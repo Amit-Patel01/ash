@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
 const Contact = () => {
-
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -9,8 +8,9 @@ const Contact = () => {
     message: "",
   });
 
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [focused, setFocused] = useState(null);
 
   useEffect(() => {
     setLoaded(true);
@@ -23,23 +23,25 @@ const Contact = () => {
     });
   };
 
-  // ✅ CONNECTED TO BACKEND
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setStatus("");
 
     try {
-      const response = await fetch("https://solutionhub-as43.onrender.com", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://solutionhub-as43.onrender.com/contact",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const data = await response.json();
 
       if (data.success) {
-        alert("Message Sent Successfully 🚀");
+        setStatus("success");
         setFormData({
           firstName: "",
           lastName: "",
@@ -47,95 +49,108 @@ const Contact = () => {
           message: "",
         });
       } else {
-        alert("Error sending message ❌");
+        setStatus("error");
       }
-
     } catch (error) {
-      console.error(error);
-      alert("Server error ❌");
+      setStatus("error");
     }
+
+    setLoading(false);
   };
 
   return (
-    <section className="relative w-full min-h-screen pt-[80px] py-16 overflow-hidden flex items-center justify-center">
+    <section className="relative w-full min-h-screen pt-[80px] flex items-center justify-center overflow-hidden px-4">
 
-      {/* Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-blue-300 blur-3xl opacity-20"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-300 blur-3xl opacity-20"></div>
+      {/* Animated Background Blobs */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute -top-20 -left-20 w-96 h-96 bg-blue-400 opacity-20 blur-3xl rounded-full animate-blob"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-400 opacity-20 blur-3xl rounded-full animate-blob animation-delay-2000"></div>
       </div>
 
-      <div className={`w-full max-w-6xl mx-auto px-4 relative z-10 transition-all duration-1000 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+      <div className={`w-full max-w-4xl transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
 
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">
-            Let's Connect
-          </h1>
-        </div>
+        <div className="glass-card rounded-3xl p-8 md:p-12 shadow-2xl">
 
-        <div className="flex justify-center">
-          <div className="w-full max-w-2xl">
-            <div className="glass-card rounded-3xl p-8">
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className="w-full rounded-xl border px-4 py-3"
-                    placeholder="First Name"
-                    required
-                  />
-
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className="w-full rounded-xl border px-4 py-3"
-                    placeholder="Last Name"
-                    required
-                  />
-                </div>
-
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full rounded-xl border px-4 py-3"
-                  placeholder="Email Address"
-                  required
-                />
-
-                <textarea
-                  rows="5"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  className="w-full rounded-xl border px-4 py-3"
-                  placeholder="Your Message..."
-                  required
-                ></textarea>
-
-                <button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl font-semibold"
-                >
-                  Send Message 🚀
-                </button>
-
-              </form>
-
-            </div>
+          {/* Header */}
+          <div className="text-center mb-10">
+            <h2 className="text-4xl font-bold mb-3">
+              Let's <span className="gradient-text">Connect</span>
+            </h2>
+            <p className="text-gray-600">
+              Have a project in mind? Let’s build something amazing together.
+            </p>
           </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+
+            {/* Name Fields */}
+            <div className="grid md:grid-cols-2 gap-5">
+              <input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                placeholder="First Name"
+                required
+                className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 focus:ring-2 focus:ring-blue-500 transition"
+              />
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                placeholder="Last Name"
+                required
+                className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 focus:ring-2 focus:ring-blue-500 transition"
+              />
+            </div>
+
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email Address"
+              required
+              className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 focus:ring-2 focus:ring-blue-500 transition"
+            />
+
+            <textarea
+              rows="5"
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              placeholder="Your Message..."
+              required
+              className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 focus:ring-2 focus:ring-blue-500 transition resize-none"
+            ></textarea>
+
+            {/* Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:scale-[1.02] transition-all duration-300 disabled:opacity-60"
+            >
+              {loading ? "Sending..." : "Send Message 🚀"}
+            </button>
+
+            {/* Status Message */}
+            {status === "success" && (
+              <div className="mt-4 text-center text-green-600 font-medium">
+                ✅ Message sent successfully!
+              </div>
+            )}
+
+            {status === "error" && (
+              <div className="mt-4 text-center text-red-600 font-medium">
+                ❌ Something went wrong. Try again.
+              </div>
+            )}
+
+          </form>
         </div>
-
       </div>
-
     </section>
   );
 };
