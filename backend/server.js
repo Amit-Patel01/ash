@@ -17,14 +17,14 @@ app.post("/contact", async (req, res) => {
 
   try {
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "onboarding@resend.dev",   // free test sender
       to: "amitpatel07029@gmail.com",
       subject: `New Contact from ${firstName}`,
       text: `
 Name: ${firstName} ${lastName}
 Email: ${email}
 Message: ${message}
-      `,
+      `
     });
 
     res.json({ success: true });
