@@ -1,95 +1,135 @@
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+
 const About = () => {
+  const [loaded, setLoaded] = useState(false)
+
   const services = [
-    "Web & Project Development Solutions",
-    "PC & Laptop Repair Services", 
-    "Video & Photo Editing Solutions",
-    "Technical Support & Guidance"
+    { icon: '💻', title: 'Web Development', desc: 'Custom websites and web applications built with modern technologies' },
+    { icon: '🔧', title: 'PC & Laptop Repair', desc: 'Professional hardware and software repair services' },
+    { icon: '🎬', title: 'Video & Photo Editing', desc: 'Professional editing services for videos and photos' },
+    { icon: '🛠️', title: 'Technical Support', desc: 'Expert technical support and guidance' }
   ]
 
+  useEffect(() => {
+    setLoaded(true)
+  }, [])
+
   return (
-    <section className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 py-16 md:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden flex items-center justify-center">
-      {/* Animated Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+    <section className="relative w-screen left-1/2 -translate-x-1/2 min-h-screen pt-28 pb-20 overflow-hidden">
+
+      {/* Background Blobs */}
+      <div className="absolute inset-0 z-[1] pointer-events-none">
+        <div className="absolute top-20 -left-20 w-80 h-80 bg-blue-400 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute top-40 -right-20 w-80 h-80 bg-purple-400 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-indigo-400 rounded-full blur-3xl opacity-20"></div>
       </div>
 
-      <div className="w-full max-w-4xl relative z-10">
+      {/* Grid Overlay */}
+      <div className="absolute inset-0 z-[2] bg-grid opacity-30"></div>
 
-        {/* Header Card */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-8 border border-gray-200">
-          <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 py-10 md:py-16 px-6 md:px-10 text-center relative">
-            <div className="absolute inset-0 opacity-20">
-              <div className="absolute top-2 left-4 text-6xl opacity-20">✨</div>
-              <div className="absolute bottom-4 right-6 text-6xl opacity-20">🚀</div>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-3 relative z-10">
+      {/* Main Content Container */}
+      <div
+        className={`relative z-20 max-w-6xl mx-auto px-4 transition-all duration-1000 ${
+          loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
+
+        {/* Main Card */}
+        <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-xl border border-white/40 overflow-hidden">
+
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 py-16 text-center text-white">
+            <h1 className="text-4xl md:text-5xl font-bold mb-2">
               About Me
             </h1>
-            <p className="text-white/90 text-base md:text-lg relative z-10">
+            <p className="text-white/90">
               Founder of AmitSolutionHub
             </p>
           </div>
 
           <div className="p-8 md:p-12">
-            <div className="flex flex-col items-center gap-8 mb-10">
+
+            {/* Profile Section */}
+            <div className="flex flex-col lg:flex-row items-center gap-10 mb-14">
+
               {/* Avatar */}
-              <div className="flex-shrink-0">
-                <div className="w-32 md:w-40 h-32 md:h-40 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-2xl transform hover:scale-110 transition-transform duration-300 glow">
-                  <span className="text-5xl md:text-6xl font-bold text-white">AP</span>
-                </div>
+              <div className="w-36 md:w-44 h-36 md:h-44 rounded-3xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 flex items-center justify-center shadow-2xl">
+                <span className="text-5xl font-bold text-white">AP</span>
               </div>
 
-              {/* Info - Centered */}
-              <div className="text-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
-                  Hi, I'm Amit Patel
+              {/* Info */}
+              <div className="text-center lg:text-left flex-1">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+                  Hi, I'm{' '}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                    Amit Patel
+                  </span>
                 </h2>
-                <p className="text-base md:text-xl gradient-text font-semibold mb-4">
-                  Full-Stack Developer | PC Technician | Digital Creator
+
+                <p className="text-lg font-semibold text-blue-600 mb-4">
+                  Full-Stack Developer • PC Technician • Digital Creator
                 </p>
-                <p className="text-gray-700 max-w-lg mx-auto text-sm md:text-base leading-relaxed">
+
+                <p className="text-gray-600 leading-relaxed max-w-lg mx-auto lg:mx-0">
                   I help businesses and individuals build strong digital presence
                   with modern websites, repair services and smart solutions.
                 </p>
               </div>
             </div>
 
-            {/* Services Grid */}
-            <div className="mb-10">
-              <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">
+            {/* Services */}
+            <div className="mb-14">
+              <h3 className="text-2xl md:text-3xl font-bold text-center mb-8">
                 What I Provide
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {services.map((service, index) => (
                   <div
                     key={index}
-                    className="bg-blue-50 flex items-center gap-4 p-4 rounded-lg hover:bg-blue-100 transition-all duration-300 transform hover:scale-105 group border border-blue-200"
+                    className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 hover:shadow-xl transition duration-300 border border-gray-100"
                   >
-                    <span className="text-green-500 text-2xl flex-shrink-0 group-hover:scale-150 transition-transform">✓</span>
-                    <span className="text-gray-700 font-semibold text-sm md:text-base">{service}</span>
+                    <div className="flex gap-4 items-center">
+                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-2xl text-white">
+                        {service.icon}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-800">
+                          {service.title}
+                        </h4>
+                        <p className="text-gray-600 text-sm">
+                          {service.desc}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Mission */}
-            <div className="bg-indigo-50 p-8 rounded-2xl text-center mb-8 hover:shadow-lg transition-shadow border border-indigo-200">
-              <h3 className="text-2xl md:text-3xl font-bold text-indigo-600 mb-4">
+            <div className="bg-white/80 backdrop-blur-md rounded-2xl p-8 text-center border border-white/40 shadow-md mb-12">
+              <div className="text-4xl mb-4">🎯</div>
+              <h3 className="text-2xl font-bold mb-4">
                 My Mission
               </h3>
-              <p className="text-gray-700 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+              <p className="text-gray-600 max-w-2xl mx-auto">
                 To provide reliable, affordable, and innovative tech solutions
                 in one platform — helping people grow in the digital world.
               </p>
             </div>
 
-            {/* Call to Action */}
+            {/* CTA */}
             <div className="text-center">
-              <a href="/contact" className="inline-block bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+              <Link
+                to="/contact"
+                className="inline-block bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-10 py-4 rounded-2xl font-semibold text-lg hover:shadow-xl transition duration-300"
+              >
                 Let's Work Together →
-              </a>
+              </Link>
             </div>
+
           </div>
         </div>
 
