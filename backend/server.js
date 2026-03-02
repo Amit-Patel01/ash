@@ -16,14 +16,32 @@ app.post("/contact", async (req, res) => {
   const { firstName, lastName, email, message } = req.body;
 
   try {
+    // 1️⃣ Mail to YOU (Admin notification)
     await resend.emails.send({
-      from: "onboarding@resend.dev",   // free test sender
+      from: "onboarding@resend.dev",
       to: "amitpatel07029@gmail.com",
       subject: `New Contact from ${firstName}`,
       text: `
 Name: ${firstName} ${lastName}
 Email: ${email}
 Message: ${message}
+      `
+    });
+
+    // 2️⃣ Auto reply to CLIENT
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: email,
+      subject: "Thank you for contacting Amit Solution Hub",
+      text: `
+Hello ${firstName},
+
+Thank you for contacting Amit Solution Hub.
+We have received your message and will get back to you shortly.
+
+Best Regards,
+Amit Patel
+AmitSolutionHub.com
       `
     });
 
@@ -37,5 +55,5 @@ Message: ${message}
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log("Server running");
+  console.log("Server running 🚀");
 });
