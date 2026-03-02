@@ -30,7 +30,7 @@ Message: ${message}
 
     // 2️⃣ Auto reply to CLIENT
     await resend.emails.send({
-  from: "Support <support@amitsolutionhub.com>",
+  from:"onboarding@resend.dev",
   to: email,
   subject: "We Received Your Message – Amit Solution Hub",
   html: `
