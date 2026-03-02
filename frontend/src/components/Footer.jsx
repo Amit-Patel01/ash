@@ -34,7 +34,7 @@ const Footer = () => {
               {/* Social Icons */}
               <div className="flex justify-center md:justify-start gap-3">
                 <a 
-                  href="#" 
+                  href="https://x.com/AmitPatel280318" 
                   className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-blue-500/50 transition-all duration-300 border border-white/20 hover:scale-110"
                   aria-label="Twitter"
                 >
@@ -43,7 +43,7 @@ const Footer = () => {
                   </svg>
                 </a>
                 <a 
-                  href="#" 
+                  href="https://www.instagram.com/amiitt_4084/" 
                   className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-pink-500/50 transition-all duration-300 border border-white/20 hover:scale-110"
                   aria-label="Instagram"
                 >
@@ -52,7 +52,7 @@ const Footer = () => {
                   </svg>
                 </a>
                 <a 
-                  href="#" 
+                  href="https://www.linkedin.com/in/amit-patel-89736b287/" 
                   className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-blue-500/50 transition-all duration-300 border border-white/20 hover:scale-110"
                   aria-label="LinkedIn"
                 >
@@ -60,6 +60,21 @@ const Footer = () => {
                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                   </svg>
                 </a>
+                <a 
+  href="https://github.com/Amit-Patel01" 
+  target="_blank"
+  rel="noopener noreferrer"
+  className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-gray-800/70 transition-all duration-300 border border-white/20 hover:scale-110"
+  aria-label="GitHub"
+>
+  <svg 
+    className="w-5 h-5" 
+    fill="currentColor" 
+    viewBox="0 0 24 24"
+  >
+    <path d="M12 .297a12 12 0 00-3.794 23.4c.6.111.82-.261.82-.577v-2.165c-3.338.726-4.042-1.416-4.042-1.416-.546-1.385-1.333-1.754-1.333-1.754-1.089-.745.083-.73.083-.73 1.205.085 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.107-.775.418-1.305.76-1.606-2.665-.303-5.467-1.332-5.467-5.93 0-1.311.469-2.381 1.236-3.221-.124-.303-.536-1.526.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 016.003 0c2.293-1.552 3.3-1.23 3.3-1.23.654 1.65.242 2.873.118 3.176.77.84 1.235 1.91 1.235 3.221 0 4.61-2.807 5.624-5.479 5.921.43.371.823 1.102.823 2.222v3.293c0 .319.216.694.825.576A12.003 12.003 0 0012 .297z"/>
+  </svg>
+</a>
               </div>
             </div>
 
