@@ -120,6 +120,25 @@ const About = () => {
               </p>
             </div>
 
+            {/* GitHub Section */}
+            <div className="bg-gradient-to-r from-slate-900 to-slate-800 backdrop-blur-md rounded-2xl p-8 text-center border border-white/20 shadow-md mb-12">
+              <div className="text-4xl mb-4">🐙</div>
+              <h3 className="text-2xl font-bold text-white mb-4">
+                My GitHub
+              </h3>
+              <p className="text-gray-300 max-w-2xl mx-auto mb-6">
+                Explore my coding projects including AI Quiz Platform, Car Service Website, and React applications.
+              </p>
+              <a
+                href="https://github.com/Amit-Patel01"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg transition duration-300"
+              >
+                Visit GitHub →
+              </a>
+            </div>
+
             {/* CTA */}
             <div className="text-center">
               <Link
