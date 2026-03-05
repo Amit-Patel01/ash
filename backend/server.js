@@ -27,11 +27,11 @@ Email: ${email}
 Message: ${message}
       `
     });
-// 2️⃣ Auto reply to CLIENT
-await resend.emails.send({
-  from: "Amit Solution Hub <onboarding@resend.dev>",
+
+    // 2️⃣ Auto reply to CLIENT
+    await resend.emails.send({
+  from:"onboarding@resend.dev",
   to: email,
-  reply_to: "amitpatel07029@gmail.com",
   subject: "We Received Your Message – Amit Solution Hub",
   html: `
   <div style="font-family: Arial, sans-serif; background-color:#f4f6f8; padding:40px 0;">
