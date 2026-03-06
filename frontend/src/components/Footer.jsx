@@ -119,7 +119,7 @@ const Footer = () => {
               <div className="space-y-3 text-gray-300 text-sm">
                 <a href="mailto:contact@amitsolutionhub.com" className="flex items-center justify-center md:justify-end gap-3 hover:text-white transition hover:translate-x-[-5px]">
                   <span className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">📧</span>
-                  amitpatel07029@gmail.com
+                  contact@amitsolutionhub.com
                 </a>
                 <a href="tel:+917874248481" className="flex items-center justify-center md:justify-end gap-3 hover:text-white transition hover:translate-x-[-5px]">
                   <span className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">📱</span>
