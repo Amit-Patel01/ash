@@ -4,10 +4,12 @@ import Hero from './components/Hero'
 import About from './pages/About'
 import Services from './pages/Services'
 import Contact from './pages/Contact'
+import Popup from './components/Popup'
 
 function App() {
   return (
     <Router>
+      <Popup />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Hero />} />
