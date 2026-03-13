@@ -13,21 +13,22 @@ app.get("/", (req, res) => {
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 app.post("/contact", async (req, res) => {
-  const { firstName, lastName, email, message } = req.body;
+  const { firstName, lastName, email, mobile, github, message } = req.body;
 
   try {
     // 1️⃣ Mail to YOU (Admin notification)
     await resend.emails.send({
-      from: "onboarding@resend.dev",
-      to: "amitpatel07029@gmail.com",
-      subject: `New Contact from ${firstName}`,
-      text: `
+  from: "onboarding@resend.dev",
+  to: "amitpatel07029@gmail.com",
+  subject: `New Contact from ${firstName}`,
+  text: `
 Name: ${firstName} ${lastName}
 Email: ${email}
+Mobile: ${mobile || 'Not provided'}
+GitHub: ${github || 'Not provided'}
 Message: ${message}
-      `
-    });
-
+`
+});
     // 2️⃣ Auto reply to CLIENT
     await resend.emails.send({
       from: "Amit Solution Hub <contact@amitsolutionhub.com>",
@@ -54,6 +55,16 @@ Message: ${message}
         <div style="margin:25px 0; padding:15px; background:#f9fafb; border-left:4px solid #2563eb;">
           <p style="margin:0; color:#374151;"><strong>Your Message:</strong></p>
           <p style="margin-top:8px; color:#6b7280;">${message}</p>
+        </div>
+
+        <div style="margin:25px 0; padding:15px; background:#f9fafb; border-left:4px solid #10b981;">
+          <p style="margin:0; color:#374151;"><strong>Mobile:</strong></p>
+          <p style="margin-top:8px; color:#6b7280;"><a href="tel:${mobile}" style="color:#10b981; font-weight:500; text-decoration:none;">📞 ${mobile}</a></p>
+        </div>
+
+        <div style="margin:25px 0; padding:15px; background:#f9fafb; border-left:4px solid #3b82f6;">
+          <p style="margin:0; color:#374151;"><strong>GitHub:</strong></p>
+          <a href="${github}" target="_blank" rel="noopener noreferrer" style="color:#3b82f6; text-decoration:none; display:inline-block; padding:10px 16px; background:#eff6ff; border-radius:8px; margin-top:8px; font-weight:500;">🔗 View GitHub Profile</a>
         </div>
 
         <p style="color:#4b5563;">

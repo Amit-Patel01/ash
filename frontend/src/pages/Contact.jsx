@@ -5,6 +5,8 @@ const Contact = () => {
     firstName: "",
     lastName: "",
     email: "",
+    mobile: "",
+    github: "",
     message: "",
   });
 
@@ -46,6 +48,8 @@ const Contact = () => {
           firstName: "",
           lastName: "",
           email: "",
+          mobile: "",
+          github: "",
           message: "",
         });
       } else {
@@ -112,6 +116,26 @@ const Contact = () => {
               value={formData.email}
               onChange={handleChange}
               placeholder="Email Address"
+              required
+              className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 focus:ring-2 focus:ring-blue-500 transition"
+            />
+
+            <input
+              type="tel"
+              name="mobile"
+              value={formData.mobile}
+              onChange={handleChange}
+              placeholder="Mobile Number (e.g. +91 1234567890)"
+              required
+              className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 focus:ring-2 focus:ring-blue-500 transition"
+            />
+
+            <input
+              type="url"
+              name="github"
+              value={formData.github}
+              onChange={handleChange}
+              placeholder="github.com/yourusername"
               required
               className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 focus:ring-2 focus:ring-blue-500 transition"
             />
