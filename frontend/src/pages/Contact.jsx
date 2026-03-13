@@ -60,6 +60,11 @@ const Contact = () => {
     }
 
     setLoading(false);
+    
+    // Auto clear success after 5s
+    if (status === "success") {
+      setTimeout(() => setStatus(""), 5000);
+    }
   };
 
   return (
@@ -156,19 +161,33 @@ const Contact = () => {
               disabled={loading}
               className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:scale-[1.02] transition-all duration-300 disabled:opacity-60"
             >
-              {loading ? "Sending..." : "Send Message 🚀"}
+{loading ? (
+                <span className="flex items-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Sending...
+                </span>
+              ) : "Send Message 🚀"}
             </button>
 
             {/* Status Message */}
-            {status === "success" && (
-              <div className="mt-4 text-center text-green-600 font-medium">
-                ✅ Message sent successfully!
+{status === "success" && (
+              <div className="mt-4 p-4 rounded-2xl bg-green-50/80 border border-green-200 shadow-lg animate-bounce-in group overflow-hidden">
+                <div className="flex items-center justify-center gap-3 transform group-hover:scale-110 transition-transform">
+                  <div className="text-3xl animate-ping">✅</div>
+                  <span className="text-lg font-bold text-green-700 bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent animate-pulse">
+                    Message sent successfully! 🎉
+                  </span>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20 blur animate-pulse"></div>
               </div>
             )}
 
-            {status === "error" && (
-              <div className="mt-4 text-center text-red-600 font-medium">
-                ❌ Something went wrong. Try again.
+{status === "error" && (
+              <div className="mt-4 p-4 rounded-2xl bg-red-50/80 border border-red-200 shadow-lg animate-shake group">
+                <div className="flex items-center justify-center gap-3">
+                  <div className="text-3xl animate-wiggle">❌</div>
+                  <span className="text-lg font-bold text-red-700">Something went wrong. Try again.</span>
+                </div>
               </div>
             )}
 
