@@ -18,23 +18,22 @@ app.post("/contact", async (req, res) => {
   try {
     // 1️⃣ Mail to YOU (Admin notification)
     await resend.emails.send({
-  from: "onboarding@resend.dev",
-  to: "amitpatel07029@gmail.com",
-  subject: `New Contact from ${firstName}`,
-  text: `
-Name: ${firstName} ${lastName}
+      from: "onboarding@resend.dev",
+      to: "amitpatel07029@gmail.com",
+      subject: `New Contact from ${firstName}`,
+      text: `Name: ${firstName} ${lastName}
 Email: ${email}
 Mobile: ${mobile || 'Not provided'}
 GitHub: ${github || 'Not provided'}
-Message: ${message}
-`
-});
+Message: ${message}`
+    });
+
     // 2️⃣ Auto reply to CLIENT
     await resend.emails.send({
       from: "Amit Solution Hub <contact@amitsolutionhub.com>",
       to: email,
-  subject: "We Received Your Message – Amit Solution Hub",
-  html: `
+      subject: "We Received Your Message – Amit Solution Hub",
+      html: `
   <div style="font-family: Arial, sans-serif; background-color:#f4f6f8; padding:40px 0;">
     <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.08);">
 
@@ -89,7 +88,7 @@ Message: ${message}
     </div>
   </div>
   `
-});
+    });
     res.json({ success: true });
 
   } catch (error) {

@@ -32,7 +32,7 @@ const Contact = () => {
 
     try {
       const response = await fetch(
-        "https://solutionhub-as43.onrender.com/contact",
+        "http://localhost:5000/contact",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
