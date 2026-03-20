@@ -27,11 +27,11 @@ const Navbar = () => {
   ]
 
   return (
-    <nav className={`sticky top-0 left-0 right-0 z-50 transition-all duration-500 ${
-      scrolled 
-        ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-white/20' 
-        : 'bg-transparent'
-    }`}>
+<nav className={`sticky top-0 left-0 right-0 z-50 transition-all duration-500 ${
+  scrolled 
+    ? 'bg-white/60 backdrop-blur-3xl border-b border-white/30 shadow-[0_10px_40px_rgba(0,0,0,0.08)]' 
+    : 'bg-white/40 backdrop-blur-xl border-b border-white/20'
+}`}>
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <div className="flex justify-between items-center h-16 md:h-20">
           <Link to="/" className="flex items-center group flex-shrink-0">
@@ -68,12 +68,12 @@ const Navbar = () => {
               </Link>
             ))}
             <Link 
-              to="/contact"
+              to="/help"
               className="ml-2 lg:ml-4 relative group"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-md opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 lg:px-8 py-2.5 lg:py-3 rounded-full font-semibold text-sm lg:text-base hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 transform hover:-translate-y-0.5">
-                Get Started
+                Help
               </div>
             </Link>
           </div>
