@@ -5,7 +5,7 @@ import About from './pages/About'
 import Services from './pages/Services'
 import Contact from './pages/Contact'
 import Popup from './components/Popup'
-import Help from './pages/Help'
+import Help from './pages/help'
 
 function App() {
   return (
