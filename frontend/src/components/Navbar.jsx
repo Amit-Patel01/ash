@@ -67,15 +67,15 @@ const Navbar = () => {
                 )}
               </Link>
             ))}
-            <Link 
-              to="/amitsolutionhub-support-chat.vercel.app/"
+            <button 
+              onClick={() => window.open('https://amitsolutionhub-support-chat.vercel.app/', '_blank')}
               className="ml-2 lg:ml-4 relative group"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-md opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 lg:px-8 py-2.5 lg:py-3 rounded-full font-semibold text-sm lg:text-base hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 transform hover:-translate-y-0.5">
+              <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 lg:px-8 py-2.5 lg:py-3 rounded-full font-semibold text-sm lg:text-base hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 transform hover:-translate-y-0.5 cursor-pointer">
                 Help
               </div>
-            </Link>
+            </button>
           </div>
 
           <div className="md:hidden flex items-center">
@@ -115,7 +115,13 @@ const Navbar = () => {
                   {link.name}
                 </Link>
               ))}
-              <div className="pt-2">
+              <button 
+                onClick={() => window.open('https://amitsolutionhub-support-chat.vercel.app/', '_blank')}
+                className="block w-full text-center bg-gradient-to-r from-green-600 to-emerald-600 text-white px-5 py-3.5 rounded-xl font-semibold text-base hover:from-green-700 hover:to-emerald-700 mb-2 transition-all duration-200 shadow-lg shadow-green-600/30"
+              >
+                Help
+              </button>
+              <div className="pt-0">
                 <Link 
                   to="/contact"
                   className="block w-full text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-3.5 rounded-xl font-semibold text-base hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg shadow-blue-600/30"
