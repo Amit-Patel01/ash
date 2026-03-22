@@ -68,7 +68,7 @@ const Navbar = () => {
               </Link>
             ))}
             <Link 
-              to="/https://amitsolutionhub-support-chat.vercel.app/"
+              to="/amitsolutionhub-support-chat.vercel.app/"
               className="ml-2 lg:ml-4 relative group"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-md opacity-70 group-hover:opacity-100 transition-opacity duration-300"></div>
