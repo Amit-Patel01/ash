@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import launchVideo from '../assets/launchinsoon.mp4'
+import launchVideo from '../assets/welcome.mp4'
 
 const Hero = () => {
   const [loaded, setLoaded] = useState(false)
@@ -17,12 +17,12 @@ const Hero = () => {
         <div className="absolute top-0 -right-4 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-8 left-20 w-96 h-96 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
-      
+
       {/* Video Background */}
-      <video 
-        autoPlay 
-        loop 
-        muted 
+      <video
+        autoPlay
+        loop
+        muted
         playsInline
         className="absolute top-0 left-0 w-full h-full object-cover opacity-20 z-0"
       >
@@ -31,10 +31,10 @@ const Hero = () => {
 
       {/* Grid Pattern Overlay */}
       <div className="absolute inset-0 z-0 bg-grid opacity-30"></div>
-      
+
       {/* Content */}
       <div className={`relative z-10 text-center px-4 max-w-5xl mx-auto py-12 transition-all duration-1000 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-        
+
         {/* Floating Badge */}
         <div className="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm border border-white/50 px-5 py-2.5 rounded-full mb-8 shadow-lg hover:shadow-xl transition-shadow duration-300 group">
           <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
