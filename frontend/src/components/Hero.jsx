@@ -24,7 +24,8 @@ const Hero = () => {
         loop
         muted
         playsInline
-        className="absolute top-0 left-0 w-full h-full object-cover opacity-20 z-0"
+        preload="auto"
+        className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto max-w-none -translate-x-1/2 -translate-y-1/2 object-cover opacity-20 pointer-events-none -z-10"
       >
         <source src={launchVideo} type="video/mp4" />
       </video>
