@@ -35,7 +35,7 @@ const About = () => {
 
   return (
     <section className="relative w-screen left-1/2 -translate-x-1/2 min-h-screen pt-28 pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
-      
+
       {/* Animated Background Blobs */}
       <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
         <div className="absolute top-10 -left-20 w-[30rem] h-[30rem] bg-blue-500/10 rounded-full blur-[100px] animate-pulse"></div>
@@ -46,15 +46,15 @@ const About = () => {
       <div className="absolute inset-0 z-[2] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-30"></div>
 
       <div className={`relative z-20 max-w-6xl mx-auto px-4 transition-all duration-1000 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
-        
+
         {/* Header Section */}
         <div className="text-center mb-16">
           {/* GitHub Profile Fetch */}
           <div className="relative inline-block mb-8 group mt-8">
             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-40 group-hover:opacity-100 transition duration-1000"></div>
-            <img 
-              src="https://github.com/Amit-Patel01.png" 
-              alt="Amit Patel" 
+            <img
+              src="https://github.com/Amit-Patel01.png"
+              alt="Amit Patel"
               className="relative w-32 h-32 md:w-44 md:h-44 rounded-full border-4 border-white object-cover shadow-2xl transition-transform duration-500 group-hover:scale-105"
             />
             <div className="absolute -bottom-2 -right-2 bg-green-500 w-6 h-6 rounded-full border-4 border-white animate-pulse shadow-lg"></div>
@@ -66,7 +66,7 @@ const About = () => {
           <p className="text-xl md:text-2xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent mb-6">
             Founder of AmitSolutionHub
           </p>
-          
+
           <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed mb-10 px-4">
             I specialize in crafting beautiful web experiences, providing expert hardware solutions, and helping businesses establish a commanding digital presence.
           </p>
@@ -83,7 +83,7 @@ const About = () => {
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-          
+
           {/* About Me Card */}
           <div className="bg-white/40 backdrop-blur-2xl rounded-3xl p-8 border border-white/60 shadow-xl group hover:shadow-2xl transition-all h-full">
             <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
@@ -148,41 +148,41 @@ const About = () => {
         {/* Tech Stack Categories */}
         <div className="space-y-8 mb-16">
           <h3 className="text-3xl font-bold text-center text-slate-800 mb-10">🛠 Tech Stack</h3>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Development Tools */}
-            <div className="bg-white/50 backdrop-blur-xl rounded-3xl p-6 border border-white/60 shadow-lg">
-              <h4 className="font-bold mb-4 text-slate-700">Development Tools</h4>
-              <div className="flex flex-wrap gap-3">
-                <img src="https://cdn.simpleicons.org/mongodb" height="32" alt="MongoDB" />
-                <img src="https://cdn.simpleicons.org/git" height="32" alt="Git" />
-                <img src="https://cdn.simpleicons.org/github" height="32" alt="GitHub" />
-             </div>
+            <div className="bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-white/60 shadow-lg">
+              <h4 className="font-bold mb-3 text-slate-700 text-sm">Development Tools</h4>
+              <div className="flex flex-wrap gap-2">
+                <img src="https://cdn.simpleicons.org/mongodb" alt="MongoDB" className="h-6 md:h-8 w-auto object-contain" />
+                <img src="https://cdn.simpleicons.org/git" alt="Git" className="h-6 md:h-8 w-auto object-contain" />
+                <img src="https://cdn.simpleicons.org/github" alt="GitHub" className="h-6 md:h-8 w-auto object-contain" />
+              </div>
             </div>
 
             {/* Languages & Frameworks */}
-            <div className="bg-white/50 backdrop-blur-xl rounded-3xl p-6 border border-white/60 shadow-lg lg:col-span-3">
-              <h4 className="font-bold mb-4 text-slate-700">Languages & Frameworks</h4>
-              <div className="flex flex-col gap-4">
-                <img src={`https://skillicons.dev/icons?i=${techStack.languages}`} alt="Languages" />
-                <img src={`https://skillicons.dev/icons?i=${techStack.frameworks}`} alt="Frameworks" />
+            <div className="bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-white/60 shadow-lg lg:col-span-3">
+              <h4 className="font-bold mb-3 text-slate-700 text-sm">Languages & Frameworks</h4>
+              <div className="flex flex-col gap-3">
+                <img src={`https://skillicons.dev/icons?i=${techStack.languages}`} alt="Languages" className="h-6 md:h-8 w-auto object-contain self-start" />
+                <img src={`https://skillicons.dev/icons?i=${techStack.frameworks}`} alt="Frameworks" className="h-6 md:h-8 w-auto object-contain self-start" />
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <div className="bg-white/50 backdrop-blur-xl rounded-3xl p-6 border border-white/60 shadow-lg">
-              <h4 className="font-bold mb-4 text-slate-700">Tools & DevOps</h4>
-              <img src={`https://skillicons.dev/icons?i=${techStack.tools}`} alt="Tools" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div className="bg-white/50 backdrop-blur-xl rounded-2xl p-4 border border-white/60 shadow-lg">
+              <h4 className="font-bold mb-3 text-slate-700 text-sm">Tools & DevOps</h4>
+              <img src={`https://skillicons.dev/icons?i=${techStack.tools}`} alt="Tools" className="h-6 md:h-8 w-auto object-contain" />
             </div>
-            <div className="bg-white/50 backdrop-blur-xl rounded-3xl p-6 border border-white/60 shadow-lg">
-              <h4 className="font-bold mb-4 text-slate-700">Operating Systems</h4>
-              <img src={`https://skillicons.dev/icons?i=${techStack.os}`} alt="OS" />
+            <div className="bg-white/50 backdrop-blur-xl rounded-3xl p-4 border border-white/60 shadow-lg">
+              <h4 className="font-bold mb-3 text-slate-700 text-sm">Operating Systems</h4>
+              <img src={`https://skillicons.dev/icons?i=${techStack.os}`} alt="OS" className="h-6 md:h-8 w-auto object-contain" />
             </div>
           </div>
         </div>
 
-      
+
 
         {/* CTA */}
         <div className="text-center">
