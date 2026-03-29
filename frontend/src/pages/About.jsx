@@ -4,187 +4,208 @@ import { Link } from 'react-router-dom'
 const About = () => {
   const [loaded, setLoaded] = useState(false)
 
-  const services = [
-    { icon: '💻', title: 'Web Development', desc: 'Custom websites built with modern technologies' },
-    { icon: '🔧', title: 'PC & Laptop Repair', desc: 'Professional hardware & software repair' },
-    { icon: '🎬', title: 'Video & Photo Editing', desc: 'Creative editing for videos and photos' },
-    { icon: '🛠️', title: 'Technical Support', desc: 'Expert technical guidance and support' }
-  ]
-
-  const techStack = [
-    { name: "HTML", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" },
-    { name: "CSS", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" },
-    { name: "JavaScript", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" },
-    { name: "Node.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
-    { name: "Express", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" },
-    { name: "MongoDB", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" },
-    { name: "PHP", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" },
-    { name: "Python", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
-    { name: "MySQL", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
-    { name: ".NET", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dot-net/dot-net-original.svg" },
-    { name: "Bootstrap", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" },
-    { name: "Git", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
-    { name: "GitHub", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" },
-    { name: "Firebase", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" },
-    { name: "Vercel", logo: "https://assets.vercel.com/image/upload/v1662130559/nextjs/Icon_dark_background.png" },
-    { name: "Angular", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularjs/angularjs-original.svg" },
-    { name: "Arduino", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/arduino/arduino-original.svg" },
-    { name: "Photoshop", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg" },
-    { name: "VS Code", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg" }
-  ];
-
   useEffect(() => {
     setLoaded(true)
   }, [])
+
+  const techStack = {
+    languages: "c,cs,html,java,js,php,ts,python,cpp",
+    frameworks: "angular,bootstrap,django,express,fastapi,flask,nextjs,nodejs,react,spring,tailwind,threejs,dotnet",
+    tools: "git,github,vercel,netlify,npm,arduino,postman",
+    os: "windows,linux"
+  }
+
+  const expertise = {
+    development: [
+      "MERN Stack Applications",
+      "PHP & MySQL Projects",
+      "Authentication & Login Systems",
+      "Admin & Client Dashboards",
+      "Payment Integration (UPI/QR)",
+      "REST API Basics"
+    ],
+    technical: [
+      "PC & Laptop Troubleshooting",
+      "SSD / HDD / RAM Upgrades",
+      "Windows Installation & BIOS Fix",
+      "System Optimization",
+      "Network & WiFi Setup"
+    ]
+  }
 
   return (
     <section className="relative w-screen left-1/2 -translate-x-1/2 min-h-screen pt-28 pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
       
       {/* Animated Background Blobs */}
       <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
-        <div className="absolute top-10 -left-20 w-[30rem] h-[30rem] bg-blue-500/30 rounded-full blur-[100px] animate-[spin_10s_linear_infinite]"></div>
-        <div className="absolute top-40 -right-20 w-[30rem] h-[30rem] bg-purple-500/30 rounded-full blur-[100px] animate-[pulse_6s_ease-in-out_infinite]"></div>
-        <div className="absolute -bottom-32 left-1/3 w-[30rem] h-[30rem] bg-indigo-500/30 rounded-full blur-[100px] animate-[bounce_8s_infinite]"></div>
+        <div className="absolute top-10 -left-20 w-[30rem] h-[30rem] bg-blue-500/10 rounded-full blur-[100px] animate-pulse"></div>
+        <div className="absolute top-40 -right-20 w-[30rem] h-[30rem] bg-purple-500/10 rounded-full blur-[100px] animation-delay-2000 animate-pulse"></div>
+        <div className="absolute -bottom-32 left-1/3 w-[30rem] h-[30rem] bg-indigo-500/10 rounded-full blur-[100px] animation-delay-4000 animate-pulse"></div>
       </div>
 
-      <div className="absolute inset-0 z-[2] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-50"></div>
+      <div className="absolute inset-0 z-[2] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-30"></div>
 
-      {/* Main Container */}
       <div className={`relative z-20 max-w-6xl mx-auto px-4 transition-all duration-1000 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
-
-        {/* Hero Card */}
-        <div className="bg-white/40 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/60 overflow-hidden mb-12 transform hover:scale-[1.01] transition-transform duration-500">
-          <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-1 relative overflow-hidden">
-             <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+        
+        {/* Header Section */}
+        <div className="text-center mb-16">
+          {/* GitHub Profile Fetch */}
+          <div className="relative inline-block mb-8 group mt-8">
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur opacity-40 group-hover:opacity-100 transition duration-1000"></div>
+            <img 
+              src="https://github.com/Amit-Patel01.png" 
+              alt="Amit Patel" 
+              className="relative w-32 h-32 md:w-44 md:h-44 rounded-full border-4 border-white object-cover shadow-2xl transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute -bottom-2 -right-2 bg-green-500 w-6 h-6 rounded-full border-4 border-white animate-pulse shadow-lg"></div>
           </div>
-          
-          <div className="p-8 md:p-12">
-            <div className="flex flex-col lg:flex-row items-center gap-10">
-              {/* Avatar with Glow */}
-              <div className="relative group perspective-1000">
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl blur opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-                <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center shadow-2xl border border-white/20 transform group-hover:rotate-y-12 transition-transform duration-500">
-                  <span className="text-6xl font-bold bg-gradient-to-br from-blue-400 to-purple-400 bg-clip-text text-transparent">AP</span>
-                  <div className="absolute -bottom-4 -right-4 bg-green-500 w-8 h-8 rounded-full border-4 border-white animate-bounce shadow-lg"></div>
-                </div>
-              </div>
 
-              {/* Info */}
-              <div className="text-center lg:text-left flex-1 space-y-4">
-                <div className="inline-block px-4 py-1.5 rounded-full bg-blue-100/50 border border-blue-200 text-blue-700 font-medium text-sm mb-2 backdrop-blur-md shadow-sm">
-                  Welcome to my portfolio
-                </div>
-                <h2 className="text-4xl md:text-5xl font-extrabold text-slate-800 tracking-tight">
-                  Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Amit Patel</span>
-                </h2>
-                <p className="text-xl font-semibold text-indigo-600">
-                  Founder of AmitSolutionHub
-                </p>
-                <p className="text-slate-600 leading-relaxed max-w-2xl text-lg mix-blend-multiply">
-                  I specialize in crafting beautiful web experiences, providing expert hardware solutions, and helping businesses establish a commanding digital presence.
-                </p>
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-2 tracking-tight">
+            Hi 👋, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">Amit Patel</span>
+          </h1>
+          <p className="text-xl md:text-2xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent mb-6">
+            Founder of AmitSolutionHub
+          </p>
+          
+          <p className="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed mb-10 px-4">
+            I specialize in crafting beautiful web experiences, providing expert hardware solutions, and helping businesses establish a commanding digital presence.
+          </p>
+
+          <div className="flex flex-wrap justify-center gap-4">
+            <a href="https://portfolio.amitsolutionhub.com/" target="_blank" rel="noreferrer" className="px-8 py-3.5 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 hover:-translate-y-1 transition-all">
+              Visit Portfolio
+            </a>
+            <a href="https://github.com/Amit-Patel01" target="_blank" rel="noreferrer" className="px-8 py-3.5 bg-slate-900 text-white rounded-2xl font-bold shadow-lg shadow-slate-200 hover:bg-black hover:-translate-y-1 transition-all">
+              GitHub Profile
+            </a>
+          </div>
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+          
+          {/* About Me Card */}
+          <div className="bg-white/40 backdrop-blur-2xl rounded-3xl p-8 border border-white/60 shadow-xl group hover:shadow-2xl transition-all h-full">
+            <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              <span className="text-blue-600 text-3xl">🚀</span> About Me
+            </h3>
+            <div className="space-y-4 text-slate-700 text-lg leading-relaxed">
+              <p className="flex items-center gap-3">🎓 <span className="font-semibold">B.Tech IT Student</span></p>
+              <p className="flex items-center gap-3">🏢 <span className="font-semibold">Founder of AmitSolutionHub</span></p>
+              <p className="flex items-center gap-3">💻 <span className="font-semibold">Full-Stack Developer (MERN, PHP, .NET)</span></p>
+              <p className="flex items-center gap-3">🎨 <span className="font-semibold">UI/UX Designer & Creative Editor</span></p>
+              <p className="flex items-center gap-3">🖥 <span className="font-semibold">PC & Laptop Technician</span></p>
+              <p className="mt-6 pt-4 border-t border-slate-200">
+                I love building practical systems that combine <span className="text-blue-600 font-bold">clean design, security, and performance.</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Journey Card */}
+          <div className="bg-white/40 backdrop-blur-2xl rounded-3xl p-8 border border-white/60 shadow-xl group hover:shadow-2xl transition-all h-full">
+            <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              <span className="text-indigo-600 text-3xl">🌟</span> My Journey
+            </h3>
+            <div className="space-y-4 text-slate-700 text-base leading-relaxed">
+              <p>
+                My journey into technology didn’t start with big resources — it started with <span className="font-bold">curiosity and consistency.</span>
+              </p>
+              <div className="flex gap-4 items-start bg-blue-50/50 p-4 rounded-2xl border border-blue-100">
+                <span className="font-bold text-blue-600">2018:</span>
+                <p>Started learning web dev, evolving from static pages to dynamic full-stack apps.</p>
               </div>
+              <div className="flex gap-4 items-start bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100">
+                <span className="font-bold text-indigo-600">2020:</span>
+                <p>Entered PC Repair field, strengthening troubleshooting and problem-solving skills.</p>
+              </div>
+              <p className="mt-2 italic">
+                The journey is still in progress — and I’m committed to improving every day. 🚀
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Two Column Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          
-          {/* Tech Stack */}
-          <div className="bg-white/40 backdrop-blur-2xl rounded-3xl shadow-xl border border-white/60 p-8 transform hover:-translate-y-2 transition-transform duration-500">
-            <div className="flex items-center gap-3 mb-8">
-              <span className="text-3xl">⚙️</span>
-              <h3 className="text-2xl font-bold text-slate-800">Tech Stack</h3>
-            </div>
-            <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-              {techStack.map((tech, index) => (
-                <div 
-                  key={index}
-                  className="group relative flex flex-col items-center justify-center w-[4.5rem] h-[4.5rem] md:w-[5rem] md:h-[5rem] bg-white/40 backdrop-blur-2xl border border-white/60 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-110 cursor-default"
-                >
-                  <div className="absolute inset-0 bg-white/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-                  <img 
-                    src={tech.logo} 
-                    alt={tech.name} 
-                    className="w-10 h-10 object-contain filter drop-shadow-md group-hover:scale-110 transition-transform duration-300"
-                  />
-                  
-                  {/* Hover Tooltip */}
-                  <div className="absolute -top-12 opacity-0 group-hover:opacity-100 group-hover:-translate-y-1 transition-all duration-300 bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg whitespace-nowrap shadow-xl pointer-events-none z-50">
-                    {tech.name}
-                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
-                  </div>
-                </div>
+        {/* Vision & Mission Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+          <div className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white rounded-3xl p-8 shadow-xl transform hover:-translate-y-2 transition-all">
+            <h4 className="text-xl font-bold mb-4 flex items-center gap-2">🎯 Mission</h4>
+            <p className="text-blue-100">To build reliable and practical digital solutions that solve real-world problems efficiently.</p>
+          </div>
+          <div className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-3xl p-8 shadow-xl transform hover:-translate-y-2 transition-all">
+            <h4 className="text-xl font-bold mb-4 flex items-center gap-2">🔭 Vision</h4>
+            <p className="text-indigo-100">To grow AmitSolutionHub into a trusted tech platform combining development and technical support.</p>
+          </div>
+          <div className="bg-white/40 backdrop-blur-xl rounded-3xl p-8 border border-white/60 shadow-xl transform hover:-translate-y-2 transition-all">
+            <h4 className="text-xl font-bold mb-4 text-slate-800">💡 Core Values</h4>
+            <div className="flex flex-wrap gap-2 text-sm">
+              {["Security First", "Creativity", "Growth", "Learning", "Performance"].map(v => (
+                <span key={v} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold">{v}</span>
               ))}
             </div>
           </div>
+        </div>
 
-          {/* GitHub Card */}
-          <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl shadow-xl border border-slate-700 p-8 text-white relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
-            
-            <div className="relative z-10">
-              <div className="flex flex-col h-full justify-between">
-                <div>
-                  <div className="flex items-center gap-4 mb-6">
-                    <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
-                      <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                    </svg>
-                    <h3 className="text-3xl font-bold">GitHub</h3>
-                  </div>
-                  <p className="text-slate-300 mb-8 text-lg">
-                    Explore my open source projects, including AI platforms and full-stack React applications.
-                  </p>
-                </div>
-                <a
-                  href="https://github.com/Amit-Patel01"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center w-full sm:w-auto bg-white text-slate-900 px-8 py-4 rounded-xl font-bold hover:bg-slate-100 transition-colors duration-300 overflow-hidden relative"
-                >
-                  <span className="relative z-10 flex items-center gap-2">
-                    Visit Profile
-                    <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                  </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:translate-x-full duration-1000"></div>
-                </a>
+        {/* Tech Stack Categories */}
+        <div className="space-y-8 mb-16">
+          <h3 className="text-3xl font-bold text-center text-slate-800 mb-10">🛠 Tech Stack</h3>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Development Tools */}
+            <div className="bg-white/50 backdrop-blur-xl rounded-3xl p-6 border border-white/60 shadow-lg">
+              <h4 className="font-bold mb-4 text-slate-700">Development Tools</h4>
+              <div className="flex flex-wrap gap-3">
+                <img src="https://cdn.simpleicons.org/mongodb" height="32" alt="MongoDB" />
+                <img src="https://cdn.simpleicons.org/git" height="32" alt="Git" />
+                <img src="https://cdn.simpleicons.org/github" height="32" alt="GitHub" />
+             </div>
+            </div>
+
+            {/* Languages & Frameworks */}
+            <div className="bg-white/50 backdrop-blur-xl rounded-3xl p-6 border border-white/60 shadow-lg lg:col-span-3">
+              <h4 className="font-bold mb-4 text-slate-700">Languages & Frameworks</h4>
+              <div className="flex flex-col gap-4">
+                <img src={`https://skillicons.dev/icons?i=${techStack.languages}`} alt="Languages" />
+                <img src={`https://skillicons.dev/icons?i=${techStack.frameworks}`} alt="Frameworks" />
               </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            <div className="bg-white/50 backdrop-blur-xl rounded-3xl p-6 border border-white/60 shadow-lg">
+              <h4 className="font-bold mb-4 text-slate-700">Tools & DevOps</h4>
+              <img src={`https://skillicons.dev/icons?i=${techStack.tools}`} alt="Tools" />
+            </div>
+            <div className="bg-white/50 backdrop-blur-xl rounded-3xl p-6 border border-white/60 shadow-lg">
+              <h4 className="font-bold mb-4 text-slate-700">Operating Systems</h4>
+              <img src={`https://skillicons.dev/icons?i=${techStack.os}`} alt="OS" />
             </div>
           </div>
         </div>
 
-        {/* Services Grid */}
-        <div className="mb-12">
-          <h3 className="text-3xl font-bold text-center text-slate-800 mb-10">What I Provide</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {services.map((service, index) => (
-              <div
-                key={index}
-                className="bg-white/40 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/50 hover:-translate-y-3 hover:shadow-2xl hover:bg-white/60 transition-all duration-300 group"
-              >
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-md group-hover:scale-110 transition-transform duration-300">
-                  {service.icon}
-                </div>
-                <h4 className="text-xl font-bold text-slate-800 mb-3">{service.title}</h4>
-                <p className="text-slate-600 text-sm leading-relaxed">{service.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+      
 
         {/* CTA */}
-        <div className="text-center pb-10">
-          <Link
-            to="/contact"
-            className="group relative inline-flex items-center justify-center"
-          >
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full blur opacity-70 group-hover:opacity-100 transition duration-300"></div>
-            <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-12 py-5 rounded-full font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-xl flex items-center gap-3">
-              Let's Work Together
-              <span className="group-hover:translate-x-2 transition-transform duration-300">→</span>
-            </div>
-          </Link>
+        <div className="text-center">
+          <p className="text-xl font-medium text-slate-600 mb-8 italic">⭐ "Building Solutions. Solving Problems. Creating Impact."</p>
+          <div className="flex justify-center gap-6 flex-wrap">
+            <a href="https://www.linkedin.com/in/amit-patel-89736b287/" target="_blank" rel="noreferrer">
+              <img src="https://skillicons.dev/icons?i=linkedin" height="40" alt="LinkedIn" className="hover:scale-110 transition-transform" />
+            </a>
+            <a href="https://www.instagram.com/amiitt_4084" target="_blank" rel="noreferrer">
+              <img src="https://skillicons.dev/icons?i=instagram" height="40" alt="Instagram" className="hover:scale-110 transition-transform" />
+            </a>
+            <a href="mailto:amitpatel07029@gmail.com">
+              <img src="https://skillicons.dev/icons?i=gmail" height="40" alt="Email" className="hover:scale-110 transition-transform" />
+            </a>
+          </div>
+          <div className="mt-12">
+            <Link
+              to="/contact"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-10 py-4 rounded-full font-bold text-lg shadow-xl hover:scale-105 transition-all inline-block"
+            >
+              Let's Build Something Great 🚀
+            </Link>
+          </div>
         </div>
 
       </div>
