@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import launchVideo from '../assets/welcome.mp4'
+import heroBg from '../assets/hero-bg.png'
 
 const Hero = () => {
   const [loaded, setLoaded] = useState(false)
@@ -11,24 +11,23 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={heroBg}
+          alt="Tech Solutions"
+          className="w-full h-full object-cover opacity-30 select-none pointer-events-none transition-opacity duration-1000"
+        />
+        {/* Overlay to ensure text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/40 to-white/10 backdrop-blur-[2px]"></div>
+      </div>
+
       {/* Animated Background Blobs */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 -left-4 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
         <div className="absolute top-0 -right-4 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-8 left-20 w-96 h-96 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
-
-      {/* Video Background */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto max-w-none -translate-x-1/2 -translate-y-1/2 object-cover opacity-20 pointer-events-none -z-10"
-      >
-        <source src={launchVideo} type="video/mp4" />
-      </video>
 
       {/* Grid Pattern Overlay */}
       <div className="absolute inset-0 z-0 bg-grid opacity-30"></div>
