@@ -76,6 +76,7 @@ const About = () => {
         {(() => {
           const getImageUrl = (github) => {
             if (!github) return null;
+            if (github.startsWith('http')) return github;
             return `https://github.com/${github}.png`;
           }
 
