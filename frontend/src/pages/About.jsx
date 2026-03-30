@@ -120,7 +120,7 @@ const About = () => {
                         ))}
                       </div>
 
-                      {member.github && (
+                      {member.github && !member.github.startsWith('http') && (
                         <a
                           href={`https://github.com/${member.github}`}
                           target="_blank"
