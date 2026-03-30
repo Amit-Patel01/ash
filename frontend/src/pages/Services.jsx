@@ -26,7 +26,8 @@ const Services = () => {
       description: 'Custom websites and web applications built with modern technologies to grow your business online.',
       color: 'from-blue-500 to-cyan-500',
       iconBg: 'from-blue-600 to-indigo-600',
-      features: ['Responsive Design', 'SEO Optimized', 'Fast Performance']
+      features: ['Responsive Design', 'SEO Optimized', 'Fast Performance'],
+      path: '/services/web-development'
     },
     {
       icon: (
@@ -39,7 +40,8 @@ const Services = () => {
       description: 'Professional hardware and software repair services for all types of computers and laptops.',
       color: 'from-indigo-500 to-purple-500',
       iconBg: 'from-purple-600 to-pink-600',
-      features: ['Hardware Repair', 'Software Fixes', 'System Optimization']
+      features: ['Hardware Repair', 'Software Fixes', 'System Optimization'],
+      path: '/services/repair'
     },
     {
       icon: (
@@ -51,7 +53,8 @@ const Services = () => {
       description: 'Professional editing services for videos and photos to make your content stand out.',
       color: 'from-pink-500 to-rose-500',
       iconBg: 'from-rose-500 to-orange-500',
-      features: ['Video Editing', 'Photo Retouching', 'Color Grading']
+      features: ['Video Editing', 'Photo Retouching', 'Color Grading'],
+      path: '/services/editing'
     },
     {
       icon: (
@@ -63,7 +66,8 @@ const Services = () => {
       description: 'Expert technical support and guidance to help you solve any tech-related issues.',
       color: 'from-amber-500 to-orange-500',
       iconBg: 'from-amber-500 to-yellow-500',
-      features: ['24/7 Support', 'Remote Assistance', 'Expert Advice']
+      features: ['24/7 Support', 'Remote Assistance', 'Expert Advice'],
+      path: '/services/tech-support'
     }
   ]
 
@@ -112,12 +116,12 @@ const Services = () => {
                   <h3 className={`text-2xl font-bold text-slate-800 mb-3 ${colorMap[service.color] || 'hover:text-blue-600'} transition-all duration-300`}>
                     {service.title}
                   </h3>
-                  <p className="text-slate-600 text-base leading-relaxed mb-6 font-medium">
+                  <p className="text-slate-600 text-base leading-relaxed mb-4 font-medium">
                     {service.description}
                   </p>
                   
                   {/* Features Glass Pills */}
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 mb-6">
                     {service.features.map((feature, idx) => (
                       <span 
                         key={idx}
@@ -127,6 +131,17 @@ const Services = () => {
                       </span>
                     ))}
                   </div>
+
+                  {/* View Details Link */}
+                  <Link 
+                    to={service.path}
+                    className={`inline-flex items-center gap-2 font-bold text-sm bg-gradient-to-r ${service.color} text-white px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform group-hover:scale-105`}
+                  >
+                    View Details
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </Link>
                 </div>
               </div>
             </div>

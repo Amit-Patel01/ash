@@ -15,6 +15,11 @@ import CustomProject from './pages/CustomProject'
 import RequestAccount from './pages/RequestAccount'
 import ForgotPassword from './pages/ForgotPassword'
 
+import WebService from './web-service/WebService'
+import RepairService from './technicalsupport/RepairService'
+import EditingService from './editing/EditingService'
+import TechSupport from './technicalsupport/TechSupport'
+
 import AdminLayout from './admin/AdminLayout'
 import AdminLogin from './admin/AdminLogin'
 import AdminDashboard from './admin/AdminDashboard'
@@ -73,6 +78,10 @@ function AppContent() {
           <Route path="contact" element={<Contact />} />
           <Route path="custom-project" element={<CustomProject />} />
           <Route path="help" element={<Help />} />
+          <Route path="services/web-development" element={<WebService />} />
+          <Route path="services/repair" element={<RepairService />} />
+          <Route path="services/editing" element={<EditingService />} />
+          <Route path="services/tech-support" element={<TechSupport />} />
         </Route>
 
         {/* Admin Login */}

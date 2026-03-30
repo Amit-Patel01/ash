@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { api } from '../config/api'
 
 function ComposeForm({ onSend }) {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
@@ -14,7 +15,7 @@ function ComposeForm({ onSend }) {
     setSending(true)
     setError('')
     try {
-      const response = await fetch('https://backend-5u1w.onrender.com/contact', {
+      const response = await fetch(api.uploadTeam.replace('/upload/team', '/contact'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -145,7 +146,7 @@ export default function AdminMessages() {
     if (!replyText.trim() || !replyingTo?.email) return
     setSending(true)
     try {
-      const response = await fetch('https://backend-5u1w.onrender.com/contact', {
+      const response = await fetch(api.uploadTeam.replace('/upload/team', '/contact'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

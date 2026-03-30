@@ -28,9 +28,33 @@ const storage = multer.diskStorage({
     cb(null, uniqueName);
   }
 });
+
+const teamStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(uploadsDir, 'team');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = 'team-' + Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
+    cb(null, uniqueName);
+  }
+});
+
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|webp/;
+    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
+    const mime = allowed.test(file.mimetype);
+    cb(null, ext && mime);
+  }
+});
+
+const uploadTeam = multer({
+  storage: teamStorage,
+  limits: { fileSize: 2 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowed = /jpeg|jpg|png|webp/;
     const ext = allowed.test(path.extname(file.originalname).toLowerCase());
@@ -51,6 +75,17 @@ app.post("/api/upload/payment", upload.single('screenshot'), (req, res) => {
   res.json({
     success: true,
     url: `/uploads/payments/${req.file.filename}`
+  });
+});
+
+// Upload team photo endpoint
+app.post("/api/upload/team", uploadTeam.single('photo'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'No file uploaded' });
+  }
+  res.json({
+    success: true,
+    url: `/uploads/team/${req.file.filename}`
   });
 });
 

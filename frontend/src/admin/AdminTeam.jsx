@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '../store/StoreContext'
+import { api, API_BASE } from '../config/api'
 
 const avatarColors = ['from-blue-500 to-cyan-500', 'from-purple-500 to-pink-500', 'from-emerald-500 to-teal-500', 'from-orange-500 to-amber-500', 'from-red-500 to-rose-500', 'from-indigo-500 to-violet-500']
 
@@ -9,7 +10,7 @@ export default function AdminTeam() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editingMember, setEditingMember] = useState(null)
-  const [formData, setFormData] = useState({ name: '', role: '', email: '', department: '', status: 'Active', skills: '', joinDate: '' })
+  const [formData, setFormData] = useState({ name: '', role: '', email: '', department: '', status: 'Active', skills: '', joinDate: '', github: '' })
 
   // Delete Modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -26,15 +27,16 @@ export default function AdminTeam() {
 
   const openCreate = () => {
     setEditingMember(null)
-    setFormData({ name: '', role: '', email: '', department: 'Engineering', status: 'Active', skills: '', joinDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) })
+    setFormData({ name: '', role: '', email: '', department: 'Engineering', status: 'Active', skills: '', joinDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }), github: '' })
     setShowModal(true)
   }
 
   const openEdit = (member) => {
     setEditingMember(member)
-    setFormData({ name: member.name, role: member.role, email: member.email, department: member.department, status: member.status, skills: (member.skills || []).join(', '), joinDate: member.joinDate })
+    setFormData({ name: member.name, role: member.role, email: member.email, department: member.department, status: member.status, skills: (member.skills || []).join(', '), joinDate: member.joinDate, github: member.github || '' })
     setShowModal(true)
   }
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -79,6 +81,11 @@ export default function AdminTeam() {
     }
   }
 
+  const getImageUrl = (github) => {
+    if (!github) return null;
+    return `https://github.com/${github}.png`;
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -109,7 +116,11 @@ export default function AdminTeam() {
           <div key={member.id} className="group bg-gray-900/50 backdrop-blur-sm border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all duration-300">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${avatarColors[index % avatarColors.length]} flex items-center justify-center text-lg font-bold shadow-lg`}>{member.avatar}</div>
+                {member.github ? (
+                  <img src={getImageUrl(member.github)} alt={member.name} className="w-12 h-12 rounded-xl object-cover shadow-lg" />
+                ) : (
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${avatarColors[index % avatarColors.length]} flex items-center justify-center text-lg font-bold shadow-lg`}>{member.avatar}</div>
+                )}
                 <div>
                   <h3 className="text-base font-semibold text-white">{member.name}</h3>
                   <p className="text-xs text-gray-400">{member.role}</p>
@@ -170,6 +181,28 @@ export default function AdminTeam() {
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="col-span-1 sm:col-span-2">
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">GitHub Username (for Profile Photo & Link)</label>
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
+                      {formData.github ? (
+                        <img src={getImageUrl(formData.github)} alt="Preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <svg className="w-8 h-8 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <input 
+                        type="text" 
+                        value={formData.github}
+                        onChange={e => setFormData({ ...formData, github: e.target.value })}
+                        placeholder="e.g. Amit-Patel01"
+                        className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all"
+                      />
+                      <p className="text-[10px] text-gray-500 mt-2">Avatar will be fetched from github.com/username.png</p>
+                    </div>
+                  </div>
+                </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5">Full Name *</label>
                   <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required placeholder="Enter full name" className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
