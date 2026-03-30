@@ -1,14 +1,66 @@
 const express = require("express");
 const cors = require("cors");
 const { Resend } = require("resend");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Serve uploaded files
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsDir));
+
+// Multer config for payment screenshots
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(uploadsDir, 'payments');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
+    cb(null, uniqueName);
+  }
+});
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|webp/;
+    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
+    const mime = allowed.test(file.mimetype);
+    cb(null, ext && mime);
+  }
+});
+
 app.get("/", (req, res) => {
   res.send("Backend Live 🚀");
 });
+
+// Upload payment screenshot endpoint
+app.post("/api/upload/payment", upload.single('screenshot'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'No file uploaded' });
+  }
+  res.json({
+    success: true,
+    url: `/uploads/payments/${req.file.filename}`
+  });
+});
+
+// Project routes
+try {
+  const projectRoutes = require('./routes/projects');
+  app.use('/api/projects', projectRoutes);
+} catch (e) {
+  console.log('Project routes not loaded:', e.message);
+}
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { db } from "../config/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -31,40 +33,30 @@ const Contact = () => {
     setStatus("");
 
     try {
-      const response = await fetch(
-        "https://backend-5u1w.onrender.com/contact",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+      await addDoc(collection(db, "messages"), {
+        ...formData,
+        createdAt: serverTimestamp(),
+        status: "unread",
+      });
 
-      const data = await response.json();
-
-      if (data.success) {
-        setStatus("success");
-        setFormData({
-          firstName: "",
-          lastName: "",
-          email: "",
-          mobile: "",
-          github: "",
-          message: "",
-        });
-      } else {
-        setStatus("error");
-      }
+      setStatus("success");
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        mobile: "",
+        github: "",
+        message: "",
+      });
+      
+      // Auto clear success after 5s
+      setTimeout(() => setStatus(""), 5000);
     } catch (error) {
+      console.error("Error submitting contact form:", error);
       setStatus("error");
     }
 
     setLoading(false);
-    
-    // Auto clear success after 5s
-    if (status === "success") {
-      setTimeout(() => setStatus(""), 5000);
-    }
   };
 
   return (

@@ -1,4 +1,12 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+
+const colorMap = {
+  'from-blue-500 to-cyan-500': 'hover:text-blue-600',
+  'from-indigo-500 to-purple-500': 'hover:text-indigo-600',
+  'from-pink-500 to-rose-500': 'hover:text-pink-600',
+  'from-amber-500 to-orange-500': 'hover:text-amber-600',
+}
 
 const Services = () => {
   const [loaded, setLoaded] = useState(false)
@@ -101,7 +109,7 @@ const Services = () => {
                   <div className="absolute inset-0 bg-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
                 <div className="flex-1 mt-2 md:mt-0">
-                  <h3 className={`text-2xl font-bold text-slate-800 mb-3 bg-clip-text group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:${service.color} transition-all duration-300`}>
+                  <h3 className={`text-2xl font-bold text-slate-800 mb-3 ${colorMap[service.color] || 'hover:text-blue-600'} transition-all duration-300`}>
                     {service.title}
                   </h3>
                   <p className="text-slate-600 text-base leading-relaxed mb-6 font-medium">

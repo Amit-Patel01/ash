@@ -5,16 +5,26 @@ const Popup = () => {
   const [isClosing, setIsClosing] = useState(false)
 
   useEffect(() => {
-    // Show popup on every page load
+    const dismissed = localStorage.getItem('popup_dismissed')
+    const dismissedTime = localStorage.getItem('popup_dismissed_time')
+    
+    // Show again after 24 hours
+    if (dismissed === 'true' && dismissedTime) {
+      const hoursSinceDismiss = (Date.now() - Number(dismissedTime)) / (1000 * 60 * 60)
+      if (hoursSinceDismiss < 24) return
+    }
+
     const timer = setTimeout(() => {
       setIsVisible(true)
-    }, 1000)
+    }, 3000)
     
     return () => clearTimeout(timer)
   }, [])
 
   const handleClose = () => {
     setIsClosing(true)
+    localStorage.setItem('popup_dismissed', 'true')
+    localStorage.setItem('popup_dismissed_time', String(Date.now()))
     setTimeout(() => {
       setIsVisible(false)
     }, 300)
@@ -30,9 +40,10 @@ const Popup = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)'
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      opacity: isClosing ? 0 : 1,
+      transition: 'opacity 0.3s ease'
     }}>
-      {/* Popup Content */}
       <div style={{
         position: 'relative',
         background: 'linear-gradient(to right, #2563eb, #9333ea)',
@@ -44,7 +55,6 @@ const Popup = () => {
         margin: '1rem',
         textAlign: 'center'
       }}>
-        {/* Close Button */}
         <button 
           onClick={handleClose}
           style={{
@@ -63,10 +73,9 @@ const Popup = () => {
           </svg>
         </button>
 
-        {/* Content */}
         <div>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.75rem' }}>
-            🚀 Something New is Coming!
+            Something New is Coming!
           </h2>
           <p style={{ fontSize: '1.125rem', marginBottom: '1rem' }}>
             Soon you will be able to learn from our courses and download source codes at low cost.
@@ -76,7 +85,6 @@ const Popup = () => {
           </p>
         </div>
 
-        {/* CTA Button */}
         <div style={{ marginTop: '1.5rem' }}>
           <button 
             onClick={handleClose}
@@ -99,4 +107,3 @@ const Popup = () => {
 }
 
 export default Popup
-

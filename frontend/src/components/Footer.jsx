@@ -34,16 +34,20 @@ const Footer = () => {
               {/* Social Icons */}
               <div className="flex justify-center md:justify-start gap-3">
                 <a 
-                  href="https://x.com/AmitPatel280318" 
+                  href="https://x.com/AmitSolutionHub" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-blue-500/50 transition-all duration-300 border border-white/20 hover:scale-110"
-                  aria-label="Twitter"
+                  aria-label="X"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                   </svg>
                 </a>
                 <a 
-                  href="https://www.instagram.com/amiitt_4084/" 
+                  href="https://www.instagram.com/amitsolutionhub" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-pink-500/50 transition-all duration-300 border border-white/20 hover:scale-110"
                   aria-label="Instagram"
                 >
@@ -52,7 +56,9 @@ const Footer = () => {
                   </svg>
                 </a>
                 <a 
-                  href="https://www.linkedin.com/in/amit-patel-89736b287/" 
+                  href="https://www.linkedin.com/company/amit-solution-hub" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-blue-500/50 transition-all duration-300 border border-white/20 hover:scale-110"
                   aria-label="LinkedIn"
                 >
@@ -100,6 +106,12 @@ const Footer = () => {
                   <Link to="/services" className="hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
                     Services
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/projects" className="hover:text-white hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-cyan-500 rounded-full"></span>
+                    Projects
                   </Link>
                 </li>
                 <li>
