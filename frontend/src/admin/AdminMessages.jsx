@@ -15,7 +15,7 @@ function ComposeForm({ onSend }) {
     setSending(true)
     setError('')
     try {
-      const response = await fetch(api.uploadTeam.replace('/upload/team', '/contact'), {
+      const response = await fetch(api.contact, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -146,25 +146,39 @@ export default function AdminMessages() {
     if (!replyText.trim() || !replyingTo?.email) return
     setSending(true)
     try {
-      const response = await fetch(api.uploadTeam.replace('/upload/team', '/contact'), {
+      const response = await fetch(api.reply, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          firstName: replyingTo.firstName || 'Admin',
-          lastName: '',
+          firstName: replyingTo.firstName || replyingTo.name || 'User',
           email: replyingTo.email,
-          mobile: replyingTo.mobile || '',
-          github: '',
-          message: `Re: ${replyingTo.subject || 'Your message'}\n\n${replyText}`
+          subject: `Re: ${replyingTo.subject || 'Your Inquiry'}`,
+          message: replyText
         })
       })
-      if (!response.ok) throw new Error('Failed to send')
+
+      if (!response.ok) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to send');
+        } else {
+          // It's likely an HTML 404 page from Render or a proxy
+          const text = await response.text();
+          console.error("❌ Non-JSON error response:", text.substring(0, 500));
+          throw new Error(`The backend returned a ${response.status} Error. This usually means the code I just added is not yet deployed to Render.`);
+        }
+      }
+
+      // Update Firestore status to 'replied'
+      await updateMessageStatus(replyingTo.id, { status: 'replied', repliedAt: new Date().toISOString() })
+      
       setMessages(messages.map(m => m.id === replyingTo.id ? { ...m, status: 'replied' } : m))
       setReplyingTo(null)
       setReplyText('')
     } catch (err) {
-      console.error('Failed to send reply:', err)
-      alert('Failed to send reply. Please try again.')
+      console.error('❌ Failed to send reply:', err.message || err)
+      alert(`⚠️  Failed to send reply: ${err.message || 'Please check your backend configuration and Resend API key.'}`)
     } finally {
       setSending(false)
     }

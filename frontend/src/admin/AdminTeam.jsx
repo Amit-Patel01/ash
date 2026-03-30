@@ -220,7 +220,7 @@ export default function AdminTeam() {
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5">Department</label>
                   <select value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all">
-                    {['Engineering', 'Design', 'Marketing', 'Management', 'Support'].map(d => <option key={d} value={d} className="bg-gray-900">{d}</option>)}
+                    {['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Editor', 'Technician'].map(d => <option key={d} value={d} className="bg-gray-900">{d}</option>)}
                   </select>
                 </div>
               </div>

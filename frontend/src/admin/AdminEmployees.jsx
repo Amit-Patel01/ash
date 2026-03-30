@@ -10,8 +10,8 @@ const avatarColors = [
   'from-indigo-500 to-violet-500',
 ]
 
-const departments = ['Engineering', 'Design', 'Marketing', 'Management', 'Support']
-const employeeRoles = ['Senior Developer', 'Junior Developer', 'UI/UX Designer', 'Frontend Developer', 'Backend Developer', 'DevOps Engineer', 'Project Manager', 'QA Engineer', 'Content Writer']
+const departments = ['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Editor', 'Technician']
+const employeeRoles = ['Senior Developer', 'Junior Developer', 'UI/UX Designer', 'Frontend Developer', 'Backend Developer', 'DevOps Engineer', 'Project Manager', 'QA Engineer', 'Content Writer', 'Video Editor', 'Technician']
 
 export default function AdminEmployees() {
   const { users, addUser, updateUser, deleteUser } = useStore()

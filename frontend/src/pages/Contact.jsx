@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { db } from "../config/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { api } from "../config/api";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -33,11 +34,27 @@ const Contact = () => {
     setStatus("");
 
     try {
+      // 1. Save to Firebase (Database)
       await addDoc(collection(db, "messages"), {
         ...formData,
         createdAt: serverTimestamp(),
         status: "unread",
       });
+
+      // 2. Call Backend API (Send Email)
+      const response = await fetch(api.contact, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to send email notification");
+      }
 
       setStatus("success");
       setFormData({

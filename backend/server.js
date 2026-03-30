@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { Resend } = require("resend");
@@ -97,7 +98,11 @@ try {
   console.log('Project routes not loaded:', e.message);
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+if (!RESEND_API_KEY) {
+  console.warn("⚠️  WARNING: RESEND_API_KEY is not set in .env. Emailing will fail.");
+}
+const resend = new Resend(RESEND_API_KEY);
 
 app.post("/contact", async (req, res) => {
   const { firstName, lastName, email, mobile, github, message } = req.body;
@@ -176,11 +181,67 @@ Message: ${message}`
   </div>
   `
     });
+    console.log(`✅ Mail process completed for ${email}`);
     res.json({ success: true });
 
   } catch (error) {
-    console.error("MAIL ERROR:", error);
-    res.status(500).json({ success: false });
+    console.error("❌ MAIL ERROR:", error.message || error);
+    res.status(500).json({ 
+      success: false, 
+      message: error.message || "Failed to send email. Ensure RESEND_API_KEY is valid and domain is verified." 
+    });
+  }
+});
+
+app.post("/reply", async (req, res) => {
+  const { email, firstName, message, subject } = req.body;
+
+  try {
+    // ONLY send the email to the client
+    await resend.emails.send({
+      from: "Amit Solution Hub <contact@amitsolutionhub.com>",
+      to: email,
+      subject: subject || "Reply from Amit Solution Hub",
+      html: `
+        <div style="font-family: Arial, sans-serif; background-color:#f4f6f8; padding:40px 0;">
+          <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.08);">
+            <!-- Header -->
+            <div style="background:linear-gradient(135deg,#2563eb,#1e40af); padding:30px; text-align:center;">
+              <h1 style="color:#ffffff; margin:0;">Amit Solution Hub</h1>
+              <p style="color:#cbd5e1; margin-top:8px;">Professional Web & Software Solutions</p>
+            </div>
+
+            <!-- Body -->
+            <div style="padding:30px;">
+              <h2 style="color:#111827;">Hello ${firstName},</h2>
+              <p style="color:#4b5563; line-height:1.6; white-space: pre-wrap;">
+                ${message}
+              </p>
+              
+              <div style="margin-top:30px;">
+                <p style="color:#6b7280; font-size:14px;">Regards,</p>
+                <p style="color:#111827; font-weight:bold; margin:0;">Amit Patel</p>
+                <p style="color:#6b7280; font-size:12px; margin:0;">Founder, Amit Solution Hub</p>
+              </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="background:#111827; padding:20px; text-align:center;">
+              <p style="color:#9ca3af; font-size:13px; margin:0;">
+                © 2026 Amit Solution Hub. All rights reserved.
+              </p>
+            </div>
+          </div>
+        </div>
+      `
+    });
+
+    console.log(`✅ Admin reply sent to ${email}`);
+    res.json({ success: true });
+
+  } catch (error) {
+    console.error("❌ REPLY ERROR:", error.message || error);
+    res.status(500).json({ success: false, message: error.message || "Failed to send reply." });
   }
 });
 
