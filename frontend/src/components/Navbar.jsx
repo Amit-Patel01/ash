@@ -196,7 +196,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Dropdown Menu */}
-        <div className={`md:hidden absolute top-full left-4 right-4 mt-4 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] origin-top ${isOpen ? 'opacity-100 scale-y-100 max-h-[500px]' : 'opacity-0 scale-y-95 max-h-0 pointer-events-none'}`}>
+        <div className={`md:hidden absolute top-full left-4 right-4 mt-4 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] origin-top ${isOpen ? 'opacity-100 scale-y-100 max-h-[800px]' : 'opacity-0 scale-y-95 max-h-0 pointer-events-none'}`}>
           <div className="bg-white/70 backdrop-blur-3xl border border-white/50 shadow-2xl rounded-3xl p-4 flex flex-col gap-2 relative overflow-hidden">
             
             {/* Subtle glow in mobile menu */}
@@ -224,6 +224,57 @@ const Navbar = () => {
             
             <div className="h-px w-full bg-slate-200/50 my-2"></div>
             
+            {/* Mobile Auth Buttons */}
+            <div className="grid grid-cols-2 gap-3 mb-2">
+              {currentUser ? (
+                <>
+                  <Link
+                    to="/employee"
+                    onClick={() => setIsOpen(false)}
+                    className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-emerald-700 bg-emerald-50/80 backdrop-blur-sm border border-emerald-200/50 transition-all duration-300 active:scale-95"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25z" />
+                    </svg>
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={() => { logout(); setIsOpen(false) }}
+                    className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-red-600 bg-red-50/80 backdrop-blur-sm border border-red-200/50 transition-all duration-300 active:scale-95"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/employee-login"
+                    onClick={() => setIsOpen(false)}
+                    className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-slate-600 bg-white/80 border border-white/60 shadow-sm transition-all duration-300 active:scale-95"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                    </svg>
+                    Login
+                  </Link>
+                  <Link
+                    to="/request-account"
+                    onClick={() => setIsOpen(false)}
+                    className="relative flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-emerald-500 to-cyan-600 shadow-lg shadow-emerald-900/10 transition-all duration-300 active:scale-95 overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-white/20 opacity-0 group-active:opacity-10 transition-opacity"></div>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+                    </svg>
+                    Join Us
+                  </Link>
+                </>
+              )}
+            </div>
+
             <button 
               onClick={() => window.location.href = 'https://chat.amitsolutionhub.com'}
               className="relative group w-full outline-none"
@@ -248,56 +299,6 @@ const Navbar = () => {
                   {social.icon}
                 </a>
               ))}
-            </div>
-
-            {/* Mobile Login Buttons */}
-            <div className="flex flex-col gap-2 mt-2">
-              {currentUser ? (
-                <>
-                  <Link
-                    to="/employee"
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-base font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 transition-all duration-300"
-                  >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25z" />
-                    </svg>
-                    Dashboard
-                  </Link>
-                  <button
-                    onClick={() => { logout(); setIsOpen(false) }}
-                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-base font-bold text-red-600 bg-red-50 border border-red-200 transition-all duration-300"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/employee-login"
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-base font-bold text-slate-600 bg-white/60 border border-white/40 transition-all duration-300"
-                  >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-                    </svg>
-                    Employee Login
-                  </Link>
-                  <Link
-                    to="/request-account"
-                    onClick={() => setIsOpen(false)}
-                    className="relative group w-full"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-cyan-600 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-300"></div>
-                    <div className="relative w-full text-center bg-gradient-to-r from-emerald-500 to-cyan-600 text-white px-6 py-3 rounded-2xl font-bold text-base hover:from-emerald-600 hover:to-cyan-700 transition-all duration-300 shadow-xl flex items-center justify-center gap-2">
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
-                      </svg>
-                      Request Account
-                    </div>
-                  </Link>
-                </>
-              )}
             </div>
           </div>
         </div>
