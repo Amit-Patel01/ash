@@ -35,8 +35,11 @@ export default function AdminEmployees() {
   const [employeeToDelete, setEmployeeToDelete] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
 
-  // Filter users to only show employees
-  const employees = users.filter(u => u.role === 'employee')
+  // Filter users to show all non-admin users (employees, developers, etc.)
+  const employees = users.filter(u => {
+    const role = (u.role || '').toLowerCase()
+    return role !== 'admin' && role !== ''
+  })
 
   const filteredDepartments = ['All', ...new Set(employees.map(e => e.department).filter(Boolean))]
 
@@ -137,6 +140,7 @@ export default function AdminEmployees() {
           <h1 className="text-2xl font-bold text-white">Employees</h1>
           <p className="text-sm text-gray-400 mt-1">
             {employees.length} employees | {employees.filter(e => e.status === 'active').length} active
+            {users.length > 0 && <span className="ml-2 text-blue-400 font-medium">(Total: {users.length})</span>}
           </p>
         </div>
         <button

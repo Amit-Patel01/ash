@@ -19,7 +19,7 @@ const About = () => {
   }
 
   return (
-    <section className="relative w-screen left-1/2 -translate-x-1/2 min-h-screen pt-28 pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
+    <section className="relative w-screen left-1/2 -translate-x-1/2 min-h-screen pt-32 md:pt-40 pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
 
       {/* Animated Background Blobs */}
       <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">

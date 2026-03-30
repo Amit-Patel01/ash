@@ -10,7 +10,7 @@ export default function AdminTeam() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editingMember, setEditingMember] = useState(null)
-  const [formData, setFormData] = useState({ name: '', role: '', email: '', department: '', status: 'Active', skills: '', joinDate: '', github: '' })
+  const [formData, setFormData] = useState({ name: '', role: '', email: '', department: 'Engineering', status: 'Active', skills: '', joinDate: '', github: '', customDepartment: '' })
 
   // Delete Modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -26,14 +26,24 @@ export default function AdminTeam() {
   })
 
   const openCreate = () => {
-    setEditingMember(null)
-    setFormData({ name: '', role: '', email: '', department: 'Engineering', status: 'Active', skills: '', joinDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }), github: '' })
+    setFormData({ name: '', role: '', email: '', department: 'Engineering', status: 'Active', skills: '', joinDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }), github: '', customDepartment: '' })
     setShowModal(true)
   }
 
   const openEdit = (member) => {
     setEditingMember(member)
-    setFormData({ name: member.name, role: member.role, email: member.email, department: member.department, status: member.status, skills: (member.skills || []).join(', '), joinDate: member.joinDate, github: member.github || '' })
+    const isOther = !['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Editor', 'Technician'].includes(member.department)
+    setFormData({ 
+      name: member.name, 
+      role: member.role, 
+      email: member.email, 
+      department: isOther ? 'Other' : member.department, 
+      status: member.status, 
+      skills: (member.skills || []).join(', '), 
+      joinDate: member.joinDate, 
+      github: member.github || '',
+      customDepartment: isOther ? member.department : ''
+    })
     setShowModal(true)
   }
 
@@ -42,7 +52,11 @@ export default function AdminTeam() {
     e.preventDefault()
     const skillsArr = formData.skills.split(',').map(s => s.trim()).filter(Boolean)
     try {
-      const payload = { ...formData, skills: skillsArr, avatar: formData.name.charAt(0).toUpperCase() }
+      const finalDept = formData.department === 'Other' ? formData.customDepartment : formData.department
+      const payload = { ...formData, department: finalDept, skills: skillsArr, avatar: formData.name.charAt(0).toUpperCase() }
+      // Remove temporary customDepartment field from payload
+      delete payload.customDepartment
+      
       if (editingMember) {
         await updateTeamMember(editingMember.id, payload)
       } else {
@@ -83,6 +97,9 @@ export default function AdminTeam() {
 
   const getImageUrl = (github) => {
     if (!github) return null;
+    // If it's already a full URL, return it
+    if (github.startsWith('http')) return github;
+    // Otherwise assume it's a GitHub username
     return `https://github.com/${github}.png`;
   }
 
@@ -156,8 +173,17 @@ export default function AdminTeam() {
 
             <div className="flex items-center justify-between pt-4 border-t border-white/5">
               <div className="flex items-center gap-4 text-xs text-gray-400">
-                <span><span className="text-white font-medium">{member.tasksCompleted}</span> tasks</span>
-                <span><span className="text-white font-medium">{member.projectsActive}</span> projects</span>
+                {/* Dynamically calculate task and project counts from the tasks store */}
+                <span>
+                  <span className="text-white font-medium">
+                    {useStore().tasks?.filter(t => t.assignee === member.name || t.avatar === member.avatar).length || 0}
+                  </span> tasks
+                </span>
+                <span>
+                  <span className="text-white font-medium">
+                    {[...new Set(useStore().tasks?.filter(t => t.assignee === member.name || t.avatar === member.avatar).map(t => t.project))].length || 0}
+                  </span> projects
+                </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-16 bg-white/5 rounded-full h-1.5 overflow-hidden">
@@ -182,13 +208,13 @@ export default function AdminTeam() {
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="col-span-1 sm:col-span-2">
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5">GitHub Username (for Profile Photo & Link)</label>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">GitHub Username or Image URL</label>
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
+                    <div className="w-16 h-16 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden text-blue-400">
                       {formData.github ? (
                         <img src={getImageUrl(formData.github)} alt="Preview" className="w-full h-full object-cover" />
                       ) : (
-                        <svg className="w-8 h-8 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                        <svg className="w-8 h-8 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                       )}
                     </div>
                     <div className="flex-1">
@@ -196,10 +222,10 @@ export default function AdminTeam() {
                         type="text" 
                         value={formData.github}
                         onChange={e => setFormData({ ...formData, github: e.target.value })}
-                        placeholder="e.g. Amit-Patel01"
+                        placeholder="e.g. 'Amit-Patel01' or 'https://example.com/photo.jpg'"
                         className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all"
                       />
-                      <p className="text-[10px] text-gray-500 mt-2">Avatar will be fetched from github.com/username.png</p>
+                      <p className="text-[10px] text-gray-500 mt-2 italic font-medium">Enter a GitHub username OR a direct link to an image.</p>
                     </div>
                   </div>
                 </div>
@@ -218,10 +244,29 @@ export default function AdminTeam() {
                   <input type="text" value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} required placeholder="e.g. Senior Developer" className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Department</label>
-                  <select value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all">
-                    {['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Editor', 'Technician'].map(d => <option key={d} value={d} className="bg-gray-900">{d}</option>)}
-                  </select>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Department *</label>
+                  <div className="space-y-3">
+                    <select 
+                      value={formData.department} 
+                      onChange={e => setFormData({ ...formData, department: e.target.value, customDepartment: '' })} 
+                      required
+                      className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all"
+                    >
+                      {['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Editor', 'Technician', 'Other'].map(d => (
+                        <option key={d} value={d} className="bg-gray-900">{d}</option>
+                      ))}
+                    </select>
+                    {formData.department === 'Other' && (
+                      <input 
+                        type="text" 
+                        value={formData.customDepartment || ''} 
+                        onChange={e => setFormData({ ...formData, customDepartment: e.target.value })} 
+                        required 
+                        placeholder="Enter custom department" 
+                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all animate-in fade-in slide-in-from-top-1" 
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

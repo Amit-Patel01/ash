@@ -14,6 +14,7 @@ import Checkout from './pages/Checkout'
 import CustomProject from './pages/CustomProject'
 import RequestAccount from './pages/RequestAccount'
 import ForgotPassword from './pages/ForgotPassword'
+import ComingSoon from './pages/ComingSoon'
 
 import WebService from './web-service/WebService'
 import RepairService from './technicalsupport/RepairService'
@@ -37,7 +38,10 @@ import AdminSettings from './admin/AdminSettings'
 
 import EmployeeLogin from './employee/EmployeeLogin'
 import EmployeeLayout from './employee/EmployeeLayout'
-import EmployeeDashboard from './employee/EmployeeDashboard'
+import EmployeeOverview from './employee/EmployeeOverview'
+import EmployeeTasks from './employee/EmployeeTasks'
+import EmployeeProjects from './employee/EmployeeProjects'
+import EmployeeProfile from './employee/EmployeeProfile'
 import SellProjectRequest from './employee/SellProjectRequest'
 
 function ProtectedAdmin({ children }) {
@@ -82,6 +86,7 @@ function AppContent() {
           <Route path="services/repair" element={<RepairService />} />
           <Route path="services/editing" element={<EditingService />} />
           <Route path="services/tech-support" element={<TechSupport />} />
+          <Route path="coming-soon" element={<ComingSoon />} />
         </Route>
 
         {/* Admin Login */}
@@ -108,11 +113,11 @@ function AppContent() {
 
         {/* Employee Panel (Firebase Auth Protected) */}
         <Route path="/employee" element={<ProtectedEmployee><EmployeeLayout /></ProtectedEmployee>}>
-          <Route index element={<EmployeeDashboard />} />
-          <Route path="tasks" element={<EmployeeDashboard />} />
-          <Route path="projects" element={<EmployeeDashboard />} />
+          <Route index element={<EmployeeOverview />} />
+          <Route path="tasks" element={<EmployeeTasks />} />
+          <Route path="projects" element={<EmployeeProjects />} />
           <Route path="sell-project" element={<SellProjectRequest />} />
-          <Route path="profile" element={<EmployeeDashboard />} />
+          <Route path="profile" element={<EmployeeProfile />} />
         </Route>
       </Routes>
     </Router>

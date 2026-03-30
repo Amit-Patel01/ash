@@ -15,7 +15,7 @@ const Projects = () => {
   useEffect(() => {
     const activeProjects = storeProjects.filter(p => p.status === 'active')
     setProjects(activeProjects)
-    
+
     // De-duplicate categories by slug to prevent UI duplication
     const uniqueCats = storeCategories.reduce((acc, current) => {
       const x = acc.find(item => item.slug === current.slug);
@@ -25,7 +25,7 @@ const Projects = () => {
         return acc;
       }
     }, []);
-    
+
     setCategories(uniqueCats)
     setLoading(false)
     setTimeout(() => setLoaded(true), 100)
@@ -36,7 +36,7 @@ const Projects = () => {
     : projects.filter(p => p.category_slug === activeCategory)
 
   return (
-    <section className="relative min-h-screen pt-28 pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
+    <section className="relative min-h-screen pt-32 md:pt-40 pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Background Effects */}
       <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
         <div className="absolute top-10 -right-20 w-[30rem] h-[30rem] bg-blue-500/20 rounded-full blur-[100px] animate-[pulse_8s_ease-in-out_infinite]"></div>
@@ -45,7 +45,7 @@ const Projects = () => {
       <div className="absolute inset-0 z-[2] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
 
       <div className={`w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 transition-all duration-1000 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
-        
+
         {/* Header */}
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 bg-white/40 backdrop-blur-md border border-white/50 px-4 py-2 rounded-full mb-6 shadow-sm">
@@ -64,11 +64,10 @@ const Projects = () => {
         <div className="flex flex-wrap justify-center gap-3 mb-12">
           <button
             onClick={() => setActiveCategory('all')}
-            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border ${
-              activeCategory === 'all'
+            className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border ${activeCategory === 'all'
                 ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-lg shadow-blue-500/25'
                 : 'bg-white/50 backdrop-blur-sm text-slate-600 border-white/60 hover:bg-white/70 hover:text-blue-600'
-            }`}
+              }`}
           >
             All Projects
           </button>
@@ -76,13 +75,12 @@ const Projects = () => {
             <button
               key={cat.slug}
               onClick={() => setActiveCategory(cat.slug)}
-              className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border ${
-                activeCategory === cat.slug
+              className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border ${activeCategory === cat.slug
                   ? cat.slug === 'basic' ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white border-transparent shadow-lg shadow-green-500/25' :
                     cat.slug === 'medium' ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-transparent shadow-lg shadow-amber-500/25' :
-                    'bg-gradient-to-r from-purple-500 to-pink-500 text-white border-transparent shadow-lg shadow-purple-500/25'
+                      'bg-gradient-to-r from-purple-500 to-pink-500 text-white border-transparent shadow-lg shadow-purple-500/25'
                   : 'bg-white/50 backdrop-blur-sm text-slate-600 border-white/60 hover:bg-white/70 hover:text-blue-600'
-              }`}
+                }`}
             >
               {cat.name}
             </button>
@@ -92,7 +90,7 @@ const Projects = () => {
         {/* Projects Grid */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1,2,3].map(i => (
+            {[1, 2, 3].map(i => (
               <div key={i} className="bg-white/40 rounded-3xl overflow-hidden border border-white/60 animate-pulse">
                 <div className="h-52 bg-slate-200/50"></div>
                 <div className="p-6 space-y-4">

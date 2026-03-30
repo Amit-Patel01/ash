@@ -247,7 +247,13 @@ export default function AdminTasks() {
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5">Assignee</label>
                   <select value={formData.assignee} onChange={e => setFormData({ ...formData, assignee: e.target.value })} className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all">
-                    {['R', 'P', 'A', 'S', 'V', 'N'].map(a => <option key={a} value={a} className="bg-gray-900">{a}</option>)}
+                    <option value="" className="bg-gray-900 text-gray-500">Unassigned</option>
+                    {/* List actual employees from Store */}
+                    {[...new Set([
+                      ...useStore().users?.filter(u => u.role !== 'admin').map(u => u.displayName),
+                      ...useStore().teamMembers?.map(m => m.name),
+                      'R', 'P', 'A', 'S', 'V', 'N' // Keep initials as fallback
+                    ])].filter(Boolean).map(a => <option key={a} value={a} className="bg-gray-900">{a}</option>)}
                   </select>
                 </div>
               </div>

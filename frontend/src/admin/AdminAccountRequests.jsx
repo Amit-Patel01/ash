@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore'
+import { db } from '../config/firebase'
 
 export default function AdminAccountRequests() {
   const { getAccountRequests, approveAccountRequest, rejectAccountRequest } = useAuth()
@@ -12,19 +14,13 @@ export default function AdminAccountRequests() {
   const [selectedRequest, setSelectedRequest] = useState(null)
   const [actionType, setActionType] = useState(null) // 'approve' or 'reject'
 
-  const loadRequests = async () => {
-    try {
-      const data = await getAccountRequests()
-      setRequests(data)
-    } catch (err) {
-      console.error("Failed to load requests:", err)
-    }
-  }
-
   useEffect(() => {
-    loadRequests()
-    const interval = setInterval(loadRequests, 5000) // Polling every 5s instead of 2s for more stability
-    return () => clearInterval(interval)
+    const q = query(collection(db, 'accountRequests'), orderBy('createdAt', 'desc'))
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+    }, (error) => console.error("Account requests snapshot error:", error))
+    
+    return () => unsubscribe()
   }, [])
 
   const filteredRequests = requests.filter(r => filter === 'all' || r.status === filter)
@@ -46,12 +42,15 @@ export default function AdminAccountRequests() {
       if (actionType === 'approve') {
         const result = await approveAccountRequest(requestId)
         if (result.success) {
-          alert(`Account for ${selectedRequest.name} has been created successfully!`)
+          if (result.alreadyExists) {
+            alert(`User ${selectedRequest.name} already exists. This duplicate request has been marked as approved.`)
+          } else {
+            alert(`Account for ${selectedRequest.name} has been created successfully!`)
+          }
         }
       } else {
         await rejectAccountRequest(requestId)
       }
-      await loadRequests()
     } catch (err) {
       console.error(err)
       alert('Failed: ' + (err.message || 'Error occurred during processing'))
@@ -157,15 +156,17 @@ export default function AdminAccountRequests() {
                   </div>
                 </div>
 
-                {request.status === 'pending' && (
+                {(request.status === 'pending' || request.status === 'rejected') && (
                   <div className="flex items-center gap-3 self-end md:self-center">
-                    <button 
-                      onClick={() => openConfirmModal(request, 'reject')}
-                      disabled={processingId === request.id}
-                      className="px-4 py-2 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
-                    >
-                      Reject
-                    </button>
+                    {request.status === 'pending' && (
+                      <button 
+                        onClick={() => openConfirmModal(request, 'reject')}
+                        disabled={processingId === request.id}
+                        className="px-4 py-2 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
+                      >
+                        Reject
+                      </button>
+                    )}
                     <button 
                       onClick={() => openConfirmModal(request, 'approve')}
                       disabled={processingId === request.id}
@@ -173,7 +174,7 @@ export default function AdminAccountRequests() {
                     >
                       {processingId === request.id ? (
                         <><div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Processing</>
-                      ) : 'Approve Request'}
+                      ) : (request.status === 'rejected' ? 'Approve Rejected' : 'Approve Request')}
                     </button>
                   </div>
                 )}

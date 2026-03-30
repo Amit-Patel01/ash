@@ -1,53 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useStore } from '../store/StoreContext'
 
-const defaultServices = [
-  {
-    id: 'web-dev',
-    name: 'Web & Project Development',
-    description: 'Custom websites and web applications built with modern technologies.',
-    icon: 'code',
-    basePrice: 499,
-    category: 'Development',
-    active: true,
-  },
-  {
-    id: 'pc-repair',
-    name: 'PC & Laptop Repair',
-    description: 'Professional hardware and software repair services for all types of computers.',
-    icon: 'tool',
-    basePrice: 299,
-    category: 'Support',
-    active: true,
-  },
-  {
-    id: 'video-editing',
-    name: 'Video & Photo Editing',
-    description: 'Professional editing services for videos and photos.',
-    icon: 'video',
-    basePrice: 199,
-    category: 'Creative',
-    active: true,
-  },
-  {
-    id: 'tech-support',
-    name: 'Technical Support & Guidance',
-    description: 'Expert technical support and guidance for tech-related issues.',
-    icon: 'support',
-    basePrice: 99,
-    category: 'Support',
-    active: true,
-  },
-  {
-    id: 'custom-project',
-    name: 'Custom Project Development',
-    description: 'Tailored project solutions built to specific requirements.',
-    icon: 'code',
-    basePrice: 1499,
-    category: 'Development',
-    active: true,
-  },
-]
+// defaultServices constant removed - now managed via StoreContext/Firestore
 
 function ServiceIcon({ icon }) {
   const icons = {
@@ -60,19 +14,19 @@ function ServiceIcon({ icon }) {
 }
 
 export default function AdminServices() {
-  const { orders, projects } = useStore()
-  const [services, setServices] = useState(() => {
-    try {
-      const saved = localStorage.getItem('admin_services')
-      return saved ? JSON.parse(saved) : defaultServices
-    } catch {
-      return defaultServices
-    }
-  })
+  const { orders, projects, services, addService, updateService, deleteService } = useStore()
   const [categoryFilter, setCategoryFilter] = useState('All')
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingService, setEditingService] = useState(null)
-  const [formData, setFormData] = useState({ name: '', description: '', icon: 'code', basePrice: '', category: 'Development', active: true })
+  const [formData, setFormData] = useState({ 
+    name: '', 
+    description: '', 
+    icon: 'code', 
+    basePrice: '', 
+    category: 'Development', 
+    path: '', // New field
+    active: true 
+  })
 
   const categories = ['All', ...new Set(services.map(s => s.category))]
 
@@ -91,42 +45,62 @@ export default function AdminServices() {
     return stats
   }, [services, orders, projects])
 
-  const saveServices = (newServices) => {
-    setServices(newServices)
-    localStorage.setItem('admin_services', JSON.stringify(newServices))
-  }
-
-  const toggleActive = (id) => {
-    const updated = services.map(s => s.id === id ? { ...s, active: !s.active } : s)
-    saveServices(updated)
-  }
-
-  const handleAdd = () => {
-    const newService = {
-      id: `service-${Date.now()}`,
-      ...formData,
-      basePrice: Number(formData.basePrice) || 0
+  const toggleActive = async (id) => {
+    const service = services.find(s => s.id === id)
+    if (!service) return
+    try {
+      await updateService(id, { active: !service.active })
+    } catch (err) {
+      alert("Failed to update service status.")
     }
-    saveServices([...services, newService])
-    setShowAddModal(false)
-    setFormData({ name: '', description: '', icon: 'code', basePrice: '', category: 'Development', active: true })
   }
 
-  const handleEdit = () => {
-    const updated = services.map(s => s.id === editingService.id ? { ...formData, id: s.id, basePrice: Number(formData.basePrice) || 0 } : s)
-    saveServices(updated)
-    setEditingService(null)
-    setFormData({ name: '', description: '', icon: 'code', basePrice: '', category: 'Development', active: true })
+  const handleAdd = async () => {
+    try {
+      await addService({
+        ...formData,
+        basePrice: Number(formData.basePrice) || 0
+      })
+      setShowAddModal(false)
+      setFormData({ name: '', description: '', icon: 'code', basePrice: '', category: 'Development', path: '', active: true })
+    } catch (err) {
+      alert("Failed to add service.")
+    }
   }
 
-  const handleDelete = (id) => {
+  const handleEdit = async () => {
+    try {
+      await updateService(editingService.id, {
+        ...formData,
+        basePrice: Number(formData.basePrice) || 0
+      })
+      setEditingService(null)
+      setFormData({ name: '', description: '', icon: 'code', basePrice: '', category: 'Development', path: '', active: true })
+    } catch (err) {
+      alert("Failed to update service.")
+    }
+  }
+
+  const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this service?')) return
-    saveServices(services.filter(s => s.id !== id))
+    try {
+      await deleteService(id)
+    } catch (err) {
+      alert("Failed to delete service.")
+    }
   }
 
   const openEdit = (service) => {
     setEditingService(service)
-    setFormData({ name: service.name, description: service.description, icon: service.icon, basePrice: String(service.basePrice), category: service.category, active: service.active })
+    setFormData({ 
+      name: service.name, 
+      description: service.description, 
+      icon: service.icon, 
+      basePrice: String(service.basePrice), 
+      category: service.category, 
+      path: service.path || '', // Load existing path
+      active: service.active 
+    })
   }
 
   const filteredServices = categoryFilter === 'All'
@@ -146,25 +120,69 @@ export default function AdminServices() {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-medium text-gray-400 mb-1.5">Icon</label>
-          <select value={formData.icon} onChange={e => setFormData({ ...formData, icon: e.target.value })} className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all">
-            <option value="code" className="bg-gray-900">Code</option>
-            <option value="tool" className="bg-gray-900">Tool</option>
-            <option value="video" className="bg-gray-900">Video</option>
-            <option value="support" className="bg-gray-900">Support</option>
-          </select>
+          <div className="space-y-2">
+            <select 
+              value={['code', 'tool', 'video', 'support'].includes(formData.icon) ? formData.icon : 'other'} 
+              onChange={e => {
+                const val = e.target.value;
+                setFormData({ ...formData, icon: val === 'other' ? '' : val });
+              }} 
+              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all"
+            >
+              <option value="code" className="bg-gray-900">Code</option>
+              <option value="tool" className="bg-gray-900">Tool</option>
+              <option value="video" className="bg-gray-900">Video</option>
+              <option value="support" className="bg-gray-900">Support</option>
+              <option value="other" className="bg-gray-900">Other (Custom)</option>
+            </select>
+            {!['code', 'tool', 'video', 'support'].includes(formData.icon) && (
+              <input 
+                type="text" 
+                value={formData.icon} 
+                onChange={e => setFormData({ ...formData, icon: e.target.value })} 
+                placeholder="Enter icon name..." 
+                className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all animate-in fade-in slide-in-from-top-1" 
+              />
+            )}
+          </div>
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-400 mb-1.5">Category</label>
-          <select value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all">
-            <option value="Development" className="bg-gray-900">Development</option>
-            <option value="Support" className="bg-gray-900">Support</option>
-            <option value="Creative" className="bg-gray-900">Creative</option>
-          </select>
+          <div className="space-y-2">
+            <select 
+              value={['Development', 'Support', 'Creative'].includes(formData.category) ? formData.category : 'other'} 
+              onChange={e => {
+                const val = e.target.value;
+                setFormData({ ...formData, category: val === 'other' ? '' : val });
+              }} 
+              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all"
+            >
+              <option value="Development" className="bg-gray-900">Development</option>
+              <option value="Support" className="bg-gray-900">Support</option>
+              <option value="Creative" className="bg-gray-900">Creative</option>
+              <option value="other" className="bg-gray-900">Other (Custom)</option>
+            </select>
+            {!['Development', 'Support', 'Creative'].includes(formData.category) && (
+              <input 
+                type="text" 
+                value={formData.category} 
+                onChange={e => setFormData({ ...formData, category: e.target.value })} 
+                placeholder="Enter custom category..." 
+                className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all animate-in fade-in slide-in-from-top-1" 
+              />
+            )}
+          </div>
         </div>
       </div>
-      <div>
-        <label className="block text-xs font-medium text-gray-400 mb-1.5">Base Price (INR)</label>
-        <input type="number" value={formData.basePrice} onChange={e => setFormData({ ...formData, basePrice: e.target.value })} placeholder="499" className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-xs font-medium text-gray-400 mb-1.5">Base Price (INR)</label>
+          <input type="number" value={formData.basePrice} onChange={e => setFormData({ ...formData, basePrice: e.target.value })} placeholder="499" className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-400 mb-1.5">Redirect Path (e.g. /services/web)</label>
+          <input type="text" value={formData.path} onChange={e => setFormData({ ...formData, path: e.target.value })} placeholder="/services/details" className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
+        </div>
       </div>
       <div className="flex justify-end gap-3 pt-2">
         <button onClick={() => { setShowAddModal(false); setEditingService(null) }} className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-gray-300 hover:bg-white/10 transition-colors">Cancel</button>
@@ -181,7 +199,7 @@ export default function AdminServices() {
           <h1 className="text-2xl font-bold text-white">Services</h1>
           <p className="text-sm text-gray-400 mt-1">{services.length} services offered</p>
         </div>
-        <button onClick={() => { setShowAddModal(true); setEditingService(null); setFormData({ name: '', description: '', icon: 'code', basePrice: '', category: 'Development', active: true }) }} className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all">
+        <button onClick={() => { setShowAddModal(true); setEditingService(null); setFormData({ name: '', description: '', icon: 'code', basePrice: '', category: 'Development', path: '', active: true }) }} className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>

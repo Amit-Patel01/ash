@@ -24,6 +24,7 @@ export function StoreProvider({ children }) {
   const [tasks, setTasks] = useState([])
   const [teamMembers, setTeamMembers] = useState([])
   const [users, setUsers] = useState([]) // Unified Users state
+  const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
 
   // Real-time Listeners
@@ -38,8 +39,7 @@ export function StoreProvider({ children }) {
       setLoading(false)
     })
 
-    const qOrders = query(collection(db, 'orders'), orderBy('createdAt', 'desc'))
-    const unsubscribeOrders = onSnapshot(qOrders, (snapshot) => {
+    const unsubscribeOrders = onSnapshot(collection(db, 'orders'), (snapshot) => {
       setOrders(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
     }, (error) => console.error("Orders snapshot error:", error))
 
@@ -47,18 +47,69 @@ export function StoreProvider({ children }) {
       setCategories(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
     }, (error) => console.error("Categories snapshot error:", error))
 
-    const unsubscribeTasks = onSnapshot(query(collection(db, 'tasks'), orderBy('createdAt', 'desc')), (snapshot) => {
+    const unsubscribeTasks = onSnapshot(collection(db, 'tasks'), (snapshot) => {
       setTasks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
     }, (error) => console.error("Tasks snapshot error:", error))
 
-    const unsubscribeTeam = onSnapshot(query(collection(db, 'team'), orderBy('createdAt', 'desc')), (snapshot) => {
+    const unsubscribeTeam = onSnapshot(collection(db, 'team'), (snapshot) => {
       setTeamMembers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
     }, (error) => console.error("Team snapshot error:", error))
 
-    // Unified Users Listener
-    const unsubscribeUsers = onSnapshot(query(collection(db, 'users'), orderBy('createdAt', 'desc')), (snapshot) => {
-      setUsers(snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() })))
+    // Unified Users Listener - Removed orderBy to ensure all users are fetched even if createdAt is missing
+    const unsubscribeUsers = onSnapshot(collection(db, 'users'), (snapshot) => {
+      const usersData = snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }))
+      setUsers(usersData)
     }, (error) => console.error("Users snapshot error:", error))
+
+    const unsubscribeServices = onSnapshot(collection(db, 'services'), (snapshot) => {
+      const servicesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      setServices(servicesData)
+      
+      // Seed default services if empty
+      if (snapshot.empty) {
+        const defaultServices = [
+          {
+            name: 'Web & Project Development',
+            description: 'Custom websites and web applications built with modern technologies to grow your business online.',
+            icon: 'code',
+            basePrice: 499,
+            category: 'Development',
+            path: '/coming-soon',
+            active: true,
+          },
+          {
+            name: 'PC & Laptop Repair',
+            description: 'Professional hardware and software repair services for all types of computers and laptops.',
+            icon: 'tool',
+            basePrice: 299,
+            category: 'Repair',
+            path: '/coming-soon',
+            active: true,
+          },
+          {
+            name: 'Video & Photo Editing',
+            description: 'Professional editing services for videos and photos to make your content stand out.',
+            icon: 'video',
+            basePrice: 199,
+            category: 'Creative',
+            path: '/coming-soon',
+            active: true,
+          },
+          {
+            name: 'Technical Support & Guidance',
+            description: 'Expert technical support and guidance to help you solve any tech-related issues.',
+            icon: 'support',
+            basePrice: 99,
+            category: 'Support',
+            path: '/coming-soon',
+            active: true,
+          }
+        ]
+        defaultServices.forEach(s => {
+          addDoc(collection(db, 'services'), { ...s, createdAt: serverTimestamp() }).catch(e => console.error("Seeding error:", e))
+        })
+      }
+    }, (error) => console.error("Services snapshot error:", error))
 
     return () => {
       unsubscribeProjects()
@@ -67,6 +118,7 @@ export function StoreProvider({ children }) {
       unsubscribeTasks()
       unsubscribeTeam()
       unsubscribeUsers()
+      unsubscribeServices()
     }
   }, [])
 
@@ -170,6 +222,23 @@ export function StoreProvider({ children }) {
     try { await deleteDoc(doc(db, 'users', id)) } catch (err) { console.error("Error deleting user:", err); throw err }
   }
 
+  // --- Services ---
+  const addService = async (service) => {
+    try {
+      const docRef = await addDoc(collection(db, 'services'), { 
+        ...service, 
+        createdAt: serverTimestamp() 
+      })
+      return { id: docRef.id, ...service }
+    } catch (err) { console.error("Error adding service:", err); throw err }
+  }
+  const updateService = async (id, updates) => {
+    try { await updateDoc(doc(db, 'services', id), updates) } catch (err) { console.error("Error updating service:", err); throw err }
+  }
+  const deleteService = async (id) => {
+    try { await deleteDoc(doc(db, 'services', id)) } catch (err) { console.error("Error deleting service:", err); throw err }
+  }
+
   const getActiveProjects = () => projects.filter(p => p.status === 'active')
   const getTotalRevenue = () => orders.filter(o => o.status === 'completed').reduce((sum, o) => sum + Number(o.amount || 0), 0)
   const getPendingOrders = () => orders.filter(o => o.status === 'pending')
@@ -182,6 +251,7 @@ export function StoreProvider({ children }) {
       addTask, updateTask, deleteTask,
       addTeamMember, updateTeamMember, deleteTeamMember,
       addUser, updateUser, deleteUser,
+      services, addService, updateService, deleteService,
       getActiveProjects, getTotalRevenue, getPendingOrders,
       loading
     }}>

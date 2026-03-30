@@ -65,7 +65,7 @@ const Contact = () => {
         github: "",
         message: "",
       });
-      
+
       // Auto clear success after 5s
       setTimeout(() => setStatus(""), 5000);
     } catch (error) {
@@ -77,7 +77,7 @@ const Contact = () => {
   };
 
   return (
-    <section className="relative w-full min-h-screen pt-[120px] pb-20 flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 px-4">
+    <section className="relative w-full min-h-screen pt-[140px] md:pt-[180px] pb-20 flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 px-4">
 
       {/* Animated Background Blobs */}
       <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
@@ -91,7 +91,7 @@ const Contact = () => {
       <div className={`w-full max-w-4xl relative z-20 transition-all duration-1000 ease-out ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"}`}>
 
         <div className="bg-white/40 backdrop-blur-2xl rounded-3xl p-8 md:p-14 shadow-2xl border border-white/60 relative overflow-hidden group">
-          
+
           <div className="absolute -inset-1 bg-gradient-to-br from-blue-500/10 to-purple-500/10 blur-xl z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100 pointer-events-none"></div>
 
           <div className="relative z-10">

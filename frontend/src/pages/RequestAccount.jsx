@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import TermsAndConditions from '../components/TermsAndConditions'
 
-const departments = ['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Sales', 'Editor', 'Technician']
-const roles = ['Developer', 'Designer', 'Project Manager', 'Marketing Executive', 'Support Agent', 'Sales Executive', 'Video Editor', 'Technician']
+const departments = ['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Sales', 'Editor', 'Technician', 'Other']
+const roles = ['Developer', 'Designer', 'Project Manager', 'Marketing Executive', 'Support Agent', 'Sales Executive', 'Video Editor', 'Technician', 'Other']
 
 export default function RequestAccount() {
   const { createAccountRequest } = useAuth()
@@ -13,6 +13,7 @@ export default function RequestAccount() {
   const [agreed, setAgreed] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     name: '', email: '', phone: '', department: '', role: '', reason: '',
     password: '', confirmPassword: ''
@@ -35,11 +36,22 @@ export default function RequestAccount() {
     }
     
     setError('')
+    setLoading(true)
+    
+    // Prepare data to submit (resolving "Other" values to their custom inputs)
+    const submissionData = {
+      ...form,
+      department: form.department === 'Other' ? form.customDepartment : form.department,
+      role: form.role === 'Other' ? form.customRole : form.role
+    }
+
     try {
-      await createAccountRequest(form)
+      await createAccountRequest(submissionData)
       setSubmitted(true)
     } catch (err) {
       setError(err.message || 'Failed to submit request.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -114,19 +126,53 @@ export default function RequestAccount() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-400 mb-1.5">Department *</label>
-                <select value={form.department} onChange={e => setForm({ ...form, department: e.target.value })} required className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-all">
-                  <option value="" className="bg-gray-900">Select department</option>
-                  {departments.map(d => <option key={d} value={d} className="bg-gray-900">{d}</option>)}
-                </select>
+                <div className="space-y-3">
+                  <select 
+                    value={form.department} 
+                    onChange={e => setForm({ ...form, department: e.target.value, customDepartment: '' })} 
+                    required 
+                    className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-all"
+                  >
+                    <option value="" className="bg-gray-900">Select department</option>
+                    {departments.map(d => <option key={d} value={d} className="bg-gray-900">{d}</option>)}
+                  </select>
+                  {form.department === 'Other' && (
+                    <input 
+                      type="text" 
+                      value={form.customDepartment || ''} 
+                      onChange={e => setForm({ ...form, customDepartment: e.target.value })} 
+                      required 
+                      placeholder="Enter custom department" 
+                      className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 transition-all animate-in fade-in slide-in-from-top-1" 
+                    />
+                  )}
+                </div>
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-medium text-gray-400 mb-1.5">Role *</label>
-              <select value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} required className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-all">
-                <option value="" className="bg-gray-900">Select role</option>
-                {roles.map(r => <option key={r} value={r} className="bg-gray-900">{r}</option>)}
-              </select>
+              <div className="space-y-3">
+                <select 
+                  value={form.role} 
+                  onChange={e => setForm({ ...form, role: e.target.value, customRole: '' })} 
+                  required 
+                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-all"
+                >
+                  <option value="" className="bg-gray-900">Select role</option>
+                  {roles.map(r => <option key={r} value={r} className="bg-gray-900">{r}</option>)}
+                </select>
+                {form.role === 'Other' && (
+                  <input 
+                    type="text" 
+                    value={form.customRole || ''} 
+                    onChange={e => setForm({ ...form, customRole: e.target.value })} 
+                    required 
+                    placeholder="Enter custom role" 
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 transition-all animate-in fade-in slide-in-from-top-1" 
+                  />
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -158,8 +204,14 @@ export default function RequestAccount() {
             <button type="submit" disabled={!agreed} className="w-full relative group disabled:opacity-50 disabled:cursor-not-allowed">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-600 to-cyan-600 rounded-xl blur opacity-40 group-hover:opacity-70 transition duration-300"></div>
               <div className="relative w-full bg-gradient-to-r from-emerald-600 to-cyan-600 text-white px-6 py-3.5 rounded-xl font-semibold text-sm hover:from-emerald-700 hover:to-cyan-700 transition-all duration-300 flex items-center justify-center gap-2">
-                Submit Request
-                <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : (
+                  <>
+                    Submit Request
+                    <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                  </>
+                )}
               </div>
             </button>
           </form>
