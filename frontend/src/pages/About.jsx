@@ -115,7 +115,7 @@ const About = () => {
 
                       <div className="flex flex-wrap justify-center gap-1.5 mb-6">
                         {(member.skills || []).slice(0, 3).map(skill => (
-                          <span key={skill} className="px-2.5 py-1 bg-white/60 rounded-lg text-[20px] font-bold text-slate-500 border border-white/50">{skill}</span>
+                          <span key={skill} className="px-2.5 py-1 bg-white/60 rounded-lg text-[15px] font-bold text-slate-500 border border-white/50">{skill}</span>
                         ))}
                       </div>
 
