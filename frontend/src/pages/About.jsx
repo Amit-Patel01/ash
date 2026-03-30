@@ -63,7 +63,7 @@ const About = () => {
             <a href="https://github.com/Amit-Patel01" target="_blank" rel="noreferrer" className="px-8 py-3.5 bg-slate-900 text-white rounded-2xl font-bold shadow-lg shadow-slate-200 hover:bg-black hover:-translate-y-1 transition-all">
               GitHub Profile
             </a>
-            <button 
+            <button
               onClick={() => document.getElementById('team-section')?.scrollIntoView({ behavior: 'smooth' })}
               className="px-8 py-3.5 bg-white text-blue-600 border border-blue-100 rounded-2xl font-bold shadow-lg hover:bg-blue-50 hover:-translate-y-1 transition-all"
             >
@@ -78,7 +78,7 @@ const About = () => {
             if (!github) return null;
             return `https://github.com/${github}.png`;
           }
-          
+
           return teamMembers.length > 0 && (
             <div id="team-section" className="mb-24 scroll-mt-28">
               <div className="text-center mb-12">
@@ -87,20 +87,20 @@ const About = () => {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {teamMembers.filter(m => m.status === 'Active').map((member, index) => (
-                  <div 
-                    key={member.id} 
+                  <div
+                    key={member.id}
                     className="group relative bg-white/40 backdrop-blur-xl rounded-3xl p-6 border border-white/60 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden"
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
                     <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700"></div>
-                    
+
                     <div className="relative flex flex-col items-center text-center w-full">
                       <div className="relative mb-5 group-hover:scale-105 transition-transform duration-500">
                         <div className="absolute -inset-1.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
                         {member.github ? (
-                          <img 
-                            src={getImageUrl(member.github)} 
-                            alt={member.name} 
+                          <img
+                            src={getImageUrl(member.github)}
+                            alt={member.name}
                             className="relative w-24 h-24 rounded-2xl object-cover border-2 border-white shadow-xl"
                           />
                         ) : (
@@ -109,24 +109,24 @@ const About = () => {
                           </div>
                         )}
                       </div>
-                      
+
                       <h4 className="text-xl font-bold text-slate-800 mb-1">{member.name}</h4>
                       <p className="text-blue-600 font-semibold text-sm mb-4">{member.role}</p>
-                      
+
                       <div className="flex flex-wrap justify-center gap-1.5 mb-6">
                         {(member.skills || []).slice(0, 3).map(skill => (
-                          <span key={skill} className="px-2.5 py-1 bg-white/60 rounded-lg text-[10px] font-bold text-slate-500 border border-white/50">{skill}</span>
+                          <span key={skill} className="px-2.5 py-1 bg-white/60 rounded-lg text-[20px] font-bold text-slate-500 border border-white/50">{skill}</span>
                         ))}
                       </div>
 
                       {member.github && (
-                        <a 
+                        <a
                           href={`https://github.com/${member.github}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-black transition-all shadow-md group/link"
                         >
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" /></svg>
                           View Profile
                           <span className="opacity-0 group-hover/link:opacity-100 group-hover/link:translate-x-1 transition-all">→</span>
                         </a>
