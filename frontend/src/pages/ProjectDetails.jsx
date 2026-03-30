@@ -70,8 +70,8 @@ const ProjectDetails = () => {
         <div className="bg-white/50 backdrop-blur-xl rounded-3xl overflow-hidden border border-white/60 shadow-xl mb-10">
           {/* Image */}
           <div className="relative h-64 md:h-80 bg-gradient-to-br from-blue-50 to-indigo-100 overflow-hidden">
-            {project.image_url ? (
-              <img src={project.image_url} alt={project.title} className="w-full h-full object-cover" />
+            {(project.image_url || project.thumbnail) ? (
+              <img src={project.image_url || project.thumbnail} alt={project.title} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <svg className="w-24 h-24 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">

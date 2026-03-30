@@ -77,18 +77,10 @@ const Contact = () => {
   };
 
   return (
-    <section className="relative w-full min-h-screen pt-[140px] md:pt-[180px] pb-20 flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 px-4">
-
-      {/* Animated Background Blobs */}
-      <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
-        <div className="absolute top-10 -left-20 w-[30rem] h-[30rem] bg-blue-500/30 rounded-full blur-[100px] animate-[spin_10s_linear_infinite]"></div>
-        <div className="absolute top-40 -right-20 w-[30rem] h-[30rem] bg-purple-500/30 rounded-full blur-[100px] animate-[pulse_6s_ease-in-out_infinite]"></div>
-        <div className="absolute -bottom-32 left-1/3 w-[30rem] h-[30rem] bg-indigo-500/30 rounded-full blur-[100px] animate-[bounce_8s_infinite]"></div>
-      </div>
-
-      <div className="absolute inset-0 z-[2] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-50"></div>
+    <section className="relative w-full min-h-screen pt-[140px] md:pt-[180px] pb-20 flex items-center justify-center px-4">
 
       <div className={`w-full max-w-4xl relative z-20 transition-all duration-1000 ease-out ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"}`}>
+
 
         <div className="bg-white/40 backdrop-blur-2xl rounded-3xl p-8 md:p-14 shadow-2xl border border-white/60 relative overflow-hidden group">
 
@@ -186,7 +178,9 @@ const Contact = () => {
                     ) : (
                       <>
                         Send Message
-                        <span className="text-xl group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">🚀</span>
+                        <svg className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.63 8.41m5.96 5.96a14.96 14.96 0 01-5.96 5.96m5.96-5.96L9.63 8.41m0 0a14.98 14.98 0 01-6.16 12.12A14.98 14.98 0 019.63 8.41m0 0L3.47 14.57" />
+                        </svg>
                       </>
                     )}
                   </div>

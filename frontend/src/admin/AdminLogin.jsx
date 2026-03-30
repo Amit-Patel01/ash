@@ -40,14 +40,13 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Animated Background */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 -left-32 w-[40rem] h-[40rem] bg-blue-500/10 rounded-full blur-[120px] animate-[spin_15s_linear_infinite]"></div>
-        <div className="absolute bottom-1/4 -right-32 w-[35rem] h-[35rem] bg-purple-500/10 rounded-full blur-[120px] animate-[pulse_8s_ease-in-out_infinite]"></div>
+        <div className="absolute top-1/3 -left-32 w-[40rem] h-[40rem] bg-blue-500/10 rounded-full blur-[120px] animate-[spin_15s_linear_infinite]"></div>
+        <div className="absolute bottom-1/3 -right-32 w-[35rem] h-[35rem] bg-purple-500/10 rounded-full blur-[120px] animate-[pulse_8s_ease-in-out_infinite]"></div>
       </div>
-
-      {/* Grid pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:24px_24px]"></div>
+
+
 
       <div className="relative z-10 w-full max-w-md">
         {/* Logo */}

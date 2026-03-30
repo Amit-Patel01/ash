@@ -93,16 +93,10 @@ const Services = () => {
   })
 
   return (
-    <section className="relative min-h-screen pt-32 md:pt-40 pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Animated Background Blobs */}
-      <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
-        <div className="absolute top-10 -right-20 w-[30rem] h-[30rem] bg-indigo-500/30 rounded-full blur-[100px] animate-[spin_10s_linear_infinite]"></div>
-        <div className="absolute bottom-10 -left-20 w-[30rem] h-[30rem] bg-blue-500/30 rounded-full blur-[100px] animate-[pulse_6s_ease-in-out_infinite]"></div>
-      </div>
-
-      <div className="absolute inset-0 z-[2] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-50"></div>
+    <section className="relative w-full min-h-screen pt-[140px] md:pt-[180px] pb-20 px-4">
 
       <div className={`w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 transition-all duration-1000 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
+
 
         {/* Header Container */}
         <div className="text-center mb-16 relative">
@@ -184,8 +178,10 @@ const Services = () => {
             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-300/30 to-purple-400/30 rounded-full blur-3xl mix-blend-multiply"></div>
 
             <div className="relative z-10">
-              <div className="mx-auto w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center text-5xl shadow-xl transform hover:-rotate-6 hover:scale-110 transition-all duration-500 mb-8 border border-white/20 animate-[bounce_3s_infinite]">
-                🚀
+              <div className="mx-auto w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-xl transform hover:-rotate-6 hover:scale-110 transition-all duration-500 mb-8 border border-white/20 animate-[bounce_3s_infinite]">
+                <svg className="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.63 8.41m5.96 5.96a14.96 14.96 0 01-5.96 5.96m5.96-5.96L9.63 8.41m0 0a14.98 14.98 0 01-6.16 12.12A14.98 14.98 0 019.63 8.41m0 0L3.47 14.57" />
+                </svg>
               </div>
               <h2 className="text-3xl md:text-4xl font-extrabold mb-5 text-slate-800 tracking-tight">
                 More Innovations on the Horizon!

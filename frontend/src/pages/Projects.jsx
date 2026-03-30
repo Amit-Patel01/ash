@@ -36,15 +36,10 @@ const Projects = () => {
     : projects.filter(p => p.category_slug === activeCategory)
 
   return (
-    <section className="relative min-h-screen pt-32 md:pt-40 pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Background Effects */}
-      <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
-        <div className="absolute top-10 -right-20 w-[30rem] h-[30rem] bg-blue-500/20 rounded-full blur-[100px] animate-[pulse_8s_ease-in-out_infinite]"></div>
-        <div className="absolute bottom-10 -left-20 w-[30rem] h-[30rem] bg-purple-500/20 rounded-full blur-[100px] animate-[pulse_10s_ease-in-out_infinite]"></div>
-      </div>
-      <div className="absolute inset-0 z-[2] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
+    <section className="relative w-full min-h-screen pt-[140px] md:pt-[180px] pb-20 px-4">
 
       <div className={`w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 transition-all duration-1000 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
+
 
         {/* Header */}
         <div className="text-center mb-14">

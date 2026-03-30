@@ -6,6 +6,7 @@ export const api = {
   checkout: `${API_BASE}/api/projects/checkout`,
   uploadPayment: `${API_BASE}/api/upload/payment`,
   uploadTeam: `${API_BASE}/api/upload/team`,
+  uploadProject: `${API_BASE}/api/upload/project`,
   contact: `${API_BASE}/contact`,
   reply: `${API_BASE}/reply`,
   projectBySlug: (slug) => `${API_BASE}/api/projects/${slug}`,

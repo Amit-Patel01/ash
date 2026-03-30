@@ -19,18 +19,10 @@ const About = () => {
   }
 
   return (
-    <section className="relative w-screen left-1/2 -translate-x-1/2 min-h-screen pt-32 md:pt-40 pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
-
-      {/* Animated Background Blobs */}
-      <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
-        <div className="absolute top-10 -left-20 w-[30rem] h-[30rem] bg-blue-500/10 rounded-full blur-[100px] animate-pulse"></div>
-        <div className="absolute top-40 -right-20 w-[30rem] h-[30rem] bg-purple-500/10 rounded-full blur-[100px] animation-delay-2000 animate-pulse"></div>
-        <div className="absolute -bottom-32 left-1/3 w-[30rem] h-[30rem] bg-indigo-500/10 rounded-full blur-[100px] animation-delay-4000 animate-pulse"></div>
-      </div>
-
-      <div className="absolute inset-0 z-[2] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-30"></div>
+    <section className="relative w-full min-h-screen pt-[140px] md:pt-[180px] pb-20 px-4">
 
       <div className={`relative z-20 max-w-6xl mx-auto px-4 transition-all duration-1000 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
+
 
         {/* Header Section */}
         <div className="text-center mb-16">
@@ -45,8 +37,12 @@ const About = () => {
             <div className="absolute -bottom-2 -right-2 bg-green-500 w-6 h-6 rounded-full border-4 border-white animate-pulse shadow-lg"></div>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-2 tracking-tight">
-            Hi 👋, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">Amit Patel</span>
+          <h1 className="text-5xl md:text-7xl font-extrabold mb-2 tracking-tight flex flex-wrap justify-center items-center gap-4">
+            Hi
+            <svg className="w-12 h-12 text-blue-600 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 7.364l4.5 1.636m-18 5.455l4.5-1.636m13.5 1.636l4.5-1.636" />
+            </svg>,
+            I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">Amit Patel</span>
           </h1>
           <p className="text-xl md:text-2xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent mb-6">
             Founder of AmitSolutionHub
@@ -145,14 +141,43 @@ const About = () => {
           {/* About Me Card */}
           <div className="bg-white/40 backdrop-blur-2xl rounded-3xl p-8 border border-white/60 shadow-xl group hover:shadow-2xl transition-all h-full">
             <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
-              <span className="text-blue-600 text-3xl">🚀</span> About Me
+              <svg className="w-8 h-8 text-blue-600 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.63 8.41m5.96 5.96a14.96 14.96 0 01-5.96 5.96m5.96-5.96L9.63 8.41m0 0a14.98 14.98 0 01-6.16 12.12A14.98 14.98 0 019.63 8.41m0 0L3.47 14.57" />
+              </svg> About Me
             </h3>
             <div className="space-y-4 text-slate-700 text-lg leading-relaxed">
-              <p className="flex items-center gap-3">🎓 <span className="font-semibold">B.Tech IT Student</span></p>
-              <p className="flex items-center gap-3">🏢 <span className="font-semibold">Founder of AmitSolutionHub</span></p>
-              <p className="flex items-center gap-3">💻 <span className="font-semibold">Full-Stack Developer (MERN, PHP, .NET)</span></p>
-              <p className="flex items-center gap-3">🎨 <span className="font-semibold">UI/UX Designer & Creative Editor</span></p>
-              <p className="flex items-center gap-3">🖥 <span className="font-semibold">PC & Laptop Technician</span></p>
+              <p className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                  <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                </svg>
+                <span className="font-semibold">B.Tech IT Student</span>
+              </p>
+              <p className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                <span className="font-semibold">Founder of AmitSolutionHub</span>
+              </p>
+              <p className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span className="font-semibold">Full-Stack Developer (MERN, PHP, .NET)</span>
+              </p>
+              <p className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+                <span className="font-semibold">UI/UX Designer & Creative Editor</span>
+              </p>
+              <p className="flex items-center gap-3">
+                <svg className="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span className="font-semibold">PC & Laptop Technician</span>
+              </p>
               <p className="mt-6 pt-4 border-t border-slate-200">
                 I love building practical systems that combine <span className="text-blue-600 font-bold">clean design, security, and performance.</span>
               </p>
@@ -162,7 +187,9 @@ const About = () => {
           {/* Journey Card */}
           <div className="bg-white/40 backdrop-blur-2xl rounded-3xl p-8 border border-white/60 shadow-xl group hover:shadow-2xl transition-all h-full">
             <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
-              <span className="text-indigo-600 text-3xl">🌟</span> My Journey
+              <svg className="w-8 h-8 text-indigo-600 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+              </svg> My Journey
             </h3>
             <div className="space-y-4 text-slate-700 text-base leading-relaxed">
               <p>
@@ -176,8 +203,11 @@ const About = () => {
                 <span className="font-bold text-indigo-600">2020:</span>
                 <p>Entered PC Repair field, strengthening troubleshooting and problem-solving skills.</p>
               </div>
-              <p className="mt-2 italic">
-                The journey is still in progress — and I’m committed to improving every day. 🚀
+              <p className="mt-2 italic flex items-center gap-2">
+                The journey is still in progress — and I’m committed to improving every day.
+                <svg className="w-5 h-5 text-blue-600 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.63 8.41m5.96 5.96a14.96 14.96 0 01-5.96 5.96m5.96-5.96L9.63 8.41m0 0a14.98 14.98 0 01-6.16 12.12A14.98 14.98 0 019.63 8.41m0 0L3.47 14.57" />
+                </svg>
               </p>
             </div>
           </div>
@@ -257,9 +287,12 @@ const About = () => {
           <div className="mt-12">
             <Link
               to="/contact"
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-10 py-4 rounded-full font-bold text-lg shadow-xl hover:scale-105 transition-all inline-block"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-10 py-4 rounded-full font-bold text-lg shadow-xl hover:scale-105 transition-all flex items-center gap-3 mx-auto max-w-fit"
             >
-              Let's Build Something Great 🚀
+              Let's Build Something Great
+              <svg className="w-6 h-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.63 8.41m5.96 5.96a14.96 14.96 0 01-5.96 5.96m5.96-5.96L9.63 8.41m0 0a14.98 14.98 0 01-6.16 12.12A14.98 14.98 0 019.63 8.41m0 0L3.47 14.57" />
+              </svg>
             </Link>
           </div>
         </div>

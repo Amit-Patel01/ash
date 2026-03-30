@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useStore } from '../store/StoreContext'
 import { api } from '../config/api'
 
 function ComposeForm({ onSend }) {
@@ -53,29 +54,14 @@ function ComposeForm({ onSend }) {
 }
 
 export default function AdminMessages() {
-  const { getAdminMessages, updateMessageStatus, deleteAdminMessage } = useAuth()
-  const [messages, setMessages] = useState([])
+  const { updateMessageStatus, deleteAdminMessage } = useAuth()
+  const { messages } = useStore()
   const [selectedMessage, setSelectedMessage] = useState(null)
   const [filter, setFilter] = useState('all')
   const [showCompose, setShowCompose] = useState(false)
   const [replyText, setReplyText] = useState('')
   const [replyingTo, setReplyingTo] = useState(null)
   const [liveIndicator, setLiveIndicator] = useState(true)
-
-  const loadMessages = async () => {
-    try {
-      const data = await getAdminMessages()
-      setMessages(data)
-    } catch (err) {
-      console.error("Failed to load messages:", err)
-    }
-  }
-
-  useEffect(() => {
-    loadMessages()
-    const interval = setInterval(loadMessages, 10000)
-    return () => clearInterval(interval)
-  }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -95,7 +81,6 @@ export default function AdminMessages() {
   const markAsRead = async (id) => {
     try {
       await updateMessageStatus(id, { status: 'read' })
-      setMessages(messages.map(m => m.id === id ? { ...m, status: 'read' } : m))
     } catch (err) {
       console.error(err)
     }
@@ -106,7 +91,6 @@ export default function AdminMessages() {
     const msg = messages.find(m => m.id === id)
     try {
       await updateMessageStatus(id, { starred: !msg.starred })
-      setMessages(messages.map(m => m.id === id ? { ...m, starred: !msg.starred } : m))
     } catch (err) {
       console.error(err)
     }
@@ -117,7 +101,6 @@ export default function AdminMessages() {
     if (!window.confirm('Are you sure you want to delete this message?')) return
     try {
       await deleteAdminMessage(id)
-      setMessages(messages.filter(m => m.id !== id))
       if (selectedMessage?.id === id) setSelectedMessage(null)
     } catch (err) {
       console.error(err)
@@ -128,7 +111,6 @@ export default function AdminMessages() {
     e.stopPropagation()
     try {
       await updateMessageStatus(id, { archived: true })
-      setMessages(messages.filter(m => m.id !== id))
       if (selectedMessage?.id === id) setSelectedMessage(null)
     } catch (err) {
       console.error(err)
@@ -173,7 +155,6 @@ export default function AdminMessages() {
       // Update Firestore status to 'replied'
       await updateMessageStatus(replyingTo.id, { status: 'replied', repliedAt: new Date().toISOString() })
       
-      setMessages(messages.map(m => m.id === replyingTo.id ? { ...m, status: 'replied' } : m))
       setReplyingTo(null)
       setReplyText('')
     } catch (err) {

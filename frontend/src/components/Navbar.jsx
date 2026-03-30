@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import brandLogo from '../assets/brand logo.png'
+import brandLogo from '../assets/brand-logo.png'
 import { useAuth } from '../context/AuthContext'
 
 const Navbar = () => {
@@ -60,151 +60,143 @@ const Navbar = () => {
       }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Floating Glass Container */}
+        {/* Floating Glass Container with Blue Glow Animation */}
         <div className={`
-          relative flex justify-between items-center px-6 lg:px-8 rounded-full 
-          transition-all duration-500 ease-out border shadow-2xl
+          relative flex justify-between items-center px-4 md:px-8 lg:px-12 rounded-full 
+          transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] border border-white/20
           ${scrolled
-            ? 'h-16 lg:h-20 bg-white/70 backdrop-blur-3xl border-white/50 shadow-blue-900/10 scale-100'
-            : 'h-20 lg:h-24 bg-white/40 backdrop-blur-2xl border-white/40 shadow-blue-900/5 scale-[1.02]'
+            ? 'h-16 lg:h-20 bg-white/10 backdrop-blur-2xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.5)] scale-100 mt-2'
+            : 'h-20 lg:h-24 bg-white/5 backdrop-blur-xl shadow-[0_40px_80px_-15px_rgba(0,0,0,0.4)] scale-[1.01]'
           }
         `}>
+          {/* Animated Light Blue Glow Background - Brought down slightly */}
+          <div className="absolute top-[2px] -inset-x-2 bottom-[-10px] bg-gradient-to-r from-blue-400/20 via-cyan-300/15 to-blue-500/20 rounded-full blur-3xl opacity-50 animate-[bluePulse_8s_infinite] pointer-events-none"></div>
 
-          {/* Subtle Glow Behind Navbar */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/10 via-transparent to-purple-500/10 rounded-full blur-xl pointer-events-none transition-opacity duration-500 opacity-50"></div>
+          
+          {/* Glass Reflection Highlight */}
+          <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
+            <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-br from-white/30 to-transparent skew-x-[45deg] -translate-y-full animate-[reflection_10s_infinite]"></div>
+          </div>
 
-          {/* Brand Logo */}
-          <Link to="/" className="relative z-10 flex items-center group flex-shrink-0 outline-none">
-            <div className="relative transform transition-all duration-300 group-hover:scale-105 group-hover:-rotate-2">
-              <img
-                src={brandLogo}
-                alt="Brand Logo"
-                className="h-10 lg:h-12 w-auto object-contain filter drop-shadow-md"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-400 blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
+          {/* Brand Logo & Alignment Container */}
+          <div className="flex items-center gap-6 lg:gap-10 h-full">
+            <Link to="/" className="relative z-10 flex items-center group flex-shrink-0 outline-none">
+              <div className="relative transform transition-all duration-500 group-hover:scale-105 group-hover:-rotate-1">
+                <img
+                  src={brandLogo}
+                  alt="Brand Logo"
+                  className="h-10 lg:h-12 w-auto object-contain filter drop-shadow-[0_8px_15px_rgba(0,0,0,0.2)]"
+                />
+              </div>
+            </Link>
+
+            {/* Desktop Links - Perfectly Aligned */}
+            <div className="hidden lg:flex items-center gap-1 xl:gap-2 h-full py-2">
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`relative px-5 h-full flex items-center rounded-full text-sm lg:text-[15px] font-bold transition-all duration-300 group outline-none overflow-hidden ${isActive
+                      ? 'text-blue-700 bg-white/90 shadow-md'
+                      : 'text-slate-800 hover:text-blue-600'
+                      }`}
+                  >
+                    <span className="relative z-10">{link.name}</span>
+                    {isActive && (
+                      <span className="absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-blue-600 rounded-full shadow-[0_0_10px_rgba(37,99,235,0.8)]"></span>
+                    )}
+                  </Link>
+                );
+              })}
             </div>
-          </Link>
+          </div>
 
-          {/* Desktop Links */}
-          <div className="hidden lg:flex items-center gap-2 xl:gap-4 z-10">
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
-              return (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={`relative px-5 py-2.5 rounded-full text-sm lg:text-base font-bold transition-all duration-300 group outline-none overflow-hidden ${isActive
-                    ? 'text-blue-700 shadow-inner bg-white/60'
-                    : 'text-slate-600 hover:text-blue-600 hover:bg-white/40'
-                    }`}
-                >
-                  <span className="relative z-10">{link.name}</span>
-
-                  {/* Hover effect background */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-100/50 to-purple-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
-
-                  {/* Active Indicator Dot */}
-                  {isActive && (
-                    <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
-                  )}
-                </Link>
-              );
-            })}
-
-            {/* Social Icons */}
-            <div className="flex items-center gap-1 ml-2">
+          <div className="flex items-center gap-2 lg:gap-4 h-full">
+            {/* Social Icons - Balanced */}
+            <div className="hidden xl:flex items-center gap-1">
               {socialLinks.map((social) => (
                 <a
                   key={social.name}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={social.name}
-                  className="w-8 h-8 flex items-center justify-center rounded-full text-slate-500 hover:text-blue-600 hover:bg-white/60 transition-all duration-300"
+                  className="w-10 h-10 flex items-center justify-center rounded-full text-slate-700 hover:text-blue-600 hover:bg-white/80 transition-all duration-300 border border-transparent hover:border-white/50"
                 >
                   {social.icon}
                 </a>
               ))}
             </div>
 
-            {/* Login / Employee Access */}
-            <div className="flex items-center gap-2 ml-2">
+            {/* Desktop Login / Dashboard - Hidden on Mobile */}
+            <div className="hidden lg:flex items-center gap-3">
               {currentUser ? (
-                <>
+                <div className="flex items-center gap-2 bg-black/5 p-1 rounded-full border border-black/5">
                   <Link
                     to={currentUser?.role === 'admin' ? '/admin' : '/employee'}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all duration-300"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-white bg-black hover:bg-slate-900 shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25z" />
-                    </svg>
                     Dashboard
                   </Link>
                   <button
                     onClick={logout}
-                    className="px-4 py-2 rounded-full text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 transition-all duration-300"
+                    className="w-10 h-10 flex items-center justify-center rounded-full text-red-600 hover:bg-red-50 transition-all group active:scale-95"
+                    title="Logout"
                   >
-                    Logout
+                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
                   </button>
-                </>
+                </div>
               ) : (
-                <>
+                <div className="flex items-center gap-2 lg:gap-3">
                   <Link
                     to="/employee-login"
-                    className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 hover:bg-white/60 border border-transparent hover:border-white/50 transition-all duration-300"
+                    className="px-5 py-2.5 rounded-full text-sm font-bold text-slate-800 hover:text-blue-600 hover:bg-white/80 transition-all duration-300"
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-                    </svg>
                     Login
                   </Link>
                   <Link
                     to="/request-account"
-                    className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-white bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+                    className="relative group overflow-hidden px-7 py-2.5 rounded-full text-[15px] font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-500/20 transition-all duration-500 transform hover:-translate-y-0.5 active:scale-95"
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
-                    </svg>
                     Join Us
                   </Link>
-                </>
+                </div>
               )}
+
+              {/* Help Button - Modern Style */}
+              <button
+                onClick={() => window.location.href = 'https://chat.amitsolutionhub.com'}
+                className="hidden sm:flex relative items-center gap-2 bg-white/90 backdrop-blur-md text-slate-900 border border-slate-200 px-6 py-2.5 rounded-full font-bold text-sm lg:text-[15px] hover:bg-white transition-all duration-300 shadow-lg hover:-translate-y-0.5"
+              >
+                <svg className="w-5 h-5 text-blue-600 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 7.364l4.5 1.636m-18 5.455l4.5-1.636m13.5 1.636l4.5-1.636" />
+                </svg>
+                Help
+              </button>
             </div>
 
-            {/* Help Button */}
-            <button
-              onClick={() => window.location.href = 'https://chat.amitsolutionhub.com'}
-              className="ml-2 relative group outline-none"
-            >
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-300"></div>
-              <div className="relative flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-7 py-2.5 rounded-full font-bold text-sm lg:text-base hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg transform group-hover:-translate-y-0.5">
-                <span className="group-hover:-rotate-12 transition-transform duration-300">👋</span>
-                Help
-              </div>
-            </button>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <div className="lg:hidden flex items-center z-10">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="relative w-12 h-12 flex items-center justify-center rounded-2xl bg-white/60 backdrop-blur-md shadow-sm border border-white/50 text-slate-700 hover:bg-white/80 hover:text-blue-600 active:scale-95 transition-all duration-300 outline-none"
-            >
-              <div className="flex flex-col items-center justify-center gap-1.5">
-                <span className={`block w-6 h-0.5 bg-current rounded-full transition-transform duration-300 ${isOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
-                <span className={`block w-6 h-0.5 bg-current rounded-full transition-opacity duration-300 ${isOpen ? 'opacity-0' : ''}`}></span>
-                <span className={`block w-6 h-0.5 bg-current rounded-full transition-transform duration-300 ${isOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
-              </div>
-            </button>
+            {/* Mobile Menu Toggle */}
+            <div className="lg:hidden flex items-center">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="relative w-12 h-12 flex items-center justify-center rounded-2xl bg-white shadow-lg border border-slate-200 text-slate-900 hover:bg-slate-50 transition-all duration-300 active:scale-95 outline-none"
+              >
+                <div className="flex flex-col items-center justify-center gap-1.5">
+                  <span className={`block w-6 h-0.5 bg-current rounded-full transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+                  <span className={`block w-6 h-0.5 bg-current rounded-full transition-all duration-300 ${isOpen ? 'opacity-0 scale-x-0' : ''}`}></span>
+                  <span className={`block w-6 h-0.5 bg-current rounded-full transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu */}
         <div className={`lg:hidden absolute top-full left-4 right-4 mt-4 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] origin-top ${isOpen ? 'opacity-100 scale-y-100 max-h-[800px]' : 'opacity-0 scale-y-95 max-h-0 pointer-events-none'}`}>
-          <div className="bg-white/70 backdrop-blur-3xl border border-white/50 shadow-2xl rounded-3xl p-4 flex flex-col gap-2 relative overflow-hidden">
+          <div className="bg-white border border-slate-200 shadow-2xl rounded-3xl p-4 flex flex-col gap-2 relative overflow-hidden">
 
-            {/* Subtle glow in mobile menu */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-400/20 blur-3xl rounded-full pointer-events-none"></div>
 
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path;
@@ -234,7 +226,7 @@ const Navbar = () => {
                   <Link
                     to={currentUser?.role === 'admin' ? '/admin' : '/employee'}
                     onClick={() => setIsOpen(false)}
-                    className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-emerald-700 bg-emerald-50/80 backdrop-blur-sm border border-emerald-200/50 transition-all duration-300 active:scale-95"
+                    className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/50 transition-all duration-300 active:scale-95"
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25z" />
@@ -243,7 +235,7 @@ const Navbar = () => {
                   </Link>
                   <button
                     onClick={() => { logout(); setIsOpen(false) }}
-                    className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-red-600 bg-red-50/80 backdrop-blur-sm border border-red-200/50 transition-all duration-300 active:scale-95"
+                    className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-red-600 bg-red-50 border border-red-200/50 transition-all duration-300 active:scale-95"
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -282,9 +274,12 @@ const Navbar = () => {
               onClick={() => window.location.href = 'https://chat.amitsolutionhub.com'}
               className="relative group w-full outline-none"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur opacity-40 group-hover:opacity-60 transition duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-10 group-hover:opacity-20 transition duration-300"></div>
               <div className="relative w-full text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-4 rounded-2xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-xl flex items-center justify-center gap-2">
-                Get Help <span className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">🚀</span>
+                Get Help 
+                <svg className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.63 8.41m5.96 5.96a14.96 14.96 0 01-5.96 5.96m5.96-5.96L9.63 8.41m0 0a14.98 14.98 0 01-6.16 12.12A14.98 14.98 0 019.63 8.41m0 0L3.47 14.57" />
+                </svg>
               </div>
             </button>
 
@@ -297,7 +292,7 @@ const Navbar = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.name}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white/60 text-slate-500 hover:text-blue-600 hover:bg-white transition-all duration-300 border border-white/40"
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-slate-700 hover:text-blue-600 hover:bg-slate-50 transition-all duration-300 border border-slate-200 shadow-sm"
                 >
                   {social.icon}
                 </a>

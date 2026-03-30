@@ -1,29 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useStore } from '../store/StoreContext'
 
 export default function AdminServiceRequests() {
-  const { getServiceRequests, updateServiceRequestStatus } = useAuth()
-  const [requests, setRequests] = useState([])
+  const { updateServiceRequestStatus } = useAuth()
+  const { serviceRequests: requests, loadingStore } = useStore()
   const [filter, setFilter] = useState('pending')
   const [expanded, setExpanded] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
-  const loadRequests = async () => {
-    try {
-      const data = await getServiceRequests()
-      setRequests(data)
-    } catch (err) {
-      console.error("Failed to load service requests:", err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    loadRequests()
-    const interval = setInterval(loadRequests, 10000)
-    return () => clearInterval(interval)
-  }, [])
+  // Real-time data from StoreContext
 
   const filteredRequests = requests.filter(r => filter === 'all' || r.status === filter)
 
@@ -33,7 +19,6 @@ export default function AdminServiceRequests() {
     
     try {
       await updateServiceRequestStatus(id, newStatus)
-      setRequests(requests.map(r => r.id === id ? { ...r, status: newStatus } : r))
     } catch (err) {
       console.error(err)
       alert("Failed to update status")

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
+import { api } from '../config/api'
 
 export default function AdminProjects() {
   const { projects, addProject, updateProject, deleteProject } = useStore()
@@ -11,9 +12,14 @@ export default function AdminProjects() {
   const [projectToDelete, setProjectToDelete] = useState(null)
   const [editingProject, setEditingProject] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
+  const [imageFile, setImageFile] = useState(null)
+  const [imagePreview, setImagePreview] = useState(null)
+  const [uploading, setUploading] = useState(false)
+  
   const [formData, setFormData] = useState({
     title: '', description: '', long_description: '', category_name: 'Basic', category_slug: 'basic',
-    price_project_only: '', price_with_source: '', features: '', tech_stack: '', is_featured: false, status: 'active'
+    price_project_only: '', price_with_source: '', features: '', tech_stack: '', is_featured: false, status: 'active',
+    thumbnail: ''
   })
 
   const filteredProjects = projects.filter(project => {
@@ -24,23 +30,25 @@ export default function AdminProjects() {
   })
 
   const openCreate = () => {
-    setEditingProject(null)
+    setImageFile(null)
+    setImagePreview(null)
     setFormData({
       title: '', description: '', long_description: '', category_name: 'Basic', category_slug: 'basic',
-      price_project_only: '', price_with_source: '', features: '', tech_stack: '', is_featured: false, status: 'active'
+      price_project_only: '', price_with_source: '', features: '', tech_stack: '', is_featured: false, status: 'active',
+      thumbnail: ''
     })
     setShowModal(true)
   }
 
   const openEdit = (project) => {
-    setEditingProject(project)
-    const features = project.features ? JSON.parse(project.features).join(', ') : ''
-    const techStack = project.tech_stack ? JSON.parse(project.tech_stack).join(', ') : ''
+    setImageFile(null)
+    setImagePreview(project.thumbnail || null)
     setFormData({
       title: project.title, description: project.description, long_description: project.long_description || '',
       category_name: project.category_name, category_slug: project.category_slug,
       price_project_only: String(project.price_project_only), price_with_source: String(project.price_with_source),
-      features, tech_stack: techStack, is_featured: project.is_featured, status: project.status || 'active'
+      features, tech_stack: techStack, is_featured: project.is_featured, status: project.status || 'active',
+      thumbnail: project.thumbnail || ''
     })
     setShowModal(true)
   }
@@ -49,12 +57,40 @@ export default function AdminProjects() {
     e.preventDefault()
     const featuresArr = formData.features.split(',').map(f => f.trim()).filter(Boolean)
     const techArr = formData.tech_stack.split(',').map(t => t.trim()).filter(Boolean)
+    
+    setUploading(true)
+    let thumbnailUrl = formData.thumbnail
+
+    // handle image upload to Drive via backend
+    if (imageFile) {
+      try {
+        const uploadData = new FormData()
+        uploadData.append('image', imageFile)
+        
+        const response = await fetch(api.uploadProject, {
+          method: 'POST',
+          body: uploadData
+        })
+        
+        const result = await response.json()
+        if (result.success) {
+          thumbnailUrl = result.url
+        } else {
+          throw new Error(result.message || 'Image upload failed')
+        }
+      } catch (err) {
+        console.error("Upload error:", err)
+        alert("Failed to upload image to Google Drive. Saving project without new image.")
+      }
+    }
+
     const payload = {
       ...formData,
       price_project_only: Number(formData.price_project_only),
       price_with_source: Number(formData.price_with_source),
       features: JSON.stringify(featuresArr),
       tech_stack: JSON.stringify(techArr),
+      thumbnail: thumbnailUrl
     }
     
     try {
@@ -64,9 +100,16 @@ export default function AdminProjects() {
         await addProject(payload)
       }
       setShowModal(false)
-    } catch (err) {
-      console.error("Error saving project:", err)
-      alert("Failed to save project. Check console for details.")
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setImageFile(file)
+      setImagePreview(URL.createObjectURL(file))
     }
   }
 
@@ -280,6 +323,29 @@ export default function AdminProjects() {
               <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              {/* Image Upload Area */}
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-gray-400">Project Thumbnail *</label>
+                <div className="flex items-center gap-4">
+                  <div className="w-24 h-24 rounded-xl bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center group relative">
+                    {imagePreview ? (
+                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <svg className="w-8 h-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                    )}
+                    <label className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                      <span className="text-[10px] text-white font-bold">CHANGE</span>
+                      <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+                    </label>
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <p className="text-xs text-white font-medium">Google Drive storage</p>
+                    <p className="text-[10px] text-gray-500">Max size: 5MB. Formats: JPG, PNG, WebP</p>
+                    <button type="button" onClick={() => document.querySelector('input[type="file"]').click()} className="text-[10px] text-blue-400 hover:text-blue-300 font-bold uppercase tracking-wider">Choose File</button>
+                  </div>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-medium text-gray-400 mb-1.5">Project Title *</label>
                 <input type="text" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required placeholder="e.g. Portfolio Website" className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
@@ -334,8 +400,11 @@ export default function AdminProjects() {
                 </label>
               </div>
               <div className="flex items-center gap-3 pt-4">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-gray-300 hover:bg-white/10 transition-all">Cancel</button>
-                <button type="submit" className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all">{editingProject ? 'Update Project' : 'Create Project'}</button>
+                <button type="button" onClick={() => setShowModal(false)} disabled={uploading} className="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-gray-300 hover:bg-white/10 transition-all">Cancel</button>
+                <button type="submit" disabled={uploading} className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all flex items-center justify-center gap-2">
+                  {uploading && <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>}
+                  {editingProject ? 'Update Project' : 'Create Project'}
+                </button>
               </div>
             </form>
           </div>

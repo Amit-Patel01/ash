@@ -25,6 +25,10 @@ export function StoreProvider({ children }) {
   const [teamMembers, setTeamMembers] = useState([])
   const [users, setUsers] = useState([]) // Unified Users state
   const [services, setServices] = useState([])
+  const [accountRequests, setAccountRequests] = useState([])
+  const [sellRequests, setSellRequests] = useState([])
+  const [serviceRequests, setServiceRequests] = useState([])
+  const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(true)
 
   // Real-time Listeners
@@ -111,6 +115,23 @@ export function StoreProvider({ children }) {
       }
     }, (error) => console.error("Services snapshot error:", error))
 
+    // Real-time listeners for Requests & Messages
+    const unsubscribeAccountRequests = onSnapshot(query(collection(db, 'accountRequests'), orderBy('createdAt', 'desc')), (snapshot) => {
+      setAccountRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+    }, (error) => console.error("Account Requests snapshot error:", error))
+
+    const unsubscribeSellRequests = onSnapshot(query(collection(db, 'sellRequests'), orderBy('createdAt', 'desc')), (snapshot) => {
+      setSellRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+    }, (error) => console.error("Sell Requests snapshot error:", error))
+
+    const unsubscribeServiceRequests = onSnapshot(query(collection(db, 'serviceRequests'), orderBy('createdAt', 'desc')), (snapshot) => {
+      setServiceRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+    }, (error) => console.error("Service Requests snapshot error:", error))
+
+    const unsubscribeMessages = onSnapshot(query(collection(db, 'messages'), orderBy('createdAt', 'desc')), (snapshot) => {
+      setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+    }, (error) => console.error("Messages snapshot error:", error))
+
     return () => {
       unsubscribeProjects()
       unsubscribeOrders()
@@ -119,6 +140,10 @@ export function StoreProvider({ children }) {
       unsubscribeTeam()
       unsubscribeUsers()
       unsubscribeServices()
+      unsubscribeAccountRequests()
+      unsubscribeSellRequests()
+      unsubscribeServiceRequests()
+      unsubscribeMessages()
     }
   }, [])
 
@@ -252,6 +277,7 @@ export function StoreProvider({ children }) {
       addTeamMember, updateTeamMember, deleteTeamMember,
       addUser, updateUser, deleteUser,
       services, addService, updateService, deleteService,
+      accountRequests, sellRequests, serviceRequests, messages,
       getActiveProjects, getTotalRevenue, getPendingOrders,
       loading
     }}>

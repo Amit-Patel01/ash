@@ -22,14 +22,50 @@ export default function TeamMemberDashboard() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'My Projects', value: myProjects.length, color: 'from-blue-500 to-indigo-600' },
-          { label: 'Total Sales', value: mySales.length, color: 'from-emerald-500 to-green-600' },
-          { label: 'Completed', value: completedSales, color: 'from-amber-500 to-orange-600' },
-          { label: 'Revenue', value: `₹${myRevenue.toLocaleString('en-IN')}`, color: 'from-purple-500 to-violet-600' },
+          { 
+            label: 'My Projects', 
+            value: myProjects.length, 
+            color: 'from-blue-500 to-indigo-600',
+            icon: (
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            )
+          },
+          { 
+            label: 'Total Sales', 
+            value: mySales.length, 
+            color: 'from-emerald-500 to-green-600',
+            icon: (
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            )
+          },
+          { 
+            label: 'Completed', 
+            value: completedSales, 
+            color: 'from-amber-500 to-orange-600',
+            icon: (
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            )
+          },
+          { 
+            label: 'Revenue', 
+            value: `₹${myRevenue.toLocaleString('en-IN')}`, 
+            color: 'from-purple-500 to-violet-600',
+            icon: (
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            )
+          },
         ].map((s, i) => (
-          <div key={i} className="bg-gray-900/50 border border-white/5 rounded-xl p-5">
-            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center mb-3`}>
-              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6z" /></svg>
+          <div key={i} className="bg-gray-900/50 border border-white/5 rounded-xl p-5 hover:bg-gray-800/50 transition-all duration-300">
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center mb-3 shadow-lg`}>
+              {s.icon}
             </div>
             <p className="text-xl font-bold text-white">{s.value}</p>
             <p className="text-xs text-gray-400">{s.label}</p>

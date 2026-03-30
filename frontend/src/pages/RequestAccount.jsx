@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import TermsAndConditions from '../components/TermsAndConditions'
 
+
+
 const departments = ['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Sales', 'Editor', 'Technician', 'Other']
 const roles = ['Developer', 'Designer', 'Project Manager', 'Marketing Executive', 'Support Agent', 'Sales Executive', 'Video Editor', 'Technician', 'Other']
 
@@ -57,7 +59,14 @@ export default function RequestAccount() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/4 -left-32 w-[40rem] h-[40rem] bg-emerald-500/10 rounded-full blur-[120px] animate-[spin_15s_linear_infinite]"></div>
+          <div className="absolute bottom-1/4 -right-32 w-[35rem] h-[35rem] bg-cyan-500/10 rounded-full blur-[120px] animate-[pulse_8s_ease-in-out_infinite]"></div>
+        </div>
+        <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:24px_24px]"></div>
+
+
         <div className="max-w-md w-full text-center">
           <div className="bg-gray-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-10 shadow-2xl">
             <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
@@ -87,6 +96,8 @@ export default function RequestAccount() {
         <div className="absolute bottom-1/4 -right-32 w-[35rem] h-[35rem] bg-cyan-500/10 rounded-full blur-[120px] animate-[pulse_8s_ease-in-out_infinite]"></div>
       </div>
       <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:24px_24px]"></div>
+
+
 
       <div className="relative z-10 w-full max-w-lg">
         <div className="text-center mb-8">

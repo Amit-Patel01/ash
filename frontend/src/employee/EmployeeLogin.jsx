@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
+
 export default function EmployeeLogin() {
   const { login } = useAuth()
   const navigate = useNavigate()
@@ -37,6 +38,7 @@ export default function EmployeeLogin() {
         <div className="absolute bottom-1/3 -right-32 w-[35rem] h-[35rem] bg-cyan-500/10 rounded-full blur-[120px] animate-[pulse_8s_ease-in-out_infinite]"></div>
       </div>
       <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:24px_24px]"></div>
+
 
       <div className="relative z-10 w-full max-w-md">
         <div className="text-center mb-8">

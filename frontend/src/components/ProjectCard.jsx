@@ -11,9 +11,9 @@ const ProjectCard = ({ project }) => {
 
       {/* Image */}
       <div className="relative h-52 overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
-        {project.image_url ? (
+        {(project.image_url || project.thumbnail) ? (
           <img
-            src={project.image_url}
+            src={project.image_url || project.thumbnail}
             alt={project.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />

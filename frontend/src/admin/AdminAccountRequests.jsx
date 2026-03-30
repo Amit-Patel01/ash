@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import { useStore } from '../store/StoreContext'
 
 export default function AdminAccountRequests() {
-  const { getAccountRequests, approveAccountRequest, rejectAccountRequest } = useAuth()
-  const [requests, setRequests] = useState([])
+  const { approveAccountRequest, rejectAccountRequest } = useAuth()
+  const { accountRequests: requests } = useStore()
   const [filter, setFilter] = useState('pending')
   const [processingId, setProcessingId] = useState(null)
   
@@ -14,14 +15,7 @@ export default function AdminAccountRequests() {
   const [selectedRequest, setSelectedRequest] = useState(null)
   const [actionType, setActionType] = useState(null) // 'approve' or 'reject'
 
-  useEffect(() => {
-    const q = query(collection(db, 'accountRequests'), orderBy('createdAt', 'desc'))
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }, (error) => console.error("Account requests snapshot error:", error))
-    
-    return () => unsubscribe()
-  }, [])
+  // Data is now handled globally in StoreContext
 
   const filteredRequests = requests.filter(r => filter === 'all' || r.status === filter)
 

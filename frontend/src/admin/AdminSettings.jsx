@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
 
 export default function AdminSettings() {
-  const { currentUser, updateUserProfile } = useAuth()
+  const { currentUser, updateUserProfile, updateUserPassword } = useAuth()
   const [activeTab, setActiveTab] = useState('profile')
   const [saving, setSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState('')
@@ -42,11 +42,16 @@ export default function AdminSettings() {
     setSaving(true)
     setSaveSuccess('')
     try {
-      await updateUserProfile(profileForm)
+      await updateUserProfile(currentUser.uid, {
+        displayName: profileForm.displayName,
+        phone: profileForm.phone,
+        bio: profileForm.bio
+      })
       setSaveSuccess('Profile updated successfully!')
       setTimeout(() => setSaveSuccess(''), 3000)
     } catch (err) {
       console.error('Failed to save profile:', err)
+      alert('Failed: ' + (err.message || 'Error updating profile'))
     } finally {
       setSaving(false)
     }
@@ -63,22 +68,15 @@ export default function AdminSettings() {
       setPasswordError('Passwords do not match')
       return
     }
+    setSaving(true)
     try {
-      const { updatePassword, reauthenticateWithCredential, EmailAuthProvider } = await import('firebase/auth')
-      const user = currentUser._firebaseUser || currentUser
-      const credential = EmailAuthProvider.credential(user.email, passwordForm.currentPassword)
-      await reauthenticateWithCredential(user, credential)
-      await updatePassword(user, passwordForm.newPassword)
+      await updateUserPassword(passwordForm.currentPassword, passwordForm.newPassword)
       setPasswordSuccess('Password updated successfully!')
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
     } catch (err) {
-      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
-        setPasswordError('Current password is incorrect')
-      } else if (err.code === 'auth/weak-password') {
-        setPasswordError('New password is too weak')
-      } else {
-        setPasswordError('Failed to update password. Please try again.')
-      }
+      setPasswordError(err.message || 'Failed to update password')
+    } finally {
+      setSaving(false)
     }
   }
 

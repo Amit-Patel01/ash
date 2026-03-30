@@ -5,6 +5,7 @@ const { Resend } = require("resend");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const { uploadToDrive } = require('./utils/driveService');
 
 const app = express();
 app.use(cors());
@@ -42,6 +43,18 @@ const teamStorage = multer.diskStorage({
   }
 });
 
+const projectStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(uploadsDir, 'projects');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = 'project-' + Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
+    cb(null, uniqueName);
+  }
+});
+
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
@@ -53,9 +66,9 @@ const upload = multer({
   }
 });
 
-const uploadTeam = multer({
-  storage: teamStorage,
-  limits: { fileSize: 2 * 1024 * 1024 },
+const uploadProject = multer({
+  storage: projectStorage,
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowed = /jpeg|jpg|png|webp/;
     const ext = allowed.test(path.extname(file.originalname).toLowerCase());
@@ -88,6 +101,29 @@ app.post("/api/upload/team", uploadTeam.single('photo'), (req, res) => {
     success: true,
     url: `/uploads/team/${req.file.filename}`
   });
+});
+
+// Upload project image to Google Drive endpoint
+app.post("/api/upload/project", uploadProject.single('image'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'No file uploaded' });
+  }
+
+  try {
+    const filePath = req.file.path;
+    const fileName = req.file.filename;
+    const mimeType = req.file.mimetype;
+
+    const driveUrl = await uploadToDrive(filePath, fileName, mimeType);
+
+    res.json({
+      success: true,
+      url: driveUrl
+    });
+  } catch (error) {
+    console.error('Project Upload Error:', error);
+    res.status(500).json({ success: false, message: 'Failed to upload to Google Drive' });
+  }
 });
 
 // Project routes

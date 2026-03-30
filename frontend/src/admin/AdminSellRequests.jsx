@@ -1,26 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useStore } from '../store/StoreContext'
 
 export default function AdminSellRequests() {
-  const { getSellRequests, approveSellRequest, rejectSellRequest } = useAuth()
-  const [requests, setRequests] = useState([])
+  const { approveSellRequest, rejectSellRequest } = useAuth()
+  const { sellRequests: requests } = useStore()
   const [filter, setFilter] = useState('pending')
   const [expanded, setExpanded] = useState(null)
 
-  const loadRequests = async () => {
-    try {
-      const data = await getSellRequests()
-      setRequests(data || [])
-    } catch (err) {
-      console.error("Failed to load sell requests:", err)
-    }
-  }
-
-  useEffect(() => {
-    loadRequests()
-    const interval = setInterval(loadRequests, 5000)
-    return () => clearInterval(interval)
-  }, [])
+  // Real-time data from StoreContext
 
   const filteredRequests = requests.filter(r => filter === 'all' || r.status === filter)
 
@@ -28,7 +16,6 @@ export default function AdminSellRequests() {
     if (!window.confirm(`Approve "${request.projectTitle}" for sale?`)) return
     try {
       await approveSellRequest(request.id)
-      await loadRequests()
     } catch (err) {
       console.error('Failed to approve:', err)
     }
@@ -38,7 +25,6 @@ export default function AdminSellRequests() {
     if (!window.confirm(`Reject "${request.projectTitle}"?`)) return
     try {
       await rejectSellRequest(request.id)
-      await loadRequests()
     } catch (err) {
       console.error('Failed to reject:', err)
     }
