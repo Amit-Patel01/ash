@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { Resend } = require("resend");
+const Razorpay = require("razorpay");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
@@ -57,6 +58,17 @@ const projectStorage = multer.diskStorage({
 
 const upload = multer({
   storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|webp/;
+    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
+    const mime = allowed.test(file.mimetype);
+    cb(null, ext && mime);
+  }
+});
+
+const uploadTeam = multer({
+  storage: teamStorage,
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowed = /jpeg|jpg|png|webp/;
@@ -138,7 +150,120 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 if (!RESEND_API_KEY) {
   console.warn("⚠️  WARNING: RESEND_API_KEY is not set in .env. Emailing will fail.");
 }
-const resend = new Resend(RESEND_API_KEY);
+const resend = new Resend(RESEND_API_KEY || "re_dummy_key_to_prevent_crash_123456");
+
+// Razorpay config
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
+if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+  console.warn("⚠️  WARNING: Razorpay keys are not set in .env. Payment features will fail.");
+}
+const razorpay = new Razorpay({
+  key_id: RAZORPAY_KEY_ID || "rzp_test_dummykey12345",
+  key_secret: RAZORPAY_KEY_SECRET || "dummysecret12345",
+});
+
+// Create Razorpay Order
+app.post("/api/razorpay/create-order", async (req, res) => {
+  const { amount, currency = "INR" } = req.body;
+  try {
+    const options = {
+      amount: amount * 100, // format in paise
+      currency,
+      receipt: `receipt_${Date.now()}`,
+    };
+    const order = await razorpay.orders.create(options);
+    res.json({ success: true, order });
+  } catch (error) {
+    console.error("Razorpay Order Error:", error);
+    res.status(500).json({ success: false, message: "Failed to create order" });
+  }
+});
+
+// Verify Razorpay Payment & Send Email
+app.post("/api/razorpay/verify-payment", async (req, res) => {
+  const { 
+    razorpay_order_id, 
+    razorpay_payment_id, 
+    razorpay_signature,
+    customer_email,
+    customer_name,
+    project_title,
+    amount,
+    purchase_type
+  } = req.body;
+
+  const crypto = require("crypto");
+  const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
+  hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+  const expectedSignature = hmac.digest("hex");
+
+  if (expectedSignature === razorpay_signature) {
+    try {
+      // Send Success Email to Client
+      await resend.emails.send({
+        from: "Amit Solution Hub <contact@amitsolutionhub.com>",
+        to: customer_email,
+        subject: `Payment Successful – ${project_title}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
+            <div style="background: linear-gradient(135deg, #2563eb, #1e40af); padding: 30px; text-align: center; color: white;">
+              <h1 style="margin: 0; font-size: 24px;">Thank You for Your Purchase!</h1>
+            </div>
+            <div style="padding: 30px; color: #1e293b;">
+              <p>Hello <strong>${customer_name}</strong>,</p>
+              <p>We’ve successfully received your payment for <strong>${project_title}</strong>.</p>
+              
+              <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0;">
+                <p style="margin: 0; font-weight: bold; color: #2563eb;">Next Steps:</p>
+                <p style="margin: 8px 0 0; line-height: 1.5;">
+                  Our team is preparing your files. <strong>You will receive the full source code and documentation at this email address within the next 24 hours.</strong>
+                </p>
+              </div>
+
+              <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;">Order ID:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 500;">${razorpay_order_id}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;">Amount Paid:</td>
+                  <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 500;">₹${amount}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #64748b;">Plan:</td>
+                  <td style="padding: 8px 0; text-align: right; font-weight: 500;">${purchase_type === 'project_with_source' ? 'Project + Source Code' : 'Project Only'}</td>
+                </tr>
+              </table>
+
+              <p style="margin-top: 30px; font-size: 14px; color: #64748b;">
+                If you have any questions, simply reply to this email or contact us at amitpatel07029@gmail.com.
+              </p>
+            </div>
+            <div style="background: #f1f5f9; padding: 20px; text-align: center; font-size: 12px; color: #94a3b8;">
+              © 2026 Amit Solution Hub. All rights reserved.
+            </div>
+          </div>
+        `
+      });
+
+      // Notify Admin
+      await resend.emails.send({
+        from: "onboarding@resend.dev",
+        to: "amitpatel07029@gmail.com",
+        subject: `New Payment Received: ₹${amount}`,
+        text: `New order for ${project_title} from ${customer_name} (${customer_email}). Order ID: ${razorpay_order_id}.`
+      });
+
+      res.json({ success: true, message: "Payment verified and email sent" });
+    } catch (error) {
+      console.error("Email Error after success:", error);
+      res.json({ success: true, message: "Payment verified but failed to send confirmation email" });
+    }
+  } else {
+    res.status(400).json({ success: false, message: "Invalid signature" });
+  }
+});
 
 app.post("/contact", async (req, res) => {
   const { firstName, lastName, email, mobile, github, message } = req.body;

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams, Link } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
+import { api } from '../config/api'
 
 const UPI_ID = 'amitpatel07029@upi'
 
@@ -20,6 +21,7 @@ const Checkout = () => {
   const [form, setForm] = useState({
     customer_name: '',
     customer_email: '',
+    customer_phone: '',
     screenshot_file: null,
   })
 
@@ -42,35 +44,77 @@ const Checkout = () => {
     setSubmitting(true)
 
     try {
-      let screenshotUrl = null
+      // 1. Create Razorpay Order
+      const orderRes = await fetch(api.razorpayCreateOrder, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount })
+      })
+      const { order } = await orderRes.json()
 
-      // Upload payment screenshot to backend if file selected
-      if (form.screenshot_file) {
-        const formData = new FormData()
-        formData.append('screenshot', form.screenshot_file)
-        const uploadRes = await fetch('https://backend-5u1w.onrender.com/api/upload/payment', {
-          method: 'POST',
-          body: formData
-        })
-        if (uploadRes.ok) {
-          const uploadData = await uploadRes.json()
-          screenshotUrl = uploadData.url
-        }
+      if (!order) throw new Error("Could not create Razorpay order")
+
+      // 2. Open Razorpay Modal
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "YOUR_TEST_KEY", // Should be in env
+        amount: order.amount,
+        currency: order.currency,
+        name: "Amit Solution Hub",
+        description: `Purchase for ${project.title}`,
+        order_id: order.id,
+        handler: async (response) => {
+          try {
+            // 3. Verify Payment
+            const verifyRes = await fetch(api.razorpayVerifyPayment, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                ...response,
+                customer_email: form.customer_email,
+                customer_name: form.customer_name,
+                project_title: project.title,
+                amount: amount,
+                purchase_type: purchaseType
+              })
+            })
+            const verifyData = await verifyRes.json()
+
+            if (verifyData.success) {
+              // 4. Save Order to Database
+              await addOrder({
+                project_id: project.id,
+                project_title: project.title,
+                customer_name: form.customer_name,
+                customer_email: form.customer_email,
+                customer_phone: form.customer_phone,
+                purchase_type: purchaseType,
+                amount: amount,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+              })
+              setSubmitted(true)
+            } else {
+              setError("Payment verification failed. Please contact support.")
+            }
+          } catch (err) {
+            console.error(err)
+            setError("Something went wrong during verification.")
+          }
+        },
+        prefill: {
+          name: form.customer_name,
+          email: form.customer_email,
+          contact: form.customer_phone
+        },
+        theme: { color: "#2563eb" }
       }
 
-      await addOrder({
-        project_id: project.id,
-        project_title: project.title,
-        customer_name: form.customer_name,
-        customer_email: form.customer_email,
-        purchase_type: purchaseType,
-        amount: amount,
-        payment_screenshot_url: screenshotUrl,
-      })
-      setSubmitted(true)
+      const rzp = new window.Razorpay(options)
+      rzp.open()
+
     } catch (err) {
       console.error(err)
-      setError('Something went wrong while submitting your order. Please try again.')
+      setError('Failed to initiate payment. Please try again.')
     } finally {
       setSubmitting(false)
     }
@@ -112,9 +156,9 @@ const Checkout = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-3xl font-extrabold text-slate-800 mb-3">Order Submitted!</h2>
+            <h2 className="text-3xl font-extrabold text-slate-800 mb-3">Payment Successful!</h2>
             <p className="text-slate-600 mb-6">
-              Thank you for your purchase. We'll verify your payment and send the project files to your email within 24 hours.
+              Thank you for your purchase. We have received your payment and will send the source code for <strong>{project.title}</strong> to your email within <strong>24 hours</strong>.
             </p>
             <div className="bg-blue-50 rounded-xl p-4 mb-6 text-left">
               <p className="text-sm text-slate-600"><strong>Order Details:</strong></p>
@@ -185,43 +229,19 @@ const Checkout = () => {
             </div>
           </div>
 
-          {/* UPI QR Payment */}
           <div className="bg-white/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-white/60 shadow-lg">
-            <h2 className="text-lg font-bold text-slate-800 mb-4">Pay via UPI</h2>
+            <h2 className="text-lg font-bold text-slate-800 mb-4">Pay Securely</h2>
             
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 text-center border border-blue-100 mb-4">
-              {/* UPI QR Code Placeholder */}
-              <div className="w-48 h-48 mx-auto bg-white rounded-2xl shadow-inner flex items-center justify-center mb-4 border-2 border-dashed border-blue-200">
-                <div className="text-center p-4">
-                  <svg className="w-12 h-12 text-blue-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                  </svg>
-                  <p className="text-xs text-slate-500 font-medium">Scan QR Code</p>
-                  <p className="text-xs text-slate-400">or use UPI ID below</p>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-center gap-2 bg-white rounded-xl px-4 py-3 border border-blue-200 shadow-sm">
-                <span className="text-sm font-bold text-slate-700">{UPI_ID}</span>
-                <button
-                  onClick={() => navigator.clipboard.writeText(UPI_ID)}
-                  className="text-blue-600 hover:text-blue-700 transition-colors"
-                  title="Copy UPI ID"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                </button>
-              </div>
-
-              <p className="text-sm text-slate-500 mt-3">
-                Pay <strong className="text-blue-600">₹{amount.toLocaleString('en-IN')}</strong> to the UPI ID above
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 text-center border border-blue-100 flex flex-col items-center justify-center space-y-4">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg" alt="Razorpay" className="h-8 opacity-80" />
+              <p className="text-sm text-slate-600 font-medium">
+                We use Razorpay for secure and instant payments using UPI, Card, Net Banking, and Wallets.
               </p>
             </div>
 
-            <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
-              <p className="text-sm text-amber-800 font-medium">
-                After payment, upload the payment screenshot below and submit the form. We'll verify and deliver your project within 24 hours.
+            <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-200 mt-4">
+              <p className="text-sm text-emerald-800 font-medium">
+                After successful payment, you will receive a confirmation email instantly and the project files within 24 hours.
               </p>
             </div>
           </div>
@@ -250,32 +270,31 @@ const Checkout = () => {
                 />
               </div>
 
-              {/* Email */}
+              {/* Mobile Number */}
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Email Address *</label>
+                <label className="block text-sm font-bold text-slate-700 mb-2">Mobile Number *</label>
                 <input
-                  type="email"
+                  type="tel"
                   required
-                  value={form.customer_email}
-                  onChange={(e) => setForm({ ...form, customer_email: e.target.value })}
-                  placeholder="you@example.com"
+                  value={form.customer_phone}
+                  onChange={(e) => setForm({ ...form, customer_phone: e.target.value })}
+                  placeholder="Enter your mobile number"
                   className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all"
                 />
               </div>
+            </div>
 
-              {/* Payment Screenshot */}
-              <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Payment Screenshot</label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/webp"
-                    onChange={(e) => setForm({ ...form, screenshot_file: e.target.files[0] })}
-                    className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 text-slate-800 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all"
-                  />
-                </div>
-                <p className="text-xs text-slate-500 mt-1.5">Upload screenshot of your UPI payment (JPG, PNG, WebP - Max 5MB)</p>
-              </div>
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Email Address *</label>
+              <input
+                type="email"
+                required
+                value={form.customer_email}
+                onChange={(e) => setForm({ ...form, customer_email: e.target.value })}
+                placeholder="you@example.com"
+                className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all"
+              />
             </div>
 
             {/* Submit */}

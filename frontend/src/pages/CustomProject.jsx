@@ -90,17 +90,13 @@ const CustomProject = () => {
   ];
 
   return (
-    <section className="relative w-full min-h-screen pt-[120px] pb-20 overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4">
-      {/* Animated Background Blobs */}
+    <section className="relative w-full min-h-screen pt-[140px] md:pt-[160px] pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 px-4">
+      {/* Background */}
       <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
-        <div className="absolute top-10 -left-20 w-[35rem] h-[35rem] bg-blue-500/20 rounded-full blur-[120px] animate-[spin_12s_linear_infinite]"></div>
-        <div className="absolute top-60 -right-20 w-[30rem] h-[30rem] bg-purple-500/20 rounded-full blur-[120px] animate-[pulse_7s_ease-in-out_infinite]"></div>
-        <div className="absolute -bottom-32 left-1/3 w-[35rem] h-[35rem] bg-indigo-500/20 rounded-full blur-[120px] animate-[bounce_9s_infinite]"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[20rem] h-[20rem] bg-cyan-500/10 rounded-full blur-[80px] animate-pulse"></div>
+        <div className="absolute top-20 -right-20 w-[30rem] h-[30rem] bg-blue-500/15 rounded-full blur-[100px]"></div>
+        <div className="absolute bottom-20 -left-20 w-[30rem] h-[30rem] bg-purple-500/15 rounded-full blur-[100px]"></div>
       </div>
-
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 z-[2] bg-[radial-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] [background-size:20px_20px]"></div>
+      <div className="absolute inset-0 z-[2] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-30"></div>
 
       <div
         className={`w-full max-w-5xl mx-auto relative z-20 transition-all duration-1000 ease-out ${
@@ -109,9 +105,9 @@ const CustomProject = () => {
       >
         {/* Top decorative element */}
         <div className="flex items-center justify-center mb-8">
-          <div className="flex items-center gap-3 px-5 py-2.5 bg-white/5 backdrop-blur-sm rounded-full border border-white/10">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-sm text-gray-300 font-medium">
+          <div className="flex items-center gap-3 px-5 py-2.5 bg-white/50 backdrop-blur-md rounded-full border border-white/60 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="text-sm font-bold text-slate-700">
               Custom Project Request
             </span>
           </div>
@@ -121,13 +117,13 @@ const CustomProject = () => {
           {/* Left side - Info */}
           <div className="lg:col-span-2 space-y-6">
             <div>
-              <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-white tracking-tight leading-tight">
-                Build Your
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+              <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-slate-800 tracking-tight leading-tight">
+                Build Your{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
                   Dream Project
                 </span>
               </h1>
-              <p className="text-lg text-gray-400 leading-relaxed">
+              <p className="text-lg text-slate-600 leading-relaxed font-medium">
                 Can't find the right package? Tell us exactly what you need, and
                 our expert team will craft a tailored solution for you.
               </p>
@@ -143,7 +139,7 @@ const CustomProject = () => {
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
-                      strokeWidth={1.8}
+                      strokeWidth={2}
                     >
                       <path
                         strokeLinecap="round"
@@ -162,7 +158,7 @@ const CustomProject = () => {
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
-                      strokeWidth={1.8}
+                      strokeWidth={2}
                     >
                       <path
                         strokeLinecap="round"
@@ -181,7 +177,7 @@ const CustomProject = () => {
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
-                      strokeWidth={1.8}
+                      strokeWidth={2}
                     >
                       <path
                         strokeLinecap="round"
@@ -196,37 +192,16 @@ const CustomProject = () => {
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="flex items-start gap-4 p-4 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/5 hover:border-white/10 transition-all group"
+                  className="flex items-start gap-4 p-4 bg-white/50 backdrop-blur-xl rounded-2xl border border-white/60 shadow-sm hover:shadow-md transition-all group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center text-blue-400 flex-shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0 group-hover:scale-110 group-hover:bg-blue-100 transition-all">
                     {item.icon}
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white">
+                    <h3 className="text-sm font-bold text-slate-800">
                       {item.title}
                     </h3>
-                    <p className="text-xs text-gray-500 mt-0.5">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { value: "200+", label: "Projects Done" },
-                { value: "50+", label: "Happy Clients" },
-                { value: "4.9", label: "Rating" },
-              ].map((stat, i) => (
-                <div
-                  key={i}
-                  className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-xl border border-white/5"
-                >
-                  <div className="text-xl font-bold text-white">
-                    {stat.value}
-                  </div>
-                  <div className="text-[10px] text-gray-500 mt-1">
-                    {stat.label}
+                    <p className="text-xs font-medium text-slate-500 mt-0.5">{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -235,11 +210,9 @@ const CustomProject = () => {
 
           {/* Right side - Form */}
           <div className="lg:col-span-3">
-            <div className="bg-white/5 backdrop-blur-2xl rounded-3xl p-6 md:p-8 shadow-2xl border border-white/10 relative overflow-hidden">
-              <div className="absolute -inset-1 bg-gradient-to-br from-blue-500/5 to-purple-500/5 blur-xl z-0 pointer-events-none"></div>
-
+            <div className="bg-white/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 shadow-xl border border-white/60 relative overflow-hidden">
               <div className="relative z-10">
-                <h2 className="text-2xl font-bold text-white mb-6">
+                <h2 className="text-2xl font-extrabold text-slate-800 mb-6">
                   Tell us about your project
                 </h2>
 
@@ -247,21 +220,21 @@ const CustomProject = () => {
                   {/* Name & Email */}
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-medium text-gray-400 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 mb-2">
                         Full Name *
                       </label>
                       <input
-                        type="text"
-                        name="fullName"
-                        value={formData.fullName}
-                        onChange={handleChange}
-                        placeholder="John Doe"
-                        required
-                        className="w-full rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all text-sm"
+                         type="text"
+                         name="fullName"
+                         value={formData.fullName}
+                         onChange={handleChange}
+                         placeholder="Your Name"
+                         required
+                         className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-400 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 mb-2">
                         Email Address *
                       </label>
                       <input
@@ -269,9 +242,9 @@ const CustomProject = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        placeholder="john@company.com"
+                        placeholder="Your Email"
                         required
-                        className="w-full rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all text-sm"
+                        className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all"
                       />
                     </div>
                   </div>
@@ -279,7 +252,7 @@ const CustomProject = () => {
                   {/* Mobile & Company */}
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-medium text-gray-400 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 mb-2">
                         Mobile Number *
                       </label>
                       <input
@@ -287,13 +260,13 @@ const CustomProject = () => {
                         name="mobile"
                         value={formData.mobile}
                         onChange={handleChange}
-                        placeholder="+91 98765 43210"
+                        placeholder="Your Mobile Number"
                         required
-                        className="w-full rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all text-sm"
+                        className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-400 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 mb-2">
                         Company / Organization
                       </label>
                       <input
@@ -301,15 +274,15 @@ const CustomProject = () => {
                         name="company"
                         value={formData.company}
                         onChange={handleChange}
-                        placeholder="Your company name"
-                        className="w-full rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all text-sm"
+                        placeholder="Your Company Name"
+                        className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all"
                       />
                     </div>
                   </div>
 
                   {/* Project Type */}
                   <div>
-                    <label className="block text-xs font-medium text-gray-400 mb-1.5">
+                    <label className="block text-sm font-bold text-slate-700 mb-2">
                       Project Type *
                     </label>
                     <select
@@ -317,13 +290,13 @@ const CustomProject = () => {
                       value={formData.projectType}
                       onChange={handleChange}
                       required
-                      className="w-full rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all text-sm appearance-none cursor-pointer"
+                      className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all appearance-none cursor-pointer"
                     >
-                      <option value="" className="bg-slate-800">
+                      <option value="" className="bg-white">
                         Select project type
                       </option>
                       {projectTypes.map((type) => (
-                        <option key={type} value={type} className="bg-slate-800">
+                        <option key={type} value={type} className="bg-white">
                           {type}
                         </option>
                       ))}
@@ -333,7 +306,7 @@ const CustomProject = () => {
                   {/* Budget & Timeline */}
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-medium text-gray-400 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 mb-2">
                         Budget Range *
                       </label>
                       <select
@@ -341,20 +314,20 @@ const CustomProject = () => {
                         value={formData.budget}
                         onChange={handleChange}
                         required
-                        className="w-full rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all text-sm appearance-none cursor-pointer"
+                        className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all appearance-none cursor-pointer"
                       >
-                        <option value="" className="bg-slate-800">
+                        <option value="" className="bg-white">
                           Select budget
                         </option>
                         {budgetRanges.map((b) => (
-                          <option key={b} value={b} className="bg-slate-800">
+                          <option key={b} value={b} className="bg-white">
                             {b}
                           </option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-400 mb-1.5">
+                      <label className="block text-sm font-bold text-slate-700 mb-2">
                         Timeline *
                       </label>
                       <select
@@ -362,13 +335,13 @@ const CustomProject = () => {
                         value={formData.timeline}
                         onChange={handleChange}
                         required
-                        className="w-full rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all text-sm appearance-none cursor-pointer"
+                        className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all appearance-none cursor-pointer"
                       >
-                        <option value="" className="bg-slate-800">
+                        <option value="" className="bg-white">
                           Select timeline
                         </option>
                         {timelineOptions.map((t) => (
-                          <option key={t} value={t} className="bg-slate-800">
+                          <option key={t} value={t} className="bg-white">
                             {t}
                           </option>
                         ))}
@@ -378,7 +351,7 @@ const CustomProject = () => {
 
                   {/* Description */}
                   <div>
-                    <label className="block text-xs font-medium text-gray-400 mb-1.5">
+                    <label className="block text-sm font-bold text-slate-700 mb-2">
                       Project Description *
                     </label>
                     <textarea
@@ -388,7 +361,7 @@ const CustomProject = () => {
                       onChange={handleChange}
                       placeholder="Describe your project requirements, features needed, and any specific technologies you prefer..."
                       required
-                      className="w-full rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50 transition-all text-sm resize-none"
+                      className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all resize-none"
                     ></textarea>
                   </div>
 
@@ -397,75 +370,72 @@ const CustomProject = () => {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="group relative w-full inline-flex items-center justify-center disabled:opacity-75 disabled:cursor-not-allowed"
+                      className="w-full px-6 py-4 rounded-xl font-bold text-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
                     >
-                      <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur opacity-50 group-hover:opacity-80 transition duration-300"></div>
-                      <div className="relative w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-4 rounded-xl font-bold text-base hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-xl flex items-center justify-center gap-2">
-                        {loading ? (
-                          <>
-                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                            Submitting your request...
-                          </>
-                        ) : (
-                          <>
-                            Submit Project Request
-                            <svg
-                              className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M14 5l7 7m0 0l-7 7m7-7H3"
-                              />
-                            </svg>
-                          </>
-                        )}
-                      </div>
+                      {loading ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          Submit Project Request
+                          <svg
+                            className="w-5 h-5 ml-1 transition-transform"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M14 5l7 7m0 0l-7 7m7-7H3"
+                            />
+                          </svg>
+                        </>
+                      )}
                     </button>
                   </div>
 
                   {/* Status Messages */}
                   {status === "success" && (
-                    <div className="mt-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 backdrop-blur-md">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white text-lg shadow-lg shadow-emerald-500/30">
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2.5}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M4.5 12.75l6 6 9-13.5"
-                            />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-emerald-400">
-                            Request Submitted!
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            We'll get back to you within 24 hours.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                     <div className="mt-4 p-4 rounded-xl bg-emerald-50 border border-emerald-200">
+                     <div className="flex items-center gap-3">
+                       <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white text-lg shadow-md shadow-emerald-500/20">
+                           <svg
+                             className="w-5 h-5"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                             stroke="currentColor"
+                             strokeWidth={2.5}
+                           >
+                             <path
+                               strokeLinecap="round"
+                               strokeLinejoin="round"
+                               d="M4.5 12.75l6 6 9-13.5"
+                             />
+                           </svg>
+                         </div>
+                         <div>
+                           <p className="text-sm font-bold text-emerald-700">
+                             Request Submitted!
+                           </p>
+                           <p className="text-xs font-medium text-emerald-600">
+                             We'll get back to you within 24 hours.
+                           </p>
+                         </div>
+                       </div>
+                     </div>
                   )}
 
                   {status === "error" && (
-                    <div className="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/30 backdrop-blur-md">
+                    <div className="mt-4 p-4 rounded-xl bg-red-50 border border-red-200">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white text-lg shadow-lg shadow-red-500/30">
+                        <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white text-lg shadow-md shadow-red-500/20">
                           !
                         </div>
-                        <p className="text-sm font-medium text-red-400">
+                        <p className="text-sm font-bold text-red-700">
                           Something went wrong. Please try again.
                         </p>
                       </div>

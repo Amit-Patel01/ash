@@ -1,0 +1,19 @@
+[dotenv@17.3.1] injecting env (3) from .env -- tip: ≡ƒöÉ prevent building .env in docker: https://dotenvx.com/prebuild
+ΓÜá∩╕Å  WARNING: RESEND_API_KEY is not set in .env. Emailing will fail.
+D:\Github-project upload\solutionhub\backend\node_modules\resend\dist\index.cjs:932
+			if (!this.key) throw new Error("Missing API key. Pass it to the constructor `new Resend(\"re_123\")`");
+			               ^
+
+Error: Missing API key. Pass it to the constructor `new Resend("re_123")`
+    at new Resend (D:\Github-project upload\solutionhub\backend\node_modules\resend\dist\index.cjs:932:25)
+    at Object.<anonymous> (D:\Github-project upload\solutionhub\backend\server.js:153:16)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.12.0

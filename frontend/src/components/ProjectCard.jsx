@@ -88,15 +88,9 @@ const ProjectCard = ({ project }) => {
         <div className="flex gap-3">
           <Link
             to={`/projects/${project.slug}`}
-            className="flex-1 text-center px-4 py-2.5 rounded-xl text-sm font-bold text-slate-700 bg-slate-100/80 hover:bg-slate-200/80 border border-slate-200/50 transition-all duration-300 hover:shadow-md"
+            className="block w-full text-center px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
           >
             View Details
-          </Link>
-          <Link
-            to={`/checkout/${project.slug}`}
-            className="flex-1 text-center px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
-          >
-            Buy Now
           </Link>
         </div>
       </div>

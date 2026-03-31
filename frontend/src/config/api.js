@@ -10,6 +10,8 @@ export const api = {
   contact: `${API_BASE}/contact`,
   reply: `${API_BASE}/reply`,
   projectBySlug: (slug) => `${API_BASE}/api/projects/${slug}`,
+  razorpayCreateOrder: `${API_BASE}/api/razorpay/create-order`,
+  razorpayVerifyPayment: `${API_BASE}/api/razorpay/verify-payment`,
 };
 
 export default api;
