@@ -47,9 +47,11 @@ export default function EmployeeOverview() {
 
   if (!userProfile) return <div className="p-8 text-white">Loading stats...</div>
 
+  // CONDITION: Use the enhanced Team Dashboard if the user has an Employee ID or the 'team' role
   const isTeamMember = userProfile?.role === 'team' || userProfile?.role === 'Team Member'
+  const hasEmployeeId = !!userProfile?.employeeId
   
-  if (isTeamMember) {
+  if (isTeamMember || hasEmployeeId) {
     return <TeamMemberDashboard />
   }
 

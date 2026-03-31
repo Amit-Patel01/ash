@@ -31,7 +31,7 @@ export default function EmployeeLayout() {
 
   const handleLogout = async () => {
     await logout()
-    navigate('/employee-login')
+    navigate('/')
   }
 
   const employeeName = userProfile?.displayName || currentUser?.displayName || 'Employee'

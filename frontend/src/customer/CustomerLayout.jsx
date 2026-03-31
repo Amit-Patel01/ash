@@ -25,7 +25,7 @@ export default function CustomerLayout() {
 
   const handleLogout = async () => {
     await logout()
-    navigate('/employee-login')
+    navigate('/')
   }
 
   const customerName = userProfile?.displayName || currentUser?.displayName || 'Customer'

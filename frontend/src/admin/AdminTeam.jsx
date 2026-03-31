@@ -11,7 +11,23 @@ export default function AdminTeam() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editingMember, setEditingMember] = useState(null)
-  const [formData, setFormData] = useState({ name: '', role: '', email: '', businessEmail: '', password: '', department: 'Engineering', status: 'Active', skills: '', joinDate: '', github: '', customDepartment: '' })
+  
+  const initialForm = { 
+    name: '', 
+    role: '', 
+    email: '', 
+    employeeId: '', 
+    department: 'Engineering', 
+    status: 'Active', 
+    skills: '', 
+    joinDate: '', 
+    github: '', 
+    linkedin: '', 
+    avatarSource: 'github', 
+    customDepartment: '' 
+  }
+  
+  const [formData, setFormData] = useState(initialForm)
 
   // Delete Modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -27,29 +43,29 @@ export default function AdminTeam() {
   })
 
   const openCreate = () => {
-    setFormData({ name: '', role: '', email: '', businessEmail: '', password: '', department: 'Engineering', status: 'Active', skills: '', joinDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }), github: '', customDepartment: '' })
+    setFormData({ ...initialForm, joinDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) })
     setShowModal(true)
   }
 
   const openEdit = (member) => {
     setEditingMember(member)
     const isOther = !['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Editor', 'Technician'].includes(member.department)
-    setFormData({ 
-      name: member.name, 
-      role: member.role, 
-      email: member.email, 
-      businessEmail: member.businessEmail || '',
-      password: '', // Don't show existing password
-      department: isOther ? 'Other' : member.department, 
-      status: member.status, 
-      skills: (member.skills || []).join(', '), 
-      joinDate: member.joinDate, 
+    setFormData({
+      name: member.name,
+      role: member.role,
+      email: member.email,
+      employeeId: member.employeeId || '',
+      department: isOther ? 'Other' : member.department,
+      status: member.status,
+      skills: (member.skills || []).join(', '),
+      joinDate: member.joinDate,
       github: member.github || '',
+      linkedin: member.linkedin || '',
+      avatarSource: member.avatarSource || 'github',
       customDepartment: isOther ? member.department : ''
     })
     setShowModal(true)
   }
-
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -57,44 +73,26 @@ export default function AdminTeam() {
     try {
       const finalDept = formData.department === 'Other' ? formData.customDepartment : formData.department
       const payload = { ...formData, department: finalDept, skills: skillsArr, avatar: formData.name.charAt(0).toUpperCase() }
-      
-      // If creating new member, first create auth account
+
+      // Clean up temp field
+      delete payload.customDepartment
+
       if (!editingMember) {
-        if (!formData.businessEmail || !formData.password) {
-          alert("Business Email and Password are required for NEW team members.")
-          return
-        }
-        
-        // 1. Create Auth account (Users collection handled inside AuthContext)
-        const userAccount = await createTeamMemberAccount(
-          formData.businessEmail, 
-          formData.password, 
-          formData.name, 
-          finalDept, 
-          'team'
-        )
-        
-        // 2. Add to Team display list linked by UID
-        await addTeamMember({ 
-          ...payload, 
-          uid: userAccount.uid,
-          tasksCompleted: 0, 
-          projectsActive: 0, 
-          performance: 0,
-          password: '••••••••' // Store masked password in display list
+        await addTeamMember({
+          ...payload,
+          tasksCompleted: 0,
+          projectsActive: 0,
+          performance: 0
         })
       } else {
         await updateTeamMember(editingMember.id, payload)
       }
-      
+
       setShowModal(false)
+      setEditingMember(null)
     } catch (err) {
       console.error(err)
-      if (err.message && err.message.includes("Identity Toolkit API")) {
-        alert(`ACTION REQUIRED: ${err.message}\n\nPlease click the link in the message to enable the API in your Google Console, then try again.`)
-      } else {
-        alert(`Failed to save team member: ${err.message}`)
-      }
+      alert(`Failed to save team member: ${err.message}`)
     }
   }
 
@@ -125,12 +123,15 @@ export default function AdminTeam() {
     }
   }
 
-  const getImageUrl = (github) => {
-    if (!github) return null;
-    // If it's already a full URL, return it
-    if (github.startsWith('http')) return github;
-    // Otherwise assume it's a GitHub username
-    return `https://github.com/${github}.png`;
+  const getImageUrl = (member) => {
+    if (!member) return null;
+    const { github, linkedin, avatarSource } = member;
+    if (avatarSource === 'linkedin' && linkedin) return linkedin;
+    if (github) {
+       if (github.startsWith('http')) return github;
+       return `https://github.com/${github}.png`;
+    }
+    return null;
   }
 
   return (
@@ -147,7 +148,7 @@ export default function AdminTeam() {
       </div>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-slate-300">
           {departments.map(dept => (
             <button key={dept} onClick={() => setDepartmentFilter(dept)} className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${departmentFilter === dept ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'}`}>{dept}</button>
           ))}
@@ -163,22 +164,27 @@ export default function AdminTeam() {
           <div key={member.id} className="group bg-gray-900/50 backdrop-blur-sm border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all duration-300">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                {member.github ? (
-                  <img src={getImageUrl(member.github)} alt={member.name} className="w-12 h-12 rounded-xl object-cover shadow-lg" />
+                {member.github || member.linkedin ? (
+                  <img src={getImageUrl(member)} alt={member.name} className="w-12 h-12 rounded-xl object-cover shadow-lg" />
                 ) : (
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${avatarColors[index % avatarColors.length]} flex items-center justify-center text-lg font-bold shadow-lg`}>{member.avatar}</div>
                 )}
                 <div>
                   <h3 className="text-base font-semibold text-white">{member.name}</h3>
-                  <p className="text-xs text-gray-400">{member.role}</p>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <p className="text-xs text-gray-400">{member.role}</p>
+                    {member.employeeId && (
+                      <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest bg-blue-500/10 px-1.5 rounded ml-1 border border-blue-500/20">{member.employeeId}</span>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-1">
                 <button onClick={() => openEdit(member)} className="p-1.5 rounded-lg text-gray-500 hover:text-blue-400 hover:bg-blue-500/10 transition-colors opacity-0 group-hover:opacity-100">
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" /></svg>
+                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" /></svg>
                 </button>
                 <button onClick={() => handleDeleteClick(member)} className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-colors opacity-0 group-hover:opacity-100">
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
                 </button>
                 <button onClick={() => toggleStatus(member)} className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium transition-colors ${member.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20' : 'bg-amber-500/10 text-amber-400 hover:bg-amber-500/20'}`}>
                   {member.status}
@@ -197,196 +203,132 @@ export default function AdminTeam() {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-1.5 mb-4">
-              {(member.skills || []).map(skill => (<span key={skill} className="px-2 py-0.5 bg-white/5 rounded-md text-[10px] font-medium text-gray-400">{skill}</span>))}
-            </div>
-
             <div className="flex items-center justify-between pt-4 border-t border-white/5">
               <div className="flex items-center gap-4 text-xs text-gray-400">
-                {/* Dynamically calculate task and project counts from the tasks store */}
-                <span>
-                   <span className="text-white font-medium">
-                     {storeTasks?.filter(t => t.assignee === member.name || t.avatar === member.avatar).length || 0}
-                   </span> tasks
-                 </span>
-                 <span>
-                   <span className="text-white font-medium">
-                     {[...new Set(storeTasks?.filter(t => t.assignee === member.name || t.avatar === member.avatar).map(t => t.project))].length || 0}
-                   </span> projects
-                 </span>
+                <span><span className="text-white font-medium">{storeTasks?.filter(t => t.assignee === member.name).length || 0}</span> tasks</span>
+                <span><span className="text-white font-medium">{[...new Set(storeTasks?.filter(t => t.assignee === member.name).map(t => t.project))].length || 0}</span> projs</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-16 bg-white/5 rounded-full h-1.5 overflow-hidden">
-                  <div className={`h-full rounded-full ${member.performance >= 90 ? 'bg-emerald-500' : member.performance >= 80 ? 'bg-blue-500' : 'bg-amber-500'}`} style={{ width: `${member.performance}%` }} />
+                  <div className="h-full bg-blue-500 rounded-full" style={{ width: `${member.performance || 0}%` }} />
                 </div>
-                <span className="text-xs text-gray-400">{member.performance}%</span>
+                <span className="text-xs text-gray-400">{member.performance || 0}%</span>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Modal */}
+      {/* Unified Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowModal(false)} />
           <div className="relative bg-gray-900 border border-white/10 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="sticky top-0 bg-gray-900 border-b border-white/5 px-6 py-4 flex items-center justify-between">
+            <div className="sticky top-0 bg-gray-900 border-b border-white/5 px-6 py-4 flex items-center justify-between z-10">
               <h2 className="text-lg font-semibold text-white">{editingMember ? 'Edit Member' : 'Add Member'}</h2>
               <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
             </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            
+            <form onSubmit={handleSubmit} className="p-6 space-y-5">
+              {/* Photo Options */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="col-span-1 sm:col-span-2">
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5">GitHub Username or Image URL</label>
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden text-blue-400">
-                      {formData.github ? (
-                        <img src={getImageUrl(formData.github)} alt="Preview" className="w-full h-full object-cover" />
-                      ) : (
-                        <svg className="w-8 h-8 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <input 
-                        type="text" 
-                        value={formData.github}
-                        onChange={e => setFormData({ ...formData, github: e.target.value })}
-                        placeholder="e.g. 'Amit-Patel01' or 'https://example.com/photo.jpg'"
-                        className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all"
-                      />
-                      <p className="text-[10px] text-gray-500 mt-2 italic font-medium">Enter a GitHub username OR a direct link to an image.</p>
-                    </div>
-                  </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">GitHub Username</label>
+                  <input type="text" value={formData.github} onChange={e => setFormData({ ...formData, github: e.target.value })} placeholder="e.g. user123" className="w-full bg-transparent text-sm text-white focus:outline-none" />
                 </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Custom Link / Image URL</label>
+                  <input type="text" value={formData.linkedin} onChange={e => setFormData({ ...formData, linkedin: e.target.value })} placeholder="https://..." className="w-full bg-transparent text-sm text-white focus:outline-none" />
+                </div>
+              </div>
+
+              {/* Avatar Selector */}
+              <div className="flex items-center justify-between gap-4 bg-white/5 p-3 rounded-xl border border-white/5">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center overflow-hidden">
+                    {formData.github || formData.linkedin ? <img src={getImageUrl(formData)} alt="P" className="w-full h-full object-cover" /> : <span className="text-[10px] text-gray-600">NULL</span>}
+                  </div>
+                  <span className="text-[11px] font-bold text-gray-300">Photo Source</span>
+                </div>
+                <div className="flex bg-gray-800 p-1 rounded-lg">
+                  <button type="button" onClick={() => setFormData({ ...formData, avatarSource: 'github' })} className={`px-3 py-1 rounded-md text-[9px] font-bold uppercase transition-all ${formData.avatarSource === 'github' ? 'bg-blue-600 text-white' : 'text-gray-500'}`}>GitHub</button>
+                  <button type="button" onClick={() => setFormData({ ...formData, avatarSource: 'linkedin' })} className={`px-3 py-1 rounded-md text-[9px] font-bold uppercase transition-all ${formData.avatarSource === 'linkedin' ? 'bg-blue-600 text-white' : 'text-gray-500'}`}>Custom</button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5">Full Name *</label>
-                  <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required placeholder="Enter full name" className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
+                  <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required placeholder="Name" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Personal Email</label>
-                  <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} placeholder="Personal email" className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Employee ID (Special)</label>
+                  <input type="text" value={formData.employeeId} onChange={e => setFormData({ ...formData, employeeId: e.target.value })} placeholder="ASH-001" className="w-full px-3 py-2 bg-white/5 border border-blue-500/20 rounded-xl text-sm text-blue-400 font-mono focus:outline-none focus:border-blue-500/50" />
                 </div>
               </div>
-              
-              <div className="bg-blue-500/5 border border-blue-500/10 rounded-2xl p-4 space-y-4">
-                <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Login Credentials</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Business Email</label>
-                    <input type="email" value={formData.businessEmail} onChange={(e) => setFormData({ ...formData, businessEmail: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" placeholder="work@company.com" required disabled={!!editingMember} />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{editingMember ? 'Manage Access' : 'Initial Password'}</label>
-                    {editingMember ? (
-                      <button type="button" onClick={() => { 
-                        resetPassword(formData.email).then(() => alert("Reset email sent!")).catch(e => alert(e.message))
-                      }} className="w-full bg-blue-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center gap-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                        Send Reset Email
-                      </button>
-                    ) : (
-                      <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" placeholder="••••••••" required={!editingMember} />
-                    )}
-                  </div>
-                </div>
-              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Role *</label>
-                  <input type="text" value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} required placeholder="e.g. Senior Developer" className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Email</label>
+                  <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} placeholder="Email" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Department *</label>
-                  <div className="space-y-3">
-                    <select 
-                      value={formData.department} 
-                      onChange={e => setFormData({ ...formData, department: e.target.value, customDepartment: '' })} 
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Role</label>
+                  <input type="text" value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} required placeholder="Role" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Department</label>
+                  <select value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none">
+                    {['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Editor', 'Technician', 'Other'].map(d => (
+                      <option key={d} value={d} className="bg-gray-900">{d}</option>
+                    ))}
+                  </select>
+                  {formData.department === 'Other' && (
+                    <input
+                      type="text"
+                      value={formData.customDepartment}
+                      onChange={e => setFormData({ ...formData, customDepartment: e.target.value })}
+                      placeholder="Enter custom department"
                       required
-                      className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all"
-                    >
-                      {['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Editor', 'Technician', 'Other'].map(d => (
-                        <option key={d} value={d} className="bg-gray-900">{d}</option>
-                      ))}
-                    </select>
-                    {formData.department === 'Other' && (
-                      <input 
-                        type="text" 
-                        value={formData.customDepartment || ''} 
-                        onChange={e => setFormData({ ...formData, customDepartment: e.target.value })} 
-                        required 
-                        placeholder="Enter custom department" 
-                        className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all animate-in fade-in slide-in-from-top-1" 
-                      />
-                    )}
-                  </div>
+                      className="mt-2 w-full px-3 py-2 bg-blue-500/5 border border-blue-500/30 rounded-xl text-xs text-blue-400 placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all"
+                    />
+                  )}
                 </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5">Status</label>
-                  <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })} className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all">
+                  <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })} className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none">
                     <option value="Active" className="bg-gray-900">Active</option>
                     <option value="On Leave" className="bg-gray-900">On Leave</option>
                   </select>
                 </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Join Date</label>
-                  <input type="text" value={formData.joinDate} onChange={e => setFormData({ ...formData, joinDate: e.target.value })} placeholder="Jan 2024" className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
-                </div>
               </div>
+
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">Skills (comma separated)</label>
-                <input type="text" value={formData.skills} onChange={e => setFormData({ ...formData, skills: e.target.value })} placeholder="React, Node.js, MongoDB" className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">Skills</label>
+                <input type="text" value={formData.skills} onChange={e => setFormData({ ...formData, skills: e.target.value })} placeholder="React, Node.js" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none" />
               </div>
-              <div className="flex items-center gap-3 pt-4">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-gray-300 hover:bg-white/10 transition-all">Cancel</button>
-                <button type="submit" className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all">{editingMember ? 'Update' : 'Create'}</button>
+
+              <div className="flex items-center gap-3 pt-2">
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-gray-400 hover:bg-white/10">Cancel</button>
+                <button type="submit" className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl text-sm font-bold text-white shadow-lg">Save Member</button>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Confirmation */}
       {showDeleteModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => !deletingId && setShowDeleteModal(false)} />
-          <div className="relative bg-gray-900 border border-red-500/20 rounded-2xl w-full max-w-sm p-6 shadow-2xl overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500/0 via-red-500 to-red-500/0 opacity-50"></div>
-            
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 mb-2">
-                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                </svg>
-              </div>
-              
-              <div>
-                <h3 className="text-xl font-bold text-white">Remove Member?</h3>
-                <p className="text-sm text-gray-400 mt-2">
-                  Are you sure you want to remove <span className="text-white font-medium">"{memberToDelete?.name}"</span> from the team?
-                </p>
-              </div>
-
-              <div className="flex flex-col w-full gap-3 pt-2">
-                <button
-                  onClick={confirmDelete}
-                  disabled={deletingId}
-                  className="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-600/20"
-                >
-                  {deletingId ? (
-                    <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Removing...</>
-                  ) : 'Yes, Remove Member'}
-                </button>
-                <button
-                  onClick={() => setShowDeleteModal(false)}
-                  disabled={deletingId}
-                  className="w-full py-3 bg-white/5 hover:bg-white/10 text-gray-300 rounded-xl font-medium transition-all"
-                >
-                  Cancel
-                </button>
-              </div>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="bg-gray-900 border border-red-500/20 rounded-2xl w-full max-w-sm p-6 text-center">
+            <h3 className="text-xl font-bold text-white mb-2">Remove Member?</h3>
+            <p className="text-sm text-gray-400 mb-6">Are you sure you want to remove <span className="text-white">"{memberToDelete?.name}"</span>?</p>
+            <div className="flex flex-col gap-3">
+              <button onClick={confirmDelete} className="w-full py-3 bg-red-600 text-white rounded-xl font-bold">{deletingId ? 'Removing...' : 'Yes, Remove'}</button>
+              <button onClick={() => setShowDeleteModal(false)} className="w-full py-3 bg-white/5 text-gray-400 rounded-xl">Cancel</button>
             </div>
           </div>
         </div>
