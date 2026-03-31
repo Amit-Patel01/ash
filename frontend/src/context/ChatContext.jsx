@@ -6,10 +6,12 @@ import {
 import { db, auth } from '../config/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import api from '../config/api'
+import { useAuth } from './AuthContext'
 
 const ChatContext = createContext(null)
 
 export function ChatProvider({ children }) {
+  const { userProfile } = useAuth()
   const [currentUser, setCurrentUser] = useState(null)
   const [chats, setChats] = useState([])
   const [activeChatId, setActiveChatId] = useState(null)
@@ -20,11 +22,12 @@ export function ChatProvider({ children }) {
   const typingTimeoutRef = useRef(null)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user)
-    })
-    return unsubscribe
-  }, [])
+    if (userProfile) {
+      setCurrentUser(userProfile)
+    } else {
+      setCurrentUser(null)
+    }
+  }, [userProfile])
 
   // Listen to user's chats
   useEffect(() => {
@@ -43,6 +46,25 @@ export function ChatProvider({ children }) {
         return bTime - aTime
       })
       setChats(chatsData)
+
+      // Handle notifications
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'modified') {
+          const chat = change.doc.data()
+          const isNewMessage = chat.lastSenderId !== currentUser.uid
+          const isNotActiveChat = change.doc.id !== activeChatId
+          const isTabHidden = document.visibilityState === 'hidden'
+
+          if (isNewMessage) {
+            if (Notification.permission === 'granted') {
+              new Notification(chat.lastSenderName || 'New Message', {
+                body: chat.lastMessage,
+                icon: '/favicon.ico',
+              })
+            }
+          }
+        }
+      })
     })
 
     return unsubscribe
@@ -157,6 +179,29 @@ export function ChatProvider({ children }) {
     }
 
     const chatRef = await addDoc(collection(db, 'chats'), chatData)
+
+    // AUTOMATIC WELCOME MESSAGE
+    // If a customer starts a chat with a staff member (admin/employee), send an automatic greeting
+    if (currentUser.role === 'customer' && (otherUserRole === 'admin' || otherUserRole === 'employee')) {
+      const welcomeText = `Hello! 👋 Thanks for reaching out. A member of our support team will be with you shortly. How can we help you today?`
+      
+      await addDoc(collection(db, 'chats', chatRef.id, 'messages'), {
+        senderId: otherUserId,
+        senderName: otherUserName,
+        text: welcomeText,
+        timestamp: serverTimestamp(),
+        status: 'sent'
+      })
+
+      // Update chat preview
+      await updateDoc(chatRef, {
+        lastMessage: welcomeText,
+        lastMessageAt: serverTimestamp(),
+        lastSenderId: otherUserId,
+        lastSenderName: otherUserName
+      })
+    }
+
     return chatRef.id
   }, [currentUser, chats])
 
@@ -221,6 +266,8 @@ export function ChatProvider({ children }) {
       await updateDoc(doc(db, 'chats', chatId), {
         lastMessage: lastMsgPreview,
         lastMessageAt: serverTimestamp(),
+        lastSenderId: currentUser.uid,
+        lastSenderName: currentUser.displayName || currentUser.email,
       });
 
       // Clear typing indicator
@@ -299,6 +346,22 @@ export function ChatProvider({ children }) {
     }
   }, [currentUser])
 
+  const requestNotificationPermission = useCallback(async () => {
+    if (!('Notification' in window)) {
+      alert('This browser does not support desktop notifications.')
+      return
+    }
+
+    if (Notification.permission !== 'granted') {
+      const permission = await Notification.requestPermission()
+      if (permission === 'granted') {
+        new Notification('Alert Activated', {
+          body: 'You will now receive message notifications!',
+        })
+      }
+    }
+  }, [])
+
   const sendTypingIndicator = useCallback(async (chatId, isTyping) => {
     if (!currentUser?.uid || !chatId) return
 
@@ -371,13 +434,9 @@ export function ChatProvider({ children }) {
     typingUsers,
     unreadCounts,
     getOrCreateChat,
-    sendMessage,
-    clearChat,
-    deleteSpecificMessages,
-    sendTypingIndicator,
-    handleTyping,
-    markAsRead,
-    getChatPartner,
+    sendMessage, clearChat, deleteSpecificMessages, requestNotificationPermission, sendTypingIndicator, handleTyping,
+    markAsRead, getChatPartner,
+    unreadCounts, userStatuses
   }
 
   return (

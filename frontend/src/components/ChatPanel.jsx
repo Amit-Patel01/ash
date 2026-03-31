@@ -42,7 +42,7 @@ function getDayLabel(timestamp) {
 export default function ChatPanel({ embedded = false }) {
   const {
     chats, activeChatId, setActiveChatId, messages,
-    sendMessage, clearChat, deleteSpecificMessages, handleTyping, typingUsers, markAsRead,
+    sendMessage, clearChat, deleteSpecificMessages, requestNotificationPermission, handleTyping, typingUsers, markAsRead,
     getChatPartner, unreadCounts, userStatuses, getOrCreateChat, currentUser
   } = useChat()
   const { getAllUsers, userProfile } = useAuth()
@@ -342,6 +342,23 @@ export default function ChatPanel({ embedded = false }) {
               </div>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2">
+              {/* Notification Toggle */}
+              <button
+                onClick={requestNotificationPermission}
+                className={`p-2 rounded-xl transition-all ${Notification.permission === 'granted' ? 'text-emerald-500 bg-emerald-500/10' : 'text-slate-500 hover:text-blue-500 hover:bg-blue-500/10'}`}
+                title={Notification.permission === 'granted' ? 'Notifications Enabled' : 'Enable Notifications'}
+              >
+                {Notification.permission === 'granted' ? (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+                  </svg>
+                )}
+              </button>
+
               {/* Select Mode Toggle */}
               <button
                 onClick={() => {
