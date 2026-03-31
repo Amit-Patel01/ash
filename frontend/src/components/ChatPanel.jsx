@@ -43,7 +43,7 @@ export default function ChatPanel({ embedded = false }) {
   const {
     chats, activeChatId, setActiveChatId, messages,
     sendMessage, clearChat, deleteSpecificMessages, requestNotificationPermission, handleTyping, typingUsers, markAsRead,
-    getChatPartner, unreadCounts, userStatuses, getOrCreateChat, currentUser
+    getChatPartner, unreadCounts, userStatuses, getOrCreateChat, createGroupChat, startVideoCall, currentUser
   } = useChat()
   const { getAllUsers, userProfile } = useAuth()
   const [messageText, setMessageText] = useState('')
@@ -62,6 +62,9 @@ export default function ChatPanel({ embedded = false }) {
   const [selectedIds, setSelectedIds] = useState(new Set())
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const emojiPickerRef = useRef(null)
+  const [showGroupCreate, setShowGroupCreate] = useState(false)
+  const [selectedUsersForGroup, setSelectedUsersForGroup] = useState([])
+  const [newGroupName, setNewGroupName] = useState('')
 
   const emojis = [
     { cat: 'Smileys', icons: ['😀', '😃', '😄', '😁', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😋', '😛', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕'] },
@@ -146,6 +149,37 @@ export default function ChatPanel({ embedded = false }) {
     if (file) {
       setImageFile(file)
       setImagePreview(URL.createObjectURL(file))
+    }
+  }
+
+  const handleCreateGroup = async () => {
+    if (!newGroupName.trim() || selectedUsersForGroup.length === 0) {
+      alert('Please provide a group name and select at least one member')
+      return
+    }
+    setSending(true)
+    try {
+      const chatId = await createGroupChat(selectedUsersForGroup, newGroupName)
+      if (chatId) {
+        setActiveChatId(chatId)
+        setShowGroupCreate(false)
+        setShowNewChat(false)
+        setSelectedUsersForGroup([])
+        setNewGroupName('')
+      }
+    } catch (err) {
+      console.error('Group creation error:', err)
+    } finally {
+      setSending(false)
+    }
+  }
+
+  const toggleUserSelection = (user) => {
+    const isSelected = selectedUsersForGroup.find(u => u.uid === user.uid)
+    if (isSelected) {
+      setSelectedUsersForGroup(selectedUsersForGroup.filter(u => u.uid !== user.uid))
+    } else {
+      setSelectedUsersForGroup([...selectedUsersForGroup, user])
     }
   }
 
@@ -342,6 +376,19 @@ export default function ChatPanel({ embedded = false }) {
               </div>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2">
+              {/* Video Call Button (For Staff/Groups) */}
+              {((partner.role !== 'customer' && userProfile?.role !== 'customer') || partner.isGroup) && (
+                <button
+                  onClick={() => startVideoCall(activeChatId)}
+                  className="p-2 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-blue-500/10 transition-all group"
+                  title="Start Video Call"
+                >
+                  <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+                  </svg>
+                </button>
+              )}
+
               {/* Notification Toggle */}
               <button
                 onClick={requestNotificationPermission}
@@ -456,25 +503,52 @@ export default function ChatPanel({ embedded = false }) {
                           className={`group relative ${isMe ? 'items-end' : 'items-start'} flex flex-col ${selectionMode ? 'cursor-pointer' : ''}`}
                         >
                           <div className={`rounded-2xl px-4 py-3 shadow-md transition-all ${selectedIds.has(msg.id) ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-900 opacity-90' : ''} ${isMe ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-none shadow-blue-500/10' : 'bg-slate-50 dark:bg-gray-800/80 text-slate-900 dark:text-white rounded-bl-none border border-gray-100 dark:border-white/5 shadow-sm'}`}>
-                            {msg.imageUrl && (
-                              <div className="relative group/img mb-2 max-w-[300px]">
-                                <img
-                                  src={msg.imageUrl}
-                                  alt="Shared"
-                                  className="rounded-xl object-cover cursor-pointer hover:brightness-90 transition-all shadow-md"
-                                  onLoad={() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                            {msg.type === 'video-call' ? (
+                              <div className="flex flex-col gap-4 p-2 min-w-[200px] sm:min-w-[280px]">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center text-blue-400 shadow-inner">
+                                    <svg className="w-6 h-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+                                    </svg>
+                                  </div>
+                                  <div className="flex-1">
+                                    <p className="font-black text-[13px] uppercase tracking-wider text-blue-400">Team Video Call</p>
+                                    <p className="text-[11px] opacity-70 font-medium">{isMe ? 'You started a call' : 'A call has started'}</p>
+                                  </div>
+                                </div>
+                                <button
                                   onClick={(e) => {
-                                    if (selectionMode) {
-                                      e.stopPropagation()
-                                      toggleMessageSelection(msg.id)
-                                    } else {
-                                      setImageView(msg.imageUrl)
-                                    }
+                                    e.stopPropagation();
+                                    if (msg.callUrl) window.open(msg.callUrl, '_blank');
                                   }}
-                                />
+                                  className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-500/30 transition-all hover:scale-[1.02] active:scale-95"
+                                >
+                                  Join Call
+                                </button>
                               </div>
+                            ) : (
+                              <>
+                                {msg.imageUrl && (
+                                  <div className="relative group/img mb-2 max-w-[300px]">
+                                    <img
+                                      src={msg.imageUrl}
+                                      alt="Shared"
+                                      className="rounded-xl object-cover cursor-pointer hover:brightness-90 transition-all shadow-md"
+                                      onLoad={() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                                      onClick={(e) => {
+                                        if (selectionMode) {
+                                          e.stopPropagation()
+                                          toggleMessageSelection(msg.id)
+                                        } else {
+                                          setImageView(msg.imageUrl)
+                                        }
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                                {msg.text && <p className="text-[14px] leading-relaxed font-medium whitespace-pre-wrap break-words">{msg.text}</p>}
+                              </>
                             )}
-                            {msg.text && <p className="text-[14px] leading-relaxed font-medium whitespace-pre-wrap break-words">{msg.text}</p>}
                           </div>
                           <div className={`flex items-center gap-1.5 mt-1.5 px-1 ${isMe ? 'flex-row-reverse' : ''}`}>
                             <span className="text-[10px] text-gray-600 font-medium">{formatMessageTime(msg.timestamp)}</span>
@@ -666,6 +740,103 @@ export default function ChatPanel({ embedded = false }) {
             <p className="text-gray-400 text-sm font-medium">Select a conversation to start messaging</p>
             <p className="text-gray-600 text-xs mt-1">or start a new one</p>
           </div>
+        </div>
+      )}
+
+      {/* New Chat / Group Create Overlay */}
+      {showNewChat && (
+        <div className="absolute inset-0 bg-white dark:bg-gray-900 z-50 flex flex-col p-4 sm:p-6 animate-in slide-in-from-left duration-300">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
+              {showGroupCreate ? 'Create Team Group' : 'New Conversation'}
+            </h2>
+            <button 
+              onClick={() => { setShowNewChat(false); setShowGroupCreate(false); setSelectedUsersForGroup([]) }}
+              className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {!showGroupCreate && (userProfile?.role === 'admin' || userProfile?.role === 'employee') && (
+            <button
+              onClick={() => setShowGroupCreate(true)}
+              className="mb-4 w-full flex items-center justify-center gap-2 p-3 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold hover:bg-blue-500/20 transition-all border border-blue-500/20"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+              </svg>
+              Create Team Group
+            </button>
+          )}
+
+          {showGroupCreate && (
+            <div className="mb-4 space-y-2">
+              <input
+                type="text"
+                value={newGroupName}
+                onChange={e => setNewGroupName(e.target.value)}
+                placeholder="Group Name (e.g., Marketing Team)"
+                className="w-full px-4 py-3 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-sm focus:outline-none focus:border-blue-500/50 transition-all font-bold"
+              />
+              <p className="text-[10px] uppercase tracking-widest font-black text-slate-400 px-1">Selected: {selectedUsersForGroup.length} members</p>
+            </div>
+          )}
+
+          <div className="relative mb-6">
+            <input
+              type="text"
+              placeholder="Search people..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl text-sm focus:outline-none focus:border-blue-500 transition-all shadow-sm dark:shadow-none"
+            />
+            <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+          </div>
+
+          <div className="flex-1 overflow-y-auto pr-2 space-y-2 scrollbar-thin">
+            {allUsers.filter(u => u.displayName?.toLowerCase().includes(searchQuery.toLowerCase()) || u.email?.toLowerCase().includes(searchQuery.toLowerCase())).map(u => {
+              const isSelected = selectedUsersForGroup.find(s => s.uid === u.uid)
+              return (
+                <button
+                  key={u.uid}
+                  onClick={() => showGroupCreate ? toggleUserSelection(u) : getOrCreateChat(u.uid, u.displayName, u.email, u.role).then(id => { if (id) { setActiveChatId(id); setShowNewChat(false) } })}
+                  className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all ${isSelected ? 'bg-blue-500/10 border-blue-500/50' : 'bg-white dark:bg-white/5 border-slate-100 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/20 shadow-sm hover:shadow-md'}`}
+                >
+                  <div className="relative">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-lg font-bold text-white shadow-lg">
+                      {u.displayName?.charAt(0).toUpperCase() || u.email?.charAt(0).toUpperCase()}
+                    </div>
+                    {isSelected && (
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center border-2 border-white dark:border-gray-900 animate-in zoom-in">
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-left flex-1">
+                    <p className="font-bold text-slate-800 dark:text-gray-100 group-hover:text-blue-600 transition-colors">{u.displayName || 'Unknown User'}</p>
+                    <p className="text-xs text-slate-400 dark:text-gray-500 mt-0.5 truncate">{u.role} • {u.email}</p>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+
+          {showGroupCreate && (
+            <button
+              onClick={handleCreateGroup}
+              disabled={sending || selectedUsersForGroup.length === 0}
+              className="mt-6 w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
+            >
+              {sending ? 'Creating Group...' : `Create Group with ${selectedUsersForGroup.length} Members`}
+            </button>
+          )}
         </div>
       )}
 

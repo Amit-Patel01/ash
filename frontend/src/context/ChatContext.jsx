@@ -205,6 +205,46 @@ export function ChatProvider({ children }) {
     return chatRef.id
   }, [currentUser, chats])
 
+  const createGroupChat = useCallback(async (selectedUsers, groupName) => {
+    if (!currentUser?.uid || !selectedUsers.length) return null
+
+    const participants = [currentUser.uid, ...selectedUsers.map(u => u.uid)]
+    const participantInfo = {
+      [currentUser.uid]: {
+        name: currentUser.displayName,
+        email: currentUser.email,
+        role: currentUser.role
+      }
+    }
+
+    selectedUsers.forEach(u => {
+      participantInfo[u.uid] = {
+        name: u.displayName || u.name,
+        email: u.email,
+        role: u.role
+      }
+    })
+
+    const chatData = {
+      participants,
+      participantInfo,
+      groupName: groupName || 'New Team Group',
+      isGroup: true,
+      lastMessage: 'Group created',
+      lastMessageAt: serverTimestamp(),
+      createdAt: serverTimestamp(),
+      createdBy: currentUser.uid
+    }
+
+    try {
+      const chatRef = await addDoc(collection(db, 'chats'), chatData)
+      return chatRef.id
+    } catch (err) {
+      console.error('Error creating group chat:', err)
+      throw err
+    }
+  }, [currentUser])
+
   const sendMessage = useCallback(async (chatId, text, imageFile) => {
     if (!currentUser?.uid || !chatId) return
 
@@ -262,13 +302,15 @@ export function ChatProvider({ children }) {
       console.log("Message added with ID:", msgRef.id);
 
       // Update chat last message
-      const lastMsgPreview = text?.trim() || (imageUrl ? '📷 Image' : '');
-      await updateDoc(doc(db, 'chats', chatId), {
+      const lastMsgPreview = text?.trim() || (imageUrl ? '📷 Image' : (messageData.type === 'video-call' ? '📹 Video Call' : ''));
+      const updateData = {
         lastMessage: lastMsgPreview,
         lastMessageAt: serverTimestamp(),
         lastSenderId: currentUser.uid,
         lastSenderName: currentUser.displayName || currentUser.email,
-      });
+      }
+      
+      await updateDoc(doc(db, 'chats', chatId), updateData);
 
       // Clear typing indicator
       try {
@@ -408,8 +450,54 @@ export function ChatProvider({ children }) {
     }
   }, [currentUser])
 
+  const startVideoCall = useCallback(async (chatId) => {
+    if (!currentUser?.uid || !chatId) return
+
+    const roomName = `SolutionHub-${chatId}`
+    const callUrl = `https://meet.jit.si/${roomName}`
+    
+    // Send a special message to the chat
+    const messageData = {
+      senderId: currentUser.uid,
+      senderName: currentUser.displayName || currentUser.email,
+      text: `Starting a video call...`,
+      type: 'video-call',
+      callUrl,
+      timestamp: serverTimestamp(),
+      status: 'sent'
+    }
+
+    try {
+      await addDoc(collection(db, 'chats', chatId, 'messages'), messageData)
+      // Also update the chat last message
+      await updateDoc(doc(db, 'chats', chatId), {
+        lastMessage: '📹 Video Call Started',
+        lastMessageAt: serverTimestamp(),
+        lastSenderId: currentUser.uid,
+        lastSenderName: currentUser.displayName || currentUser.email
+      })
+      
+      // Open the call for the initiator
+      window.open(callUrl, '_blank')
+    } catch (err) {
+      console.error('Error starting video call:', err)
+      alert('Failed to start video call.')
+    }
+  }, [currentUser])
+
   const getChatPartner = useCallback((chat) => {
     if (!chat || !currentUser?.uid) return null
+    
+    if (chat.isGroup) {
+      return {
+        uid: chat.id,
+        name: chat.groupName || 'Team Group',
+        isGroup: true,
+        participantsCount: chat.participants.length,
+        status: 'online' // Groups are always "online" for UI
+      }
+    }
+
     const partnerId = chat.participants.find(p => p !== currentUser.uid)
     if (!partnerId) return null
     
@@ -435,7 +523,7 @@ export function ChatProvider({ children }) {
     unreadCounts,
     getOrCreateChat,
     sendMessage, clearChat, deleteSpecificMessages, requestNotificationPermission, sendTypingIndicator, handleTyping,
-    markAsRead, getChatPartner,
+    markAsRead, getChatPartner, createGroupChat, startVideoCall,
     unreadCounts, userStatuses
   }
 
