@@ -69,6 +69,18 @@ const projectStorage = multer.diskStorage({
   }
 });
 
+const chatStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(uploadsDir, 'chat');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = 'chat-' + Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
+    cb(null, uniqueName);
+  }
+});
+
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 const upload = multer({
@@ -105,6 +117,19 @@ const uploadProject = multer({
     const mime = ALLOWED_MIME_TYPES.includes(file.mimetype);
     if (!ext || !mime) {
       return cb(new Error('Only JPG, PNG, and WebP images are allowed'));
+    }
+    cb(null, true);
+  }
+});
+
+const uploadChat = multer({
+  storage: chatStorage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // Allow up to 10MB for chat images
+  fileFilter: (req, file, cb) => {
+    const ext = /\.(jpeg|jpg|png|webp|gif)$/i.test(path.extname(file.originalname));
+    const mime = [...ALLOWED_MIME_TYPES, 'image/gif'].includes(file.mimetype);
+    if (!ext || !mime) {
+      return cb(new Error('Only JPG, PNG, GIF, and WebP images are allowed'));
     }
     cb(null, true);
   }
@@ -149,6 +174,17 @@ app.post("/api/upload/project", uploadProject.single('image'), (req, res) => {
   res.json({
     success: true,
     url: `${getBaseUrl(req)}/uploads/projects/${req.file.filename}`
+  });
+});
+
+// Upload chat image locally (to bypass Firebase Storage CORS)
+app.post("/api/upload/chat", uploadChat.single('chat-image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'No file uploaded' });
+  }
+  res.json({
+    success: true,
+    url: `${getBaseUrl(req)}/uploads/chat/${req.file.filename}`
   });
 });
 

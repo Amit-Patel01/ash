@@ -6,14 +6,14 @@ import { useTheme } from '../context/ThemeContext'
 import ChatPanel from '../components/ChatPanel'
 
 export default function ChatPage() {
-  const { currentUser, getAllUsers } = useAuth()
+  const { currentUser, userProfile, getAllUsers } = useAuth()
   const { getOrCreateChat, setActiveChatId, chats } = useChat()
   const { theme, toggleTheme } = useTheme()
   const navigate = useNavigate()
   const [initialized, setInitialized] = useState(false)
 
   useEffect(() => {
-    if (!currentUser) return
+    if (!currentUser || initialized || userProfile?.role === 'admin' || userProfile?.role === 'employee') return
 
     const initChat = async () => {
       // Check if there's already a chat with admin
@@ -71,7 +71,7 @@ export default function ChatPage() {
   }
 
   return (
-    <section className="relative h-[100dvh] bg-slate-50 dark:bg-gray-950 pt-[72px] sm:pt-24 pb-2 sm:pb-8 overflow-hidden transition-colors duration-500">
+    <section className="relative h-screen bg-slate-50 dark:bg-gray-950 overflow-hidden transition-colors duration-500 flex flex-col">
       {/* Animated Background Glows */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute -top-[10%] -left-[10%] w-[70%] sm:w-[50%] h-[50%] bg-blue-400/20 dark:bg-blue-600/10 rounded-full blur-[80px] sm:blur-[120px] animate-blob"></div>
@@ -79,41 +79,52 @@ export default function ChatPage() {
         <div className="absolute -bottom-[10%] left-[20%] w-[50%] sm:w-[40%] h-[40%] bg-indigo-400/15 dark:bg-indigo-600/5 rounded-full blur-[80px] sm:blur-[120px] animate-blob" style={{ animationDelay: '4s' }}></div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col">
-        <div className="flex-shrink-0 mb-2 sm:mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white transition-colors tracking-tight">Support Center</h1>
-            <p className="text-[9px] sm:text-sm text-slate-500 dark:text-gray-400 mt-0.5 uppercase tracking-[0.15em] sm:tracking-[0.2em] font-black">Real-time assistance</p>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-4">
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              className="group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border border-white dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
-            >
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center transition-colors group-hover:bg-blue-500/10">
-                {theme === 'light' ? (
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M14.25 12a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
-                  </svg>
-                ) : (
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                  </svg>
-                )}
-              </div>
-              <span className="hidden md:block text-[10px] font-black text-slate-600 dark:text-gray-400 uppercase tracking-tighter">Theme</span>
-            </button>
+      {/* Header Area */}
+      <div className="relative z-20 flex-shrink-0 px-4 py-3 sm:px-6 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-gray-200 dark:border-white/10 flex items-center justify-between">
+        <div className="flex items-center gap-3 sm:gap-6">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 border border-transparent hover:border-slate-300 dark:hover:border-white/20 group"
+          >
+            <svg className="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            <span className="hidden sm:block font-bold text-sm tracking-tight">Back to Website</span>
+          </button>
 
-            <div className="flex items-center gap-1.5 px-2.5 py-1 sm:py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-md">
-              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-              <span className="text-[9px] sm:text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest leading-none">Online</span>
-            </div>
+          <div className="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
+
+          <div>
+            <h1 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-none">Amit Solution Hub Support Center</h1>
+            <p className="text-[10px] text-slate-500 dark:text-gray-400 mt-1 uppercase tracking-[0.2em] font-black hidden sm:block">Real-time assistance</p>
           </div>
         </div>
-        <div className="flex-1 flex flex-col min-h-0 bg-white/40 dark:bg-gray-900/40 backdrop-blur-3xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white dark:border-white/10 overflow-hidden transition-all duration-300 mb-1 sm:mb-0">
-          <ChatPanel embedded />
+
+        <div className="flex items-center gap-2 sm:gap-4">
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all"
+          >
+            {theme === 'light' ? (
+              <svg className="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M14.25 12a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+              </svg>
+            )}
+          </button>
+
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest leading-none">Online</span>
+          </div>
         </div>
+      </div>
+
+      <div className="relative z-10 flex-1 min-h-0 w-full">
+        <ChatPanel embedded />
       </div>
     </section>
   )

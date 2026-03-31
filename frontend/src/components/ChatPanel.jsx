@@ -19,10 +19,30 @@ function formatMessageTime(timestamp) {
   return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
 }
 
+function getDayLabel(timestamp) {
+  if (!timestamp?.seconds) return ''
+  const date = new Date(timestamp.seconds * 1000)
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const yesterday = new Date(today)
+  yesterday.setDate(yesterday.getDate() - 1)
+  const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+
+  if (messageDate.getTime() === today.getTime()) return 'Today'
+  if (messageDate.getTime() === yesterday.getTime()) return 'Yesterday'
+  
+  return date.toLocaleDateString('en-US', { 
+    weekday: 'long', 
+    month: 'short', 
+    day: 'numeric',
+    year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+  })
+}
+
 export default function ChatPanel({ embedded = false }) {
   const {
     chats, activeChatId, setActiveChatId, messages,
-    sendMessage, handleTyping, typingUsers, markAsRead,
+    sendMessage, clearChat, deleteSpecificMessages, handleTyping, typingUsers, markAsRead,
     getChatPartner, unreadCounts, userStatuses, getOrCreateChat, currentUser
   } = useChat()
   const { getAllUsers, userProfile } = useAuth()
@@ -38,6 +58,8 @@ export default function ChatPanel({ embedded = false }) {
   const messagesEndRef = useRef(null)
   const fileInputRef = useRef(null)
   const messageInputRef = useRef(null)
+  const [selectionMode, setSelectionMode] = useState(false)
+  const [selectedIds, setSelectedIds] = useState(new Set())
 
   useEffect(() => {
     const scrollToBottom = () => {
@@ -116,6 +138,22 @@ export default function ChatPanel({ embedded = false }) {
     }
   }
 
+  const toggleMessageSelection = (msgId) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      if (next.has(msgId)) next.delete(msgId)
+      else next.add(msgId)
+      return next
+    })
+  }
+
+  const handleDeleteSelected = async () => {
+    if (selectedIds.size === 0) return
+    await deleteSpecificMessages(activeChatId, Array.from(selectedIds))
+    setSelectionMode(false)
+    setSelectedIds(new Set())
+  }
+
   const activeChat = chats.find(c => c.id === activeChatId)
   const partner = activeChat ? getChatPartner(activeChat) : null
   const isPartnerTyping = partner && typingUsers[partner.uid]
@@ -142,9 +180,9 @@ export default function ChatPanel({ embedded = false }) {
   })
 
   return (
-    <div className={`flex h-full bg-white/20 dark:bg-transparent backdrop-blur-3xl transition-colors duration-300 relative ${embedded ? '' : 'rounded-3xl shadow-2xl border border-white dark:border-white/5 overflow-hidden'}`}>
+    <div className={`flex h-full w-full bg-white/20 dark:bg-gray-950/20 backdrop-blur-3xl transition-colors duration-300 relative ${embedded ? '' : 'rounded-3xl shadow-2xl border border-white dark:border-white/5 overflow-hidden'}`}>
       {/* Sidebar - List of messages */}
-      <div className={`w-full md:w-80 flex flex-col border-r border-slate-200/50 dark:border-white/5 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl transition-all duration-300 ${activeChatId ? 'hidden md:flex' : 'flex'}`}>
+      <div className={`w-full md:w-80 lg:w-96 flex flex-col border-r border-slate-200/50 dark:border-white/10 bg-white/60 dark:bg-gray-900/40 backdrop-blur-2xl transition-all duration-300 ${activeChatId ? 'hidden md:flex' : 'flex'}`}>
         <div className="p-4 border-b border-gray-100 dark:border-white/5">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">Messages</h2>
@@ -255,9 +293,9 @@ export default function ChatPanel({ embedded = false }) {
           <div className="h-16 px-4 flex items-center gap-3 border-b border-slate-200/50 dark:border-white/5 bg-white/60 dark:bg-gray-900/50 backdrop-blur-md">
             <button
               onClick={() => setActiveChatId(null)}
-              className="md:hidden p-2 -ml-2 rounded-xl text-slate-500 dark:text-gray-400 bg-slate-100 dark:bg-white/5 hover:text-slate-900 dark:hover:text-white transition-all active:scale-90"
+              className="md:hidden p-2.5 rounded-xl text-slate-600 dark:text-gray-300 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95 shadow-sm"
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
               </svg>
             </button>
@@ -278,16 +316,42 @@ export default function ChatPanel({ embedded = false }) {
                 </p>
               </div>
             </div>
-            {/* Info Button */}
-            <button
-              onClick={() => setShowInfo(!showInfo)}
-              className={`p-2 rounded-lg transition-colors ${showInfo ? 'bg-blue-500/20 text-blue-400' : 'text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'}`}
-              title="Chat Info"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              {/* Select Mode Toggle */}
+              <button
+                onClick={() => {
+                  setSelectionMode(!selectionMode)
+                  setSelectedIds(new Set())
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${selectionMode ? 'bg-amber-500/10 border-amber-500/30 text-amber-500' : 'bg-blue-500/10 border-blue-500/30 text-blue-500 hover:bg-blue-500/20'}`}
+              >
+                {selectionMode ? 'Cancel' : 'Select'}
+              </button>
+
+              {/* Clear Chat Button */}
+              {!selectionMode && (
+                <button
+                  onClick={() => clearChat(activeChatId)}
+                  className="p-2 rounded-xl text-slate-500 hover:text-red-500 hover:bg-red-500/10 transition-all group"
+                  title="Clear Conversation"
+                >
+                  <svg className="w-5 h-5 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                  </svg>
+                </button>
+              )}
+
+              {/* Info Button */}
+              <button
+                onClick={() => setShowInfo(!showInfo)}
+                className={`p-2 rounded-xl transition-all ${showInfo ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 border border-transparent'}`}
+                title="Chat Info"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                </svg>
+              </button>
+            </div>
           </div>
 
           {/* Messages */}
@@ -307,46 +371,87 @@ export default function ChatPanel({ embedded = false }) {
               messages.map((msg, idx) => {
                 const isMe = msg.senderId === currentUser?.uid
                 const showAvatar = idx === 0 || messages[idx - 1]?.senderId !== msg.senderId
+                
+                // Day separator logic
+                const currentDate = getDayLabel(msg.timestamp)
+                const prevDate = idx > 0 ? getDayLabel(messages[idx - 1].timestamp) : null
+                const showDateHeader = currentDate !== prevDate
+
                 return (
-                  <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'} w-full`}>
-                    <div className={`flex items-end gap-2 max-w-[92%] sm:max-w-[70%] ${isMe ? 'flex-row-reverse' : ''}`}>
-                      {!isMe && (
-                        <div className={`w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0 mb-1 ${showAvatar ? 'visible' : 'invisible'}`}>
-                          {msg.senderName?.charAt(0).toUpperCase()}
+                  <div key={msg.id} className="space-y-6">
+                    {showDateHeader && (
+                      <div className="flex items-center justify-center py-4">
+                        <div className="px-5 py-1.5 rounded-full bg-slate-200/50 dark:bg-white/5 border border-slate-300/30 dark:border-white/10 backdrop-blur-sm">
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-gray-400">
+                            {currentDate}
+                          </span>
                         </div>
-                      )}
-                      <div className={`group relative ${isMe ? 'items-end' : 'items-start'} flex flex-col`}>
-                        <div className={`rounded-2xl px-4 py-3 shadow-md transition-shadow ${isMe ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-none shadow-blue-500/10' : 'bg-slate-50 dark:bg-gray-800/80 text-slate-900 dark:text-white rounded-bl-none border border-gray-100 dark:border-white/5 shadow-sm'}`}>
-                          {msg.imageUrl && (
-                            <div className="relative group/img mb-2 max-w-[300px]">
-                              <img
-                                src={msg.imageUrl}
-                                alt="Shared"
-                                className="rounded-xl object-cover cursor-pointer hover:brightness-90 transition-all shadow-md"
-                                onLoad={() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                                onClick={() => setImageView(msg.imageUrl)}
-                              />
+                      </div>
+                    )}
+                    
+                    <div className={`flex ${isMe ? 'justify-end' : 'justify-start'} w-full relative group/row`}>
+                      <div className={`flex items-end gap-2 max-w-[92%] sm:max-w-[70%] ${isMe ? 'flex-row-reverse' : ''}`}>
+                        {selectionMode ? (
+                          <div 
+                            onClick={() => toggleMessageSelection(msg.id)}
+                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center cursor-pointer transition-all self-center shrink-0 ${selectedIds.has(msg.id) ? 'bg-blue-500 border-blue-500 scale-110 shadow-lg shadow-blue-500/20' : 'bg-transparent border-slate-300 dark:border-white/20 hover:border-blue-500'}`}
+                          >
+                            {selectedIds.has(msg.id) && (
+                              <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                              </svg>
+                            )}
+                          </div>
+                        ) : (
+                          !isMe && (
+                            <div className={`w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0 mb-1 ${showAvatar ? 'visible' : 'invisible'}`}>
+                              {msg.senderName?.charAt(0).toUpperCase()}
                             </div>
-                          )}
-                          {msg.text && <p className="text-[14px] leading-relaxed font-medium whitespace-pre-wrap break-words">{msg.text}</p>}
-                        </div>
-                        <div className={`flex items-center gap-1.5 mt-1.5 px-1 ${isMe ? 'flex-row-reverse' : ''}`}>
-                          <span className="text-[10px] text-gray-600 font-medium">{formatMessageTime(msg.timestamp)}</span>
-                          {isMe && (
-                            <span className="flex items-center">
-                              {msg.status === 'read' ? (
-                                <svg className="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M4 12.8571L9 17.5L20 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                  <path d="M9 12.1429L14.5 17.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
-                              ) : (
-                                <svg className="w-4 h-4 text-gray-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M4 12.8571L9 17.5L20 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
-                              )}
-                              {msg.status === 'read' && <span className="text-[9px] text-blue-500/80 ml-0.5 font-bold uppercase tracking-tighter">Seen</span>}
-                            </span>
-                          )}
+                          )
+                        )}
+                        <div 
+                          onClick={() => selectionMode && toggleMessageSelection(msg.id)}
+                          className={`group relative ${isMe ? 'items-end' : 'items-start'} flex flex-col ${selectionMode ? 'cursor-pointer' : ''}`}
+                        >
+                          <div className={`rounded-2xl px-4 py-3 shadow-md transition-all ${selectedIds.has(msg.id) ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-900 opacity-90' : ''} ${isMe ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-none shadow-blue-500/10' : 'bg-slate-50 dark:bg-gray-800/80 text-slate-900 dark:text-white rounded-bl-none border border-gray-100 dark:border-white/5 shadow-sm'}`}>
+                            {msg.imageUrl && (
+                              <div className="relative group/img mb-2 max-w-[300px]">
+                                <img
+                                  src={msg.imageUrl}
+                                  alt="Shared"
+                                  className="rounded-xl object-cover cursor-pointer hover:brightness-90 transition-all shadow-md"
+                                  onLoad={() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                                  onClick={(e) => {
+                                    if (selectionMode) {
+                                      e.stopPropagation()
+                                      toggleMessageSelection(msg.id)
+                                    } else {
+                                      setImageView(msg.imageUrl)
+                                    }
+                                  }}
+                                />
+                              </div>
+                            )}
+                            {msg.text && <p className="text-[14px] leading-relaxed font-medium whitespace-pre-wrap break-words">{msg.text}</p>}
+                          </div>
+                          <div className={`flex items-center gap-1.5 mt-1.5 px-1 ${isMe ? 'flex-row-reverse' : ''}`}>
+                            <span className="text-[10px] text-gray-600 font-medium">{formatMessageTime(msg.timestamp)}</span>
+                            {isMe && (
+                              <span className="flex items-center">
+                                {msg.status === 'read' || msg.status === 'seen' ? (
+                                  <svg className="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 12.8571L9 17.5L20 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M9 12.1429L14.5 17.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
+                                ) : (
+                                  <svg className="w-4 h-4 text-gray-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 12.8571L9 17.5L20 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
+                                )}
+                                {(msg.status === 'read' || msg.status === 'seen') && <span className="text-[9px] text-blue-500/80 ml-0.5 font-bold uppercase tracking-tighter">Seen</span>}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -375,6 +480,40 @@ export default function ChatPanel({ embedded = false }) {
             <div ref={messagesEndRef} />
           </div>
 
+          {/* Selection Actions (Floating Bar) */}
+          {selectionMode && (
+            <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-10 fade-in duration-300">
+              <div className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-6 border border-white/10 dark:border-slate-200">
+                <div className="flex flex-col">
+                  <span className="text-xs font-black uppercase tracking-widest opacity-50">Selected</span>
+                  <span className="text-lg font-bold leading-none">{selectedIds.size} Messages</span>
+                </div>
+                <div className="h-8 w-px bg-white/10 dark:bg-slate-200"></div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => {
+                      setSelectionMode(false)
+                      setSelectedIds(new Set())
+                    }}
+                    className="px-4 py-2 text-sm font-bold hover:bg-white/10 dark:hover:bg-slate-100 rounded-xl transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleDeleteSelected}
+                    disabled={selectedIds.size === 0}
+                    className="px-4 py-2 bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:hover:bg-red-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/20 transition-all flex items-center gap-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    </svg>
+                    Delete Selected
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Image Preview */}
           {imagePreview && (
             <div className="px-4 py-2 border-t border-gray-100 dark:border-white/5 bg-white dark:bg-gray-900/50">
@@ -389,8 +528,8 @@ export default function ChatPanel({ embedded = false }) {
             </div>
           )}
 
-          {/* Input */}
-          <div className="p-3 border-t border-gray-100 dark:border-white/5 bg-white dark:bg-gray-900/30">
+          {/* Input Area */}
+          <div className="p-4 border-t border-gray-200 dark:border-white/10 bg-white/80 dark:bg-gray-950/50 backdrop-blur-md pb-[env(safe-area-inset-bottom,16px)]">
             <div className="flex items-end gap-2">
               <input
                 ref={fileInputRef}

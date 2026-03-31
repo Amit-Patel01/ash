@@ -3,9 +3,9 @@ import {
   collection, addDoc, onSnapshot, query, orderBy, doc, setDoc,
   updateDoc, deleteDoc, serverTimestamp, where, getDocs, getDoc, limit
 } from 'firebase/firestore'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { db, storage, auth } from '../config/firebase'
+import { db, auth } from '../config/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
+import api from '../config/api'
 
 const ChatContext = createContext(null)
 
@@ -167,48 +167,135 @@ export function ChatProvider({ children }) {
       let imageUrl = null
 
       if (imageFile) {
-        // Create a unique filename
-        const fileExt = imageFile.name.split('.').pop()
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`
-        const imageRef = ref(storage, `chat-images/${chatId}/${fileName}`)
+        console.log("Starting image upload via backend...", { name: imageFile.name, size: imageFile.size });
         
-        const snapshot = await uploadBytes(imageRef, imageFile)
-        imageUrl = await getDownloadURL(snapshot.ref)
+        if (imageFile.size > 10 * 1024 * 1024) {
+          throw new Error("Image too large. Please select an image under 10MB.");
+        }
+
+        try {
+          const formData = new FormData();
+          formData.append('chat-image', imageFile);
+          
+          const response = await fetch(api.uploadChat, {
+            method: 'POST',
+            body: formData,
+            // Header for FormData is automatically set by fetch with boundary
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `Upload failed with status ${response.status}`);
+          }
+
+          const data = await response.json();
+          imageUrl = data.url;
+          console.log("Backend upload successful, URL obtained:", imageUrl);
+        } catch (uploadErr) {
+          console.error("Backend Upload Error:", uploadErr);
+          throw new Error(`Upload Error: ${uploadErr.message}. Make sure the backend server is running.`);
+        }
       }
 
-      if (!text?.trim() && !imageUrl) return
+      if (!text?.trim() && !imageUrl) {
+        console.warn("Empty message, ignoring.");
+        return;
+      }
 
       const messageData = {
         senderId: currentUser.uid,
         senderName: currentUser.displayName || currentUser.email,
         senderEmail: currentUser.email,
         text: text?.trim() || '',
-        imageUrl,
+        imageUrl: imageUrl || null,
         timestamp: serverTimestamp(),
         status: 'sent',
       }
 
-      // Add message to Firestore
-      const msgRef = await addDoc(collection(db, 'chats', chatId, 'messages'), messageData)
+      console.log("Adding message to Firestore...", messageData);
+      const msgRef = await addDoc(collection(db, 'chats', chatId, 'messages'), messageData);
+      console.log("Message added with ID:", msgRef.id);
 
       // Update chat last message
-      const lastMsgPreview = text?.trim() || (imageFile ? '📷 Image' : '')
+      const lastMsgPreview = text?.trim() || (imageUrl ? '📷 Image' : '');
       await updateDoc(doc(db, 'chats', chatId), {
         lastMessage: lastMsgPreview,
         lastMessageAt: serverTimestamp(),
-      })
+      });
 
       // Clear typing indicator
-      await setDoc(doc(db, 'chats', chatId, 'typing', currentUser.uid), {
-        isTyping: false,
-        name: currentUser.displayName || currentUser.email,
-        updatedAt: serverTimestamp(),
-      }, { merge: true })
+      try {
+        await setDoc(doc(db, 'chats', chatId, 'typing', currentUser.uid), {
+          isTyping: false,
+          name: currentUser.displayName || currentUser.email,
+          updatedAt: serverTimestamp(),
+        }, { merge: true });
+      } catch (typingErr) {
+        console.warn("Failed to clear typing indicator:", typingErr.message);
+      }
 
-      return msgRef.id
+      return msgRef.id;
     } catch (err) {
-      console.error('Error sending message:', err)
-      throw err
+      console.error('Final sendMessage Error:', err);
+      alert(err.message || 'Failed to send message. Please try again.');
+      throw err;
+    }
+  }, [currentUser])
+
+  const clearChat = useCallback(async (chatId) => {
+    if (!currentUser?.uid || !chatId) return
+
+    if (!window.confirm('Are you sure you want to clear all messages in this chat? This cannot be undone.')) return
+
+    try {
+      const messagesRef = collection(db, 'chats', chatId, 'messages')
+      const snapshot = await getDocs(messagesRef)
+      
+      const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref))
+      await Promise.all(deletePromises)
+
+      // Update chat last message
+      await updateDoc(doc(db, 'chats', chatId), {
+        lastMessage: 'Chat cleared',
+        lastMessageAt: serverTimestamp(),
+      })
+
+      console.log('Chat cleared successfully:', chatId)
+    } catch (err) {
+      console.error('Error clearing chat:', err)
+      alert('Failed to clear chat. Please try again.')
+    }
+  }, [currentUser])
+
+  const deleteSpecificMessages = useCallback(async (chatId, messageIds) => {
+    if (!currentUser?.uid || !chatId || !messageIds?.length) return
+
+    if (!window.confirm(`Are you sure you want to delete ${messageIds.length} message(s)?`)) return
+
+    try {
+      const deletePromises = messageIds.map(id => deleteDoc(doc(db, 'chats', chatId, 'messages', id)))
+      await Promise.all(deletePromises)
+
+      // Get latest message to update chat preview
+      const messagesRef = collection(db, 'chats', chatId, 'messages')
+      const q = query(messagesRef, orderBy('timestamp', 'desc'), limit(1))
+      const snapshot = await getDocs(q)
+      
+      let lastMsg = 'Chat cleared'
+      if (!snapshot.empty) {
+        const data = snapshot.docs[0].data()
+        lastMsg = data.text || (data.imageUrl ? '📷 Image' : 'Message deleted')
+      }
+
+      await updateDoc(doc(db, 'chats', chatId), {
+        lastMessage: lastMsg,
+        lastMessageAt: serverTimestamp(),
+      })
+
+      console.log(`${messageIds.length} messages deleted successfully from chat:`, chatId)
+    } catch (err) {
+      console.error('Error deleting specific messages:', err)
+      alert('Failed to delete messages. Please try again.')
     }
   }, [currentUser])
 
@@ -240,15 +327,16 @@ export function ChatProvider({ children }) {
     const q = query(
       collection(db, 'chats', chatId, 'messages'),
       where('senderId', '!=', currentUser.uid),
-      where('status', '!=', 'read'),
-      limit(50) // Process in batches to avoid overwhelming
+      limit(50)
     )
 
     try {
       const snapshot = await getDocs(q)
       if (snapshot.empty) return
 
-      const promises = snapshot.docs.map(d => 
+      const promises = snapshot.docs
+        .filter(d => d.data().status !== 'read')
+        .map(d => 
         updateDoc(doc(db, 'chats', chatId, 'messages', d.id), { status: 'read' })
       )
       await Promise.all(promises)
@@ -284,6 +372,8 @@ export function ChatProvider({ children }) {
     unreadCounts,
     getOrCreateChat,
     sendMessage,
+    clearChat,
+    deleteSpecificMessages,
     sendTypingIndicator,
     handleTyping,
     markAsRead,

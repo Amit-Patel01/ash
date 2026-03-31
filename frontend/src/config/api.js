@@ -12,6 +12,7 @@ export const api = {
   projectBySlug: (slug) => `${API_BASE}/api/projects/${slug}`,
   razorpayCreateOrder: `${API_BASE}/api/razorpay/create-order`,
   razorpayVerifyPayment: `${API_BASE}/api/razorpay/verify-payment`,
+  uploadChat: `${API_BASE}/api/upload/chat`,
 };
 
 export default api;

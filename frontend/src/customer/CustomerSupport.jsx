@@ -10,8 +10,8 @@ export default function CustomerSupport() {
   const [initialized, setInitialized] = useState(false)
 
   useEffect(() => {
+    if (!currentUser?.uid || initialized) return
     const initChat = async () => {
-      if (!currentUser?.uid || initialized) return
 
       // Check if there's already a chat with admin
       const existingChat = chats.find(c => {
