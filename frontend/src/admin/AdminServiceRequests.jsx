@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
 
 export default function AdminServiceRequests() {
   const { updateServiceRequestStatus } = useAuth()
-  const { serviceRequests: requests, loadingStore } = useStore()
+  const { serviceRequests: requests, loading } = useStore()
   const [filter, setFilter] = useState('pending')
   const [expanded, setExpanded] = useState(null)
-  const [loading, setLoading] = useState(false)
 
   // Real-time data from StoreContext
 

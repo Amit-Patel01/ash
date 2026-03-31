@@ -1,16 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
-import { api, API_BASE } from '../config/api'
+import { useAuth } from '../context/AuthContext'
 
 const avatarColors = ['from-blue-500 to-cyan-500', 'from-purple-500 to-pink-500', 'from-emerald-500 to-teal-500', 'from-orange-500 to-amber-500', 'from-red-500 to-rose-500', 'from-indigo-500 to-violet-500']
 
 export default function AdminTeam() {
-  const { teamMembers, addTeamMember, updateTeamMember, deleteTeamMember } = useStore()
+  const { teamMembers, addTeamMember, updateTeamMember, deleteTeamMember, tasks: storeTasks } = useStore()
+  const { createTeamMemberAccount, resetPassword } = useAuth()
   const [departmentFilter, setDepartmentFilter] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editingMember, setEditingMember] = useState(null)
-  const [formData, setFormData] = useState({ name: '', role: '', email: '', department: 'Engineering', status: 'Active', skills: '', joinDate: '', github: '', customDepartment: '' })
+  const [formData, setFormData] = useState({ name: '', role: '', email: '', businessEmail: '', password: '', department: 'Engineering', status: 'Active', skills: '', joinDate: '', github: '', customDepartment: '' })
 
   // Delete Modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -26,7 +27,7 @@ export default function AdminTeam() {
   })
 
   const openCreate = () => {
-    setFormData({ name: '', role: '', email: '', department: 'Engineering', status: 'Active', skills: '', joinDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }), github: '', customDepartment: '' })
+    setFormData({ name: '', role: '', email: '', businessEmail: '', password: '', department: 'Engineering', status: 'Active', skills: '', joinDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }), github: '', customDepartment: '' })
     setShowModal(true)
   }
 
@@ -37,6 +38,8 @@ export default function AdminTeam() {
       name: member.name, 
       role: member.role, 
       email: member.email, 
+      businessEmail: member.businessEmail || '',
+      password: '', // Don't show existing password
       department: isOther ? 'Other' : member.department, 
       status: member.status, 
       skills: (member.skills || []).join(', '), 
@@ -54,17 +57,44 @@ export default function AdminTeam() {
     try {
       const finalDept = formData.department === 'Other' ? formData.customDepartment : formData.department
       const payload = { ...formData, department: finalDept, skills: skillsArr, avatar: formData.name.charAt(0).toUpperCase() }
-      // Remove temporary customDepartment field from payload
-      delete payload.customDepartment
       
-      if (editingMember) {
-        await updateTeamMember(editingMember.id, payload)
+      // If creating new member, first create auth account
+      if (!editingMember) {
+        if (!formData.businessEmail || !formData.password) {
+          alert("Business Email and Password are required for NEW team members.")
+          return
+        }
+        
+        // 1. Create Auth account (Users collection handled inside AuthContext)
+        const userAccount = await createTeamMemberAccount(
+          formData.businessEmail, 
+          formData.password, 
+          formData.name, 
+          finalDept, 
+          'team'
+        )
+        
+        // 2. Add to Team display list linked by UID
+        await addTeamMember({ 
+          ...payload, 
+          uid: userAccount.uid,
+          tasksCompleted: 0, 
+          projectsActive: 0, 
+          performance: 0,
+          password: '••••••••' // Store masked password in display list
+        })
       } else {
-        await addTeamMember({ ...payload, tasksCompleted: 0, projectsActive: 0, performance: 0 })
+        await updateTeamMember(editingMember.id, payload)
       }
+      
       setShowModal(false)
     } catch (err) {
-      alert("Failed to save team member.")
+      console.error(err)
+      if (err.message && err.message.includes("Identity Toolkit API")) {
+        alert(`ACTION REQUIRED: ${err.message}\n\nPlease click the link in the message to enable the API in your Google Console, then try again.`)
+      } else {
+        alert(`Failed to save team member: ${err.message}`)
+      }
     }
   }
 
@@ -175,15 +205,15 @@ export default function AdminTeam() {
               <div className="flex items-center gap-4 text-xs text-gray-400">
                 {/* Dynamically calculate task and project counts from the tasks store */}
                 <span>
-                  <span className="text-white font-medium">
-                    {useStore().tasks?.filter(t => t.assignee === member.name || t.avatar === member.avatar).length || 0}
-                  </span> tasks
-                </span>
-                <span>
-                  <span className="text-white font-medium">
-                    {[...new Set(useStore().tasks?.filter(t => t.assignee === member.name || t.avatar === member.avatar).map(t => t.project))].length || 0}
-                  </span> projects
-                </span>
+                   <span className="text-white font-medium">
+                     {storeTasks?.filter(t => t.assignee === member.name || t.avatar === member.avatar).length || 0}
+                   </span> tasks
+                 </span>
+                 <span>
+                   <span className="text-white font-medium">
+                     {[...new Set(storeTasks?.filter(t => t.assignee === member.name || t.avatar === member.avatar).map(t => t.project))].length || 0}
+                   </span> projects
+                 </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-16 bg-white/5 rounded-full h-1.5 overflow-hidden">
@@ -234,8 +264,31 @@ export default function AdminTeam() {
                   <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required placeholder="Enter full name" className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Email *</label>
-                  <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} required placeholder="email@solutionhub.com" className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Personal Email</label>
+                  <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} placeholder="Personal email" className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
+                </div>
+              </div>
+              
+              <div className="bg-blue-500/5 border border-blue-500/10 rounded-2xl p-4 space-y-4">
+                <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Login Credentials</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Business Email</label>
+                    <input type="email" value={formData.businessEmail} onChange={(e) => setFormData({ ...formData, businessEmail: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" placeholder="work@company.com" required disabled={!!editingMember} />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{editingMember ? 'Manage Access' : 'Initial Password'}</label>
+                    {editingMember ? (
+                      <button type="button" onClick={() => { 
+                        resetPassword(formData.email).then(() => alert("Reset email sent!")).catch(e => alert(e.message))
+                      }} className="w-full bg-blue-50 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                        Send Reset Email
+                      </button>
+                    ) : (
+                      <input type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" placeholder="••••••••" required={!editingMember} />
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

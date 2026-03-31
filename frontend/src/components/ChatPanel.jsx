@@ -1,0 +1,524 @@
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { useChat } from '../context/ChatContext'
+import { useAuth } from '../context/AuthContext'
+
+function formatTime(timestamp) {
+  if (!timestamp?.seconds) return ''
+  const date = new Date(timestamp.seconds * 1000)
+  const now = new Date()
+  const diff = now - date
+  if (diff < 60000) return 'Just now'
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`
+  if (diff < 86400000) return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
+function formatMessageTime(timestamp) {
+  if (!timestamp?.seconds) return ''
+  const date = new Date(timestamp.seconds * 1000)
+  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+}
+
+export default function ChatPanel({ embedded = false }) {
+  const {
+    chats, activeChatId, setActiveChatId, messages,
+    sendMessage, handleTyping, typingUsers, markAsRead,
+    getChatPartner, unreadCounts, userStatuses, getOrCreateChat, currentUser
+  } = useChat()
+  const { getAllUsers, userProfile } = useAuth()
+  const [messageText, setMessageText] = useState('')
+  const [imageFile, setImageFile] = useState(null)
+  const [imagePreview, setImagePreview] = useState(null)
+  const [showNewChat, setShowNewChat] = useState(false)
+  const [allUsers, setAllUsers] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sending, setSending] = useState(false)
+  const [imageView, setImageView] = useState(null)
+  const [showInfo, setShowInfo] = useState(false)
+  const messagesEndRef = useRef(null)
+  const fileInputRef = useRef(null)
+  const messageInputRef = useRef(null)
+
+  useEffect(() => {
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+    scrollToBottom()
+    // Small delay to ensure images are partially rendered
+    const timer = setTimeout(scrollToBottom, 100)
+    return () => clearTimeout(timer)
+  }, [messages, typingUsers, imagePreview])
+
+  useEffect(() => {
+    if (activeChatId) {
+      markAsRead(activeChatId)
+      messageInputRef.current?.focus()
+    }
+  }, [activeChatId, markAsRead])
+
+  useEffect(() => {
+    if (showNewChat && getAllUsers) {
+      getAllUsers().then(users => {
+        let filtered = users.filter(u => u.uid !== currentUser?.uid)
+        
+        // CUSTOMER PRIVACY: Hide other customers from search if current user is a customer
+        if (userProfile?.role === 'customer') {
+          filtered = filtered.filter(u => u.role === 'admin' || u.role === 'employee')
+        }
+        
+        setAllUsers(filtered)
+      }).catch(console.error)
+    }
+  }, [showNewChat, getAllUsers, currentUser, userProfile])
+
+  const handleSend = async () => {
+    if ((!messageText.trim() && !imageFile) || sending) return
+    setSending(true)
+    try {
+      await sendMessage(activeChatId, messageText.trim(), imageFile)
+      setMessageText('')
+      setImageFile(null)
+      setImagePreview(null)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    } catch (err) {
+      console.error('Send error:', err)
+    } finally {
+      setSending(false)
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
+
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setImageFile(file)
+      setImagePreview(URL.createObjectURL(file))
+    }
+  }
+
+  const removeImage = () => {
+    setImageFile(null)
+    setImagePreview(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  const startNewChat = async (user) => {
+    const chatId = await getOrCreateChat(user.uid, user.displayName, user.email, user.role)
+    if (chatId) {
+      setActiveChatId(chatId)
+      setShowNewChat(false)
+    }
+  }
+
+  const activeChat = chats.find(c => c.id === activeChatId)
+  const partner = activeChat ? getChatPartner(activeChat) : null
+  const isPartnerTyping = partner && typingUsers[partner.uid]
+  const isPartnerOnline = partner?.status === 'online'
+
+  const filteredChats = chats.filter(chat => {
+    const p = getChatPartner(chat)
+    if (!p) return false
+    
+    // CUSTOMER PRIVACY: Hide conversations with other customers if current user is a customer
+    if (userProfile?.role === 'customer' && p.role === 'customer') {
+      return false
+    }
+
+    if (!searchQuery) return true
+    return p?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           p?.email?.toLowerCase().includes(searchQuery.toLowerCase())
+  })
+
+  const filteredUsers = allUsers.filter(u => {
+    if (!searchQuery) return true
+    return u.displayName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           u.email?.toLowerCase().includes(searchQuery.toLowerCase())
+  })
+
+  return (
+    <div className={`flex h-full bg-white/20 dark:bg-transparent backdrop-blur-3xl transition-colors duration-300 relative ${embedded ? '' : 'rounded-3xl shadow-2xl border border-white dark:border-white/5 overflow-hidden'}`}>
+      {/* Sidebar - List of messages */}
+      <div className={`w-full md:w-80 flex flex-col border-r border-slate-200/50 dark:border-white/5 bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl transition-all duration-300 ${activeChatId ? 'hidden md:flex' : 'flex'}`}>
+        <div className="p-4 border-b border-gray-100 dark:border-white/5">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Messages</h2>
+            <button
+              onClick={() => setShowNewChat(!showNewChat)}
+              className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 flex items-center justify-center transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+            </button>
+          </div>
+          <div className="relative">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="Search conversations..."
+              className="w-full pl-9 pr-3 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm text-slate-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all shadow-sm dark:shadow-none"
+            />
+          </div>
+        </div>
+
+        {showNewChat ? (
+          <div className="flex-1 overflow-y-auto px-2 py-4 scrollbar-thin">
+            <p className="text-[10px] text-slate-500 px-3 mb-2 font-black uppercase tracking-widest">New Conversation</p>
+            {filteredUsers.length === 0 ? (
+              <p className="text-sm text-slate-400 text-center py-12 italic">No users found</p>
+            ) : (
+              filteredUsers.map(user => (
+                <button
+                  key={user.uid}
+                  onClick={() => startNewChat(user)}
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors text-left"
+                >
+                  <div className="relative">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-sm font-bold text-white">
+                      {(user.displayName || user.email)?.charAt(0).toUpperCase()}
+                    </div>
+                    {userStatuses[user.uid]?.state === 'online' && (
+                      <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-900"></span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">{user.displayName || 'Unknown'}</p>
+                    <p className="text-[11px] text-blue-600 dark:text-blue-400 font-bold truncate uppercase tracking-wider">{user.role || 'User'}</p>
+                  </div>
+                </button>
+              ))
+            )}
+          </div>
+        ) : (
+          <div className="flex-1 overflow-y-auto px-2 py-3 scrollbar-thin">
+            {filteredChats.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-500 text-sm font-medium">No conversations yet</p>
+                <button onClick={() => setShowNewChat(true)} className="mt-2 text-blue-400 text-xs hover:text-blue-300">Start one</button>
+              </div>
+            ) : (
+              filteredChats.map(chat => {
+                const p = getChatPartner(chat)
+                if (!p) return null
+                const unread = unreadCounts[chat.id] || 0
+                const isActive = chat.id === activeChatId
+                return (
+                  <button
+                    key={chat.id}
+                    onClick={() => { setActiveChatId(chat.id); setShowNewChat(false) }}
+                    className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all text-left ${isActive ? 'bg-blue-500/10 border border-blue-500/20' : 'hover:bg-slate-100 dark:hover:bg-white/5 border border-transparent'}`}
+                  >
+                    <div className="relative flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center text-sm font-bold text-white">
+                        {p.name?.charAt(0).toUpperCase()}
+                      </div>
+                      {p.status === 'online' && (
+                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-900"></span>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <p className={`text-sm font-bold truncate ${unread > 0 ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300'}`}>{p.name}</p>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 flex-shrink-0 ml-2">{formatTime(chat.lastMessageAt)}</span>
+                      </div>
+                      <div className="flex items-center justify-between mt-0.5">
+                        <p className={`text-[13px] truncate ${unread > 0 ? 'text-slate-700 dark:text-gray-200 font-semibold' : 'text-slate-500 dark:text-gray-500'}`}>{chat.lastMessage || 'No messages yet'}</p>
+                        {unread > 0 && (
+                          <span className="ml-2 flex-shrink-0 w-5 h-5 rounded-full bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center">
+                            {unread > 9 ? '9+' : unread}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Chat View */}
+      {activeChatId && partner ? (
+        <div className={`flex-1 flex flex-col ${!activeChatId && 'hidden md:flex'}`}>
+          {/* Header */}
+          <div className="h-16 px-4 flex items-center gap-3 border-b border-slate-200/50 dark:border-white/5 bg-white/60 dark:bg-gray-900/50 backdrop-blur-md">
+            <button
+              onClick={() => setActiveChatId(null)}
+              className="md:hidden p-2 -ml-2 rounded-xl text-slate-500 dark:text-gray-400 bg-slate-100 dark:bg-white/5 hover:text-slate-900 dark:hover:text-white transition-all active:scale-90"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </button>
+            <div className="relative">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center text-sm font-black text-white shadow-lg">
+                {partner.name?.charAt(0).toUpperCase()}
+              </div>
+              {isPartnerOnline && (
+                <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-900"></span>
+              )}
+            </div>
+            <div className="flex-1">
+              <p className="text-base font-bold text-slate-900 dark:text-white leading-tight">{partner.name}</p>
+              <div className="flex items-center gap-1.5">
+                <span className={`w-2 h-2 rounded-full ${isPartnerOnline ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400 dark:bg-slate-600'}`}></span>
+                <p className={`text-[11px] font-black tracking-tighter ${isPartnerOnline ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-400'}`}>
+                  {isPartnerTyping ? 'typing...' : isPartnerOnline ? 'Online' : partner.lastSeen ? `Last seen ${formatTime({ seconds: new Date(partner.lastSeen).getTime() / 1000 })}` : 'Offline'}
+                </p>
+              </div>
+            </div>
+            {/* Info Button */}
+            <button
+              onClick={() => setShowInfo(!showInfo)}
+              className={`p-2 rounded-lg transition-colors ${showInfo ? 'bg-blue-500/20 text-blue-400' : 'text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'}`}
+              title="Chat Info"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/20 dark:bg-transparent scrollbar-thin">
+            {messages.length === 0 ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-white/5 flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                    </svg>
+                  </div>
+                  <p className="text-slate-500 dark:text-gray-400 text-sm">Start your conversation with {partner.name}</p>
+                </div>
+              </div>
+            ) : (
+              messages.map((msg, idx) => {
+                const isMe = msg.senderId === currentUser?.uid
+                const showAvatar = idx === 0 || messages[idx - 1]?.senderId !== msg.senderId
+                return (
+                  <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'} w-full`}>
+                    <div className={`flex items-end gap-2 max-w-[92%] sm:max-w-[70%] ${isMe ? 'flex-row-reverse' : ''}`}>
+                      {!isMe && (
+                        <div className={`w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0 mb-1 ${showAvatar ? 'visible' : 'invisible'}`}>
+                          {msg.senderName?.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <div className={`group relative ${isMe ? 'items-end' : 'items-start'} flex flex-col`}>
+                        <div className={`rounded-2xl px-4 py-3 shadow-md transition-shadow ${isMe ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-none shadow-blue-500/10' : 'bg-slate-50 dark:bg-gray-800/80 text-slate-900 dark:text-white rounded-bl-none border border-gray-100 dark:border-white/5 shadow-sm'}`}>
+                          {msg.imageUrl && (
+                            <div className="relative group/img mb-2 max-w-[300px]">
+                              <img
+                                src={msg.imageUrl}
+                                alt="Shared"
+                                className="rounded-xl object-cover cursor-pointer hover:brightness-90 transition-all shadow-md"
+                                onLoad={() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                                onClick={() => setImageView(msg.imageUrl)}
+                              />
+                            </div>
+                          )}
+                          {msg.text && <p className="text-[14px] leading-relaxed font-medium whitespace-pre-wrap break-words">{msg.text}</p>}
+                        </div>
+                        <div className={`flex items-center gap-1.5 mt-1.5 px-1 ${isMe ? 'flex-row-reverse' : ''}`}>
+                          <span className="text-[10px] text-gray-600 font-medium">{formatMessageTime(msg.timestamp)}</span>
+                          {isMe && (
+                            <span className="flex items-center">
+                              {msg.status === 'read' ? (
+                                <svg className="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M4 12.8571L9 17.5L20 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                  <path d="M9 12.1429L14.5 17.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                              ) : (
+                                <svg className="w-4 h-4 text-gray-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M4 12.8571L9 17.5L20 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                              )}
+                              {msg.status === 'read' && <span className="text-[9px] text-blue-500/80 ml-0.5 font-bold uppercase tracking-tighter">Seen</span>}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })
+            )}
+
+            {/* Typing indicator */}
+            {isPartnerTyping && (
+              <div className="flex items-end gap-2">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center text-[10px] font-bold text-white">
+                  {partner.name?.charAt(0).toUpperCase()}
+                </div>
+                <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-white/5 rounded-2xl rounded-bl-md px-4 py-3">
+                  <div className="flex items-center gap-1">
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="h-6"></div>
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Image Preview */}
+          {imagePreview && (
+            <div className="px-4 py-2 border-t border-gray-100 dark:border-white/5 bg-white dark:bg-gray-900/50">
+              <div className="relative inline-block">
+                <img src={imagePreview} alt="Preview" className="h-20 rounded-lg" />
+                <button onClick={removeImage} className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors">
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Input */}
+          <div className="p-3 border-t border-gray-100 dark:border-white/5 bg-white dark:bg-gray-900/30">
+            <div className="flex items-end gap-2">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageSelect}
+                className="hidden"
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="p-2.5 rounded-xl text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors flex-shrink-0"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                </svg>
+              </button>
+              <div className="flex-1 relative">
+                <textarea
+                  ref={messageInputRef}
+                  value={messageText}
+                  onChange={e => {
+                    setMessageText(e.target.value)
+                    if (activeChatId) handleTyping(activeChatId)
+                  }}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Type a message..."
+                  rows={1}
+                  className="w-full px-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm text-slate-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all shadow-sm dark:shadow-none resize-none"
+                  style={{ maxHeight: '120px' }}
+                />
+              </div>
+              <button
+                onClick={handleSend}
+                disabled={sending || (!messageText.trim() && !imageFile)}
+                className="p-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+              >
+                {sending ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className={`flex-1 flex items-center justify-center bg-slate-50/10 dark:bg-transparent ${activeChatId ? 'hidden md:flex' : 'flex'}`}>
+          <div className="text-center">
+            <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-4">
+              <svg className="w-10 h-10 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+              </svg>
+            </div>
+            <p className="text-gray-400 text-sm font-medium">Select a conversation to start messaging</p>
+            <p className="text-gray-600 text-xs mt-1">or start a new one</p>
+          </div>
+        </div>
+      )}
+
+      {/* Info Sidebar Overlay for Mobile / Sidebar for Desktop */}
+      {showInfo && partner && (
+        <>
+          {/* Backdrop for mobile */}
+          <div 
+            className="fixed inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-sm z-[40] md:hidden animate-in fade-in duration-300"
+            onClick={() => setShowInfo(false)}
+          />
+          <div className="fixed md:relative inset-y-0 right-0 w-full xs:w-80 md:w-72 border-l border-slate-200/50 dark:border-white/5 bg-white dark:bg-gray-900 backdrop-blur-2xl p-6 flex flex-col z-[50] md:z-10 animate-in slide-in-from-right duration-300">
+            <div className="flex justify-between items-center mb-8">
+              <h3 className="text-slate-900 dark:text-white font-black tracking-tight">Contact Info</h3>
+              <button 
+                onClick={() => setShowInfo(false)} 
+                className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all active:scale-95"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center text-2xl font-bold text-white mx-auto mb-4 shadow-lg shadow-emerald-500/20">
+                {partner.name?.charAt(0).toUpperCase()}
+              </div>
+              <h4 className="text-slate-900 dark:text-white font-bold text-lg leading-none mb-1">{partner.name}</h4>
+              <p className="text-blue-400 text-xs font-bold uppercase tracking-widest">{partner.role}</p>
+            </div>
+
+            <div className="space-y-6">
+              <div className="bg-slate-500/5 dark:bg-slate-800/40 rounded-2xl p-4 border border-slate-200/50 dark:border-white/10 shadow-sm dark:shadow-lg">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 uppercase font-black tracking-widest">Availability</p>
+                <div className="flex items-center gap-3">
+                  <div className={`w-3 h-3 rounded-full shadow-lg ${isPartnerOnline ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500/50'}`}></div>
+                  <p className={`text-base ${isPartnerOnline ? 'text-emerald-500 font-bold' : 'text-slate-900 dark:text-white font-black'}`}>
+                    {isPartnerOnline ? 'Online now' : 'Offline'}
+                  </p>
+                </div>
+                {!isPartnerOnline && partner.lastSeen && (
+                  <p className="text-[11px] text-slate-500 dark:text-blue-200 mt-2 ml-6 font-medium italic opacity-80">
+                    Last seen {formatTime({ seconds: new Date(partner.lastSeen).getTime() / 1000 })}
+                  </p>
+                )}
+              </div>
+
+              <div className="bg-slate-500/5 dark:bg-slate-800/40 rounded-2xl p-4 border border-slate-200/50 dark:border-white/10 shadow-sm dark:shadow-lg">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 uppercase font-black tracking-widest">Messaging Status</p>
+                <p className="text-[13px] text-slate-800 dark:text-white leading-relaxed font-bold">
+                  Messages to this user are delivered instantly.
+                </p>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Image Viewer Modal */}
+      {imageView && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90" onClick={() => setImageView(null)}>
+          <img src={imageView} alt="Full view" className="max-w-full max-h-full rounded-lg" />
+          <button onClick={() => setImageView(null)} className="absolute top-4 right-4 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
+import TeamMemberDashboard from './TeamMemberDashboard'
 
 export default function EmployeeOverview() {
   const { userProfile } = useAuth()
@@ -45,6 +46,12 @@ export default function EmployeeOverview() {
   const inProgressTasks = myTasks.filter(t => ['in-progress', 'In Progress'].includes(t.status)).length
 
   if (!userProfile) return <div className="p-8 text-white">Loading stats...</div>
+
+  const isTeamMember = userProfile?.role === 'team' || userProfile?.role === 'Team Member'
+  
+  if (isTeamMember) {
+    return <TeamMemberDashboard />
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">

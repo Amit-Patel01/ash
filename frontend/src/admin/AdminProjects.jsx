@@ -47,7 +47,7 @@ export default function AdminProjects() {
       title: project.title, description: project.description, long_description: project.long_description || '',
       category_name: project.category_name, category_slug: project.category_slug,
       price_project_only: String(project.price_project_only), price_with_source: String(project.price_with_source),
-      features, tech_stack: techStack, is_featured: project.is_featured, status: project.status || 'active',
+      features: Array.isArray(project.features) ? project.features.join(', ') : (project.features || ''), tech_stack: Array.isArray(project.tech_stack) ? project.tech_stack.join(', ') : (project.tech_stack || ''), is_featured: project.is_featured, status: project.status || 'active',
       thumbnail: project.thumbnail || ''
     })
     setShowModal(true)
@@ -80,7 +80,7 @@ export default function AdminProjects() {
         }
       } catch (err) {
         console.error("Upload error:", err)
-        alert("Failed to upload image to Google Drive. Saving project without new image.")
+        alert("Failed to upload image. Saving project without new image.")
       }
     }
 
@@ -339,7 +339,7 @@ export default function AdminProjects() {
                     </label>
                   </div>
                   <div className="flex-1 space-y-1">
-                    <p className="text-xs text-white font-medium">Google Drive storage</p>
+                    <p className="text-xs text-white font-medium">Image storage</p>
                     <p className="text-[10px] text-gray-500">Max size: 5MB. Formats: JPG, PNG, WebP</p>
                     <button type="button" onClick={() => document.querySelector('input[type="file"]').click()} className="text-[10px] text-blue-400 hover:text-blue-300 font-bold uppercase tracking-wider">Choose File</button>
                   </div>

@@ -124,7 +124,7 @@ export function StoreProvider({ children }) {
       setSellRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
     }, (error) => console.error("Sell Requests snapshot error:", error))
 
-    const unsubscribeServiceRequests = onSnapshot(query(collection(db, 'serviceRequests'), orderBy('createdAt', 'desc')), (snapshot) => {
+    const unsubscribeServiceRequests = onSnapshot(query(collection(db, 'custom_requests'), orderBy('createdAt', 'desc')), (snapshot) => {
       setServiceRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
     }, (error) => console.error("Service Requests snapshot error:", error))
 

@@ -156,6 +156,7 @@ const Footer = () => {
               {/* Made with love */}
               <div className="flex items-center gap-2 text-gray-400 text-sm">
                 <span>Built with</span>
+                <span className="text-red-400">♥</span>
                 <span>by</span>
                 <span className="text-white font-semibold">Amit Patel</span>
               </div>

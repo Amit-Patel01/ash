@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
 
 const columns = [
@@ -49,7 +49,7 @@ function TaskCard({ task, onDragStart, onDelete, onEdit }) {
 }
 
 export default function AdminTasks() {
-  const { tasks, addTask, updateTask, deleteTask } = useStore()
+  const { tasks, addTask, updateTask, deleteTask, users, teamMembers } = useStore()
   const [view, setView] = useState('kanban')
   const [projectFilter, setProjectFilter] = useState('All')
   const [showModal, setShowModal] = useState(false)
@@ -250,9 +250,9 @@ export default function AdminTasks() {
                     <option value="" className="bg-gray-900 text-gray-500">Unassigned</option>
                     {/* List actual employees from Store */}
                     {[...new Set([
-                      ...useStore().users?.filter(u => u.role !== 'admin').map(u => u.displayName),
-                      ...useStore().teamMembers?.map(m => m.name),
-                      'R', 'P', 'A', 'S', 'V', 'N' // Keep initials as fallback
+                      ...users?.filter(u => u.role !== 'admin').map(u => u.displayName),
+                      ...teamMembers?.map(m => m.name),
+                      'R', 'P', 'A', 'S', 'V', 'N'
                     ])].filter(Boolean).map(a => <option key={a} value={a} className="bg-gray-900">{a}</option>)}
                   </select>
                 </div>

@@ -25,7 +25,7 @@ import {
   setDoc,
   serverTimestamp
 } from 'firebase/firestore'
-import { auth, db, firebaseConfig } from '../config/firebase'
+import { auth, db, firebaseConfig, setUserOnline, setUserOffline } from '../config/firebase'
 import { initializeApp } from 'firebase/app'
 import { getAuth as getSecondaryAuth, signOut as secondarySignOut } from 'firebase/auth'
 
@@ -40,6 +40,13 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        // Set user online
+        setUserOnline(user.uid)
+
+        // Set offline on page unload
+        const handleUnload = () => setUserOffline(user.uid)
+        window.addEventListener('beforeunload', handleUnload)
+
         // Fetch extra profile data from Firestore
         const profileRef = doc(db, 'users', user.uid)
         const profileSnap = await getDoc(profileRef)
@@ -77,7 +84,10 @@ export function AuthProvider({ children }) {
       setLoading(false)
     })
 
-    return unsubscribe
+    return () => {
+      unsubscribe()
+      window.removeEventListener('beforeunload', () => {})
+    }
   }, [])
 
   const login = useCallback(async (email, password) => {
@@ -124,6 +134,9 @@ export function AuthProvider({ children }) {
   }, [])
 
   const logout = useCallback(async () => {
+    if (auth.currentUser) {
+      await setUserOffline(auth.currentUser.uid)
+    }
     await signOut(auth)
   }, [])
 
@@ -372,6 +385,46 @@ export function AuthProvider({ children }) {
     })
   }, [])
 
+  const createTeamMemberAccount = useCallback(async (email, password, name, department, role) => {
+    // 1. Check if user already exists
+    const usersRef = collection(db, 'users')
+    const userQuery = query(usersRef, where('email', '==', email))
+    const userSnapshot = await getDocs(userQuery)
+    if (!userSnapshot.empty) {
+      throw new Error('An account with this email already exists.')
+    }
+
+    // 2. Initializing secondary app to create user
+    const secondaryAppName = `TeamCreationApp_${Date.now()}`
+    const secondaryApp = initializeApp(firebaseConfig, secondaryAppName)
+    const secondaryAuth = getSecondaryAuth(secondaryApp)
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password)
+      const newUser = userCredential.user
+
+      await updateProfile(newUser, { displayName: name })
+
+      const userData = {
+        uid: newUser.uid,
+        email: email,
+        displayName: name,
+        role: role || 'team', // Important: assign team role
+        department: department || '',
+        avatar: name.charAt(0).toUpperCase(),
+        status: 'active',
+        createdAt: new Date().toISOString()
+      }
+
+      await setDoc(doc(db, 'users', newUser.uid), userData)
+      await secondarySignOut(secondaryAuth)
+
+      return { uid: newUser.uid, ...userData }
+    } catch (error) {
+      throw error
+    }
+  }, [])
+
   const value = {
     currentUser, userProfile, loading,
     login, signup, logout, resetPassword,
@@ -380,6 +433,7 @@ export function AuthProvider({ children }) {
     getAllUsers, updateUserProfile, deleteUser, updateUserPassword,
     getAdminMessages, updateMessageStatus, deleteAdminMessage,
     getServiceRequests, updateServiceRequestStatus,
+    createTeamMemberAccount
   }
 
   return (

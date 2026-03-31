@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { getFirestore, doc, setDoc, serverTimestamp } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage'
 
 export const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -14,4 +15,21 @@ export const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db = getFirestore(app)
+export const storage = getStorage(app)
 export default app
+
+export const setUserOnline = async (uid) => {
+  if (!uid) return
+  await setDoc(doc(db, 'status', uid), {
+    state: 'online',
+    lastSeen: serverTimestamp(),
+  }, { merge: true })
+}
+
+export const setUserOffline = async (uid) => {
+  if (!uid) return
+  await setDoc(doc(db, 'status', uid), {
+    state: 'offline',
+    lastSeen: serverTimestamp(),
+  }, { merge: true })
+}

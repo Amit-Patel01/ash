@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams, Link } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
+import { useAuth } from '../context/AuthContext'
 import { api } from '../config/api'
-
-const UPI_ID = 'amitpatel07029@upi'
 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
@@ -24,6 +23,7 @@ const Checkout = () => {
   const [searchParams] = useSearchParams()
   const purchaseType = searchParams.get('type') || 'project_only'
   const { projects, addOrder } = useStore()
+  const { currentUser, loading: authLoading } = useAuth()
 
   const [project, setProject] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -45,6 +45,17 @@ const Checkout = () => {
     setLoading(false)
     setTimeout(() => setLoaded(true), 100)
   }, [slug, projects])
+
+  useEffect(() => {
+    if (currentUser) {
+      setForm(prev => ({
+        ...prev,
+        customer_name: currentUser.displayName || prev.customer_name,
+        customer_email: currentUser.email || prev.customer_email,
+        customer_phone: currentUser.phone || prev.customer_phone,
+      }))
+    }
+  }, [currentUser])
 
   const amount = project
     ? purchaseType === 'project_with_source'
@@ -140,13 +151,43 @@ const Checkout = () => {
     }
   }
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <section className="min-h-screen pt-28 pb-20 bg-gradient-to-br from-slate-50 to-slate-100">
         <div className="max-w-2xl mx-auto px-4 animate-pulse space-y-6">
           <div className="h-48 bg-slate-200/50 rounded-3xl"></div>
           <div className="h-12 bg-slate-200/50 rounded-xl"></div>
           <div className="h-12 bg-slate-200/50 rounded-xl"></div>
+        </div>
+      </section>
+    )
+  }
+
+  if (!currentUser) {
+    return (
+      <section className="min-h-screen pt-[140px] md:pt-[180px] pb-20 px-4 flex items-center justify-center">
+        <div className="max-w-md mx-auto text-center">
+          <div className="bg-white/40 backdrop-blur-2xl rounded-3xl p-10 border border-white/60 shadow-xl">
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-200">
+              <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-slate-800 mb-3">Login Required</h2>
+            <p className="text-slate-500 mb-6">Please sign in or create an account to proceed with checkout.</p>
+            <div className="space-y-3">
+              <Link to="/login" className="block w-full px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-200 transition-all text-center">
+                Sign In
+              </Link>
+              <Link to="/signup" className="block w-full px-6 py-3.5 bg-white/60 border border-slate-200 text-slate-700 rounded-2xl font-bold hover:bg-white transition-all text-center">
+                Create Account
+              </Link>
+            </div>
+            <Link to={`/projects/${slug}`} className="text-xs text-slate-400 hover:text-slate-600 transition-colors flex items-center justify-center gap-1 mt-4">
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+              Back to Project
+            </Link>
+          </div>
         </div>
       </section>
     )

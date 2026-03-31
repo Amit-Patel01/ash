@@ -134,7 +134,7 @@ const Navbar = () => {
               {currentUser ? (
                 <div className="flex items-center gap-2 bg-black/5 p-1 rounded-full border border-black/5">
                   <Link
-                    to={currentUser?.role === 'admin' ? '/admin' : '/employee'}
+                    to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'customer' ? '/customer' : '/employee'}
                     className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-white bg-black hover:bg-slate-900 shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
                   >
                     Dashboard
@@ -158,7 +158,7 @@ const Navbar = () => {
                     Login
                   </Link>
                   <Link
-                    to="/request-account"
+                    to="/join-us"
                     className="relative group overflow-hidden px-7 py-2.5 rounded-full text-[15px] font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-500/20 transition-all duration-500 transform hover:-translate-y-0.5 active:scale-95"
                   >
                     Join Us
@@ -167,15 +167,15 @@ const Navbar = () => {
               )}
 
               {/* Help Button - Modern Style */}
-              <button
-                onClick={() => window.location.href = 'https://chat.amitsolutionhub.com'}
+              <Link
+                to="/chat"
                 className="hidden sm:flex relative items-center gap-2 bg-white/90 backdrop-blur-md text-slate-900 border border-slate-200 px-6 py-2.5 rounded-full font-bold text-sm lg:text-[15px] hover:bg-white transition-all duration-300 shadow-lg hover:-translate-y-0.5"
               >
                 <svg className="w-5 h-5 text-blue-600 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 7.364l4.5 1.636m-18 5.455l4.5-1.636m13.5 1.636l4.5-1.636" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                 </svg>
-                Help
-              </button>
+                Chat
+              </Link>
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -224,7 +224,7 @@ const Navbar = () => {
               {currentUser ? (
                 <>
                   <Link
-                    to={currentUser?.role === 'admin' ? '/admin' : '/employee'}
+                    to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'customer' ? '/customer' : '/employee'}
                     onClick={() => setIsOpen(false)}
                     className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/50 transition-all duration-300 active:scale-95"
                   >
@@ -256,7 +256,7 @@ const Navbar = () => {
                     Login
                   </Link>
                   <Link
-                    to="/request-account"
+                    to="/join-us"
                     onClick={() => setIsOpen(false)}
                     className="relative flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-emerald-500 to-cyan-600 shadow-lg shadow-emerald-900/10 transition-all duration-300 active:scale-95 overflow-hidden"
                   >
@@ -270,18 +270,19 @@ const Navbar = () => {
               )}
             </div>
 
-            <button
-              onClick={() => window.location.href = 'https://chat.amitsolutionhub.com'}
+            <Link
+              to="/chat"
+              onClick={() => setIsOpen(false)}
               className="relative group w-full outline-none"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-10 group-hover:opacity-20 transition duration-300"></div>
               <div className="relative w-full text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-4 rounded-2xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-xl flex items-center justify-center gap-2">
-                Get Help 
+                Chat with Us
                 <svg className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.63 8.41m5.96 5.96a14.96 14.96 0 01-5.96 5.96m5.96-5.96L9.63 8.41m0 0a14.98 14.98 0 01-6.16 12.12A14.98 14.98 0 019.63 8.41m0 0L3.47 14.57" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                 </svg>
               </div>
-            </button>
+            </Link>
 
             {/* Mobile Social Icons */}
             <div className="flex items-center justify-center gap-3 mt-2 py-2">

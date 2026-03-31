@@ -1,7 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore'
-import { db } from '../config/firebase'
 import { useStore } from '../store/StoreContext'
 
 export default function AdminAccountRequests() {

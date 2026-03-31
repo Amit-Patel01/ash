@@ -189,8 +189,8 @@ const Services = () => {
               <p className="text-slate-600 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-medium">
                 We're aggressively expanding our service portfolio to bring you the next generation of tech solutions.
               </p>
-              <a
-                href="/contact"
+              <Link
+                to="/contact"
                 className="group relative inline-flex items-center justify-center"
               >
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full blur opacity-70 group-hover:opacity-100 transition duration-300"></div>
@@ -200,7 +200,7 @@ const Services = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
                 </div>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

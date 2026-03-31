@@ -24,6 +24,7 @@ export default function EmployeeTasks() {
   const { tasks, updateTask } = useStore()
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('all')
+  const [updatingId, setUpdatingId] = useState(null)
 
   // Filter tasks assigned to this employee
   const myTasks = useMemo(() => {

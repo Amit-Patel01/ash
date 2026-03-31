@@ -6,7 +6,20 @@ const Razorpay = require("razorpay");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const { uploadToDrive } = require('./utils/driveService');
+const admin = require("firebase-admin");
+
+// Initialize Firebase Admin
+const serviceAccount = require("./credentials.json");
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+  console.log(`📡 Firebase Admin Initialized (Project: ${serviceAccount.project_id})`);
+  if (serviceAccount.project_id !== "solutionhub-81976") {
+    console.warn("⚠️  WARNING: Project ID mismatch! Your credentials.json is for", serviceAccount.project_id, "but your frontend uses solutionhub-81976.");
+  }
+}
 
 const app = express();
 app.use(cors());
@@ -56,14 +69,18 @@ const projectStorage = multer.diskStorage({
   }
 });
 
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowed = /jpeg|jpg|png|webp/;
-    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
-    const mime = allowed.test(file.mimetype);
-    cb(null, ext && mime);
+    const ext = /\.(jpeg|jpg|png|webp)$/i.test(path.extname(file.originalname));
+    const mime = ALLOWED_MIME_TYPES.includes(file.mimetype);
+    if (!ext || !mime) {
+      return cb(new Error('Only JPG, PNG, and WebP images are allowed'));
+    }
+    cb(null, true);
   }
 });
 
@@ -71,10 +88,12 @@ const uploadTeam = multer({
   storage: teamStorage,
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowed = /jpeg|jpg|png|webp/;
-    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
-    const mime = allowed.test(file.mimetype);
-    cb(null, ext && mime);
+    const ext = /\.(jpeg|jpg|png|webp)$/i.test(path.extname(file.originalname));
+    const mime = ALLOWED_MIME_TYPES.includes(file.mimetype);
+    if (!ext || !mime) {
+      return cb(new Error('Only JPG, PNG, and WebP images are allowed'));
+    }
+    cb(null, true);
   }
 });
 
@@ -82,16 +101,23 @@ const uploadProject = multer({
   storage: projectStorage,
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowed = /jpeg|jpg|png|webp/;
-    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
-    const mime = allowed.test(file.mimetype);
-    cb(null, ext && mime);
+    const ext = /\.(jpeg|jpg|png|webp)$/i.test(path.extname(file.originalname));
+    const mime = ALLOWED_MIME_TYPES.includes(file.mimetype);
+    if (!ext || !mime) {
+      return cb(new Error('Only JPG, PNG, and WebP images are allowed'));
+    }
+    cb(null, true);
   }
 });
 
 app.get("/", (req, res) => {
   res.send("Backend Live 🚀");
 });
+
+const getBaseUrl = (req) => {
+  const proto = req.headers['x-forwarded-proto'] || req.protocol;
+  return `${proto}://${req.get('host')}`;
+};
 
 // Upload payment screenshot endpoint
 app.post("/api/upload/payment", upload.single('screenshot'), (req, res) => {
@@ -100,7 +126,7 @@ app.post("/api/upload/payment", upload.single('screenshot'), (req, res) => {
   }
   res.json({
     success: true,
-    url: `/uploads/payments/${req.file.filename}`
+    url: `${getBaseUrl(req)}/uploads/payments/${req.file.filename}`
   });
 });
 
@@ -111,31 +137,33 @@ app.post("/api/upload/team", uploadTeam.single('photo'), (req, res) => {
   }
   res.json({
     success: true,
-    url: `/uploads/team/${req.file.filename}`
+    url: `${getBaseUrl(req)}/uploads/team/${req.file.filename}`
   });
 });
 
-// Upload project image to Google Drive endpoint
-app.post("/api/upload/project", uploadProject.single('image'), async (req, res) => {
+// Upload project image locally
+app.post("/api/upload/project", uploadProject.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ success: false, message: 'No file uploaded' });
   }
+  res.json({
+    success: true,
+    url: `${getBaseUrl(req)}/uploads/projects/${req.file.filename}`
+  });
+});
 
-  try {
-    const filePath = req.file.path;
-    const fileName = req.file.filename;
-    const mimeType = req.file.mimetype;
-
-    const driveUrl = await uploadToDrive(filePath, fileName, mimeType);
-
-    res.json({
-      success: true,
-      url: driveUrl
-    });
-  } catch (error) {
-    console.error('Project Upload Error:', error);
-    res.status(500).json({ success: false, message: 'Failed to upload to Google Drive' });
+// Multer error handler
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ success: false, message: 'File too large. Max size is 5MB.' });
+    }
+    return res.status(400).json({ success: false, message: err.message });
   }
+  if (err.message === 'Only JPG, PNG, and WebP images are allowed') {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+  next(err);
 });
 
 // Project routes
@@ -406,6 +434,7 @@ app.post("/reply", async (req, res) => {
   }
 });
 
+// Server setup and listener
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log("Server running 🚀");
