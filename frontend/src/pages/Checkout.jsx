@@ -5,6 +5,20 @@ import { api } from '../config/api'
 
 const UPI_ID = 'amitpatel07029@upi'
 
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true)
+      return
+    }
+    const script = document.createElement('script')
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+    script.onload = () => resolve(true)
+    script.onerror = () => resolve(false)
+    document.body.appendChild(script)
+  })
+}
+
 const Checkout = () => {
   const { slug } = useParams()
   const [searchParams] = useSearchParams()
@@ -44,6 +58,12 @@ const Checkout = () => {
     setSubmitting(true)
 
     try {
+      // 0. Ensure Razorpay is loaded
+      const isLoaded = await loadRazorpayScript()
+      if (!isLoaded) {
+        throw new Error("Failed to load Razorpay SDK. Please check your internet connection.")
+      }
+
       // 1. Create Razorpay Order
       const orderRes = await fetch(api.razorpayCreateOrder, {
         method: 'POST',
