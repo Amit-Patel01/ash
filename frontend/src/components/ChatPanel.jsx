@@ -65,6 +65,8 @@ export default function ChatPanel({ embedded = false }) {
   const [showGroupCreate, setShowGroupCreate] = useState(false)
   const [selectedUsersForGroup, setSelectedUsersForGroup] = useState([])
   const [newGroupName, setNewGroupName] = useState('')
+  const [showMoreMenu, setShowMoreMenu] = useState(false)
+  const moreMenuRef = useRef(null)
 
   const emojis = [
     { cat: 'Smileys', icons: ['😀', '😃', '😄', '😁', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😋', '😛', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '😣', '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬', '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗', '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯', '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐', '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕'] },
@@ -78,6 +80,9 @@ export default function ChatPanel({ embedded = false }) {
     const handleClickOutside = (event) => {
       if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target)) {
         setShowEmojiPicker(false)
+      }
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target)) {
+        setShowMoreMenu(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
@@ -376,7 +381,7 @@ export default function ChatPanel({ embedded = false }) {
               </div>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2">
-              {/* Video Call Button (For Staff/Groups) */}
+              {/* Video Call Button (For Staff/Groups) - Visible on all screens if eligible */}
               {((partner.role !== 'customer' && userProfile?.role !== 'customer') || partner.isGroup) && (
                 <button
                   onClick={() => startVideoCall(activeChatId)}
@@ -389,57 +394,122 @@ export default function ChatPanel({ embedded = false }) {
                 </button>
               )}
 
-              {/* Notification Toggle */}
-              <button
-                onClick={requestNotificationPermission}
-                className={`p-2 rounded-xl transition-all ${Notification.permission === 'granted' ? 'text-emerald-500 bg-emerald-500/10' : 'text-slate-500 hover:text-blue-500 hover:bg-blue-500/10'}`}
-                title={Notification.permission === 'granted' ? 'Notifications Enabled' : 'Enable Notifications'}
-              >
-                {Notification.permission === 'granted' ? (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                  </svg>
-                ) : (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
-                  </svg>
-                )}
-              </button>
-
-              {/* Select Mode Toggle */}
-              <button
-                onClick={() => {
-                  setSelectionMode(!selectionMode)
-                  setSelectedIds(new Set())
-                }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${selectionMode ? 'bg-amber-500/10 border-amber-500/30 text-amber-500' : 'bg-blue-500/10 border-blue-500/30 text-blue-500 hover:bg-blue-500/20'}`}
-              >
-                {selectionMode ? 'Cancel' : 'Select'}
-              </button>
-
-              {/* Clear Chat Button */}
-              {!selectionMode && (
+              {/* Desktop Actions (Hidden on Mobile) */}
+              <div className="hidden sm:flex items-center gap-1.5 sm:gap-2">
+                {/* Notification Toggle */}
                 <button
-                  onClick={() => clearChat(activeChatId)}
-                  className="p-2 rounded-xl text-slate-500 hover:text-red-500 hover:bg-red-500/10 transition-all group"
-                  title="Clear Conversation"
+                  onClick={requestNotificationPermission}
+                  className={`p-2 rounded-xl transition-all ${Notification.permission === 'granted' ? 'text-emerald-500 bg-emerald-500/10' : 'text-slate-500 hover:text-blue-500 hover:bg-blue-500/10'}`}
+                  title={Notification.permission === 'granted' ? 'Notifications Enabled' : 'Enable Notifications'}
                 >
-                  <svg className="w-5 h-5 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                  {Notification.permission === 'granted' ? (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+                    </svg>
+                  )}
+                </button>
+
+                {/* Select Mode Toggle */}
+                <button
+                  onClick={() => {
+                    setSelectionMode(!selectionMode)
+                    setSelectedIds(new Set())
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${selectionMode ? 'bg-amber-500/10 border-amber-500/30 text-amber-500' : 'bg-blue-500/10 border-blue-500/30 text-blue-500 hover:bg-blue-500/20'}`}
+                >
+                  {selectionMode ? 'Cancel' : 'Select'}
+                </button>
+
+                {/* Clear Chat Button */}
+                {!selectionMode && (
+                  <button
+                    onClick={() => clearChat(activeChatId)}
+                    className="p-2 rounded-xl text-slate-500 hover:text-red-500 hover:bg-red-500/10 transition-all group"
+                    title="Clear Conversation"
+                  >
+                    <svg className="w-5 h-5 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                    </svg>
+                  </button>
+                )}
+
+                {/* Info Button */}
+                <button
+                  onClick={() => setShowInfo(!showInfo)}
+                  className={`p-2 rounded-xl transition-all ${showInfo ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 border border-transparent'}`}
+                  title="Chat Info"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
                   </svg>
                 </button>
-              )}
+              </div>
 
-              {/* Info Button */}
-              <button
-                onClick={() => setShowInfo(!showInfo)}
-                className={`p-2 rounded-xl transition-all ${showInfo ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 border border-transparent'}`}
-                title="Chat Info"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
-                </svg>
-              </button>
+              {/* Mobile More Menu */}
+              <div className="relative sm:hidden" ref={moreMenuRef}>
+                <button
+                  onClick={() => setShowMoreMenu(!showMoreMenu)}
+                  className={`p-2 rounded-xl transition-all ${showMoreMenu ? 'bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white' : 'text-slate-500'}`}
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+                  </svg>
+                </button>
+
+                {showMoreMenu && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10 p-2 z-[60] animate-in slide-in-from-top-2 fade-in duration-200">
+                    <button
+                      onClick={() => {
+                        setSelectionMode(!selectionMode)
+                        setSelectedIds(new Set())
+                        setShowMoreMenu(false)
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-gray-300 text-sm font-bold transition-all"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {selectionMode ? 'Cancel Selection' : 'Select Messages'}
+                    </button>
+                    
+                    <button
+                      onClick={() => { requestNotificationPermission(); setShowMoreMenu(false) }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-gray-300 text-sm font-bold transition-all"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                      </svg>
+                      Notifications
+                    </button>
+
+                    <button
+                      onClick={() => { setShowInfo(true); setShowMoreMenu(false) }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-gray-300 text-sm font-bold transition-all"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                      </svg>
+                      Contact Info
+                    </button>
+
+                    <div className="h-px bg-gray-100 dark:bg-white/5 my-1 mx-2"></div>
+
+                    <button
+                      onClick={() => { clearChat(activeChatId); setShowMoreMenu(false) }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-bold transition-all"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                      </svg>
+                      Clear Chat
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -645,8 +715,8 @@ export default function ChatPanel({ embedded = false }) {
           )}
 
           {/* Input Area */}
-          <div className="p-4 border-t border-gray-200 dark:border-white/10 bg-white/80 dark:bg-gray-950/50 backdrop-blur-md pb-[env(safe-area-inset-bottom,16px)]">
-            <div className="flex items-end gap-2">
+          <div className="p-3 sm:p-4 border-t border-gray-200 dark:border-white/10 bg-white/80 dark:bg-gray-950/50 backdrop-blur-md pb-[env(safe-area-inset-bottom,16px)]">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -656,7 +726,7 @@ export default function ChatPanel({ embedded = false }) {
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="p-2.5 rounded-xl text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors flex-shrink-0"
+                className="p-2 sm:p-2.5 rounded-full text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all flex-shrink-0 active:scale-95"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -666,7 +736,7 @@ export default function ChatPanel({ embedded = false }) {
               <div className="relative">
                 <button
                   onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                  className={`p-2.5 rounded-xl transition-colors ${showEmojiPicker ? 'bg-blue-500/20 text-blue-500' : 'text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'}`}
+                  className={`p-2 sm:p-2.5 rounded-full transition-all active:scale-95 ${showEmojiPicker ? 'bg-blue-500/20 text-blue-500' : 'text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'}`}
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
@@ -709,14 +779,14 @@ export default function ChatPanel({ embedded = false }) {
                   onKeyDown={handleKeyDown}
                   placeholder="Type a message..."
                   rows={1}
-                  className="w-full px-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm text-slate-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all shadow-sm dark:shadow-none resize-none"
+                  className="w-full px-3 sm:px-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm text-slate-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all shadow-sm dark:shadow-none resize-none"
                   style={{ maxHeight: '120px' }}
                 />
               </div>
               <button
                 onClick={handleSend}
                 disabled={sending || (!messageText.trim() && !imageFile)}
-                className="p-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+                className="p-2 sm:p-2.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0 active:scale-95 shadow-lg shadow-blue-500/20"
               >
                 {sending ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

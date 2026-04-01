@@ -95,7 +95,10 @@ export default function ChatPage() {
           <div className="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
 
           <div>
-            <h1 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-none">Amit Solution Hub Support Center</h1>
+            <h1 className="text-base sm:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-none">
+              <span className="sm:hidden">Support Center</span>
+              <span className="hidden sm:block">Amit Solution Hub Support Center</span>
+            </h1>
             <p className="text-[10px] text-slate-500 dark:text-gray-400 mt-1 uppercase tracking-[0.2em] font-black hidden sm:block">Real-time assistance</p>
           </div>
         </div>
