@@ -523,8 +523,7 @@ export function ChatProvider({ children }) {
     unreadCounts,
     getOrCreateChat,
     sendMessage, clearChat, deleteSpecificMessages, requestNotificationPermission, sendTypingIndicator, handleTyping,
-    markAsRead, getChatPartner, createGroupChat, startVideoCall,
-    unreadCounts, userStatuses
+    markAsRead, getChatPartner, createGroupChat, startVideoCall
   }
 
   return (
