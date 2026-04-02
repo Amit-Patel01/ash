@@ -14,6 +14,9 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
   // Test mode toggle - controlled by env variable
   const isTestModeEnabled = import.meta.env.VITE_TEST_MODE === 'true' || import.meta.env.VITE_TEST_MODE === true
 
+  // Check if course is free
+  const isFreeCourse = selectedPlan.price === 0 || selectedPlan.price === '0' || selectedPlan.isFree === true
+
   const loadRazorpay = () => {
     return new Promise((resolve) => {
       const script = document.createElement('script')
@@ -223,7 +226,33 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
           </div>
         )}
 
-        <button
+        {/* Free Course - Show Enroll Button */}
+        {isFreeCourse ? (
+          <button
+            onClick={handleTestEnrollment}
+            disabled={submitting}
+            className="w-full relative group"
+          >
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl blur opacity-30 group-hover:opacity-100 transition duration-300"></div>
+            <div className="relative w-full py-4 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 disabled:opacity-50 transition-all flex items-center justify-center gap-3 shadow-xl">
+              {submitting ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Enrolling...
+                </>
+              ) : (
+                <>
+                  Enroll for Free
+                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </>
+              )}
+            </div>
+          </button>
+        ) : (
+          <>
+            <button
           onClick={handleRazorpayPayment}
           disabled={submitting}
           className="w-full relative group"
@@ -267,7 +296,7 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
             )}
           </button>
         )}
-        
+
         <p className="text-center text-[10px] text-slate-400 uppercase tracking-widest font-bold">
           🛡️ Secured by industry standard encryption
         </p>
