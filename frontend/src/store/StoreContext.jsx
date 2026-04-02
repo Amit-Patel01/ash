@@ -107,13 +107,13 @@ export function StoreProvider({ children }) {
       setTradingSessions(sessionsData)
     }, (error) => console.error("Trading Sessions snapshot error:", error))
 
-    // Trading Enrollments Listener
-    const unsubscribeEnrollments = onSnapshot(query(collection(db, 'tradingEnrollments'), orderBy('createdAt', 'desc')), (snapshot) => {
+    // Trading Enrollments Listener (removed orderBy to avoid index requirement)
+    const unsubscribeEnrollments = onSnapshot(collection(db, 'tradingEnrollments'), (snapshot) => {
       setTradingEnrollments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
     }, (error) => console.error("Trading Enrollments snapshot error:", error))
 
-    // Trading Payments Listener
-    const unsubscribePayments = onSnapshot(query(collection(db, 'tradingPayments'), orderBy('createdAt', 'desc')), (snapshot) => {
+    // Trading Payments Listener (removed orderBy to avoid index requirement)
+    const unsubscribePayments = onSnapshot(collection(db, 'tradingPayments'), (snapshot) => {
       setTradingPayments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
     }, (error) => console.error("Trading Payments snapshot error:", error))
 

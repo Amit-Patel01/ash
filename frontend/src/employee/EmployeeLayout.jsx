@@ -105,9 +105,6 @@ export default function EmployeeLayout() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            {!currentUser?.emailVerified && (
-              <span className="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-[10px] font-medium border border-amber-500/20">Email not verified</span>
-            )}
             <Link to="/" className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
               View Site

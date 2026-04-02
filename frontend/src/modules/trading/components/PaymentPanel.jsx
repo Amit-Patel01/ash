@@ -11,6 +11,9 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
+  // Test mode toggle - controlled by env variable
+  const isTestModeEnabled = import.meta.env.VITE_TEST_MODE === 'true' || import.meta.env.VITE_TEST_MODE === true
+
   const loadRazorpay = () => {
     return new Promise((resolve) => {
       const script = document.createElement('script')
@@ -74,6 +77,8 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
                 userEmail: currentUser.email,
                 planId: selectedPlan.id,
                 planName: selectedPlan.name,
+                courseId: selectedPlan.id,
+                courseName: selectedPlan.name,
                 amount: selectedPlan.price
               })
             })
@@ -124,8 +129,8 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
         userId: currentUser.uid,
         userName: currentUser.displayName || currentUser.email,
         userEmail: currentUser.email,
-        planId: selectedPlan.id,
-        planName: selectedPlan.name,
+        courseId: selectedPlan.id,
+        courseName: selectedPlan.name,
         amount: selectedPlan.price,
         status: 'active',
       })
@@ -135,8 +140,8 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
         userId: currentUser.uid,
         userName: currentUser.displayName || currentUser.email,
         userEmail: currentUser.email,
-        planId: selectedPlan.id,
-        planName: selectedPlan.name,
+        courseId: selectedPlan.id,
+        courseName: selectedPlan.name,
         amount: selectedPlan.price,
         paymentId: 'TEST_' + Date.now(),
         method: 'test_bypass',
@@ -241,25 +246,27 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
           </div>
         </button>
 
-        <button
-          onClick={handleTestEnrollment}
-          disabled={submitting}
-          className="w-full py-3 bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold rounded-2xl hover:bg-emerald-100 disabled:opacity-50 transition-all flex items-center justify-center gap-2 text-sm"
-        >
-          {submitting ? (
-            <>
-              <div className="w-4 h-4 border-2 border-emerald-300 border-t-emerald-700 rounded-full animate-spin"></div>
-              Processing...
-            </>
-          ) : (
-            <>
-              Skip Payment (Test Mode)
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
-            </>
-          )}
-        </button>
+        {isTestModeEnabled && (
+          <button
+            onClick={handleTestEnrollment}
+            disabled={submitting}
+            className="w-full py-3 bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold rounded-2xl hover:bg-emerald-100 disabled:opacity-50 transition-all flex items-center justify-center gap-2 text-sm"
+          >
+            {submitting ? (
+              <>
+                <div className="w-4 h-4 border-2 border-emerald-300 border-t-emerald-700 rounded-full animate-spin"></div>
+                Processing...
+              </>
+            ) : (
+              <>
+                Skip Payment (Test Mode)
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </>
+            )}
+          </button>
+        )}
         
         <p className="text-center text-[10px] text-slate-400 uppercase tracking-widest font-bold">
           🛡️ Secured by industry standard encryption

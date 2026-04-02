@@ -369,8 +369,8 @@ app.post("/api/trading/verify-payment", async (req, res) => {
         userId,
         userName,
         userEmail,
-        planId,
-        planName,
+        courseId: planId,
+        courseName: planName,
         amount,
         paymentMethod: 'razorpay',
         orderId: razorpay_order_id,
@@ -379,9 +379,8 @@ app.post("/api/trading/verify-payment", async (req, res) => {
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
-      // 2. Mark Enrollment as Active
-      const enrollmentId = `${userId}_${planId}`;
-      const enrollmentRef = db.collection('tradingEnrollments').doc(enrollmentId);
+      // 2. Mark Enrollment as Active (use auto-generated ID instead of composite key)
+      const enrollmentRef = db.collection('tradingEnrollments').doc();
       await enrollmentRef.set({
         userId,
         userName,
@@ -391,7 +390,8 @@ app.post("/api/trading/verify-payment", async (req, res) => {
         status: 'active',
         paymentId: razorpay_payment_id,
         enrolledAt: admin.firestore.FieldValue.serverTimestamp(),
-      }, { merge: true });
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
 
       // 3. Send Success Email
       await resend.emails.send({

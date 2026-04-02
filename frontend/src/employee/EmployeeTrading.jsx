@@ -3,7 +3,7 @@ import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 
 export default function EmployeeTrading() {
-  const { tradingCourses, tradingSessions, employeePermissions, addTradingCourse, updateTradingCourse, deleteTradingCourse, addTradingSession, updateTradingSession, deleteTradingSession, tradingCurriculum, addCurriculumModule, updateCurriculumModule, deleteCurriculumModule, seedDefaultCurriculum } = useStore()
+  const { tradingCourses, tradingSessions, tradingEnrollments, employeePermissions, users, teamMembers, addTradingCourse, updateTradingCourse, deleteTradingCourse, addTradingSession, updateTradingSession, deleteTradingSession, tradingCurriculum, addCurriculumModule, updateCurriculumModule, deleteCurriculumModule, seedDefaultCurriculum } = useStore()
   const { currentUser, userProfile } = useAuth()
   const [activeSection, setActiveSection] = useState('overview')
   const [showCourseModal, setShowCourseModal] = useState(false)
@@ -15,15 +15,62 @@ export default function EmployeeTrading() {
 
   const [courseForm, setCourseForm] = useState({ name: '', price: '', description: '', features: '', highlighted: false, badge: '' })
   const [sessionForm, setSessionForm] = useState({ topic: '', date: '', time: '', platform: 'Google Meet', meeting_link: '', course_id: '' })
+  const [showEnrollmentModal, setShowEnrollmentModal] = useState(false)
+  const [enrollmentForm, setEnrollmentForm] = useState({ userEmail: '', courseId: '', status: 'active' })
 
   // Get current user permissions
   const userId = currentUser?.uid
   const perms = employeePermissions[userId] || {}
+  // Debug log
+  console.log('DEBUG - userId:', userId, 'perms:', perms)
   const canManageCourses = perms.can_manage_courses === true
   const canManagePricing = perms.can_manage_pricing === true
   const canCreateSessions = perms.can_create_sessions === true
   const canEditCurriculum = perms.can_edit_curriculum === true
-  const hasAnyPermission = canManageCourses || canManagePricing || canCreateSessions || canEditCurriculum
+  const canManageEnrollments = perms.can_manage_enrollments === true
+  const canViewEnrollments = true // Everyone can see enrollments
+  const hasAnyPermission = canManageCourses || canManagePricing || canCreateSessions || canEditCurriculum || canManageEnrollments
+
+  // Find user by email
+  const findUserByEmail = (email) => {
+    const allUsers = [...(users || []), ...(teamMembers || [])]
+    return allUsers.find(u => u.email?.toLowerCase() === email.toLowerCase())
+  }
+
+  // Handle manual enrollment
+  const handleAddEnrollment = async (e) => {
+    e.preventDefault()
+    if (!enrollmentForm.userEmail || !enrollmentForm.courseId) {
+      alert('Please fill all fields')
+      return
+    }
+    setSaving(true)
+    try {
+      const user = findUserByEmail(enrollmentForm.userEmail)
+      if (!user) {
+        alert('User not found with this email')
+        setSaving(false)
+        return
+      }
+      await addTradingEnrollment({
+        userId: user.uid || user.id,
+        userName: user.displayName || user.name || enrollmentForm.userEmail,
+        userEmail: enrollmentForm.userEmail,
+        courseId: enrollmentForm.courseId,
+        courseName: tradingCourses.find(c => c.id === enrollmentForm.courseId)?.name || 'Course',
+        amount: tradingCourses.find(c => c.id === enrollmentForm.courseId)?.price || 0,
+        status: enrollmentForm.status,
+      })
+      setShowEnrollmentModal(false)
+      setEnrollmentForm({ userEmail: '', courseId: '', status: 'active' })
+      showSuccess('Enrollment added successfully!')
+    } catch (err) {
+      console.error('Add enrollment error:', err)
+      alert('Failed to add enrollment')
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const showSuccess = (msg) => {
     setSuccessMsg(msg)
@@ -139,7 +186,7 @@ export default function EmployeeTrading() {
     try { await deleteCurriculumModule(m.id); showSuccess('Module deleted') } catch { alert('Failed') }
   }
 
-  if (!hasAnyPermission) {
+  if (!hasAnyPermission && !canViewEnrollments) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
         <div className="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
@@ -175,8 +222,9 @@ export default function EmployeeTrading() {
       </div>
 
       {/* Section Tabs */}
-      <div className="flex gap-2 border-b border-white/5 pb-2">
+      <div className="flex gap-2 border-b border-white/5 pb-2 overflow-x-auto">
         <button onClick={() => setActiveSection('overview')} className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${activeSection === 'overview' ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-white'}`}>Overview</button>
+        <button onClick={() => setActiveSection('enrollments')} className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${activeSection === 'enrollments' ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-white'}`}>Enrollments</button>
         {canManageCourses && (
           <button onClick={() => setActiveSection('courses')} className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${activeSection === 'courses' ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-white'}`}>Courses</button>
         )}
@@ -193,7 +241,7 @@ export default function EmployeeTrading() {
 
       {/* Overview Section */}
       {activeSection === 'overview' && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
           <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-6 text-center">
             <p className="text-3xl font-extrabold text-blue-400">{tradingCourses.length}</p>
             <p className="text-sm text-gray-400 mt-1">Courses</p>
@@ -203,9 +251,81 @@ export default function EmployeeTrading() {
             <p className="text-sm text-gray-400 mt-1">Sessions</p>
           </div>
           <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-6 text-center">
-            <p className="text-3xl font-extrabold text-emerald-400">{[canManageCourses, canManagePricing, canCreateSessions].filter(Boolean).length}</p>
+            <p className="text-3xl font-extrabold text-emerald-400">{tradingEnrollments.length}</p>
+            <p className="text-sm text-gray-400 mt-1">Enrollments</p>
+          </div>
+          <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-6 text-center">
+            <p className="text-3xl font-extrabold text-amber-400">{[canManageCourses, canManagePricing, canCreateSessions].filter(Boolean).length}</p>
             <p className="text-sm text-gray-400 mt-1">Your Permissions</p>
           </div>
+        </div>
+      )}
+
+      {/* Enrollments Section */}
+      {activeSection === 'enrollments' && (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <p className="text-sm text-gray-400">View all student enrollments in the trading mentorship program.</p>
+            <div className="flex gap-2">
+              <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-bold">{tradingEnrollments.length} Total</span>
+              {(canManageEnrollments || canManageCourses) && (
+                <button onClick={() => setShowEnrollmentModal(true)} className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-500/10 text-emerald-400 rounded-lg text-sm font-medium hover:bg-emerald-500/20 transition-all">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                  Add Enrollment
+                </button>
+              )}
+            </div>
+          </div>
+          {tradingEnrollments.length === 0 ? (
+            <p className="text-gray-500 text-sm text-center py-8">No enrollments yet.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-white/5 text-gray-400 text-xs font-bold uppercase tracking-wider">
+                    <th className="px-4 py-3">Student</th>
+                    <th className="px-4 py-3">Course</th>
+                    <th className="px-4 py-3">Amount</th>
+                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3">Join Date</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm text-gray-300">
+                  {tradingEnrollments.map((enr) => (
+                    <tr key={enr.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs">
+                            {enr.userName?.charAt(0) || 'S'}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-white">{enr.userName || 'Student'}</p>
+                            <p className="text-xs text-gray-500">{enr.userEmail}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 font-medium">{enr.courseName || enr.planName}</td>
+                      <td className="px-4 py-3">₹{Number(enr.amount || 0).toLocaleString('en-IN')}</td>
+                      <td className="px-4 py-3">
+                        <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${
+                          enr.status === 'active' ? 'bg-emerald-500/10 text-emerald-400' : 
+                          enr.status === 'pending' ? 'bg-amber-500/10 text-amber-400' : 
+                          'bg-gray-500/10 text-gray-400'
+                        }`}>
+                          {enr.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-500">
+                        {enr.createdAt?.toDate ? enr.createdAt.toDate().toLocaleDateString() : 
+                         enr.createdAt ? new Date(enr.createdAt).toLocaleDateString() :
+                         enr.enrolledAt ? new Date(enr.enrolledAt).toLocaleDateString() : 'N/A'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 
@@ -380,6 +500,15 @@ export default function EmployeeTrading() {
                   <input type="text" value={courseForm.badge} onChange={e => setCourseForm({...courseForm, badge: e.target.value})} className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50" />
                 </div>
               </div>
+              <div className="flex items-center justify-between p-3 bg-white/[0.02] rounded-xl border border-white/5">
+                <div>
+                  <p className="text-sm font-semibold text-white">Free Course</p>
+                  <p className="text-[10px] text-gray-500">Mark as free (price will be 0)</p>
+                </div>
+                <button type="button" onClick={() => setCourseForm({...courseForm, highlighted: !courseForm.highlighted, price: courseForm.highlighted ? courseForm.price : 0})} className={`w-12 h-6 rounded-full transition-all relative ${courseForm.highlighted ? 'bg-emerald-500' : 'bg-gray-700'}`}>
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${courseForm.highlighted ? 'left-7' : 'left-1'}`} />
+                </button>
+              </div>
               <div>
                 <label className="block text-xs font-medium text-gray-400 mb-1.5">Description</label>
                 <textarea value={courseForm.description} onChange={e => setCourseForm({...courseForm, description: e.target.value})} rows={3} className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 resize-none" />
@@ -489,6 +618,66 @@ export default function EmployeeTrading() {
                 <button type="button" onClick={() => setShowModuleModal(false)} className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-gray-400 hover:bg-white/10">Cancel</button>
                 <button type="submit" disabled={saving} className="flex-[2] px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-600 rounded-xl text-sm font-bold text-white disabled:opacity-50">
                   {saving ? 'Saving...' : (editingModule ? 'Update' : 'Create')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Add Enrollment Modal */}
+      {showEnrollmentModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowEnrollmentModal(false)} />
+          <div className="relative bg-gray-900 border border-white/10 rounded-2xl w-full max-w-lg shadow-2xl">
+            <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-white">Add Enrollment</h2>
+              <button onClick={() => setShowEnrollmentModal(false)} className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <form onSubmit={handleAddEnrollment} className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">Student Email *</label>
+                <input 
+                  type="email" 
+                  value={enrollmentForm.userEmail} 
+                  onChange={e => setEnrollmentForm({...enrollmentForm, userEmail: e.target.value})} 
+                  required 
+                  placeholder="student@example.com" 
+                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50" 
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">Select Course *</label>
+                <select 
+                  value={enrollmentForm.courseId} 
+                  onChange={e => setEnrollmentForm({...enrollmentForm, courseId: e.target.value})} 
+                  required 
+                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50"
+                >
+                  <option value="" className="bg-gray-900">Select a course</option>
+                  {tradingCourses.map(c => (
+                    <option key={c.id} value={c.id} className="bg-gray-900">{c.name} - ₹{Number(c.price || 0).toLocaleString('en-IN')}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">Status</label>
+                <select 
+                  value={enrollmentForm.status} 
+                  onChange={e => setEnrollmentForm({...enrollmentForm, status: e.target.value})} 
+                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50"
+                >
+                  <option value="active" className="bg-gray-900">Active</option>
+                  <option value="pending" className="bg-gray-900">Pending</option>
+                  <option value="completed" className="bg-gray-900">Completed</option>
+                </select>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setShowEnrollmentModal(false)} className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-gray-400 hover:bg-white/10">Cancel</button>
+                <button type="submit" disabled={saving} className="flex-[2] px-4 py-3 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl text-sm font-bold text-white disabled:opacity-50">
+                  {saving ? 'Adding...' : 'Add Enrollment'}
                 </button>
               </div>
             </form>

@@ -39,7 +39,7 @@ const EnrollmentList = ({ isAdmin = false }) => {
                   </div>
                 </td>
                 <td className="px-6 py-4 font-semibold text-slate-700">{enr.courseName}</td>
-                <td className="px-6 py-4">{enr.createdAt?.toDate().toLocaleDateString() || 'N/A'}</td>
+                <td className="px-6 py-4">{enr.createdAt?.toDate ? enr.createdAt.toDate().toLocaleDateString() : enr.createdAt ? new Date(enr.createdAt).toLocaleDateString() : 'N/A'}</td>
                 <td className="px-6 py-4">
                   <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
                     enr.status === 'active' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'

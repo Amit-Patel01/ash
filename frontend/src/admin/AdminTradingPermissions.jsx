@@ -7,6 +7,7 @@ const PERMISSION_KEYS = [
   { key: 'can_create_sessions', label: 'Create Live Sessions', desc: 'Schedule and manage live sessions' },
   { key: 'can_manage_mentor_profile', label: 'Mentor Profile', desc: 'Update mentor name, bio, photo and stats' },
   { key: 'can_edit_curriculum', label: 'Edit Curriculum', desc: 'Add, edit, and delete curriculum modules and topics' },
+  { key: 'can_manage_enrollments', label: 'Manage Enrollments', desc: 'Add and manage student enrollments manually' },
 ]
 
 export default function AdminTradingPermissions() {
