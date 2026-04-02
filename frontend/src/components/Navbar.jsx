@@ -59,8 +59,12 @@ const Navbar = () => {
     },
   ]
 
+  const isTradingPage = location.pathname === '/services/trading-mentorship'
+
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ease-in-out ${scrolled
+    <nav className={`fixed left-0 right-0 z-[140] transition-all duration-500 ease-in-out ${
+      isTradingPage ? 'top-9' : 'top-0'
+    } ${scrolled
       ? 'py-2 lg:py-3'
       : 'py-4 lg:py-6'
       }`}>

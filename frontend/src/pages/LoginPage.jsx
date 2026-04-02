@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../config/firebase'
@@ -7,6 +7,9 @@ import { db } from '../config/firebase'
 export default function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const redirectPath = searchParams.get('redirect')
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -22,6 +25,11 @@ export default function LoginPage() {
       const profileSnap = await getDoc(doc(db, 'users', user.uid))
       const profile = profileSnap.data()
 
+      if (redirectPath) {
+        navigate(redirectPath)
+        return
+      }
+      
       if (profile?.role === 'admin') {
         navigate('/admin')
       } else if (profile?.role === 'customer') {

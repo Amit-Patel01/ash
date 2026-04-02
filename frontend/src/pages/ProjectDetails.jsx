@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import api from '../config/api'
 import { useStore } from '../store/StoreContext'
+import { useAuth } from '../context/AuthContext'
 
 const ProjectDetails = () => {
   const { slug } = useParams()
   const { projects } = useStore()
+  const { currentUser } = useAuth()
   const [project, setProject] = useState(null)
   const [loading, setLoading] = useState(true)
   const [loaded, setLoaded] = useState(false)
@@ -157,10 +159,10 @@ const ProjectDetails = () => {
                   </li>
                 </ul>
                 <Link
-                  to={`/checkout/${project.slug}?type=project_only`}
+                  to={currentUser ? `/checkout/${project.slug}?type=project_only` : `/login?redirect=/checkout/${project.slug}?type=project_only`}
                   className="block w-full text-center px-6 py-3 rounded-xl font-bold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all duration-300 border border-slate-200"
                 >
-                  Buy Project Only
+                  {currentUser ? 'Buy Project Only' : 'Login to Buy'}
                 </Link>
               </div>
 
@@ -196,10 +198,10 @@ const ProjectDetails = () => {
                   </li>
                 </ul>
                 <Link
-                  to={`/checkout/${project.slug}?type=project_with_source`}
+                  to={currentUser ? `/checkout/${project.slug}?type=project_with_source` : `/login?redirect=/checkout/${project.slug}?type=project_with_source`}
                   className="block w-full text-center px-6 py-3 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300"
                 >
-                  Buy with Source Code
+                  {currentUser ? 'Buy with Source Code' : 'Login to Buy'}
                 </Link>
               </div>
             </div>

@@ -113,6 +113,7 @@ const Checkout = () => {
             if (verifyData.success) {
               // 4. Save Order to Database
               await addOrder({
+                userId: currentUser.uid, // Tie order to user account
                 project_id: project.id,
                 project_title: project.title,
                 customer_name: form.customer_name,
@@ -351,10 +352,11 @@ const Checkout = () => {
               <input
                 type="email"
                 required
+                disabled={!!currentUser}
                 value={form.customer_email}
                 onChange={(e) => setForm({ ...form, customer_email: e.target.value })}
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-white/70 border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-300 transition-all disabled:opacity-70 disabled:bg-slate-50"
               />
             </div>
 

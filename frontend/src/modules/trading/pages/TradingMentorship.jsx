@@ -7,6 +7,9 @@ import LiveSessions from '../components/LiveSessions'
 import EnrollmentList from '../components/EnrollmentList'
 import PaymentPanel from '../components/PaymentPanel'
 import EmployeeAccess from '../components/EmployeeAccess'
+import GraphBackground from '../components/GraphBackground'
+import TickerTape from '../components/TickerTape'
+import Sparkline from '../components/Sparkline'
 
 const ICON_MAP = {
   book: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>),
@@ -155,27 +158,31 @@ export default function TradingMentorship() {
       {/* Public Overview Section */}
       {activeSection === 'overview' && (
         <>
+          <TickerTape />
+
           {/* HERO */}
-          <section ref={heroRef} className="relative w-full min-h-screen flex items-center justify-center overflow-hidden pt-28 pb-20 px-4 bg-gradient-to-br from-slate-50 to-blue-50/30">
-            <div className={`relative z-10 max-w-5xl mx-auto text-center ${fade(heroVisible)}`}>
+          <section ref={heroRef} className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-white via-white to-blue-50/20 pt-40 md:pt-48">
+            <GraphBackground />
+            
+            <div className={`relative z-10 max-w-5xl mx-auto text-center px-4 ${fade(heroVisible)}`}>
               <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full border border-blue-200 bg-blue-50">
                 <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
                 <span className="text-blue-700 text-sm font-bold tracking-wide uppercase">Live Mentorship Program</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-tight mb-6 text-slate-900">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight mb-4 sm:mb-6 text-slate-900">
                 Master the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Stock Market</span>
                 <br />with Expert Guidance
               </h1>
 
-              <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-10 leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-slate-500 max-w-xl md:max-w-2xl mx-auto mb-6 sm:mb-10 leading-relaxed">
                 Learn intraday trading, technical analysis, and risk management from a professional trader with 10+ years of market experience.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
                 <a
                   href="#pricing"
-                  className="group inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg shadow-xl transition-all duration-300 hover:scale-105 bg-blue-600 text-white hover:bg-blue-700"
+                  className="group inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-bold text-sm sm:text-lg shadow-xl transition-all duration-300 hover:scale-105 bg-blue-600 text-white hover:bg-blue-700"
                 >
                   Enroll Now
                   <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -238,9 +245,12 @@ export default function TradingMentorship() {
 
                   <div className="grid grid-cols-3 gap-4">
                     {(mentorProfile?.stats || DEFAULT_MENTOR.stats).map((stat, i) => (
-                      <div key={i} className="text-center p-4 rounded-2xl border border-slate-100 bg-slate-50">
-                        <p className="text-2xl font-extrabold text-blue-600">{stat.value}</p>
-                        <p className="text-xs text-slate-400 mt-1">{stat.label}</p>
+                      <div key={i} className="text-center p-4 rounded-2xl border border-slate-100 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all group">
+                        <p className="text-2xl font-black text-blue-600 mb-1">{stat.value}</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-3">{stat.label}</p>
+                        <div className="flex justify-center opacity-40 group-hover:opacity-80 transition-opacity">
+                          <Sparkline color={i % 2 === 0 ? '#2563eb' : '#22c55e'} width={60} height={20} />
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -264,30 +274,41 @@ export default function TradingMentorship() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                    className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 border-2 ${
                       activeTab === tab.id
-                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
-                        : 'text-slate-500 border border-slate-200 hover:border-blue-300 hover:text-blue-600'
+                        ? 'bg-blue-600 border-blue-600 text-white shadow-xl shadow-blue-200'
+                        : 'bg-white border-slate-100 text-slate-400 hover:border-blue-200 hover:text-blue-600'
                     }`}
                   >
                     {tab.icon}
-                    <span className="hidden sm:inline">{tab.label}</span>
+                    <span>{tab.label}</span>
                   </button>
                 ))}
               </div>
 
               {CURRICULUM_TABS.map(tab => (
                 activeTab === tab.id && (
-                  <div key={tab.id} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in duration-500">
+                  <div key={tab.id} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {tab.topics.map((topic, i) => (
                       <div
                         key={i}
-                        className="flex items-start gap-3 p-5 rounded-2xl border border-slate-100 hover:border-blue-200 bg-white transition-all duration-300 group"
+                        className="relative flex flex-col p-6 rounded-3xl border border-slate-100 bg-white shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-500 group overflow-hidden"
                       >
-                        <div className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold bg-blue-50 text-blue-600">
-                          {i + 1}
+                        <div className="absolute top-0 right-0 px-3 py-1 bg-blue-50 text-[10px] font-black text-blue-600 rounded-bl-xl tracking-tighter opacity-70">
+                          MODULE {i + 1}
                         </div>
-                        <p className="text-slate-700 font-semibold group-hover:text-blue-600 transition-colors">{topic}</p>
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                            <span className="text-blue-600 font-black text-sm">#{(i + 1).toString().padStart(2, '0')}</span>
+                          </div>
+                          <div className="flex-1 border-b border-slate-50 pb-1">
+                            <div className="flex justify-between items-end">
+                              <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Quote Result</span>
+                              <span className="text-[10px] font-bold text-green-500">BUY ★</span>
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-slate-800 font-bold text-lg leading-tight group-hover:text-blue-600 transition-colors">{topic}</p>
                       </div>
                     ))}
                   </div>
@@ -304,9 +325,9 @@ export default function TradingMentorship() {
 
           {/* PAYMENT MODAL */}
           {selectedPlan && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 pt-24 md:pt-32">
               <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedPlan(null)} />
-              <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto">
+              <div className="relative w-full max-w-lg max-h-[85vh] overflow-y-auto">
                 <button
                   onClick={() => setSelectedPlan(null)}
                   className="absolute top-4 right-4 z-10 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-200 hover:text-slate-700"

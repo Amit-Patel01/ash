@@ -131,6 +131,7 @@ function AppContent() {
         <Route path="coming-soon" element={<ComingSoon />} />
         <Route path="join-us" element={<RoleSelect />} />
         <Route path="signup" element={<CustomerSignup />} />
+        <Route path="login" element={<LoginPage />} />
       </Route>
 
       {/* Role-based redirect */}
