@@ -20,14 +20,6 @@ const ICON_MAP = {
   sparkle: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" /></svg>),
 }
 
-const FALLBACK_CURRICULUM = [
-  { id: 'basics', label: 'Market Basics', iconName: 'book', topics: ['What is Stock Market?', 'How Exchanges Work (NSE/BSE)', 'Demat & Trading Accounts', 'Types of Orders', 'Market Participants', 'Bull vs Bear Markets'] },
-  { id: 'technical', label: 'Technical Analysis', iconName: 'chart', topics: ['Candlestick Patterns', 'Support & Resistance', 'Trendlines & Channels', 'Moving Averages (SMA/EMA)', 'RSI, MACD, Bollinger Bands', 'Volume Analysis'] },
-  { id: 'intraday', label: 'Intraday Trading', iconName: 'bolt', topics: ['Scalping Strategies', 'Opening Range Breakout', 'VWAP Trading', 'Momentum Trading', 'Gap Up/Down Strategies', 'Intraday Stock Selection'] },
-  { id: 'swing', label: 'Swing & Positional', iconName: 'trending', topics: ['Swing Trading Setups', 'Positional Trade Management', 'Sector Rotation Strategy', 'Earnings Play Strategies', 'Multi-Timeframe Analysis', 'Portfolio Allocation'] },
-  { id: 'risk', label: 'Risk Management', iconName: 'shield', topics: ['Position Sizing', 'Stop Loss Strategies', 'Risk-Reward Ratio', 'Capital Preservation', 'Drawdown Management', 'Diversification Techniques'] },
-  { id: 'psychology', label: 'Trading Psychology', iconName: 'sparkle', topics: ['Emotional Discipline', 'FOMO & Greed Management', 'Developing a Trading Plan', 'Journaling & Review', 'Patience & Consistency', 'Building Winning Habits'] },
-]
 
 
 const FAQ_DATA = [
@@ -50,25 +42,13 @@ function useInView() {
   return [ref, isVisible]
 }
 
-const DEFAULT_MENTOR = {
-  name: 'Mentor Name',
-  title: 'Professional Trader & Market Analyst',
-  bio: 'Add mentor bio from admin panel.',
-  photoUrl: '',
-  stats: [
-    { value: '10+', label: 'Years Experience' },
-    { value: '1000+', label: 'Sessions Done' },
-    { value: 'Intraday', label: 'Specialist' },
-  ],
-}
+const DEFAULT_MENTOR = null;
 
 export default function TradingMentorship() {
   const { tradingCourses, tradingSessions, mentorProfile, tradingCurriculum } = useStore()
   const { currentUser, isAdmin, isEmployee } = useAuth()
 
-  const CURRICULUM_TABS = tradingCurriculum.length > 0
-    ? tradingCurriculum.map(m => ({ ...m, icon: ICON_MAP[m.iconName] || ICON_MAP.book }))
-    : FALLBACK_CURRICULUM.map(m => ({ ...m, icon: ICON_MAP[m.iconName] || ICON_MAP.book }))
+  const CURRICULUM_TABS = (tradingCurriculum || []).map(m => ({ ...m, icon: ICON_MAP[m.iconName] || ICON_MAP.book }));
 
   const [activeTab, setActiveTab] = useState(CURRICULUM_TABS[0]?.id || 'basics')
   const [openFaq, setOpenFaq] = useState(null)
@@ -77,10 +57,7 @@ export default function TradingMentorship() {
 
 
 
-  const upcomingSessions = tradingSessions?.length > 0 ? tradingSessions : [
-    { id: 1, date: '2026-04-10', time: '10:00 AM', topic: 'Technical Analysis Deep Dive', platform: 'Google Meet', meeting_link: '#' },
-    { id: 2, date: '2026-04-12', time: '02:00 PM', topic: 'Intraday Strategy Workshop', platform: 'Zoom', meeting_link: '#' },
-  ]
+  const upcomingSessions = tradingSessions || []
 
   const [heroRef, heroVisible] = useInView()
   const [aboutRef, aboutVisible] = useInView()
@@ -211,111 +188,115 @@ export default function TradingMentorship() {
           </section>
 
           {/* ABOUT MENTOR */}
-          <section ref={aboutRef} className="relative py-20 px-4 bg-white">
-            <div className={`max-w-6xl mx-auto ${fade(aboutVisible)}`}>
-              <div className="text-center mb-14">
-                <h2 className="text-3xl md:text-5xl font-extrabold mb-4 text-slate-900">
-                  Meet Your <span className="text-blue-600">Mentor</span>
-                </h2>
-                <p className="text-slate-500 max-w-xl mx-auto">Learn from a seasoned professional with a proven track record</p>
-              </div>
-
-              <div className="flex flex-col lg:flex-row items-center gap-12">
-                <div className="flex-shrink-0">
-                  <div className="w-56 h-56 md:w-72 md:h-72 rounded-3xl border-4 border-blue-100 overflow-hidden shadow-lg bg-slate-100">
-                    {mentorProfile?.photoUrl ? (
-                      <img src={mentorProfile.photoUrl} alt={mentorProfile.name || 'Mentor'} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-400">
-                        <svg className="w-20 h-20 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                        </svg>
-                        <span className="text-xs text-slate-400">Mentor Photo</span>
-                      </div>
-                    )}
-                  </div>
+          {mentorProfile && (
+            <section ref={aboutRef} className="relative py-20 px-4 bg-white">
+              <div className={`max-w-6xl mx-auto ${fade(aboutVisible)}`}>
+                <div className="text-center mb-14">
+                  <h2 className="text-3xl md:text-5xl font-extrabold mb-4 text-slate-900">
+                    Meet Your <span className="text-blue-600">Mentor</span>
+                  </h2>
+                  <p className="text-slate-500 max-w-xl mx-auto">Learn from a seasoned professional with a proven track record</p>
                 </div>
 
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold mb-2 text-slate-900">{mentorProfile?.name || DEFAULT_MENTOR.name}</h3>
-                  <p className="text-blue-600 font-semibold mb-4">{mentorProfile?.title || DEFAULT_MENTOR.title}</p>
-                  <p className="text-slate-500 leading-relaxed mb-6">
-                    {mentorProfile?.bio || DEFAULT_MENTOR.bio}
-                  </p>
-
-                  <div className="grid grid-cols-3 gap-4">
-                    {(mentorProfile?.stats || DEFAULT_MENTOR.stats).map((stat, i) => (
-                      <div key={i} className="text-center p-4 rounded-2xl border border-slate-100 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all group">
-                        <p className="text-2xl font-black text-blue-600 mb-1">{stat.value}</p>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-3">{stat.label}</p>
-                        <div className="flex justify-center opacity-40 group-hover:opacity-80 transition-opacity">
-                          <Sparkline color={i % 2 === 0 ? '#2563eb' : '#22c55e'} width={60} height={20} />
+                <div className="flex flex-col lg:flex-row items-center gap-12">
+                  <div className="flex-shrink-0">
+                    <div className="w-56 h-56 md:w-72 md:h-72 rounded-3xl border-4 border-blue-100 overflow-hidden shadow-lg bg-slate-100">
+                      {mentorProfile?.photoUrl ? (
+                        <img src={mentorProfile.photoUrl} alt={mentorProfile.name || 'Mentor'} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-slate-400">
+                          <svg className="w-20 h-20 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                          </svg>
+                          <span className="text-xs text-slate-400">Mentor Photo</span>
                         </div>
-                      </div>
-                    ))}
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex-1">
+                    <h3 className="text-2xl font-bold mb-2 text-slate-900">{mentorProfile?.name}</h3>
+                    <p className="text-blue-600 font-semibold mb-4">{mentorProfile?.title}</p>
+                    <p className="text-slate-500 leading-relaxed mb-6">
+                      {mentorProfile?.bio}
+                    </p>
+
+                    <div className="grid grid-cols-3 gap-4">
+                      {(mentorProfile?.stats || []).map((stat, i) => (
+                        <div key={i} className="text-center p-4 rounded-2xl border border-slate-100 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all group">
+                          <p className="text-2xl font-black text-blue-600 mb-1">{stat.value}</p>
+                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-3">{stat.label}</p>
+                          <div className="flex justify-center opacity-40 group-hover:opacity-80 transition-opacity">
+                            <Sparkline color={i % 2 === 0 ? '#2563eb' : '#22c55e'} width={60} height={20} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </section>
+          )}
 
           {/* CURRICULUM */}
-          <section id="curriculum" ref={curriculumRef} className="relative py-20 px-4 bg-slate-50/50">
-            <div className={`max-w-6xl mx-auto ${fade(curriculumVisible)}`}>
-              <div className="text-center mb-14">
-                <h2 className="text-3xl md:text-5xl font-extrabold mb-4 text-slate-900">
-                  What You'll <span className="text-blue-600">Learn</span>
-                </h2>
-                <p className="text-slate-500 max-w-xl mx-auto">A comprehensive 6-module curriculum designed for all levels</p>
-              </div>
+          {CURRICULUM_TABS.length > 0 && (
+            <section id="curriculum" ref={curriculumRef} className="relative py-20 px-4 bg-slate-50/50">
+              <div className={`max-w-6xl mx-auto ${fade(curriculumVisible)}`}>
+                <div className="text-center mb-14">
+                  <h2 className="text-3xl md:text-5xl font-extrabold mb-4 text-slate-900">
+                    What You'll <span className="text-blue-600">Learn</span>
+                  </h2>
+                  <p className="text-slate-500 max-w-xl mx-auto">A comprehensive curriculum designed for all levels</p>
+                </div>
 
-              <div className="flex flex-wrap justify-center gap-2 mb-10">
+                <div className="flex flex-wrap justify-center gap-2 mb-10">
+                  {CURRICULUM_TABS.map(tab => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 border-2 ${
+                        activeTab === tab.id
+                          ? 'bg-blue-600 border-blue-600 text-white shadow-xl shadow-blue-200'
+                          : 'bg-white border-slate-100 text-slate-400 hover:border-blue-200 hover:text-blue-600'
+                      }`}
+                    >
+                      {tab.icon}
+                      <span>{tab.label}</span>
+                    </button>
+                  ))}
+                </div>
+
                 {CURRICULUM_TABS.map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 border-2 ${
-                      activeTab === tab.id
-                        ? 'bg-blue-600 border-blue-600 text-white shadow-xl shadow-blue-200'
-                        : 'bg-white border-slate-100 text-slate-400 hover:border-blue-200 hover:text-blue-600'
-                    }`}
-                  >
-                    {tab.icon}
-                    <span>{tab.label}</span>
-                  </button>
-                ))}
-              </div>
-
-              {CURRICULUM_TABS.map(tab => (
-                activeTab === tab.id && (
-                  <div key={tab.id} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    {tab.topics.map((topic, i) => (
-                      <div
-                        key={i}
-                        className="relative flex flex-col p-6 rounded-3xl border border-slate-100 bg-white shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-500 group overflow-hidden"
-                      >
-                        <div className="absolute top-0 right-0 px-3 py-1 bg-blue-50 text-[10px] font-black text-blue-600 rounded-bl-xl tracking-tighter opacity-70">
-                          MODULE {i + 1}
-                        </div>
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
-                            <span className="text-blue-600 font-black text-sm">#{(i + 1).toString().padStart(2, '0')}</span>
+                  activeTab === tab.id && (
+                    <div key={tab.id} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                      {tab.topics.map((topic, i) => (
+                        <div
+                          key={i}
+                          className="relative flex flex-col p-6 rounded-3xl border border-slate-100 bg-white shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-500 group overflow-hidden"
+                        >
+                          <div className="absolute top-0 right-0 px-3 py-1 bg-blue-50 text-[10px] font-black text-blue-600 rounded-bl-xl tracking-tighter opacity-70">
+                            MODULE {i + 1}
                           </div>
-                          <div className="flex-1 border-b border-slate-50 pb-1">
-                            <div className="flex justify-between items-end">
-                              <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Quote Result</span>
-                              <span className="text-[10px] font-bold text-green-500">BUY ★</span>
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                              <span className="text-blue-600 font-black text-sm">#{(i + 1).toString().padStart(2, '0')}</span>
+                            </div>
+                            <div className="flex-1 border-b border-slate-50 pb-1">
+                              <div className="flex justify-between items-end">
+                                <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Quote Result</span>
+                                <span className="text-[10px] font-bold text-green-500">BUY ★</span>
+                              </div>
                             </div>
                           </div>
+                          <p className="text-slate-800 font-bold text-lg leading-tight group-hover:text-blue-600 transition-colors">{topic}</p>
                         </div>
-                        <p className="text-slate-800 font-bold text-lg leading-tight group-hover:text-blue-600 transition-colors">{topic}</p>
-                      </div>
-                    ))}
-                  </div>
-                )
-              ))}
-            </div>
-          </section>
+                      ))}
+                    </div>
+                  )
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* PRICING */}
           <Pricing

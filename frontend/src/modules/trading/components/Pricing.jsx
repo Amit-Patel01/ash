@@ -1,39 +1,6 @@
 import React from 'react'
 
 const Pricing = ({ courses, onPlanSelect }) => {
-  const DEFAULT_PRICING = [
-    {
-      id: 'basic',
-      name: 'Basic',
-      price: 4999,
-      period: 'one-time',
-      description: 'Perfect for beginners wanting to learn the fundamentals',
-      features: ['Market Basics Course', 'Technical Analysis Fundamentals', '5 Pre-recorded Sessions', 'Email Support', 'Basic Chart Patterns Guide', 'Community Access'],
-      highlighted: false,
-      badge: '',
-    },
-    {
-      id: 'pro',
-      name: 'Pro',
-      price: 9999,
-      period: 'one-time',
-      description: 'Most popular plan for serious traders',
-      features: ['Everything in Basic', 'Intraday Trading Masterclass', 'Swing Trading Strategies', '12 Live Sessions/month', 'Risk Management Toolkit', 'Priority WhatsApp Support', 'Weekly Market Analysis', 'Trading Journal Template'],
-      highlighted: true,
-      badge: 'MOST POPULAR',
-    },
-    {
-      id: 'premium',
-      name: 'Premium',
-      price: 19999,
-      period: 'one-time',
-      description: 'Complete mentorship for aspiring professional traders',
-      features: ['Everything in Pro', '1-on-1 Mentorship Calls', 'Unlimited Live Sessions', 'Personal Trading Plan', 'Portfolio Review', 'Lifetime Access to Updates', 'Direct Mentor WhatsApp', 'Certificate of Completion'],
-      highlighted: false,
-      badge: '',
-    },
-  ]
-
   const displayData = courses && courses.length > 0 ? courses.map(c => ({
     id: c.id,
     name: c.name,
@@ -43,7 +10,9 @@ const Pricing = ({ courses, onPlanSelect }) => {
     features: c.features || [],
     highlighted: c.highlighted || false,
     badge: c.badge || '',
-  })) : DEFAULT_PRICING
+  })) : []
+
+  if (displayData.length === 0) return null;
 
   return (
     <section id="pricing" className="py-20 px-4 bg-gray-50/50">

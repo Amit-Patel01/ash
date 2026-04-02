@@ -4,7 +4,7 @@ import { useAuth } from '../../../context/AuthContext'
 
 const LiveSessions = () => {
   const { tradingSessions, tradingEnrollments, loading } = useStore()
-  const { currentUser } = useAuth()
+  const { currentUser, isAdmin, isEmployee } = useAuth()
 
   // Check if user is enrolled in any trading course
   const isEnrolled = React.useMemo(() => {
@@ -18,10 +18,9 @@ const LiveSessions = () => {
     </div>
   )
 
-  const upcomingSessions = tradingSessions && tradingSessions.length > 0 ? tradingSessions : [
-    { id: 1, date: '2026-04-10', time: '10:00 AM', topic: 'Live Market Scalping', platform: 'Zoom' },
-    { id: 2, date: '2026-04-12', time: '07:00 PM', topic: 'Options Greek Mastery', platform: 'Google Meet' }
-  ]
+  const sessions = tradingSessions && tradingSessions.length > 0 ? tradingSessions : []
+
+  if (sessions.length === 0 && !isAdmin && !isEmployee) return null;
 
   return (
     <section className="py-20 px-4 bg-white">
@@ -45,7 +44,7 @@ const LiveSessions = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {upcomingSessions.map((session, i) => (
+          {sessions.map((session, i) => (
             <div key={session.id || i} className="group p-8 rounded-3xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-blue-500 hover:shadow-2xl transition-all duration-300">
               <div className="flex items-start justify-between mb-6">
                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 group-hover:border-blue-200">
