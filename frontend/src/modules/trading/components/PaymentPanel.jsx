@@ -300,6 +300,8 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
         <p className="text-center text-[10px] text-slate-400 uppercase tracking-widest font-bold">
           🛡️ Secured by industry standard encryption
         </p>
+      </>
+    )}
       </div>
     </div>
   )

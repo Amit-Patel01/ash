@@ -1,0 +1,40 @@
+
+> frontend@0.0.0 build
+> vite build
+
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 96 modules transformed.
+Γ£ù Build failed in 2.43s
+error during build:
+[vite:esbuild] Transform failed with 2 errors:
+D:/Github-project upload/solutionhub/frontend/src/modules/trading/components/PaymentPanel.jsx:303:8: ERROR: Unexpected closing "div" tag does not match opening fragment tag
+D:/Github-project upload/solutionhub/frontend/src/modules/trading/components/PaymentPanel.jsx:304:10: ERROR: Unterminated regular expression
+file: D:/Github-project upload/solutionhub/frontend/src/modules/trading/components/PaymentPanel.jsx:303:8
+
+Unexpected closing "div" tag does not match opening fragment tag
+301 |            ≡ƒ¢í∩╕Å Secured by industry standard encryption
+302 |          </p>
+303 |        </div>
+    |          ^
+304 |      </div>
+305 |    )
+
+Unterminated regular expression
+302 |          </p>
+303 |        </div>
+304 |      </div>
+    |            ^
+305 |    )
+306 |  }
+
+    at failureErrorWithLog (D:\Github-project upload\solutionhub\frontend\node_modules\esbuild\lib\main.js:1467:15)
+    at D:\Github-project upload\solutionhub\frontend\node_modules\esbuild\lib\main.js:736:50
+    at responseCallbacks.<computed> (D:\Github-project upload\solutionhub\frontend\node_modules\esbuild\lib\main.js:603:9)
+    at handleIncomingPacket (D:\Github-project upload\solutionhub\frontend\node_modules\esbuild\lib\main.js:658:12)
+    at Socket.readFromStdout (D:\Github-project upload\solutionhub\frontend\node_modules\esbuild\lib\main.js:581:7)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
