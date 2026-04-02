@@ -5,44 +5,45 @@ import { useAuth } from '../context/AuthContext'
 
 export default function CustomerOverview() {
   const { currentUser, userProfile } = useAuth()
-  const { orders, projects } = useStore()
+  const { orders, projects, tradingEnrollments } = useStore()
 
   const myOrders = useMemo(() => {
     return orders.filter(o => o.customer_email === currentUser?.email || o.customer_uid === currentUser?.uid)
   }, [orders, currentUser])
 
-  const totalSpent = myOrders.filter(o => o.status === 'completed').reduce((sum, o) => sum + Number(o.amount || 0), 0)
-  const pendingOrders = myOrders.filter(o => o.status === 'pending').length
-  const completedOrders = myOrders.filter(o => o.status === 'completed').length
+    const totalSpent = myOrders.filter(o => o.status === 'completed').reduce((sum, o) => sum + Number(o.amount || 0), 0)
+    const pendingOrders = myOrders.filter(o => o.status === 'pending').length
+    const completedOrders = myOrders.filter(o => o.status === 'completed').length
+    const recentOrders = myOrders.slice(0, 5)
+    const activeEnrollments = tradingEnrollments.filter(e => e.userId === currentUser?.uid && e.status === 'active').length
 
-  const recentOrders = myOrders.slice(0, 5)
-
-  return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Dashboard</h1>
-          <p className="text-sm text-gray-400 mt-1">Welcome back, <span className="text-blue-400 font-semibold">{userProfile?.displayName || currentUser?.displayName || 'Customer'}</span>. Here's your overview.</p>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          { label: 'Total Orders', value: myOrders.length, icon: '📦', color: 'from-blue-500 to-indigo-600' },
-          { label: 'Completed', value: completedOrders, icon: '✅', color: 'from-emerald-500 to-green-600' },
-          { label: 'Pending', value: pendingOrders, icon: '⏳', color: 'from-amber-500 to-orange-600' },
-          { label: 'Total Spent', value: `₹${totalSpent.toLocaleString('en-IN')}`, icon: '💰', color: 'from-purple-500 to-violet-600' },
-        ].map((stat, i) => (
-          <div key={i} className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 hover:bg-gray-800/50 hover:border-white/10 transition-all duration-300 shadow-xl group">
-            <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300 mb-4`}>
-              <span className="text-xl">{stat.icon}</span>
-            </div>
-            <p className="text-3xl font-extrabold text-white tracking-tight">{stat.value}</p>
-            <p className="text-sm font-medium text-gray-400 mt-1">{stat.label}</p>
+    return (
+      <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-white tracking-tight">Dashboard</h1>
+            <p className="text-sm text-gray-400 mt-1">Welcome back, <span className="text-blue-400 font-semibold">{userProfile?.displayName || currentUser?.displayName || 'Customer'}</span>. Here's your overview.</p>
           </div>
-        ))}
-      </div>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          {[
+            { label: 'Total Orders', value: myOrders.length, icon: '📦', color: 'from-blue-500 to-indigo-600' },
+            { label: 'Completed', value: completedOrders, icon: '✅', color: 'from-emerald-500 to-green-600' },
+            { label: 'Active Courses', value: activeEnrollments, icon: '🎓', color: 'from-blue-600 to-cyan-600' },
+            { label: 'Pending', value: pendingOrders, icon: '⏳', color: 'from-amber-500 to-orange-600' },
+            { label: 'Total Spent', value: `₹${totalSpent.toLocaleString('en-IN')}`, icon: '💰', color: 'from-purple-500 to-violet-600' },
+          ].map((stat, i) => (
+            <div key={i} className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 hover:bg-gray-800/50 hover:border-white/10 transition-all duration-300 shadow-xl group">
+              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300 mb-4`}>
+                <span className="text-xl">{stat.icon}</span>
+              </div>
+              <p className="text-3xl font-extrabold text-white tracking-tight">{stat.value}</p>
+              <p className="text-sm font-medium text-gray-400 mt-1">{stat.label}</p>
+            </div>
+          ))}
+        </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
         {/* Recent Orders */}
@@ -116,6 +117,54 @@ export default function CustomerOverview() {
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* My Mentorships Section */}
+      <div className="mt-8 bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-8 hover:border-white/10 transition-colors shadow-2xl relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-xl font-bold text-white flex items-center gap-3">
+            <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+            </svg>
+            My Mentorships
+          </h3>
+          <Link to="/services/trading-mentorship" className="text-sm text-blue-400 hover:text-blue-300 font-medium">Explore More</Link>
+        </div>
+
+        {tradingEnrollments.filter(e => e.userId === currentUser?.uid && e.status === 'active').length === 0 ? (
+          <div className="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/10">
+            <div className="text-3xl mb-3 opacity-50">🎓</div>
+            <p className="text-gray-400 font-medium">No active enrollments yet</p>
+            <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">Start your trading journey by enrolling in our professional mentorship programs.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {tradingEnrollments
+              .filter(e => e.userId === currentUser?.uid && e.status === 'active')
+              .map(enrollment => (
+                <div key={enrollment.id} className="p-5 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all flex items-center justify-between group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-900/20">
+                      SH
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight">{enrollment.courseName || 'Mentorship'}</p>
+                      <p className="text-[10px] text-gray-500 font-medium tracking-widest uppercase">Active Enrollment</p>
+                    </div>
+                  </div>
+                  <Link 
+                    to="/services/trading-mentorship" 
+                    className="p-2.5 rounded-xl bg-white/10 text-white hover:bg-blue-600 transition-all shadow-xl group/btn"
+                  >
+                    <svg className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </Link>
+                </div>
+              ))}
+          </div>
+        )}
       </div>
     </div>
   )

@@ -7,6 +7,7 @@ const colorMap = {
   'from-indigo-500 to-purple-500': 'hover:text-indigo-600',
   'from-pink-500 to-rose-500': 'hover:text-pink-600',
   'from-amber-500 to-orange-500': 'hover:text-amber-600',
+  'from-amber-500 to-yellow-500': 'hover:text-yellow-600',
 }
 
 const Services = () => {
@@ -44,6 +45,13 @@ const Services = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
           </svg>
         )
+      case 'trading':
+      case 'chart':
+        return (
+          <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+          </svg>
+        )
       default:
         return (
           <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,6 +66,7 @@ const Services = () => {
     if (cat.includes('dev')) return { color: 'from-blue-500 to-cyan-500', iconBg: 'from-blue-600 to-indigo-600' }
     if (cat.includes('support') || cat.includes('repair')) return { color: 'from-indigo-500 to-purple-500', iconBg: 'from-purple-600 to-pink-600' }
     if (cat.includes('creative') || cat.includes('edit')) return { color: 'from-pink-500 to-rose-500', iconBg: 'from-rose-500 to-orange-500' }
+    if (cat.includes('trading') || cat.includes('finance') || cat.includes('mentorship')) return { color: 'from-amber-500 to-yellow-500', iconBg: 'from-yellow-600 to-amber-600' }
     return { color: 'from-amber-500 to-orange-500', iconBg: 'from-amber-500 to-yellow-500' }
   }
 
@@ -67,6 +76,7 @@ const Services = () => {
     if (t.includes('repair')) return '/services/repair'
     if (t.includes('edit')) return '/services/editing'
     if (t.includes('support')) return '/services/tech-support'
+    if (t.includes('trading') || t.includes('mentorship')) return '/services/trading-mentorship'
     return '/contact'
   }
 
@@ -75,6 +85,7 @@ const Services = () => {
     if (cat.includes('dev')) return ['Responsive Design', 'SEO Optimized', 'Fast Performance']
     if (cat.includes('support') || cat.includes('repair')) return ['Hardware Repair', 'Software Fixes', 'System Optimization']
     if (cat.includes('creative') || cat.includes('edit')) return ['Video Editing', 'Photo Retouching', 'Color Grading']
+    if (cat.includes('trading') || cat.includes('finance') || cat.includes('mentorship')) return ['Live Sessions', 'Technical Analysis', 'Risk Management']
     return ['24/7 Support', 'Expert Help', 'Custom Solutions']
   }
 

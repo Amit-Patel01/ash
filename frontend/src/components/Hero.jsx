@@ -12,14 +12,17 @@ const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28 md:pt-36">
       {/* Background Image Layer */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <img
           src={heroBg}
           alt="Tech Solutions"
-          className="w-full h-full object-cover opacity-20 select-none pointer-events-none transition-opacity duration-1000"
+          className="w-full h-full object-cover opacity-40 select-none pointer-events-none scale-105 transition-all duration-1000"
         />
-        {/* Mirror/Reflection Layer */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/10 to-white/40 backdrop-blur-[1px]"></div>
+        {/* Modern Glass Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-white/95 via-white/40 to-blue-50/30 backdrop-blur-[2px]"></div>
+        {/* Floating Light Accents */}
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-purple-400/5 rounded-full blur-[150px] animate-pulse"></div>
       </div>
 
 

@@ -4,6 +4,7 @@ import { StoreProvider } from './store/StoreContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ChatProvider } from './context/ChatContext'
 import { ThemeProvider } from './context/ThemeContext'
+import LoadingScreen from './components/LoadingScreen'
 import Layout from './components/Layout'
 import Hero from './components/Hero'
 import About from './pages/About'
@@ -39,6 +40,7 @@ import AdminAccountRequests from './admin/AdminAccountRequests'
 import AdminSellRequests from './admin/AdminSellRequests'
 import AdminServiceRequests from './admin/AdminServiceRequests'
 import AdminSettings from './admin/AdminSettings'
+import AdminMentorProfile from './admin/AdminMentorProfile'
 
 import EmployeeLogin from './employee/EmployeeLogin'
 import RequestAccount from './pages/RequestAccount'
@@ -58,11 +60,16 @@ import CustomerSupport from './customer/CustomerSupport'
 import CustomerProfile from './customer/CustomerProfile'
 
 import ChatPage from './pages/ChatPage'
+import TradingMentorship from './modules/trading/pages/TradingMentorship'
+import AdminTradingPermissions from './admin/AdminTradingPermissions'
+import AdminTradingCourses from './admin/AdminTradingCourses'
+import AdminTradingSessions from './admin/AdminTradingSessions'
+import EmployeeTrading from './employee/EmployeeTrading'
 
 function ProtectedAdmin({ children }) {
   const { currentUser, loading } = useAuth()
-  
-  if (loading) return null
+
+  if (loading) return <LoadingScreen />
   if (!currentUser || currentUser.role !== 'admin') {
     return <Navigate to="/admin-login" replace />
   }
@@ -71,23 +78,23 @@ function ProtectedAdmin({ children }) {
 
 function ProtectedEmployee({ children }) {
   const { currentUser, loading } = useAuth()
-  
-  if (loading) return null
+
+  if (loading) return <LoadingScreen />
   if (!currentUser) return <Navigate to="/login" replace />
   return children
 }
 
 function ProtectedCustomer({ children }) {
   const { currentUser, loading } = useAuth()
-  
-  if (loading) return null
+
+  if (loading) return <LoadingScreen />
   if (!currentUser) return <Navigate to="/login" replace />
   return children
 }
 
 function RoleRedirect() {
   const { currentUser, loading } = useAuth()
-  if (loading) return null
+  if (loading) return <LoadingScreen />
   if (!currentUser) return <Navigate to="/login" replace />
   if (currentUser.role === 'admin') return <Navigate to="/admin" replace />
   if (currentUser.role === 'customer') return <Navigate to="/customer" replace />
@@ -120,6 +127,7 @@ function AppContent() {
         <Route path="services/repair" element={<RepairService />} />
         <Route path="services/editing" element={<EditingService />} />
         <Route path="services/tech-support" element={<TechSupport />} />
+        <Route path="services/trading-mentorship" element={<TradingMentorship />} />
         <Route path="coming-soon" element={<ComingSoon />} />
         <Route path="join-us" element={<RoleSelect />} />
         <Route path="signup" element={<CustomerSignup />} />
@@ -141,6 +149,10 @@ function AppContent() {
         <Route path="service-requests" element={<AdminServiceRequests />} />
         <Route path="sell-requests" element={<AdminSellRequests />} />
         <Route path="services" element={<AdminServices />} />
+        <Route path="trading-permissions" element={<AdminTradingPermissions />} />
+        <Route path="trading-courses" element={<AdminTradingCourses />} />
+        <Route path="trading-sessions" element={<AdminTradingSessions />} />
+        <Route path="mentor-profile" element={<AdminMentorProfile />} />
         <Route path="messages" element={<AdminMessages />} />
         <Route path="settings" element={<AdminSettings />} />
       </Route>
@@ -156,6 +168,7 @@ function AppContent() {
         <Route path="tasks" element={<EmployeeTasks />} />
         <Route path="projects" element={<EmployeeProjects />} />
         <Route path="sell-project" element={<SellProjectRequest />} />
+        <Route path="trading" element={<EmployeeTrading />} />
         <Route path="chat" element={<EmployeeChat />} />
         <Route path="profile" element={<EmployeeProfile />} />
       </Route>
@@ -165,6 +178,7 @@ function AppContent() {
         <Route index element={<CustomerOverview />} />
         <Route path="orders" element={<CustomerOrders />} />
         <Route path="support" element={<CustomerSupport />} />
+        <Route path="trading-mentorship" element={<TradingMentorship />} />
         <Route path="profile" element={<CustomerProfile />} />
       </Route>
     </Routes>

@@ -13,7 +13,7 @@ function StatIcon({ icon }) {
 }
 
 export default function AdminDashboard() {
-  const { projects, orders, getTotalRevenue, loading: storeLoading } = useStore()
+  const { projects, orders, getTotalRevenue, tradingCourses, tradingSessions, tradingEnrollments, tradingPayments, loading: storeLoading } = useStore()
   const { currentUser } = useAuth()
   const [selectedPeriod, setSelectedPeriod] = useState('week')
 
@@ -24,6 +24,13 @@ export default function AdminDashboard() {
     { label: 'Pending Orders', value: orders.filter(o => o.status === 'pending').length, change: '', changeType: 'positive', icon: 'task', color: 'from-emerald-500 to-teal-500' },
     { label: 'Total Sales', value: orders.length, change: '', changeType: 'positive', icon: 'group', color: 'from-purple-500 to-pink-500' },
     { label: 'Revenue', value: `₹${getTotalRevenue().toLocaleString('en-IN')}`, change: '', changeType: 'positive', icon: 'dollar', color: 'from-orange-500 to-amber-500' },
+  ]
+
+  const tradingStats = [
+    { label: 'Courses', value: tradingCourses.length, link: '/admin/trading-courses' },
+    { label: 'Sessions', value: tradingSessions.length, link: '/admin/trading-sessions' },
+    { label: 'Enrollments', value: tradingEnrollments.length, link: null },
+    { label: 'Pending Payments', value: tradingPayments.filter(p => p.status === 'pending').length, link: null },
   ]
 
   const recentOrders = orders.slice(0, 5)
@@ -54,6 +61,22 @@ export default function AdminDashboard() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Trading Overview */}
+      <div className="bg-gray-900/50 backdrop-blur-sm border border-white/5 rounded-2xl p-6">
+        <h2 className="text-lg font-semibold text-white mb-4">Trading Mentorship Overview</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {tradingStats.map((stat, i) => (
+            <div key={i} className="text-center p-4 rounded-xl bg-white/[0.03] border border-white/5">
+              <p className="text-2xl font-bold text-white">{stat.value}</p>
+              <p className="text-xs text-gray-400 mt-1">{stat.label}</p>
+              {stat.link && (
+                <a href={stat.link} className="text-[10px] text-blue-400 hover:text-blue-300 mt-1 inline-block">Manage</a>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Recent Orders Table */}

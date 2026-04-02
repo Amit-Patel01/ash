@@ -16,16 +16,14 @@ function ComposeForm({ onSend }) {
     setSending(true)
     setError('')
     try {
-      const response = await fetch(api.contact, {
+      const response = await fetch(api.reply, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          firstName: form.name || 'Admin',
-          lastName: '',
+          firstName: form.name || 'User',
           email: form.email,
-          mobile: '',
-          github: '',
-          message: form.subject ? `Subject: ${form.subject}\n\n${form.message}` : form.message
+          subject: form.subject || 'Message from Amit Solution Hub',
+          message: form.message
         })
       })
       if (!response.ok) throw new Error('Failed to send')

@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const crypto = require("crypto");
 const cors = require("cors");
 const { Resend } = require("resend");
 const Razorpay = require("razorpay");
@@ -202,13 +203,7 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-// Project routes
-try {
-  const projectRoutes = require('./routes/projects');
-  app.use('/api/projects', projectRoutes);
-} catch (e) {
-  console.log('Project routes not loaded:', e.message);
-}
+
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 if (!RESEND_API_KEY) {
@@ -246,9 +241,9 @@ app.post("/api/razorpay/create-order", async (req, res) => {
 
 // Verify Razorpay Payment & Send Email
 app.post("/api/razorpay/verify-payment", async (req, res) => {
-  const { 
-    razorpay_order_id, 
-    razorpay_payment_id, 
+  const {
+    razorpay_order_id,
+    razorpay_payment_id,
     razorpay_signature,
     customer_email,
     customer_name,
@@ -257,10 +252,18 @@ app.post("/api/razorpay/verify-payment", async (req, res) => {
     purchase_type
   } = req.body;
 
-  const crypto = require("crypto");
-  const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
+  const hmac = crypto.createHmac("sha256", RAZORPAY_KEY_SECRET);
   hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
   const expectedSignature = hmac.digest("hex");
+
+  if (expectedSignature !== razorpay_signature) {
+    console.error("❌ Projects Signature Mismatch:", { 
+      expected: expectedSignature, 
+      received: razorpay_signature,
+      orderId: razorpay_order_id,
+      paymentId: razorpay_payment_id
+    });
+  }
 
   if (expectedSignature === razorpay_signature) {
     try {
@@ -323,6 +326,100 @@ app.post("/api/razorpay/verify-payment", async (req, res) => {
     } catch (error) {
       console.error("Email Error after success:", error);
       res.json({ success: true, message: "Payment verified but failed to send confirmation email" });
+    }
+  } else {
+    res.status(400).json({ success: false, message: "Invalid signature" });
+  }
+});
+
+// Verify Razorpay Payment for Trading Mentorship
+app.post("/api/trading/verify-payment", async (req, res) => {
+  const {
+    razorpay_order_id,
+    razorpay_payment_id,
+    razorpay_signature,
+    userId,
+    userName,
+    userEmail,
+    planId,
+    planName,
+    amount
+  } = req.body;
+
+  const hmac = crypto.createHmac("sha256", RAZORPAY_KEY_SECRET);
+  hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+  const expectedSignature = hmac.digest("hex");
+
+  if (expectedSignature !== razorpay_signature) {
+    console.error("❌ Trading Signature Mismatch:", { 
+      expected: expectedSignature, 
+      received: razorpay_signature,
+      orderId: razorpay_order_id,
+      paymentId: razorpay_payment_id
+    });
+  }
+
+  if (expectedSignature === razorpay_signature) {
+    try {
+      const db = admin.firestore();
+      
+      // 1. Record Payment
+      const paymentRef = db.collection('tradingPayments').doc(razorpay_payment_id);
+      await paymentRef.set({
+        userId,
+        userName,
+        userEmail,
+        planId,
+        planName,
+        amount,
+        paymentMethod: 'razorpay',
+        orderId: razorpay_order_id,
+        paymentId: razorpay_payment_id,
+        status: 'completed',
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      // 2. Mark Enrollment as Active
+      const enrollmentId = `${userId}_${planId}`;
+      const enrollmentRef = db.collection('tradingEnrollments').doc(enrollmentId);
+      await enrollmentRef.set({
+        userId,
+        userName,
+        userEmail,
+        courseId: planId,
+        courseName: planName,
+        status: 'active',
+        paymentId: razorpay_payment_id,
+        enrolledAt: admin.firestore.FieldValue.serverTimestamp(),
+      }, { merge: true });
+
+      // 3. Send Success Email
+      await resend.emails.send({
+        from: "Amit Solution Hub <contact@amitsolutionhub.com>",
+        to: userEmail,
+        subject: `Welcome to ${planName} Mentorship!`,
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 12px; overflow: hidden;">
+            <div style="background: #2563eb; color: white; padding: 40px; text-align: center;">
+              <h1>Enrollment Confirmed!</h1>
+              <p>You now have access to the ${planName} Mentorship Program.</p>
+            </div>
+            <div style="padding: 40px;">
+              <h2>Hello ${userName},</h2>
+              <p>Your payment of ₹${amount} was successful. Your account has been activated for the <strong>${planName}</strong> plan.</p>
+              <p>You can now access live sessions, curriculum, and community resources through your dashboard.</p>
+              <div style="text-align: center; margin: 40px 0;">
+                <a href="https://amitsolutionhub.com/customer" style="background: #2563eb; color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold;">Go to Dashboard</a>
+              </div>
+            </div>
+          </div>
+        `
+      });
+
+      res.json({ success: true, message: "Payment verified and enrollment activated" });
+    } catch (error) {
+      console.error("Verification Error:", error);
+      res.status(500).json({ success: false, message: "Failed to process enrollment" });
     }
   } else {
     res.status(400).json({ success: false, message: "Invalid signature" });
@@ -411,9 +508,9 @@ Message: ${message}`
 
   } catch (error) {
     console.error("❌ MAIL ERROR:", error.message || error);
-    res.status(500).json({ 
-      success: false, 
-      message: error.message || "Failed to send email. Ensure RESEND_API_KEY is valid and domain is verified." 
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to send email. Ensure RESEND_API_KEY is valid and domain is verified."
     });
   }
 });

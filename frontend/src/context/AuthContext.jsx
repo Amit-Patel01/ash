@@ -25,6 +25,7 @@ import {
   onSnapshot
 } from 'firebase/firestore'
 import { auth, db, firebaseConfig, setUserOnline, setUserOffline } from '../config/firebase'
+import LoadingScreen from '../components/LoadingScreen'
 import { initializeApp } from 'firebase/app'
 import { getAuth as getSecondaryAuth, signOut as secondarySignOut } from 'firebase/auth'
 
@@ -209,15 +210,25 @@ export function AuthProvider({ children }) {
     return querySnapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }))
   }, [])
 
+  const hasPermission = useCallback((permissionKey) => {
+    if (!currentUser) return false
+    if (currentUser.role === 'admin') return true
+    return currentUser.permissions?.[permissionKey] === true
+  }, [currentUser])
+
+  const isAdmin = currentUser?.role === 'admin'
+  const isEmployee = currentUser?.role === 'employee' || currentUser?.role === 'mentor'
+
   const value = {
     currentUser, userProfile, loading,
     login, signup, logout, resetPassword,
-    updateUserProfile, createAccountRequest, approveAccountRequest, getAllUsers
+    updateUserProfile, createAccountRequest, approveAccountRequest, getAllUsers,
+    hasPermission, isAdmin, isEmployee
   }
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {loading ? <LoadingScreen /> : children}
     </AuthContext.Provider>
   )
 }

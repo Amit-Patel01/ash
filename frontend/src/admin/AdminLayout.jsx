@@ -5,16 +5,20 @@ import { useStore } from '../store/StoreContext'
 
 const navItems = [
   { path: '/admin', label: 'Dashboard', icon: 'dashboard' },
-  { path: '/admin/projects', label: 'Projects', icon: 'folder' },
-  { path: '/admin/tasks', label: 'Tasks', icon: 'task' },
-  { path: '/admin/employees', label: 'Employees', icon: 'badge' },
-  { path: '/admin/sales', label: 'Sales', icon: 'cart' },
-  { path: '/admin/account-requests', label: 'Account Requests', icon: 'userPlus' },
-  { path: '/admin/service-requests', label: 'Service Requests', icon: 'clipboardList' },
-  { path: '/admin/sell-requests', label: 'Sell Requests', icon: 'tag' },
-  { path: '/admin/services', label: 'Services', icon: 'design_services' },
-  { path: '/admin/messages', label: 'Messages', icon: 'mail' },
-  { path: '/admin/settings', label: 'Settings', icon: 'settings' },
+  { path: '/admin/projects', label: 'Projects', icon: 'folder', permission: 'can_manage_projects' },
+  { path: '/admin/tasks', label: 'Tasks', icon: 'task', permission: 'can_manage_tasks' },
+  { path: '/admin/employees', label: 'Employees', icon: 'badge', permission: 'can_manage_employees' },
+  { path: '/admin/sales', label: 'Sales', icon: 'cart', permission: 'can_manage_sales' },
+  { path: '/admin/account-requests', label: 'Account Requests', icon: 'userPlus', permission: 'can_approve_accounts' },
+  { path: '/admin/service-requests', label: 'Service Requests', icon: 'clipboardList', permission: 'can_manage_service_requests' },
+  { path: '/admin/sell-requests', label: 'Sell Requests', icon: 'tag', permission: 'can_manage_sell_requests' },
+  { path: '/admin/services', label: 'Services', icon: 'design_services', permission: 'can_manage_services' },
+  { path: '/admin/trading-permissions', label: 'Trading Permissions', icon: 'shield', permission: 'can_manage_permissions' },
+  { path: '/admin/trading-courses', label: 'Trading Courses', icon: 'trending_up', permission: 'can_manage_courses' },
+  { path: '/admin/trading-sessions', label: 'Trading Sessions', icon: 'video_call', permission: 'can_create_sessions' },
+  { path: '/admin/mentor-profile', label: 'Mentor Profile', icon: 'person', permission: 'can_manage_mentor_profile' },
+  { path: '/admin/messages', label: 'Messages', icon: 'mail', permission: 'can_manage_messages' },
+  { path: '/admin/settings', label: 'Settings', icon: 'settings', permission: 'can_manage_settings' },
 ]
 
 const iconMap = {
@@ -81,10 +85,30 @@ const iconMap = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
     </svg>
   ),
+  shield: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+    </svg>
+  ),
+  trending_up: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+    </svg>
+  ),
+  video_call: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+    </svg>
+  ),
+  person: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+    </svg>
+  ),
 }
 
 export default function AdminLayout({ onLogout }) {
-  const { currentUser } = useAuth()
+  const { currentUser, hasPermission } = useAuth()
   const { accountRequests, sellRequests, serviceRequests, messages } = useStore()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -144,7 +168,7 @@ export default function AdminLayout({ onLogout }) {
 
         {/* Navigation */}
         <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
+          {navItems.filter(item => !item.permission || hasPermission(item.permission)).map((item) => {
             const isActive = item.path === '/admin'
               ? location.pathname === '/admin'
               : location.pathname.startsWith(item.path)

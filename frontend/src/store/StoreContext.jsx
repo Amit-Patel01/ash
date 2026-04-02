@@ -14,6 +14,7 @@ import {
   serverTimestamp 
 } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import LoadingScreen from '../components/LoadingScreen'
 
 const StoreContext = createContext(null)
 
@@ -29,6 +30,13 @@ export function StoreProvider({ children }) {
   const [sellRequests, setSellRequests] = useState([])
   const [serviceRequests, setServiceRequests] = useState([])
   const [messages, setMessages] = useState([])
+  const [tradingCourses, setTradingCourses] = useState([])
+  const [tradingSessions, setTradingSessions] = useState([])
+  const [tradingEnrollments, setTradingEnrollments] = useState([])
+  const [tradingPayments, setTradingPayments] = useState([])
+  const [mentorProfile, setMentorProfile] = useState(null)
+  const [employeePermissions, setEmployeePermissions] = useState({})
+  const [tradingCurriculum, setTradingCurriculum] = useState([])
   const [loading, setLoading] = useState(true)
 
   // Real-time Listeners
@@ -68,51 +76,6 @@ export function StoreProvider({ children }) {
     const unsubscribeServices = onSnapshot(collection(db, 'services'), (snapshot) => {
       const servicesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
       setServices(servicesData)
-      
-      // Seed default services if empty
-      if (snapshot.empty) {
-        const defaultServices = [
-          {
-            name: 'Web & Project Development',
-            description: 'Custom websites and web applications built with modern technologies to grow your business online.',
-            icon: 'code',
-            basePrice: 499,
-            category: 'Development',
-            path: '/coming-soon',
-            active: true,
-          },
-          {
-            name: 'PC & Laptop Repair',
-            description: 'Professional hardware and software repair services for all types of computers and laptops.',
-            icon: 'tool',
-            basePrice: 299,
-            category: 'Repair',
-            path: '/coming-soon',
-            active: true,
-          },
-          {
-            name: 'Video & Photo Editing',
-            description: 'Professional editing services for videos and photos to make your content stand out.',
-            icon: 'video',
-            basePrice: 199,
-            category: 'Creative',
-            path: '/coming-soon',
-            active: true,
-          },
-          {
-            name: 'Technical Support & Guidance',
-            description: 'Expert technical support and guidance to help you solve any tech-related issues.',
-            icon: 'support',
-            basePrice: 99,
-            category: 'Support',
-            path: '/coming-soon',
-            active: true,
-          }
-        ]
-        defaultServices.forEach(s => {
-          addDoc(collection(db, 'services'), { ...s, createdAt: serverTimestamp() }).catch(e => console.error("Seeding error:", e))
-        })
-      }
     }, (error) => console.error("Services snapshot error:", error))
 
     // Real-time listeners for Requests & Messages
@@ -132,6 +95,51 @@ export function StoreProvider({ children }) {
       setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
     }, (error) => console.error("Messages snapshot error:", error))
 
+    // Trading Courses Listener
+    const unsubscribeCourses = onSnapshot(collection(db, 'tradingCourses'), (snapshot) => {
+      const coursesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      setTradingCourses(coursesData)
+    }, (error) => console.error("Trading Courses snapshot error:", error))
+
+    // Trading Sessions Listener
+    const unsubscribeSessions = onSnapshot(collection(db, 'tradingSessions'), (snapshot) => {
+      const sessionsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      setTradingSessions(sessionsData)
+    }, (error) => console.error("Trading Sessions snapshot error:", error))
+
+    // Trading Enrollments Listener
+    const unsubscribeEnrollments = onSnapshot(query(collection(db, 'tradingEnrollments'), orderBy('createdAt', 'desc')), (snapshot) => {
+      setTradingEnrollments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+    }, (error) => console.error("Trading Enrollments snapshot error:", error))
+
+    // Trading Payments Listener
+    const unsubscribePayments = onSnapshot(query(collection(db, 'tradingPayments'), orderBy('createdAt', 'desc')), (snapshot) => {
+      setTradingPayments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+    }, (error) => console.error("Trading Payments snapshot error:", error))
+
+    // Mentor Profile Listener
+    const unsubscribeMentorProfile = onSnapshot(doc(db, 'tradingSettings', 'mentorProfile'), (snapshot) => {
+      if (snapshot.exists()) {
+        setMentorProfile({ id: snapshot.id, ...snapshot.data() })
+      }
+    }, (error) => console.error("Mentor Profile snapshot error:", error))
+
+    // Employee Permissions Listener
+    const unsubscribePermissions = onSnapshot(collection(db, 'employeePermissions'), (snapshot) => {
+      const perms = {}
+      snapshot.docs.forEach(doc => {
+        perms[doc.id] = doc.data()
+      })
+      setEmployeePermissions(perms)
+    }, (error) => console.error("Permissions snapshot error:", error))
+
+    // Trading Curriculum Listener
+    const unsubscribeCurriculum = onSnapshot(collection(db, 'tradingCurriculum'), (snapshot) => {
+      const curriculumData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      curriculumData.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+      setTradingCurriculum(curriculumData)
+    }, (error) => console.error("Curriculum snapshot error:", error))
+
     return () => {
       unsubscribeProjects()
       unsubscribeOrders()
@@ -144,6 +152,13 @@ export function StoreProvider({ children }) {
       unsubscribeSellRequests()
       unsubscribeServiceRequests()
       unsubscribeMessages()
+      unsubscribeCourses()
+      unsubscribeSessions()
+      unsubscribeEnrollments()
+      unsubscribePayments()
+      unsubscribeMentorProfile()
+      unsubscribePermissions()
+      unsubscribeCurriculum()
     }
   }, [])
 
@@ -268,20 +283,153 @@ export function StoreProvider({ children }) {
   const getTotalRevenue = () => orders.filter(o => o.status === 'completed').reduce((sum, o) => sum + Number(o.amount || 0), 0)
   const getPendingOrders = () => orders.filter(o => o.status === 'pending')
 
+  // --- Trading Courses ---
+  const addTradingCourse = async (course) => {
+    try {
+      const docRef = await addDoc(collection(db, 'tradingCourses'), {
+        ...course,
+        createdAt: serverTimestamp()
+      })
+      return { id: docRef.id, ...course }
+    } catch (err) { console.error("Error adding trading course:", err); throw err }
+  }
+  const updateTradingCourse = async (id, updates) => {
+    try { await updateDoc(doc(db, 'tradingCourses', id), updates) } catch (err) { console.error("Error updating trading course:", err); throw err }
+  }
+  const deleteTradingCourse = async (id) => {
+    try { await deleteDoc(doc(db, 'tradingCourses', id)) } catch (err) { console.error("Error deleting trading course:", err); throw err }
+  }
+
+  // --- Trading Sessions ---
+  const addTradingSession = async (session) => {
+    try {
+      const docRef = await addDoc(collection(db, 'tradingSessions'), {
+        ...session,
+        createdAt: serverTimestamp()
+      })
+      return { id: docRef.id, ...session }
+    } catch (err) { console.error("Error adding trading session:", err); throw err }
+  }
+  const updateTradingSession = async (id, updates) => {
+    try { await updateDoc(doc(db, 'tradingSessions', id), updates) } catch (err) { console.error("Error updating trading session:", err); throw err }
+  }
+  const deleteTradingSession = async (id) => {
+    try { await deleteDoc(doc(db, 'tradingSessions', id)) } catch (err) { console.error("Error deleting trading session:", err); throw err }
+  }
+
+  // --- Trading Enrollments ---
+  const addTradingEnrollment = async (enrollment) => {
+    try {
+      const docRef = await addDoc(collection(db, 'tradingEnrollments'), {
+        ...enrollment,
+        status: 'pending',
+        createdAt: serverTimestamp()
+      })
+      return { id: docRef.id, ...enrollment }
+    } catch (err) { console.error("Error adding enrollment:", err); throw err }
+  }
+  const updateTradingEnrollment = async (id, updates) => {
+    try { await updateDoc(doc(db, 'tradingEnrollments', id), updates) } catch (err) { console.error("Error updating enrollment:", err); throw err }
+  }
+  const deleteTradingEnrollment = async (id) => {
+    try { await deleteDoc(doc(db, 'tradingEnrollments', id)) } catch (err) { console.error("Error deleting enrollment:", err); throw err }
+  }
+
+  // --- Trading Payments ---
+  const addTradingPayment = async (payment) => {
+    try {
+      const docRef = await addDoc(collection(db, 'tradingPayments'), {
+        ...payment,
+        createdAt: serverTimestamp()
+      })
+      return { id: docRef.id, ...payment }
+    } catch (err) { console.error("Error adding payment:", err); throw err }
+  }
+  const updateTradingPayment = async (id, updates) => {
+    try { await updateDoc(doc(db, 'tradingPayments', id), updates) } catch (err) { console.error("Error updating payment:", err); throw err }
+  }
+  const deleteTradingPayment = async (id) => {
+    try { await deleteDoc(doc(db, 'tradingPayments', id)) } catch (err) { console.error("Error deleting payment:", err); throw err }
+  }
+
+  // --- Employee Permissions ---
+  const updateEmployeePermissions = async (employeeId, permissions) => {
+    try {
+      await setDoc(doc(db, 'employeePermissions', employeeId), {
+        ...permissions,
+        updatedAt: serverTimestamp()
+      })
+    } catch (err) { console.error("Error updating permissions:", err); throw err }
+  }
+  const getEmployeePermissions = (employeeId) => {
+    return employeePermissions[employeeId] || {}
+  }
+
+  // --- Mentor Profile ---
+  const updateMentorProfile = async (profileData) => {
+    try {
+      await setDoc(doc(db, 'tradingSettings', 'mentorProfile'), {
+        ...profileData,
+        updatedAt: serverTimestamp()
+      })
+    } catch (err) { console.error("Error updating mentor profile:", err); throw err }
+  }
+
+  // --- Trading Curriculum ---
+  const addCurriculumModule = async (module) => {
+    try {
+      const docRef = await addDoc(collection(db, 'tradingCurriculum'), {
+        ...module,
+        order: tradingCurriculum.length,
+        createdAt: serverTimestamp()
+      })
+      return { id: docRef.id, ...module }
+    } catch (err) { console.error("Error adding curriculum module:", err); throw err }
+  }
+  const updateCurriculumModule = async (id, updates) => {
+    try { await updateDoc(doc(db, 'tradingCurriculum', id), updates) } catch (err) { console.error("Error updating curriculum module:", err); throw err }
+  }
+  const deleteCurriculumModule = async (id) => {
+    try { await deleteDoc(doc(db, 'tradingCurriculum', id)) } catch (err) { console.error('Error deleting curriculum module:', err); throw err }
+  }
+  const seedDefaultCurriculum = async () => {
+    if (tradingCurriculum.length > 0) return
+    const defaults = [
+      { label: 'Market Basics', iconName: 'book', topics: ['What is Stock Market?', 'How Exchanges Work (NSE/BSE)', 'Demat & Trading Accounts', 'Types of Orders', 'Market Participants', 'Bull vs Bear Markets'] },
+      { label: 'Technical Analysis', iconName: 'chart', topics: ['Candlestick Patterns', 'Support & Resistance', 'Trendlines & Channels', 'Moving Averages (SMA/EMA)', 'RSI, MACD, Bollinger Bands', 'Volume Analysis'] },
+      { label: 'Intraday Trading', iconName: 'bolt', topics: ['Scalping Strategies', 'Opening Range Breakout', 'VWAP Trading', 'Momentum Trading', 'Gap Up/Down Strategies', 'Intraday Stock Selection'] },
+      { label: 'Swing & Positional', iconName: 'trending', topics: ['Swing Trading Setups', 'Positional Trade Management', 'Sector Rotation Strategy', 'Earnings Play Strategies', 'Multi-Timeframe Analysis', 'Portfolio Allocation'] },
+      { label: 'Risk Management', iconName: 'shield', topics: ['Position Sizing', 'Stop Loss Strategies', 'Risk-Reward Ratio', 'Capital Preservation', 'Drawdown Management', 'Diversification Techniques'] },
+      { label: 'Trading Psychology', iconName: 'sparkle', topics: ['Emotional Discipline', 'FOMO & Greed Management', 'Developing a Trading Plan', 'Journaling & Review', 'Patience & Consistency', 'Building Winning Habits'] },
+    ]
+    for (let i = 0; i < defaults.length; i++) {
+      await addDoc(collection(db, 'tradingCurriculum'), { ...defaults[i], order: i, createdAt: serverTimestamp() })
+    }
+  }
+
+  const value = {
+    projects, categories, orders, tasks, teamMembers, users,
+    addProject, updateProject, deleteProject,
+    addOrder, updateOrderStatus, deleteOrder,
+    addTask, updateTask, deleteTask,
+    addTeamMember, updateTeamMember, deleteTeamMember,
+    addUser, updateUser, deleteUser,
+    services, addService, updateService, deleteService,
+    accountRequests, sellRequests, serviceRequests, messages,
+    tradingCourses, addTradingCourse, updateTradingCourse, deleteTradingCourse,
+    tradingSessions, addTradingSession, updateTradingSession, deleteTradingSession,
+    tradingEnrollments, addTradingEnrollment, updateTradingEnrollment, deleteTradingEnrollment,
+    tradingPayments, addTradingPayment, updateTradingPayment, deleteTradingPayment,
+    employeePermissions, updateEmployeePermissions, getEmployeePermissions,
+    mentorProfile, updateMentorProfile,
+    tradingCurriculum, addCurriculumModule, updateCurriculumModule, deleteCurriculumModule, seedDefaultCurriculum,
+    getActiveProjects, getTotalRevenue, getPendingOrders,
+    loading
+  }
+
   return (
-    <StoreContext.Provider value={{
-      projects, categories, orders, tasks, teamMembers, users,
-      addProject, updateProject, deleteProject,
-      addOrder, updateOrderStatus, deleteOrder,
-      addTask, updateTask, deleteTask,
-      addTeamMember, updateTeamMember, deleteTeamMember,
-      addUser, updateUser, deleteUser,
-      services, addService, updateService, deleteService,
-      accountRequests, sellRequests, serviceRequests, messages,
-      getActiveProjects, getTotalRevenue, getPendingOrders,
-      loading
-    }}>
-      {children}
+    <StoreContext.Provider value={value}>
+      {loading ? <LoadingScreen /> : children}
     </StoreContext.Provider>
   )
 }
