@@ -34,7 +34,7 @@ const LiveSessions = () => {
             <p className="text-slate-500 max-w-xl">Join real-time sessions where we analyze current markets and execute trades together.</p>
           </div>
           {!isEnrolled && (
-            <button 
+            <button
               onClick={() => document.getElementById('pricing-section')?.scrollIntoView({ behavior: 'smooth' })}
               className="px-6 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
             >
@@ -63,7 +63,7 @@ const LiveSessions = () => {
                 </svg>
                 {session.date} at {session.time}
               </p>
-              
+
               <button
                 onClick={() => {
                   if (isEnrolled && session.meeting_link && session.meeting_link !== '#') {
@@ -71,11 +71,10 @@ const LiveSessions = () => {
                   }
                 }}
                 disabled={!isEnrolled || !session.meeting_link || session.meeting_link === '#'}
-                className={`w-full py-4 rounded-2xl font-bold transition-all ${
-                  isEnrolled && session.meeting_link && session.meeting_link !== '#'
-                  ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200 cursor-pointer'
-                  : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
-                }`}
+                className={`w-full py-4 rounded-2xl font-bold transition-all ${isEnrolled && session.meeting_link && session.meeting_link !== '#'
+                    ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200 cursor-pointer'
+                    : 'bg-slate-200 text-slate-400 cursor-not-allowed opacity-60'
+                  }`}
               >
                 {!isEnrolled ? (
                   <span className="flex items-center justify-center gap-2">

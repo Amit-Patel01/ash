@@ -82,11 +82,10 @@ export default function TradingMentorship() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveSection(tab.id)}
-                  className={`px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all ${
-                    activeSection === tab.id
+                  className={`px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all ${activeSection === tab.id
                       ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
                       : 'text-slate-500 hover:bg-slate-100'
-                  }`}
+                    }`}
                 >
                   {tab.label}
                 </button>
@@ -140,7 +139,7 @@ export default function TradingMentorship() {
           {/* HERO */}
           <section ref={heroRef} className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-white via-white to-blue-50/20 pt-40 md:pt-48">
             <GraphBackground />
-            
+
             <div className={`relative z-10 max-w-5xl mx-auto text-center px-4 ${fade(heroVisible)}`}>
               <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full border border-blue-200 bg-blue-50">
                 <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
@@ -254,11 +253,10 @@ export default function TradingMentorship() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 border-2 ${
-                        activeTab === tab.id
+                      className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 border-2 ${activeTab === tab.id
                           ? 'bg-blue-600 border-blue-600 text-white shadow-xl shadow-blue-200'
                           : 'bg-white border-slate-100 text-slate-400 hover:border-blue-200 hover:text-blue-600'
-                      }`}
+                        }`}
                     >
                       {tab.icon}
                       <span>{tab.label}</span>

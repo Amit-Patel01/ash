@@ -61,7 +61,7 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
 
       // 2. Open Razorpay Checkout
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID, 
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: orderData.order.amount,
         currency: orderData.order.currency,
         name: 'Amit Solution Hub',
@@ -188,7 +188,7 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
             <p className="text-sm text-slate-500">Complete your enrollment via Razorpay</p>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-2xl p-4 border border-blue-100 flex items-center justify-between">
           <div>
             <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-0.5">Selected Plan</p>
@@ -253,55 +253,55 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
         ) : (
           <>
             <button
-          onClick={handleRazorpayPayment}
-          disabled={submitting}
-          className="w-full relative group"
-        >
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-30 group-hover:opacity-100 transition duration-300"></div>
-          <div className="relative w-full py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center justify-center gap-3 shadow-xl">
-            {submitting ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Processing...
-              </>
-            ) : (
-              <>
-                Pay Now with Razorpay
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </>
-            )}
-          </div>
-        </button>
+              onClick={handleRazorpayPayment}
+              disabled={submitting}
+              className="w-full relative group"
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-30 group-hover:opacity-100 transition duration-300"></div>
+              <div className="relative w-full py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center justify-center gap-3 shadow-xl">
+                {submitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    Pay Now with Razorpay
+                    <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </>
+                )}
+              </div>
+            </button>
 
-        {isTestModeEnabled && (
-          <button
-            onClick={handleTestEnrollment}
-            disabled={submitting}
-            className="w-full py-3 bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold rounded-2xl hover:bg-emerald-100 disabled:opacity-50 transition-all flex items-center justify-center gap-2 text-sm"
-          >
-            {submitting ? (
-              <>
-                <div className="w-4 h-4 border-2 border-emerald-300 border-t-emerald-700 rounded-full animate-spin"></div>
-                Processing...
-              </>
-            ) : (
-              <>
-                Skip Payment (Test Mode)
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </>
+            {isTestModeEnabled && (
+              <button
+                onClick={handleTestEnrollment}
+                disabled={submitting}
+                className="w-full py-3 bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold rounded-2xl hover:bg-emerald-100 disabled:opacity-50 transition-all flex items-center justify-center gap-2 text-sm"
+              >
+                {submitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-emerald-300 border-t-emerald-700 rounded-full animate-spin"></div>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    Skip Payment (Test Mode)
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </>
+                )}
+              </button>
             )}
-          </button>
+
+            <p className="text-center text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+              🛡️ Secured by industry standard encryption
+            </p>
+          </>
         )}
-
-        <p className="text-center text-[10px] text-slate-400 uppercase tracking-widest font-bold">
-          🛡️ Secured by industry standard encryption
-        </p>
-      </>
-    )}
       </div>
     </div>
   )

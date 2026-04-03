@@ -28,9 +28,8 @@ const Pricing = ({ courses, onPlanSelect }) => {
           {displayData.map((plan) => (
             <div
               key={plan.id}
-              className={`relative rounded-3xl p-8 bg-white border transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${
-                plan.highlighted ? 'border-blue-500 shadow-xl ring-4 ring-blue-50' : 'border-slate-200 shadow-sm'
-              }`}
+              className={`relative rounded-3xl p-8 bg-white border transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${plan.highlighted ? 'border-blue-500 shadow-xl ring-4 ring-blue-50' : 'border-slate-200 shadow-sm'
+                }`}
             >
               {plan.highlighted && (
                 <div className="absolute -top-4 left-6 px-3 py-1 bg-green-500 text-white text-[10px] font-black rounded-lg shadow-lg flex items-center gap-1">
@@ -75,11 +74,10 @@ const Pricing = ({ courses, onPlanSelect }) => {
                     onPlanSelect(plan)
                   }
                 }}
-                className={`block w-full text-center py-4 rounded-2xl font-bold transition-all duration-300 cursor-pointer ${
-                  plan.highlighted
+                className={`block w-full text-center py-4 rounded-2xl font-bold transition-all duration-300 cursor-pointer ${plan.highlighted
                     ? 'bg-blue-600 text-white shadow-lg hover:bg-blue-700 hover:scale-[1.02]'
                     : 'bg-slate-50 text-slate-900 border border-slate-200 hover:bg-slate-100'
-                }`}
+                  }`}
               >
                 Enroll Now
               </button>
