@@ -385,7 +385,7 @@ export default function TradingMentorship() {
 
           {/* WHATSAPP FLOAT */}
           <a
-            href="https://wa.me/919999999999?text=Hi%2C%20I%27m%20interested%20in%20the%20Trading%20Mentorship%20program"
+            href="https://wa.me/918799246225?text=Hi%2C%20I%27m%20interested%20in%20the%20Trading%20Mentorship%20program"
             target="_blank"
             rel="noopener noreferrer"
             className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform duration-300"
