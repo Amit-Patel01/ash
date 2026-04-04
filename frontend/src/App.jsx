@@ -20,6 +20,7 @@ import CustomerSignup from './pages/CustomerSignup'
 import ForgotPassword from './pages/ForgotPassword'
 import RoleSelect from './pages/RoleSelect'
 import ComingSoon from './pages/ComingSoon'
+import VerifyCertificate from './pages/VerifyCertificate'
 
 import WebService from './web-service/WebService'
 import RepairService from './technicalsupport/RepairService'
@@ -42,6 +43,7 @@ import AdminServiceRequests from './admin/AdminServiceRequests'
 import AdminSettings from './admin/AdminSettings'
 import AdminMentorProfile from './admin/AdminMentorProfile'
 import AdminCustomers from './admin/AdminCustomers'
+import AdminCertificates from './admin/AdminCertificates'
 
 import EmployeeLogin from './employee/EmployeeLogin'
 import RequestAccount from './pages/RequestAccount'
@@ -133,6 +135,7 @@ function AppContent() {
         <Route path="join-us" element={<RoleSelect />} />
         <Route path="signup" element={<CustomerSignup />} />
         <Route path="login" element={<LoginPage />} />
+        <Route path="verify" element={<VerifyCertificate />} />
       </Route>
 
       {/* Role-based redirect */}
@@ -147,6 +150,7 @@ function AppContent() {
         <Route path="team" element={<AdminTeam />} />
         <Route path="employees" element={<AdminEmployees />} />
         <Route path="customers" element={<AdminCustomers />} />
+        <Route path="certificates" element={<AdminCertificates />} />
         <Route path="sales" element={<AdminSales />} />
         <Route path="account-requests" element={<AdminAccountRequests />} />
         <Route path="service-requests" element={<AdminServiceRequests />} />

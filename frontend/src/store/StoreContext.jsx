@@ -37,6 +37,7 @@ export function StoreProvider({ children }) {
   const [mentorProfile, setMentorProfile] = useState(null)
   const [employeePermissions, setEmployeePermissions] = useState({})
   const [tradingCurriculum, setTradingCurriculum] = useState([])
+  const [certificates, setCertificates] = useState([])
   const [loading, setLoading] = useState(true)
 
   // Real-time Listeners
@@ -140,6 +141,10 @@ export function StoreProvider({ children }) {
       setTradingCurriculum(curriculumData)
     }, (error) => console.error("Curriculum snapshot error:", error))
 
+    const unsubscribeCertificates = onSnapshot(query(collection(db, 'certificates'), orderBy('createdAt', 'desc')), (snapshot) => {
+      setCertificates(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+    }, (error) => console.error("Certificates snapshot error:", error))
+
     return () => {
       unsubscribeProjects()
       unsubscribeOrders()
@@ -159,6 +164,7 @@ export function StoreProvider({ children }) {
       unsubscribeMentorProfile()
       unsubscribePermissions()
       unsubscribeCurriculum()
+      unsubscribeCertificates()
     }
   }, [])
 
@@ -408,6 +414,38 @@ export function StoreProvider({ children }) {
     }
   }
 
+  // --- Certificates ---
+  const issueCertificate = async (enrollment) => {
+    try {
+      // Generate a unique ID AP-XXXXXXXX
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+      let result = ''
+      for (let i = 0; i < 8; i++) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length))
+      }
+      const certId = `AP-${result}`
+
+      const newCert = {
+        userId: enrollment.userId,
+        userName: enrollment.userName,
+        userEmail: enrollment.userEmail,
+        courseName: enrollment.courseName || enrollment.title || 'Mentorship',
+        status: 'approved',
+        certificate_id: certId,
+        approval_date: serverTimestamp(),
+        createdAt: serverTimestamp()
+      }
+      const docRef = await addDoc(collection(db, 'certificates'), newCert)
+      return { id: docRef.id, ...newCert }
+    } catch (err) { console.error("Error issuing certificate:", err); throw err }
+  }
+
+  const revokeCertificate = async (certId) => {
+    try {
+      await deleteDoc(doc(db, 'certificates', certId))
+    } catch (err) { console.error("Error revoking certificate:", err); throw err }
+  }
+
   const value = {
     projects, categories, orders, tasks, teamMembers, users,
     addProject, updateProject, deleteProject,
@@ -424,6 +462,7 @@ export function StoreProvider({ children }) {
     employeePermissions, updateEmployeePermissions, getEmployeePermissions,
     mentorProfile, updateMentorProfile,
     tradingCurriculum, addCurriculumModule, updateCurriculumModule, deleteCurriculumModule, seedDefaultCurriculum,
+    certificates, issueCertificate, revokeCertificate,
     getActiveProjects, getTotalRevenue, getPendingOrders,
     loading
   }

@@ -9,6 +9,7 @@ const navItems = [
   { path: '/admin/tasks', label: 'Tasks', icon: 'task', permission: 'can_manage_tasks' },
   { path: '/admin/employees', label: 'Employees', icon: 'badge', permission: 'can_manage_employees' },
   { path: '/admin/customers', label: 'Customers', icon: 'group' },
+  { path: '/admin/certificates', label: 'Certificates', icon: 'award' },
   { path: '/admin/sales', label: 'Sales', icon: 'cart', permission: 'can_manage_sales' },
   { path: '/admin/account-requests', label: 'Account Requests', icon: 'userPlus', permission: 'can_approve_accounts' },
   { path: '/admin/service-requests', label: 'Service Requests', icon: 'clipboardList', permission: 'can_manage_service_requests' },
@@ -98,7 +99,12 @@ const iconMap = {
   ),
   video_call: (
     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+    </svg>
+  ),
+  award: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0V9.452c0-.612.428-1.128 1.037-1.189a9.764 9.764 0 002.508-.68 1.125 1.125 0 00.334-1.814L15.803 3.48a1.125 1.125 0 00-1.606 0l-1.588 1.588-.002.002L11 6.5l-1.588-1.588-.002-.002L7.803 3.48a1.125 1.125 0 00-1.606 0L3.59 5.769a1.125 1.125 0 00.334 1.814 9.764 9.764 0 002.508.68c.61.061 1.037.577 1.037 1.19v5.923" />
     </svg>
   ),
   person: (

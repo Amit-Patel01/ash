@@ -1,49 +1,63 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
+import { Award, Download, ExternalLink, Loader2, CheckCircle, ShieldCheck } from 'lucide-react'
+import CertificateModal from '../modules/trading/components/CertificateModal'
 
 export default function CustomerOverview() {
   const { currentUser, userProfile } = useAuth()
-  const { orders, projects, tradingEnrollments, tradingSessions } = useStore()
+  const { orders, projects, tradingEnrollments, tradingSessions, certificates } = useStore()
+
+  const [selectedCert, setSelectedCert] = useState(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const myOrders = useMemo(() => {
     return orders.filter(o => o.customer_email === currentUser?.email || o.customer_uid === currentUser?.uid)
   }, [orders, currentUser])
 
-    const totalSpent = myOrders.filter(o => o.status === 'completed').reduce((sum, o) => sum + Number(o.amount || 0), 0)
-    const pendingOrders = myOrders.filter(o => o.status === 'pending').length
-    const completedOrders = myOrders.filter(o => o.status === 'completed').length
-    const recentOrders = myOrders.slice(0, 5)
-    const activeEnrollments = tradingEnrollments.filter(e => e.userId === currentUser?.uid && e.status === 'active').length
+  const myCertificates = useMemo(() => {
+    return certificates.filter(c => c.userId === currentUser?.uid)
+  }, [certificates, currentUser])
 
-    return (
-      <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-white tracking-tight">Dashboard</h1>
-            <p className="text-sm text-gray-400 mt-1">Welcome back, <span className="text-blue-400 font-semibold">{userProfile?.displayName || currentUser?.displayName || 'Customer'}</span>. Here's your overview.</p>
-          </div>
+  const totalSpent = myOrders.filter(o => o.status === 'completed').reduce((sum, o) => sum + Number(o.amount || 0), 0)
+  const pendingOrders = myOrders.filter(o => o.status === 'pending').length
+  const completedOrders = myOrders.filter(o => o.status === 'completed').length
+  const recentOrders = myOrders.slice(0, 5)
+  const activeEnrollments = tradingEnrollments.filter(e => e.userId === currentUser?.uid && e.status === 'active')
+
+  const openCertificate = (cert) => {
+    setSelectedCert(cert)
+    setIsModalOpen(true)
+  }
+
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-white tracking-tight">Dashboard</h1>
+          <p className="text-sm text-gray-400 mt-1">Welcome back, <span className="text-blue-400 font-semibold">{userProfile?.displayName || currentUser?.displayName || 'Customer'}</span>. Here's your overview.</p>
         </div>
+      </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          {[
-            { label: 'Total Orders', value: myOrders.length, icon: '📦', color: 'from-blue-500 to-indigo-600' },
-            { label: 'Completed', value: completedOrders, icon: '✅', color: 'from-emerald-500 to-green-600' },
-            { label: 'Active Courses', value: activeEnrollments, icon: '🎓', color: 'from-blue-600 to-cyan-600' },
-            { label: 'Pending', value: pendingOrders, icon: '⏳', color: 'from-amber-500 to-orange-600' },
-            { label: 'Total Spent', value: `₹${totalSpent.toLocaleString('en-IN')}`, icon: '💰', color: 'from-purple-500 to-violet-600' },
-          ].map((stat, i) => (
-            <div key={i} className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 hover:bg-gray-800/50 hover:border-white/10 transition-all duration-300 shadow-xl group">
-              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300 mb-4`}>
-                <span className="text-xl">{stat.icon}</span>
-              </div>
-              <p className="text-3xl font-extrabold text-white tracking-tight">{stat.value}</p>
-              <p className="text-sm font-medium text-gray-400 mt-1">{stat.label}</p>
+      {/* Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        {[
+          { label: 'Total Orders', value: myOrders.length, icon: '📦', color: 'from-blue-500 to-indigo-600' },
+          { label: 'Completed', value: completedOrders, icon: '✅', color: 'from-emerald-500 to-green-600' },
+          { label: 'Active Courses', value: activeEnrollments.length, icon: '🎓', color: 'from-blue-600 to-cyan-600' },
+          { label: 'Pending', value: pendingOrders, icon: '⏳', color: 'from-amber-500 to-orange-600' },
+          { label: 'Total Spent', value: `₹${totalSpent.toLocaleString('en-IN')}`, icon: '💰', color: 'from-purple-500 to-violet-600' },
+        ].map((stat, i) => (
+          <div key={i} className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 hover:bg-gray-800/50 hover:border-white/10 transition-all duration-300 shadow-xl group">
+            <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300 mb-4`}>
+              <span className="text-xl">{stat.icon}</span>
             </div>
-          ))}
-        </div>
+            <p className="text-3xl font-extrabold text-white tracking-tight">{stat.value}</p>
+            <p className="text-sm font-medium text-gray-400 mt-1">{stat.label}</p>
+          </div>
+        ))}
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
         {/* Recent Orders */}
@@ -106,15 +120,6 @@ export default function CustomerOverview() {
                 <p className="text-xs text-gray-400">Get help from our team</p>
               </div>
             </Link>
-            <Link to="/custom-project" className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/10 transition-all">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">Request Custom Project</p>
-                <p className="text-xs text-gray-400">Tell us what you need</p>
-              </div>
-            </Link>
           </div>
         </div>
       </div>
@@ -133,7 +138,7 @@ export default function CustomerOverview() {
             <Link to="/services/trading-mentorship" className="text-sm text-blue-400 hover:text-blue-300 font-medium">Explore More</Link>
           </div>
 
-          {tradingEnrollments.filter(e => e.userId === currentUser?.uid && e.status === 'active').length === 0 ? (
+          {activeEnrollments.length === 0 ? (
             <div className="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/10">
               <div className="text-3xl mb-3 opacity-50">🎓</div>
               <p className="text-gray-400 font-medium">No active enrollments yet</p>
@@ -141,9 +146,9 @@ export default function CustomerOverview() {
             </div>
           ) : (
             <div className="space-y-4">
-              {tradingEnrollments
-                .filter(e => e.userId === currentUser?.uid && e.status === 'active')
-                .map(enrollment => (
+              {activeEnrollments.map(enrollment => {
+                const cert = myCertificates.find(c => c.courseName === enrollment.courseName);
+                return (
                   <div key={enrollment.id} className="p-5 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all flex items-center justify-between group">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-900/20">
@@ -154,66 +159,69 @@ export default function CustomerOverview() {
                         <p className="text-[10px] text-gray-500 font-medium tracking-widest uppercase">Active Enrollment</p>
                       </div>
                     </div>
-                    <Link 
-                      to="/services/trading-mentorship" 
-                      className="p-2.5 rounded-xl bg-white/10 text-white hover:bg-blue-600 transition-all shadow-xl group/btn"
-                    >
-                      <svg className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                      </svg>
-                    </Link>
-                  </div>
-                ))}
-            </div>
-          )}
-        </div>
-
-        {/* Upcoming Sessions */}
-        <div className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-8 hover:border-white/10 transition-colors shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
-          <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-3">
-            <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-            Live Meetings
-          </h3>
-
-          {tradingSessions.length === 0 ? (
-            <div className="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/10">
-              <p className="text-gray-500 font-medium">No live sessions scheduled</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {tradingSessions.slice(0, 3).map(session => {
-                const isEnrolled = tradingEnrollments.some(e => e.userId === currentUser?.uid && e.status === 'active');
-                return (
-                  <div key={session.id} className="p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-bold text-white">{session.topic}</p>
-                        <p className="text-xs text-gray-500">{session.date} • {session.time}</p>
-                      </div>
-                      {isEnrolled && session.meeting_link && session.meeting_link !== '#' ? (
-                        <a 
-                          href={session.meeting_link} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="px-4 py-2 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-xl text-xs font-bold hover:bg-blue-600 transition-all hover:text-white"
-                        >
-                          Join
-                        </a>
-                      ) : (
-                        <span className="text-[10px] px-2 py-1 bg-white/5 text-gray-600 rounded-lg uppercase font-bold">Locked</span>
-                      )}
+                    <div className="flex gap-2">
+                       {!cert ? (
+                          <span className="px-4 py-2 bg-gray-500/10 text-gray-500 border border-gray-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest">In Progress</span>
+                       ) : cert.status === 'pending' ? (
+                          <span className="px-4 py-2 bg-amber-500/10 text-amber-500 border border-amber-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest">Pending Review</span>
+                       ) : cert.status === 'approved' ? (
+                          <button 
+                            onClick={() => openCertificate(cert)}
+                            className="px-4 py-2 bg-emerald-500/10 hover:bg-emerald-600 text-emerald-400 hover:text-white border border-emerald-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2"
+                          >
+                             <Award size={14} /> View Certificate
+                          </button>
+                       ) : (
+                          <span className="px-4 py-2 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl text-[10px] font-black uppercase tracking-widest">Rejected</span>
+                       )}
                     </div>
                   </div>
                 );
               })}
-              <Link to="/services/trading-mentorship" className="block text-center text-xs text-gray-500 hover:text-blue-400 font-medium pt-2 transition-colors">View All Sessions</Link>
+            </div>
+          )}
+        </div>
+
+        {/* My Certificates Quick View */}
+        <div className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-8 hover:border-white/10 transition-colors shadow-2xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
+          <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-3">
+             <Award className="text-yellow-500" size={24} />
+             Earned Certificates
+          </h3>
+          
+          {myCertificates.filter(c => c.status === 'approved').length === 0 ? (
+            <div className="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/10">
+               <ShieldCheck className="mx-auto text-gray-700 mb-4" size={40} />
+               <p className="text-gray-500 text-sm">You haven't earned any certificates yet.</p>
+               <p className="text-[10px] text-gray-600 uppercase tracking-widest mt-2">Finish a course to unlock one!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-3">
+                {myCertificates.filter(c => c.status === 'approved').map(cert => (
+                    <div key={cert.id} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-blue-500/30 transition-all cursor-pointer group/cert" onClick={() => openCertificate(cert)}>
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-yellow-500/10 rounded-xl flex items-center justify-center text-yellow-500 group-hover/cert:bg-yellow-500 group-hover/cert:text-white transition-all">
+                                <Award size={20} />
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-white leading-none">{cert.courseName}</p>
+                                <p className="text-[10px] text-gray-500 font-mono mt-1">{cert.certificate_id}</p>
+                            </div>
+                        </div>
+                        <Download className="text-gray-600 group-hover/cert:text-blue-400 transition-colors" size={18} />
+                    </div>
+                ))}
             </div>
           )}
         </div>
       </div>
+
+      <CertificateModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        certData={selectedCert}
+      />
     </div>
   )
 }

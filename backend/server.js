@@ -598,6 +598,138 @@ app.post("/reply", async (req, res) => {
   }
 });
 
+// --- Certificate Management System ---
+
+/**
+ * Generates a unique Certificate ID in the format AP-XXXXXXXX
+ */
+const generateCertificateId = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Avoid confusing chars like O, I, 1, 0
+    let result = '';
+    for (let i = 0; i < 8; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return `AP-${result}`;
+};
+
+// Request a certificate
+app.post("/api/certificates/request", async (req, res) => {
+    const { userId, userName, userEmail, courseName } = req.body;
+
+    if (!userId || !userName || !userEmail || !courseName) {
+        return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+
+    try {
+        const certificatesRef = admin.firestore().collection("certificates");
+        
+        // Check if a certificate for this course already exists for this user
+        const existing = await certificatesRef
+            .where("userId", "==", userId)
+            .where("courseName", "==", courseName)
+            .get();
+
+        if (!existing.empty) {
+            return res.status(400).json({ success: false, message: "Certificate already requested/exists for this course" });
+        }
+
+        const newCert = {
+            userId,
+            userName,
+            userEmail,
+            courseName,
+            status: "pending",
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        };
+
+        const docRef = await certificatesRef.add(newCert);
+        res.json({ success: true, id: docRef.id });
+    } catch (error) {
+        console.error("❌ CERT REQUEST ERROR:", error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+// Admin: Approve/Reject Certificate
+app.patch("/api/certificates/update-status", async (req, res) => {
+    const { certId, status, adminId } = req.body;
+
+    if (!certId || !status) {
+        return res.status(400).json({ success: false, message: "Missing certificate ID or status" });
+    }
+
+    try {
+        const certRef = admin.firestore().collection("certificates").doc(certId);
+        const certSnap = await certRef.get();
+
+        if (!certSnap.exists) {
+            return res.status(404).json({ success: false, message: "Certificate not found" });
+        }
+
+        const updates = { 
+            status,
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        };
+
+        if (status === "approved") {
+            // Generate a unique Certificate ID if it doesn't already have one
+            const currentData = certSnap.data();
+            if (!currentData.certificate_id) {
+                let uniqueIdFound = false;
+                let newId = "";
+                
+                while (!uniqueIdFound) {
+                    newId = generateCertificateId();
+                    const dupCheck = await admin.firestore().collection("certificates")
+                        .where("certificate_id", "==", newId)
+                        .get();
+                    if (dupCheck.empty) uniqueIdFound = true;
+                }
+                
+                updates.certificate_id = newId;
+                updates.approval_date = admin.firestore.FieldValue.serverTimestamp();
+            }
+        }
+
+        await certRef.update(updates);
+        res.json({ success: true, certificate_id: updates.certificate_id });
+    } catch (error) {
+        console.error("❌ CERT STATUS UPDATE ERROR:", error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
+// Public: Verify Certificate
+app.get("/api/certificates/verify/:certId", async (req, res) => {
+    const { certId } = req.params;
+
+    try {
+        const certificatesRef = admin.firestore().collection("certificates");
+        const snapshot = await certificatesRef
+            .where("certificate_id", "==", certId)
+            .where("status", "==", "approved")
+            .get();
+
+        if (snapshot.empty) {
+            return res.status(404).json({ success: false, message: "Invalid or unapproved Certificate ID" });
+        }
+
+        const certData = snapshot.docs[0].data();
+        res.json({
+            success: true,
+            data: {
+                name: certData.userName,
+                course: certData.courseName,
+                date: certData.approval_date.toDate().toLocaleDateString(),
+                certificate_id: certData.certificate_id
+            }
+        });
+    } catch (error) {
+        console.error("❌ CERT VERIFY ERROR:", error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
+});
+
 // Server setup and listener
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
