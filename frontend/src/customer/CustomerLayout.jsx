@@ -46,7 +46,7 @@ export default function CustomerLayout() {
             {sidebarOpen && (
               <div>
                 <h1 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">SolutionHub</h1>
-                <p className="text-[10px] text-gray-500 -mt-0.5 tracking-wider uppercase">Customer Portal</p>
+                <p className="text-[10px] text-gray-500 -mt-0.5 tracking-wider uppercase">Customer / Student Portal</p>
               </div>
             )}
           </div>

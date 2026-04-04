@@ -31,7 +31,7 @@ export default function RoleSelect() {
                 </svg>
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-800 mb-2">I am a Customer</h2>
+                <h2 className="text-2xl font-bold text-slate-800 mb-2">I am a Customer/Student</h2>
                 <p className="text-sm text-slate-500 leading-relaxed">Browse projects, place orders, and chat with support</p>
               </div>
               <div className="flex items-center gap-2 text-emerald-600 text-sm font-bold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 bg-emerald-50 px-4 py-2 rounded-full">
