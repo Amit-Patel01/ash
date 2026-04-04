@@ -53,8 +53,14 @@ export default function TradingMentorship() {
   const [openFaq, setOpenFaq] = useState(null)
   const [selectedPlan, setSelectedPlan] = useState(null)
   const [activeSection, setActiveSection] = useState('overview')
+  const [isScrolled, setIsScrolled] = useState(false)
 
-
+  // Force overview for customers
+  useEffect(() => {
+    if (currentUser?.role === 'customer') {
+      setActiveSection('overview')
+    }
+  }, [currentUser])
 
   const upcomingSessions = tradingSessions || []
 
@@ -66,11 +72,11 @@ export default function TradingMentorship() {
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
-      {/* Navigation Tabs for Admin/Employee */}
-      {(isAdmin || isEmployee) && (
-        <div className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 pt-28">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-1 overflow-x-auto pb-3">
+      {/* Conditional Administrative Tabs */}
+      {currentUser && (currentUser.role === 'admin' || currentUser.role === 'employee' || currentUser.role === 'mentor') && currentUser.role !== 'customer' && (
+        <div className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 pt-28 animate-in fade-in slide-in-from-top-4 duration-500">
+          <div className="max-w-6xl mx-auto px-4 text-center">
+            <div className="inline-flex items-center gap-1 overflow-x-auto pb-3 bg-slate-100/50 p-1.5 rounded-2xl border border-slate-100 mb-4">
               {[
                 { id: 'overview', label: 'Overview' },
                 { id: 'enrollments', label: 'Enrollments' },
@@ -81,9 +87,9 @@ export default function TradingMentorship() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveSection(tab.id)}
-                  className={`px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all ${activeSection === tab.id
-                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
-                      : 'text-slate-500 hover:bg-slate-100'
+                  className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 ${activeSection === tab.id
+                      ? 'bg-blue-600 text-white shadow-xl shadow-blue-200 scale-105'
+                      : 'text-slate-500 hover:bg-white hover:text-blue-600'
                     }`}
                 >
                   {tab.label}

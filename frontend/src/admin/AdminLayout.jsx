@@ -8,6 +8,7 @@ const navItems = [
   { path: '/admin/projects', label: 'Projects', icon: 'folder', permission: 'can_manage_projects' },
   { path: '/admin/tasks', label: 'Tasks', icon: 'task', permission: 'can_manage_tasks' },
   { path: '/admin/employees', label: 'Employees', icon: 'badge', permission: 'can_manage_employees' },
+  { path: '/admin/customers', label: 'Customers', icon: 'group' },
   { path: '/admin/sales', label: 'Sales', icon: 'cart', permission: 'can_manage_sales' },
   { path: '/admin/account-requests', label: 'Account Requests', icon: 'userPlus', permission: 'can_approve_accounts' },
   { path: '/admin/service-requests', label: 'Service Requests', icon: 'clipboardList', permission: 'can_manage_service_requests' },

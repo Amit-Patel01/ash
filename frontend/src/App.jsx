@@ -41,6 +41,7 @@ import AdminSellRequests from './admin/AdminSellRequests'
 import AdminServiceRequests from './admin/AdminServiceRequests'
 import AdminSettings from './admin/AdminSettings'
 import AdminMentorProfile from './admin/AdminMentorProfile'
+import AdminCustomers from './admin/AdminCustomers'
 
 import EmployeeLogin from './employee/EmployeeLogin'
 import RequestAccount from './pages/RequestAccount'
@@ -145,6 +146,7 @@ function AppContent() {
         <Route path="tasks" element={<AdminTasks />} />
         <Route path="team" element={<AdminTeam />} />
         <Route path="employees" element={<AdminEmployees />} />
+        <Route path="customers" element={<AdminCustomers />} />
         <Route path="sales" element={<AdminSales />} />
         <Route path="account-requests" element={<AdminAccountRequests />} />
         <Route path="service-requests" element={<AdminServiceRequests />} />

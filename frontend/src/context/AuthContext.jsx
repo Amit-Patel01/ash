@@ -58,16 +58,25 @@ export function AuthProvider({ children }) {
 
           // Fallback: If no profile exists yet
           if (!profileSnap.exists()) {
-            const isAdmin = user.email === 'amitp@solutionhub.com'
+            const isAdminEmail = user.email === 'amitp@solutionhub.com'
             profileData = {
               uid: user.uid,
               email: user.email,
               displayName: user.displayName || 'User',
-              role: isAdmin ? 'admin' : 'employee',
+              role: isAdminEmail ? 'admin' : 'customer',
               status: 'active',
               createdAt: new Date().toISOString()
             }
             await setDoc(profileRef, profileData)
+          }
+
+          // Force logout if banned
+          if (profileData?.status === 'banned') {
+            await signOut(auth)
+            setCurrentUser(null)
+            setUserProfile(null)
+            setLoading(false)
+            return
           }
 
           const userData = {

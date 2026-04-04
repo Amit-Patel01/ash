@@ -96,7 +96,7 @@ export default function CustomerSignup() {
               </div>
             </div>
 
-            <Link to="/employee-login" className="block w-full px-6 py-4 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white rounded-2xl font-bold hover:from-emerald-700 hover:to-cyan-700 shadow-xl shadow-emerald-500/20 transition-all duration-300 text-center transform hover:-translate-y-1">
+            <Link to="/login" className="block w-full px-6 py-4 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white rounded-2xl font-bold hover:from-emerald-700 hover:to-cyan-700 shadow-xl shadow-emerald-500/20 transition-all duration-300 text-center transform hover:-translate-y-1">
               Sign In Now
             </Link>
           </div>
