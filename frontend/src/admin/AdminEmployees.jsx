@@ -43,6 +43,7 @@ export default function AdminEmployees() {
     skills: '',
     github: '',
     linkedin: '',
+    portfolio: '',
     avatarSource: 'github',
   })
 
@@ -88,6 +89,7 @@ export default function AdminEmployees() {
       skills: '',
       github: '',
       linkedin: '',
+      portfolio: '',
       avatarSource: 'github',
     })
     setActiveTab('basic')
@@ -118,6 +120,7 @@ export default function AdminEmployees() {
       skills: Array.isArray(employee.skills) ? employee.skills.join(', ') : (employee.skills || ''),
       github: employee.github || '',
       linkedin: employee.linkedin || '',
+      portfolio: employee.portfolio || '',
       avatarSource: employee.avatarSource || 'github',
     })
     
@@ -142,6 +145,7 @@ export default function AdminEmployees() {
           skills: member.skills || [],
           github: member.github || '',
           linkedin: member.linkedin || '',
+          portfolio: member.portfolio || '',
           avatarSource: member.avatarSource || 'github',
           showOnTeam: true,
           role: 'employee',
@@ -610,17 +614,35 @@ export default function AdminEmployees() {
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Social / Custom Link</label>
+                        <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Profile Avatar Link</label>
                         <div className="relative">
                           <input
                             type="text"
                             value={formData.linkedin}
                             onChange={e => setFormData({ ...formData, linkedin: e.target.value })}
-                            placeholder="https://linkedin.com/in/..."
+                            placeholder="https://example.com/avatar-image.png"
                             className="w-full pl-9 pr-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50"
                           />
-                          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.762 0-5 5-5h-14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
+                          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
                         </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Portfolio URL</label>
+                      <div className="relative">
+                        <input
+                          type="url"
+                          value={formData.portfolio}
+                          onChange={e => setFormData({ ...formData, portfolio: e.target.value })}
+                          placeholder="https://portfolio.amitsolutionhub.com/"
+                          className="w-full pl-9 pr-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50"
+                        />
+                        <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
                       </div>
                     </div>
 
@@ -657,7 +679,7 @@ export default function AdminEmployees() {
                             onClick={() => setFormData({ ...formData, avatarSource: 'linkedin' })} 
                             className={`px-3 py-1.5 rounded-md text-[9px] font-bold uppercase transition-all ${formData.avatarSource === 'linkedin' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-gray-500 hover:text-gray-300'}`}
                           >
-                            LinkedIn/Custom
+                            Photo URL
                           </button>
                         </div>
                       </div>

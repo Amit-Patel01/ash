@@ -7,7 +7,10 @@ export default function EmployeeProfile() {
     displayName: userProfile?.displayName || '',
     phone: userProfile?.phone || '',
     department: userProfile?.department || '',
-    avatar: userProfile?.avatar || ''
+    avatar: userProfile?.avatar || '',
+    github: userProfile?.github || '',
+    linkedin: userProfile?.linkedin || '',
+    portfolio: userProfile?.portfolio || '',
   })
   const [passwordForm, setPasswordForm] = useState({ current: '', new: '', confirm: '' })
   const [profileStatus, setProfileStatus] = useState({ type: '', message: '' })
@@ -77,6 +80,21 @@ export default function EmployeeProfile() {
           <div className="md:col-span-2">
             <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">Profile Photo URL</label>
             <input type="url" value={profileForm.avatar} onChange={e => setProfileForm({ ...profileForm, avatar: e.target.value })} placeholder="https://example.com/photo.jpg" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-700 focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:col-span-2">
+            <div>
+              <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">GitHub Username</label>
+              <input type="text" value={profileForm.github} onChange={e => setProfileForm({ ...profileForm, github: e.target.value })} placeholder="username" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">LinkedIn URL</label>
+              <input type="url" value={profileForm.linkedin} onChange={e => setProfileForm({ ...profileForm, linkedin: e.target.value })} placeholder="https://linkedin.com/in/..." className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">Portfolio URL</label>
+              <input type="url" value={profileForm.portfolio} onChange={e => setProfileForm({ ...profileForm, portfolio: e.target.value })} placeholder="https://portfolio.com" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner" />
+            </div>
           </div>
           <button type="submit" disabled={loading} className="md:col-span-2 py-3.5 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-emerald-500/20 active:scale-[0.99] flex items-center justify-center gap-2">
             {loading && <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></div>}

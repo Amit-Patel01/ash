@@ -7,8 +7,8 @@ const Layout = () => {
   const location = useLocation()
   
   // Hide navbar/footer on specific pages
-  const hideNavbar = location.pathname.startsWith('/chat')
-  const hideFooter = ['/chat', '/admin', '/employee'].some(path => location.pathname.startsWith(path))
+  const hideNavbar = ['/chat', '/signup', '/login'].some(path => location.pathname.startsWith(path))
+  const hideFooter = ['/chat', '/signup', '/login', '/admin', '/employee'].some(path => location.pathname.startsWith(path))
 
   return (
     <div className="min-h-screen w-full flex flex-col relative">

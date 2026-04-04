@@ -62,11 +62,10 @@ const Navbar = () => {
   const isTradingPage = location.pathname === '/services/trading-mentorship'
 
   return (
-    <nav className={`fixed left-0 right-0 z-[140] transition-all duration-500 ease-in-out ${
-      isTradingPage ? 'top-9' : 'top-0'
-    } ${scrolled
-      ? 'py-2 lg:py-3'
-      : 'py-4 lg:py-6'
+    <nav className={`fixed left-0 right-0 z-[140] transition-all duration-500 ease-in-out ${isTradingPage ? 'top-9' : 'top-0'
+      } ${scrolled
+        ? 'py-2 lg:py-3'
+        : 'py-4 lg:py-6'
       }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -82,7 +81,7 @@ const Navbar = () => {
           {/* Animated Light Blue Glow Background - Brought down slightly */}
           <div className="absolute top-[2px] -inset-x-2 bottom-[-10px] bg-gradient-to-r from-blue-400/20 via-cyan-300/15 to-blue-500/20 rounded-full blur-3xl opacity-50 animate-[bluePulse_8s_infinite] pointer-events-none"></div>
 
-          
+
           {/* Glass Reflection Highlight */}
           <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
             <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-br from-white/30 to-transparent skew-x-[45deg] -translate-y-full animate-[reflection_10s_infinite]"></div>
