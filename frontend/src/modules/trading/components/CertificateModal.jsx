@@ -1,186 +1,252 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Download, Share2, Award, ShieldCheck, Printer, FileText, Image as ImageIcon } from 'lucide-react'
+import { X, FileText, Image as ImageIcon } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
-import html2canvas from 'html2canvas'
+import * as htmlToImage from 'html-to-image'
 import jsPDF from 'jspdf'
+
+import msmeLogo from '../../../assets/msme.png'
+import brandLogo from '../../../assets/logo.png'
+import founderSign from '../../../assets/founder-sign.png'
+import mentorSign from '../../../assets/mentor-sign.png'
 
 export default function CertificateModal({ isOpen, onClose, certData }) {
   const certificateRef = useRef(null)
+  const containerRef = useRef(null)
   const [isDownloading, setIsDownloading] = useState(false)
+  const [scale, setScale] = useState(1)
+
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleResize = () => {
+      if (containerRef.current) {
+         const containerWidth = containerRef.current.offsetWidth
+         const containerHeight = containerRef.current.offsetHeight
+         
+         // The exact fixed native dimensions of the certificate container (w-[1000px] aspect-[1.414/1])
+         const targetWidth = 1000
+         const targetHeight = 1000 / 1.414
+         
+         const scaleX = (containerWidth * 0.9) / targetWidth
+         const scaleY = (containerHeight * 0.9) / targetHeight
+         
+         // Use the smaller scale so it fully fits in both directions
+         setScale(Math.min(scaleX, scaleY, 1))
+      }
+    }
+    
+    // Slight delay to allow DOM to render
+    setTimeout(handleResize, 100)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [isOpen])
 
   if (!isOpen || !certData) return null
 
-  const downloadAsPDF = async () => {
-    setIsDownloading(true)
-    const element = certificateRef.current
-    const canvas = await html2canvas(element, { scale: 3, useCORS: true })
-    const imgData = canvas.toDataURL('image/png')
-    
-    const pdf = new jsPDF('l', 'mm', 'a4')
-    const imgProps = pdf.getImageProperties(imgData)
-    const pdfWidth = pdf.internal.pageSize.getWidth()
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
-    
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
-    pdf.save(`Certificate_${certData.certificate_id}.pdf`)
-    setIsDownloading(false)
-  }
-
-  const downloadAsImage = async () => {
-    setIsDownloading(true)
-    const element = certificateRef.current
-    const canvas = await html2canvas(element, { scale: 3, useCORS: true })
-    const link = document.createElement('a')
-    link.download = `Certificate_${certData.certificate_id}.png`
-    link.href = canvas.toDataURL('image/png')
-    link.click()
-    setIsDownloading(false)
-  }
-
   const verifyUrl = `https://amitsolutionhub.com/verify?id=${certData.certificate_id}`
+
+  const isTradingCourse =
+    certData.courseName.toLowerCase().includes("stock") ||
+    certData.courseName.toLowerCase().includes("trading")
+
+  // PDF Download
+  const downloadPDF = async () => {
+    setIsDownloading(true)
+    try {
+      const dataUrl = await htmlToImage.toPng(certificateRef.current, { pixelRatio: 3, cacheBust: true })
+
+      const pdf = new jsPDF('l', 'mm', 'a4')
+      const pdfWidth = pdf.internal.pageSize.getWidth()
+      const pdfHeight = pdfWidth / 1.414
+
+      pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight)
+      pdf.save(`Certificate_${certData.certificate_id}.pdf`)
+    } catch (err) {
+      console.error("PDF generation failed:", err)
+      alert("There was an error generating the PDF. Please try again.")
+    } finally {
+      setIsDownloading(false)
+    }
+  }
+
+  // Image Download
+  const downloadImage = async () => {
+    setIsDownloading(true)
+    try {
+      const dataUrl = await htmlToImage.toPng(certificateRef.current, { pixelRatio: 3, cacheBust: true })
+      
+      const link = document.createElement('a')
+      link.download = `Certificate_${certData.certificate_id}.png`
+      link.href = dataUrl
+      link.click()
+    } catch (err) {
+      console.error("Image generation failed:", err)
+      alert("There was an error generating the image. Please try again.")
+    } finally {
+      setIsDownloading(false)
+    }
+  }
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="absolute inset-0 bg-black/90 backdrop-blur-md"
-        />
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
 
-        {/* Content */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="relative w-full max-w-5xl bg-[#111418] border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[95vh]"
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          className="bg-[#111] rounded-3xl w-full max-w-5xl overflow-hidden flex flex-col max-h-[90vh]"
         >
+
           {/* Top Bar */}
-          <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
-            <div className="flex items-center gap-3">
-              <Award className="text-yellow-500" size={24} />
-              <h2 className="text-lg font-black text-white tracking-tight uppercase">Achievement Certificate</h2>
-            </div>
-            <button
-              onClick={onClose}
-              className="p-2 rounded-full hover:bg-white/10 text-gray-400 transition-all hover:text-white"
-            >
-              <X size={24} />
-            </button>
+          <div className="flex justify-between items-center p-4 border-b border-white/10 text-white flex-shrink-0">
+            <h2 className="font-bold">Certificate</h2>
+            <button onClick={onClose} className="hover:bg-white/10 p-1 rounded-lg transition-colors"><X /></button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 sm:p-10 custom-scrollbar">
-            {/* The Certificate Paper (A4 Landscape aspect ratio) */}
-            <div className="relative mx-auto w-full max-w-4xl shadow-2xl overflow-hidden bg-white" ref={certificateRef}>
-              
-              {/* Frame Part 1: Outer Border */}
-              <div className="absolute inset-0 border-[20px] border-[#1e40af]" />
-              {/* Frame Part 2: Thin Gold Inset */}
-              <div className="absolute inset-[10px] border-2 border-[#d4af37]" />
-              
-              <div className="relative px-20 py-24 text-center">
-                {/* Patterns */}
-                <div className="absolute top-0 right-0 p-10 opacity-5">
-                    <Award size={200} />
+          {/* Certificate Area (Responsive Wrapper) */}
+          <div ref={containerRef} className="bg-gray-100 flex-1 overflow-hidden flex items-center justify-center min-h-[400px]">
+            
+            {/* Scaling Viewport */}
+            <div 
+              style={{
+                transform: `scale(${scale})`,
+                transformOrigin: 'center center',
+                width: '1000px',
+                height: '707px'
+              }}
+              className="flex-shrink-0 shadow-2xl relative"
+            >
+              <div ref={certificateRef} className="bg-white text-gray-900 w-full h-full relative overflow-hidden flex flex-col justify-between p-8">
+                
+                {/* Subtle Noise / Watermark Background */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none z-0">
+                   <img src={brandLogo} className="w-[60%] object-contain grayscale" alt="Watermark" />
                 </div>
-                <div className="absolute bottom-0 left-0 p-10 opacity-5">
-                    <ShieldCheck size={200} />
-                </div>
 
-                {/* Content */}
-                <div className="space-y-12">
-                  {/* Header Logo or Icon */}
-                  <div className="flex flex-col items-center">
-                    <div className="w-20 h-20 bg-[#1e40af] rounded-full flex items-center justify-center text-white mb-4 shadow-xl border-4 border-[#d4af37]">
-                        <Award size={40} />
-                    </div>
-                    <h3 className="text-3xl font-black text-[#1e40af] uppercase tracking-widest leading-none">Amit Solution Hub</h3>
-                    <p className="text-[10px] uppercase tracking-[0.4em] text-gray-500 font-black mt-2">Professional Web & Software Solutions</p>
-                  </div>
+                {/* Decorative Corner Accents */}
+                <div className="absolute top-0 left-0 w-24 h-24 border-t-8 border-l-8 border-blue-900 m-8 opacity-90 z-10" />
+                <div className="absolute top-0 right-0 w-24 h-24 border-t-8 border-r-8 border-yellow-500 m-8 opacity-90 z-10" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 border-b-8 border-l-8 border-yellow-500 m-8 opacity-90 z-10" />
+                <div className="absolute bottom-0 right-0 w-24 h-24 border-b-8 border-r-8 border-blue-900 m-8 opacity-90 z-10" />
 
-                  {/* Title */}
-                  <div className="space-y-4">
-                    <h1 className="text-5xl font-black text-gray-900 tracking-tighter">CERTIFICATE <span className="text-[#1e40af]">OF COMPLETION</span></h1>
-                    <div className="w-40 h-1 bg-[#d4af37] mx-auto rounded-full" />
-                  </div>
+                {/* Inner Double Line Border */}
+                <div className="absolute inset-6 border border-gray-200 outline outline-1 outline-offset-[6px] outline-gray-200 pointer-events-none z-0"></div>
 
-                  {/* Body Text */}
-                  <div className="max-w-2xl mx-auto space-y-8">
-                    <p className="text-gray-500 text-lg italic serif">This is to certify that</p>
-                    <h2 className="text-5xl font-black text-gray-900 underline decoration-[#d4af37] decoration-4 underline-offset-8 uppercase leading-tight">
-                        {certData.userName}
-                    </h2>
-                    <p className="text-gray-500 text-lg leading-relaxed font-serif max-w-lg mx-auto">
-                      has successfully completed the intensive course in <br/>
-                      <span className="font-black text-gray-900 uppercase not-italic">"{certData.courseName}"</span> <br/>
-                      demonstrating exceptional dedication and technical proficiency.
-                    </p>
-                  </div>
-
-                  {/* Bottom Row: Signatures + Date + QR */}
-                  <div className="pt-12 grid grid-cols-3 items-end gap-8">
-                    {/* Date */}
-                    <div className="flex flex-col items-center">
-                      <p className="text-gray-900 font-black text-lg border-b-2 border-gray-900 w-full pb-2">
-                        {certData.approval_date?.toDate ? certData.approval_date.toDate().toLocaleDateString() : new Date().toLocaleDateString()}
-                      </p>
-                      <p className="text-[10px] uppercase font-black tracking-widest text-[#d4af37] mt-2">Achievement Date</p>
-                    </div>
-
-                    {/* QR Code */}
-                    <div className="flex flex-col items-center">
-                      <div className="p-2 border-2 border-gray-100 rounded-lg">
-                        <QRCodeSVG value={verifyUrl} size={80} />
-                      </div>
-                      <div className="mt-4 space-y-1">
-                        <p className="text-[8px] uppercase font-black tracking-tighter text-gray-400">Scannable Verification</p>
-                        <p className="text-[9px] font-mono text-[#1e40af] font-bold">{certData.certificate_id}</p>
-                      </div>
-                    </div>
-
-                    {/* Signature */}
-                    <div className="flex flex-col items-center">
-                        <div className="w-full text-[#1e40af] pb-2 font-black text-2xl italic tracking-tight border-b-2 border-gray-900">
-                             Amit Patel
+                {/* Content Container */}
+                <div className="relative z-20 flex-1 flex flex-col justify-between">
+                    
+                    {/* Top Logos */}
+                    <div className="flex items-start px-8 pt-4">
+                        <div className="w-1/3 flex items-center justify-start">
+                            <img src={msmeLogo} className="h-20 object-contain drop-shadow-sm" alt="MSME Logo" />
                         </div>
-                        <p className="text-[10px] uppercase font-black tracking-widest text-[#d4af37] mt-2">Founder & CEO</p>
+                        <div className="w-1/3 flex items-center justify-center">
+                            <img src={brandLogo} className="h-[120px] object-contain drop-shadow-sm" alt="Brand Logo" />
+                        </div>
+                        <div className="w-1/3"></div> {/* Balance spacer */}
                     </div>
-                  </div>
-                </div>
-              </div>
 
-              {/* Secure Hologram style seal */}
-              <div className="absolute bottom-10 right-10 w-24 h-24 rounded-full border-4 border-[#d4af37]/30 flex items-center justify-center opacity-40">
-                  <div className="w-16 h-16 rounded-full border-2 border-[#d4af37]/50 flex items-center justify-center text-[#d4af37] font-black text-[8px] text-center">
-                      OFFICIAL <br/> SEAL
-                  </div>
+                    {/* Main Title */}
+                    <div className="text-center space-y-4 -mt-4">
+                        <div className="flex items-center justify-center gap-4 text-xs font-bold text-yellow-600 tracking-[0.4em] uppercase">
+                            <span className="w-16 h-[1px] bg-yellow-500/50"></span>
+                            Official Certification
+                            <span className="w-16 h-[1px] bg-yellow-500/50"></span>
+                        </div>
+                        <h1 className="text-6xl font-serif text-blue-950 font-black tracking-widest">
+                            CERTIFICATE
+                        </h1>
+                        <h2 className="text-xl text-gray-500 tracking-[0.3em] font-light">
+                            OF PARTICIPATION
+                        </h2>
+                    </div>
+
+                    {/* Body Text */}
+                    <div className="flex flex-col items-center justify-center text-center px-20">
+                        <p className="text-gray-500 text-lg italic mb-6">
+                            This certificate is proudly presented to
+                        </p>
+                        
+                        <h2 className="text-[3.5rem] leading-none font-serif font-bold text-blue-900 border-b border-gray-300 pb-4 px-16 inline-block">
+                            {certData.userName}
+                        </h2>
+                        
+                        <p className="text-gray-600 text-lg leading-relaxed mt-6 max-w-2xl">
+                            In recognition of their hard work, dedication, and successful completion of the comprehensive curriculum in <span className="font-bold text-blue-950 text-xl whitespace-nowrap">{certData.courseName}</span>.
+                        </p>
+                    </div>
+
+                    {/* Footer Signatures and Details */}
+                    <div className="grid grid-cols-3 items-end w-full px-12 pb-6">
+                        
+                        {/* Date */}
+                        <div className="flex flex-col items-center text-center">
+                            <p className="text-xl font-bold text-gray-800 mb-1">
+                               {certData.approval_date?.toDate ? certData.approval_date.toDate().toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB')}
+                            </p>
+                            <div className="w-32 border-t-2 border-gray-800/80 pt-2">
+                                <p className="text-xs uppercase tracking-widest text-gray-500 font-bold">Date of Issue</p>
+                            </div>
+                        </div>
+
+                        {/* QR & Verification */}
+                        <div className="flex flex-col items-center text-center justify-end">
+                            <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-100 mb-2">
+                                <QRCodeSVG value={verifyUrl} size={80} level="M" />
+                            </div>
+                            <p className="text-[10px] uppercase font-bold tracking-widest text-blue-400">VERIFY ONLINE</p>
+                            <p className="text-[9px] font-mono text-gray-400 tracking-wider">ID: {certData.certificate_id}</p>
+                        </div>
+
+                        {/* Signatures */}
+                        <div className="flex justify-around items-end gap-6">
+                            <div className="flex flex-col items-center text-center">
+                                <img src={founderSign} className="h-14 object-contain mb-1" alt="Founder Signature" />
+                                <div className="w-32 border-t-2 border-gray-800/80 pt-2">
+                                    <p className="text-xs uppercase tracking-widest text-gray-500 font-bold">Founder</p>
+                                </div>
+                            </div>
+                            
+                            {isTradingCourse && (
+                                <div className="flex flex-col items-center text-center">
+                                    <img src={mentorSign} className="h-14 object-contain mb-1" alt="Mentor Signature" />
+                                    <div className="w-32 border-t-2 border-gray-800/80 pt-2">
+                                        <p className="text-xs uppercase tracking-widest text-gray-500 font-bold">Mentor</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                    </div>
+                    
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Action Bar */}
-          <div className="px-8 py-6 border-t border-white/10 bg-white/[0.02] grid grid-cols-2 sm:flex sm:items-center sm:justify-center gap-4">
-            <button
-               onClick={downloadAsPDF}
-               disabled={isDownloading}
-               className="flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 rounded-2xl text-white font-black hover:bg-blue-700 transition-all active:scale-95 disabled:opacity-50"
+          {/* Action Buttons */}
+          <div className="flex flex-shrink-0 flex-wrap items-center justify-center gap-4 p-6 bg-black/40 border-t border-white/10 backdrop-blur-md">
+            <button 
+              onClick={downloadPDF} 
+              disabled={isDownloading}
+              className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-bold tracking-wide transition-all shadow-lg flex items-center gap-2 disabled:opacity-50"
             >
-               <FileText size={18} />
-               {isDownloading ? 'Processing...' : 'Download PDF'}
+              {isDownloading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <FileText size={20} />}
+              {isDownloading ? 'Generating PDF...' : 'Download PDF'}
             </button>
-            <button
-               onClick={downloadAsImage}
-               disabled={isDownloading}
-               className="flex items-center justify-center gap-2 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-black hover:bg-white/10 transition-all active:scale-95 disabled:opacity-50"
+
+            <button 
+              onClick={downloadImage} 
+              disabled={isDownloading}
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-3 rounded-xl font-bold tracking-wide transition-all shadow-lg flex items-center gap-2 disabled:opacity-50"
             >
-               <ImageIcon size={18} />
-               Download Image
+              {isDownloading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <ImageIcon size={20} />}
+              {isDownloading ? 'Generating Image...' : 'Download Image'}
             </button>
           </div>
+
         </motion.div>
       </div>
     </AnimatePresence>
