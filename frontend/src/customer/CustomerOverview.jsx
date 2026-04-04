@@ -120,51 +120,99 @@ export default function CustomerOverview() {
       </div>
 
       {/* My Mentorships Section */}
-      <div className="mt-8 bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-8 hover:border-white/10 transition-colors shadow-2xl relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
-        <div className="flex items-center justify-between mb-8">
-          <h3 className="text-xl font-bold text-white flex items-center gap-3">
-            <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-            </svg>
-            My Mentorships
-          </h3>
-          <Link to="/services/trading-mentorship" className="text-sm text-blue-400 hover:text-blue-300 font-medium">Explore More</Link>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+        <div className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-8 hover:border-white/10 transition-colors shadow-2xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="text-xl font-bold text-white flex items-center gap-3">
+              <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+              </svg>
+              My Mentorships
+            </h3>
+            <Link to="/services/trading-mentorship" className="text-sm text-blue-400 hover:text-blue-300 font-medium">Explore More</Link>
+          </div>
+
+          {tradingEnrollments.filter(e => e.userId === currentUser?.uid && e.status === 'active').length === 0 ? (
+            <div className="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/10">
+              <div className="text-3xl mb-3 opacity-50">🎓</div>
+              <p className="text-gray-400 font-medium">No active enrollments yet</p>
+              <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">Start your trading journey by enrolling in our professional mentorship programs.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {tradingEnrollments
+                .filter(e => e.userId === currentUser?.uid && e.status === 'active')
+                .map(enrollment => (
+                  <div key={enrollment.id} className="p-5 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all flex items-center justify-between group">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-900/20">
+                        SH
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight">{enrollment.courseName || 'Mentorship'}</p>
+                        <p className="text-[10px] text-gray-500 font-medium tracking-widest uppercase">Active Enrollment</p>
+                      </div>
+                    </div>
+                    <Link 
+                      to="/services/trading-mentorship" 
+                      className="p-2.5 rounded-xl bg-white/10 text-white hover:bg-blue-600 transition-all shadow-xl group/btn"
+                    >
+                      <svg className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                      </svg>
+                    </Link>
+                  </div>
+                ))}
+            </div>
+          )}
         </div>
 
-        {tradingEnrollments.filter(e => e.userId === currentUser?.uid && e.status === 'active').length === 0 ? (
-          <div className="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/10">
-            <div className="text-3xl mb-3 opacity-50">🎓</div>
-            <p className="text-gray-400 font-medium">No active enrollments yet</p>
-            <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">Start your trading journey by enrolling in our professional mentorship programs.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {tradingEnrollments
-              .filter(e => e.userId === currentUser?.uid && e.status === 'active')
-              .map(enrollment => (
-                <div key={enrollment.id} className="p-5 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all flex items-center justify-between group">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-900/20">
-                      SH
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight">{enrollment.courseName || 'Mentorship'}</p>
-                      <p className="text-[10px] text-gray-500 font-medium tracking-widest uppercase">Active Enrollment</p>
+        {/* Upcoming Sessions */}
+        <div className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-8 hover:border-white/10 transition-colors shadow-2xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
+          <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-3">
+            <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            Live Meetings
+          </h3>
+
+          {tradingSessions.length === 0 ? (
+            <div className="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/10">
+              <p className="text-gray-500 font-medium">No live sessions scheduled</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {tradingSessions.slice(0, 3).map(session => {
+                const isEnrolled = tradingEnrollments.some(e => e.userId === currentUser?.uid && e.status === 'active');
+                return (
+                  <div key={session.id} className="p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-bold text-white">{session.topic}</p>
+                        <p className="text-xs text-gray-500">{session.date} • {session.time}</p>
+                      </div>
+                      {isEnrolled && session.meeting_link && session.meeting_link !== '#' ? (
+                        <a 
+                          href={session.meeting_link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="px-4 py-2 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-xl text-xs font-bold hover:bg-blue-600 transition-all hover:text-white"
+                        >
+                          Join
+                        </a>
+                      ) : (
+                        <span className="text-[10px] px-2 py-1 bg-white/5 text-gray-600 rounded-lg uppercase font-bold">Locked</span>
+                      )}
                     </div>
                   </div>
-                  <Link 
-                    to="/services/trading-mentorship" 
-                    className="p-2.5 rounded-xl bg-white/10 text-white hover:bg-blue-600 transition-all shadow-xl group/btn"
-                  >
-                    <svg className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                    </svg>
-                  </Link>
-                </div>
-              ))}
-          </div>
-        )}
+                );
+              })}
+              <Link to="/services/trading-mentorship" className="block text-center text-xs text-gray-500 hover:text-blue-400 font-medium pt-2 transition-colors">View All Sessions</Link>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

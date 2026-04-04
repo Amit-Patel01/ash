@@ -320,12 +320,13 @@ export function StoreProvider({ children }) {
   // --- Trading Enrollments ---
   const addTradingEnrollment = async (enrollment) => {
     try {
-      const docRef = await addDoc(collection(db, 'tradingEnrollments'), {
+      const newEnrollment = {
         ...enrollment,
-        status: 'pending',
+        status: enrollment.status || 'pending',
         createdAt: serverTimestamp()
-      })
-      return { id: docRef.id, ...enrollment }
+      }
+      const docRef = await addDoc(collection(db, 'tradingEnrollments'), newEnrollment)
+      return { id: docRef.id, ...newEnrollment }
     } catch (err) { console.error("Error adding enrollment:", err); throw err }
   }
   const updateTradingEnrollment = async (id, updates) => {
