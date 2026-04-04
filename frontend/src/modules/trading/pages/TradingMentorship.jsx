@@ -8,7 +8,6 @@ import EnrollmentList from '../components/EnrollmentList'
 import PaymentPanel from '../components/PaymentPanel'
 import EmployeeAccess from '../components/EmployeeAccess'
 import GraphBackground from '../components/GraphBackground'
-import TickerTape from '../components/TickerTape'
 import Sparkline from '../components/Sparkline'
 
 const ICON_MAP = {
@@ -134,8 +133,6 @@ export default function TradingMentorship() {
       {/* Public Overview Section */}
       {activeSection === 'overview' && (
         <>
-          <TickerTape />
-
           {/* HERO */}
           <section ref={heroRef} className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-white via-white to-blue-50/20 pt-40 md:pt-48">
             <GraphBackground />

@@ -426,6 +426,37 @@ app.post("/api/trading/verify-payment", async (req, res) => {
   }
 });
 
+app.post("/api/trading/enrollment-email", async (req, res) => {
+  const { userName, userEmail, planName, amount } = req.body;
+  try {
+    await resend.emails.send({
+      from: "Amit Solution Hub <contact@amitsolutionhub.com>",
+      to: userEmail,
+      subject: `Welcome to ${planName} Mentorship!`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 12px; overflow: hidden;">
+          <div style="background: #2563eb; color: white; padding: 40px; text-align: center;">
+            <h1>Enrollment Confirmed!</h1>
+            <p>You now have access to the ${planName} Mentorship Program.</p>
+          </div>
+          <div style="padding: 40px;">
+            <h2>Hello ${userName},</h2>
+            <p>Your enrollment in the <strong>${planName}</strong> plan has been confirmed.</p>
+            <p>You can now access live sessions, curriculum, and community resources through your dashboard.</p>
+            <div style="text-align: center; margin: 40px 0;">
+              <a href="https://amitsolutionhub.com/customer" style="background: #2563eb; color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold;">Go to Dashboard</a>
+            </div>
+          </div>
+        </div>
+      `
+    });
+    res.json({ success: true, message: "Enrollment email sent" });
+  } catch (error) {
+    console.error("Email Error:", error);
+    res.status(500).json({ success: false, message: "Failed to send email" });
+  }
+});
+
 app.post("/contact", async (req, res) => {
   const { firstName, lastName, email, mobile, github, message } = req.body;
 

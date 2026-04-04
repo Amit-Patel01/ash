@@ -137,6 +137,23 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
         amount: selectedPlan.price,
         status: 'active',
       })
+      
+      // Send Enrollment Email via Backend
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+      try {
+        await fetch(`${API_URL}/api/trading/enrollment-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userName: currentUser.displayName || currentUser.email,
+            userEmail: currentUser.email,
+            planName: selectedPlan.name,
+            amount: selectedPlan.price
+          })
+        })
+      } catch (err) {
+        console.error('Failed to send enrollment email:', err)
+      }
 
       // Create payment record
       await addTradingPayment({
@@ -148,7 +165,8 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
         amount: selectedPlan.price,
         paymentId: 'TEST_' + Date.now(),
         method: 'test_bypass',
-        status: 'success',
+        status: 'completed',
+        createdAt: serverTimestamp()
       })
 
       setSuccess(true)

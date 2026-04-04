@@ -3,7 +3,7 @@ import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 
 export default function EmployeeTrading() {
-  const { tradingCourses, tradingSessions, tradingEnrollments, employeePermissions, users, teamMembers, addTradingCourse, updateTradingCourse, deleteTradingCourse, addTradingSession, updateTradingSession, deleteTradingSession, tradingCurriculum, addCurriculumModule, updateCurriculumModule, deleteCurriculumModule, seedDefaultCurriculum } = useStore()
+  const { tradingCourses, tradingSessions, tradingEnrollments, employeePermissions, users, teamMembers, addTradingCourse, updateTradingCourse, deleteTradingCourse, addTradingSession, updateTradingSession, deleteTradingSession, tradingCurriculum, addCurriculumModule, updateCurriculumModule, deleteCurriculumModule, seedDefaultCurriculum, addTradingEnrollment, updateTradingEnrollment, deleteTradingEnrollment } = useStore()
   const { currentUser, userProfile } = useAuth()
   const [activeSection, setActiveSection] = useState('overview')
   const [showCourseModal, setShowCourseModal] = useState(false)
@@ -52,15 +52,34 @@ export default function EmployeeTrading() {
         setSaving(false)
         return
       }
+      const course = tradingCourses.find(c => c.id === enrollmentForm.courseId)
       await addTradingEnrollment({
         userId: user.uid || user.id,
         userName: user.displayName || user.name || enrollmentForm.userEmail,
         userEmail: enrollmentForm.userEmail,
         courseId: enrollmentForm.courseId,
-        courseName: tradingCourses.find(c => c.id === enrollmentForm.courseId)?.name || 'Course',
-        amount: tradingCourses.find(c => c.id === enrollmentForm.courseId)?.price || 0,
+        courseName: course?.name || 'Course',
+        amount: course?.price || 0,
         status: enrollmentForm.status,
       })
+      
+      // Send Enrollment Email via Backend
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+      try {
+        await fetch(`${API_URL}/api/trading/enrollment-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userName: user.displayName || user.name || enrollmentForm.userEmail,
+            userEmail: enrollmentForm.userEmail,
+            planName: course?.name || 'Trading Mentorship',
+            amount: course?.price || 0
+          })
+        })
+      } catch (err) {
+        console.error('Failed to send manual enrollment email:', err)
+      }
+
       setShowEnrollmentModal(false)
       setEnrollmentForm({ userEmail: '', courseId: '', status: 'active' })
       showSuccess('Enrollment added successfully!')
@@ -69,6 +88,27 @@ export default function EmployeeTrading() {
       alert('Failed to add enrollment')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleDeleteEnrollment = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this enrollment?')) return
+    try {
+      await deleteTradingEnrollment(id)
+      showSuccess('Enrollment deleted')
+    } catch (err) {
+      console.error('Delete enrollment error:', err)
+      alert('Failed to delete enrollment')
+    }
+  }
+
+  const handleStatusUpdate = async (id, status) => {
+    try {
+      await updateTradingEnrollment(id, { status })
+      showSuccess('Status updated')
+    } catch (err) {
+      console.error('Update status error:', err)
+      alert('Failed to update status')
     }
   }
 
@@ -288,6 +328,7 @@ export default function EmployeeTrading() {
                     <th className="px-4 py-3">Amount</th>
                     <th className="px-4 py-3">Status</th>
                     <th className="px-4 py-3">Join Date</th>
+                    {(canManageEnrollments || canManageCourses) && <th className="px-4 py-3 text-right">Actions</th>}
                   </tr>
                 </thead>
                 <tbody className="text-sm text-gray-300">
@@ -320,6 +361,28 @@ export default function EmployeeTrading() {
                          enr.createdAt ? new Date(enr.createdAt).toLocaleDateString() :
                          enr.enrolledAt ? new Date(enr.enrolledAt).toLocaleDateString() : 'N/A'}
                       </td>
+                      {(canManageEnrollments || canManageCourses) && (
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <select 
+                              value={enr.status}
+                              onChange={(e) => handleStatusUpdate(enr.id, e.target.value)}
+                              className="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-gray-300 outline-none focus:border-blue-500/50 cursor-pointer"
+                            >
+                              <option value="pending" className="bg-gray-900">Pending</option>
+                              <option value="active" className="bg-gray-900">Active</option>
+                              <option value="completed" className="bg-gray-900">Completed</option>
+                            </select>
+                            <button 
+                              onClick={() => handleDeleteEnrollment(enr.id)}
+                              className="p-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-all"
+                              title="Delete Enrollment"
+                            >
+                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            </button>
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
