@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) => {
   const backendTarget = env.VITE_API_URL || 'https://backend-5u1w.onrender.com';
 
   return {
+    
     plugins: [react()],
     server: {
       proxy: {
