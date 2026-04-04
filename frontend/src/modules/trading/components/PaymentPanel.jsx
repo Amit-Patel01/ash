@@ -44,7 +44,8 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
       }
 
       // 1. Create order on backend
-      const orderRes = await fetch('/api/razorpay/create-order', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+      const orderRes = await fetch(`${API_URL}/api/razorpay/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -55,7 +56,7 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
       const orderData = await orderRes.json()
 
       if (!orderData.success) {
-        setError('Failed to initiate order. Please try again.')
+        setError(orderData.message || 'Failed to initiate order. Please try again.')
         return
       }
 
@@ -70,7 +71,7 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
         handler: async (response) => {
           // 3. Verify payment on success
           try {
-            const verifyRes = await fetch('/api/trading/verify-payment', {
+            const verifyRes = await fetch(`${API_URL}/api/trading/verify-payment`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -165,8 +166,7 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
         amount: selectedPlan.price,
         paymentId: 'TEST_' + Date.now(),
         method: 'test_bypass',
-        status: 'completed',
-        createdAt: serverTimestamp()
+        status: 'completed'
       })
 
       setSuccess(true)
