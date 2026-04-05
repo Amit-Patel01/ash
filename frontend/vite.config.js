@@ -10,12 +10,13 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
-      // Source code obfuscation for production build
+      // Temporarily disabled to debug 404 module errors on production
+      /*
       mode === 'production' && obfuscator({
         compact: true,
         controlFlowFlattening: true,
         controlFlowFlatteningThreshold: 0.75,
-        deadCodeInjection: false, // Security: Disable as it can break some dynamic imports
+        deadCodeInjection: false,
         debugProtection: true,
         debugProtectionInterval: 4000,
         disableConsoleOutput: true,
@@ -25,11 +26,11 @@ export default defineConfig(({ mode }) => {
         renameGlobals: false,
         selfDefending: true,
         simplify: true,
-        splitStrings: false, // Security: Disable to ensure dynamic import paths remain intact
+        splitStrings: false,
         stringArray: true,
         stringArrayCallsTransform: true,
         stringArrayCallsTransformThreshold: 0.75,
-        stringArrayEncoding: [], // Security: Use empty array to avoid browser/proxy mangling
+        stringArrayEncoding: [],
         stringArrayIndexShift: true,
         stringArrayRotate: true,
         stringArrayShuffle: true,
@@ -38,9 +39,10 @@ export default defineConfig(({ mode }) => {
         stringArrayWrappersParametersMaxCount: 4,
         stringArrayWrappersType: 'function',
         stringArrayThreshold: 0.75,
-        transformObjectKeys: false, // Security: Crucial to keep false for Vite/Module compatibility
+        transformObjectKeys: false,
         unicodeEscapeSequence: false
       })
+      */
     ].filter(Boolean),
     build: {
       sourcemap: false, // Security: Disable source maps in production
