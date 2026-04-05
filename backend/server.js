@@ -211,6 +211,51 @@ if (!RESEND_API_KEY) {
 }
 const resend = new Resend(RESEND_API_KEY || "re_dummy_key_to_prevent_crash_123456");
 
+/**
+ * Premium Email Template Wrapper
+ */
+const emailTemplate = (subject, content, ctaText = null, ctaUrl = null) => `
+  <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+    <!-- Brand Header -->
+    <div style="background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%); padding: 40px 20px; text-align: center;">
+      <img src="https://www.amitsolutionhub.com/logo.png" alt="Amit Solution Hub" style="height: 60px; margin-bottom: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));" />
+      <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">${subject}</h1>
+    </div>
+
+    <!-- Content Body -->
+    <div style="padding: 40px; color: #1e293b; line-height: 1.6;">
+      ${content}
+      
+      ${ctaText && ctaUrl ? `
+        <div style="text-align: center; margin: 40px 0;">
+          <a href="${ctaUrl}" style="background-color: #2563eb; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 12px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);">
+            ${ctaText}
+          </a>
+        </div>
+      ` : ''}
+
+      <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid #f1f5f9; font-size: 14px; color: #64748b;">
+        <p>Best Regards,</p>
+        <p style="color: #1e293b; font-weight: bold; margin-bottom: 0;">Amit Patel</p>
+        <p style="margin-top: 0;">Founder, Amit Solution Hub</p>
+      </div>
+    </div>
+
+    <!-- Professional Footer -->
+    <div style="background-color: #f8fafc; padding: 30px; text-align: center; border-top: 1px solid #f1f5f9;">
+      <p style="margin: 0; font-size: 12px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+        © 2026 Amit Solution Hub | Registered MSME
+      </p>
+      <p style="margin: 8px 0 0; font-size: 11px; color: #cbd5e1;">
+        Support: support@amitsolutionhub.com | Gujarat, India
+      </p>
+      <div style="margin-top: 20px; display: flex; justify-content: center; gap: 15px;">
+        <span style="font-size: 11px; color: #94a3b8;">Built with Excellence.</span>
+      </div>
+    </div>
+  </div>
+`;
+
 // Razorpay config
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
@@ -269,54 +314,45 @@ app.post("/api/razorpay/verify-payment", async (req, res) => {
     try {
       // Send Success Email to Client
       await resend.emails.send({
-        from: "Amit Solution Hub <contact@amitsolutionhub.com>",
+        from: "Amit Solution Hub <support@amitsolutionhub.com>",
         to: customer_email,
         subject: `Payment Successful – ${project_title}`,
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden;">
-            <div style="background: linear-gradient(135deg, #2563eb, #1e40af); padding: 30px; text-align: center; color: white;">
-              <h1 style="margin: 0; font-size: 24px;">Thank You for Your Purchase!</h1>
-            </div>
-            <div style="padding: 30px; color: #1e293b;">
-              <p>Hello <strong>${customer_name}</strong>,</p>
-              <p>We’ve successfully received your payment for <strong>${project_title}</strong>.</p>
-              
-              <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0;">
-                <p style="margin: 0; font-weight: bold; color: #2563eb;">Next Steps:</p>
-                <p style="margin: 8px 0 0; line-height: 1.5;">
-                  Our team is preparing your files. <strong>You will receive the full source code and documentation at this email address within the next 24 hours.</strong>
-                </p>
-              </div>
-
-              <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;">Order ID:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 500;">${razorpay_order_id}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;">Amount Paid:</td>
-                  <td style="padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 500;">₹${amount}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; color: #64748b;">Plan:</td>
-                  <td style="padding: 8px 0; text-align: right; font-weight: 500;">${purchase_type === 'project_with_source' ? 'Project + Source Code' : 'Project Only'}</td>
-                </tr>
-              </table>
-
-              <p style="margin-top: 30px; font-size: 14px; color: #64748b;">
-                If you have any questions, simply reply to this email or contact us at amitpatel07029@gmail.com.
-              </p>
-            </div>
-            <div style="background: #f1f5f9; padding: 20px; text-align: center; font-size: 12px; color: #94a3b8;">
-              © 2026 Amit Solution Hub. All rights reserved.
-            </div>
+        html: emailTemplate(
+          "Thank You for Your Purchase!",
+          `
+          <p>Hello <strong>${customer_name}</strong>,</p>
+          <p>We’ve successfully received your payment for <strong>${project_title}</strong>.</p>
+          
+          <div style="background: #eff6ff; border-radius: 12px; padding: 24px; margin: 24px 0; border: 1px solid #dbeafe;">
+            <p style="margin: 0; font-weight: bold; color: #1e40af;">Next Steps:</p>
+            <p style="margin: 8px 0 0; color: #1e3a8a;">
+              Our engineers are preparing your files. <strong>The full source code, setup guide, and documentation will reach this email within 24 hours.</strong>
+            </p>
           </div>
-        `
+
+          <table style="width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 14px;">
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 12px 0; color: #64748b;">Order ID</td>
+              <td style="padding: 12px 0; text-align: right; font-weight: 600;">${razorpay_order_id}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 12px 0; color: #64748b;">Amount Paid</td>
+              <td style="padding: 12px 0; text-align: right; font-weight: 600; color: #059669;">₹${amount}</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px 0; color: #64748b;">Package</td>
+              <td style="padding: 12px 0; text-align: right; font-weight: 600;">${purchase_type === 'project_with_source' ? 'Source + Setup' : 'Project Only'}</td>
+            </tr>
+          </table>
+          `,
+          "View Orders",
+          "https://www.amitsolutionhub.com/customer/orders"
+        )
       });
 
       // Notify Admin
       await resend.emails.send({
-        from: "onboarding@resend.dev",
+        from: "Amit Solution Hub <support@amitsolutionhub.com>",
         to: "amitpatel07029@gmail.com",
         subject: `New Payment Received: ₹${amount}`,
         text: `New order for ${project_title} from ${customer_name} (${customer_email}). Order ID: ${razorpay_order_id}.`
@@ -395,25 +431,25 @@ app.post("/api/trading/verify-payment", async (req, res) => {
 
       // 3. Send Success Email
       await resend.emails.send({
-        from: "Amit Solution Hub <contact@amitsolutionhub.com>",
+        from: "Amit Solution Hub <support@amitsolutionhub.com>",
         to: userEmail,
         subject: `Welcome to ${planName} Mentorship!`,
-        html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 12px; overflow: hidden;">
-            <div style="background: #2563eb; color: white; padding: 40px; text-align: center;">
-              <h1>Enrollment Confirmed!</h1>
-              <p>You now have access to the ${planName} Mentorship Program.</p>
-            </div>
-            <div style="padding: 40px;">
-              <h2>Hello ${userName},</h2>
-              <p>Your payment of ₹${amount} was successful. Your account has been activated for the <strong>${planName}</strong> plan.</p>
-              <p>You can now access live sessions, curriculum, and community resources through your dashboard.</p>
-              <div style="text-align: center; margin: 40px 0;">
-                <a href="https://amitsolutionhub.com/customer" style="background: #2563eb; color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: bold;">Go to Dashboard</a>
-              </div>
-            </div>
-          </div>
-        `
+        html: emailTemplate(
+          "Enrollment Confirmed!",
+          `
+          <h2>Hello ${userName},</h2>
+          <p>Your enrollment in the <strong>${planName} Mentorship Program</strong> is active. We are excited to have you join our next cohort.</p>
+          <p>Your payment of <strong>₹${amount}</strong> was successful. You now have full access to:</p>
+          <ul style="padding-left: 20px; color: #475569;">
+            <li>Daily Live Trading Sessions</li>
+            <li>Premium Strategy Blueprints</li>
+            <li>Private Community Discord/Telegram</li>
+            <li>One-on-One Performance Review</li>
+          </ul>
+          `,
+          "Access Dashboard",
+          "https://www.amitsolutionhub.com/customer"
+        )
       });
 
       res.json({ success: true, message: "Payment verified and enrollment activated" });
@@ -430,7 +466,7 @@ app.post("/api/trading/enrollment-email", async (req, res) => {
   const { userName, userEmail, planName, amount } = req.body;
   try {
     await resend.emails.send({
-      from: "Amit Solution Hub <contact@amitsolutionhub.com>",
+      from: "Amit Solution Hub <support@amitsolutionhub.com>",
       to: userEmail,
       subject: `Welcome to ${planName} Mentorship!`,
       html: `
@@ -463,7 +499,7 @@ app.post("/contact", async (req, res) => {
   try {
     // 1️⃣ Mail to YOU (Admin notification)
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "Amit Solution Hub <support@amitsolutionhub.com>",
       to: "amitpatel07029@gmail.com",
       subject: `New Contact from ${firstName}`,
       text: `Name: ${firstName} ${lastName}
@@ -475,64 +511,25 @@ Message: ${message}`
 
     // 2️⃣ Auto reply to CLIENT
     await resend.emails.send({
-      from: "Amit Solution Hub <contact@amitsolutionhub.com>",
+      from: "Amit Solution Hub <support@amitsolutionhub.com>",
       to: email,
-      subject: "We Received Your Message – Amit Solution Hub",
-      html: `
-  <div style="font-family: Arial, sans-serif; background-color:#f4f6f8; padding:40px 0;">
-    <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.08);">
+      subject: "Message Received – Amit Solution Hub",
+      html: emailTemplate(
+        "We've Received Your Message",
+        `
+        <p>Hello ${firstName},</p>
+        <p>Thank you for reaching out to <strong>Amit Solution Hub</strong>. Our team has received your inquiry and we will get back to you within 24 business hours.</p>
 
-      <!-- Header -->
-      <div style="background:linear-gradient(135deg,#2563eb,#1e40af); padding:30px; text-align:center;">
-        <h1 style="color:#ffffff; margin:0;">Amit Solution Hub</h1>
-        <p style="color:#cbd5e1; margin-top:8px;">Professional Web & Software Solutions</p>
-      </div>
-
-      <!-- Body -->
-      <div style="padding:30px;">
-        <h2 style="color:#111827;">Hello ${firstName},</h2>
-        <p style="color:#4b5563; line-height:1.6;">
-          Thank you for contacting <strong>Amit Solution Hub</strong>.
-          We have successfully received your message and our team will respond shortly.
-        </p>
-
-        <div style="margin:25px 0; padding:15px; background:#f9fafb; border-left:4px solid #2563eb;">
-          <p style="margin:0; color:#374151;"><strong>Your Message:</strong></p>
-          <p style="margin-top:8px; color:#6b7280;">${message}</p>
+        <div style="margin: 30px 0; padding: 24px; background-color: #f8fafc; border-radius: 12px; border: 1px solid #f1f5f9;">
+          <p style="margin: 0; font-size: 12px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Your Inquiry:</p>
+          <p style="margin-top: 10px; color: #475569; font-style: italic;">"${message}"</p>
         </div>
 
-        <div style="margin:25px 0; padding:15px; background:#f9fafb; border-left:4px solid #10b981;">
-          <p style="margin:0; color:#374151;"><strong>Mobile:</strong></p>
-          <p style="margin-top:8px; color:#6b7280;"><a href="tel:${mobile}" style="color:#10b981; font-weight:500; text-decoration:none;">📞 ${mobile}</a></p>
-        </div>
-
-        <div style="margin:25px 0; padding:15px; background:#f9fafb; border-left:4px solid #3b82f6;">
-          <p style="margin:0; color:#374151;"><strong>GitHub:</strong></p>
-          <a href="${github}" target="_blank" rel="noopener noreferrer" style="color:#3b82f6; text-decoration:none; display:inline-block; padding:10px 16px; background:#eff6ff; border-radius:8px; margin-top:8px; font-weight:500;">🔗 View GitHub Profile</a>
-        </div>
-
-        <p style="color:#4b5563;">
-          If your inquiry is urgent, feel free to reply directly to this email.
-        </p>
-
-        <div style="margin-top:30px;">
-          <a href="https://amitsolutionhub.com" 
-             style="background:#2563eb; color:#ffffff; padding:12px 20px; text-decoration:none; border-radius:6px; display:inline-block;">
-            Visit Our Website
-          </a>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div style="background:#111827; padding:20px; text-align:center;">
-        <p style="color:#9ca3af; font-size:13px; margin:0;">
-          © 2026 Amit Solution Hub. All rights reserved.
-        </p>
-      </div>
-
-    </div>
-  </div>
-  `
+        <p>While you wait, feel free to explore our latest case studies and source code projects on our official website.</p>
+        `,
+        "Explore Projects",
+        "https://www.amitsolutionhub.com/projects"
+      )
     });
     console.log(`✅ Mail process completed for ${email}`);
     res.json({ success: true });
@@ -552,41 +549,17 @@ app.post("/reply", async (req, res) => {
   try {
     // ONLY send the email to the client
     await resend.emails.send({
-      from: "Amit Solution Hub <support@amitsolutionhub.com",
+      from: "Amit Solution Hub <support@amitsolutionhub.com>",
       to: email,
       subject: subject || "Reply from Amit Solution Hub",
-      html: `
-        <div style="font-family: Arial, sans-serif; background-color:#f4f6f8; padding:40px 0;">
-          <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.08);">
-            <!-- Header -->
-            <div style="background:linear-gradient(135deg,#2563eb,#1e40af); padding:30px; text-align:center;">
-              <h1 style="color:#ffffff; margin:0;">Amit Solution Hub</h1>
-              <p style="color:#cbd5e1; margin-top:8px;">Professional Web & Software Solutions</p>
-            </div>
-
-            <!-- Body -->
-            <div style="padding:30px;">
-              <h2 style="color:#111827;">Hello ${firstName},</h2>
-              <p style="color:#4b5563; line-height:1.6; white-space: pre-wrap;">
-                ${message}
-              </p>
-              
-              <div style="margin-top:30px;">
-                <p style="color:#6b7280; font-size:14px;">Regards,</p>
-                <p style="color:#111827; font-weight:bold; margin:0;">Amit Patel</p>
-                <p style="color:#6b7280; font-size:12px; margin:0;">Founder, Amit Solution Hub</p>
-              </div>
-            </div>
-
-            <!-- Footer -->
-            <div style="background:#111827; padding:20px; text-align:center;">
-              <p style="color:#9ca3af; font-size:13px; margin:0;">
-                © 2026 Amit Solution Hub. All rights reserved.
-              </p>
-            </div>
-          </div>
-        </div>
-      `
+      html: emailTemplate(
+        subject || "Official Update",
+        `
+        <p>Hello ${firstName},</p>
+        <div style="color: #4b5563; line-height: 1.8; white-space: pre-wrap; font-size: 15px; margin: 25px 0;">${message}</div>
+        <p>If you have further questions regarding this matter, please simply reply to this email thread.</p>
+        `
+      )
     });
 
     console.log(`✅ Admin reply sent to ${email}`);
