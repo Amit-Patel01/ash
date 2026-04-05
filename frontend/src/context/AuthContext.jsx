@@ -133,9 +133,23 @@ export function AuthProvider({ children }) {
     await signOut(auth)
   }, [])
 
-  const resetPassword = useCallback(async (email) => {
-    await sendPasswordResetEmail(auth, email)
-  }, [])
+  const resetPassword = useCallback(async (email, returnUrl) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email, 
+          returnUrl: returnUrl || (window.location.origin + '/login')
+        })
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.message);
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }, []);
 
   // User details update
   const updateUserProfile = useCallback(async (uid, data) => {

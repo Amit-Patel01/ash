@@ -9,6 +9,7 @@ export const api = {
   razorpayCreateOrder: `${API_BASE}/api/razorpay/create-order`,
   razorpayVerifyPayment: `${API_BASE}/api/razorpay/verify-payment`,
   uploadChat: `${API_BASE}/api/upload/chat`,
+  forgotPassword: `${API_BASE}/api/auth/forgot-password`,
 };
 
 export default api;
