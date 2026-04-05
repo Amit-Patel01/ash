@@ -12,14 +12,27 @@ const LiveMeetingPopup = () => {
   const [activeSession, setActiveSession] = useState(null)
   const [isDismissed, setIsDismissed] = useState(false)
 
-  // Find if there's any session marked as live
+  // Find if there's any session marked as live or starting soon
   useEffect(() => {
     if (!tradingSessions) return
 
-    const liveSession = tradingSessions.find(s => s.isLive === true)
+    // 1. Check for LIVE sessions first
+    let current = tradingSessions.find(s => s.isLive === true)
     
-    if (liveSession) {
-      setActiveSession(liveSession)
+    // 2. If no live sessions, check for upcoming sessions (next 60 mins)
+    if (!current) {
+        const now = new Date();
+        current = tradingSessions.find(s => {
+          if (!s.date || !s.time) return false;
+          const sessionDate = new Date(`${s.date}T${s.time}`);
+          const diffMs = sessionDate - now;
+          const diffMins = diffMs / (1000 * 60);
+          return diffMins > 0 && diffMins <= 60;
+        });
+    }
+    
+    if (current) {
+      setActiveSession(current)
       // Show popup if not dismissed and not on sensitive pages
       const isSensitivePage = ['/login', '/signup', '/admin', '/employee'].some(path => location.pathname.startsWith(path))
       if (!isDismissed && !isSensitivePage) {
@@ -28,7 +41,6 @@ const LiveMeetingPopup = () => {
     } else {
       setIsVisible(false)
       setActiveSession(null)
-      setIsDismissed(false) // Reset dismiss state when no session is live
     }
   }, [tradingSessions, location.pathname, isDismissed])
 
@@ -55,10 +67,10 @@ const LiveMeetingPopup = () => {
     <div className="fixed bottom-6 left-6 z-[999] animate-in slide-in-from-left-10 duration-500">
       <div className="relative group">
         {/* Glow Effect */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-pink-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+        <div className="absolute -inset-2 bg-gradient-to-r from-red-600 via-rose-600 to-pink-600 rounded-3xl blur-xl opacity-40 group-hover:opacity-70 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
         
         {/* Main Card */}
-        <div className="relative md:w-96 bg-white/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-5 overflow-hidden">
+        <div className="relative md:w-[420px] bg-white/90 backdrop-blur-2xl border-2 border-white/40 rounded-3xl shadow-[0_20px_70px_-15px_rgba(0,0,0,0.3)] p-7 overflow-hidden">
           {/* Close Button */}
           <button 
             onClick={() => setIsDismissed(true)}
@@ -80,15 +92,18 @@ const LiveMeetingPopup = () => {
 
             <div className="flex-1 pr-6">
               <div className="flex items-center gap-2 mb-1">
-                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-red-100 text-red-600 uppercase tracking-tighter">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping"></span>
-                  Live Now
+                <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-tighter ${activeSession.isLive ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'}`}>
+                  {activeSession.isLive && <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping"></span>}
+                  {activeSession.isLive ? 'Live Now' : 'Starting Soon'}
                 </span>
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{getCourseName(activeSession.course_id)}</span>
               </div>
               <h3 className="text-sm font-black text-slate-900 line-clamp-1">{activeSession.topic}</h3>
-              <p className="text-[11px] text-slate-500 mt-1 line-clamp-2 leading-tight">
-                {isEnrolled ? "Jump into the session right now to clarify your doubts." : "Our experts are analyzing the markets live. Enroll now to access the link."}
+              <p className="text-[11px] font-bold text-slate-500 mt-2 line-clamp-2 leading-tight">
+                {activeSession.isLive 
+                  ? (isEnrolled ? "You're enrolled! Jump into the live session right now." : "🔥 LIVE MARKET ANALYSIS: Enroll now to get the meeting access link and join the stream!")
+                  : (isEnrolled ? "A session is starting soon! Get ready to join." : "🚀 UPCOMING SESSION: Enroll now to receive the access link once we go live!")
+                }
               </p>
             </div>
           </div>
@@ -97,24 +112,28 @@ const LiveMeetingPopup = () => {
             {isEnrolled ? (
               <button 
                 onClick={handleJoin}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-black py-2.5 rounded-xl shadow-lg shadow-blue-200 hover:shadow-blue-300 transition-all hover:scale-[1.02] active:scale-95"
+                className={`flex-1 text-white text-xs font-black py-2.5 rounded-xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg ${activeSession.isLive ? 'bg-gradient-to-r from-red-600 to-rose-600 shadow-red-200 hover:shadow-red-300' : 'bg-gradient-to-r from-blue-600 to-indigo-600 shadow-blue-200 hover:shadow-blue-300'}`}
               >
-                Join Meeting
+                {activeSession.isLive ? 'Join Meeting' : 'Join Link In Session'}
               </button>
             ) : (
               <Link 
                 to="/services/trading-mentorship" 
                 onClick={() => setIsVisible(false)}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-black py-2.5 rounded-xl shadow-lg shadow-blue-200 hover:shadow-blue-300 text-center transition-all hover:scale-[1.02] active:scale-95"
+                className="flex-[3] bg-gradient-to-r from-red-600 via-rose-600 to-red-500 text-white text-[14px] font-black py-4 rounded-2xl shadow-[0_10px_40px_-10px_rgba(225,29,72,0.5)] hover:shadow-[0_20px_50px_-10px_rgba(225,29,72,0.6)] text-center transition-all hover:scale-[1.05] active:scale-95 flex items-center justify-center gap-3 border-2 border-white/20"
               >
-                Enroll to Join
+                <div className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+                </div>
+                <span className="uppercase tracking-tight">Enroll to Access Link</span>
               </Link>
             )}
             <button 
               onClick={() => setIsDismissed(true)}
-              className="px-4 bg-slate-100 text-slate-500 text-xs font-bold py-2.5 rounded-xl hover:bg-slate-200 transition-all"
+              className="flex-1 bg-slate-100 text-slate-500 text-[11px] font-black py-4 rounded-2xl hover:bg-slate-200 transition-all text-center border-2 border-transparent"
             >
-              Later
+              LATER
             </button>
           </div>
         </div>

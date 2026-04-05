@@ -14,7 +14,7 @@ export default function EmployeeTrading() {
   const [successMsg, setSuccessMsg] = useState('')
 
   const [courseForm, setCourseForm] = useState({ name: '', price: '', description: '', features: '', highlighted: false, badge: '' })
-  const [sessionForm, setSessionForm] = useState({ topic: '', date: '', time: '', platform: 'Google Meet', meeting_link: '', course_id: '' })
+  const [sessionForm, setSessionForm] = useState({ topic: '', date: '', time: '', platform: 'Google Meet', meeting_link: '', course_id: '', isLive: false })
   const [showEnrollmentModal, setShowEnrollmentModal] = useState(false)
   const [enrollmentForm, setEnrollmentForm] = useState({ userEmail: '', courseId: '', status: 'active' })
 
@@ -152,12 +152,20 @@ export default function EmployeeTrading() {
   // Session handlers
   const openCreateSession = () => {
     setEditingSession(null)
-    setSessionForm({ topic: '', date: '', time: '', platform: 'Google Meet', meeting_link: '', course_id: '' })
+    setSessionForm({ topic: '', date: '', time: '', platform: 'Google Meet', meeting_link: '', course_id: '', isLive: false })
     setShowSessionModal(true)
   }
   const openEditSession = (s) => {
     setEditingSession(s)
-    setSessionForm({ topic: s.topic || '', date: s.date || '', time: s.time || '', platform: s.platform || 'Google Meet', meeting_link: s.meeting_link || '', course_id: s.course_id || '' })
+    setSessionForm({ 
+      topic: s.topic || '', 
+      date: s.date || '', 
+      time: s.time || '', 
+      platform: s.platform || 'Google Meet', 
+      meeting_link: s.meeting_link || '', 
+      course_id: s.course_id || '',
+      isLive: s.isLive || false
+    })
     setShowSessionModal(true)
   }
   const handleSessionSubmit = async (e) => {
@@ -174,6 +182,13 @@ export default function EmployeeTrading() {
   const handleDeleteSession = async (s) => {
     if (!window.confirm(`Delete "${s.topic}"?`)) return
     try { await deleteTradingSession(s.id); showSuccess('Session deleted') } catch { alert('Failed') }
+  }
+
+  const handleToggleLive = async (session) => {
+    try {
+      await updateTradingSession(session.id, { isLive: !session.isLive })
+      showSuccess(`Meeting marked as ${!session.isLive ? 'LIVE' : 'OFFLINE'}`)
+    } catch { alert('Failed to update live status') }
   }
 
   // Curriculum state
@@ -465,15 +480,31 @@ export default function EmployeeTrading() {
                 <div key={s.id} className="bg-gray-900/50 border border-white/5 rounded-xl p-4 group hover:border-white/10 transition-all">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                      <h4 className="font-bold text-white">{s.topic}</h4>
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-bold text-white">{s.topic}</h4>
+                        {s.isLive && (
+                          <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-tighter border border-red-500/20">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                            Live
+                          </span>
+                        )}
+                      </div>
                       <p className="text-sm text-gray-400">{s.date} at {s.time} — {s.platform}</p>
                     </div>
-                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                      {s.meeting_link && s.meeting_link !== '#' && (
-                        <a href={s.meeting_link} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20">Join</a>
-                      )}
-                      <button onClick={() => openEditSession(s)} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-500/10 text-blue-400 hover:bg-blue-500/20">Edit</button>
-                      <button onClick={() => handleDeleteSession(s)} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20">Delete</button>
+                    <div className="flex gap-2 items-center">
+                      <button 
+                        onClick={() => handleToggleLive(s)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${s.isLive ? 'bg-red-500 text-white shadow-lg shadow-red-500/25' : 'bg-white/5 text-gray-400 hover:text-white'}`}
+                      >
+                        {s.isLive ? 'End Live' : 'Go Live'}
+                      </button>
+                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                        {s.meeting_link && s.meeting_link !== '#' && (
+                          <a href={s.meeting_link} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20">Join</a>
+                        )}
+                        <button onClick={() => openEditSession(s)} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-500/10 text-blue-400 hover:bg-blue-500/20">Edit</button>
+                        <button onClick={() => handleDeleteSession(s)} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20">Delete</button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -639,6 +670,15 @@ export default function EmployeeTrading() {
                   <option value="" className="bg-gray-900">General</option>
                   {tradingCourses.map(c => <option key={c.id} value={c.id} className="bg-gray-900">{c.name}</option>)}
                 </select>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-white/[0.02] rounded-xl border border-white/5">
+                <div>
+                  <p className="text-sm font-semibold text-white">Live Now</p>
+                  <p className="text-[10px] text-gray-500">Enable this to show "LIVE" popup to all users</p>
+                </div>
+                <button type="button" onClick={() => setSessionForm({...sessionForm, isLive: !sessionForm.isLive})} className={`w-12 h-6 rounded-full transition-all relative ${sessionForm.isLive ? 'bg-red-500' : 'bg-gray-700'}`}>
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${sessionForm.isLive ? 'left-7' : 'left-1'}`} />
+                </button>
               </div>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowSessionModal(false)} className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-gray-400 hover:bg-white/10">Cancel</button>

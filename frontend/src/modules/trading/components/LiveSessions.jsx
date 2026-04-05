@@ -23,7 +23,7 @@ const LiveSessions = () => {
   if (sessions.length === 0 && !isAdmin && !isEmployee) return null;
 
   return (
-    <section className="py-20 px-4 bg-white">
+    <section className="relative z-10 py-20 px-4 bg-white">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div>
@@ -45,18 +45,26 @@ const LiveSessions = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {sessions.map((session, i) => (
-            <div key={session.id || i} className="group p-8 rounded-3xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-blue-500 hover:shadow-2xl transition-all duration-300">
+            <div key={session.id || i} className="group p-8 rounded-3xl border border-slate-100 bg-white hover:border-blue-500 hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
               <div className="flex items-start justify-between mb-6">
                 <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-slate-100 group-hover:border-blue-200">
                   <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <span className="px-4 py-1.5 rounded-full text-xs font-black tracking-widest bg-emerald-100 text-emerald-700 uppercase">
-                  {session.platform}
-                </span>
+                <div className="flex flex-col items-end gap-2">
+                  <span className="px-4 py-1.5 rounded-full text-xs font-black tracking-widest bg-emerald-100 text-emerald-700 uppercase">
+                    {session.platform}
+                  </span>
+                  {session.isLive && (
+                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500 text-white text-[10px] font-black uppercase tracking-widest animate-pulse shadow-lg shadow-red-500/25">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+                      Live Now
+                    </span>
+                  )}
+                </div>
               </div>
-              <h4 className="text-xl font-bold text-slate-900 mb-2">{session.topic}</h4>
+              <h4 className="text-xl font-bold text-slate-900 mb-2">{session.topic || 'Untitled Session'}</h4>
               <p className="text-slate-500 mb-6 flex items-center gap-2">
                 <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
