@@ -232,6 +232,22 @@ export function AuthProvider({ children }) {
       await setDoc(doc(db, 'users', newUser.uid), userData)
       await updateDoc(requestRef, { status: 'approved', approvedAt: new Date().toISOString() })
       await secondarySignOut(secondaryAuth)
+
+      // Notify employee of approval via email
+      try {
+        fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/notify-account-approval`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: request.email,
+            name: request.name,
+            role: request.role || 'Employee'
+          })
+        });
+      } catch (e) {
+        console.error("Failed to trigger approval email:", e);
+      }
+
       return { success: true }
     } catch (error) {
       throw error

@@ -648,6 +648,43 @@ app.post("/api/admin/broadcast-email", async (req, res) => {
   }
 });
 
+// Admin Notify Account Approval
+app.post("/api/admin/notify-account-approval", async (req, res) => {
+  const { email, name, role } = req.body;
+  
+  if (!email || !name) {
+    return res.status(400).json({ success: false, message: "Email and Name are required." });
+  }
+
+  const welcomeContent = `
+    <div style="background-color: #f8fafc; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+      <h2 style="color: #1e40af; margin-top: 0;">Welcome to the Team, ${name}!</h2>
+      <p style="color: #475569; font-size: 16px;">We are thrilled to inform you that your account request for <strong>Amit Solution Hub</strong> has been <strong>APPROVED</strong>.</p>
+      <div style="margin: 20px 0; padding: 15px; background: #ffffff; border-left: 4px solid #2563eb; border-radius: 4px;">
+        <p style="margin: 4px 0;"><strong>Role:</strong> ${role || 'Employee'}</p>
+        <p style="margin: 4px 0;"><strong>Status:</strong> Active</p>
+      </div>
+      <p style="color: #475569;">You can now log in using your registered credentials to access your dashboard and start collaborating.</p>
+    </div>
+  `;
+
+  try {
+    await resend.emails.send({
+      from: "Amit Solution Hub <support@amitsolutionhub.com>",
+      to: email,
+      subject: "Account Approved - Welcome to Amit Solution Hub",
+      html: emailTemplate("Account Approved!", welcomeContent, "Access Dashboard", "https://www.amitsolutionhub.com/login")
+    });
+
+    console.log(`✅ Account Approval Notification sent to ${email}`);
+    res.json({ success: true, message: "Notification sent successfully" });
+
+  } catch (error) {
+    console.error("Notify Account Approval Error:", error);
+    res.status(500).json({ success: false, message: "Failed to send notification email." });
+  }
+});
+
 app.post("/contact", async (req, res) => {
   const { firstName, lastName, email, mobile, github, message } = req.body;
 
