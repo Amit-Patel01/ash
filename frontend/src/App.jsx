@@ -191,6 +191,8 @@ function AppContent() {
       <Route path="/employee-login" element={<EmployeeLogin />} />
       <Route path="/request-account" element={<RequestAccount />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/forgot-password." element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ForgotPassword />} />
 
       {/* Employee Panel */}
       <Route path="/employee" element={<ProtectedEmployee><EmployeeLayout /></ProtectedEmployee>}>

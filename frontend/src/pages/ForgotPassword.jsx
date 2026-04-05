@@ -1,17 +1,27 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { useSearchParams, Link } from 'react-router-dom'
-
+import { useSearchParams, Link, useNavigate } from 'react-router-dom'
 
 export default function ForgotPassword() {
-  const { resetPassword } = useAuth()
+  const { resetPassword, verifyResetCode, confirmReset } = useAuth()
   const [searchParams] = useSearchParams()
-  const from = searchParams.get('from')
+  const navigate = useNavigate()
   
+  // URL Params
+  const from = searchParams.get('from')
+  const mode = searchParams.get('mode')
+  const oobCode = searchParams.get('oobCode')
+  
+  // States
   const [email, setEmail] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
+  const [verifyingCode, setVerifyingCode] = useState(mode === 'resetPassword')
+  const [userEmail, setUserEmail] = useState('') // Verified email from code
 
   const getBackPath = () => {
     if (from === 'admin') return '/admin-login'
@@ -19,7 +29,24 @@ export default function ForgotPassword() {
     return '/login'
   }
 
-  const handleSubmit = async (e) => {
+  // Effect to verify code if in reset mode
+  useEffect(() => {
+    if (mode === 'resetPassword' && oobCode) {
+      const verify = async () => {
+        try {
+          const email = await verifyResetCode(oobCode)
+          setUserEmail(email)
+        } catch (err) {
+          setError('This password reset link is invalid or has expired.')
+        } finally {
+          setVerifyingCode(false)
+        }
+      }
+      verify()
+    }
+  }, [mode, oobCode, verifyResetCode])
+
+  const handleRequestReset = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
@@ -29,22 +56,76 @@ export default function ForgotPassword() {
       setSent(true)
     } catch (err) {
       let msg = 'Failed to send reset email. Please try again.'
-      if (err.code === 'auth/user-not-found') msg = 'No account found with this email.'
-      if (err.code === 'auth/invalid-email') msg = 'Please enter a valid email address.'
-      if (err.code === 'auth/too-many-requests') msg = 'Too many requests. Please try again later.'
+      if (err.message.includes('not found')) msg = 'No account found with this email.'
       setError(msg)
     } finally {
       setLoading(false)
     }
   }
 
+  const handleConfirmReset = async (e) => {
+    e.preventDefault()
+    if (newPassword !== confirmPassword) return setError('Passwords do not match.')
+    if (newPassword.length < 6) return setError('Password must be at least 6 characters.')
+    
+    setError('')
+    setLoading(true)
+    try {
+      await confirmReset(oobCode, newPassword)
+      setSuccess(true)
+      setTimeout(() => navigate(getBackPath()), 3000)
+    } catch (err) {
+      setError('Failed to reset password. The link may have expired.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // --- RENDERING ---
+
+  // 1. Loading/Verifying State
+  if (verifyingCode) {
+    return (
+      <div className="min-h-screen w-full relative flex items-center justify-center p-4 bg-[#030712] overflow-hidden">
+        <div className="relative z-10 text-center">
+          <div className="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-400 font-medium">Verifying security link...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // 2. Success State
+  if (success) {
+    return (
+      <div className="min-h-screen w-full relative flex items-center justify-center p-4 bg-[#030712] overflow-hidden">
+        <div className="absolute top-0 -left-4 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] animate-pulse pointer-events-none"></div>
+        <div className="absolute bottom-0 -right-4 w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px] animate-pulse pointer-events-none delay-700"></div>
+        
+        <div className="relative z-10 w-full max-w-[440px] animate-in zoom-in duration-700">
+          <div className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-[32px] p-10 shadow-2xl text-center">
+            <div className="w-20 h-20 bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-green-500/20">
+              <svg className="w-10 h-10 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-extrabold text-white mb-3">Password Updated</h2>
+            <p className="text-slate-400 mb-8 leading-relaxed">Your password has been reset successfully. Redirecting you to login...</p>
+            <div className="w-full bg-slate-800 h-1 rounded-full overflow-hidden">
+              <div className="bg-green-500 h-full animate-[progress_3s_linear]"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // 3. Sent Confirmation State
   if (sent) {
     return (
       <div className="min-h-screen w-full relative flex items-center justify-center p-4 bg-[#030712] overflow-hidden">
-        {/* Background Animated Blobs */}
         <div className="absolute top-0 -left-4 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] animate-pulse pointer-events-none"></div>
         <div className="absolute bottom-0 -right-4 w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px] animate-pulse pointer-events-none delay-700"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[160px] pointer-events-none"></div>
 
         <div className="relative z-10 w-full max-w-[440px] animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out text-center">
           <div className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 shadow-2xl shadow-black/50">
@@ -72,6 +153,7 @@ export default function ForgotPassword() {
     )
   }
 
+  // 4. MAIN FORM (Request link OR Reset password)
   return (
     <div className="min-h-screen w-full relative flex items-center justify-center p-4 bg-[#030712] overflow-hidden selection:bg-blue-500/30 selection:text-blue-200">
       {/* Background Animated Blobs */}
@@ -92,13 +174,19 @@ export default function ForgotPassword() {
               Solution<span className="text-blue-500">Hub</span> <span className="text-xs not-italic font-medium text-slate-500 ml-1 opacity-50">SECURITY</span>
             </span>
           </Link>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight mb-2">Reset Password</h1>
-          <p className="text-slate-400 text-sm font-medium">Enter your email and we'll send you a recovery link.</p>
+          <h1 className="text-3xl font-extrabold text-white tracking-tight mb-2">
+            {mode === 'resetPassword' ? 'New Password' : 'Reset Password'}
+          </h1>
+          <p className="text-slate-400 text-sm font-medium">
+            {mode === 'resetPassword' 
+              ? `Creating a new password for ${userEmail || 'your account'}` 
+              : "Enter your email and we'll send you a recovery link."}
+          </p>
         </div>
 
         {/* Form Card */}
         <div className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 shadow-2xl shadow-black/50">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={mode === 'resetPassword' ? handleConfirmReset : handleRequestReset} className="space-y-6">
             {error && (
               <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl animate-in shake duration-500">
                 <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
@@ -110,24 +198,51 @@ export default function ForgotPassword() {
               </div>
             )}
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
-              <div className="relative group">
-                <input 
-                  type="email" 
-                  value={email} 
-                  onChange={e => setEmail(e.target.value)} 
-                  placeholder="name@company.com" 
-                  required 
-                  className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 text-sm font-medium"
-                />
-                <div className="absolute inset-0 rounded-2xl bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            {mode === 'resetPassword' ? (
+              <>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">New Password</label>
+                  <input 
+                    type="password" 
+                    value={newPassword} 
+                    onChange={e => setNewPassword(e.target.value)} 
+                    placeholder="••••••••"
+                    required 
+                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300 text-sm font-medium"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Confirm Password</label>
+                  <input 
+                    type="password" 
+                    value={confirmPassword} 
+                    onChange={e => setConfirmPassword(e.target.value)} 
+                    placeholder="••••••••"
+                    required 
+                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300 text-sm font-medium"
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
+                <div className="relative group">
+                  <input 
+                    type="email" 
+                    value={email} 
+                    onChange={e => setEmail(e.target.value)} 
+                    placeholder="name@company.com" 
+                    required 
+                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300 text-sm font-medium"
+                  />
+                  <div className="absolute inset-0 rounded-2xl bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                </div>
               </div>
-            </div>
+            )}
 
             <button 
               type="submit" 
-              disabled={loading || !email} 
+              disabled={loading || (mode !== 'resetPassword' && !email)} 
               className="w-full relative group overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4.5 rounded-2xl font-extrabold text-sm shadow-xl shadow-blue-900/20 hover:shadow-blue-500/30 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -135,13 +250,13 @@ export default function ForgotPassword() {
                 {loading ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span>Processing Request...</span>
+                    <span>{mode === 'resetPassword' ? 'Updating Password...' : 'Processing Request...'}</span>
                   </>
                 ) : (
                   <>
-                    <span>Send Reset Link</span>
+                    <span>{mode === 'resetPassword' ? 'Update Password' : 'Send Reset Link'}</span>
                     <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d={mode === 'resetPassword' ? "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" : "M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"} />
                     </svg>
                   </>
                 )}
@@ -159,11 +274,17 @@ export default function ForgotPassword() {
           </div>
         </div>
 
-        {/* Footer Note */}
         <p className="text-center mt-8 text-[10px] text-slate-600 font-bold uppercase tracking-[0.2em] leading-relaxed">
           Secured Infrastructure Provided • SolHub
         </p>
       </div>
+      
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes progress {
+          from { width: 0; }
+          to { width: 100%; }
+        }
+      `}} />
     </div>
   )
 }

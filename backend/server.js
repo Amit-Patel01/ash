@@ -582,26 +582,31 @@ app.post("/api/auth/forgot-password", async (req, res) => {
   try {
     // 1. Generate the official Firebase Reset Link using Admin SDK
     // This creates the same link that Firebase would send normally
+    const cleanReturnUrl = (returnUrl || "https://www.amitsolutionhub.com/login").replace(/\.$/, "");
     const actionCodeSettings = {
-      url: returnUrl || "http://localhost:5173/login", // Redirect back to this URL after reset
-      handleCodeInApp: false, // Use the standard Firebase Reset Page
+      url: cleanReturnUrl, 
+      handleCodeInApp: true, 
     };
 
     const resetLink = await admin.auth().generatePasswordResetLink(email, actionCodeSettings);
     
-    // 2. Fetch user to get their name (optional but nice for the UI)
+    // 2. Fetch user to get their name
     let displayName = "Member";
     try {
       const userRecord = await admin.auth().getUserByEmail(email);
       displayName = userRecord.displayName || "Member";
-    } catch (e) {
-      // User might not exist or other error, we'll continue with "Member"
-    }
+    } catch (e) {}
 
     // 3. Send the custom email via Resend with the Premium Template
     await resend.emails.send({
       from: "Amit Solution Hub <support@amitsolutionhub.com>",
       to: email,
+      reply_to: "support@amitsolutionhub.com",
+      headers: {
+        "X-Entity-Ref-ID": `reset-${Date.now()}`,
+        "Auto-Submitted": "auto-generated",
+        "X-Auto-Response-Suppress": "All"
+      },
       subject: "🔒 Action Required: Reset Your SolutionHub Password",
       html: `
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9fafb; border-radius: 16px; overflow: hidden; border: 1px solid #e5e7eb;">

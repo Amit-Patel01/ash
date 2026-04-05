@@ -4,6 +4,8 @@ import {
   signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
+  verifyPasswordResetCode,
+  confirmPasswordReset,
   createUserWithEmailAndPassword,
   updateProfile,
   updatePassword,
@@ -151,6 +153,14 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  const verifyResetCode = useCallback(async (code) => {
+    return await verifyPasswordResetCode(auth, code);
+  }, []);
+
+  const confirmReset = useCallback(async (code, newPassword) => {
+    return await confirmPasswordReset(auth, code, newPassword);
+  }, []);
+
   // User details update
   const updateUserProfile = useCallback(async (uid, data) => {
     const userRef = doc(db, 'users', uid)
@@ -244,7 +254,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     currentUser, userProfile, loading,
-    login, signup, logout, resetPassword,
+    login, signup, logout, resetPassword, verifyResetCode, confirmReset,
     updateUserProfile, createAccountRequest, approveAccountRequest, getAllUsers,
     hasPermission, isAdmin, isEmployee
   }
