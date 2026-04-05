@@ -15,8 +15,7 @@ export default defineConfig(({ mode }) => {
         compact: true,
         controlFlowFlattening: true,
         controlFlowFlatteningThreshold: 0.75,
-        deadCodeInjection: true,
-        deadCodeInjectionThreshold: 0.4,
+        deadCodeInjection: false, // Security: Disable as it can break some dynamic imports
         debugProtection: true,
         debugProtectionInterval: 4000,
         disableConsoleOutput: true,
@@ -26,12 +25,11 @@ export default defineConfig(({ mode }) => {
         renameGlobals: false,
         selfDefending: true,
         simplify: true,
-        splitStrings: true,
-        splitStringsChunkLength: 10,
+        splitStrings: false, // Security: Disable to ensure dynamic import paths remain intact
         stringArray: true,
         stringArrayCallsTransform: true,
         stringArrayCallsTransformThreshold: 0.75,
-        stringArrayEncoding: ['base64'],
+        stringArrayEncoding: [], // Security: Use empty array to avoid browser/proxy mangling
         stringArrayIndexShift: true,
         stringArrayRotate: true,
         stringArrayShuffle: true,
@@ -40,7 +38,7 @@ export default defineConfig(({ mode }) => {
         stringArrayWrappersParametersMaxCount: 4,
         stringArrayWrappersType: 'function',
         stringArrayThreshold: 0.75,
-        transformObjectKeys: true,
+        transformObjectKeys: false, // Security: Crucial to keep false for Vite/Module compatibility
         unicodeEscapeSequence: false
       })
     ].filter(Boolean),
