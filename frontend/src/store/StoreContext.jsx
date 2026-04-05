@@ -369,7 +369,19 @@ export function StoreProvider({ children }) {
     } catch (err) { console.error("Error adding trading session:", err); throw err }
   }
   const updateTradingSession = async (id, updates) => {
-    try { await updateDoc(doc(db, 'tradingSessions', id), updates) } catch (err) { console.error("Error updating trading session:", err); throw err }
+    try { 
+      // If updating isLive to true, use our backend API to trigger notifications
+      if (updates.hasOwnProperty('isLive')) {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/trading/toggle-live`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: id, isLive: updates.isLive })
+        });
+        if (!response.ok) throw new Error("Failed to update status through API");
+      } else {
+        await updateDoc(doc(db, 'tradingSessions', id), updates);
+      }
+    } catch (err) { console.error("Error updating trading session:", err); throw err }
   }
   const deleteTradingSession = async (id) => {
     try { await deleteDoc(doc(db, 'tradingSessions', id)) } catch (err) { console.error("Error deleting trading session:", err); throw err }

@@ -8,6 +8,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const admin = require("firebase-admin");
+const cron = require("node-cron");
 
 // Initialize Firebase Admin
 const serviceAccount = require("./credentials.json");
@@ -256,6 +257,79 @@ const emailTemplate = (subject, content, ctaText = null, ctaUrl = null) => `
   </div>
 `;
 
+/**
+ * Send Mentorship Session Notifications
+ */
+const sendSessionNotification = async (sessionId, type) => {
+  try {
+    const db = admin.firestore();
+    const sessionRef = db.collection('tradingSessions').doc(sessionId);
+    const sessionSnap = await sessionRef.get();
+    
+    if (!sessionSnap.exists) return;
+    const session = sessionSnap.data();
+    
+    // Get all active enrollments for this course
+    const enrollmentsSnap = await db.collection('tradingEnrollments')
+      .where('courseId', '==', session.course_id)
+      .where('status', '==', 'active')
+      .get();
+      
+    if (enrollmentsSnap.empty) return;
+    
+    const emails = [...new Set(enrollmentsSnap.docs.map(doc => doc.data().userEmail).filter(Boolean))];
+    if (emails.length === 0) return;
+
+    const subject = type === 'LIVE_NOW' 
+      ? `🔴 WE ARE LIVE: ${session.topic}` 
+      : `⏳ Reminder: Meeting Starting in 60 Mins - ${session.topic}`;
+
+    const content = type === 'LIVE_NOW'
+      ? `
+        <p>Hello Trader,</p>
+        <p>We are <strong>LIVE NOW</strong> for our session: <strong>${session.topic}</strong>.</p>
+        <div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 16px; margin: 20px 0; border-radius: 8px;">
+          <p style="margin: 0; color: #991b1b; font-weight: bold;">Topic: ${session.topic}</p>
+          <p style="margin: 4px 0 0; color: #b91c1c; font-size: 13px;">Don't miss out on the live market analysis and strategy breakdown!</p>
+        </div>
+      `
+      : `
+        <p>Hello Trader,</p>
+        <p>This is a reminder that your trading session <strong>${session.topic}</strong> is starting in about 60 minutes.</p>
+        <div style="background: #eff6ff; border-left: 4px solid #2563eb; padding: 16px; margin: 20px 0; border-radius: 8px;">
+          <p style="margin: 0; color: #1e40af; font-weight: bold;">Scheduled Time: ${session.time}</p>
+          <p style="margin: 4px 0 0; color: #1e3a8a; font-size: 13px;">Please be ready with your charts and questions.</p>
+        </div>
+      `;
+
+    const ctaText = type === 'LIVE_NOW' ? "Join Live Stream" : "Go to Dashboard";
+    const ctaUrl = type === 'LIVE_NOW' 
+      ? (session.meeting_link || "https://www.amitsolutionhub.com/customer")
+      : "https://www.amitsolutionhub.com/customer";
+
+    // Send in batches of 50 to avoid limits (Resend usually handles this but it's safer)
+    for (let i = 0; i < emails.length; i += 50) {
+      const batch = emails.slice(i, i + 50);
+      await Promise.all(batch.map(email => 
+        resend.emails.send({
+          from: "Amit Solution Hub <support@amitsolutionhub.com>",
+          to: email,
+          subject: subject,
+          html: emailTemplate(subject, content, ctaText, ctaUrl)
+        })
+      ));
+    }
+
+    if (type === 'REMINDER') {
+      await sessionRef.update({ reminderSent: true });
+    }
+
+    console.log(`✅ ${type} Notification sent to ${emails.length} users for session: ${session.topic}`);
+  } catch (error) {
+    console.error(`❌ Notification Error (${type}):`, error);
+  }
+};
+
 // Razorpay config
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
@@ -490,6 +564,87 @@ app.post("/api/trading/enrollment-email", async (req, res) => {
   } catch (error) {
     console.error("Email Error:", error);
     res.status(500).json({ success: false, message: "Failed to send email" });
+  }
+});
+
+// Toggle Live Status with Notification
+app.post("/api/trading/toggle-live", async (req, res) => {
+  const { sessionId, isLive } = req.body;
+  try {
+    const db = admin.firestore();
+    const sessionRef = db.collection('tradingSessions').doc(sessionId);
+    
+    await sessionRef.update({ 
+      isLive,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    if (isLive === true) {
+      // Trigger notification in background
+      sendSessionNotification(sessionId, 'LIVE_NOW');
+    }
+
+    res.json({ success: true, message: `Session is now ${isLive ? 'LIVE' : 'OFFLINE'}` });
+  } catch (error) {
+    console.error("Toggle Live Error:", error);
+    res.status(500).json({ success: false, message: "Failed to update status" });
+  }
+});
+
+// Admin Bulk Broadcast Email
+app.post("/api/admin/broadcast-email", async (req, res) => {
+  const { targetType, manualEmails, subject, message } = req.body;
+  
+  try {
+    let emails = [];
+
+    if (targetType === 'enrolled') {
+      const db = admin.firestore();
+      const enrollmentsSnap = await db.collection('tradingEnrollments')
+        .where('status', '==', 'active')
+        .get();
+      emails = [...new Set(enrollmentsSnap.docs.map(doc => doc.data().userEmail).filter(Boolean))];
+    } else if (targetType === 'manual' && manualEmails) {
+      // Split by comma, newline or space and clean up
+      emails = manualEmails
+        .split(/[\n, ]+/)
+        .map(e => e.trim())
+        .filter(e => e && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
+    }
+
+    if (emails.length === 0) {
+      return res.status(400).json({ success: false, message: "No valid email addresses found." });
+    }
+
+    // Process in batches of 50
+    const results = { sent: 0, failed: 0 };
+    for (let i = 0; i < emails.length; i += 50) {
+      const batch = emails.slice(i, i + 50);
+      await Promise.all(batch.map(async (email) => {
+        try {
+          await resend.emails.send({
+            from: "Amit Solution Hub <support@amitsolutionhub.com>",
+            to: email,
+            subject: subject,
+            html: emailTemplate(subject, `<div style="white-space: pre-wrap;">${message}</div>`)
+          });
+          results.sent++;
+        } catch (e) {
+          console.error(`Failed to send to ${email}:`, e);
+          results.failed++;
+        }
+      }));
+    }
+
+    res.json({ 
+      success: true, 
+      message: `Broadcast complete. Sent: ${results.sent}, Failed: ${results.failed}`,
+      count: results.sent 
+    });
+
+  } catch (error) {
+    console.error("Broadcast Email Error:", error);
+    res.status(500).json({ success: false, message: "Internal server error during broadcast." });
   }
 });
 
@@ -778,6 +933,41 @@ app.get("/api/certificates/verify/:certId", async (req, res) => {
   } catch (error) {
     console.error("❌ CERT VERIFY ERROR:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+// Cron Job: Check for sessions starting in 60 mins
+// Runs every 10 minutes
+cron.schedule('*/10 * * * *', async () => {
+  try {
+    const db = admin.firestore();
+    const now = new Date();
+    const oneHourFromNow = new Date(now.getTime() + 60 * 60 * 1000);
+    
+    // Check sessions for today that haven't sent reminders
+    const todayStr = now.toISOString().split('T')[0];
+    const sessionsSnap = await db.collection('tradingSessions')
+      .where('date', '==', todayStr)
+      .where('reminderSent', '!=', true)
+      .get();
+
+    if (sessionsSnap.empty) return;
+
+    for (const doc of sessionsSnap.docs) {
+      const session = doc.data();
+      if (!session.time) continue;
+
+      const sessionDate = new Date(`${session.date}T${session.time}`);
+      const diffMs = sessionDate - now;
+      const diffMins = diffMs / (1000 * 60);
+
+      // Trigger if starting in 50-70 minutes
+      if (diffMins > 50 && diffMins <= 70) {
+        await sendSessionNotification(doc.id, 'REMINDER');
+      }
+    }
+  } catch (error) {
+    console.error("Cron Job Error:", error);
   }
 });
 

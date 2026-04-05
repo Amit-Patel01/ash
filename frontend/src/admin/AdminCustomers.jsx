@@ -15,6 +15,12 @@ export default function AdminCustomers() {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [customerToDelete, setCustomerToDelete] = useState(null)
   const [isProcessing, setIsProcessing] = useState(null)
+  const [showBroadcastModal, setShowBroadcastModal] = useState(false)
+  const [broadcastTarget, setBroadcastTarget] = useState('enrolled') // 'enrolled' or 'manual'
+  const [broadcastManualEmails, setBroadcastManualEmails] = useState('')
+  const [broadcastSubject, setBroadcastSubject] = useState('')
+  const [broadcastMessage, setBroadcastMessage] = useState('')
+  const [sendingBroadcast, setSendingBroadcast] = useState(false)
 
   // Filter for only customers
   const customers = users.filter(u => (u.role || '').toLowerCase() === 'customer')
@@ -92,12 +98,19 @@ export default function AdminCustomers() {
             </svg>
             <input
               type="text"
-              placeholder="Search by name or email..."
+               placeholder="Search by name or email..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all placeholder:text-gray-600"
             />
           </div>
+          <button 
+            onClick={() => setShowBroadcastModal(true)}
+            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl text-xs font-black text-white shadow-xl shadow-blue-600/20 hover:shadow-blue-600/40 active:scale-95 transition-all flex items-center gap-2 uppercase tracking-widest"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+            Bulk Email
+          </button>
         </div>
         <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 flex items-center justify-between">
           <div>
@@ -226,6 +239,128 @@ export default function AdminCustomers() {
               >
                 {isProcessing ? 'Deleting...' : 'Yes, Delete'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Broadcast Modal */}
+      {showBroadcastModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-in fade-in duration-300" onClick={() => !sendingBroadcast && setShowBroadcastModal(false)} />
+          <div className="relative bg-gray-900 border border-white/10 rounded-[2.5rem] w-full max-w-lg shadow-2xl animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
+            <div className="p-8 border-b border-white/5 bg-white/[0.02]">
+              <h3 className="text-2xl font-black text-white tracking-tight flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
+                </div>
+                Bulk Broadcast
+              </h3>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-8 space-y-6">
+              {/* Target Selection */}
+              <div>
+                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3">Target Audience</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button 
+                    onClick={() => setBroadcastTarget('enrolled')}
+                    className={`px-4 py-3 rounded-2xl text-xs font-bold border transition-all ${broadcastTarget === 'enrolled' ? 'bg-blue-500/10 border-blue-500/50 text-blue-400 shadow-lg shadow-blue-500/10' : 'bg-white/5 border-white/10 text-gray-500 hover:text-gray-300'}`}
+                  >
+                    Mentorship Students
+                  </button>
+                  <button 
+                    onClick={() => setBroadcastTarget('manual')}
+                    className={`px-4 py-3 rounded-2xl text-xs font-bold border transition-all ${broadcastTarget === 'manual' ? 'bg-indigo-500/10 border-indigo-500/50 text-indigo-400 shadow-lg shadow-indigo-500/10' : 'bg-white/5 border-white/10 text-gray-500 hover:text-gray-300'}`}
+                  >
+                    Manual Entry
+                  </button>
+                </div>
+              </div>
+
+              {broadcastTarget === 'manual' && (
+                <div className="animate-in slide-in-from-top-2 duration-300">
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Manual Emails (Comma/Space separated)</label>
+                  <textarea 
+                    value={broadcastManualEmails}
+                    onChange={e => setBroadcastManualEmails(e.target.value)}
+                    placeholder="email1@example.com, email2@example.com..."
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-indigo-500/50 min-h-[80px] resize-none font-mono"
+                  />
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Subject</label>
+                  <input 
+                    type="text"
+                    value={broadcastSubject}
+                    onChange={e => setBroadcastSubject(e.target.value)}
+                    placeholder="Important Update Regarding..."
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-blue-500/50"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Message</label>
+                  <textarea 
+                    value={broadcastMessage}
+                    onChange={e => setBroadcastMessage(e.target.value)}
+                    placeholder="Type your message here..."
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-blue-500/50 min-h-[160px] resize-y"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="p-8 bg-white/5 border-t border-white/5">
+              <div className="grid grid-cols-2 gap-3">
+                <button 
+                  onClick={() => setShowBroadcastModal(false)}
+                  disabled={sendingBroadcast}
+                  className="px-6 py-3.5 bg-white/5 text-gray-400 rounded-2xl text-xs font-bold hover:bg-white/10 transition-all uppercase tracking-widest"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={async () => {
+                   if (!broadcastSubject || !broadcastMessage) return alert("Please fill subject and message");
+                   if (broadcastTarget === 'manual' && !broadcastManualEmails) return alert("Please enter target emails");
+                   
+                   setSendingBroadcast(true);
+                   try {
+                     const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/broadcast-email`, {
+                       method: 'POST',
+                       headers: { 'Content-Type': 'application/json' },
+                       body: JSON.stringify({
+                         targetType: broadcastTarget,
+                         manualEmails: broadcastManualEmails,
+                         subject: broadcastSubject,
+                         message: broadcastMessage
+                       })
+                     });
+                     const data = await response.json();
+                     if (data.success) {
+                       alert(`Success: ${data.message}`);
+                       setShowBroadcastModal(false);
+                       setBroadcastSubject('');
+                       setBroadcastMessage('');
+                       setBroadcastManualEmails('');
+                     } else {
+                       alert(data.message);
+                     }
+                   } catch (err) {
+                     alert("Failed to send broadcast: " + err.message);
+                   } finally {
+                     setSendingBroadcast(false);
+                   }
+                  }}
+                  disabled={sendingBroadcast}
+                  className="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl text-xs font-black shadow-xl shadow-blue-600/20 hover:shadow-blue-600/40 disabled:opacity-50 transition-all uppercase tracking-widest"
+                >
+                  {sendingBroadcast ? 'Sending...' : 'Send Broadcast'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
