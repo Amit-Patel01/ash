@@ -38,6 +38,7 @@ export function StoreProvider({ children }) {
   const [employeePermissions, setEmployeePermissions] = useState({})
   const [tradingCurriculum, setTradingCurriculum] = useState([])
   const [certificates, setCertificates] = useState([])
+  const [announcement, setAnnouncement] = useState(null)
   const [loading, setLoading] = useState(true)
 
   // Real-time Listeners
@@ -145,6 +146,12 @@ export function StoreProvider({ children }) {
       setCertificates(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
     }, (error) => console.error("Certificates snapshot error:", error))
 
+    const unsubscribeAnnouncement = onSnapshot(doc(db, 'settings', 'announcement'), (snapshot) => {
+      if (snapshot.exists()) {
+        setAnnouncement({ id: snapshot.id, ...snapshot.data() })
+      }
+    }, (error) => console.error("Announcement snapshot error:", error))
+
     return () => {
       unsubscribeProjects()
       unsubscribeOrders()
@@ -165,6 +172,7 @@ export function StoreProvider({ children }) {
       unsubscribePermissions()
       unsubscribeCurriculum()
       unsubscribeCertificates()
+      unsubscribeAnnouncement()
     }
   }, [])
 
@@ -490,6 +498,16 @@ export function StoreProvider({ children }) {
     } catch (err) { console.error("Error revoking certificate:", err); throw err }
   }
 
+  // --- Announcement ---
+  const updateAnnouncement = async (data) => {
+    try {
+      await setDoc(doc(db, 'settings', 'announcement'), {
+        ...data,
+        updatedAt: serverTimestamp()
+      })
+    } catch (err) { console.error("Error updating announcement:", err); throw err }
+  }
+
   // --- Administrative Collections CRUD ---
   const deleteAdminMessage = async (id) => {
     try { await deleteDoc(doc(db, 'messages', id)) } catch (err) { console.error("Error deleting message:", err); throw err }
@@ -541,6 +559,7 @@ export function StoreProvider({ children }) {
     tradingCurriculum, addCurriculumModule, updateCurriculumModule, deleteCurriculumModule, seedDefaultCurriculum,
     certificates, issueCertificate, revokeCertificate,
     getActiveProjects, getTotalRevenue, getPendingOrders,
+    announcement, updateAnnouncement,
     loading
   }
 

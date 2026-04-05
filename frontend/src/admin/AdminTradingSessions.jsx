@@ -12,12 +12,13 @@ export default function AdminTradingSessions() {
     platform: 'Google Meet',
     meeting_link: '',
     course_id: '',
+    isLive: false,
   })
   const [saving, setSaving] = useState(false)
 
   const openCreate = () => {
     setEditingSession(null)
-    setFormData({ topic: '', date: '', time: '', platform: 'Google Meet', meeting_link: '', course_id: '' })
+    setFormData({ topic: '', date: '', time: '', platform: 'Google Meet', meeting_link: '', course_id: '', isLive: false })
     setShowModal(true)
   }
 
@@ -30,6 +31,7 @@ export default function AdminTradingSessions() {
       platform: session.platform || 'Google Meet',
       meeting_link: session.meeting_link || '',
       course_id: session.course_id || '',
+      isLive: session.isLive || false,
     })
     setShowModal(true)
   }
@@ -108,6 +110,12 @@ export default function AdminTradingSessions() {
                     {session.course_id && (
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border border-purple-500/30 text-purple-400 bg-purple-500/10">
                         {getCourseName(session.course_id)}
+                      </span>
+                    )}
+                    {session.isLive && (
+                      <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-red-500 text-white animate-pulse">
+                        <span className="w-1 h-1 rounded-full bg-white"></span>
+                        LIVE NOW
                       </span>
                     )}
                   </div>
@@ -190,6 +198,19 @@ export default function AdminTradingSessions() {
                     <option key={c.id} value={c.id} className="bg-gray-900">{c.name}</option>
                   ))}
                 </select>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-red-500/5 rounded-xl border border-red-500/10">
+                <div>
+                  <p className="text-sm font-bold text-white">Live Status</p>
+                  <p className="text-[10px] text-gray-500">Show "Live Now" popup to all users</p>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={() => setFormData({ ...formData, isLive: !formData.isLive })}
+                  className={`w-12 h-6 rounded-full transition-all relative ${formData.isLive ? 'bg-red-500' : 'bg-gray-700'}`}
+                >
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${formData.isLive ? 'left-7' : 'left-1'}`} />
+                </button>
               </div>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-gray-400 hover:bg-white/10 transition-all">Cancel</button>

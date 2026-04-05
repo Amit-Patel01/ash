@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useStore } from '../store/StoreContext'
 
 export default function AdminSettings() {
   const { currentUser, updateUserProfile, updateUserPassword } = useAuth()
+  const { announcement, updateAnnouncement } = useStore()
   const [activeTab, setActiveTab] = useState('profile')
   const [saving, setSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState('')
@@ -22,6 +24,23 @@ export default function AdminSettings() {
   const [passwordError, setPasswordError] = useState('')
   const [passwordSuccess, setPasswordSuccess] = useState('')
 
+  const [announcementForm, setAnnouncementForm] = useState({
+    message: announcement?.message || '',
+    isActive: announcement?.isActive || false,
+    type: announcement?.type || 'info', // info, warning, success
+  })
+
+  // Sync announcement form when global state loads
+  useEffect(() => {
+    if (announcement) {
+      setAnnouncementForm({
+        message: announcement.message || '',
+        isActive: announcement.isActive || false,
+        type: announcement.type || 'info',
+      })
+    }
+  }, [announcement])
+
   const [notificationPrefs, setNotificationPrefs] = useState(() => {
     try {
       const saved = localStorage.getItem('notification_prefs')
@@ -33,6 +52,7 @@ export default function AdminSettings() {
 
   const tabs = [
     { id: 'profile', label: 'Profile' },
+    { id: 'announcement', label: 'Announcement' },
     { id: 'notifications', label: 'Notifications' },
     { id: 'security', label: 'Security' },
   ]
@@ -74,6 +94,21 @@ export default function AdminSettings() {
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
     } catch (err) {
       setPasswordError(err.message || 'Failed to update password')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleSaveAnnouncement = async () => {
+    setSaving(true)
+    setSaveSuccess('')
+    try {
+      await updateAnnouncement(announcementForm)
+      setSaveSuccess('Announcement updated successfully!')
+      setTimeout(() => setSaveSuccess(''), 3000)
+    } catch (err) {
+      console.error('Failed to save announcement:', err)
+      alert('Failed: ' + (err.message || 'Error updating announcement'))
     } finally {
       setSaving(false)
     }
@@ -171,6 +206,80 @@ export default function AdminSettings() {
               <button onClick={handleSaveProfile} disabled={saving} className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50">
                 {saving ? 'Saving...' : 'Save Changes'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'announcement' && (
+        <div className="space-y-6">
+          <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-6">
+            <h2 className="text-lg font-semibold text-white mb-6">Global Announcement Popup</h2>
+            
+            {saveSuccess && (
+              <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                <p className="text-sm text-emerald-400">{saveSuccess}</p>
+              </div>
+            )}
+
+            <div className="space-y-6">
+              <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-xl">
+                <div>
+                  <p className="text-sm font-medium text-white">Enable Popup</p>
+                  <p className="text-xs text-gray-500">Show this message to all visitors</p>
+                </div>
+                <label className="relative inline-flex cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={announcementForm.isActive} 
+                    onChange={() => setAnnouncementForm({ ...announcementForm, isActive: !announcementForm.isActive })} 
+                    className="sr-only peer" 
+                  />
+                  <div className="w-11 h-6 bg-white/10 rounded-full peer peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" />
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">Announcement Message</label>
+                <textarea
+                  rows={4}
+                  value={announcementForm.message}
+                  onChange={e => setAnnouncementForm({ ...announcementForm, message: e.target.value })}
+                  placeholder="Enter the message you want to show to all users..."
+                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">Popup Style</label>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { id: 'info', label: 'Information', color: 'bg-blue-500/20 text-blue-400 border-blue-500/20' },
+                    { id: 'warning', label: 'Warning', color: 'bg-amber-500/20 text-amber-400 border-amber-500/20' },
+                    { id: 'success', label: 'Success', color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/20' },
+                  ].map(style => (
+                    <button
+                      key={style.id}
+                      onClick={() => setAnnouncementForm({ ...announcementForm, type: style.id })}
+                      className={`px-4 py-2.5 rounded-xl border text-xs font-bold transition-all ${
+                        announcementForm.type === style.id ? style.color : 'bg-white/5 border-white/10 text-gray-400'
+                      }`}
+                    >
+                      {style.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-4">
+                <button 
+                  onClick={handleSaveAnnouncement} 
+                  disabled={saving} 
+                  className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50"
+                >
+                  {saving ? 'Saving...' : 'Save Settings'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
