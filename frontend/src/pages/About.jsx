@@ -623,7 +623,7 @@ const About = () => {
 
             <div className="abt-pill abt-in d1" style={{ marginBottom:26 }}>
               <span className="abt-pill-dot"/>
-              AmitSolutionHub · MSME Registered · Est. 2021
+              AmitSolutionHub · MSME Registered 
             </div>
 
             {/* Avatar with rings */}
