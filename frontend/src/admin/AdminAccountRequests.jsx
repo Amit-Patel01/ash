@@ -3,15 +3,15 @@ import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
 
 export default function AdminAccountRequests() {
-  const { approveAccountRequest, rejectAccountRequest } = useAuth()
-  const { accountRequests: requests } = useStore()
+  const { approveAccountRequest } = useAuth()
+  const { accountRequests: requests, rejectAccountRequest, deleteAccountRequest } = useStore()
   const [filter, setFilter] = useState('pending')
   const [processingId, setProcessingId] = useState(null)
   
   // Custom Modal state
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [selectedRequest, setSelectedRequest] = useState(null)
-  const [actionType, setActionType] = useState(null) // 'approve' or 'reject'
+  const [actionType, setActionType] = useState(null) // 'approve', 'reject', or 'delete'
 
   // Data is now handled globally in StoreContext
 
@@ -40,8 +40,10 @@ export default function AdminAccountRequests() {
             alert(`Account for ${selectedRequest.name} has been created successfully!`)
           }
         }
-      } else {
+      } else if (actionType === 'reject') {
         await rejectAccountRequest(requestId)
+      } else if (actionType === 'delete') {
+        await deleteAccountRequest(requestId)
       }
     } catch (err) {
       console.error(err)
@@ -168,6 +170,15 @@ export default function AdminAccountRequests() {
                         <><div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Processing</>
                       ) : (request.status === 'rejected' ? 'Approve Rejected' : 'Approve Request')}
                     </button>
+                    {request.status !== 'pending' && (
+                      <button 
+                        onClick={() => openConfirmModal(request, 'delete')}
+                        className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500/20 rounded-xl transition-all"
+                        title="Delete Permanently"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      </button>
+                    )}
                   </div>
                 )}
                 {request.status !== 'pending' && (
@@ -208,11 +219,13 @@ export default function AdminAccountRequests() {
                 )}
               </div>
               <h2 className="text-xl font-bold text-white mb-2">
-                {actionType === 'approve' ? 'Approve Account?' : 'Reject Request?'}
+                {actionType === 'approve' ? 'Approve Account?' : actionType === 'delete' ? 'Delete Permanently?' : 'Reject Request?'}
               </h2>
               <p className="text-sm text-gray-400 mb-8 leading-relaxed">
                 {actionType === 'approve' 
                   ? `This will create a new user account for ${selectedRequest?.name} and grant them login access.`
+                  : actionType === 'delete'
+                  ? `This will permanently remove the request from ${selectedRequest?.name}. This action cannot be undone.`
                   : `Are you sure you want to reject the application from ${selectedRequest?.name}?`}
               </p>
               <div className="flex flex-col gap-3">
@@ -224,7 +237,11 @@ export default function AdminAccountRequests() {
                       : 'bg-red-500 hover:bg-red-600 shadow-red-500/20'
                   }`}
                 >
-                  {actionType === 'approve' ? 'Confirm Approval' : 'Yes, Reject Request'}
+                  {actionType === 'approve' 
+                      ? 'Confirm Approval' 
+                      : actionType === 'delete' 
+                      ? 'Yes, Delete Permanently' 
+                      : 'Yes, Reject Request'}
                 </button>
                 <button 
                   onClick={() => setShowConfirmModal(false)}

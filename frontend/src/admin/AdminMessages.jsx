@@ -52,8 +52,7 @@ function ComposeForm({ onSend }) {
 }
 
 export default function AdminMessages() {
-  const { updateMessageStatus, deleteAdminMessage } = useAuth()
-  const { messages } = useStore()
+  const { messages, updateMessageStatus, deleteAdminMessage } = useStore()
   const [selectedMessage, setSelectedMessage] = useState(null)
   const [filter, setFilter] = useState('all')
   const [showCompose, setShowCompose] = useState(false)

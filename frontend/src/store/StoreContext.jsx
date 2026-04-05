@@ -262,10 +262,54 @@ export function StoreProvider({ children }) {
     } catch (err) { console.error("Error adding user:", err); throw err }
   }
   const updateUser = async (id, updates) => {
-    try { await updateDoc(doc(db, 'users', id), updates) } catch (err) { console.error("Error updating user:", err); throw err }
+    try { 
+      // Update the user document
+      await updateDoc(doc(db, 'users', id), updates) 
+
+      // Sync with team collection if they are a team member
+      const userSnap = await getDoc(doc(db, 'users', id))
+      if (userSnap.exists()) {
+        const userData = userSnap.data()
+        const teamSnap = await getDocs(query(collection(db, 'team')))
+        const teamMember = teamSnap.docs.find(d => 
+          (d.data().email && userData.email && d.data().email.toLowerCase() === userData.email.toLowerCase()) || 
+          (d.data().employeeId && userData.employeeId && d.data().employeeId === userData.employeeId)
+        )
+        if (teamMember) {
+          await updateDoc(doc(db, 'team', teamMember.id), {
+            name: userData.displayName || userData.name,
+            role: userData.jobTitle,
+            department: userData.department,
+            employeeId: userData.employeeId || '',
+            email: userData.email,
+            github: userData.github || '',
+            linkedin: userData.linkedin || '',
+            portfolio: userData.portfolio || '',
+            avatarSource: userData.avatarSource || 'github',
+            isMentor: userData.isMentor || false,
+            status: userData.status === 'active' ? 'Active' : 'Inactive'
+          })
+        }
+      }
+    } catch (err) { console.error("Error updating user:", err); throw err }
   }
   const deleteUser = async (id) => {
-    try { await deleteDoc(doc(db, 'users', id)) } catch (err) { console.error("Error deleting user:", err); throw err }
+    try { 
+      // Find and delete from team collection first if they exist there
+      const userSnap = await getDoc(doc(db, 'users', id))
+      if (userSnap.exists()) {
+        const userData = userSnap.data()
+        const teamSnap = await getDocs(query(collection(db, 'team')))
+        const teamMember = teamSnap.docs.find(d => 
+          (d.data().email && userData.email && d.data().email.toLowerCase() === userData.email.toLowerCase()) || 
+          (d.data().employeeId && userData.employeeId && d.data().employeeId === userData.employeeId)
+        )
+        if (teamMember) {
+          await deleteDoc(doc(db, 'team', teamMember.id))
+        }
+      }
+      await deleteDoc(doc(db, 'users', id)) 
+    } catch (err) { console.error("Error deleting user:", err); throw err }
   }
 
   // --- Services ---
@@ -446,6 +490,35 @@ export function StoreProvider({ children }) {
     } catch (err) { console.error("Error revoking certificate:", err); throw err }
   }
 
+  // --- Administrative Collections CRUD ---
+  const deleteAdminMessage = async (id) => {
+    try { await deleteDoc(doc(db, 'messages', id)) } catch (err) { console.error("Error deleting message:", err); throw err }
+  }
+  const updateMessageStatus = async (id, updates) => {
+    try { await updateDoc(doc(db, 'messages', id), updates) } catch (err) { console.error("Error updating message:", err); throw err }
+  }
+  const deleteServiceRequest = async (id) => {
+    try { await deleteDoc(doc(db, 'custom_requests', id)) } catch (err) { console.error("Error deleting service request:", err); throw err }
+  }
+  const updateServiceRequestStatus = async (id, status) => {
+    try { await updateDoc(doc(db, 'custom_requests', id), { status, processedAt: serverTimestamp() }) } catch (err) { console.error("Error updating service request status:", err); throw err }
+  }
+  const deleteAccountRequest = async (id) => {
+    try { await deleteDoc(doc(db, 'accountRequests', id)) } catch (err) { console.error("Error deleting account request:", err); throw err }
+  }
+  const rejectAccountRequest = async (id) => {
+    try { await updateDoc(doc(db, 'accountRequests', id), { status: 'rejected', rejectedAt: serverTimestamp() }) } catch (err) { console.error("Error rejecting account request:", err); throw err }
+  }
+  const deleteSellRequest = async (id) => {
+    try { await deleteDoc(doc(db, 'sellRequests', id)) } catch (err) { console.error("Error deleting sell request:", err); throw err }
+  }
+  const approveSellRequest = async (id) => {
+    try { await updateDoc(doc(db, 'sellRequests', id), { status: 'approved', approvedAt: serverTimestamp() }) } catch (err) { console.error("Error approving sell request:", err); throw err }
+  }
+  const rejectSellRequest = async (id) => {
+    try { await updateDoc(doc(db, 'sellRequests', id), { status: 'rejected', rejectedAt: serverTimestamp() }) } catch (err) { console.error("Error rejecting sell request:", err); throw err }
+  }
+
   const value = {
     projects, categories, orders, tasks, teamMembers, users,
     addProject, updateProject, deleteProject,
@@ -455,6 +528,10 @@ export function StoreProvider({ children }) {
     addUser, updateUser, deleteUser,
     services, addService, updateService, deleteService,
     accountRequests, sellRequests, serviceRequests, messages,
+    deleteAdminMessage, updateMessageStatus,
+    deleteServiceRequest, updateServiceRequestStatus,
+    deleteAccountRequest, rejectAccountRequest,
+    deleteSellRequest, approveSellRequest, rejectSellRequest,
     tradingCourses, addTradingCourse, updateTradingCourse, deleteTradingCourse,
     tradingSessions, addTradingSession, updateTradingSession, deleteTradingSession,
     tradingEnrollments, addTradingEnrollment, updateTradingEnrollment, deleteTradingEnrollment,
