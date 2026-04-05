@@ -39,12 +39,13 @@ export default function AdminEmployees() {
     customJobTitle: '',
     customDepartment: '',
     // Unified Team Fields
-    showOnTeam: false,
-    skills: '',
     github: '',
     linkedin: '',
     portfolio: '',
     avatarSource: 'github',
+    isMentor: false,
+    showOnTeam: false,
+    skills: '',
   })
 
   // Delete Modal state
@@ -85,12 +86,13 @@ export default function AdminEmployees() {
       employeeId: '',
       customJobTitle: '',
       customDepartment: '',
-      showOnTeam: false,
-      skills: '',
       github: '',
       linkedin: '',
       portfolio: '',
       avatarSource: 'github',
+      isMentor: false,
+      showOnTeam: false,
+      skills: '',
     })
     setActiveTab('basic')
     setShowModal(true)
@@ -122,6 +124,7 @@ export default function AdminEmployees() {
       linkedin: employee.linkedin || '',
       portfolio: employee.portfolio || '',
       avatarSource: employee.avatarSource || 'github',
+      isMentor: employee.isMentor || false,
     })
     
     setActiveTab('basic')
@@ -134,7 +137,6 @@ export default function AdminEmployees() {
     try {
       let count = 0
       for (const member of teamMembers) {
-        // Check if user already exists by email
         const existing = users.find(u => u.email === member.email)
         const userData = {
           displayName: member.name,
@@ -151,7 +153,8 @@ export default function AdminEmployees() {
           role: 'employee',
           employeeId: member.employeeId || '',
           joinDate: member.joinDate || new Date().toISOString().split('T')[0],
-          password: 'Password123!', // Temporary default password for migrated accounts
+          password: 'Password123!',
+          isMentor: member.isMentor || false,
         }
 
         if (existing) {
@@ -566,27 +569,43 @@ export default function AdminEmployees() {
                         />
                       </div>
                     </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                       {/* Mentor Toggle */}
+                       <div className="flex items-center justify-between p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+                        <div>
+                          <p className="text-[11px] font-bold text-white">Set as Mentor</p>
+                          <p className="text-[9px] text-gray-400">Include in 'Our Mentors'</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, isMentor: !formData.isMentor })}
+                          className={`w-10 h-5 rounded-full transition-all relative ${formData.isMentor ? 'bg-emerald-600' : 'bg-gray-700'}`}
+                        >
+                          <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${formData.isMentor ? 'left-6' : 'left-1'}`} />
+                        </button>
+                      </div>
+
+                      {/* Visibility Switch */}
+                      <div className="flex items-center justify-between p-3 bg-blue-500/5 border border-blue-500/20 rounded-xl">
+                        <div>
+                          <p className="text-[11px] font-bold text-white">Show on About Page</p>
+                          <p className="text-[9px] text-gray-400">Public visibility</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, showOnTeam: !formData.showOnTeam })}
+                          className={`w-10 h-5 rounded-full transition-all relative ${formData.showOnTeam ? 'bg-blue-600' : 'bg-gray-700'}`}
+                        >
+                          <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${formData.showOnTeam ? 'left-6' : 'left-1'}`} />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
 
                 {activeTab === 'profile' && (
                   <div className="space-y-5 animate-in fade-in slide-in-from-right-2 duration-300">
-                    
-                    {/* Visibility Switch */}
-                    <div className="flex items-center justify-between p-4 bg-blue-500/5 border border-blue-500/20 rounded-2xl">
-                      <div>
-                        <p className="text-sm font-bold text-white">Show on Team Page</p>
-                        <p className="text-[10px] text-gray-500 mt-0.5">Toggle this to show/hide this member on the 'About Us' page.</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setFormData({ ...formData, showOnTeam: !formData.showOnTeam })}
-                        className={`w-12 h-6 rounded-full transition-all relative ${formData.showOnTeam ? 'bg-blue-600' : 'bg-gray-700'}`}
-                      >
-                        <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${formData.showOnTeam ? 'left-7' : 'left-1'}`} />
-                      </button>
-                    </div>
-
                     <div>
                       <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Expertise / Skills</label>
                       <input

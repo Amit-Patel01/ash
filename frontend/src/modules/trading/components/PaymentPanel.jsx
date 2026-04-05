@@ -93,7 +93,7 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
               if (onPaymentSuccess) onPaymentSuccess()
               setTimeout(() => {
                 navigate('/customer')
-              }, 3000)
+              }, 1200)
             } else {
               setError('Payment verification failed. Please contact support.')
             }
@@ -128,52 +128,48 @@ const PaymentPanel = ({ selectedPlan, onPaymentSuccess }) => {
     setError('')
 
     try {
-      // Create enrollment directly
-      await addTradingEnrollment({
-        userId: currentUser.uid,
-        userName: currentUser.displayName || currentUser.email,
-        userEmail: currentUser.email,
-        courseId: selectedPlan.id,
-        courseName: selectedPlan.name,
-        amount: selectedPlan.price,
-        status: 'active',
-      })
-      
-      // Send Enrollment Email via Backend
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
-      try {
-        await fetch(`${API_URL}/api/trading/enrollment-email`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userName: currentUser.displayName || currentUser.email,
-            userEmail: currentUser.email,
-            planName: selectedPlan.name,
-            amount: selectedPlan.price
-          })
+      // 1. Create enrollment & payment concurrently
+      await Promise.all([
+        addTradingEnrollment({
+          userId: currentUser.uid,
+          userName: currentUser.displayName || currentUser.email,
+          userEmail: currentUser.email,
+          courseId: selectedPlan.id,
+          courseName: selectedPlan.name,
+          amount: selectedPlan.price,
+          status: 'active',
+        }),
+        addTradingPayment({
+          userId: currentUser.uid,
+          userName: currentUser.displayName || currentUser.email,
+          userEmail: currentUser.email,
+          courseId: selectedPlan.id,
+          courseName: selectedPlan.name,
+          amount: selectedPlan.price,
+          paymentId: 'TEST_' + Date.now(),
+          method: 'test_bypass',
+          status: 'completed'
         })
-      } catch (err) {
-        console.error('Failed to send enrollment email:', err)
-      }
-
-      // Create payment record
-      await addTradingPayment({
-        userId: currentUser.uid,
-        userName: currentUser.displayName || currentUser.email,
-        userEmail: currentUser.email,
-        courseId: selectedPlan.id,
-        courseName: selectedPlan.name,
-        amount: selectedPlan.price,
-        paymentId: 'TEST_' + Date.now(),
-        method: 'test_bypass',
-        status: 'completed'
-      })
+      ])
+      
+      // 2. Trigger Enrollment Email (Non-blocking - fire and forget)
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+      fetch(`${API_URL}/api/trading/enrollment-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userName: currentUser.displayName || currentUser.email,
+          userEmail: currentUser.email,
+          planName: selectedPlan.name,
+          amount: selectedPlan.price
+        })
+      }).catch(err => console.error('Failed to send enrollment email:', err))
 
       setSuccess(true)
       if (onPaymentSuccess) onPaymentSuccess()
       setTimeout(() => {
         navigate('/customer')
-      }, 3000)
+      }, 1200)
     } catch (err) {
       console.error('Test Enrollment Error:', err)
       setError('Test enrollment failed. Please try again.')

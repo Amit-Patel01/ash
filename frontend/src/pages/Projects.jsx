@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import ProjectCard from '../components/ProjectCard'
 import api from '../config/api'
 import { useStore } from '../store/StoreContext'
+import SEO from '../components/SEO'
 
 const Projects = () => {
   const { projects: storeProjects, categories: storeCategories } = useStore()
@@ -36,7 +37,10 @@ const Projects = () => {
     : projects.filter(p => p.category_slug === activeCategory)
 
   return (
-    <section className="relative w-full min-h-screen pt-[140px] md:pt-[180px] pb-20 px-4">
+    <>
+      <SEO title="Our Projects | AmitSolutionHub" 
+           description="Browse pre-built professional web projects ready to deploy for businesses, startups, and portfolios." />
+      <section className="relative w-full min-h-screen pt-[140px] md:pt-[180px] pb-20 px-4">
 
       <div className={`w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 transition-all duration-1000 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
 
@@ -141,6 +145,7 @@ const Projects = () => {
         </div>
       </div>
     </section>
+    </>
   )
 }
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
+import SEO from '../components/SEO'
 
 const colorMap = {
   'from-blue-500 to-cyan-500': 'hover:text-blue-600',
@@ -104,7 +105,10 @@ const Services = () => {
   })
 
   return (
-    <section className="relative w-full min-h-screen pt-[140px] md:pt-[180px] pb-20 px-4">
+    <>
+      <SEO title="Our Services | AmitSolutionHub" 
+           description="Explore our wide range of services including web development, hardware repair, editing, technical support, and premium trading mentorship." />
+      <section className="relative w-full min-h-screen pt-[140px] md:pt-[180px] pb-20 px-4">
 
       <div className={`w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 transition-all duration-1000 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
 
@@ -137,6 +141,17 @@ const Services = () => {
                 key={service.id || index}
                 className="group relative bg-white/40 backdrop-blur-2xl rounded-3xl p-8 hover:bg-white/60 shadow-xl border border-white/60 hover:-translate-y-2 transition-all duration-500 overflow-hidden"
               >
+                {/* 🔥 HOT Badge for Trading Mentorship */}
+                {service.title && service.title.toLowerCase().includes('trading') && (
+                  <div className="absolute top-0 right-0 z-20">
+                    <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-[10px] sm:text-xs font-extrabold uppercase tracking-widest py-1.5 px-4 shadow-lg rounded-bl-xl rounded-tr-3xl flex items-center gap-1.5 transform translate-x-2 -translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300">
+                      <span className="animate-pulse">🔥</span> 
+                      <span className="hidden sm:inline">Trending</span>
+                      <span className="inline sm:hidden">Hot</span>
+                    </div>
+                  </div>
+                )}
+
                 {/* Glow behind card content */}
                 <div className={`absolute -inset-4 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-10 transition-opacity duration-700 blur-xl z-0`}></div>
 
@@ -218,6 +233,7 @@ const Services = () => {
 
       </div>
     </section>
+    </>
   )
 }
 

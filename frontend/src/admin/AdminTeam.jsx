@@ -23,8 +23,11 @@ export default function AdminTeam() {
     joinDate: '', 
     github: '', 
     linkedin: '', 
+    portfolio: '',
+    customImageUrl: '',
     avatarSource: 'github', 
-    customDepartment: '' 
+    customDepartment: '',
+    isMentor: false
   }
   
   const [formData, setFormData] = useState(initialForm)
@@ -61,8 +64,11 @@ export default function AdminTeam() {
       joinDate: member.joinDate,
       github: member.github || '',
       linkedin: member.linkedin || '',
+      portfolio: member.portfolio || '',
+      customImageUrl: member.customImageUrl || '',
       avatarSource: member.avatarSource || 'github',
-      customDepartment: isOther ? member.department : ''
+      customDepartment: isOther ? member.department : '',
+      isMentor: member.isMentor || false
     })
     setShowModal(true)
   }
@@ -72,9 +78,18 @@ export default function AdminTeam() {
     const skillsArr = formData.skills.split(',').map(s => s.trim()).filter(Boolean)
     try {
       const finalDept = formData.department === 'Other' ? formData.customDepartment : formData.department
-      const payload = { ...formData, department: finalDept, skills: skillsArr, avatar: formData.name.charAt(0).toUpperCase() }
+      const payload = { 
+        ...formData, 
+        department: finalDept, 
+        skills: skillsArr, 
+        avatar: formData.name.charAt(0).toUpperCase(),
+        // Store customImageUrl into linkedin field for avatar, keep linkedin separately
+        linkedin: formData.linkedin || '',
+        portfolio: formData.portfolio || '',
+        customImageUrl: formData.customImageUrl || '',
+      }
 
-      // Clean up temp field
+      // Clean up temp fields
       delete payload.customDepartment
 
       if (!editingMember) {
@@ -125,8 +140,9 @@ export default function AdminTeam() {
 
   const getImageUrl = (member) => {
     if (!member) return null;
-    const { github, linkedin, avatarSource } = member;
-    if (avatarSource === 'linkedin' && linkedin) return linkedin;
+    const { github, customImageUrl, avatarSource } = member;
+    if (avatarSource === 'custom' && customImageUrl) return customImageUrl;
+    if (avatarSource === 'linkedin' && customImageUrl) return customImageUrl; // backward compat
     if (github) {
        if (github.startsWith('http')) return github;
        return `https://github.com/${github}.png`;
@@ -237,8 +253,32 @@ export default function AdminTeam() {
                   <input type="text" value={formData.github} onChange={e => setFormData({ ...formData, github: e.target.value })} placeholder="e.g. user123" className="w-full bg-transparent text-sm text-white focus:outline-none" />
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-xl p-3">
-                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Custom Link / Image URL</label>
-                  <input type="text" value={formData.linkedin} onChange={e => setFormData({ ...formData, linkedin: e.target.value })} placeholder="https://..." className="w-full bg-transparent text-sm text-white focus:outline-none" />
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Custom Image URL (for avatar)</label>
+                  <input type="text" value={formData.customImageUrl} onChange={e => setFormData({ ...formData, customImageUrl: e.target.value })} placeholder="https://..." className="w-full bg-transparent text-sm text-white focus:outline-none" />
+                </div>
+              </div>
+
+              {/* Social URLs */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-white/5 border border-blue-500/20 rounded-xl p-3">
+                  <label className="block text-[10px] font-black text-blue-400/70 uppercase tracking-widest mb-2">🔗 LinkedIn Profile URL</label>
+                  <input
+                    type="url"
+                    value={formData.linkedin}
+                    onChange={e => setFormData({ ...formData, linkedin: e.target.value })}
+                    placeholder="https://linkedin.com/in/your-profile"
+                    className="w-full bg-transparent text-sm text-white focus:outline-none placeholder-gray-600"
+                  />
+                </div>
+                <div className="bg-white/5 border border-purple-500/20 rounded-xl p-3">
+                  <label className="block text-[10px] font-black text-purple-400/70 uppercase tracking-widest mb-2">🌍 Portfolio URL</label>
+                  <input
+                    type="url"
+                    value={formData.portfolio}
+                    onChange={e => setFormData({ ...formData, portfolio: e.target.value })}
+                    placeholder="https://yourportfolio.com"
+                    className="w-full bg-transparent text-sm text-white focus:outline-none placeholder-gray-600"
+                  />
                 </div>
               </div>
 
@@ -246,13 +286,13 @@ export default function AdminTeam() {
               <div className="flex items-center justify-between gap-4 bg-white/5 p-3 rounded-xl border border-white/5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center overflow-hidden">
-                    {formData.github || formData.linkedin ? <img src={getImageUrl(formData)} alt="P" className="w-full h-full object-cover" /> : <span className="text-[10px] text-gray-600">NULL</span>}
+                    {formData.github || formData.customImageUrl ? <img src={getImageUrl({ ...formData, linkedin: formData.customImageUrl })} alt="P" className="w-full h-full object-cover" /> : <span className="text-[10px] text-gray-600">NULL</span>}
                   </div>
                   <span className="text-[11px] font-bold text-gray-300">Photo Source</span>
                 </div>
                 <div className="flex bg-gray-800 p-1 rounded-lg">
                   <button type="button" onClick={() => setFormData({ ...formData, avatarSource: 'github' })} className={`px-3 py-1 rounded-md text-[9px] font-bold uppercase transition-all ${formData.avatarSource === 'github' ? 'bg-blue-600 text-white' : 'text-gray-500'}`}>GitHub</button>
-                  <button type="button" onClick={() => setFormData({ ...formData, avatarSource: 'linkedin' })} className={`px-3 py-1 rounded-md text-[9px] font-bold uppercase transition-all ${formData.avatarSource === 'linkedin' ? 'bg-blue-600 text-white' : 'text-gray-500'}`}>Custom</button>
+                  <button type="button" onClick={() => setFormData({ ...formData, avatarSource: 'custom' })} className={`px-3 py-1 rounded-md text-[9px] font-bold uppercase transition-all ${formData.avatarSource === 'custom' ? 'bg-blue-600 text-white' : 'text-gray-500'}`}>Custom</button>
                 </div>
               </div>
 
@@ -286,16 +326,35 @@ export default function AdminTeam() {
                       <option key={d} value={d} className="bg-gray-900">{d}</option>
                     ))}
                   </select>
-                  {formData.department === 'Other' && (
-                    <input
-                      type="text"
-                      value={formData.customDepartment}
-                      onChange={e => setFormData({ ...formData, customDepartment: e.target.value })}
-                      placeholder="Enter custom department"
-                      required
-                      className="mt-2 w-full px-3 py-2 bg-blue-500/5 border border-blue-500/30 rounded-xl text-xs text-blue-400 placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                  )}
+                </div>
+                {/* Mentor Toggle */}
+                <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl p-3 h-[62px] self-end">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" checked={formData.isMentor} onChange={e => setFormData({ ...formData, isMentor: e.target.checked })} className="sr-only peer" />
+                    <div className="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-500"></div>
+                  </label>
+                  <div>
+                    <div className="text-xs font-bold text-white">Set as Mentor</div>
+                    <div className="text-[10px] text-gray-400 leading-tight">Displays in 'Our Mentors' section</div>
+                  </div>
+                </div>
+              </div>
+
+              {formData.department === 'Other' && (
+                <input
+                  type="text"
+                  value={formData.customDepartment}
+                  onChange={e => setFormData({ ...formData, customDepartment: e.target.value })}
+                  placeholder="Enter custom department"
+                  required
+                  className="mt-2 w-full px-3 py-2 bg-blue-500/5 border border-blue-500/30 rounded-xl text-xs text-blue-400 placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all"
+                />
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Expected Join Date</label>
+                  <input type="text" value={formData.joinDate} onChange={e => setFormData({ ...formData, joinDate: e.target.value })} placeholder="Jan 2024" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5">Status</label>

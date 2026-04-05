@@ -1,73 +1,82 @@
-import { useCallback } from 'react'
+import { useCallback, lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
+import { ErrorBoundary } from 'react-error-boundary'
+
 import { StoreProvider } from './store/StoreContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ChatProvider } from './context/ChatContext'
 import { ThemeProvider } from './context/ThemeContext'
 import LoadingScreen from './components/LoadingScreen'
 import Layout from './components/Layout'
-import Hero from './components/Hero'
-import About from './pages/About'
-import Services from './pages/Services'
-import Contact from './pages/Contact'
-import Help from './pages/help'
-import Projects from './pages/Projects'
-import ProjectDetails from './pages/ProjectDetails'
-import Checkout from './pages/Checkout'
-import CustomProject from './pages/CustomProject'
-import LoginPage from './pages/LoginPage'
-import CustomerSignup from './pages/CustomerSignup'
-import ForgotPassword from './pages/ForgotPassword'
-import RoleSelect from './pages/RoleSelect'
-import ComingSoon from './pages/ComingSoon'
-import VerifyCertificate from './pages/VerifyCertificate'
 
-import WebService from './web-service/WebService'
-import RepairService from './technicalsupport/RepairService'
-import EditingService from './editing/EditingService'
-import TechSupport from './technicalsupport/TechSupport'
+const Hero = lazy(() => import('./components/Hero'))
+const About = lazy(() => import('./pages/About'))
+const Services = lazy(() => import('./pages/Services'))
+const Contact = lazy(() => import('./pages/Contact'))
+const Help = lazy(() => import('./pages/help'))
+const Projects = lazy(() => import('./pages/Projects'))
+const ProjectDetails = lazy(() => import('./pages/ProjectDetails'))
+const Checkout = lazy(() => import('./pages/Checkout'))
+const CustomProject = lazy(() => import('./pages/CustomProject'))
+const LoginPage = lazy(() => import('./pages/LoginPage'))
+const CustomerSignup = lazy(() => import('./pages/CustomerSignup'))
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
+const RoleSelect = lazy(() => import('./pages/RoleSelect'))
+const ComingSoon = lazy(() => import('./pages/ComingSoon'))
+const VerifyCertificate = lazy(() => import('./pages/VerifyCertificate'))
 
-import AdminLayout from './admin/AdminLayout'
-import AdminLogin from './admin/AdminLogin'
-import AdminDashboard from './admin/AdminDashboard'
-import AdminProjects from './admin/AdminProjects'
-import AdminTasks from './admin/AdminTasks'
-import AdminTeam from './admin/AdminTeam'
-import AdminEmployees from './admin/AdminEmployees'
-import AdminServices from './admin/AdminServices'
-import AdminMessages from './admin/AdminMessages'
-import AdminSales from './admin/AdminSales'
-import AdminAccountRequests from './admin/AdminAccountRequests'
-import AdminSellRequests from './admin/AdminSellRequests'
-import AdminServiceRequests from './admin/AdminServiceRequests'
-import AdminSettings from './admin/AdminSettings'
-import AdminMentorProfile from './admin/AdminMentorProfile'
-import AdminCustomers from './admin/AdminCustomers'
-import AdminCertificates from './admin/AdminCertificates'
+const PrivacyPolicy = lazy(() => import('./pages/legal/PrivacyPolicy'))
+const TermsOfService = lazy(() => import('./pages/legal/TermsOfService'))
+const RefundPolicy = lazy(() => import('./pages/legal/RefundPolicy'))
+const GrievanceCell = lazy(() => import('./pages/legal/GrievanceCell'))
 
-import EmployeeLogin from './employee/EmployeeLogin'
-import RequestAccount from './pages/RequestAccount'
+const WebService = lazy(() => import('./web-service/WebService'))
+const RepairService = lazy(() => import('./technicalsupport/RepairService'))
+const EditingService = lazy(() => import('./editing/EditingService'))
+const TechSupport = lazy(() => import('./technicalsupport/TechSupport'))
 
-import EmployeeLayout from './employee/EmployeeLayout'
-import EmployeeOverview from './employee/EmployeeOverview'
-import EmployeeTasks from './employee/EmployeeTasks'
-import EmployeeProjects from './employee/EmployeeProjects'
-import EmployeeProfile from './employee/EmployeeProfile'
-import SellProjectRequest from './employee/SellProjectRequest'
-import EmployeeChat from './employee/EmployeeChat'
+const AdminLayout = lazy(() => import('./admin/AdminLayout'))
+const AdminLogin = lazy(() => import('./admin/AdminLogin'))
+const AdminDashboard = lazy(() => import('./admin/AdminDashboard'))
+const AdminProjects = lazy(() => import('./admin/AdminProjects'))
+const AdminTasks = lazy(() => import('./admin/AdminTasks'))
+const AdminTeam = lazy(() => import('./admin/AdminTeam'))
+const AdminEmployees = lazy(() => import('./admin/AdminEmployees'))
+const AdminServices = lazy(() => import('./admin/AdminServices'))
+const AdminMessages = lazy(() => import('./admin/AdminMessages'))
+const AdminSales = lazy(() => import('./admin/AdminSales'))
+const AdminAccountRequests = lazy(() => import('./admin/AdminAccountRequests'))
+const AdminSellRequests = lazy(() => import('./admin/AdminSellRequests'))
+const AdminServiceRequests = lazy(() => import('./admin/AdminServiceRequests'))
+const AdminSettings = lazy(() => import('./admin/AdminSettings'))
+const AdminMentorProfile = lazy(() => import('./admin/AdminMentorProfile'))
+const AdminCustomers = lazy(() => import('./admin/AdminCustomers'))
+const AdminCertificates = lazy(() => import('./admin/AdminCertificates'))
 
-import CustomerLayout from './customer/CustomerLayout'
-import CustomerOverview from './customer/CustomerOverview'
-import CustomerOrders from './customer/CustomerOrders'
-import CustomerSupport from './customer/CustomerSupport'
-import CustomerProfile from './customer/CustomerProfile'
+const EmployeeLogin = lazy(() => import('./employee/EmployeeLogin'))
+const RequestAccount = lazy(() => import('./pages/RequestAccount'))
 
-import ChatPage from './pages/ChatPage'
-import TradingMentorship from './modules/trading/pages/TradingMentorship'
-import AdminTradingPermissions from './admin/AdminTradingPermissions'
-import AdminTradingCourses from './admin/AdminTradingCourses'
-import AdminTradingSessions from './admin/AdminTradingSessions'
-import EmployeeTrading from './employee/EmployeeTrading'
+const EmployeeLayout = lazy(() => import('./employee/EmployeeLayout'))
+const EmployeeOverview = lazy(() => import('./employee/EmployeeOverview'))
+const EmployeeTasks = lazy(() => import('./employee/EmployeeTasks'))
+const EmployeeProjects = lazy(() => import('./employee/EmployeeProjects'))
+const EmployeeProfile = lazy(() => import('./employee/EmployeeProfile'))
+const SellProjectRequest = lazy(() => import('./employee/SellProjectRequest'))
+const EmployeeChat = lazy(() => import('./employee/EmployeeChat'))
+
+const CustomerLayout = lazy(() => import('./customer/CustomerLayout'))
+const CustomerOverview = lazy(() => import('./customer/CustomerOverview'))
+const CustomerOrders = lazy(() => import('./customer/CustomerOrders'))
+const CustomerSupport = lazy(() => import('./customer/CustomerSupport'))
+const CustomerProfile = lazy(() => import('./customer/CustomerProfile'))
+
+const ChatPage = lazy(() => import('./pages/ChatPage'))
+const TradingMentorship = lazy(() => import('./modules/trading/pages/TradingMentorship'))
+const AdminTradingPermissions = lazy(() => import('./admin/AdminTradingPermissions'))
+const AdminTradingCourses = lazy(() => import('./admin/AdminTradingCourses'))
+const AdminTradingSessions = lazy(() => import('./admin/AdminTradingSessions'))
+const EmployeeTrading = lazy(() => import('./employee/EmployeeTrading'))
 
 function ProtectedAdmin({ children }) {
   const { currentUser, loading } = useAuth()
@@ -114,7 +123,15 @@ function AppContent() {
   }, [logout, navigate])
 
   return (
-    <Routes>
+    <ErrorBoundary fallback={
+      <div style={{ padding: '50px', textAlign: 'center', color: '#64748b', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <h2 style={{ color: '#ef4444', marginBottom: 12 }}>Component Error</h2>
+        <p>A module failed to load. Please try refreshing the page.</p>
+        <button onClick={() => window.location.reload()} style={{ marginTop: 20, padding: '10px 20px', background: '#3b82f6', color: 'white', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>Refresh Page</button>
+      </div>
+    }>
+      <Suspense fallback={<LoadingScreen />}>
+        <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Hero />} />
         <Route path="about" element={<About />} />
@@ -136,6 +153,12 @@ function AppContent() {
         <Route path="signup" element={<CustomerSignup />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="verify" element={<VerifyCertificate />} />
+        
+        {/* Legal Pages */}
+        <Route path="privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="terms-of-service" element={<TermsOfService />} />
+        <Route path="refund-policy" element={<RefundPolicy />} />
+        <Route path="grievance" element={<GrievanceCell />} />
       </Route>
 
       {/* Role-based redirect */}
@@ -188,22 +211,26 @@ function AppContent() {
         <Route path="trading-mentorship" element={<TradingMentorship />} />
         <Route path="profile" element={<CustomerProfile />} />
       </Route>
-    </Routes>
+        </Routes>
+      </Suspense>
+    </ErrorBoundary>
   )
 }
 
 export default function App() {
   return (
-    <Router>
-      <ThemeProvider>
-        <StoreProvider>
-          <AuthProvider>
-            <ChatProvider>
-              <AppContent />
-            </ChatProvider>
-          </AuthProvider>
-        </StoreProvider>
-      </ThemeProvider>
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <ThemeProvider>
+          <StoreProvider>
+            <AuthProvider>
+              <ChatProvider>
+                <AppContent />
+              </ChatProvider>
+            </AuthProvider>
+          </StoreProvider>
+        </ThemeProvider>
+      </Router>
+    </HelmetProvider>
   )
 }

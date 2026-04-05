@@ -552,7 +552,7 @@ app.post("/reply", async (req, res) => {
   try {
     // ONLY send the email to the client
     await resend.emails.send({
-      from: "Amit Solution Hub <contact@amitsolutionhub.com>",
+      from: "Amit Solution Hub <support@amitsolutionhub.com>",
       to: email,
       subject: subject || "Reply from Amit Solution Hub",
       html: `
