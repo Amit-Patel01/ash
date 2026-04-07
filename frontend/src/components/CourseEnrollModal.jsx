@@ -4,6 +4,21 @@ import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import { api } from '../config/api'
+
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    if (window.Razorpay) {
+      resolve(true)
+      return
+    }
+    const script = document.createElement('script')
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+    script.onload = () => resolve(true)
+    script.onerror = () => resolve(false)
+    document.body.appendChild(script)
+  })
+}
 
 export default function CourseEnrollModal({ course, onClose, onSuccess }) {
   const { addEnrollment, isUserEnrolled } = useStore()
@@ -40,21 +55,96 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
       const snap = await getDocs(q)
       if (!snap.empty) { setSuccess(true); return }
 
-      await addEnrollment({
-        userId: currentUser.uid,
-        userName: currentUser.displayName || currentUser.email,
-        userEmail: currentUser.email,
-        userMobile: mobile,
-        courseId: course.id,
-        courseTitle: course.title,
-        category: course.category,
-        amount: course.isFree ? 0 : Number(course.price || 0),
-        instructor: course.instructor || '',
-        assignedEmployeeId: course.assignedEmployeeId || '',
-      })
-      setSuccess(true)
-      if (onSuccess) onSuccess()
+      if (course.isFree || course.price === 0) {
+        await addEnrollment({
+          userId: currentUser.uid,
+          userName: currentUser.displayName || currentUser.email,
+          userEmail: currentUser.email,
+          userMobile: mobile,
+          courseId: course.id,
+          courseTitle: course.title,
+          category: course.category,
+          amount: 0,
+          instructor: course.instructor || '',
+          assignedEmployeeId: course.assignedEmployeeId || '',
+        })
+        setSuccess(true)
+        if (onSuccess) onSuccess()
+      } else {
+        // Paid enrollment via Razorpay
+        const isLoaded = await loadRazorpayScript()
+        if (!isLoaded) throw new Error("Failed to load Razorpay SDK")
+
+        const amount = Number(course.price)
+        const orderRes = await fetch(api.razorpayCreateOrder, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount })
+        })
+        const { order } = await orderRes.json()
+        if (!order) throw new Error("Could not create Razorpay order")
+
+        const options = {
+          key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+          amount: order.amount,
+          currency: order.currency,
+          name: "Amit Solution Hub",
+          description: `Enrollment for ${course.title}`,
+          order_id: order.id,
+          handler: async (response) => {
+            try {
+              const verifyRes = await fetch(api.razorpayVerifyCourse, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  ...response,
+                  userId: currentUser.uid,
+                  userName: currentUser.displayName || currentUser.email,
+                  userEmail: currentUser.email,
+                  planId: course.id,
+                  planName: course.title,
+                  amount: amount
+                })
+              })
+              const verifyData = await verifyRes.json()
+
+              if (verifyData.success) {
+                await addEnrollment({
+                  userId: currentUser.uid,
+                  userName: currentUser.displayName || currentUser.email,
+                  userEmail: currentUser.email,
+                  userMobile: mobile,
+                  courseId: course.id,
+                  courseTitle: course.title,
+                  category: course.category,
+                  amount: amount,
+                  instructor: course.instructor || '',
+                  assignedEmployeeId: course.assignedEmployeeId || '',
+                  paymentId: response.razorpay_payment_id
+                })
+                setSuccess(true)
+                if (onSuccess) onSuccess()
+              } else {
+                setError("Payment verification failed. Please contact support.")
+              }
+            } catch (err) {
+              console.error(err)
+              setError("Something went wrong during verification.")
+            }
+          },
+          prefill: {
+            name: currentUser.displayName || "",
+            email: currentUser.email || "",
+            contact: mobile
+          },
+          theme: { color: "#2563eb" }
+        }
+
+        const rzp = new window.Razorpay(options)
+        rzp.open()
+      }
     } catch (err) {
+      console.error(err)
       setError('Enrollment failed. Please try again.')
     } finally {
       setSubmitting(false)
@@ -176,8 +266,8 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
                 )}
               </button>
 
-              {!course.isFree && (
-                <p className="text-center text-xs text-slate-400">🛡️ Secure enrollment · Razorpay coming soon</p>
+              {!course.isFree && course.price !== 0 && (
+                <p className="text-center text-xs text-slate-400">🛡️ Secure enrollment · Powered by Razorpay</p>
               )}
             </div>
           </>

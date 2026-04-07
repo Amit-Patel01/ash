@@ -81,4 +81,57 @@ const verifyProjectPayment = async (req, res) => {
   }
 };
 
-module.exports = { createOrder, verifyProjectPayment };
+/**
+ * POST /api/razorpay/verify-course
+ * Course enrollments
+ */
+const verifyCoursePayment = async (req, res) => {
+  const {
+    razorpay_order_id,
+    razorpay_payment_id,
+    razorpay_signature,
+    userId,
+    userName,
+    userEmail,
+    planId,
+    planName,
+    amount,
+  } = req.body;
+
+  const hmac = crypto.createHmac("sha256", RAZORPAY_KEY_SECRET);
+  hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+  const expectedSignature = hmac.digest("hex");
+
+  if (expectedSignature !== razorpay_signature) {
+    logger.error("❌ Course Signature Mismatch", { razorpay_order_id });
+    return res.status(400).json({ success: false, message: "Invalid signature" });
+  }
+
+  try {
+    // Enqueue async email processing
+    addPaymentJob("TRADING_PAYMENT", {
+      razorpay_order_id,
+      razorpay_payment_id,
+      userId,
+      userName,
+      userEmail,
+      planId,
+      planName,
+      amount,
+    });
+
+    // Notify admin
+    sendEmail({
+      to: "amitpatel07029@gmail.com",
+      subject: `New Course Enrollment: ₹${amount}`,
+      text: `New enrollment for ${planName} from ${userName} (${userEmail}). Order ID: ${razorpay_order_id}.`,
+    }).catch((e) => logger.error("Admin notify error:", e));
+
+    res.json({ success: true, message: "Payment verified successfully" });
+  } catch (error) {
+    logger.error("Course payment verify error:", error);
+    res.json({ success: true, message: "Payment verified but email failed" });
+  }
+};
+
+module.exports = { createOrder, verifyProjectPayment, verifyCoursePayment };

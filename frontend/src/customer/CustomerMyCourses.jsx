@@ -4,14 +4,14 @@ import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
 export default function CustomerMyCourses() {
-  const { getUserEnrollments, courses } = useStore()
+  const { getUserEnrollments, courses, tradingCourses } = useStore()
   const { currentUser } = useAuth()
   const navigate = useNavigate()
   const [expandedId, setExpandedId] = useState(null)
 
   const myEnrollments = currentUser ? getUserEnrollments(currentUser.uid) : []
 
-  const getMyCourse = (courseId) => courses.find(c => c.id === courseId)
+  const getMyCourse = (courseId) => courses.find(c => c.id === courseId) || tradingCourses.find(c => c.id === courseId)
 
   if (myEnrollments.length === 0) {
     return (
@@ -48,9 +48,19 @@ export default function CustomerMyCourses() {
 
       <div className="space-y-4">
         {myEnrollments.map(enr => {
-          const course = getMyCourse(enr.courseId)
+          let course = getMyCourse(enr.courseId)
+          if (!course) {
+            // Fallback if course document was deleted or is hardcoded
+            course = {
+              id: enr.courseId,
+              title: enr.courseTitle || enr.courseName || enr.courseId,
+              category: enr.category || 'Course',
+              instructor: enr.instructor || '',
+              materials: [],
+              meetingLink: ''
+            }
+          }
           const isExpanded = expandedId === enr.id
-          if (!course) return null
 
           const hasMaterials = Array.isArray(course.materials) && course.materials.length > 0
           const hasMeetingLink = !!course.meetingLink
