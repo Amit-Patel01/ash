@@ -3,6 +3,15 @@ import { useStore } from '../store/StoreContext'
 
 // defaultServices constant removed - now managed via StoreContext/Firestore
 
+const GRADIENT_MAP = [
+  'from-blue-500 via-indigo-500 to-purple-600',
+  'from-emerald-500 via-teal-500 to-cyan-600',
+  'from-amber-500 via-orange-500 to-rose-500',
+  'from-pink-500 via-purple-500 to-indigo-600',
+  'from-cyan-500 via-blue-500 to-violet-600',
+  'from-lime-500 via-emerald-500 to-teal-600',
+]
+
 function ServiceIcon({ icon }) {
   const icons = {
     code: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>,
@@ -190,40 +199,71 @@ export default function AdminServices() {
       </div>
     </div>
   )
-
+  
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Services</h1>
-          <p className="text-sm text-gray-400 mt-1">{services.length} services offered</p>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Services Platform</h1>
+          <div className="flex items-center gap-3 mt-1.5">
+            <p className="text-sm text-gray-500">{services.length} services offered</p>
+            <span className="w-1 h-1 rounded-full bg-gray-700" />
+            <span className="text-sm font-medium text-emerald-400">{services.filter(s => s.active).length} active</span>
+          </div>
         </div>
-        <button onClick={() => { setShowAddModal(true); setEditingService(null); setFormData({ name: '', description: '', icon: 'code', basePrice: '', category: 'Development', path: '', active: true }) }} className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <button 
+          onClick={() => { setShowAddModal(true); setEditingService(null); setFormData({ name: '', description: '', icon: 'code', basePrice: '', category: 'Development', path: '', active: true }) }} 
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-white hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5 transition-all duration-200"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
           Add Service
         </button>
       </div>
 
+      {/* Info Banner */}
+      <div className="flex items-center gap-3 px-4 py-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-sm text-blue-300">
+        <svg className="w-4 h-4 flex-shrink-0 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        These services are displayed globally across the main website. Customers can request custom projects based on them.
+      </div>
+
       {/* Add/Edit Modal */}
       {(showAddModal || editingService) && (
-        <div className="bg-gray-900/50 border border-white/10 rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-white mb-4">{editingService ? 'Edit Service' : 'Add New Service'}</h2>
-          <ServiceForm onSubmit={editingService ? handleEdit : handleAdd} submitLabel={editingService ? 'Save Changes' : 'Add Service'} />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => { setShowAddModal(false); setEditingService(null) }} />
+          <div className="relative bg-gray-950 border border-white/10 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
+            <div className="h-1 w-full bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500" />
+            
+            <div className="px-6 py-5 border-b border-white/5 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-white">{editingService ? 'Edit Service' : '✦ New Capability'}</h2>
+                <p className="text-xs text-gray-500 mt-0.5">{editingService ? 'Update existing service catalog' : 'Add a new service offering to the platform'}</p>
+              </div>
+              <button onClick={() => { setShowAddModal(false); setEditingService(null) }} className="p-2 rounded-xl text-gray-500 hover:text-white hover:bg-white/10 transition-all">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            
+            <div className="p-6">
+              <ServiceForm onSubmit={editingService ? handleEdit : handleAdd} submitLabel={editingService ? 'Save Changes' : 'Create Service'} />
+            </div>
+          </div>
         </div>
       )}
 
       {/* Category filter */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
         {categories.map(cat => (
           <button
             key={cat}
             onClick={() => setCategoryFilter(cat)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${categoryFilter === cat
-                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+            className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${categoryFilter === cat
+                ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 border border-blue-500/30'
+                : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 border border-transparent'
               }`}
           >
             {cat}
@@ -232,53 +272,109 @@ export default function AdminServices() {
       </div>
 
       {/* Services Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-        {filteredServices.map((service) => (
-          <div
-            key={service.id}
-            className="group bg-gray-900/50 backdrop-blur-sm border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all duration-300"
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center text-blue-400">
-                <ServiceIcon icon={service.icon} />
-              </div>
-              <div className="flex items-center gap-2">
-                <button onClick={() => openEdit(service)} className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-white/5 text-gray-500 hover:text-white transition-all">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                  </svg>
-                </button>
-                <button onClick={() => handleDelete(service.id)} className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-red-500/10 text-gray-500 hover:text-red-400 transition-all">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                  </svg>
-                </button>
-                <label className="relative inline-flex cursor-pointer">
-                  <input type="checkbox" checked={service.active} onChange={() => toggleActive(service.id)} className="sr-only peer" />
-                  <div className="w-9 h-5 bg-white/10 rounded-full peer peer-checked:bg-blue-500/50 after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full" />
-                </label>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {filteredServices.map((service, idx) => {
+          const gradient = GRADIENT_MAP[idx % GRADIENT_MAP.length]
+          return (
+            <div
+              key={service.id}
+              className={`relative group rounded-2xl overflow-hidden border transition-all duration-300 ${
+                service.active 
+                  ? 'border-white/10 hover:border-white/20 shadow-lg hover:shadow-xl hover:-translate-y-1' 
+                  : 'border-white/5 opacity-60 hover:opacity-80'
+              } bg-gray-900/80 backdrop-blur-xl`}
+            >
+              {/* Top gradient blur behind icon */}
+              <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradient} rounded-full blur-[50px] opacity-10 group-hover:opacity-30 transition-all duration-500`} />
+              
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-5">
+                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${gradient} p-[1px] shadow-lg`}>
+                    <div className="w-full h-full bg-gray-900 rounded-[15px] flex items-center justify-center">
+                      <div className={`text-transparent bg-clip-text bg-gradient-to-br ${gradient}`}>
+                        <ServiceIcon icon={service.icon} />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                    <button onClick={() => openEdit(service)} className="p-2 rounded-xl bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-all">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
+                      </svg>
+                    </button>
+                    <button onClick={() => handleDelete(service.id)} className="p-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <h3 className="text-lg font-bold text-white leading-tight mb-1">{service.name}</h3>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold ${service.active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
+                      {service.active ? 'Live' : 'Paused'}
+                    </span>
+                    <span className="px-2 py-0.5 bg-white/5 border border-white/10 rounded-lg text-[10px] font-medium text-gray-400">
+                      {service.category}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-400 line-clamp-2 leading-relaxed">{service.description}</p>
+                </div>
+
+                <div className="bg-black/30 rounded-xl p-3 border border-white/5 space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-500 font-medium text-xs">Starting Base Price</span>
+                    <span className="text-white font-bold tracking-wide">₹{service.basePrice.toLocaleString('en-IN')}</span>
+                  </div>
+                  
+                  <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-0.5">Orders</span>
+                      <span className="text-white font-semibold flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                        {serviceStats[service.id]?.orders || 0}
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-0.5">Revenue</span>
+                      <span className="text-emerald-400 font-bold flex items-center gap-1">
+                        <span className="text-[10px]">₹</span>
+                        {(serviceStats[service.id]?.revenue || 0).toLocaleString('en-IN')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Toggle Active status at very bottom */}
+                <div className="mt-4 flex items-center justify-between bg-white/[0.02] p-2.5 rounded-xl border border-white/5 group-hover:border-white/10 transition-colors">
+                  <span className="text-xs font-semibold text-gray-400">{service.active ? 'Accepting Requests' : 'Currently Hidden'}</span>
+                  <label className="relative inline-flex cursor-pointer shadow-inner">
+                    <input type="checkbox" checked={service.active} onChange={() => toggleActive(service.id)} className="sr-only peer" />
+                    <div className="w-10 h-5 bg-gray-800 rounded-full peer peer-checked:bg-gradient-to-r peer-checked:from-emerald-500 peer-checked:to-teal-500 border border-gray-700 peer-checked:border-emerald-500/50 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full shadow-sm" />
+                  </label>
+                </div>
               </div>
             </div>
-
-            <h3 className="text-base font-semibold text-white mb-1">{service.name}</h3>
-            <p className="text-sm text-gray-500 mb-4 line-clamp-2">{service.description}</p>
-
-            <div className="flex items-center gap-1 mb-4">
-              <span className="px-2 py-0.5 bg-white/5 rounded-md text-[10px] font-medium text-gray-400">{service.category}</span>
-              <span className="px-2 py-0.5 bg-white/5 rounded-md text-[10px] font-medium text-gray-400">From ₹{service.basePrice.toLocaleString('en-IN')}</span>
-              <span className={`px-2 py-0.5 rounded-md text-[10px] font-medium ${service.active ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
-                {service.active ? 'Active' : 'Inactive'}
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between pt-4 border-t border-white/5">
-              <div className="text-xs text-gray-400">
-                <span className="text-white font-medium">{serviceStats[service.id]?.orders || 0}</span> orders
-              </div>
-              <div className="text-sm font-semibold text-white">₹{(serviceStats[service.id]?.revenue || 0).toLocaleString('en-IN')}</div>
-            </div>
+          )
+        })}
+        
+        {/* Add New Service Card Slot */}
+        <button
+          onClick={() => { setShowAddModal(true); setEditingService(null); setFormData({ name: '', description: '', icon: 'code', basePrice: '', category: 'Development', path: '', active: true }) }}
+          className="group rounded-2xl border-2 border-dashed border-white/10 hover:border-blue-500/40 bg-transparent py-14 flex flex-col items-center justify-center gap-4 text-gray-500 hover:text-blue-400 transition-all duration-300"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-white/5 group-hover:bg-blue-500/10 flex items-center justify-center transition-all">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
           </div>
-        ))}
+          <span className="text-sm font-bold tracking-wide">Add New Service</span>
+        </button>
       </div>
 
       {filteredServices.length === 0 && (

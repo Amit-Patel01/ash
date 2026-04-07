@@ -4,21 +4,31 @@
   "description": "Contact form backend",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "start:pm2": "pm2 start ecosystem.config.js",
+    "stop:pm2": "pm2 stop solutionhub-backend",
+    "restart:pm2": "pm2 restart solutionhub-backend",
+    "logs": "pm2 logs solutionhub-backend",
+    "logs:error": "pm2 logs solutionhub-backend --err"
   },
   "author": "Amit Patel",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.3.2",
     "firebase-admin": "^13.7.0",
+    "helmet": "^8.1.0",
     "multer": "^2.1.1",
     "node-cron": "^4.2.1",
     "nodemailer": "^8.0.1",
     "razorpay": "^2.9.6",
     "resend": "3.4.0",
-    "svix": "1.15.0"
+    "svix": "1.15.0",
+    "winston": "^3.19.0"
   }
 }

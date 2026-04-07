@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import TermsAndConditions from '../components/TermsAndConditions'
+import { emailNotify } from '../utils/emailNotify'
 
 export default function CustomerSignup() {
   const { signup } = useAuth()
@@ -26,6 +27,15 @@ export default function CustomerSignup() {
       setError('Please fill all required fields')
       return
     }
+    if (!form.phone) {
+      setError('Mobile number is required — so our team can reach you')
+      return
+    }
+    const cleanPhone = form.phone.replace(/\D/g, '')
+    if (cleanPhone.length < 10 || !/^[6-9]\d{9}$/.test(cleanPhone)) {
+      setError('Enter a valid 10-digit Indian mobile number (starts with 6-9)')
+      return
+    }
     if (form.password !== form.confirmPassword) {
       setError('Passwords do not match')
       return
@@ -47,12 +57,15 @@ export default function CustomerSignup() {
         uid: user.uid,
         email: form.email,
         displayName: form.name,
-        phone: form.phone || '',
+        phone: form.phone.replace(/\D/g, ''),
         role: 'customer',
         status: 'active',
         avatar: form.name.charAt(0).toUpperCase(),
         createdAt: new Date().toISOString()
       })
+
+      // ✉️ Welcome email
+      emailNotify('welcome', { name: form.name, email: form.email })
 
       setSubmitted(true)
     } catch (err) {
@@ -149,8 +162,21 @@ export default function CustomerSignup() {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Phone Number (Optional)</label>
-              <input type="text" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="+91 98765 43210" className="w-full px-5 py-4 bg-slate-800/50 border border-white/5 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all duration-300 shadow-inner" />
+              <label className="block text-xs font-black text-slate-500 uppercase tracking-widest ml-1">
+                Mobile Number <span className="text-red-400">*</span>
+              </label>
+              <div className="relative">
+                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-medium">+91</span>
+                <input
+                  type="tel"
+                  value={form.phone}
+                  onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
+                  required
+                  placeholder="10-digit mobile number"
+                  className="w-full pl-14 pr-5 py-4 bg-slate-800/50 border border-white/5 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all duration-300 shadow-inner"
+                />
+              </div>
+              <p className="text-[10px] text-slate-600 ml-1">📞 Required so our team can contact you about your courses</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

@@ -8,6 +8,7 @@ export default function AdminTeam() {
   const { teamMembers, addTeamMember, updateTeamMember, deleteTeamMember, tasks: storeTasks } = useStore()
   const { createTeamMemberAccount, resetPassword } = useAuth()
   const [departmentFilter, setDepartmentFilter] = useState('All')
+  const [showingFilter, setShowingFilter] = useState('all') // 'all' | 'about'
   const [searchQuery, setSearchQuery] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editingMember, setEditingMember] = useState(null)
@@ -42,7 +43,8 @@ export default function AdminTeam() {
   const filteredMembers = teamMembers.filter(member => {
     const matchesDept = departmentFilter === 'All' || member.department === departmentFilter
     const matchesSearch = member.name.toLowerCase().includes(searchQuery.toLowerCase()) || member.role.toLowerCase().includes(searchQuery.toLowerCase())
-    return matchesDept && matchesSearch
+    const matchesAbout = showingFilter === 'all' || (showingFilter === 'about' && member.isMentor)
+    return matchesDept && matchesSearch && matchesAbout
   })
 
   const openCreate = () => {
@@ -164,7 +166,28 @@ export default function AdminTeam() {
       </div>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-slate-300">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 flex-wrap">
+          {/* Showing on About filter */}
+          <button
+            onClick={() => setShowingFilter(showingFilter === 'about' ? 'all' : 'about')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all border ${
+              showingFilter === 'about'
+                ? 'bg-purple-500/20 text-purple-300 border-purple-500/40'
+                : 'text-gray-400 hover:text-white hover:bg-white/5 border-transparent'
+            }`}
+          >
+            <span className="text-sm">🌐</span>
+            Showing on About
+            <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
+              showingFilter === 'about' ? 'bg-purple-500/30 text-purple-300' : 'bg-white/10 text-gray-500'
+            }`}>
+              {teamMembers.filter(m => m.isMentor).length}
+            </span>
+          </button>
+
+          <span className="w-px h-4 bg-white/10 mx-1" />
+
+          {/* Department filters */}
           {departments.map(dept => (
             <button key={dept} onClick={() => setDepartmentFilter(dept)} className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${departmentFilter === dept ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'}`}>{dept}</button>
           ))}
@@ -191,6 +214,9 @@ export default function AdminTeam() {
                     <p className="text-xs text-gray-400">{member.role}</p>
                     {member.employeeId && (
                       <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest bg-blue-500/10 px-1.5 rounded ml-1 border border-blue-500/20">{member.employeeId}</span>
+                    )}
+                    {member.isMentor && (
+                      <span className="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">🌐 About</span>
                     )}
                   </div>
                 </div>

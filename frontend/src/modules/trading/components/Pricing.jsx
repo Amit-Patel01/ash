@@ -1,16 +1,19 @@
 import React from 'react'
 
 const Pricing = ({ courses, onPlanSelect }) => {
-  const displayData = courses && courses.length > 0 ? courses.map(c => ({
-    id: c.id,
-    name: c.name,
-    price: c.price,
-    period: 'one-time',
-    description: c.description || '',
-    features: c.features || [],
-    highlighted: c.highlighted || false,
-    badge: c.badge || '',
-  })) : []
+  // ✅ Only show PUBLISHED courses to students
+  const displayData = (courses || [])
+    .filter(c => c.published !== false)
+    .map(c => ({
+      id: c.id,
+      name: c.name,
+      price: c.price,
+      period: 'one-time',
+      description: c.description || '',
+      features: c.features || [],
+      highlighted: c.highlighted || false,
+      badge: c.badge || '',
+    }))
 
   if (displayData.length === 0) return null;
 
@@ -48,7 +51,7 @@ const Pricing = ({ courses, onPlanSelect }) => {
 
               <div className="flex flex-col mb-6">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-black text-slate-900 tracking-tighter">₹{plan.price.toLocaleString('en-IN')}</span>
+                  <span className="text-4xl font-black text-slate-900 tracking-tighter">₹{Number(plan.price).toLocaleString('en-IN')}</span>
                   <span className="text-slate-400 text-xs font-bold uppercase tracking-widest">/ {plan.period}</span>
                 </div>
                 <div className="flex items-center gap-2 mt-1">
@@ -69,11 +72,7 @@ const Pricing = ({ courses, onPlanSelect }) => {
               </ul>
 
               <button
-                onClick={() => {
-                  if (onPlanSelect) {
-                    onPlanSelect(plan)
-                  }
-                }}
+                onClick={() => onPlanSelect && onPlanSelect(plan)}
                 className={`block w-full text-center py-4 rounded-2xl font-bold transition-all duration-300 cursor-pointer ${plan.highlighted
                     ? 'bg-blue-600 text-white shadow-lg hover:bg-blue-700 hover:scale-[1.02]'
                     : 'bg-slate-50 text-slate-900 border border-slate-200 hover:bg-slate-100'

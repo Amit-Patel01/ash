@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { emailNotify } from '../utils/emailNotify'
 
 const categories = ['Basic', 'Medium', 'Premium']
 
@@ -19,6 +20,20 @@ export default function SellProjectRequest() {
       userId: currentUser?.uid,
       userName: userProfile?.displayName || 'Unknown',
       userEmail: currentUser?.email || 'unknown',
+    })
+    // ✉️ Email admin + seller
+    emailNotify('sell_request_admin', {
+      sellerName: userProfile?.displayName || 'Employee',
+      sellerEmail: currentUser?.email,
+      sellerPhone: userProfile?.phone || '',
+      projectTitle: form.projectTitle,
+      projectDesc: form.description,
+      price: form.price
+    })
+    emailNotify('sell_request_user', {
+      sellerName: userProfile?.displayName || 'Employee',
+      sellerEmail: currentUser?.email,
+      projectTitle: form.projectTitle
     })
     setSubmitted(true)
   }

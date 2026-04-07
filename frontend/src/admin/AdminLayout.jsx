@@ -3,27 +3,75 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
 
-const navItems = [
-  { path: '/admin', label: 'Dashboard', icon: 'dashboard' },
-  { path: '/admin/projects', label: 'Projects', icon: 'folder', permission: 'can_manage_projects' },
-  { path: '/admin/tasks', label: 'Tasks', icon: 'task', permission: 'can_manage_tasks' },
-  { path: '/admin/employees', label: 'Employees', icon: 'badge', permission: 'can_manage_employees' },
-  { path: '/admin/customers', label: 'Customers', icon: 'group' },
-  { path: '/admin/certificates', label: 'Certificates', icon: 'award' },
-  { path: '/admin/sales', label: 'Sales', icon: 'cart', permission: 'can_manage_sales' },
-  { path: '/admin/account-requests', label: 'Account Requests', icon: 'userPlus', permission: 'can_approve_accounts' },
-  { path: '/admin/service-requests', label: 'Service Requests', icon: 'clipboardList', permission: 'can_manage_service_requests' },
-  { path: '/admin/sell-requests', label: 'Sell Requests', icon: 'tag', permission: 'can_manage_sell_requests' },
-  { path: '/admin/services', label: 'Services', icon: 'design_services', permission: 'can_manage_services' },
-  { path: '/admin/trading-permissions', label: 'Trading Permissions', icon: 'shield', permission: 'can_manage_permissions' },
-  { path: '/admin/trading-courses', label: 'Trading Courses', icon: 'trending_up', permission: 'can_manage_courses' },
-  { path: '/admin/trading-sessions', label: 'Trading Sessions', icon: 'video_call', permission: 'can_create_sessions' },
-  { path: '/admin/mentor-profile', label: 'Mentor Profile', icon: 'person', permission: 'can_manage_mentor_profile' },
-  { path: '/admin/messages', label: 'Messages', icon: 'mail', permission: 'can_manage_messages' },
-  { path: '/admin/settings', label: 'Settings', icon: 'settings', permission: 'can_manage_settings' },
+const navGroups = [
+  {
+    label: 'Core',
+    items: [
+      { path: '/admin', label: 'Dashboard', icon: 'dashboard' },
+      { path: '/admin/projects', label: 'Projects', icon: 'folder', permission: 'can_manage_projects' },
+      { path: '/admin/tasks', label: 'Tasks', icon: 'task', permission: 'can_manage_tasks' },
+      { path: '/admin/sales', label: 'Sales', icon: 'cart', permission: 'can_manage_sales' },
+      { path: '/admin/services', label: 'Services', icon: 'design_services', permission: 'can_manage_services' },
+    ]
+  },
+  {
+    label: 'Employees',
+    items: [
+      { path: '/admin/employees', label: 'All Employees', icon: 'badge', permission: 'can_manage_employees' },
+      { path: '/admin/mentor-profile', label: 'Mentor Profile', icon: 'person', permission: 'can_manage_mentor_profile' },
+      { path: '/admin/certificates', label: 'Certificates', icon: 'award' },
+    ]
+  },
+  {
+    label: 'Students',
+    items: [
+      { path: '/admin/customers', label: 'All Students', icon: 'group' },
+      { path: '/admin/course-enrollments', label: 'Enrollments', icon: 'book' },
+      { path: '/admin/account-requests', label: 'Account Requests', icon: 'userPlus', permission: 'can_approve_accounts' },
+    ]
+  },
+  {
+    label: 'Communication',
+    items: [
+      { path: '/admin/messages', label: 'Messages', icon: 'mail', permission: 'can_manage_messages' },
+    ]
+  },
+  {
+    label: 'Requests',
+    items: [
+      { path: '/admin/service-requests', label: 'Service Requests', icon: 'clipboardList', permission: 'can_manage_service_requests' },
+      { path: '/admin/sell-requests', label: 'Sell Requests', icon: 'tag', permission: 'can_manage_sell_requests' },
+    ]
+  },
+  {
+    label: 'Courses',
+    items: [
+      { path: '/admin/courses', label: 'All Courses', icon: 'book' },
+      { path: '/admin/course-categories', label: 'Categories', icon: 'tag' },
+    ]
+  },
+  {
+    label: 'Trading',
+    items: [
+      { path: '/admin/trading-courses', label: 'Courses', icon: 'trending_up', permission: 'can_manage_courses' },
+      { path: '/admin/trading-sessions', label: 'Sessions', icon: 'video_call', permission: 'can_create_sessions' },
+      { path: '/admin/trading-permissions', label: 'Permissions', icon: 'shield', permission: 'can_manage_permissions' },
+    ]
+  },
+  {
+    label: 'System',
+    items: [
+      { path: '/admin/settings', label: 'Settings', icon: 'settings', permission: 'can_manage_settings' },
+    ]
+  },
 ]
 
 const iconMap = {
+  book: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+    </svg>
+  ),
   dashboard: (
     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
@@ -173,54 +221,79 @@ export default function AdminLayout({ onLogout }) {
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
-          {navItems.filter(item => !item.permission || hasPermission(item.permission)).map((item) => {
-            const isActive = item.path === '/admin'
-              ? location.pathname === '/admin'
-              : location.pathname.startsWith(item.path)
+        {/* Navigation — Category Grouped */}
+        <nav className="flex-1 py-4 px-3 overflow-y-auto space-y-4">
+          {navGroups.map((group) => {
+            const visibleItems = group.items.filter(item => !item.permission || hasPermission(item.permission))
+            if (visibleItems.length === 0) return null
             return (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive
-                    ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white shadow-lg shadow-blue-500/10'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
-              >
-                <span className={`flex-shrink-0 transition-colors ${isActive ? 'text-blue-400' : 'text-gray-500 group-hover:text-gray-300'}`}>
-                  {iconMap[item.icon]}
-                </span>
-                {sidebarOpen && <span>{item.label}</span>}
+              <div key={group.label}>
+                {/* Group Label */}
                 {sidebarOpen && (
-                  <>
-                    {item.path === '/admin/account-requests' && accountRequests.filter(r => r.status === 'pending').length > 0 && (
-                      <span className="ml-auto px-2 py-0.5 rounded-full bg-blue-500 text-[10px] font-bold text-white shadow-lg shadow-blue-500/20">
-                        {accountRequests.filter(r => r.status === 'pending').length}
-                      </span>
-                    )}
-                    {item.path === '/admin/service-requests' && serviceRequests.filter(r => r.status === 'pending').length > 0 && (
-                      <span className="ml-auto px-2 py-0.5 rounded-full bg-amber-500 text-[10px] font-bold text-white shadow-lg shadow-amber-500/20">
-                        {serviceRequests.filter(r => r.status === 'pending').length}
-                      </span>
-                    )}
-                    {item.path === '/admin/sell-requests' && sellRequests.filter(r => r.status === 'pending').length > 0 && (
-                      <span className="ml-auto px-2 py-0.5 rounded-full bg-purple-500 text-[10px] font-bold text-white shadow-lg shadow-purple-500/20">
-                        {sellRequests.filter(r => r.status === 'pending').length}
-                      </span>
-                    )}
-                    {item.path === '/admin/messages' && messages.filter(m => m.status === 'unread').length > 0 && (
-                      <span className="ml-auto px-2 py-0.5 rounded-full bg-red-500 text-[10px] font-bold text-white shadow-lg shadow-red-500/20">
-                        {messages.filter(m => m.status === 'unread').length}
-                      </span>
-                    )}
-                  </>
+                  <p className="px-3 mb-1 text-[10px] font-bold uppercase tracking-widest text-gray-600">
+                    {group.label}
+                  </p>
                 )}
-                {isActive && sidebarOpen && !['/admin/account-requests', '/admin/service-requests', '/admin/sell-requests', '/admin/messages'].includes(item.path) && (
-                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-400 shadow-lg shadow-blue-400/50" />
+                {!sidebarOpen && (
+                  <div className="h-px bg-white/5 mx-2 mb-2" />
                 )}
-              </Link>
+                <div className="space-y-0.5">
+                  {visibleItems.map((item) => {
+                    const isActive = item.path === '/admin'
+                      ? location.pathname === '/admin'
+                      : location.pathname.startsWith(item.path)
+                    return (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+                          isActive
+                            ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white shadow-lg shadow-blue-500/10'
+                            : 'text-gray-400 hover:text-white hover:bg-white/5'
+                        }`}
+                      >
+                        <span className={`flex-shrink-0 transition-colors ${
+                          isActive ? 'text-blue-400' : 'text-gray-500 group-hover:text-gray-300'
+                        }`}>
+                          {iconMap[item.icon]}
+                        </span>
+                        {sidebarOpen && <span className="flex-1">{item.label}</span>}
+                        {sidebarOpen && (
+                          <>
+                            {item.path === '/admin/account-requests' && accountRequests.filter(r => r.status === 'pending').length > 0 && (
+                              <span className="px-1.5 py-0.5 rounded-full bg-blue-500 text-[10px] font-bold text-white">
+                                {accountRequests.filter(r => r.status === 'pending').length}
+                              </span>
+                            )}
+                            {item.path === '/admin/service-requests' && serviceRequests.filter(r => r.status === 'pending').length > 0 && (
+                              <span className="px-1.5 py-0.5 rounded-full bg-amber-500 text-[10px] font-bold text-white">
+                                {serviceRequests.filter(r => r.status === 'pending').length}
+                              </span>
+                            )}
+                            {item.path === '/admin/sell-requests' && sellRequests.filter(r => r.status === 'pending').length > 0 && (
+                              <span className="px-1.5 py-0.5 rounded-full bg-purple-500 text-[10px] font-bold text-white">
+                                {sellRequests.filter(r => r.status === 'pending').length}
+                              </span>
+                            )}
+                            {item.path === '/admin/messages' && messages.filter(m => m.status === 'unread').length > 0 && (
+                              <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-[10px] font-bold text-white">
+                                {messages.filter(m => m.status === 'unread').length}
+                              </span>
+                            )}
+                            {isActive && ![
+                              '/admin/account-requests', '/admin/service-requests',
+                              '/admin/sell-requests', '/admin/messages'
+                            ].includes(item.path) && (
+                              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-lg shadow-blue-400/50" />
+                            )}
+                          </>
+                        )}
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
             )
           })}
         </nav>

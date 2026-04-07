@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import LoadingScreen from '../components/LoadingScreen'
+import { emailNotify } from '../utils/emailNotify'
 
 const StoreContext = createContext(null)
 
@@ -39,6 +40,11 @@ export function StoreProvider({ children }) {
   const [tradingCurriculum, setTradingCurriculum] = useState([])
   const [certificates, setCertificates] = useState([])
   const [announcement, setAnnouncement] = useState(null)
+  // ── Generic Course System (Phase 1) ──────────────────────────
+  const [courses, setCourses] = useState([])
+  const [enrollments, setEnrollments] = useState([])
+  const [courseCategories, setCourseCategories] = useState([])
+  // ─────────────────────────────────────────────────────────────
   const [loading, setLoading] = useState(true)
 
   // Real-time Listeners
@@ -152,6 +158,30 @@ export function StoreProvider({ children }) {
       }
     }, (error) => console.error("Announcement snapshot error:", error))
 
+    // ── Generic Course System Listeners ──────────────────────────
+    const unsubscribeGenericCourses = onSnapshot(
+      query(collection(db, 'courses'), orderBy('createdAt', 'desc')),
+      (snapshot) => setCourses(snapshot.docs.map(d => ({ id: d.id, ...d.data() }))),
+      (error) => console.error("Courses snapshot error:", error)
+    )
+
+    const unsubscribeGenericEnrollments = onSnapshot(
+      query(collection(db, 'enrollments'), orderBy('enrolledAt', 'desc')),
+      (snapshot) => setEnrollments(snapshot.docs.map(d => ({ id: d.id, ...d.data() }))),
+      (error) => console.error("Enrollments snapshot error:", error)
+    )
+
+    const unsubscribeCourseCategories = onSnapshot(
+      collection(db, 'courseCategories'),
+      (snapshot) => {
+        const cats = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
+        cats.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+        setCourseCategories(cats)
+      },
+      (error) => console.error("CourseCategories snapshot error:", error)
+    )
+    // ─────────────────────────────────────────────────────────────
+
     return () => {
       unsubscribeProjects()
       unsubscribeOrders()
@@ -173,6 +203,9 @@ export function StoreProvider({ children }) {
       unsubscribeCurriculum()
       unsubscribeCertificates()
       unsubscribeAnnouncement()
+      unsubscribeGenericCourses()
+      unsubscribeGenericEnrollments()
+      unsubscribeCourseCategories()
     }
   }, [])
 
@@ -500,6 +533,13 @@ export function StoreProvider({ children }) {
         createdAt: serverTimestamp()
       }
       const docRef = await addDoc(collection(db, 'certificates'), newCert)
+      // ✉️ Email certificate to student
+      emailNotify('certificate_issued', {
+        studentName: enrollment.userName,
+        studentEmail: enrollment.userEmail,
+        courseName: enrollment.courseName || enrollment.title || 'Mentorship',
+        certId
+      })
       return { id: docRef.id, ...newCert }
     } catch (err) { console.error("Error issuing certificate:", err); throw err }
   }
@@ -519,6 +559,174 @@ export function StoreProvider({ children }) {
       })
     } catch (err) { console.error("Error updating announcement:", err); throw err }
   }
+
+  // ══════════════════════════════════════════════════════════════
+  // GENERIC COURSE SYSTEM — Phase 1
+  // ══════════════════════════════════════════════════════════════
+
+  // Slug generator
+  const generateSlug = (title) =>
+    title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Date.now().toString(36)
+
+  // --- Courses CRUD ---
+  const addCourse = async (courseData) => {
+    try {
+      const slug = courseData.slug || generateSlug(courseData.title)
+      const payload = {
+        ...courseData,
+        slug,
+        published: courseData.published ?? false,
+        highlighted: courseData.highlighted ?? false,
+        enrolledCount: 0,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      }
+      const docRef = await addDoc(collection(db, 'courses'), payload)
+      return { id: docRef.id, ...payload }
+    } catch (err) { console.error('Error adding course:', err); throw err }
+  }
+
+  const updateCourse = async (id, updates) => {
+    try {
+      await updateDoc(doc(db, 'courses', id), { ...updates, updatedAt: serverTimestamp() })
+    } catch (err) { console.error('Error updating course:', err); throw err }
+  }
+
+  const deleteCourse = async (id) => {
+    try { await deleteDoc(doc(db, 'courses', id)) }
+    catch (err) { console.error('Error deleting course:', err); throw err }
+  }
+
+  // --- Enrollments CRUD ---
+  const addEnrollment = async (enrollmentData) => {
+    try {
+      // ✅ Duplicate guard at Firestore level
+      const existing = enrollments.find(
+        e => e.userId === enrollmentData.userId &&
+             e.courseId === enrollmentData.courseId &&
+             e.status === 'active'
+      )
+      if (existing) return existing // Already enrolled — return silently
+
+      const payload = {
+        ...enrollmentData,
+        status: 'active',
+        enrolledAt: serverTimestamp()
+      }
+      const docRef = await addDoc(collection(db, 'enrollments'), payload)
+
+      // Increment enrolledCount on the course
+      const courseRef = doc(db, 'courses', enrollmentData.courseId)
+      const courseSnap = await getDoc(courseRef)
+      if (courseSnap.exists()) {
+        await updateDoc(courseRef, { enrolledCount: (courseSnap.data().enrolledCount || 0) + 1 })
+      }
+
+      // ── Notify assigned employee ────────────────────────────────
+      const recipientId = enrollmentData.assignedEmployeeId
+      if (recipientId) {
+        await addDoc(collection(db, 'notifications'), {
+          recipientId,
+          type: 'new_enrollment',
+          title: 'New Student Enrolled!',
+          message: `${enrollmentData.userName || enrollmentData.userEmail} enrolled in "${enrollmentData.courseTitle}"`,
+          courseId: enrollmentData.courseId,
+          courseTitle: enrollmentData.courseTitle,
+          studentName: enrollmentData.userName || enrollmentData.userEmail,
+          studentEmail: enrollmentData.userEmail,
+          studentMobile: enrollmentData.userMobile || '',
+          planLabel: enrollmentData.planLabel || '',
+          amount: enrollmentData.amount || 0,
+          read: false,
+          createdAt: serverTimestamp()
+        })
+
+        // ✉️ Email to employee
+        const empSnap = await getDoc(doc(db, 'users', recipientId))
+        if (empSnap.exists()) {
+          const emp = empSnap.data()
+          emailNotify('enrollment_employee', {
+            employeeEmail: emp.email,
+            employeeName: emp.displayName || emp.name || emp.email,
+            studentName: enrollmentData.userName || enrollmentData.userEmail,
+            studentEmail: enrollmentData.userEmail,
+            studentMobile: enrollmentData.userMobile || '',
+            courseTitle: enrollmentData.courseTitle,
+            planLabel: enrollmentData.planLabel || '',
+            amount: enrollmentData.amount || 0
+          })
+        }
+      }
+
+      // ✉️ Email to student
+      emailNotify('enrollment_student', {
+        studentName: enrollmentData.userName || enrollmentData.userEmail,
+        studentEmail: enrollmentData.userEmail,
+        courseTitle: enrollmentData.courseTitle,
+        planLabel: enrollmentData.planLabel || '',
+        amount: enrollmentData.amount || 0
+      })
+      // ────────────────────────────────────────────────────────────
+
+      return { id: docRef.id, ...payload }
+    } catch (err) { console.error('Error adding enrollment:', err); throw err }
+  }
+
+
+  const updateEnrollment = async (id, updates) => {
+    try { await updateDoc(doc(db, 'enrollments', id), updates) }
+    catch (err) { console.error('Error updating enrollment:', err); throw err }
+  }
+
+  const deleteEnrollment = async (id) => {
+    try { await deleteDoc(doc(db, 'enrollments', id)) }
+    catch (err) { console.error('Error deleting enrollment:', err); throw err }
+  }
+
+  // Get all enrollments for a specific user
+  const getUserEnrollments = (uid) =>
+    enrollments.filter(e => e.userId === uid && e.status === 'active')
+
+  // Check if a user is enrolled in a specific course
+  const isUserEnrolled = (uid, courseId) =>
+    enrollments.some(e => e.userId === uid && e.courseId === courseId && e.status === 'active')
+
+  // --- Course Categories CRUD ---
+  const addCourseCategory = async (data) => {
+    try {
+      const payload = { ...data, order: courseCategories.length, createdAt: serverTimestamp() }
+      const docRef = await addDoc(collection(db, 'courseCategories'), payload)
+      return { id: docRef.id, ...payload }
+    } catch (err) { console.error('Error adding category:', err); throw err }
+  }
+
+  const updateCourseCategory = async (id, updates) => {
+    try { await updateDoc(doc(db, 'courseCategories', id), updates) }
+    catch (err) { console.error('Error updating category:', err); throw err }
+  }
+
+  const deleteCourseCategory = async (id) => {
+    try { await deleteDoc(doc(db, 'courseCategories', id)) }
+    catch (err) { console.error('Error deleting category:', err); throw err }
+  }
+
+  // Seed default categories if none exist
+  const seedCourseCategories = async () => {
+    if (courseCategories.length > 0) return
+    const defaults = [
+      { name: 'Trading',           icon: '📈', color: '#10b981', order: 0 },
+      { name: 'Web Development',   icon: '💻', color: '#3b82f6', order: 1 },
+      { name: 'Python',            icon: '🐍', color: '#f59e0b', order: 2 },
+      { name: 'Digital Marketing', icon: '📣', color: '#ec4899', order: 3 },
+      { name: 'Graphic Design',    icon: '🎨', color: '#8b5cf6', order: 4 },
+      { name: 'Excel / Data',      icon: '📊', color: '#06b6d4', order: 5 },
+      { name: 'Other',             icon: '📚', color: '#6b7280', order: 6 },
+    ]
+    for (const cat of defaults) {
+      await addDoc(collection(db, 'courseCategories'), { ...cat, createdAt: serverTimestamp() })
+    }
+  }
+  // ══════════════════════════════════════════════════════════════
 
   // --- Administrative Collections CRUD ---
   const deleteAdminMessage = async (id) => {
@@ -572,6 +780,13 @@ export function StoreProvider({ children }) {
     certificates, issueCertificate, revokeCertificate,
     getActiveProjects, getTotalRevenue, getPendingOrders,
     announcement, updateAnnouncement,
+    // ── Generic Course System ──
+    courses, addCourse, updateCourse, deleteCourse,
+    enrollments, addEnrollment, updateEnrollment, deleteEnrollment,
+    getUserEnrollments, isUserEnrolled,
+    courseCategories, addCourseCategory, updateCourseCategory, deleteCourseCategory,
+    seedCourseCategories,
+    // ──────────────────────────
     loading
   }
 

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import TermsAndConditions from '../components/TermsAndConditions'
+import { emailNotify } from '../utils/emailNotify'
 
 const departments = ['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Sales', 'Editor', 'Technician', 'Other']
 const roles = ['Developer', 'Designer', 'Project Manager', 'Marketing Executive', 'Support Agent', 'Sales Executive', 'Video Editor', 'Technician', 'Other']
@@ -46,6 +47,13 @@ export default function RequestAccount() {
 
     try {
       await createAccountRequest(submissionData)
+      // ✉️ Notify admin about new account request
+      emailNotify('account_request', {
+        requesterName: submissionData.name,
+        requesterEmail: submissionData.email,
+        requesterPhone: submissionData.phone,
+        role: submissionData.role
+      })
       setSubmitted(true)
     } catch (err) {
       setError(err.message || 'Failed to submit request.')

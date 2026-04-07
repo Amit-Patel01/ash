@@ -8,6 +8,9 @@ export default function EmployeeProfile() {
     phone: userProfile?.phone || '',
     department: userProfile?.department || '',
     avatar: userProfile?.avatar || '',
+    bio: userProfile?.bio || '',
+    jobTitle: userProfile?.jobTitle || '',
+    experience: userProfile?.experience || '',
     github: userProfile?.github || '',
     linkedin: userProfile?.linkedin || '',
     portfolio: userProfile?.portfolio || '',
@@ -80,6 +83,26 @@ export default function EmployeeProfile() {
           <div className="md:col-span-2">
             <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">Profile Photo URL</label>
             <input type="url" value={profileForm.avatar} onChange={e => setProfileForm({ ...profileForm, avatar: e.target.value })} placeholder="https://example.com/photo.jpg" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-700 focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner" />
+          </div>
+
+          {/* Mentor/Instructor Profile fields */}
+          <div className="md:col-span-2 bg-white/[0.02] rounded-xl border border-white/5 p-4">
+            <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-3">🎓 Instructor / Mentor Profile</p>
+            <p className="text-[10px] text-gray-600 mb-4">These details appear on your course page as the instructor profile</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">Job Title / Designation</label>
+                <input type="text" value={profileForm.jobTitle} onChange={e => setProfileForm({ ...profileForm, jobTitle: e.target.value })} placeholder="e.g. Full Stack Developer, Trading Expert" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">Experience</label>
+                <input type="text" value={profileForm.experience} onChange={e => setProfileForm({ ...profileForm, experience: e.target.value })} placeholder="e.g. 5+ Years" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">Bio / About You</label>
+              <textarea value={profileForm.bio} onChange={e => setProfileForm({ ...profileForm, bio: e.target.value })} rows={3} placeholder="Tell students about your background, expertise and teaching approach..." className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-all shadow-inner resize-none" />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:col-span-2">

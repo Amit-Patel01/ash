@@ -1,0 +1,5 @@
+[2026-04-07 20:58:49] WARN: ⚠️  GEMINI_API_KEY not set — AI chatbot features disabled.
+[2026-04-07 20:58:49] INFO: 📡 Firebase Admin Initialized (Project: solutionhub-81976)
+[2026-04-07 20:58:49] WARN: ⚠️  GEMINI_API_KEY not set. AI features will not work.
+[2026-04-07 20:58:49] INFO: 🚀 SolutionHub Backend v2.0 running on port 5000
+[2026-04-07 20:58:49] INFO: 📦 Modules: trading | admin | auth | certificates | razorpay | ai | webhook

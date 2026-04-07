@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import { ChatProvider } from './context/ChatContext'
 import { ThemeProvider } from './context/ThemeContext'
 import LoadingScreen from './components/LoadingScreen'
+import AIChatbot from './components/AIChatbot'
 import Layout from './components/Layout'
 
 const Hero = lazy(() => import('./components/Hero'))
@@ -76,7 +77,14 @@ const TradingMentorship = lazy(() => import('./modules/trading/pages/TradingMent
 const AdminTradingPermissions = lazy(() => import('./admin/AdminTradingPermissions'))
 const AdminTradingCourses = lazy(() => import('./admin/AdminTradingCourses'))
 const AdminTradingSessions = lazy(() => import('./admin/AdminTradingSessions'))
+const AdminCourses = lazy(() => import('./admin/AdminCourses'))
+const AdminCourseCategories = lazy(() => import('./admin/AdminCourseCategories'))
+const AdminCourseEnrollments = lazy(() => import('./admin/AdminCourseEnrollments'))
 const EmployeeTrading = lazy(() => import('./employee/EmployeeTrading'))
+const EmployeeCourseManage = lazy(() => import('./employee/EmployeeCourseManage'))
+const CoursesPage = lazy(() => import('./pages/CoursesPage'))
+const CourseDetailPage = lazy(() => import('./pages/CourseDetailPage'))
+const CustomerMyCourses = lazy(() => import('./customer/CustomerMyCourses'))
 
 function ProtectedAdmin({ children }) {
   const { currentUser, loading } = useAuth()
@@ -148,6 +156,8 @@ function AppContent() {
         <Route path="services/editing" element={<EditingService />} />
         <Route path="services/tech-support" element={<TechSupport />} />
         <Route path="services/trading-mentorship" element={<TradingMentorship />} />
+        <Route path="courses" element={<CoursesPage />} />
+        <Route path="courses/:slug" element={<CourseDetailPage />} />
         <Route path="coming-soon" element={<ComingSoon />} />
         <Route path="join-us" element={<RoleSelect />} />
         <Route path="signup" element={<CustomerSignup />} />
@@ -183,6 +193,9 @@ function AppContent() {
         <Route path="trading-courses" element={<AdminTradingCourses />} />
         <Route path="trading-sessions" element={<AdminTradingSessions />} />
         <Route path="mentor-profile" element={<AdminMentorProfile />} />
+        <Route path="courses" element={<AdminCourses />} />
+        <Route path="course-categories" element={<AdminCourseCategories />} />
+        <Route path="course-enrollments" element={<AdminCourseEnrollments />} />
         <Route path="messages" element={<AdminMessages />} />
         <Route path="settings" element={<AdminSettings />} />
       </Route>
@@ -201,6 +214,7 @@ function AppContent() {
         <Route path="projects" element={<EmployeeProjects />} />
         <Route path="sell-project" element={<SellProjectRequest />} />
         <Route path="trading" element={<EmployeeTrading />} />
+        <Route path="course-manage" element={<EmployeeCourseManage />} />
         <Route path="chat" element={<EmployeeChat />} />
         <Route path="profile" element={<EmployeeProfile />} />
       </Route>
@@ -211,10 +225,13 @@ function AppContent() {
         <Route path="orders" element={<CustomerOrders />} />
         <Route path="support" element={<CustomerSupport />} />
         <Route path="trading-mentorship" element={<TradingMentorship />} />
+        <Route path="my-courses" element={<CustomerMyCourses />} />
         <Route path="profile" element={<CustomerProfile />} />
       </Route>
         </Routes>
       </Suspense>
+      {/* Global AI Chatbot Widget */}
+      <AIChatbot />
     </ErrorBoundary>
   )
 }

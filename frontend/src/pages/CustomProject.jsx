@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { db } from "../config/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { emailNotify } from "../utils/emailNotify";
 
 const CustomProject = () => {
   const [formData, setFormData] = useState({
@@ -42,6 +43,19 @@ const CustomProject = () => {
       });
 
       setStatus("success");
+      // ✉️ Email admin + user
+      emailNotify('service_request_admin', {
+        clientName: formData.fullName,
+        clientEmail: formData.email,
+        clientPhone: formData.mobile,
+        serviceType: formData.projectType,
+        message: formData.description
+      })
+      emailNotify('service_request_user', {
+        clientName: formData.fullName,
+        clientEmail: formData.email,
+        serviceType: formData.projectType
+      })
       setFormData({
         fullName: "",
         email: "",
