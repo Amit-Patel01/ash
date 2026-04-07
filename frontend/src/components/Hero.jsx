@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState, useMemo } from 'react'
+import { useStore } from '../store/StoreContext'
 import SEO from './SEO'
 import msmeQR from '../assets/msme-qr.png'
 import msmeLogo from '../assets/msme.png'
@@ -228,6 +229,16 @@ const WHY = [
 ══════════════════════════════════════════════════════════════ */
 const Hero = () => {
   const [loaded, setLoaded] = useState(false)
+  const { courses, courseCategories } = useStore()
+  const navigate = useNavigate()
+
+  const activeCourses = useMemo(() => {
+    return courses?.filter(c => c.published !== false).slice(0, 3) || []
+  }, [courses])
+
+  const getCatMeta = (catId) => {
+    return courseCategories?.find(c => c.id === catId) || null
+  }
 
   useEffect(() => { setTimeout(() => setLoaded(true), 80) }, [])
 
@@ -348,42 +359,66 @@ const Hero = () => {
               </div>
 
               {/* Programs Cards Container */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: 24, alignItems: 'stretch' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24, alignItems: 'stretch' }}>
                 
-                {/* Active Trading Program Card */}
-                <div style={{
-                  display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
-                  padding:'32px 24px',
-                  borderRadius:24,
-                  background:'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(234, 88, 12, 0.05))',
-                  border:'2px solid rgba(245, 158, 11, 0.3)',
-                  textAlign:'center',
-                  gap:16,
-                  boxShadow:'0 10px 30px -10px rgba(245,158,11,0.2)',
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}>
-                  <div style={{ position:'absolute', top:0, left:0, width:'100%', height:4, background:'linear-gradient(90deg, #f59e0b, #ea580c)' }}></div>
-                  <div style={{ fontSize:48, animation:'hp-float 3s ease-in-out infinite' }}>📈</div>
-                  <div>
-                    <div style={{ display:'inline-block', padding:'4px 12px', background:'#f59e0b', color:'white', fontSize:11, fontWeight:800, borderRadius:99, marginBottom:10, letterSpacing:1, textTransform:'uppercase', animation:'hp-pulse 2s infinite' }}>🔴 Live Enrollments</div>
-                    <div style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'clamp(1.2rem,2.5vw,1.6rem)', color:'#0f172a', marginBottom:8 }}>
-                      Trading <span style={{ color:'#d97706' }}>Mentorship</span>
+                {activeCourses.map(course => {
+                  const catMeta = getCatMeta(course.category)
+                  
+                  // Use a default color based on category if available
+                  const btnColor = catMeta?.color || '#3b82f6';
+                  
+                  return (
+                    <div key={course.id} style={{
+                      display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
+                      padding:'32px 24px',
+                      borderRadius:24,
+                      background:'rgba(255,255,255,.9)',
+                      border:'1px solid rgba(255,255,255,.95)',
+                      textAlign:'center',
+                      gap:16,
+                      boxShadow:'0 10px 30px -10px rgba(0,0,0,0.06)',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      transition: 'transform 0.3s, box-shadow 0.3s'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 15px 35px -10px rgba(0,0,0,0.1)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 10px 30px -10px rgba(0,0,0,0.06)'; }}
+                    >
+                      {/* Badge */}
+                      {course.badge && (
+                        <div style={{ display:'inline-block', padding:'4px 12px', background: btnColor, color:'white', fontSize:11, fontWeight:800, borderRadius:99, marginBottom:10, letterSpacing:1, textTransform:'uppercase', animation: course.highlighted ? 'hp-pulse 2s infinite' : 'none' }}>
+                          {course.badge}
+                        </div>
+                      )}
+                      
+                      {/* Icon */}
+                      <div style={{ fontSize:48, animation: course.highlighted ? 'hp-float 3s ease-in-out infinite' : 'none' }}>
+                        {catMeta?.icon || '📚'}
+                      </div>
+                      
+                      <div>
+                        <div style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'clamp(1.2rem,2.5vw,1.6rem)', color:'#0f172a', marginBottom:8 }}>
+                          {course.title}
+                        </div>
+                        <p style={{ fontSize:13, color:'#64748b', lineHeight:1.6, maxWidth:300, margin:'0 auto' }}>
+                          {course.description?.substring(0, 80) || 'Master practical skills with our premium program.'}...
+                        </p>
+                      </div>
+                      <Link to={`/courses/${course.slug || course.id}`} style={{ 
+                        marginTop:'auto', padding:'10px 24px', background: `linear-gradient(135deg, ${btnColor}, ${btnColor}dd)`, 
+                        color:'white', fontWeight:700, borderRadius:99, fontSize:14, textDecoration:'none',
+                        boxShadow:`0 4px 14px ${btnColor}40`, transition:'0.3s'
+                      }}
+                      onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                      onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                      >
+                        Course Details ➔
+                      </Link>
                     </div>
-                    <p style={{ fontSize:13, color:'#64748b', lineHeight:1.6, maxWidth:300, margin:'0 auto' }}>
-                      Master technical analysis, risk management, and live market psychology with our premium program.
-                    </p>
-                  </div>
-                  <Link to="/services/trading-mentorship" style={{ 
-                    marginTop:'auto', padding:'10px 24px', background:'linear-gradient(135deg, #f59e0b, #ea580c)', 
-                    color:'white', fontWeight:700, borderRadius:99, fontSize:14, textDecoration:'none',
-                    boxShadow:'0 4px 14px rgba(245,158,11,0.4)', transition:'0.3s'
-                  }}>
-                    View Course Details ➔
-                  </Link>
-                </div>
+                  )
+                })}
 
-                {/* Coming Soon banner */}
+                {/* Coming Soon / View All banner */}
                 <div style={{
                   display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
                   padding:'32px 24px',
@@ -396,32 +431,15 @@ const Hero = () => {
                   <div style={{ fontSize:40, opacity:0.8 }}>🚧</div>
                   <div>
                     <div style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'clamp(1.1rem,2vw,1.4rem)', color:'#334155', marginBottom:6 }}>
-                      Other Programs <span style={{ color:'#8b5cf6' }}>Soon</span>
+                      More Programs <span style={{ color:'#8b5cf6' }}>Soon</span>
                     </div>
                     <p style={{ fontSize:12, color:'#64748b', lineHeight:1.6, maxWidth:320, margin:'0 auto 16px' }}>
                       Web Development, AI, Data Science, UI/UX, and Cyber Security internships launching shortly.
                     </p>
                   </div>
-                  {/* Category preview chips */}
-                  <div style={{ display:'flex', flexWrap:'wrap', gap:6, justifyContent:'center' }}>
-                    {[
-                      { icon:'💻', label:'Web Dev', color:'#1d4ed8' },
-                      { icon:'🤖', label:'AI Engine', color:'#7c3aed' },
-                      { icon:'🎨', label:'UI/UX', color:'#d97706' },
-                      { icon:'🔒', label:'Security', color:'#dc2626' },
-                    ].map(({ icon, label, color }) => (
-                      <div key={label} style={{
-                        display:'inline-flex', alignItems:'center', gap:4,
-                        padding:'4px 10px', borderRadius:999,
-                        background:'white', border:'1px solid rgba(0,0,0,.06)',
-                        fontSize:11, fontWeight:600, color:'#475569',
-                      }}>
-                        <span>{icon}</span><span style={{ color }}>{label}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <Link to="/signup" className="hp-cta-primary" style={{ marginTop:'auto', padding:'8px 20px', fontSize:13 }}>
-                    Notify Me
+                  
+                  <Link to="/courses" className="hp-cta-primary" style={{ marginTop:'auto', padding:'10px 24px', fontSize:14, width:'80%', textAlign:'center', justifyContent: 'center' }}>
+                    View All Courses →
                   </Link>
                 </div>
 

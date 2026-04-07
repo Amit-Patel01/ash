@@ -12,7 +12,7 @@ let model = null;
 
 if (GEMINI_API_KEY) {
   genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-  model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 }
 
 const SYSTEM_CONTEXT = `You are a helpful assistant for Amit Solution Hub — a professional platform offering:

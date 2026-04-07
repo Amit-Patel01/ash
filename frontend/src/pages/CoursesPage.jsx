@@ -47,12 +47,12 @@ export default function CoursesPage() {
       </Helmet>
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white py-16 px-4">
-        <div className="max-w-6xl mx-auto text-center">
+      <section className="-mt-20 lg:-mt-24 pt-32 lg:pt-40 pb-16 px-4 bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-50 text-slate-900 relative z-0 border-b border-indigo-100/50">
+        <div className="max-w-6xl mx-auto text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-black mb-4">
-            Learn from <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Industry Experts</span>
+            Learn from <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Industry Experts</span>
           </h1>
-          <p className="text-slate-400 text-lg mb-8 max-w-2xl mx-auto">
+          <p className="text-slate-600 text-lg mb-8 max-w-2xl mx-auto">
             Professional courses designed for real-world success. Enroll, learn, and grow.
           </p>
           {/* Search */}
@@ -64,7 +64,7 @@ export default function CoursesPage() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search courses..."
-              className="w-full pl-12 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:border-blue-400/60 backdrop-blur"
+              className="w-full pl-12 pr-4 py-3.5 bg-white border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 shadow-sm transition-all"
             />
           </div>
         </div>

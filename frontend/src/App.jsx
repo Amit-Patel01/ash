@@ -65,6 +65,7 @@ const EmployeeProjects = lazy(() => import('./employee/EmployeeProjects'))
 const EmployeeProfile = lazy(() => import('./employee/EmployeeProfile'))
 const SellProjectRequest = lazy(() => import('./employee/SellProjectRequest'))
 const EmployeeChat = lazy(() => import('./employee/EmployeeChat'))
+const EmployeeBroadcast = lazy(() => import('./employee/EmployeeBroadcast'))
 
 const CustomerLayout = lazy(() => import('./customer/CustomerLayout'))
 const CustomerOverview = lazy(() => import('./customer/CustomerOverview'))
@@ -215,6 +216,7 @@ function AppContent() {
         <Route path="sell-project" element={<SellProjectRequest />} />
         <Route path="trading" element={<EmployeeTrading />} />
         <Route path="course-manage" element={<EmployeeCourseManage />} />
+        <Route path="broadcast" element={<EmployeeBroadcast />} />
         <Route path="chat" element={<EmployeeChat />} />
         <Route path="profile" element={<EmployeeProfile />} />
       </Route>

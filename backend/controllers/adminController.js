@@ -14,6 +14,14 @@ const broadcastEmail = async (req, res) => {
 
     if (targetType === "enrolled") {
       emails = await getActiveEnrolledEmails();
+    } else if (targetType === "course" && req.body.courseId) {
+      const { getEnrollmentsByCourse } = require("../services/firebaseService");
+      const enrolls = await getEnrollmentsByCourse(req.body.courseId);
+      emails = enrolls
+        .filter(e => !req.body.planId || e.planId === req.body.planId)
+        .map(e => e.userEmail)
+        .filter(Boolean);
+      emails = [...new Set(emails)];
     } else if (targetType === "manual" && manualEmails) {
       emails = manualEmails
         .split(/[\n, ]+/)
