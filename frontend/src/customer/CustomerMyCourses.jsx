@@ -4,14 +4,14 @@ import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
 export default function CustomerMyCourses() {
-  const { getUserEnrollments, courses, tradingCourses } = useStore()
+  const { getUserEnrollments, courses } = useStore()
   const { currentUser } = useAuth()
   const navigate = useNavigate()
   const [expandedId, setExpandedId] = useState(null)
 
   const myEnrollments = currentUser ? getUserEnrollments(currentUser.uid) : []
 
-  const getMyCourse = (courseId) => courses.find(c => c.id === courseId) || tradingCourses.find(c => c.id === courseId)
+  const getMyCourse = (courseId) => courses.find(c => c.id === courseId)
 
   if (myEnrollments.length === 0) {
     return (

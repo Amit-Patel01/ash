@@ -18,8 +18,7 @@ const navGroups = [
     label: 'Employees',
     items: [
       { path: '/admin/employees', label: 'All Employees', icon: 'badge', permission: 'can_manage_employees' },
-      { path: '/admin/mentor-profile', label: 'Mentor Profile', icon: 'person', permission: 'can_manage_mentor_profile' },
-      { path: '/admin/certificates', label: 'Certificates', icon: 'award' },
+      { path: '/admin/customers', label: 'Students', icon: 'group' },
     ]
   },
   {
@@ -48,14 +47,6 @@ const navGroups = [
     items: [
       { path: '/admin/courses', label: 'All Courses', icon: 'book' },
       { path: '/admin/course-categories', label: 'Categories', icon: 'tag' },
-    ]
-  },
-  {
-    label: 'Trading',
-    items: [
-      { path: '/admin/trading-courses', label: 'Courses', icon: 'trending_up', permission: 'can_manage_courses' },
-      { path: '/admin/trading-sessions', label: 'Sessions', icon: 'video_call', permission: 'can_create_sessions' },
-      { path: '/admin/trading-permissions', label: 'Permissions', icon: 'shield', permission: 'can_manage_permissions' },
     ]
   },
   {

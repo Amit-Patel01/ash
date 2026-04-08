@@ -4,7 +4,6 @@ import { useStore } from '../store/StoreContext'
 import SEO from './SEO'
 import msmeQR from '../assets/msme-qr.png'
 import msmeLogo from '../assets/msme.png'
-import LiveSessionBanner from './LiveSessionBanner'
 
 /* ══════════════════════════════════════════════════════════════
    INLINE STYLES — No external CSS dependencies
@@ -275,9 +274,6 @@ const Hero = () => {
             padding:'clamp(100px,13vw,140px) clamp(16px,5vw,28px) clamp(60px,8vw,80px)',
           }}>
             <div style={{ maxWidth:1040, width:'100%', margin:'0 auto', textAlign:'center' }}>
-              {/* Live Session Banner */}
-              <LiveSessionBanner />
-
               {/* Status badge */}
               <div className="hp-in d1" style={{ display:'inline-flex', alignItems:'center', gap:8,
                 padding:'7px 18px', borderRadius:999, marginBottom:28,

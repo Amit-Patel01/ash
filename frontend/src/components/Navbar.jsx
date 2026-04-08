@@ -36,12 +36,8 @@ const Navbar = () => {
     { name: 'Contact', path: '/contact' },
   ]
 
-
-  const isTradingPage = location.pathname === '/services/trading-mentorship'
-
   return (
-    <nav className={`fixed left-0 right-0 z-[140] transition-all duration-500 ease-in-out ${isTradingPage ? 'top-9' : 'top-0'
-      } ${scrolled
+    <nav className={`fixed left-0 right-0 z-[140] transition-all duration-500 ease-in-out top-0 ${scrolled
         ? 'py-2 lg:py-3'
         : 'py-4 lg:py-6'
       }`}>

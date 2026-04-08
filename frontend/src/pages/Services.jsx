@@ -46,13 +46,6 @@ const Services = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
           </svg>
         )
-      case 'trading':
-      case 'chart':
-        return (
-          <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
-          </svg>
-        )
       default:
         return (
           <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +60,6 @@ const Services = () => {
     if (cat.includes('dev')) return { color: 'from-blue-500 to-cyan-500', iconBg: 'from-blue-600 to-indigo-600' }
     if (cat.includes('support') || cat.includes('repair')) return { color: 'from-indigo-500 to-purple-500', iconBg: 'from-purple-600 to-pink-600' }
     if (cat.includes('creative') || cat.includes('edit')) return { color: 'from-pink-500 to-rose-500', iconBg: 'from-rose-500 to-orange-500' }
-    if (cat.includes('trading') || cat.includes('finance') || cat.includes('mentorship')) return { color: 'from-amber-500 to-yellow-500', iconBg: 'from-yellow-600 to-amber-600' }
     return { color: 'from-amber-500 to-orange-500', iconBg: 'from-amber-500 to-yellow-500' }
   }
 
@@ -77,7 +69,6 @@ const Services = () => {
     if (t.includes('repair')) return '/services/repair'
     if (t.includes('edit')) return '/services/editing'
     if (t.includes('support')) return '/services/tech-support'
-    if (t.includes('trading') || t.includes('mentorship')) return '/services/trading-mentorship'
     return '/contact'
   }
 
@@ -86,7 +77,6 @@ const Services = () => {
     if (cat.includes('dev')) return ['Responsive Design', 'SEO Optimized', 'Fast Performance']
     if (cat.includes('support') || cat.includes('repair')) return ['Hardware Repair', 'Software Fixes', 'System Optimization']
     if (cat.includes('creative') || cat.includes('edit')) return ['Video Editing', 'Photo Retouching', 'Color Grading']
-    if (cat.includes('trading') || cat.includes('finance') || cat.includes('mentorship')) return ['Live Sessions', 'Technical Analysis', 'Risk Management']
     return ['24/7 Support', 'Expert Help', 'Custom Solutions']
   }
 
@@ -106,8 +96,8 @@ const Services = () => {
 
   return (
     <>
-      <SEO title="Our Services | AmitSolutionHub" 
-           description="Explore our wide range of services including web development, hardware repair, editing, technical support, and premium trading mentorship." />
+       <SEO title="Our Services | AmitSolutionHub" 
+            description="Explore our wide range of services including web development, hardware repair, editing, and technical support." />
       <section className="relative w-full min-h-screen pt-[140px] md:pt-[180px] pb-20 px-4">
 
       <div className={`w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 transition-all duration-1000 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
@@ -141,17 +131,6 @@ const Services = () => {
                 key={service.id || index}
                 className="group relative bg-white/40 backdrop-blur-2xl rounded-3xl p-8 hover:bg-white/60 shadow-xl border border-white/60 hover:-translate-y-2 transition-all duration-500 overflow-hidden"
               >
-                {/* 🔥 HOT Badge for Trading Mentorship */}
-                {service.title && service.title.toLowerCase().includes('trading') && (
-                  <div className="absolute top-0 right-0 z-20">
-                    <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white text-[10px] sm:text-xs font-extrabold uppercase tracking-widest py-1.5 px-4 shadow-lg rounded-bl-xl rounded-tr-3xl flex items-center gap-1.5 transform translate-x-2 -translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300">
-                      <span className="animate-pulse">🔥</span> 
-                      <span className="hidden sm:inline">Trending</span>
-                      <span className="inline sm:hidden">Hot</span>
-                    </div>
-                  </div>
-                )}
-
                 {/* Glow behind card content */}
                 <div className={`absolute -inset-4 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-10 transition-opacity duration-700 blur-xl z-0`}></div>
 

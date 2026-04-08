@@ -50,9 +50,7 @@ const AdminAccountRequests = lazy(() => import('./admin/AdminAccountRequests'))
 const AdminSellRequests = lazy(() => import('./admin/AdminSellRequests'))
 const AdminServiceRequests = lazy(() => import('./admin/AdminServiceRequests'))
 const AdminSettings = lazy(() => import('./admin/AdminSettings'))
-const AdminMentorProfile = lazy(() => import('./admin/AdminMentorProfile'))
 const AdminCustomers = lazy(() => import('./admin/AdminCustomers'))
-const AdminCertificates = lazy(() => import('./admin/AdminCertificates'))
 
 const EmployeeLogin = lazy(() => import('./employee/EmployeeLogin'))
 const RequestAccount = lazy(() => import('./pages/RequestAccount'))
@@ -73,18 +71,14 @@ const CustomerSupport = lazy(() => import('./customer/CustomerSupport'))
 const CustomerProfile = lazy(() => import('./customer/CustomerProfile'))
 
 const ChatPage = lazy(() => import('./pages/ChatPage'))
-const TradingMentorship = lazy(() => import('./modules/trading/pages/TradingMentorship'))
-const AdminTradingPermissions = lazy(() => import('./admin/AdminTradingPermissions'))
-const AdminTradingCourses = lazy(() => import('./admin/AdminTradingCourses'))
-const AdminTradingSessions = lazy(() => import('./admin/AdminTradingSessions'))
 const AdminCourses = lazy(() => import('./admin/AdminCourses'))
 const AdminCourseCategories = lazy(() => import('./admin/AdminCourseCategories'))
 const AdminCourseEnrollments = lazy(() => import('./admin/AdminCourseEnrollments'))
-const EmployeeTrading = lazy(() => import('./employee/EmployeeTrading'))
 const EmployeeCourseManage = lazy(() => import('./employee/EmployeeCourseManage'))
 const CoursesPage = lazy(() => import('./pages/CoursesPage'))
 const CourseDetailPage = lazy(() => import('./pages/CourseDetailPage'))
 const CustomerMyCourses = lazy(() => import('./customer/CustomerMyCourses'))
+const AboutTradingMentorship = lazy(() => import('./pages/AboutTradingMentorship'))
 
 function ProtectedAdmin({ children }) {
   const { currentUser, loading } = useAuth()
@@ -155,7 +149,8 @@ function AppContent() {
         <Route path="services/repair" element={<RepairService />} />
         <Route path="services/editing" element={<EditingService />} />
         <Route path="services/tech-support" element={<TechSupport />} />
-        <Route path="services/trading-mentorship" element={<TradingMentorship />} />
+        <Route path="services/trading-mentorship" element={<AboutTradingMentorship />} />
+        <Route path="about" element={<AboutTradingMentorship />} />
         <Route path="courses" element={<CoursesPage />} />
         <Route path="courses/:slug" element={<CourseDetailPage />} />
         <Route path="coming-soon" element={<ComingSoon />} />
@@ -183,16 +178,11 @@ function AppContent() {
         <Route path="team" element={<AdminTeam />} />
         <Route path="employees" element={<AdminEmployees />} />
         <Route path="customers" element={<AdminCustomers />} />
-        <Route path="certificates" element={<AdminCertificates />} />
         <Route path="sales" element={<AdminSales />} />
         <Route path="account-requests" element={<AdminAccountRequests />} />
         <Route path="service-requests" element={<AdminServiceRequests />} />
         <Route path="sell-requests" element={<AdminSellRequests />} />
         <Route path="services" element={<AdminServices />} />
-        <Route path="trading-permissions" element={<AdminTradingPermissions />} />
-        <Route path="trading-courses" element={<AdminTradingCourses />} />
-        <Route path="trading-sessions" element={<AdminTradingSessions />} />
-        <Route path="mentor-profile" element={<AdminMentorProfile />} />
         <Route path="courses" element={<AdminCourses />} />
         <Route path="course-categories" element={<AdminCourseCategories />} />
         <Route path="course-enrollments" element={<AdminCourseEnrollments />} />
@@ -213,7 +203,6 @@ function AppContent() {
         <Route path="tasks" element={<EmployeeTasks />} />
         <Route path="projects" element={<EmployeeProjects />} />
         <Route path="sell-project" element={<SellProjectRequest />} />
-        <Route path="trading" element={<EmployeeTrading />} />
         <Route path="course-manage" element={<EmployeeCourseManage />} />
         <Route path="broadcast" element={<EmployeeBroadcast />} />
         <Route path="chat" element={<EmployeeChat />} />
@@ -225,7 +214,7 @@ function AppContent() {
         <Route index element={<CustomerOverview />} />
         <Route path="orders" element={<CustomerOrders />} />
         <Route path="support" element={<CustomerSupport />} />
-        <Route path="trading-mentorship" element={<TradingMentorship />} />
+        <Route path="trading-mentorship" element={<AboutTradingMentorship />} />
         <Route path="my-courses" element={<CustomerMyCourses />} />
         <Route path="profile" element={<CustomerProfile />} />
       </Route>

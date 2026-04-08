@@ -9,7 +9,6 @@ const navItems = [
   { path: '/employee/projects', label: 'Projects', icon: 'folder' },
   { path: '/employee/course-manage', label: 'Manage Courses', icon: 'book' },
   { path: '/employee/broadcast', label: 'Bulk Email / Broadcast', icon: 'speaker' },
-  { path: '/employee/trading', label: 'Trading Mentorship', icon: 'trending' },
   { path: '/employee/chat', label: 'Messages', icon: 'chat' },
   { path: '/employee/sell-project', label: 'Sell Project', icon: 'tag' },
   { path: '/employee/profile', label: 'Profile', icon: 'user' },

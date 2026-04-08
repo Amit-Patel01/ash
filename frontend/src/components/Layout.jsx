@@ -2,7 +2,6 @@ import { Outlet, useLocation } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import GlowBackground from './GlowBackground'
-import LiveMeetingPopup from './LiveMeetingPopup'
 import AnnouncementPopup from './AnnouncementPopup'
 
 const Layout = () => {
@@ -15,7 +14,6 @@ const Layout = () => {
   return (
     <div className="min-h-screen w-full flex flex-col relative text-slate-900">
       <GlowBackground />
-      <LiveMeetingPopup />
       <AnnouncementPopup />
       
       <div className="relative z-10 flex flex-col min-h-screen w-full overflow-x-hidden">
