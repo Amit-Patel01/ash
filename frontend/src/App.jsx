@@ -12,6 +12,7 @@ import Layout from './components/Layout'
 
 const Hero = lazy(() => import('./components/Hero'))
 const About = lazy(() => import('./pages/About'))
+const PublicEmployeeProfile = lazy(() => import('./pages/PublicEmployeeProfile'))
 const Services = lazy(() => import('./pages/Services'))
 const Contact = lazy(() => import('./pages/Contact'))
 const Help = lazy(() => import('./pages/help'))
@@ -24,7 +25,7 @@ const CustomerSignup = lazy(() => import('./pages/CustomerSignup'))
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
 const RoleSelect = lazy(() => import('./pages/RoleSelect'))
 const ComingSoon = lazy(() => import('./pages/ComingSoon'))
-const VerifyCertificate = lazy(() => import('./pages/VerifyCertificate'))
+const VerifyCertificate = lazy(() => import('./pages/VerifyCertificateRefined'))
 
 const PrivacyPolicy = lazy(() => import('./pages/legal/PrivacyPolicy'))
 const TermsOfService = lazy(() => import('./pages/legal/TermsOfService'))
@@ -57,35 +58,48 @@ const RequestAccount = lazy(() => import('./pages/RequestAccount'))
 
 const EmployeeLayout = lazy(() => import('./employee/EmployeeLayout'))
 const EmployeeOverview = lazy(() => import('./employee/EmployeeOverview'))
-const EmployeeTasks = lazy(() => import('./employee/EmployeeTasks'))
-const EmployeeProjects = lazy(() => import('./employee/EmployeeProjects'))
-const EmployeeProfile = lazy(() => import('./employee/EmployeeProfile'))
-const SellProjectRequest = lazy(() => import('./employee/SellProjectRequest'))
-const EmployeeChat = lazy(() => import('./employee/EmployeeChat'))
-const EmployeeBroadcast = lazy(() => import('./employee/EmployeeBroadcast'))
+const EmployeeTasks = lazy(() => import('./employee/EmployeeTasksRefined'))
+const EmployeeProjects = lazy(() => import('./employee/EmployeeProjectsRefined'))
+const EmployeeProfile = lazy(() => import('./employee/EmployeeProfileRefined'))
+const SellProjectRequest = lazy(() => import('./employee/SellProjectRequestRefined'))
+const EmployeeChat = lazy(() => import('./employee/EmployeeChatRefined'))
+const EmployeeBroadcast = lazy(() => import('./employee/EmployeeBroadcastRefined'))
 
 const CustomerLayout = lazy(() => import('./customer/CustomerLayout'))
 const CustomerOverview = lazy(() => import('./customer/CustomerOverview'))
 const CustomerOrders = lazy(() => import('./customer/CustomerOrders'))
 const CustomerSupport = lazy(() => import('./customer/CustomerSupport'))
 const CustomerProfile = lazy(() => import('./customer/CustomerProfile'))
+const CustomerCertificates = lazy(() => import('./customer/CustomerCertificates'))
 
 const ChatPage = lazy(() => import('./pages/ChatPage'))
 const AdminCourses = lazy(() => import('./admin/AdminCourses'))
 const AdminCourseCategories = lazy(() => import('./admin/AdminCourseCategories'))
 const AdminCourseEnrollments = lazy(() => import('./admin/AdminCourseEnrollments'))
-const EmployeeCourseManage = lazy(() => import('./employee/EmployeeCourseManage'))
+const EmployeeCourseManage = lazy(() => import('./employee/EmployeeCourseManageRefined'))
 const CoursesPage = lazy(() => import('./pages/CoursesPage'))
 const CourseDetailPage = lazy(() => import('./pages/CourseDetailPage'))
 const CustomerMyCourses = lazy(() => import('./customer/CustomerMyCourses'))
 const AboutTradingMentorship = lazy(() => import('./pages/AboutTradingMentorship'))
 
+const employeeRoles = ['employee', 'mentor']
+
+const getHomePathForRole = (role) => {
+  if (role === 'admin') return '/admin'
+  if (role === 'customer') return '/customer'
+  if (employeeRoles.includes(role)) return '/employee'
+  return '/login'
+}
+
 function ProtectedAdmin({ children }) {
   const { currentUser, loading } = useAuth()
 
   if (loading) return null
-  if (!currentUser || currentUser.role !== 'admin') {
+  if (!currentUser) {
     return <Navigate to="/admin-login" replace />
+  }
+  if (currentUser.role !== 'admin') {
+    return <Navigate to={getHomePathForRole(currentUser.role)} replace />
   }
   return children
 }
@@ -95,6 +109,9 @@ function ProtectedEmployee({ children }) {
 
   if (loading) return null
   if (!currentUser) return <Navigate to="/login" replace />
+  if (!employeeRoles.includes(currentUser.role)) {
+    return <Navigate to={getHomePathForRole(currentUser.role)} replace />
+  }
   return children
 }
 
@@ -103,6 +120,9 @@ function ProtectedCustomer({ children }) {
 
   if (loading) return null
   if (!currentUser) return <Navigate to="/login" replace />
+  if (currentUser.role !== 'customer') {
+    return <Navigate to={getHomePathForRole(currentUser.role)} replace />
+  }
   return children
 }
 
@@ -110,9 +130,7 @@ function RoleRedirect() {
   const { currentUser, loading } = useAuth()
   if (loading) return null
   if (!currentUser) return <Navigate to="/login" replace />
-  if (currentUser.role === 'admin') return <Navigate to="/admin" replace />
-  if (currentUser.role === 'customer') return <Navigate to="/customer" replace />
-  return <Navigate to="/employee" replace />
+  return <Navigate to={getHomePathForRole(currentUser.role)} replace />
 }
 
 function AppContent() {
@@ -137,6 +155,7 @@ function AppContent() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Hero />} />
         <Route path="about" element={<About />} />
+        <Route path="team/:profileId" element={<PublicEmployeeProfile />} />
         <Route path="services" element={<Services />} />
         <Route path="projects" element={<Projects />} />
         <Route path="projects/:slug" element={<ProjectDetails />} />
@@ -150,7 +169,7 @@ function AppContent() {
         <Route path="services/editing" element={<EditingService />} />
         <Route path="services/tech-support" element={<TechSupport />} />
         <Route path="services/trading-mentorship" element={<AboutTradingMentorship />} />
-        <Route path="about" element={<AboutTradingMentorship />} />
+        <Route path="trading-mentorship" element={<AboutTradingMentorship />} />
         <Route path="courses" element={<CoursesPage />} />
         <Route path="courses/:slug" element={<CourseDetailPage />} />
         <Route path="coming-soon" element={<ComingSoon />} />
@@ -216,6 +235,7 @@ function AppContent() {
         <Route path="support" element={<CustomerSupport />} />
         <Route path="trading-mentorship" element={<AboutTradingMentorship />} />
         <Route path="my-courses" element={<CustomerMyCourses />} />
+        <Route path="certificates" element={<CustomerCertificates />} />
         <Route path="profile" element={<CustomerProfile />} />
       </Route>
         </Routes>

@@ -1,6 +1,31 @@
 const admin = require("firebase-admin");
 const { logger } = require("../logger");
 
+const enrichDecodedUser = async (decoded) => {
+  let profileData = null;
+
+  if (decoded?.uid) {
+    try {
+      const profileSnap = await admin.firestore().collection("users").doc(decoded.uid).get();
+      if (profileSnap.exists) {
+        profileData = profileSnap.data();
+      }
+    } catch (error) {
+      logger.warn(`[Auth] Failed to load profile for ${decoded.uid}: ${error.message}`);
+    }
+  }
+
+  return {
+    ...decoded,
+    ...profileData,
+    uid: decoded?.uid,
+    email: decoded?.email || profileData?.email,
+    role: decoded?.role || profileData?.role || decoded?.customClaims?.role || null,
+    employeeId: profileData?.employeeId || decoded?.employeeId || null,
+    permissions: profileData?.permissions || decoded?.permissions || {},
+  };
+};
+
 /**
  * Verify Firebase ID Token from Authorization header
  * Attaches decoded token to req.user
@@ -19,7 +44,7 @@ const verifyFirebaseToken = async (req, res, next) => {
 
   try {
     const decoded = await admin.auth().verifyIdToken(token);
-    req.user = decoded; // { uid, email, role (custom claim), ... }
+    req.user = await enrichDecodedUser(decoded);
     next();
   } catch (err) {
     logger.warn(`[Auth] Token verification failed: ${err.message}`);
@@ -42,7 +67,8 @@ const optionalAuth = async (req, res, next) => {
 
   const token = authHeader.split("Bearer ")[1];
   try {
-    req.user = await admin.auth().verifyIdToken(token);
+    const decoded = await admin.auth().verifyIdToken(token);
+    req.user = await enrichDecodedUser(decoded);
   } catch {
     req.user = null;
   }

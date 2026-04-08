@@ -1,18 +1,27 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const https = require("https");
 const { logger } = require("../logger");
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const GEMINI_API_VERSION = process.env.GEMINI_API_VERSION || "v1beta";
+const GEMINI_API_BASE = process.env.GEMINI_API_BASE || "https://generativelanguage.googleapis.com";
+const MAX_HISTORY_MESSAGES = 10;
+const MAX_MESSAGE_CHARS = 4000;
+
+const AI_KEY_SOURCES = [
+  ["GEMINI_API_KEY", process.env.GEMINI_API_KEY],
+  ["GOOGLE_API_KEY", process.env.GOOGLE_API_KEY],
+  ["GOOGLE_GENERATIVE_AI_API_KEY", process.env.GOOGLE_GENERATIVE_AI_API_KEY],
+  ["GOOGLE_GENAI_API_KEY", process.env.GOOGLE_GENAI_API_KEY],
+];
+
+const keySourceEntry = AI_KEY_SOURCES.find(([, value]) => Boolean(value));
+const GEMINI_API_KEY = keySourceEntry?.[1] || "";
+const GEMINI_KEY_SOURCE = keySourceEntry?.[0] || null;
 
 if (!GEMINI_API_KEY) {
-  logger.warn("⚠️  GEMINI_API_KEY not set. AI features will not work.");
-}
-
-let genAI = null;
-let model = null;
-
-if (GEMINI_API_KEY) {
-  genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-  model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  logger.warn("⚠️  Gemini API key not set. AI features will not work.");
+} else {
+  logger.info(`[AI] Gemini configured with model ${GEMINI_MODEL} using ${GEMINI_KEY_SOURCE}.`);
 }
 
 const SYSTEM_CONTEXT = `You are a helpful assistant for Amit Solution Hub — a professional platform offering:
@@ -29,32 +38,163 @@ Be concise, professional, and friendly. Help users with:
 If asked something outside your scope, politely redirect to support@amitsolutionhub.com.
 Always respond in the same language the user uses.`;
 
+const AI_UNAVAILABLE_MESSAGE =
+  "AI assistant is currently unavailable. Please try again later or contact support@amitsolutionhub.com.";
+
+const getAIStatus = () => ({
+  available: Boolean(GEMINI_API_KEY),
+  provider: "gemini",
+  model: GEMINI_MODEL,
+  keySource: GEMINI_KEY_SOURCE,
+  message: GEMINI_API_KEY
+    ? `Gemini is ready on ${GEMINI_MODEL}.`
+    : "Gemini is not configured on the backend. Set GEMINI_API_KEY before using the chatbot.",
+});
+
+const normalizeMessage = (message) => {
+  if (!message || typeof message.content !== "string") return null;
+
+  const role = message.role === "assistant" ? "model" : "user";
+  const content = message.content.trim().slice(0, MAX_MESSAGE_CHARS);
+
+  if (!content) return null;
+
+  return { role, parts: [{ text: content }] };
+};
+
+const buildChatContents = (messages = []) => {
+  const normalized = messages
+    .map(normalizeMessage)
+    .filter(Boolean)
+    .slice(-MAX_HISTORY_MESSAGES);
+
+  while (normalized.length && normalized[0].role !== "user") {
+    normalized.shift();
+  }
+
+  return normalized;
+};
+
+const extractTextFromResponse = (payload) => {
+  const candidate = payload?.candidates?.find((item) => item?.content?.parts?.length);
+  const text = candidate?.content?.parts
+    ?.map((part) => (typeof part?.text === "string" ? part.text : ""))
+    .filter(Boolean)
+    .join("\n")
+    .trim();
+
+  return text || "";
+};
+
+const postJson = (url, payload) =>
+  new Promise((resolve, reject) => {
+    const requestBody = JSON.stringify(payload);
+    const requestUrl = new URL(url);
+
+    const req = https.request(
+      {
+        protocol: requestUrl.protocol,
+        hostname: requestUrl.hostname,
+        port: requestUrl.port || 443,
+        path: `${requestUrl.pathname}${requestUrl.search}`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(requestBody),
+          "x-goog-api-key": GEMINI_API_KEY,
+        },
+      },
+      (res) => {
+        let raw = "";
+
+        res.on("data", (chunk) => {
+          raw += chunk;
+        });
+
+        res.on("end", () => {
+          let parsed = {};
+
+          try {
+            parsed = raw ? JSON.parse(raw) : {};
+          } catch (error) {
+            reject(new Error(`Gemini returned invalid JSON (${res.statusCode || "unknown"})`));
+            return;
+          }
+
+          if ((res.statusCode || 500) >= 200 && (res.statusCode || 500) < 300) {
+            resolve(parsed);
+            return;
+          }
+
+          reject(new Error(parsed?.error?.message || `Gemini request failed (${res.statusCode || 500})`));
+        });
+      }
+    );
+
+    req.on("error", reject);
+    req.write(requestBody);
+    req.end();
+  });
+
+const generateText = async ({
+  contents,
+  systemInstruction = SYSTEM_CONTEXT,
+  temperature = 0.7,
+  topP = 0.9,
+  maxOutputTokens = 700,
+  thinkingBudget = 0,
+}) => {
+  if (!GEMINI_API_KEY) {
+    return AI_UNAVAILABLE_MESSAGE;
+  }
+
+  const payload = {
+    system_instruction: {
+      parts: [{ text: systemInstruction }],
+    },
+    contents,
+    generationConfig: {
+      temperature,
+      topP,
+      maxOutputTokens,
+      responseMimeType: "text/plain",
+      thinkingConfig: {
+        thinkingBudget,
+      },
+    },
+  };
+
+  const response = await postJson(
+    `${GEMINI_API_BASE}/${GEMINI_API_VERSION}/models/${GEMINI_MODEL}:generateContent`,
+    payload
+  );
+
+  return extractTextFromResponse(response) || AI_UNAVAILABLE_MESSAGE;
+};
+
 /**
  * Chat with Gemini AI
  * @param {Array} messages - Array of { role: 'user'|'assistant', content: string }
  * @returns {string} Assistant reply
  */
 const chatWithAI = async (messages) => {
-  if (!model) {
-    return "AI features are currently unavailable. Please contact support@amitsolutionhub.com for assistance.";
+  if (!GEMINI_API_KEY) {
+    return AI_UNAVAILABLE_MESSAGE;
   }
 
   try {
-    // Build chat history from messages (excluding last user message)
-    const history = [];
-    const allMessages = [
-      { role: "user", parts: [{ text: SYSTEM_CONTEXT }] },
-      { role: "model", parts: [{ text: "Understood! I'm ready to help Amit Solution Hub users." }] },
-      ...messages.slice(0, -1).map((m) => ({
-        role: m.role === "assistant" ? "model" : "user",
-        parts: [{ text: m.content }],
-      })),
-    ];
+    const contents = buildChatContents(messages);
 
-    const chat = model.startChat({ history: allMessages });
-    const lastMessage = messages[messages.length - 1];
-    const result = await chat.sendMessage(lastMessage.content);
-    const response = result.response.text();
+    if (!contents.length) {
+      return "Please send your question and I will help you.";
+    }
+
+    const response = await generateText({
+      contents,
+      temperature: 0.65,
+      maxOutputTokens: 600,
+      thinkingBudget: 0,
+    });
 
     logger.info(`[AI] Chat response generated (${response.length} chars)`);
     return response;
@@ -70,7 +210,7 @@ const chatWithAI = async (messages) => {
  * @returns {string} Recommendation text
  */
 const getRecommendations = async (userProfile) => {
-  if (!model) {
+  if (!GEMINI_API_KEY) {
     return "Recommendations unavailable. Please browse our projects at amitsolutionhub.com/projects.";
   }
 
@@ -85,12 +225,16 @@ Available categories:
 Respond with a concise, bulleted list of specific recommendations with brief reasons. Keep it under 100 words.`;
 
   try {
-    const result = await model.generateContent(prompt);
-    return result.response.text();
+    return await generateText({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      temperature: 0.5,
+      maxOutputTokens: 250,
+      thinkingBudget: 0,
+    });
   } catch (err) {
     logger.error(`[AI] Recommendations error: ${err.message}`);
     throw err;
   }
 };
 
-module.exports = { chatWithAI, getRecommendations };
+module.exports = { chatWithAI, getRecommendations, getAIStatus };

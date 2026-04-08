@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import { api } from '../config/api'
+import { auth } from '../config/firebase'
 
 export default function EmployeeBroadcast() {
   const { courses, enrollments } = useStore()
@@ -52,12 +53,14 @@ export default function EmployeeBroadcast() {
     setResult(null)
     
     try {
-      // It passes to "admin/broadcast-email" but RBAC permissive logging lets it through or it's accessible.
+      const token = await auth.currentUser?.getIdToken()
+      if (!token) throw new Error('Please log in again to continue.')
+
       const res = await fetch(`${api.base}/admin/broadcast-email`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            ...(localStorage.getItem('token') ? { 'Authorization': `Bearer ${localStorage.getItem('token')}` } : {})
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           targetType: 'course',

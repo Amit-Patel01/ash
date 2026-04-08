@@ -1,220 +1,284 @@
-import { useState, useEffect } from "react";
-import { db } from "../config/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { api } from "../config/api";
+import { useState } from 'react'
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import SEO from '../components/SEO'
+import PublicPageShell, { PublicGlassCard, PublicSection, PublicSectionHeading } from '../components/public/PublicPageShell'
+import { api } from '../config/api'
+import { db } from '../config/firebase'
+
+const inputClasses =
+  'w-full rounded-[24px] border border-slate-200 bg-white px-5 py-4 text-sm text-slate-700 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-sky-300 focus:ring-4 focus:ring-sky-100'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    mobile: "",
-    github: "",
-    message: "",
-  });
+    firstName: '',
+    lastName: '',
+    email: '',
+    mobile: '',
+    github: '',
+    message: '',
+  })
+  const [status, setStatus] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const [status, setStatus] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const handleChange = (event) => {
+    setFormData((current) => ({
+      ...current,
+      [event.target.name]: event.target.value,
+    }))
+  }
 
-  useEffect(() => {
-    setLoaded(true);
-  }, []);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setStatus("");
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    setLoading(true)
+    setStatus('')
 
     try {
-      // 1. Save to Firebase (Database)
-      await addDoc(collection(db, "messages"), {
+      await addDoc(collection(db, 'messages'), {
         ...formData,
         createdAt: serverTimestamp(),
-        status: "unread",
-      });
+        status: 'unread',
+      })
 
-      // 2. Call Backend API (Send Email)
       const response = await fetch(api.contact, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to send email notification");
+        throw new Error(data.message || 'Failed to send email notification')
       }
 
-      setStatus("success");
+      setStatus('success')
       setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        mobile: "",
-        github: "",
-        message: "",
-      });
+        firstName: '',
+        lastName: '',
+        email: '',
+        mobile: '',
+        github: '',
+        message: '',
+      })
 
-      // Auto clear success after 5s
-      setTimeout(() => setStatus(""), 5000);
+      setTimeout(() => setStatus(''), 5000)
     } catch (error) {
-      console.error("Error submitting contact form:", error);
-      setStatus("error");
+      console.error('Error submitting contact form:', error)
+      setStatus('error')
     }
 
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   return (
-    <section className="relative w-full min-h-screen pt-[140px] md:pt-[180px] pb-20 flex items-center justify-center px-4">
+    <>
+      <SEO
+        title="Contact | AmitSolutionHub"
+        description="Contact AmitSolutionHub through a cleaner mobile-friendly page with visible trust cues and faster enquiry flow."
+      />
 
-      <div className={`w-full max-w-4xl relative z-20 transition-all duration-1000 ease-out ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"}`}>
-
-
-        <div className="bg-white/40 backdrop-blur-2xl rounded-3xl p-8 md:p-14 shadow-2xl border border-white/60 relative overflow-hidden group">
-
-          <div className="absolute -inset-1 bg-gradient-to-br from-blue-500/10 to-purple-500/10 blur-xl z-0 transition-opacity duration-500 opacity-50 group-hover:opacity-100 pointer-events-none"></div>
-
-          <div className="relative z-10">
-            {/* Header */}
-            <div className="text-center mb-12">
-              <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-slate-800 tracking-tight">
-                Let's <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Connect</span>
-              </h2>
-              <p className="text-lg text-slate-600 max-w-xl mx-auto font-medium mix-blend-multiply">
-                Have a project in mind? Fill out the form below and let’s start building something amazing together.
-              </p>
+      <PublicPageShell
+        badge="Let's Connect"
+        title={
+          <>
+            A contact page that feels
+            <span className="bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent"> trustworthy, clear, and responsive </span>
+            on mobile too
+          </>
+        }
+        description="Use this page to send project, internship, training, or support enquiries through a cleaner white-glow interface built to look professional on small screens."
+        actions={[
+          { label: 'Message the Team', to: '/chat', icon: '💬' },
+          { label: 'Call Support', href: 'tel:+917874248481', variant: 'secondary', icon: '📞' },
+        ]}
+        pills={['Fast response flow', 'MSME-backed presence', 'Mobile-first contact form', 'Professional public impression']}
+        stats={[
+          { value: '24/7', label: 'Message Intake' },
+          { value: '< 1 Day', label: 'Typical Response' },
+          { value: 'India', label: 'Support Base' },
+        ]}
+        aside={
+          <div className="space-y-5">
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">Public Trust</div>
+              <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-900">Keep the first enquiry experience simple and credible</h3>
             </div>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto">
-              {/* Name Fields */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  placeholder="First Name"
-                  required
-                  className="w-full rounded-2xl border border-white/40 bg-white/50 backdrop-blur-sm px-5 py-4 text-slate-800 placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:bg-white/80 focus:border-blue-400 transition-all shadow-sm font-medium"
-                />
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  placeholder="Last Name"
-                  required
-                  className="w-full rounded-2xl border border-white/40 bg-white/50 backdrop-blur-sm px-5 py-4 text-slate-800 placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:bg-white/80 focus:border-blue-400 transition-all shadow-sm font-medium"
-                />
+            <div className="grid gap-3">
+              {[
+                { label: 'Support Email', value: 'support@amitsolutionhub.com' },
+                { label: 'Phone', value: '+91 7874248481' },
+                { label: 'Location', value: 'Godhra, Gujarat, India' },
+              ].map((item) => (
+                <div key={item.label} className="rounded-3xl border border-slate-200/80 bg-white/90 p-4">
+                  <div className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{item.label}</div>
+                  <div className="mt-1 text-sm font-bold text-slate-900">{item.value}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-[26px] border border-sky-100 bg-gradient-to-br from-sky-50 to-indigo-50 p-5">
+              <div className="text-sm font-bold text-slate-900">Presentation Guidance</div>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                A clear contact path, company identity, and direct support details help the site appear more genuine and organized for reviewers.
+              </p>
+            </div>
+          </div>
+        }
+      >
+        <PublicSection className="space-y-8">
+          <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
+            <PublicGlassCard className="space-y-6 p-6 sm:p-7">
+              <PublicSectionHeading
+                badge="Reach Out"
+                title="Before you submit"
+                description="Share enough detail about your project, internship interest, or issue so the team can respond faster."
+              />
+
+              <div className="grid gap-4">
+                {[
+                  {
+                    title: 'Project or service enquiry',
+                    text: 'Mention goals, preferred timeline, and the kind of deliverable you need.',
+                  },
+                  {
+                    title: 'Internship or training request',
+                    text: 'Add your current role, learning interest, and what outcome you are expecting.',
+                  },
+                  {
+                    title: 'Technical help',
+                    text: 'Include the exact problem, device or stack details, and any urgent blockers.',
+                  },
+                ].map((item) => (
+                  <div key={item.title} className="rounded-[26px] border border-slate-200/80 bg-white/90 p-5">
+                    <div className="text-base font-bold text-slate-900">{item.title}</div>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{item.text}</p>
+                  </div>
+                ))}
               </div>
 
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Email Address"
-                required
-                className="w-full rounded-2xl border border-white/40 bg-white/50 backdrop-blur-sm px-5 py-4 text-slate-800 placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:bg-white/80 focus:border-blue-400 transition-all shadow-sm font-medium"
-              />
+              <div className="rounded-[26px] border border-slate-200 bg-slate-50 p-5">
+                <div className="text-sm font-bold text-slate-900">Useful links</div>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <a href="mailto:support@amitsolutionhub.com" className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">
+                    Email Support
+                  </a>
+                  <a href="tel:+917874248481" className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">
+                    Call Now
+                  </a>
+                </div>
+              </div>
+            </PublicGlassCard>
 
-              <input
-                type="tel"
-                name="mobile"
-                value={formData.mobile}
-                onChange={handleChange}
-                placeholder="Mobile Number (+91 1234567890)"
-                required
-                className="w-full rounded-2xl border border-white/40 bg-white/50 backdrop-blur-sm px-5 py-4 text-slate-800 placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:bg-white/80 focus:border-blue-400 transition-all shadow-sm font-medium"
-              />
+            <PublicGlassCard className="p-6 sm:p-7">
+              <div className="space-y-6">
+                <PublicSectionHeading
+                  badge="Contact Form"
+                  title="Send your message"
+                  description="The form now uses bigger touch targets, cleaner spacing, and a more premium white-glow layout."
+                />
 
-              <input
-                type="url"
-                name="github"
-                value={formData.github}
-                onChange={handleChange}
-                placeholder="github.com/yourusername"
-                required
-                className="w-full rounded-2xl border border-white/40 bg-white/50 backdrop-blur-sm px-5 py-4 text-slate-800 placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:bg-white/80 focus:border-blue-400 transition-all shadow-sm font-medium"
-              />
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      placeholder="First Name"
+                      required
+                      className={inputClasses}
+                    />
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      placeholder="Last Name"
+                      required
+                      className={inputClasses}
+                    />
+                  </div>
 
-              <textarea
-                rows="5"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                placeholder="How can we help you?"
-                required
-                className="w-full rounded-2xl border border-white/40 bg-white/50 backdrop-blur-sm px-5 py-4 text-slate-800 placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/30 focus:bg-white/80 focus:border-blue-400 transition-all shadow-sm resize-none font-medium"
-              ></textarea>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Email Address"
+                    required
+                    className={inputClasses}
+                  />
 
-              {/* Submit Button */}
-              <div className="pt-4">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="group relative w-full inline-flex items-center justify-center disabled:opacity-75 disabled:cursor-not-allowed"
-                >
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-60 group-hover:opacity-100 transition duration-300"></div>
-                  <div className="relative w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-5 rounded-2xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-xl flex items-center justify-center gap-3">
+                  <input
+                    type="tel"
+                    name="mobile"
+                    value={formData.mobile}
+                    onChange={handleChange}
+                    placeholder="Mobile Number (+91...)"
+                    required
+                    className={inputClasses}
+                  />
+
+                  <input
+                    type="url"
+                    name="github"
+                    value={formData.github}
+                    onChange={handleChange}
+                    placeholder="GitHub or portfolio URL"
+                    required
+                    className={inputClasses}
+                  />
+
+                  <textarea
+                    rows="6"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Tell us what you need"
+                    required
+                    className={`${inputClasses} resize-none`}
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="inline-flex w-full items-center justify-center gap-3 rounded-[24px] bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 px-6 py-4 text-base font-semibold text-white shadow-[0_22px_45px_-24px_rgba(37,99,235,0.9)] transition-all duration-300 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
+                  >
                     {loading ? (
                       <>
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        Sending securely...
+                        <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                        <span>Sending securely...</span>
                       </>
                     ) : (
                       <>
-                        Send Message
-                        <svg className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.63 8.41m5.96 5.96a14.96 14.96 0 01-5.96 5.96m5.96-5.96L9.63 8.41m0 0a14.98 14.98 0 01-6.16 12.12A14.98 14.98 0 019.63 8.41m0 0L3.47 14.57" />
-                        </svg>
+                        <span>Send Message</span>
+                        <span aria-hidden="true">→</span>
                       </>
                     )}
-                  </div>
-                </button>
+                  </button>
+
+                  {status === 'success' && (
+                    <div className="rounded-[24px] border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-700">
+                      Message sent successfully. The team will get back to you soon.
+                    </div>
+                  )}
+
+                  {status === 'error' && (
+                    <div className="rounded-[24px] border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700">
+                      Failed to send message. Please try again after a moment.
+                    </div>
+                  )}
+                </form>
               </div>
-
-              {/* Status Messages */}
-              {status === "success" && (
-                <div className="mt-6 p-5 rounded-2xl bg-green-500/10 border border-green-500/30 shadow-lg animate-[bounce_1s_ease-in-out] group backdrop-blur-md relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-emerald-400/20 animate-pulse"></div>
-                  <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-4 transform group-hover:scale-105 transition-transform">
-                    <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-2xl shadow-lg shadow-green-500/40">✓</div>
-                    <span className="text-xl font-bold text-green-700 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                      Message sent successfully!
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {status === "error" && (
-                <div className="mt-6 p-5 rounded-2xl bg-red-500/10 border border-red-500/30 shadow-lg group backdrop-blur-md relative overflow-hidden">
-                  <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white text-2xl shadow-lg shadow-red-500/40">!</div>
-                    <span className="text-xl font-medium text-red-600">Failed to send message. Please try again later.</span>
-                  </div>
-                </div>
-              )}
-
-            </form>
+            </PublicGlassCard>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-};
+        </PublicSection>
+      </PublicPageShell>
+    </>
+  )
+}
 
-export default Contact;
+export default Contact

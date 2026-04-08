@@ -1,0 +1,459 @@
+import { useMemo, useState } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { api } from '../config/api'
+import { auth } from '../config/firebase'
+import { useStore } from '../store/StoreContext'
+import {
+  EmployeeBadge,
+  EmployeeEmptyState,
+  EmployeePageHeader,
+  EmployeeSurface,
+} from './EmployeePanelUI'
+import {
+  courseBelongsToEmployee,
+  enrollmentMatchesCourse,
+  getEmployeeKeyList,
+  getEmployeeMemberData,
+} from './employeeUtils'
+
+export default function EmployeeBroadcastRefined() {
+  const { courses, enrollments, teamMembers } = useStore()
+  const { currentUser, userProfile } = useAuth()
+  const [form, setForm] = useState({
+    courseId: '',
+    planId: '',
+    subject: '',
+    message: '',
+    imageUrl: '',
+    imageLabel: '',
+    attachImage: true,
+  })
+  const [sending, setSending] = useState(false)
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const [result, setResult] = useState(null)
+  const [imageResult, setImageResult] = useState(null)
+
+  const memberData = useMemo(
+    () => getEmployeeMemberData(teamMembers, currentUser, userProfile),
+    [teamMembers, currentUser, userProfile]
+  )
+
+  const employeeKeys = useMemo(
+    () => getEmployeeKeyList(currentUser, userProfile, memberData),
+    [currentUser, userProfile, memberData]
+  )
+
+  const myCourses = useMemo(
+    () => courses.filter(course => courseBelongsToEmployee(course, employeeKeys)),
+    [courses, employeeKeys]
+  )
+
+  const selectedCourse = useMemo(
+    () => myCourses.find(course => course.id === form.courseId) || null,
+    [myCourses, form.courseId]
+  )
+
+  const courseEnrollments = useMemo(() => {
+    if (!selectedCourse) return []
+    return enrollments.filter(
+      enrollment => enrollment.status === 'active' && enrollmentMatchesCourse(enrollment, selectedCourse)
+    )
+  }, [enrollments, selectedCourse])
+
+  const filteredEnrollments = useMemo(() => {
+    if (!form.planId) return courseEnrollments
+    return courseEnrollments.filter(enrollment => enrollment.planId === form.planId)
+  }, [courseEnrollments, form.planId])
+
+  const uniquePlans = useMemo(() => {
+    return [...new Map(
+      courseEnrollments
+        .map(enrollment => {
+          const matchedPlan = selectedCourse?.plans?.find(
+            plan => plan.id === enrollment.planId || plan.label === enrollment.planLabel
+          )
+          const planId = matchedPlan?.id || enrollment.planId || enrollment.planLabel
+          const planLabel = matchedPlan?.label || enrollment.planLabel || enrollment.planId || 'Standard'
+          return [planId, { id: planId, label: planLabel }]
+        })
+        .filter(([planId]) => Boolean(planId))
+    ).values()]
+  }, [courseEnrollments, selectedCourse])
+
+  const reachableStudents = myCourses.reduce((count, course) => {
+    return count + enrollments.filter(
+      enrollment => enrollment.status === 'active' && enrollmentMatchesCourse(enrollment, course)
+    ).length
+  }, 0)
+
+  const handleImageSelect = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      setImageResult({ success: false, message: 'Please choose a valid image file.' })
+      return
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setImageResult({ success: false, message: 'Image size must be 5MB or smaller.' })
+      return
+    }
+
+    setUploadingImage(true)
+    setImageResult(null)
+
+    try {
+      const formData = new FormData()
+      formData.append('broadcast-image', file)
+
+      const response = await fetch(api.uploadBroadcast, {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await response.json()
+      if (!response.ok || !data?.url) {
+        throw new Error(data.message || 'Image upload failed.')
+      }
+
+      setForm(current => ({
+        ...current,
+        imageUrl: data.url,
+        imageLabel: file.name,
+        attachImage: true,
+      }))
+      setImageResult({ success: true, message: 'Image uploaded and ready for email.' })
+    } catch (error) {
+      setImageResult({ success: false, message: error.message || 'Unable to upload image.' })
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
+  const removeImage = () => {
+    setForm(current => ({
+      ...current,
+      imageUrl: '',
+      imageLabel: '',
+      attachImage: true,
+    }))
+    setImageResult(null)
+  }
+
+  const handleSend = async () => {
+    if (!form.courseId) {
+      window.alert('Please select a course first.')
+      return
+    }
+
+    if (!form.subject.trim() || !form.message.trim()) {
+      window.alert('Subject and message are required.')
+      return
+    }
+
+    if (!filteredEnrollments.length) {
+      window.alert('There are no students in the selected audience.')
+      return
+    }
+
+    const confirmed = window.confirm(
+      `Are you sure you want to broadcast this message to ${filteredEnrollments.length} student(s)?`
+    )
+    if (!confirmed) return
+
+    setSending(true)
+    setResult(null)
+
+    try {
+      const token = await auth.currentUser?.getIdToken()
+      if (!token) throw new Error('Please log in again to continue.')
+
+      const response = await fetch(api.adminBroadcastEmail, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          targetType: 'course',
+          courseId: form.courseId,
+          planId: form.planId || null,
+          subject: form.subject.trim(),
+          message: form.message,
+          imageUrl: form.imageUrl || null,
+          imageLabel: form.imageLabel || null,
+          attachImage: Boolean(form.imageUrl && form.attachImage),
+        }),
+      })
+
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.message || 'Failed to send broadcast')
+
+      setResult({ success: true, message: data.message || 'Broadcast sent successfully.' })
+      setForm(current => ({
+        ...current,
+        subject: '',
+        message: '',
+        imageUrl: '',
+        imageLabel: '',
+        attachImage: true,
+      }))
+      setImageResult(null)
+    } catch (error) {
+      setResult({ success: false, message: error.message || 'Unable to send broadcast.' })
+    } finally {
+      setSending(false)
+    }
+  }
+
+  if (!myCourses.length) {
+    return (
+      <div className="space-y-6">
+        <EmployeePageHeader
+          eyebrow="Outreach Center"
+          title="Student Broadcasts"
+          description="Assigned courses ke enrolled students ko targeted updates bhejne ke liye yeh page use hota hai."
+        />
+        <EmployeeEmptyState
+          icon="📢"
+          title="No assigned course audience yet"
+          description="Jaise hi admin aapko course assign karega aur students enroll honge, yahan se direct broadcast bhejna possible ho jayega."
+        />
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      <EmployeePageHeader
+        eyebrow="Outreach Center"
+        title="Student Broadcasts"
+        description="Course-wise ya plan-wise audience select karke employees ab direct announcements bhej sakte hain. Yeh flow assigned courses tak limited hai."
+        stats={[
+          { label: 'Assigned courses', value: myCourses.length },
+          { label: 'Reachable students', value: reachableStudents },
+          { label: 'Selected audience', value: filteredEnrollments.length },
+        ]}
+      />
+
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[0.95fr_1.25fr_0.8fr]">
+        <EmployeeSurface title="Audience Filters" description="Course aur plan select karke exact recipients decide karo.">
+          <div className="space-y-5">
+            <div>
+              <label className="mb-2 block text-xs font-black uppercase tracking-[0.24em] text-slate-500">
+                Assigned Course
+              </label>
+              <select
+                value={form.courseId}
+                onChange={(event) => setForm(current => ({ ...current, courseId: event.target.value, planId: '' }))}
+                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+              >
+                <option value="" className="bg-slate-950">Choose Course</option>
+                {myCourses.map(course => (
+                  <option key={course.id} value={course.id} className="bg-slate-950">{course.title}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-xs font-black uppercase tracking-[0.24em] text-slate-500">
+                Plan Filter
+              </label>
+              <select
+                value={form.planId}
+                onChange={(event) => setForm(current => ({ ...current, planId: event.target.value }))}
+                disabled={!selectedCourse || !uniquePlans.length}
+                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="" className="bg-slate-950">All Plans</option>
+                {uniquePlans.map(plan => (
+                  <option key={plan.id} value={plan.id} className="bg-slate-950">{plan.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="rounded-[24px] border border-cyan-400/15 bg-cyan-400/[0.07] p-5 text-center">
+              <p className="text-[11px] font-black uppercase tracking-[0.28em] text-cyan-300">Audience Size</p>
+              <p className="mt-3 text-4xl font-black text-white">{filteredEnrollments.length}</p>
+              <p className="mt-2 text-sm text-slate-300">
+                {selectedCourse ? 'Students currently in this selection' : 'Select a course to view recipients'}
+              </p>
+            </div>
+
+            {selectedCourse && (
+              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
+                <p className="text-sm font-black text-white">{selectedCourse.title}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <EmployeeBadge tone="info">{selectedCourse.category || 'General'}</EmployeeBadge>
+                  <EmployeeBadge>{selectedCourse.level || 'Open Level'}</EmployeeBadge>
+                  <EmployeeBadge tone={selectedCourse.meetingLink ? 'success' : 'warning'}>
+                    {selectedCourse.meetingLink ? 'Meeting Ready' : 'Meeting Pending'}
+                  </EmployeeBadge>
+                </div>
+              </div>
+            )}
+          </div>
+        </EmployeeSurface>
+
+        <EmployeeSurface title="Message Composer" description="Subject aur message type karke selected students ko send karo.">
+          <div className="space-y-4">
+            {result && (
+              <div className={`rounded-2xl border px-4 py-3 text-sm ${
+                result.success
+                  ? 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300'
+                  : 'border-rose-400/20 bg-rose-400/10 text-rose-300'
+              }`}>
+                {result.message}
+              </div>
+            )}
+
+            <div>
+              <label className="mb-2 block text-xs font-black uppercase tracking-[0.24em] text-slate-500">
+                Email Subject
+              </label>
+              <input
+                value={form.subject}
+                onChange={(event) => setForm(current => ({ ...current, subject: event.target.value }))}
+                disabled={!selectedCourse}
+                placeholder="Schedule update, material release, live class reminder"
+                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-xs font-black uppercase tracking-[0.24em] text-slate-500">
+                Email Body
+              </label>
+              <textarea
+                value={form.message}
+                onChange={(event) => setForm(current => ({ ...current, message: event.target.value }))}
+                disabled={!selectedCourse}
+                rows={12}
+                placeholder={`Hello students,\n\nWe have an important update regarding your course...\n\nRegards,\nTeam SolutionHub`}
+                className="w-full rounded-[24px] border border-white/10 bg-white/5 px-4 py-4 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              />
+            </div>
+
+            <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4">
+              <div className="flex items-start justify-between gap-4 flex-wrap">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.24em] text-slate-500">Image Attachment</p>
+                  <p className="mt-2 text-sm text-slate-400">
+                    Mail ke andar preview bhi jayega aur chaho to attachment bhi send hoga.
+                  </p>
+                </div>
+                <label className="inline-flex cursor-pointer items-center rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15">
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/webp"
+                    onChange={handleImageSelect}
+                    disabled={!selectedCourse || uploadingImage}
+                    className="hidden"
+                  />
+                  {uploadingImage ? 'Uploading...' : form.imageUrl ? 'Replace Image' : 'Upload Image'}
+                </label>
+              </div>
+
+              {imageResult && (
+                <div className={`mt-4 rounded-2xl border px-4 py-3 text-sm ${
+                  imageResult.success
+                    ? 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300'
+                    : 'border-rose-400/20 bg-rose-400/10 text-rose-300'
+                }`}>
+                  {imageResult.message}
+                </div>
+              )}
+
+              {form.imageUrl && (
+                <div className="mt-4 rounded-[24px] border border-white/10 bg-slate-950/60 p-4">
+                  <div className="overflow-hidden rounded-[20px] border border-white/10 bg-white">
+                    <img
+                      src={form.imageUrl}
+                      alt={form.imageLabel || 'Broadcast attachment'}
+                      className="h-56 w-full object-contain"
+                    />
+                  </div>
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-white">{form.imageLabel || 'Broadcast image'}</p>
+                      <p className="mt-1 text-xs text-slate-500">PNG, JPG ya WebP. Max 5MB.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="rounded-2xl border border-rose-400/20 bg-rose-400/10 px-4 py-2 text-sm font-medium text-rose-300 transition hover:bg-rose-400/15"
+                    >
+                      Remove
+                    </button>
+                  </div>
+
+                  <label className="mt-4 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-slate-300">
+                    <input
+                      type="checkbox"
+                      checked={form.attachImage}
+                      onChange={(event) => setForm(current => ({ ...current, attachImage: event.target.checked }))}
+                      className="h-4 w-4 rounded border-white/20 bg-transparent text-cyan-400 focus:ring-cyan-400"
+                    />
+                    Attach image as downloadable file also
+                  </label>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+              <p className="text-sm text-slate-400">
+                Broadcast jayega to <span className="font-semibold text-white">{filteredEnrollments.length}</span> student{filteredEnrollments.length !== 1 ? 's' : ''}
+                {form.imageUrl ? <span className="text-slate-500"> with image</span> : null}
+              </p>
+              <button
+                onClick={handleSend}
+                disabled={sending || uploadingImage || !selectedCourse || !form.subject.trim() || !form.message.trim() || !filteredEnrollments.length}
+                className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-5 py-3 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {sending ? 'Broadcasting...' : 'Send Broadcast'}
+              </button>
+            </div>
+          </div>
+        </EmployeeSurface>
+
+        <EmployeeSurface title="Selected Students" description="Current filters ke basis par yeh recipients message receive karenge.">
+          {!filteredEnrollments.length ? (
+            <EmployeeEmptyState
+              icon="👥"
+              title="No students selected"
+              description="Course choose karo ya plan filter reset karo. Audience yahan live update hoti rahegi."
+              className="py-10"
+            />
+          ) : (
+            <div className="space-y-3">
+              {filteredEnrollments.slice(0, 8).map(enrollment => (
+                <div key={enrollment.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-white">{enrollment.userName || enrollment.userEmail}</p>
+                      <p className="mt-1 truncate text-xs text-slate-400">{enrollment.userEmail}</p>
+                    </div>
+                    <EmployeeBadge tone={Number(enrollment.amount || 0) > 0 ? 'success' : 'info'}>
+                      {Number(enrollment.amount || 0) > 0 ? `₹${Number(enrollment.amount).toLocaleString('en-IN')}` : 'FREE'}
+                    </EmployeeBadge>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {enrollment.planLabel && <EmployeeBadge>{enrollment.planLabel}</EmployeeBadge>}
+                    {enrollment.userMobile && <EmployeeBadge tone="info">{enrollment.userMobile}</EmployeeBadge>}
+                  </div>
+                </div>
+              ))}
+              {filteredEnrollments.length > 8 && (
+                <p className="text-center text-xs text-slate-500">
+                  +{filteredEnrollments.length - 8} more students included in this broadcast
+                </p>
+              )}
+            </div>
+          )}
+        </EmployeeSurface>
+      </div>
+    </div>
+  )
+}

@@ -1,8 +1,17 @@
 const express = require("express");
 const router = express.Router();
-const { chatWithAI, getRecommendations } = require("../services/aiService");
+const { chatWithAI, getRecommendations, getAIStatus } = require("../services/aiService");
 const { optionalAuth } = require("../middlewares/authMiddleware");
 const { logger } = require("../logger");
+
+router.get("/status", (req, res) => {
+  const status = getAIStatus();
+
+  res.status(status.available ? 200 : 503).json({
+    success: status.available,
+    ...status,
+  });
+});
 
 /**
  * POST /api/ai/chat
@@ -10,9 +19,19 @@ const { logger } = require("../logger");
  */
 router.post("/chat", optionalAuth, async (req, res) => {
   const { messages } = req.body;
+  const status = getAIStatus();
 
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
     return res.status(400).json({ success: false, message: "messages array is required" });
+  }
+
+  if (!status.available) {
+    return res.status(503).json({
+      success: false,
+      code: "ai_not_configured",
+      reply: status.message,
+      status,
+    });
   }
 
   // Limit context window
@@ -36,6 +55,16 @@ router.post("/chat", optionalAuth, async (req, res) => {
  */
 router.post("/recommend", optionalAuth, async (req, res) => {
   const { userId, interests, purchaseHistory } = req.body;
+  const status = getAIStatus();
+
+  if (!status.available) {
+    return res.status(503).json({
+      success: false,
+      code: "ai_not_configured",
+      recommendations: status.message,
+      status,
+    });
+  }
 
   try {
     const userProfile = {

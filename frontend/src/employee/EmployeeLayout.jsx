@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import NotificationBell from '../components/NotificationBell'
@@ -42,83 +42,136 @@ export default function EmployeeLayout() {
 
   const employeeName = userProfile?.displayName || currentUser?.displayName || 'Employee'
   const employeeEmail = currentUser?.email || 'employee@solutionhub.com'
+  const employeeRole = userProfile?.jobTitle || userProfile?.role || 'employee'
+  const employeeInitial = employeeName.charAt(0).toUpperCase()
+  const currentNavItem = useMemo(() => {
+    return navItems.find(item =>
+      item.path === '/employee'
+        ? location.pathname === '/employee'
+        : location.pathname.startsWith(item.path)
+    ) || navItems[0]
+  }, [location.pathname])
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex">
-      {mobileMenuOpen && <div className="fixed inset-0 bg-black/60 z-40 lg:hidden" onClick={() => setMobileMenuOpen(false)} />}
+    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.12),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(34,211,238,0.12),_transparent_24%),linear-gradient(180deg,_rgba(15,23,42,0.65),_rgba(2,6,23,0.92))]" />
+      {mobileMenuOpen && <div className="fixed inset-0 z-40 bg-black/65 backdrop-blur-sm lg:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
-      <aside className={`fixed lg:static inset-y-0 left-0 z-50 transform ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-72' : 'w-20'} flex flex-col bg-gray-900/80 backdrop-blur-xl border-r border-white/5`}>
-        <div className="flex items-center h-16 px-4 border-b border-white/5">
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center flex-shrink-0">
-              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+      <div className="relative flex min-h-screen">
+        <aside className={`fixed inset-y-0 left-0 z-50 flex transform flex-col border-r border-white/10 bg-slate-950/90 backdrop-blur-2xl transition-all duration-300 ease-in-out lg:static lg:translate-x-0 ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} ${sidebarOpen ? 'w-72' : 'w-24'}`}>
+          <div className="border-b border-white/8 px-4 py-5">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-500 shadow-lg shadow-emerald-500/20">
+                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+              </div>
+              {sidebarOpen && (
+                <div className="min-w-0">
+                  <p className="text-[10px] font-black uppercase tracking-[0.32em] text-cyan-300">SolutionHub</p>
+                  <h1 className="truncate text-lg font-black text-white">{isTeamMember ? 'Team Workspace' : 'Employee Workspace'}</h1>
+                </div>
+              )}
             </div>
-            {sidebarOpen && (
-              <div>
-                <h1 className="text-lg font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">SolutionHub</h1>
-                <p className="text-[10px] text-gray-500 -mt-0.5 tracking-wider uppercase">{isTeamMember ? 'Team Panel' : 'Employee Panel'}</p>
-              </div>
-            )}
           </div>
-        </div>
-
-        <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
-            const isActive = item.path === '/employee' ? location.pathname === '/employee' : location.pathname.startsWith(item.path)
-            return (
-              <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive ? 'bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 text-white shadow-lg shadow-emerald-500/10' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}>
-                <span className={`flex-shrink-0 transition-colors ${isActive ? 'text-emerald-400' : 'text-gray-500 group-hover:text-gray-300'}`}>{iconMap[item.icon]}</span>
-                {sidebarOpen && <span>{item.label}</span>}
-                {isActive && sidebarOpen && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-lg shadow-emerald-400/50" />}
-              </Link>
-            )
-          })}
-        </nav>
-
-        <div className="p-4 border-t border-white/5">
-          <div className={`flex items-center gap-3 ${!sidebarOpen ? 'justify-center' : ''}`}>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center flex-shrink-0 text-sm font-bold">{employeeName.charAt(0)}</div>
-            {sidebarOpen && (
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{employeeName}</p>
-                <p className="text-xs text-gray-500 truncate">{employeeEmail}</p>
+          {sidebarOpen && (
+            <div className="mx-4 mt-4 rounded-[24px] border border-white/10 bg-white/[0.04] p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-sm font-black text-white">
+                  {employeeInitial}
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-white">{employeeName}</p>
+                  <p className="truncate text-[11px] text-slate-400">{employeeEmail}</p>
+                </div>
               </div>
-            )}
-            {sidebarOpen && (
-              <button onClick={handleLogout} title="Logout" className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-colors">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-300">
+                  {isTeamMember ? 'Team' : 'Employee'}
+                </span>
+                <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300">
+                  {employeeRole}
+                </span>
+              </div>
+            </div>
+          )}
+
+          <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-6">
+            {navItems.map((item) => {
+              const isActive = item.path === '/employee' ? location.pathname === '/employee' : location.pathname.startsWith(item.path)
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`group flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-semibold transition-all duration-200 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 text-white shadow-lg shadow-emerald-500/10'
+                      : 'text-slate-400 hover:bg-white/5 hover:text-white'
+                  }`}
+                >
+                  <span className={`flex-shrink-0 transition-colors ${isActive ? 'text-emerald-300' : 'text-slate-500 group-hover:text-slate-300'}`}>{iconMap[item.icon]}</span>
+                  {sidebarOpen && <span className="truncate">{item.label}</span>}
+                  {isActive && sidebarOpen && <span className="ml-auto h-2 w-2 rounded-full bg-emerald-300 shadow-lg shadow-emerald-400/40" />}
+                </Link>
+              )
+            })}
+          </nav>
+
+          <div className="border-t border-white/8 p-4">
+            <div className={`flex items-center gap-3 ${!sidebarOpen ? 'justify-center' : ''}`}>
+              <button
+                onClick={handleLogout}
+                title="Logout"
+                className={`flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-3 text-slate-300 transition hover:border-rose-400/20 hover:bg-rose-400/10 hover:text-white ${sidebarOpen ? 'w-full justify-between' : 'justify-center px-0'}`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-400/15 text-rose-300">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+                  </span>
+                  {sidebarOpen && <span className="text-sm font-semibold">Logout</span>}
+                </div>
               </button>
-            )}
-          </div>
-        </div>
-
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="hidden lg:flex absolute -right-3 top-20 w-6 h-6 items-center justify-center rounded-full bg-gray-800 border border-white/10 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
-          <svg className={`w-4 h-4 transition-transform ${sidebarOpen ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
-        </button>
-      </aside>
-
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 bg-gray-900/50 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 lg:px-6">
-          <div className="flex items-center gap-4">
-            <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
-            </button>
-            <div>
-              <p className="text-sm text-gray-400">Welcome back,</p>
-              <p className="text-sm font-medium text-white">{employeeName}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <NotificationBell />
-            <Link to="/" className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
-              <span className="hidden xs:inline">View Site</span>
-            </Link>
-          </div>
-        </header>
-        <main className="flex-1 p-4 lg:p-6 overflow-y-auto">
-          <Outlet />
-        </main>
+
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="absolute -right-3 top-24 hidden h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-slate-900 text-slate-300 transition hover:bg-slate-800 hover:text-white lg:flex">
+            <svg className={`w-4 h-4 transition-transform ${sidebarOpen ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+          </button>
+        </aside>
+
+        <div className="flex min-w-0 flex-1 flex-col">
+          <header className="sticky top-0 z-30 border-b border-white/8 bg-slate-950/70 px-4 py-4 backdrop-blur-2xl lg:px-8">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex items-start gap-4">
+                <button onClick={() => setMobileMenuOpen(true)} className="rounded-2xl border border-white/10 bg-white/5 p-2.5 text-slate-300 transition hover:bg-white/10 hover:text-white lg:hidden">
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+                </button>
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-[0.28em] text-cyan-300">{currentNavItem.label}</p>
+                  <h2 className="mt-1 text-2xl font-black text-white">{employeeName}</h2>
+                  <p className="mt-1 text-sm text-slate-400">Focused workspace for tasks, students, communication and delivery.</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-300">
+                  <span className="font-black text-white">{currentNavItem.label}</span>
+                  <span className="ml-2 text-slate-500">Active page</span>
+                </div>
+                <NotificationBell />
+                <Link to="/" className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-300 transition hover:bg-white/10 hover:text-white">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                  <span>View Site</span>
+                </Link>
+              </div>
+            </div>
+          </header>
+
+          <main className="flex-1 overflow-y-auto px-4 py-6 lg:px-8">
+            <div className="mx-auto w-full max-w-[1600px]">
+              <Outlet />
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   )

@@ -55,15 +55,16 @@ const emailTemplate = (subject, content, ctaText = null, ctaUrl = null) => `
 
 /**
  * Send a transactional email via Resend
- * @param {Object} opts - { to, subject, html, text? }
+ * @param {Object} opts - { to, subject, html, text?, attachments? }
  */
-const sendEmail = async ({ to, subject, html, text }) => {
+const sendEmail = async ({ to, subject, html, text, attachments }) => {
   return resend.emails.send({
     from: "Amit Solution Hub <support@amitsolutionhub.com>",
     to,
     subject,
     html: html || undefined,
     text: text || undefined,
+    attachments: attachments || undefined,
   });
 };
 

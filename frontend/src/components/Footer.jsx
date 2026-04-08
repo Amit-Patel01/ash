@@ -103,6 +103,12 @@ const Footer = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/courses" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
+                    <span className="w-1.5 h-1.5 bg-blue-500/50 rounded-full group-hover:bg-blue-400 transition-colors"></span>
+                    Courses
+                  </Link>
+                </li>
+                <li>
                   <Link to="/services" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
                     <span className="w-1.5 h-1.5 bg-blue-500/50 rounded-full group-hover:bg-blue-400 transition-colors"></span>
                     Services
@@ -112,6 +118,12 @@ const Footer = () => {
                   <Link to="/projects" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
                     <span className="w-1.5 h-1.5 bg-blue-500/50 rounded-full group-hover:bg-blue-400 transition-colors"></span>
                     Projects
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/contact" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
+                    <span className="w-1.5 h-1.5 bg-blue-500/50 rounded-full group-hover:bg-blue-400 transition-colors"></span>
+                    Contact
                   </Link>
                 </li>
               </ul>

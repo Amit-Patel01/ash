@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
+import { auth } from '../config/firebase'
 
 const avatarColors = [
   'from-blue-500 to-cyan-500',
@@ -327,14 +328,20 @@ export default function AdminCustomers() {
                    if (!broadcastSubject || !broadcastMessage) return alert("Please fill subject and message");
                    if (broadcastTarget === 'manual' && !broadcastManualEmails) return alert("Please enter target emails");
                    
-                   setSendingBroadcast(true);
-                   try {
-                     const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/broadcast-email`, {
-                       method: 'POST',
-                       headers: { 'Content-Type': 'application/json' },
-                       body: JSON.stringify({
-                         targetType: broadcastTarget,
-                         manualEmails: broadcastManualEmails,
+                    setSendingBroadcast(true);
+                    try {
+                      const token = await auth.currentUser?.getIdToken();
+                      if (!token) throw new Error("Please log in again to continue");
+
+                      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/broadcast-email`, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                          targetType: broadcastTarget,
+                          manualEmails: broadcastManualEmails,
                          subject: broadcastSubject,
                          message: broadcastMessage
                        })

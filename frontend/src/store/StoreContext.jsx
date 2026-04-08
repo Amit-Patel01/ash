@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { emailNotify } from '../utils/emailNotify'
+import { DEFAULT_CERTIFICATE_TEMPLATE, mergeCertificateTemplate } from '../utils/certificateTemplate'
 
 const StoreContext = createContext(null)
 
@@ -38,6 +39,7 @@ export function StoreProvider({ children }) {
   const [employeePermissions, setEmployeePermissions] = useState({})
   const [tradingCurriculum, setTradingCurriculum] = useState([])
   const [certificates, setCertificates] = useState([])
+  const [certificateTemplate, setCertificateTemplate] = useState(DEFAULT_CERTIFICATE_TEMPLATE)
   const [announcement, setAnnouncement] = useState(null)
   // ── Generic Course System (Phase 1) ──────────────────────────
   const [courses, setCourses] = useState([])
@@ -151,6 +153,14 @@ export function StoreProvider({ children }) {
       setCertificates(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
     }, (error) => console.error("Certificates snapshot error:", error))
 
+    const unsubscribeCertificateTemplate = onSnapshot(doc(db, 'settings', 'certificateTemplate'), (snapshot) => {
+      if (snapshot.exists()) {
+        setCertificateTemplate(mergeCertificateTemplate(snapshot.data()))
+      } else {
+        setCertificateTemplate(DEFAULT_CERTIFICATE_TEMPLATE)
+      }
+    }, (error) => console.error("CertificateTemplate snapshot error:", error))
+
     const unsubscribeAnnouncement = onSnapshot(doc(db, 'settings', 'announcement'), (snapshot) => {
       if (snapshot.exists()) {
         setAnnouncement({ id: snapshot.id, ...snapshot.data() })
@@ -201,6 +211,7 @@ export function StoreProvider({ children }) {
       unsubscribePermissions()
       unsubscribeCurriculum()
       unsubscribeCertificates()
+      unsubscribeCertificateTemplate()
       unsubscribeAnnouncement()
       unsubscribeGenericCourses()
       unsubscribeGenericEnrollments()
@@ -511,23 +522,47 @@ export function StoreProvider({ children }) {
   }
 
   // --- Certificates ---
-  const issueCertificate = async (enrollment) => {
+  const issueCertificate = async (enrollment, meta = {}) => {
     try {
-      // Generate a unique ID AP-XXXXXXXX
+      const courseName = enrollment.courseName || enrollment.courseTitle || enrollment.title || 'Mentorship'
+      const existingCertificate = certificates.find(cert =>
+        cert.status === 'approved' &&
+        cert.userId === enrollment.userId &&
+        (
+          cert.enrollmentId === enrollment.id ||
+          cert.courseId === enrollment.courseId ||
+          cert.courseName === courseName
+        )
+      )
+
+      if (existingCertificate) return existingCertificate
+
+      const prefix = String(certificateTemplate?.certificatePrefix || 'AP')
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, '')
+        .slice(0, 6) || 'AP'
+
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
       let result = ''
       for (let i = 0; i < 8; i++) {
-          result += chars.charAt(Math.floor(Math.random() * chars.length))
+        result += chars.charAt(Math.floor(Math.random() * chars.length))
       }
-      const certId = `AP-${result}`
+      const certId = `${prefix}-${result}`
+      const templateSnapshot = mergeCertificateTemplate(certificateTemplate)
 
       const newCert = {
         userId: enrollment.userId,
         userName: enrollment.userName,
         userEmail: enrollment.userEmail,
-        courseName: enrollment.courseName || enrollment.title || 'Mentorship',
+        courseId: enrollment.courseId || '',
+        enrollmentId: enrollment.id || '',
+        courseName,
         status: 'approved',
         certificate_id: certId,
+        issuedByUid: meta.issuedByUid || '',
+        issuedByName: meta.issuedByName || '',
+        issuedByRole: meta.issuedByRole || '',
+        templateSnapshot,
         approval_date: serverTimestamp(),
         createdAt: serverTimestamp()
       }
@@ -536,7 +571,7 @@ export function StoreProvider({ children }) {
       emailNotify('certificate_issued', {
         studentName: enrollment.userName,
         studentEmail: enrollment.userEmail,
-        courseName: enrollment.courseName || enrollment.title || 'Mentorship',
+        courseName,
         certId
       })
       return { id: docRef.id, ...newCert }
@@ -547,6 +582,15 @@ export function StoreProvider({ children }) {
     try {
       await deleteDoc(doc(db, 'certificates', certId))
     } catch (err) { console.error("Error revoking certificate:", err); throw err }
+  }
+
+  const updateCertificateTemplate = async (data) => {
+    try {
+      await setDoc(doc(db, 'settings', 'certificateTemplate'), {
+        ...mergeCertificateTemplate(data),
+        updatedAt: serverTimestamp()
+      })
+    } catch (err) { console.error("Error updating certificate template:", err); throw err }
   }
 
   // --- Announcement ---
@@ -631,8 +675,11 @@ export function StoreProvider({ children }) {
       // ── Notify assigned employee ────────────────────────────────
       if (recipientId) {
         await addDoc(collection(db, 'notifications'), {
+          enrollmentId: docRef.id,
+          notificationKey: `enrollment:${docRef.id}`,
           recipientId,
           recipientEmployeeId: assignedEmployee?.employeeId || '',
+          assignedEmployeeRef: enrollmentData.assignedEmployeeId || recipientId,
           type: 'new_enrollment',
           title: 'New Student Enrolled!',
           message: `${enrollmentData.userName || enrollmentData.userEmail} enrolled in "${enrollmentData.courseTitle}"`,
@@ -781,7 +828,7 @@ export function StoreProvider({ children }) {
     employeePermissions, updateEmployeePermissions, getEmployeePermissions,
     mentorProfile, updateMentorProfile,
     tradingCurriculum, addCurriculumModule, updateCurriculumModule, deleteCurriculumModule, seedDefaultCurriculum,
-    certificates, issueCertificate, revokeCertificate,
+    certificates, certificateTemplate, issueCertificate, revokeCertificate, updateCertificateTemplate,
     getActiveProjects, getTotalRevenue, getPendingOrders,
     announcement, updateAnnouncement,
     // ── Generic Course System ──

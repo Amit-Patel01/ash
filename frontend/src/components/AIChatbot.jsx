@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'
+import { api } from '../config/api'
 
 const WELCOME_MESSAGE = {
   role: 'assistant',
-  content: "👋 Hi! I'm the **SolutionHub AI Assistant** — powered by Gemini.\n\nI can help you with:\n• 🛒 Finding the right source code project\n• 📈 Trading mentorship details & pricing\n• 🔧 Technical support guidance\n• 📋 Account & order questions\n\nHow can I help you today?"
+  content: "👋 Hi! I'm the **SolutionHub AI Assistant** — powered by **Gemini 2.5 Flash**.\n\nI can help you with:\n• 🛒 Finding the right source code project\n• 📈 Trading mentorship details & pricing\n• 🔧 Technical support guidance\n• 📋 Account & order questions\n\nHow can I help you today?"
 }
 
 const QUICK_PROMPTS = [
@@ -13,6 +12,12 @@ const QUICK_PROMPTS = [
   'Trading mentorship pricing?',
   'How to get my source code?',
 ]
+
+const DEFAULT_STATUS = {
+  checked: false,
+  available: true,
+  message: '',
+}
 
 function MarkdownText({ text }) {
   const formatted = text
@@ -30,6 +35,7 @@ export default function AIChatbot() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [dots, setDots] = useState('')
+  const [assistantStatus, setAssistantStatus] = useState(DEFAULT_STATUS)
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
 
@@ -52,9 +58,52 @@ export default function AIChatbot() {
     if (open) setTimeout(() => inputRef.current?.focus(), 300)
   }, [open])
 
+  useEffect(() => {
+    if (!open) return
+
+    let cancelled = false
+
+    const loadStatus = async () => {
+      try {
+        const response = await fetch(api.aiStatus)
+        const data = await response.json().catch(() => ({}))
+
+        if (!cancelled) {
+          setAssistantStatus({
+            checked: true,
+            available: typeof data.available === 'boolean' ? data.available : response.ok,
+            message: data.message || data.reply || '',
+          })
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setAssistantStatus({
+            checked: true,
+            available: false,
+            message: 'AI server is unreachable right now. Please try again later.',
+          })
+        }
+      }
+    }
+
+    loadStatus()
+
+    return () => {
+      cancelled = true
+    }
+  }, [open])
+
   const sendMessage = async (text) => {
     const messageText = (text || input).trim()
     if (!messageText || loading) return
+
+    if (assistantStatus.checked && !assistantStatus.available) {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: assistantStatus.message || 'AI assistant is unavailable right now. Please try again later.',
+      }])
+      return
+    }
 
     const userMessage = { role: 'user', content: messageText }
     const newMessages = [...messages, userMessage]
@@ -63,12 +112,18 @@ export default function AIChatbot() {
     setLoading(true)
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/ai/chat`, {
+      const response = await fetch(api.aiChat, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: newMessages }),
       })
-      const data = await response.json()
+
+      const data = await response.json().catch(() => ({}))
+
+      if (!response.ok) {
+        throw new Error(data.reply || data.message || 'Sorry, I could not process that. Please try again.')
+      }
+
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: data.reply || 'Sorry, I could not process that. Please try again.'
@@ -76,7 +131,7 @@ export default function AIChatbot() {
     } catch (err) {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: '❌ Connection error. Please check your network or contact support@amitsolutionhub.com.'
+        content: err.message || '❌ Connection error. Please check your network or contact support@amitsolutionhub.com.'
       }])
     } finally {
       setLoading(false)
@@ -181,9 +236,26 @@ export default function AIChatbot() {
                   SolutionHub AI
                 </div>
                 <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#4ade80', display: 'inline-block', boxShadow: '0 0 6px #4ade80' }} />
-                  Powered by Gemini
+                  <span style={{
+                    width: '7px',
+                    height: '7px',
+                    borderRadius: '50%',
+                    background: assistantStatus.checked && !assistantStatus.available ? '#f97316' : '#4ade80',
+                    display: 'inline-block',
+                    boxShadow: assistantStatus.checked && !assistantStatus.available ? '0 0 6px #f97316' : '0 0 6px #4ade80'
+                  }} />
+                  Powered by Gemini 2.5 Flash
                 </div>
+                {assistantStatus.checked && assistantStatus.message && (
+                  <div style={{
+                    marginTop: '4px',
+                    color: assistantStatus.available ? 'rgba(255,255,255,0.72)' : '#fed7aa',
+                    fontSize: '10px',
+                    lineHeight: 1.4,
+                  }}>
+                    {assistantStatus.message}
+                  </div>
+                )}
               </div>
               <button
                 onClick={clearChat}
@@ -299,9 +371,9 @@ export default function AIChatbot() {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask anything..."
+                placeholder={assistantStatus.checked && !assistantStatus.available ? 'AI assistant is offline right now' : 'Ask anything...'}
                 rows={1}
-                disabled={loading}
+                disabled={loading || (assistantStatus.checked && !assistantStatus.available)}
                 style={{
                   flex: 1,
                   background: 'rgba(255,255,255,0.06)',
@@ -324,7 +396,7 @@ export default function AIChatbot() {
               <motion.button
                 id="ai-chat-send"
                 onClick={() => sendMessage()}
-                disabled={loading || !input.trim()}
+                disabled={loading || !input.trim() || (assistantStatus.checked && !assistantStatus.available)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 style={{

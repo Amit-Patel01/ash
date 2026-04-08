@@ -507,7 +507,19 @@ const About = () => {
     if (!m) return null
     if (m.avatarSource === 'custom' && m.customImageUrl) return m.customImageUrl
     if (m.avatarSource === 'linkedin' && m.linkedin && !m.linkedin.includes('linkedin.com')) return m.linkedin
-    if (m.github) return m.github.startsWith('http') ? m.github : `https://github.com/${m.github}.png`
+    
+    let gb = m.github;
+    if (gb) {
+      if (gb.startsWith('http')) {
+        if (!gb.endsWith('.png')) {
+          gb = gb.replace(/\/$/, '');
+          return `${gb}.png`;
+        }
+        return gb;
+      } else {
+        return `https://github.com/${gb}.png`;
+      }
+    }
     return null
   }
 
@@ -527,6 +539,7 @@ const About = () => {
 
       {teamArray.map((m, i) => {
         const imgUrl = getImageUrl(m)
+        const profileId = encodeURIComponent(m.uid || m.employeeId || m.id || m.email || m.displayName || 'team-member')
         const total = teamArray.length;
         let diff = (i - activeIdx) % total;
         if (diff < -Math.floor(total/2)) diff += total;
@@ -550,25 +563,44 @@ const About = () => {
             pointerEvents: absDiff === 0 ? 'auto' : 'none'
           }}>
             <div className="abt-tcard-img-wrap">
-              {imgUrl
-                ? <img src={imgUrl} alt={m.displayName} loading="lazy" />
-                : <div className="abt-tc-init-new">{(m.displayName || 'U').charAt(0)}</div>
-              }
+              {imgUrl && (
+                <img 
+                  src={imgUrl} 
+                  alt={m.displayName} 
+                  loading="lazy" 
+                  onError={(e) => { 
+                    e.currentTarget.style.display = 'none'; 
+                    if (e.currentTarget.nextElementSibling) {
+                      e.currentTarget.nextElementSibling.style.display = 'flex';
+                    }
+                  }} 
+                />
+              )}
+              <div 
+                className="abt-tc-init-new" 
+                style={{ display: imgUrl ? 'none' : 'flex' }}
+              >
+                {(m.displayName || 'U').charAt(0)}
+              </div>
               <div className="abt-tcard-role">{m.jobTitle || m.role || 'Team Member'}</div>
             </div>
 
             <div className="abt-tcard-body">
               <h3 className="abt-tcard-name">{m.displayName}</h3>
-              <p className="abt-tcard-bio">{m.bio || 'Passionate about building digital solutions that make an impact.'}</p>
+              {m.bio && <p className="abt-tcard-bio">{m.bio}</p>}
+
+              <div style={{ marginTop: 14, marginBottom: 14 }}>
+                <Link
+                  to={`/team/${profileId}`}
+                  className="abt-soc"
+                  style={{ background:'#eff6ff', borderColor:'rgba(59,130,246,.18)', color:'#2563eb', width:'100%', justifyContent:'center' }}
+                >
+                  View Public Profile
+                </Link>
+              </div>
               
-              {(m.github || m.linkedin || m.portfolio) && (
+              {(m.linkedin || m.portfolio) && (
                 <div className="abt-tc-socials" style={{ marginTop: 'auto' }}>
-                  {m.github && (
-                    <a href={m.github.startsWith('http') ? m.github : `https://github.com/${m.github}`}
-                      target="_blank" rel="noreferrer" className="abt-tc-soc-btn" style={{ background:'#0f172a' }}>
-                      <svg width="15" height="15" fill="white" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-                    </a>
-                  )}
                   {m.linkedin && m.linkedin.includes('linkedin.com') && (
                     <a href={m.linkedin.startsWith('http') ? m.linkedin : `https://linkedin.com/in/${m.linkedin}`}
                       target="_blank" rel="noreferrer" className="abt-tc-soc-btn" style={{ background:'#0a66c2' }}>

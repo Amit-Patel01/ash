@@ -340,6 +340,51 @@ const Hero = () => {
                 ))}
               </div>
 
+              <div className="hp-in d6" style={{ marginTop:28 }}>
+                <div style={{
+                  display:'grid',
+                  gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',
+                  gap:12,
+                  maxWidth:860,
+                  margin:'0 auto',
+                }}>
+                  {[
+                    { label:'About', sub:'Founder, team, and public profiles', to:'/about' },
+                    { label:'Courses', sub:'Internships and skill tracks', to:'/courses' },
+                    { label:'Services', sub:'Business and technical solutions', to:'/services' },
+                    { label:'Contact', sub:'Quick enquiry and support', to:'/contact' },
+                  ].map((item) => (
+                    <Link
+                      key={item.label}
+                      to={item.to}
+                      style={{
+                        textDecoration:'none',
+                        padding:'16px 18px',
+                        borderRadius:20,
+                        background:'rgba(255,255,255,.82)',
+                        border:'1px solid rgba(255,255,255,.96)',
+                        boxShadow:'0 16px 38px -26px rgba(15,23,42,.34)',
+                        textAlign:'left',
+                        transition:'transform .28s ease, box-shadow .28s ease, border-color .28s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-4px)'
+                        e.currentTarget.style.boxShadow = '0 24px 48px -24px rgba(37,99,235,.24)'
+                        e.currentTarget.style.borderColor = 'rgba(59,130,246,.18)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'none'
+                        e.currentTarget.style.boxShadow = '0 16px 38px -26px rgba(15,23,42,.34)'
+                        e.currentTarget.style.borderColor = 'rgba(255,255,255,.96)'
+                      }}
+                    >
+                      <div style={{ fontSize:15, fontWeight:800, color:'#0f172a', marginBottom:5 }}>{item.label}</div>
+                      <div style={{ fontSize:12, lineHeight:1.6, color:'#64748b' }}>{item.sub}</div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
             </div>
           </section>
 

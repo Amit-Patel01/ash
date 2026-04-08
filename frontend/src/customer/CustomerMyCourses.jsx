@@ -1,21 +1,46 @@
 import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function CustomerMyCourses() {
-  const { getUserEnrollments, courses } = useStore()
+  const { getUserEnrollments, courses, certificates } = useStore()
   const { currentUser } = useAuth()
   const navigate = useNavigate()
   const [expandedId, setExpandedId] = useState(null)
 
   const myEnrollments = currentUser ? getUserEnrollments(currentUser.uid) : []
+  const myCertificates = currentUser
+    ? certificates.filter(cert => cert.userId === currentUser.uid && cert.status === 'approved')
+    : []
+
+  const normalize = (value) => String(value || '').trim().toLowerCase()
+
+  const formatDate = (value) => {
+    if (!value) return 'Recently enrolled'
+    if (typeof value?.toDate === 'function') return value.toDate().toLocaleDateString()
+
+    const parsed = new Date(value)
+    return Number.isNaN(parsed.getTime()) ? 'Recently enrolled' : parsed.toLocaleDateString()
+  }
 
   const getMyCourse = (enrollment) =>
     courses.find(c =>
       c.id === enrollment.courseId ||
       (enrollment.courseTitle && c.title === enrollment.courseTitle)
     )
+
+  const getCourseCertificate = (enrollment, course) => {
+    const courseNames = [
+      course?.title,
+      enrollment.courseTitle,
+      enrollment.courseName,
+    ]
+      .map(normalize)
+      .filter(Boolean)
+
+    return myCertificates.find(cert => courseNames.includes(normalize(cert.courseName))) || null
+  }
 
   if (myEnrollments.length === 0) {
     return (
@@ -39,22 +64,29 @@ export default function CustomerMyCourses() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-white">My Courses</h1>
           <p className="text-sm text-gray-400 mt-1">{myEnrollments.length} enrolled course{myEnrollments.length !== 1 ? 's' : ''}</p>
         </div>
-        <button onClick={() => navigate('/courses')}
-          className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm font-medium text-gray-300 hover:bg-white/10 transition-all">
-          Browse More
-        </button>
+        <div className="flex items-center gap-3">
+          <Link
+            to="/customer/certificates"
+            className="px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-xl text-sm font-medium text-amber-300 hover:bg-amber-500/15 transition-all"
+          >
+            Certificates
+          </Link>
+          <button onClick={() => navigate('/courses')}
+            className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm font-medium text-gray-300 hover:bg-white/10 transition-all">
+            Browse More
+          </button>
+        </div>
       </div>
 
       <div className="space-y-4">
         {myEnrollments.map(enr => {
           let course = getMyCourse(enr)
           if (!course) {
-            // Fallback if course document was deleted or is hardcoded
             course = {
               id: enr.courseId,
               title: enr.courseTitle || enr.courseName || enr.courseId,
@@ -68,12 +100,12 @@ export default function CustomerMyCourses() {
 
           const hasMaterials = Array.isArray(course.materials) && course.materials.length > 0
           const hasMeetingLink = !!course.meetingLink
+          const certificate = getCourseCertificate(enr, course)
+          const resourcesReady = [hasMeetingLink, hasMaterials, Boolean(certificate)].filter(Boolean).length
 
           return (
             <div key={enr.id} className="bg-gray-900/60 border border-white/5 rounded-2xl overflow-hidden hover:border-white/10 transition-all">
-              {/* Course Header */}
               <div className="p-5 flex items-start gap-4">
-                {/* Thumbnail / Icon */}
                 <div className="w-16 h-16 rounded-xl flex-shrink-0 overflow-hidden">
                   {course.thumbnail ? (
                     <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" onError={e => e.target.style.display='none'} />
@@ -89,16 +121,45 @@ export default function CustomerMyCourses() {
                     <div>
                       <p className="text-xs text-gray-500 mb-1">{enr.category || course.category}</p>
                       <h3 className="font-bold text-white mb-1">{course.title}</h3>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="text-[11px] text-gray-500">Enrolled {formatDate(enr.enrolledAt || enr.createdAt)}</p>
+                        {(enr.planLabel || enr.planName) && (
+                          <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-semibold text-gray-300">
+                            {enr.planLabel || enr.planName}
+                          </span>
+                        )}
+                      </div>
                       {course.instructor && (
                         <p className="text-xs text-gray-500">👨‍🏫 {course.instructor}</p>
                       )}
                     </div>
-                    <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
-                      ✓ Active
-                    </span>
+                    <div className="flex items-center gap-2 flex-wrap justify-end">
+                      {certificate && (
+                        <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/20">
+                          Certificate Ready
+                        </span>
+                      )}
+                      <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+                        Active
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Quick action row */}
+                  <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
+                    <p className="text-[11px] text-gray-500">{resourcesReady} of 3 student resources ready</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${hasMeetingLink ? 'bg-blue-500/10 border-blue-500/20 text-blue-300' : 'bg-white/5 border-white/10 text-gray-500'}`}>
+                        Live Session
+                      </span>
+                      <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${hasMaterials ? 'bg-purple-500/10 border-purple-500/20 text-purple-300' : 'bg-white/5 border-white/10 text-gray-500'}`}>
+                        Materials
+                      </span>
+                      <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${certificate ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-white/5 border-white/10 text-gray-500'}`}>
+                        Certificate
+                      </span>
+                    </div>
+                  </div>
+
                   <div className="flex items-center gap-3 mt-3 flex-wrap">
                     {hasMeetingLink && (
                       <a href={course.meetingLink} target="_blank" rel="noopener noreferrer"
@@ -121,14 +182,29 @@ export default function CustomerMyCourses() {
                         </svg>
                       </button>
                     )}
+                    {certificate && (
+                      <Link
+                        to={`/verify?id=${certificate.certificate_id}`}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 border border-amber-500/20 transition-colors"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0Z" />
+                        </svg>
+                        View Certificate
+                      </Link>
+                    )}
                     {!hasMaterials && !hasMeetingLink && (
-                      <p className="text-xs text-gray-600 italic">Course content coming soon...</p>
+                      <button
+                        onClick={() => navigate('/customer/support')}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white/5 text-gray-300 hover:bg-white/10 border border-white/10 transition-colors"
+                      >
+                        Contact Support
+                      </button>
                     )}
                   </div>
                 </div>
               </div>
 
-              {/* Expanded materials list */}
               {isExpanded && hasMaterials && (
                 <div className="px-5 pb-5 border-t border-white/5 pt-4">
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Study Materials</p>
@@ -151,6 +227,23 @@ export default function CustomerMyCourses() {
                       </a>
                     ))}
                   </div>
+                  {certificate && (
+                    <div className="mt-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+                      <p className="text-xs font-bold text-amber-300 uppercase tracking-wider mb-2">Certificate Issued</p>
+                      <div className="flex items-center justify-between gap-3 flex-wrap">
+                        <div>
+                          <p className="text-sm font-semibold text-white">{certificate.courseName}</p>
+                          <p className="text-[11px] text-amber-200/80">ID: {certificate.certificate_id}</p>
+                        </div>
+                        <Link
+                          to={`/verify?id=${certificate.certificate_id}`}
+                          className="px-3 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-bold hover:bg-amber-400 transition-colors"
+                        >
+                          Verify Certificate
+                        </Link>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

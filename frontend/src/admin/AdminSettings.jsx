@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
+import { hexToRgba, mergeCertificateTemplate } from '../utils/certificateTemplate'
+import CertificateDocument from '../components/certificates/CertificateDocument'
 
 export default function AdminSettings() {
   const { currentUser, updateUserProfile, updateUserPassword } = useAuth()
-  const { announcement, updateAnnouncement } = useStore()
+  const { announcement, updateAnnouncement, certificateTemplate, updateCertificateTemplate } = useStore()
   const [activeTab, setActiveTab] = useState('profile')
   const [saving, setSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState('')
@@ -30,6 +32,17 @@ export default function AdminSettings() {
     type: announcement?.type || 'info', // info, warning, success
   })
 
+  const [certificateForm, setCertificateForm] = useState(() => mergeCertificateTemplate(certificateTemplate))
+  const certificatePreview = {
+    userName: 'Amit Patel',
+    courseName: 'All Blueprint Of Course',
+    certificate_id: `${(certificateForm.certificatePrefix || 'AP').toUpperCase()}-EBGF3DZT`,
+    approval_date: new Date().toISOString(),
+    issuedByName: certificateForm.issuerName,
+    issuedByRole: certificateForm.issuerRole,
+    templateSnapshot: certificateForm,
+  }
+
   // Sync announcement form when global state loads
   useEffect(() => {
     if (announcement) {
@@ -40,6 +53,10 @@ export default function AdminSettings() {
       })
     }
   }, [announcement])
+
+  useEffect(() => {
+    setCertificateForm(mergeCertificateTemplate(certificateTemplate))
+  }, [certificateTemplate])
 
   const [notificationPrefs, setNotificationPrefs] = useState(() => {
     try {
@@ -53,6 +70,7 @@ export default function AdminSettings() {
   const tabs = [
     { id: 'profile', label: 'Profile' },
     { id: 'announcement', label: 'Announcement' },
+    { id: 'certificate', label: 'Certificate' },
     { id: 'notifications', label: 'Notifications' },
     { id: 'security', label: 'Security' },
   ]
@@ -109,6 +127,21 @@ export default function AdminSettings() {
     } catch (err) {
       console.error('Failed to save announcement:', err)
       alert('Failed: ' + (err.message || 'Error updating announcement'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleSaveCertificateTemplate = async () => {
+    setSaving(true)
+    setSaveSuccess('')
+    try {
+      await updateCertificateTemplate(certificateForm)
+      setSaveSuccess('Certificate template updated successfully!')
+      setTimeout(() => setSaveSuccess(''), 3000)
+    } catch (err) {
+      console.error('Failed to save certificate template:', err)
+      alert('Failed: ' + (err.message || 'Error updating certificate template'))
     } finally {
       setSaving(false)
     }
@@ -279,6 +312,205 @@ export default function AdminSettings() {
                 >
                   {saving ? 'Saving...' : 'Save Settings'}
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'certificate' && (
+        <div className="space-y-6">
+          <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-6">
+            <div className="flex items-start justify-between gap-4 flex-wrap mb-6">
+              <div>
+                <h2 className="text-lg font-semibold text-white">Certificate Customization</h2>
+                <p className="text-sm text-gray-400 mt-1">Employee-issued certificates will use this branding and issuer information.</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <label className="text-xs font-medium text-gray-400">Accent Color</label>
+                <input
+                  type="color"
+                  value={certificateForm.accentColor}
+                  onChange={e => setCertificateForm({ ...certificateForm, accentColor: e.target.value })}
+                  className="h-10 w-12 rounded-lg border border-white/10 bg-transparent"
+                />
+              </div>
+            </div>
+
+            {saveSuccess && (
+              <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                <p className="text-sm text-emerald-400">{saveSuccess}</p>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1.5">Certificate Prefix / Code Base</label>
+                    <input
+                      type="text"
+                      value={certificateForm.certificatePrefix}
+                      onChange={e => setCertificateForm({ ...certificateForm, certificatePrefix: e.target.value.toUpperCase() })}
+                      placeholder="AP"
+                      className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
+                    />
+                    <p className="mt-1.5 text-[11px] text-gray-500">Example: `AP` se certificate ID `AP-XXXXXXX` format me generate hogi.</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1.5">Seal Label</label>
+                    <input
+                      type="text"
+                      value={certificateForm.sealLabel}
+                      onChange={e => setCertificateForm({ ...certificateForm, sealLabel: e.target.value })}
+                      placeholder="Verified Certificate"
+                      className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Certificate Title</label>
+                  <input
+                    type="text"
+                    value={certificateForm.title}
+                    onChange={e => setCertificateForm({ ...certificateForm, title: e.target.value })}
+                    placeholder="Certificate of Achievement"
+                    className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Subtitle</label>
+                  <textarea
+                    rows={3}
+                    value={certificateForm.subtitle}
+                    onChange={e => setCertificateForm({ ...certificateForm, subtitle: e.target.value })}
+                    placeholder="Awarded for successful completion and verified performance."
+                    className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all resize-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1.5">Organization Name</label>
+                    <input
+                      type="text"
+                      value={certificateForm.organizationName}
+                      onChange={e => setCertificateForm({ ...certificateForm, organizationName: e.target.value })}
+                      placeholder="Amit Solution Hub"
+                      className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1.5">Support Email</label>
+                    <input
+                      type="email"
+                      value={certificateForm.supportEmail}
+                      onChange={e => setCertificateForm({ ...certificateForm, supportEmail: e.target.value })}
+                      placeholder="support@amitsolutionhub.com"
+                      className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1.5">Issuer Name</label>
+                    <input
+                      type="text"
+                      value={certificateForm.issuerName}
+                      onChange={e => setCertificateForm({ ...certificateForm, issuerName: e.target.value })}
+                      placeholder="Amit Patel"
+                      className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1.5">Issuer Role</label>
+                    <input
+                      type="text"
+                      value={certificateForm.issuerRole}
+                      onChange={e => setCertificateForm({ ...certificateForm, issuerRole: e.target.value })}
+                      placeholder="Founder & Program Director"
+                      className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1.5">Signature Name</label>
+                    <input
+                      type="text"
+                      value={certificateForm.signatureName}
+                      onChange={e => setCertificateForm({ ...certificateForm, signatureName: e.target.value })}
+                      placeholder="Amit Patel"
+                      className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1.5">Signature Role</label>
+                    <input
+                      type="text"
+                      value={certificateForm.signatureRole}
+                      onChange={e => setCertificateForm({ ...certificateForm, signatureRole: e.target.value })}
+                      placeholder="Authorized Signatory"
+                      className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Footer Note</label>
+                  <textarea
+                    rows={3}
+                    value={certificateForm.footerNote}
+                    onChange={e => setCertificateForm({ ...certificateForm, footerNote: e.target.value })}
+                    placeholder="This credential can be verified online using the certificate ID."
+                    className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all resize-none"
+                  />
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    onClick={handleSaveCertificateTemplate}
+                    disabled={saving}
+                    className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50"
+                  >
+                    {saving ? 'Saving...' : 'Save Template'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-3xl border border-white/10 p-5 shadow-2xl" style={{ background: `linear-gradient(135deg, ${hexToRgba(certificateForm.accentColor, 0.2)}, rgba(15, 23, 42, 0.96))` }}>
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-[11px] font-bold uppercase tracking-[0.25em]" style={{ color: certificateForm.accentColor }}>{certificateForm.sealLabel}</p>
+                      <h3 className="text-2xl font-black text-white mt-2">Live Certificate Preview</h3>
+                    </div>
+                    <div className="px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-[0.25em]" style={{ borderColor: hexToRgba(certificateForm.accentColor, 0.35), color: certificateForm.accentColor, backgroundColor: hexToRgba(certificateForm.accentColor, 0.12) }}>
+                      {certificatePreview.certificate_id}
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-300 mt-4 leading-relaxed">
+                    Yahi exact layout customer aur verify page par use hoga. Alignment, sign placement, code base, aur footer changes yahin live dekh sakte ho.
+                  </p>
+                </div>
+
+                <div className="overflow-hidden rounded-[30px] border border-white/10 bg-slate-950/40 p-3">
+                  <CertificateDocument certificate={certificatePreview} template={certificateForm} />
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-gray-500">Issuer Block</p>
+                    <p className="mt-2 text-sm font-semibold text-white">{certificateForm.issuerName}</p>
+                    <p className="mt-1 text-xs text-gray-400">{certificateForm.issuerRole}</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-gray-500">Signature Block</p>
+                    <p className="mt-2 text-sm font-semibold text-white">{certificateForm.signatureName}</p>
+                    <p className="mt-1 text-xs text-gray-400">{certificateForm.signatureRole}</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

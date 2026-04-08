@@ -164,10 +164,38 @@ export function AuthProvider({ children }) {
   // User details update
   const updateUserProfile = useCallback(async (uid, data) => {
     const userRef = doc(db, 'users', uid)
-    await updateDoc(userRef, {
+    await setDoc(userRef, {
       ...data,
       updatedAt: new Date().toISOString()
-    })
+    }, { merge: true })
+
+    if (auth.currentUser?.uid === uid) {
+      const nextDisplayName = data.displayName ?? auth.currentUser.displayName ?? ''
+      const nextPhotoURL =
+        data.photoURL !== undefined
+          ? (data.photoURL || null)
+          : data.avatar !== undefined
+            ? (data.avatar || null)
+            : (auth.currentUser.photoURL || null)
+
+      if (data.displayName !== undefined || data.photoURL !== undefined || data.avatar !== undefined) {
+        await updateProfile(auth.currentUser, {
+          displayName: nextDisplayName,
+          photoURL: nextPhotoURL
+        })
+      }
+    }
+  }, [])
+
+  const updateUserPassword = useCallback(async (currentPassword, newPassword) => {
+    const activeUser = auth.currentUser
+    if (!activeUser?.email) {
+      throw new Error('No active user session found.')
+    }
+
+    const credential = EmailAuthProvider.credential(activeUser.email, currentPassword)
+    await reauthenticateWithCredential(activeUser, credential)
+    await updatePassword(activeUser, newPassword)
   }, [])
 
   const createAccountRequest = useCallback(async (requestData) => {
@@ -233,21 +261,6 @@ export function AuthProvider({ children }) {
       await updateDoc(requestRef, { status: 'approved', approvedAt: new Date().toISOString() })
       await secondarySignOut(secondaryAuth)
 
-      // Notify employee of approval via email
-      try {
-        fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/notify-account-approval`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: request.email,
-            name: request.name,
-            role: request.role || 'Employee'
-          })
-        });
-      } catch (e) {
-        console.error("Failed to trigger approval email:", e);
-      }
-
       return { success: true }
     } catch (error) {
       throw error
@@ -271,7 +284,7 @@ export function AuthProvider({ children }) {
   const value = {
     currentUser, userProfile, loading,
     login, signup, logout, resetPassword, verifyResetCode, confirmReset,
-    updateUserProfile, createAccountRequest, approveAccountRequest, getAllUsers,
+    updateUserProfile, updateUserPassword, createAccountRequest, approveAccountRequest, getAllUsers,
     hasPermission, isAdmin, isEmployee
   }
 

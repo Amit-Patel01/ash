@@ -20,8 +20,14 @@ if (missingEnv.length > 0) {
   logger.warn(`⚠️  Missing ENV variables: ${missingEnv.join(", ")} — Some features may not work.`);
 }
 
-if (!process.env.GEMINI_API_KEY) {
-  logger.warn("⚠️  GEMINI_API_KEY not set — AI chatbot features disabled.");
+const geminiEnvKey =
+  process.env.GEMINI_API_KEY ||
+  process.env.GOOGLE_API_KEY ||
+  process.env.GOOGLE_GENERATIVE_AI_API_KEY ||
+  process.env.GOOGLE_GENAI_API_KEY;
+
+if (!geminiEnvKey) {
+  logger.warn("⚠️  Gemini API key not set — AI chatbot features disabled.");
 }
 
 // ─── Firebase Admin ──────────────────────────────────────────────────────────
@@ -102,6 +108,7 @@ const imageFilter = (req, file, cb) => {
 const upload = multer({ storage: makeStorage("payments"), limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: imageFilter });
 const uploadTeam = multer({ storage: makeStorage("team", "team-"), limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: imageFilter });
 const uploadProject = multer({ storage: makeStorage("projects", "project-"), limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: imageFilter });
+const uploadBroadcast = multer({ storage: makeStorage("broadcasts", "broadcast-"), limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: imageFilter });
 const uploadChat = multer({
   storage: makeStorage("chat", "chat-"),
   limits: { fileSize: 10 * 1024 * 1024 },
@@ -131,6 +138,11 @@ app.post("/api/upload/team", uploadTeam.single("photo"), (req, res) => {
 app.post("/api/upload/project", uploadProject.single("image"), (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
   res.json({ success: true, url: `${getBaseUrl(req)}/uploads/projects/${req.file.filename}` });
+});
+
+app.post("/api/upload/broadcast", uploadBroadcast.single("broadcast-image"), (req, res) => {
+  if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
+  res.json({ success: true, url: `${getBaseUrl(req)}/uploads/broadcasts/${req.file.filename}` });
 });
 
 app.post("/api/upload/chat", uploadChat.single("chat-image"), (req, res) => {

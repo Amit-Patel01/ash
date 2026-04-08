@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 const PLAN_BLANK = { label: '', duration: '', price: '', isFree: false, highlighted: false, features: '' }
 
 export default function EmployeeCourseManage() {
-  const { courses, updateCourse, enrollments } = useStore()
+  const { courses, updateCourse, enrollments, certificates, issueCertificate, revokeCertificate } = useStore()
   const { currentUser, userProfile } = useAuth()
 
   const assignedEmployeeIds = [currentUser?.uid, userProfile?.uid, userProfile?.employeeId].filter(Boolean)
@@ -28,9 +28,21 @@ export default function EmployeeCourseManage() {
   // ─── Meeting link states ────────────────────────────
   const [meetingLink, setMeetingLink] = useState('')
   const [editMeet, setEditMeet] = useState(false)
+  const [certificateBusyId, setCertificateBusyId] = useState('')
   const matchesCourseEnrollment = (enrollment, course) =>
     enrollment.courseId === course.id ||
     (enrollment.courseTitle && enrollment.courseTitle === course.title)
+
+  const getEnrollmentCertificate = (enrollment, course) =>
+    certificates.find(cert =>
+      cert.status === 'approved' &&
+      cert.userId === enrollment.userId &&
+      (
+        cert.enrollmentId === enrollment.id ||
+        cert.courseId === course.id ||
+        cert.courseName === course.title
+      )
+    ) || null
 
   const openCourse = (course) => {
     setSelectedCourse(course)
@@ -131,6 +143,38 @@ export default function EmployeeCourseManage() {
   const courseEnrollments = selectedCourse
     ? enrollments.filter(e => e.status === 'active' && matchesCourseEnrollment(e, selectedCourse))
     : []
+
+  const handleIssueCertificate = async (enrollment) => {
+    if (!selectedCourse) return
+    setCertificateBusyId(enrollment.id)
+    try {
+      await issueCertificate(
+        {
+          ...enrollment,
+          courseId: selectedCourse.id,
+          courseName: selectedCourse.title,
+          courseTitle: selectedCourse.title,
+        },
+        {
+          issuedByUid: currentUser?.uid,
+          issuedByName: userProfile?.displayName || currentUser?.displayName || 'Employee',
+          issuedByRole: userProfile?.role || 'employee',
+        }
+      )
+    } finally {
+      setCertificateBusyId('')
+    }
+  }
+
+  const handleRevokeCertificate = async (certificateId, enrollmentId) => {
+    if (!window.confirm('Revoke this certificate?')) return
+    setCertificateBusyId(enrollmentId)
+    try {
+      await revokeCertificate(certificateId)
+    } finally {
+      setCertificateBusyId('')
+    }
+  }
 
   if (myCourses.length === 0) {
     return (
@@ -335,21 +379,56 @@ export default function EmployeeCourseManage() {
                   <h3 className="text-sm font-bold text-white mb-4">Enrolled Students ({courseEnrollments.length})</h3>
                   {courseEnrollments.length === 0 ? <p className="text-sm text-gray-600 italic py-4">No students enrolled yet</p> : (
                     <div className="space-y-2">
-                      {courseEnrollments.map(enr => (
-                        <div key={enr.id} className="flex items-center gap-3 p-3 bg-white/[0.02] rounded-xl border border-white/5">
+                      {courseEnrollments.map(enr => {
+                        const certificate = getEnrollmentCertificate(enr, selectedCourse)
+                        const busy = certificateBusyId === enr.id
+                        return (
+                        <div key={enr.id} className="flex flex-col gap-4 p-4 bg-white/[0.02] rounded-xl border border-white/5 lg:flex-row lg:items-center">
                           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
                             {(enr.userName || '?').charAt(0).toUpperCase()}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-white truncate">{enr.userName || '—'}</p>
                             <p className="text-[10px] text-gray-500">{enr.userEmail} · {enr.planLabel || 'Standard'}</p>
+                            <div className="flex flex-wrap items-center gap-2 mt-2">
+                              <span className={`px-2 py-0.5 rounded-full border text-[10px] font-bold ${certificate ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-white/5 border-white/10 text-gray-500'}`}>
+                                {certificate ? 'Certificate Issued' : 'Certificate Pending'}
+                              </span>
+                              {certificate?.certificate_id && (
+                                <span className="text-[10px] font-mono text-gray-400">{certificate.certificate_id}</span>
+                              )}
+                            </div>
                           </div>
-                          <div className="text-right flex-shrink-0">
+                          <div className="text-left lg:text-right flex-shrink-0">
                             <p className="text-xs font-bold text-blue-400">{Number(enr.amount) === 0 ? 'FREE' : `₹${Number(enr.amount).toLocaleString('en-IN')}`}</p>
                             {enr.userMobile && <p className="text-[10px] text-gray-500">{enr.userMobile}</p>}
                           </div>
+                          <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+                            {certificate ? (
+                              <>
+                                <button
+                                  onClick={() => handleRevokeCertificate(certificate.id, enr.id)}
+                                  disabled={busy}
+                                  className="px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-xs font-bold text-red-300 hover:bg-red-500/20 disabled:opacity-50 transition-all"
+                                >
+                                  {busy ? 'Updating...' : 'Revoke'}
+                                </button>
+                                <span className="text-[10px] text-gray-500">
+                                  Issued {certificate.approval_date?.toDate ? certificate.approval_date.toDate().toLocaleDateString('en-IN') : 'recently'}
+                                </span>
+                              </>
+                            ) : (
+                              <button
+                                onClick={() => handleIssueCertificate(enr)}
+                                disabled={busy}
+                                className="px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/20 text-xs font-bold text-emerald-300 hover:bg-emerald-500/25 disabled:opacity-50 transition-all"
+                              >
+                                {busy ? 'Issuing...' : 'Issue Certificate'}
+                              </button>
+                            )}
+                          </div>
                         </div>
-                      ))}
+                      )})}
                     </div>
                   )}
                 </div>

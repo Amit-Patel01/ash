@@ -6,6 +6,7 @@ import MobileRequiredPopup from '../components/MobileRequiredPopup'
 const navItems = [
   { path: '/customer', label: 'Dashboard', icon: 'dashboard' },
   { path: '/customer/my-courses', label: 'My Courses', icon: 'book' },
+  { path: '/customer/certificates', label: 'Certificates', icon: 'award' },
   { path: '/customer/orders', label: 'My Orders', icon: 'orders' },
   { path: '/customer/support', label: 'Support Chat', icon: 'chat' },
   { path: '/customer/profile', label: 'Profile', icon: 'user' },
@@ -17,6 +18,7 @@ const iconMap = {
   orders: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>),
   chat: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" /></svg>),
   user: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>),
+  award: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0016.5 3h-9a2.25 2.25 0 00-2.25 2.25V16.5A2.25 2.25 0 007.5 18.75m9 0 1.154 1.154A1.125 1.125 0 0116.858 21H7.142a1.125 1.125 0 01-.796-1.92L7.5 18.75m4.5-10.5 1.068 2.165 2.39.347-1.729 1.685.408 2.381L12 13.762l-2.137 1.123.408-2.381-1.729-1.685 2.39-.347L12 8.25z" /></svg>),
   trending: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg>),
 }
 
@@ -34,6 +36,7 @@ export default function CustomerLayout() {
 
   const customerName = userProfile?.displayName || currentUser?.displayName || 'Customer'
   const customerEmail = currentUser?.email || 'customer@solutionhub.com'
+  const customerAvatar = userProfile?.avatar || userProfile?.photoURL || currentUser?.avatar || currentUser?.photoURL || ''
 
   return (
     <div className="min-h-screen bg-gray-950 text-white flex">
@@ -70,7 +73,13 @@ export default function CustomerLayout() {
 
         <div className="p-4 border-t border-white/5">
           <div className={`flex items-center gap-3 ${!sidebarOpen ? 'justify-center' : ''}`}>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 flex items-center justify-center flex-shrink-0 text-sm font-bold">{customerName.charAt(0)}</div>
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 flex items-center justify-center flex-shrink-0 overflow-hidden text-sm font-bold">
+              {customerAvatar ? (
+                <img src={customerAvatar} alt={customerName} className="w-full h-full object-cover" />
+              ) : (
+                customerName.charAt(0)
+              )}
+            </div>
             {sidebarOpen && (
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-white truncate">{customerName}</p>
@@ -102,6 +111,16 @@ export default function CustomerLayout() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <Link to="/customer/profile" className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-xs font-bold text-white">
+                {customerAvatar ? (
+                  <img src={customerAvatar} alt={customerName} className="w-full h-full object-cover" />
+                ) : (
+                  customerName.charAt(0)
+                )}
+              </div>
+              <span className="hidden sm:inline">Profile</span>
+            </Link>
             <Link to="/" className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
               <span className="hidden xs:inline">View Site</span>
