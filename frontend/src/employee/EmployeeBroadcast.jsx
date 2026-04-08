@@ -9,7 +9,10 @@ export default function EmployeeBroadcast() {
 
   const assignedEmployeeIds = [currentUser?.uid, userProfile?.uid, userProfile?.employeeId].filter(Boolean)
   // Filter only courses assigned to this employee
-  const myCourses = courses.filter(c => assignedEmployeeIds.includes(c.assignedEmployeeId))
+  const myCourses = courses.filter(c =>
+    assignedEmployeeIds.includes(c.assignedEmployeeId) ||
+    assignedEmployeeIds.includes(c.assignedEmployeeRef)
+  )
 
   const [form, setForm] = useState({
     courseId: '',
@@ -20,12 +23,15 @@ export default function EmployeeBroadcast() {
   
   const [sending, setSending] = useState(false)
   const [result, setResult] = useState(null)
+  const matchesCourseEnrollment = (enrollment, course) =>
+    enrollment.courseId === course.id ||
+    (enrollment.courseTitle && enrollment.courseTitle === course.title)
 
   const selectedCourse = myCourses.find(c => c.id === form.courseId)
   
   // Calculate enrollments for display
   const courseEnrolls = selectedCourse 
-    ? enrollments.filter(e => e.courseId === selectedCourse.id && e.status === 'active')
+    ? enrollments.filter(e => e.status === 'active' && matchesCourseEnrollment(e, selectedCourse))
     : []
     
   const filteredEnrolls = form.planId 

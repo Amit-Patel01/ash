@@ -11,7 +11,11 @@ export default function CustomerMyCourses() {
 
   const myEnrollments = currentUser ? getUserEnrollments(currentUser.uid) : []
 
-  const getMyCourse = (courseId) => courses.find(c => c.id === courseId)
+  const getMyCourse = (enrollment) =>
+    courses.find(c =>
+      c.id === enrollment.courseId ||
+      (enrollment.courseTitle && c.title === enrollment.courseTitle)
+    )
 
   if (myEnrollments.length === 0) {
     return (
@@ -48,7 +52,7 @@ export default function CustomerMyCourses() {
 
       <div className="space-y-4">
         {myEnrollments.map(enr => {
-          let course = getMyCourse(enr.courseId)
+          let course = getMyCourse(enr)
           if (!course) {
             // Fallback if course document was deleted or is hardcoded
             course = {

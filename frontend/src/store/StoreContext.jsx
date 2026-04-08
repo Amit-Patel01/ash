@@ -599,6 +599,11 @@ export function StoreProvider({ children }) {
   // --- Enrollments CRUD ---
   const addEnrollment = async (enrollmentData) => {
     try {
+      const assignedEmployee = users.find(u =>
+        [u.uid, u.id, u.employeeId, u.email].filter(Boolean).includes(enrollmentData.assignedEmployeeId)
+      )
+      const recipientId = assignedEmployee?.uid || enrollmentData.assignedEmployeeId || ''
+
       // ✅ Duplicate guard at Firestore level
       const existing = enrollments.find(
         e => e.userId === enrollmentData.userId &&
@@ -609,6 +614,8 @@ export function StoreProvider({ children }) {
 
       const payload = {
         ...enrollmentData,
+        assignedEmployeeId: recipientId,
+        assignedEmployeeRef: enrollmentData.assignedEmployeeId || recipientId,
         status: 'active',
         enrolledAt: serverTimestamp()
       }
@@ -622,10 +629,10 @@ export function StoreProvider({ children }) {
       }
 
       // ── Notify assigned employee ────────────────────────────────
-      const recipientId = enrollmentData.assignedEmployeeId
       if (recipientId) {
         await addDoc(collection(db, 'notifications'), {
           recipientId,
+          recipientEmployeeId: assignedEmployee?.employeeId || '',
           type: 'new_enrollment',
           title: 'New Student Enrolled!',
           message: `${enrollmentData.userName || enrollmentData.userEmail} enrolled in "${enrollmentData.courseTitle}"`,
@@ -641,12 +648,10 @@ export function StoreProvider({ children }) {
         })
 
         // ✉️ Email to employee
-        const empSnap = await getDoc(doc(db, 'users', recipientId))
-        if (empSnap.exists()) {
-          const emp = empSnap.data()
+        if (assignedEmployee?.email) {
           emailNotify('enrollment_employee', {
-            employeeEmail: emp.email,
-            employeeName: emp.displayName || emp.name || emp.email,
+            employeeEmail: assignedEmployee.email,
+            employeeName: assignedEmployee.displayName || assignedEmployee.name || assignedEmployee.email,
             studentName: enrollmentData.userName || enrollmentData.userEmail,
             studentEmail: enrollmentData.userEmail,
             studentMobile: enrollmentData.userMobile || '',

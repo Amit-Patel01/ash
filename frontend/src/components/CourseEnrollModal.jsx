@@ -30,7 +30,12 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
-  const enrolled = currentUser ? isUserEnrolled(currentUser.uid, course.id) : false
+  const actualCourseId = course.courseId || course.id
+  const actualCourseTitle = course.courseTitle || course.title
+  const actualPrice = Number(course.price || 0)
+  const isFreeCourse = course.isFree || course.price === 0 || course.price === '0' || actualPrice === 0
+
+  const enrolled = currentUser ? isUserEnrolled(currentUser.uid, actualCourseId) : false
 
   const validateMobile = () => {
     const c = mobile.replace(/\s/g, '')
@@ -49,24 +54,26 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
       const q = query(
         collection(db, 'enrollments'),
         where('userId', '==', currentUser.uid),
-        where('courseId', '==', course.id),
+        where('courseId', '==', actualCourseId),
         where('status', '==', 'active')
       )
       const snap = await getDocs(q)
       if (!snap.empty) { setSuccess(true); return }
 
-      if (course.isFree || course.price === 0 || course.price === '0' || Number(course.price) === 0) {
+      if (isFreeCourse) {
         await addEnrollment({
           userId: currentUser.uid,
           userName: currentUser.displayName || currentUser.email,
           userEmail: currentUser.email,
           userMobile: mobile,
-          courseId: course.id,
-          courseTitle: course.title,
+          courseId: actualCourseId,
+          courseTitle: actualCourseTitle,
           category: course.category,
           amount: 0,
           instructor: course.instructor || '',
           assignedEmployeeId: course.assignedEmployeeId || '',
+          planId: course.planId || course.id || '',
+          planLabel: course.planLabel || course.label || '',
         })
         setSuccess(true)
         if (onSuccess) onSuccess()
@@ -75,7 +82,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
         const isLoaded = await loadRazorpayScript()
         if (!isLoaded) throw new Error("Failed to load Razorpay SDK")
 
-        const amount = Number(course.price)
+        const amount = actualPrice
         const orderRes = await fetch(api.razorpayCreateOrder, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -101,8 +108,8 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
                   userId: currentUser.uid,
                   userName: currentUser.displayName || currentUser.email,
                   userEmail: currentUser.email,
-                  planId: course.id,
-                  planName: course.title,
+                  planId: course.planId || course.id,
+                  planName: course.planLabel || course.label || actualCourseTitle,
                   amount: amount
                 })
               })
@@ -114,13 +121,15 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
                   userName: currentUser.displayName || currentUser.email,
                   userEmail: currentUser.email,
                   userMobile: mobile,
-                  courseId: course.id,
-                  courseTitle: course.title,
+                  courseId: actualCourseId,
+                  courseTitle: actualCourseTitle,
                   category: course.category,
                   amount: amount,
                   instructor: course.instructor || '',
                   assignedEmployeeId: course.assignedEmployeeId || '',
-                  paymentId: response.razorpay_payment_id
+                  paymentId: response.razorpay_payment_id,
+                  planId: course.planId || course.id || '',
+                  planLabel: course.planLabel || course.label || '',
                 })
                 setSuccess(true)
                 if (onSuccess) onSuccess()
@@ -166,7 +175,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2">Already Enrolled! 🎓</h3>
             <p className="text-slate-500 text-sm mb-1">You're already enrolled in</p>
-            <p className="font-bold text-blue-600 mb-5">{course.title}</p>
+            <p className="font-bold text-blue-600 mb-5">{actualCourseTitle}</p>
             <div className="flex gap-3">
               <button onClick={onClose} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition-all">Close</button>
               <button onClick={() => navigate('/customer/my-courses')} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all">My Courses →</button>
@@ -184,7 +193,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
             </div>
             <h3 className="text-2xl font-bold text-slate-900 mb-2">Enrolled Successfully! 🎉</h3>
             <p className="text-slate-500 mb-1">You are now enrolled in</p>
-            <p className="font-bold text-blue-600 mb-5">{course.title}</p>
+            <p className="font-bold text-blue-600 mb-5">{actualCourseTitle}</p>
             <div className="flex gap-3">
               <button onClick={onClose} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition-all">Close</button>
               <button onClick={() => navigate('/customer/my-courses')} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all">View My Courses →</button>
@@ -197,7 +206,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-blue-200 text-xs font-bold uppercase tracking-widest mb-1">Enrolling in</p>
-                  <h3 className="text-xl font-bold leading-tight">{course.title}</h3>
+                  <h3 className="text-xl font-bold leading-tight">{actualCourseTitle}</h3>
                   {course.category && <p className="text-blue-200 text-sm mt-1">{course.category}</p>}
                 </div>
                 <button onClick={onClose} className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors flex-shrink-0 ml-3">
@@ -207,7 +216,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
               {/* Price */}
               <div className="mt-4 flex items-center gap-3">
                 <span className="text-3xl font-black">
-                  {course.isFree ? 'FREE' : `₹${Number(course.price || 0).toLocaleString('en-IN')}`}
+                  {isFreeCourse ? 'FREE' : `₹${actualPrice.toLocaleString('en-IN')}`}
                 </span>
                 <span className="text-blue-200 text-xs">one-time</span>
               </div>
@@ -259,14 +268,14 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
               >
                 {submitting ? (
                   <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Enrolling...</>
-                ) : (course.isFree || course.price === 0 || course.price === '0' || Number(course.price) === 0) ? (
+                ) : isFreeCourse ? (
                   'Enroll for Free →'
                 ) : (
                   'Enroll Now →'
                 )}
               </button>
 
-              {!(course.isFree || course.price === 0 || course.price === '0' || Number(course.price) === 0) && (
+              {!isFreeCourse && (
                 <p className="text-center text-xs text-slate-400">🛡️ Secure enrollment · Powered by Razorpay</p>
               )}
             </div>

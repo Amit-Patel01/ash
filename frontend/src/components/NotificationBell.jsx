@@ -4,16 +4,17 @@ import { collection, query, where, onSnapshot, updateDoc, doc, orderBy, limit, w
 import { db } from '../config/firebase'
 
 export default function NotificationBell() {
-  const { currentUser } = useAuth()
+  const { currentUser, userProfile } = useAuth()
   const [notifications, setNotifications] = useState([])
   const [open, setOpen] = useState(false)
   const panelRef = useRef(null)
 
   useEffect(() => {
-    if (!currentUser?.uid) return
+    const recipientIds = [...new Set([currentUser?.uid, userProfile?.uid, userProfile?.employeeId].filter(Boolean))]
+    if (recipientIds.length === 0) return
     const q = query(
       collection(db, 'notifications'),
-      where('recipientId', '==', currentUser.uid),
+      where('recipientId', 'in', recipientIds),
       orderBy('createdAt', 'desc'),
       limit(30)
     )
@@ -21,7 +22,7 @@ export default function NotificationBell() {
       setNotifications(snap.docs.map(d => ({ id: d.id, ...d.data() })))
     })
     return unsub
-  }, [currentUser?.uid])
+  }, [currentUser?.uid, userProfile?.uid, userProfile?.employeeId])
 
   // Close on outside click
   useEffect(() => {

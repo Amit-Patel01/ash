@@ -54,9 +54,13 @@ export default function CourseDetailPage() {
   }
 
   const catMeta = courseCategories.find(c => c.name === course.category)
-  const instructor = users.find(u => u.uid === course.assignedEmployeeId)
+  const assignedEmployeeIds = [course.assignedEmployeeId, course.assignedEmployeeRef].filter(Boolean)
+  const instructor = users.find(u => assignedEmployeeIds.includes(u.uid) || assignedEmployeeIds.includes(u.employeeId))
+  const matchesCourseEnrollment = (enrollment) =>
+    enrollment.courseId === course.id ||
+    (enrollment.courseTitle && enrollment.courseTitle === course.title)
   const enrolled = currentUser ? isUserEnrolled(currentUser.uid, course.id) : false
-  const enrolledCount = enrollments.filter(e => e.courseId === course.id && e.status === 'active').length
+  const enrolledCount = enrollments.filter(e => e.status === 'active' && matchesCourseEnrollment(e)).length
 
   const plans = Array.isArray(course.plans) && course.plans.length > 0 ? course.plans : null
   const features = Array.isArray(course.features) ? course.features : []
@@ -68,7 +72,8 @@ export default function CourseDetailPage() {
     { q: 'What is the refund policy?', a: 'We offer a 7-day money-back guarantee if you are not satisfied.' },
   ]
 
-  const canManage = isAdmin || (isEmployee && course.assignedEmployeeId === currentUser?.uid)
+  const currentEmployeeIds = [currentUser?.uid, currentUser?.employeeId].filter(Boolean)
+  const canManage = isAdmin || (isEmployee && assignedEmployeeIds.some(id => currentEmployeeIds.includes(id)))
 
   return (
     <div className="min-h-screen bg-white text-slate-900">
@@ -101,7 +106,7 @@ export default function CourseDetailPage() {
       {activeSection === 'enrollments' && canManage && (
         <section className="max-w-6xl mx-auto px-4 py-10">
           <h2 className="text-xl font-bold mb-6">Enrolled Students — {course.title}</h2>
-          {enrollments.filter(e => e.courseId === course.id).length === 0 ? (
+          {enrollments.filter(matchesCourseEnrollment).length === 0 ? (
             <div className="text-center py-16 text-slate-400">No students enrolled yet.</div>
           ) : (
             <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
@@ -114,7 +119,7 @@ export default function CourseDetailPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
-                  {enrollments.filter(e => e.courseId === course.id).map(enr => (
+                  {enrollments.filter(matchesCourseEnrollment).map(enr => (
                     <tr key={enr.id} className="hover:bg-slate-50">
                       <td className="px-4 py-3 text-sm font-medium">{enr.userName || '—'}</td>
                       <td className="px-4 py-3 text-sm text-slate-500">{enr.userEmail}</td>

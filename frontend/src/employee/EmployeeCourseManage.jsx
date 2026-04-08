@@ -9,7 +9,10 @@ export default function EmployeeCourseManage() {
   const { currentUser, userProfile } = useAuth()
 
   const assignedEmployeeIds = [currentUser?.uid, userProfile?.uid, userProfile?.employeeId].filter(Boolean)
-  const myCourses = courses.filter(c => assignedEmployeeIds.includes(c.assignedEmployeeId))
+  const myCourses = courses.filter(c =>
+    assignedEmployeeIds.includes(c.assignedEmployeeId) ||
+    assignedEmployeeIds.includes(c.assignedEmployeeRef)
+  )
   const [selectedCourse, setSelectedCourse] = useState(null)
   const [saving, setSaving] = useState(false)
   const [activeTab, setActiveTab] = useState('plans') // plans | materials | meeting | students
@@ -25,6 +28,9 @@ export default function EmployeeCourseManage() {
   // ─── Meeting link states ────────────────────────────
   const [meetingLink, setMeetingLink] = useState('')
   const [editMeet, setEditMeet] = useState(false)
+  const matchesCourseEnrollment = (enrollment, course) =>
+    enrollment.courseId === course.id ||
+    (enrollment.courseTitle && enrollment.courseTitle === course.title)
 
   const openCourse = (course) => {
     setSelectedCourse(course)
@@ -123,7 +129,7 @@ export default function EmployeeCourseManage() {
   }
 
   const courseEnrollments = selectedCourse
-    ? enrollments.filter(e => e.courseId === selectedCourse.id && e.status === 'active')
+    ? enrollments.filter(e => e.status === 'active' && matchesCourseEnrollment(e, selectedCourse))
     : []
 
   if (myCourses.length === 0) {
@@ -154,7 +160,7 @@ export default function EmployeeCourseManage() {
         {/* Course list */}
         <div className="lg:col-span-1 space-y-2">
           {myCourses.map(course => {
-            const cnt = enrollments.filter(e => e.courseId === course.id && e.status === 'active').length
+            const cnt = enrollments.filter(e => e.status === 'active' && matchesCourseEnrollment(e, course)).length
             const planCount = (course.plans || []).length
             return (
               <button key={course.id} onClick={() => openCourse(course)}
