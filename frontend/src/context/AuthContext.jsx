@@ -27,7 +27,7 @@ import {
   onSnapshot
 } from 'firebase/firestore'
 import { auth, db, firebaseConfig, setUserOnline, setUserOffline } from '../config/firebase'
-import LoadingScreen from '../components/LoadingScreen'
+
 import { initializeApp } from 'firebase/app'
 import { getAuth as getSecondaryAuth, signOut as secondarySignOut } from 'firebase/auth'
 
@@ -277,7 +277,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {loading ? <LoadingScreen /> : children}
+      {children}
     </AuthContext.Provider>
   )
 }

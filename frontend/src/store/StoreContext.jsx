@@ -14,7 +14,6 @@ import {
   serverTimestamp 
 } from 'firebase/firestore'
 import { db } from '../config/firebase'
-import LoadingScreen from '../components/LoadingScreen'
 import { emailNotify } from '../utils/emailNotify'
 
 const StoreContext = createContext(null)
@@ -792,7 +791,7 @@ export function StoreProvider({ children }) {
 
   return (
     <StoreContext.Provider value={value}>
-      {loading ? <LoadingScreen /> : children}
+      {children}
     </StoreContext.Provider>
   )
 }

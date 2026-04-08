@@ -19,13 +19,13 @@ const createOrder = async (req, res) => {
   const { amount, currency = "INR" } = req.body;
   try {
     const order = await razorpay.orders.create({
-      amount: amount * 100,
+      amount: Math.round(Number(amount) * 100),
       currency,
       receipt: `receipt_${Date.now()}`,
     });
     res.json({ success: true, order });
   } catch (error) {
-    logger.error("Razorpay create order error:", error);
+    logger.error(`Razorpay create order error: ${JSON.stringify(error)}`, error);
     res.status(500).json({ success: false, message: "Failed to create order" });
   }
 };

@@ -36,6 +36,7 @@ if (!admin.apps.length) {
 
 // ─── Express App ─────────────────────────────────────────────────────────────
 const app = express();
+app.set('trust proxy', 1);
 
 // ─── Webhook route FIRST (needs raw body before express.json) ────────────────
 app.use("/api/webhook", require("./routes/webhook"));

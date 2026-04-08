@@ -7,7 +7,6 @@ import { StoreProvider } from './store/StoreContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ChatProvider } from './context/ChatContext'
 import { ThemeProvider } from './context/ThemeContext'
-import LoadingScreen from './components/LoadingScreen'
 import AIChatbot from './components/AIChatbot'
 import Layout from './components/Layout'
 
@@ -90,7 +89,7 @@ const CustomerMyCourses = lazy(() => import('./customer/CustomerMyCourses'))
 function ProtectedAdmin({ children }) {
   const { currentUser, loading } = useAuth()
 
-  if (loading) return <LoadingScreen />
+  if (loading) return null
   if (!currentUser || currentUser.role !== 'admin') {
     return <Navigate to="/admin-login" replace />
   }
@@ -100,7 +99,7 @@ function ProtectedAdmin({ children }) {
 function ProtectedEmployee({ children }) {
   const { currentUser, loading } = useAuth()
 
-  if (loading) return <LoadingScreen />
+  if (loading) return null
   if (!currentUser) return <Navigate to="/login" replace />
   return children
 }
@@ -108,14 +107,14 @@ function ProtectedEmployee({ children }) {
 function ProtectedCustomer({ children }) {
   const { currentUser, loading } = useAuth()
 
-  if (loading) return <LoadingScreen />
+  if (loading) return null
   if (!currentUser) return <Navigate to="/login" replace />
   return children
 }
 
 function RoleRedirect() {
   const { currentUser, loading } = useAuth()
-  if (loading) return <LoadingScreen />
+  if (loading) return null
   if (!currentUser) return <Navigate to="/login" replace />
   if (currentUser.role === 'admin') return <Navigate to="/admin" replace />
   if (currentUser.role === 'customer') return <Navigate to="/customer" replace />
@@ -139,7 +138,7 @@ function AppContent() {
         <button onClick={() => window.location.reload()} style={{ marginTop: 20, padding: '10px 20px', background: '#3b82f6', color: 'white', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>Refresh Page</button>
       </div>
     }>
-      <Suspense fallback={<LoadingScreen />}>
+      <Suspense fallback={null}>
         <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Hero />} />
