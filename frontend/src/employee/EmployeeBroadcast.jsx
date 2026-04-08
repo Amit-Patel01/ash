@@ -5,10 +5,11 @@ import { api } from '../config/api'
 
 export default function EmployeeBroadcast() {
   const { courses, enrollments } = useStore()
-  const { currentUser } = useAuth()
+  const { currentUser, userProfile } = useAuth()
 
+  const assignedEmployeeIds = [currentUser?.uid, userProfile?.uid, userProfile?.employeeId].filter(Boolean)
   // Filter only courses assigned to this employee
-  const myCourses = courses.filter(c => c.assignedEmployeeId === currentUser?.uid)
+  const myCourses = courses.filter(c => assignedEmployeeIds.includes(c.assignedEmployeeId))
 
   const [form, setForm] = useState({
     courseId: '',

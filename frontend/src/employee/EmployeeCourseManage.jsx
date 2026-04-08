@@ -6,9 +6,10 @@ const PLAN_BLANK = { label: '', duration: '', price: '', isFree: false, highligh
 
 export default function EmployeeCourseManage() {
   const { courses, updateCourse, enrollments } = useStore()
-  const { currentUser } = useAuth()
+  const { currentUser, userProfile } = useAuth()
 
-  const myCourses = courses.filter(c => c.assignedEmployeeId === currentUser?.uid)
+  const assignedEmployeeIds = [currentUser?.uid, userProfile?.uid, userProfile?.employeeId].filter(Boolean)
+  const myCourses = courses.filter(c => assignedEmployeeIds.includes(c.assignedEmployeeId))
   const [selectedCourse, setSelectedCourse] = useState(null)
   const [saving, setSaving] = useState(false)
   const [activeTab, setActiveTab] = useState('plans') // plans | materials | meeting | students

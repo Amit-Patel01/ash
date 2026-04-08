@@ -29,6 +29,28 @@ const verifyPayment = async (req, res) => {
     amount,
   } = req.body;
 
+  // Handle free plans (amount == 0) without Razorpay verification
+  if (Number(amount) === 0) {
+    try {
+      // Enqueue async processing (email + course assignment)
+      addPaymentJob("TRADING_PAYMENT", {
+        razorpay_payment_id,
+        razorpay_order_id,
+        userId,
+        userName,
+        userEmail,
+        planId,
+        planName,
+        amount,
+      });
+
+      return res.json({ success: true, message: "Free enrollment processed and enrollment is being processed" });
+    } catch (error) {
+      logger.error("Free trading enrollment error:", error);
+      return res.status(500).json({ success: false, message: "Failed to process free enrollment" });
+    }
+  }
+
   const hmac = crypto.createHmac("sha256", RAZORPAY_KEY_SECRET);
   hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
   const expectedSignature = hmac.digest("hex");

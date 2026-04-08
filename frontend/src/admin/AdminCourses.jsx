@@ -57,10 +57,11 @@ export default function AdminCourses() {
   }
 
   const handleAssignEmployee = (uid) => {
-    const emp = employees.find(e => e.uid === uid)
+    const emp = employees.find(e => (e.uid || e.id) === uid)
+    const assignedId = emp ? (emp.uid || emp.id) : uid
     setForm(f => ({
       ...f,
-      assignedEmployeeId: uid,
+      assignedEmployeeId: assignedId,
       assignedEmployeeName: emp ? (emp.displayName || emp.name || emp.email) : ''
     }))
   }
@@ -327,11 +328,14 @@ export default function AdminCourses() {
                 >
                   <option value="">— Select an employee —</option>
                   {employees.length === 0 && <option disabled>No employees found</option>}
-                  {employees.map(emp => (
-                    <option key={emp.uid} value={emp.uid}>
-                      {emp.displayName || emp.name || emp.email} ({emp.role})
-                    </option>
-                  ))}
+                  {employees.map(emp => {
+                    const employeeKey = emp.uid || emp.id
+                    return (
+                      <option key={employeeKey} value={employeeKey}>
+                        {emp.displayName || emp.name || emp.email} ({emp.role})
+                      </option>
+                    )
+                  })}
                 </select>
                 <p className="text-[11px] text-gray-500 mt-1">The assigned employee will manage plans, materials, and meeting links from their Employee Panel</p>
               </div>

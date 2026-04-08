@@ -55,7 +55,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
       const snap = await getDocs(q)
       if (!snap.empty) { setSuccess(true); return }
 
-      if (course.isFree || course.price === 0) {
+      if (course.isFree || course.price === 0 || course.price === '0' || Number(course.price) === 0) {
         await addEnrollment({
           userId: currentUser.uid,
           userName: currentUser.displayName || currentUser.email,
@@ -259,14 +259,14 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
               >
                 {submitting ? (
                   <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Enrolling...</>
-                ) : course.isFree ? (
+                ) : (course.isFree || course.price === 0 || course.price === '0' || Number(course.price) === 0) ? (
                   'Enroll for Free →'
                 ) : (
                   'Enroll Now →'
                 )}
               </button>
 
-              {!course.isFree && course.price !== 0 && (
+              {!(course.isFree || course.price === 0 || course.price === '0' || Number(course.price) === 0) && (
                 <p className="text-center text-xs text-slate-400">🛡️ Secure enrollment · Powered by Razorpay</p>
               )}
             </div>
