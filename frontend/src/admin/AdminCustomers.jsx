@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
 import { auth } from '../config/firebase'
+import { api } from '../config/api'
 
 const avatarColors = [
   'from-blue-500 to-cyan-500',
@@ -333,7 +334,7 @@ export default function AdminCustomers() {
                       const token = await auth.currentUser?.getIdToken();
                       if (!token) throw new Error("Please log in again to continue");
 
-                      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/broadcast-email`, {
+                      const response = await fetch(api.adminBroadcastEmail, {
                         method: 'POST',
                         headers: {
                           'Content-Type': 'application/json',

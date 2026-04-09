@@ -31,7 +31,45 @@ if (!geminiEnvKey) {
 }
 
 // ─── Firebase Admin ──────────────────────────────────────────────────────────
-const serviceAccount = require("./credentials.json");
+const normalizeServiceAccount = (serviceAccount) => {
+  if (!serviceAccount || typeof serviceAccount !== "object") {
+    return serviceAccount;
+  }
+
+  const normalized = { ...serviceAccount };
+
+  if (typeof normalized.private_key === "string") {
+    normalized.private_key = normalized.private_key
+      .trim()
+      .replace(/^"(.*)"$/, "$1")
+      .replace(/\r/g, "")
+      .replace(/\\n/g, "\n");
+  }
+
+  return normalized;
+};
+
+const loadServiceAccount = () => {
+  if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+    try {
+      return normalizeServiceAccount(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON));
+    } catch (error) {
+      logger.error("Invalid FIREBASE_SERVICE_ACCOUNT_JSON value. Expected valid JSON.");
+      throw error;
+    }
+  }
+
+  const credentialsPath = path.join(__dirname, "credentials.json");
+  if (fs.existsSync(credentialsPath)) {
+    return normalizeServiceAccount(require("./credentials.json"));
+  }
+
+  throw new Error(
+    "Firebase credentials missing. Set FIREBASE_SERVICE_ACCOUNT_JSON or provide backend/credentials.json."
+  );
+};
+
+const serviceAccount = loadServiceAccount();
 if (!admin.apps.length) {
   admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
   logger.info(`📡 Firebase Admin Initialized (Project: ${serviceAccount.project_id})`);
@@ -42,6 +80,7 @@ if (!admin.apps.length) {
 
 // ─── Express App ─────────────────────────────────────────────────────────────
 const app = express();
+app.disable("x-powered-by");
 app.set('trust proxy', 1);
 
 // ─── Webhook route FIRST (needs raw body before express.json) ────────────────
@@ -52,10 +91,46 @@ app.use(
   helmet({
     contentSecurityPolicy: false, // Disabled to avoid breaking existing frontend
     crossOriginEmbedderPolicy: false,
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
   })
 );
-app.use(cors());
-app.use(express.json());
+const DEFAULT_ALLOWED_ORIGINS = [
+  "https://www.amitsolutionhub.com",
+  "https://amitsolutionhub.com",
+  "https://amitsolutionhub.vercel.app",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:4173",
+  "http://127.0.0.1:4173",
+];
+
+const allowedOrigins = Array.from(
+  new Set(
+    (process.env.ALLOWED_ORIGINS || "")
+      .split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean)
+      .concat(DEFAULT_ALLOWED_ORIGINS)
+  )
+);
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      logger.warn(`Blocked CORS origin: ${origin}`);
+      return callback(new Error("Origin not allowed by CORS"));
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false,
+    maxAge: 86400,
+  })
+);
+app.use(express.json({ limit: "1mb" }));
 
 // ─── Rate Limiting ────────────────────────────────────────────────────────────
 const apiLimiter = rateLimit({

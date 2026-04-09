@@ -4,48 +4,44 @@ import obfuscator from 'vite-plugin-javascript-obfuscator'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
-  const backendTarget = env.VITE_API_URL || 'https://backend-5u1w.onrender.com';
+  const env = loadEnv(mode, process.cwd(), '')
+  const backendTarget = env.VITE_API_URL || 'https://backend-5u1w.onrender.com'
+  const enableObfuscation = mode === 'production' && env.VITE_ENABLE_OBFUSCATION === 'true'
    
   return {
     plugins: [
       react(),
-      // Temporarily disabled to debug 404 module errors on production
-      /*
-      mode === 'production' && obfuscator({
+      enableObfuscation && obfuscator({
         compact: true,
-        controlFlowFlattening: true,
-        controlFlowFlatteningThreshold: 0.75,
+        controlFlowFlattening: false,
         deadCodeInjection: false,
-        debugProtection: true,
-        debugProtectionInterval: 4000,
+        debugProtection: false,
         disableConsoleOutput: true,
         identifierNamesGenerator: 'hexadecimal',
         log: false,
-        numbersToExpressions: true,
+        numbersToExpressions: false,
         renameGlobals: false,
-        selfDefending: true,
+        selfDefending: false,
         simplify: true,
         splitStrings: false,
         stringArray: true,
-        stringArrayCallsTransform: true,
-        stringArrayCallsTransformThreshold: 0.75,
-        stringArrayEncoding: [],
-        stringArrayIndexShift: true,
-        stringArrayRotate: true,
-        stringArrayShuffle: true,
-        stringArrayWrappersCount: 2,
-        stringArrayWrappersChainedCalls: true,
-        stringArrayWrappersParametersMaxCount: 4,
-        stringArrayWrappersType: 'function',
-        stringArrayThreshold: 0.75,
+        stringArrayEncoding: ['base64'],
+        stringArrayThreshold: 0.6,
         transformObjectKeys: false,
         unicodeEscapeSequence: false
       })
-      */
     ].filter(Boolean),
+    esbuild: mode === 'production'
+      ? {
+          drop: ['console', 'debugger'],
+          legalComments: 'none',
+        }
+      : undefined,
     build: {
       sourcemap: false, // Security: Disable source maps in production
+      minify: 'esbuild',
+      target: 'es2020',
+      cssMinify: true,
       chunkSizeWarningLimit: 1000,
     },
     server: {

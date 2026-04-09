@@ -4,32 +4,82 @@ import SEO from '../components/SEO'
 import PublicPageShell, { PublicGlassCard, PublicSection, PublicSectionHeading } from '../components/public/PublicPageShell'
 import { useStore } from '../store/StoreContext'
 
+const normalize = (value) => String(value || '').trim().toLowerCase()
+
 const normalizeTeam = (teamMembers = [], users = []) => {
-  return teamMembers.map((member) => {
+  const output = []
+  const seen = new Set()
+  const safeTeam = Array.isArray(teamMembers) ? teamMembers : []
+  const safeUsers = Array.isArray(users) ? users : []
+
+  safeTeam.forEach((member) => {
+    if (!member) return
+
+    const memberEmail = normalize(member.email)
     const userMatch =
-      users.find(
+      safeUsers.find(
         (user) =>
           (user.uid && member.uid && user.uid === member.uid) ||
-          (user.email && member.email && user.email === member.email) ||
-          (user.employeeId && member.employeeId && user.employeeId === member.employeeId)
-      ) || {}
+          (user.employeeId && member.employeeId && user.employeeId === member.employeeId) ||
+          (user.email && memberEmail && normalize(user.email) === memberEmail)
+      ) || null
 
-    return {
-      ...userMatch,
+    output.push({
       ...member,
-      displayName: member.displayName || userMatch.displayName || member.name || 'Team Member',
-      email: member.email || userMatch.email || '',
-      department: member.department || userMatch.department || 'Core Team',
-      jobTitle: member.jobTitle || userMatch.jobTitle || userMatch.role || 'Team Member',
+      ...userMatch,
+      id: member.id || userMatch?.uid || userMatch?.id,
+      uid: userMatch?.uid || member.uid || '',
+      displayName: userMatch?.displayName || member.displayName || member.name || 'Team Member',
+      name: member.name || userMatch?.name || userMatch?.displayName || 'Team Member',
+      email: member.email || userMatch?.email || '',
+      department: userMatch?.department || member.department || 'Core Team',
+      jobTitle: userMatch?.jobTitle || member.jobTitle || member.role || userMatch?.role || 'Team Member',
       bio:
+        userMatch?.bio ||
         member.bio ||
-        userMatch.bio ||
         'Focused on practical execution, learner support, and reliable digital delivery.',
+    })
+
+    if (memberEmail) seen.add(memberEmail)
+  })
+
+  safeUsers.forEach((user) => {
+    if (!user) return
+
+    const userEmail = normalize(user.email)
+    if (user.showOnTeam && user.status === 'active' && !seen.has(userEmail)) {
+      output.push({
+        ...user,
+        id: user.uid || user.id,
+        uid: user.uid || '',
+        displayName: user.displayName || user.name || 'Team Member',
+        name: user.name || user.displayName || 'Team Member',
+        email: user.email || '',
+        department: user.department || 'Core Team',
+        jobTitle: user.jobTitle || user.role || 'Team Member',
+        bio:
+          user.bio ||
+          'Focused on practical execution, learner support, and reliable digital delivery.',
+      })
+
+      if (userEmail) seen.add(userEmail)
     }
   })
+
+  return output
 }
 
-const getMemberKey = (member) => member.uid || member.employeeId || member.id || member.email || member.displayName
+const getMemberKeys = (member) =>
+  [...new Set([
+    member?.uid,
+    member?.employeeId,
+    member?.id,
+    member?.email,
+    member?.displayName,
+    member?.name,
+  ].filter(Boolean))]
+
+const getMemberKey = (member) => getMemberKeys(member)[0] || ''
 
 const getImageUrl = (member) => {
   if (member.photoURL) return member.photoURL
@@ -91,9 +141,13 @@ const PublicEmployeeProfile = () => {
   const profiles = useMemo(() => normalizeTeam(teamMembers, users), [teamMembers, users])
 
   const member = useMemo(() => {
-    const decodedId = decodeURIComponent(profileId || '')
+    const decodedId = normalize(decodeURIComponent(profileId || ''))
 
-    return profiles.find((item) => getMemberKey(item) === decodedId) || null
+    return (
+      profiles.find((item) =>
+        getMemberKeys(item).some((key) => normalize(key) === decodedId)
+      ) || null
+    )
   }, [profileId, profiles])
 
   if (!member) {

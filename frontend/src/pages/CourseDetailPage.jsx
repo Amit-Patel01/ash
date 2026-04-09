@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef, useMemo } from 'react'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
@@ -21,10 +21,149 @@ const fade = (v) => `transition-all duration-700 ${v ? 'opacity-100 translate-y-
 
 const LEVEL_COLORS = { Beginner: 'bg-emerald-100 text-emerald-700', Intermediate: 'bg-amber-100 text-amber-700', Advanced: 'bg-red-100 text-red-700' }
 
+const normalize = (value) => String(value || '').trim().toLowerCase()
+
+const getInstructorImage = (instructor) => {
+  if (!instructor) return ''
+  if (instructor.photoURL) return instructor.photoURL
+  if (instructor.avatarUrl) return instructor.avatarUrl
+  if (instructor.avatar) return instructor.avatar
+  if (instructor.avatarSource === 'custom' && instructor.customImageUrl) return instructor.customImageUrl
+
+  let githubValue = instructor.github
+  if (githubValue) {
+    if (githubValue.startsWith('http')) {
+      if (!githubValue.endsWith('.png')) {
+        githubValue = githubValue.replace(/\/$/, '')
+        return `${githubValue}.png`
+      }
+      return githubValue
+    }
+    return `https://github.com/${githubValue}.png`
+  }
+
+  if (instructor.avatarSource === 'linkedin' && instructor.linkedin && !instructor.linkedin.includes('linkedin.com')) {
+    return instructor.linkedin
+  }
+
+  return ''
+}
+
+const getInstructorLinks = (instructor) => {
+  if (!instructor) return []
+
+  const links = []
+
+  if (instructor.github) {
+    links.push({
+      label: 'GitHub',
+      href: instructor.github.startsWith('http') ? instructor.github : `https://github.com/${instructor.github}`,
+    })
+  }
+
+  if (instructor.linkedin) {
+    links.push({
+      label: 'LinkedIn',
+      href: instructor.linkedin.startsWith('http') ? instructor.linkedin : `https://linkedin.com/in/${instructor.linkedin}`,
+    })
+  }
+
+  if (instructor.portfolio) {
+    links.push({
+      label: 'Portfolio',
+      href: instructor.portfolio.startsWith('http') ? instructor.portfolio : `https://${instructor.portfolio}`,
+    })
+  }
+
+  return links
+}
+
+const resolveInstructorProfile = (course, users = [], teamMembers = []) => {
+  const courseIdentities = [
+    course?.assignedEmployeeId,
+    course?.assignedEmployeeRef,
+    course?.assignedEmployeeName,
+    course?.instructor,
+  ]
+    .filter(Boolean)
+    .map(normalize)
+
+  if (courseIdentities.length === 0) {
+    return { instructor: null, publicProfileId: '' }
+  }
+
+  const matchesCourseIdentity = (item) =>
+    [
+      item?.uid,
+      item?.id,
+      item?.employeeId,
+      item?.email,
+      item?.displayName,
+      item?.name,
+    ]
+      .filter(Boolean)
+      .map(normalize)
+      .some((identity) => courseIdentities.includes(identity))
+
+  const userMatch = users.find(matchesCourseIdentity) || null
+  const teamMatch = teamMembers.find(matchesCourseIdentity) || null
+
+  if (!userMatch && !teamMatch) {
+    return { instructor: null, publicProfileId: '' }
+  }
+
+  const instructor = {
+    ...teamMatch,
+    ...userMatch,
+    displayName:
+      userMatch?.displayName ||
+      teamMatch?.displayName ||
+      teamMatch?.name ||
+      userMatch?.name ||
+      course?.assignedEmployeeName ||
+      course?.instructor ||
+      'Instructor',
+    name:
+      teamMatch?.name ||
+      userMatch?.name ||
+      userMatch?.displayName ||
+      course?.assignedEmployeeName ||
+      course?.instructor ||
+      'Instructor',
+    email: userMatch?.email || teamMatch?.email || '',
+    employeeId: userMatch?.employeeId || teamMatch?.employeeId || '',
+    uid: userMatch?.uid || teamMatch?.uid || '',
+    department: userMatch?.department || teamMatch?.department || '',
+    jobTitle: userMatch?.jobTitle || teamMatch?.jobTitle || teamMatch?.role || userMatch?.role || '',
+    role: userMatch?.jobTitle || teamMatch?.jobTitle || teamMatch?.role || userMatch?.role || '',
+    bio: userMatch?.bio || teamMatch?.bio || '',
+    experience: userMatch?.experience || teamMatch?.experience || '',
+    github: userMatch?.github || teamMatch?.github || '',
+    linkedin: userMatch?.linkedin || teamMatch?.linkedin || '',
+    portfolio: userMatch?.portfolio || teamMatch?.portfolio || '',
+    avatar: userMatch?.avatar || teamMatch?.avatar || '',
+    photoURL: userMatch?.photoURL || teamMatch?.photoURL || '',
+    avatarUrl: userMatch?.avatarUrl || teamMatch?.avatarUrl || '',
+    avatarSource: userMatch?.avatarSource || teamMatch?.avatarSource || '',
+    customImageUrl: userMatch?.customImageUrl || teamMatch?.customImageUrl || '',
+  }
+
+  const publicProfileId = encodeURIComponent(
+    instructor.uid ||
+    instructor.employeeId ||
+    teamMatch?.id ||
+    instructor.email ||
+    instructor.displayName ||
+    'team-member'
+  )
+
+  return { instructor, publicProfileId }
+}
+
 export default function CourseDetailPage() {
   const { slug } = useParams()
   const navigate = useNavigate()
-  const { courses, courseCategories, users, isUserEnrolled, enrollments } = useStore()
+  const { courses, courseCategories, users, teamMembers, isUserEnrolled, enrollments } = useStore()
   const { currentUser, isAdmin, isEmployee } = useAuth()
 
   const [selectedPlan, setSelectedPlan] = useState(null)
@@ -55,7 +194,21 @@ export default function CourseDetailPage() {
 
   const catMeta = courseCategories.find(c => c.name === course.category)
   const assignedEmployeeIds = [course.assignedEmployeeId, course.assignedEmployeeRef].filter(Boolean)
-  const instructor = users.find(u => assignedEmployeeIds.includes(u.uid) || assignedEmployeeIds.includes(u.employeeId))
+  const { instructor, publicProfileId } = useMemo(
+    () => resolveInstructorProfile(course, users, teamMembers),
+    [course, users, teamMembers]
+  )
+  const instructorImage = getInstructorImage(instructor)
+  const instructorLinks = getInstructorLinks(instructor)
+  const instructorName =
+    instructor?.displayName ||
+    instructor?.name ||
+    course.assignedEmployeeName ||
+    course.instructor ||
+    'Course Instructor'
+  const instructorRole = instructor?.jobTitle || instructor?.role || 'Course Instructor'
+  const instructorBio = instructor?.bio || 'Expert instructor with proven industry experience.'
+  const instructorExperience = instructor?.experience || '5+ Years'
   const matchesCourseEnrollment = (enrollment) =>
     enrollment.courseId === course.id ||
     (enrollment.courseTitle && enrollment.courseTitle === course.title)
@@ -187,7 +340,7 @@ export default function CourseDetailPage() {
                 {course.level && <span className={`px-3 py-1 rounded-full font-bold text-xs ${LEVEL_COLORS[course.level] || 'bg-slate-100 text-slate-600'}`}>{course.level}</span>}
                 {course.duration && <span>⏱ {course.duration}</span>}
                 {enrolledCount > 0 && <span>👥 {enrolledCount} Enrolled</span>}
-                {course.instructor && <span>👨‍🏫 {course.instructor}</span>}
+                {instructorName && <span>👨‍🏫 {instructorName}</span>}
               </div>
 
               {/* CTA */}
@@ -274,7 +427,7 @@ export default function CourseDetailPage() {
           )}
 
           {/* INSTRUCTOR */}
-          {(instructor || course.instructor) && (
+          {(instructor || course.instructor || course.assignedEmployeeName) && (
             <section className="py-20 px-4 bg-slate-50">
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-14">
@@ -282,28 +435,55 @@ export default function CourseDetailPage() {
                 </div>
                 <div className="flex flex-col lg:flex-row items-center gap-12 max-w-4xl mx-auto">
                   <div className="w-48 h-48 rounded-3xl border-4 border-blue-100 overflow-hidden shadow-lg bg-slate-200 flex-shrink-0 flex items-center justify-center">
-                    {instructor?.photoURL || instructor?.avatarUrl ? (
-                      <img src={instructor.photoURL || instructor.avatarUrl} alt="Instructor" className="w-full h-full object-cover" />
+                    {instructorImage ? (
+                      <img src={instructorImage} alt={instructorName} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-5xl font-black text-white">
-                        {(instructor?.displayName || instructor?.name || course.instructor || '?').charAt(0).toUpperCase()}
+                        {instructorName.charAt(0).toUpperCase()}
                       </div>
                     )}
                   </div>
                   <div className="flex-1 text-center lg:text-left">
                     <h3 className="text-2xl font-bold text-slate-900 mb-1">
-                      {instructor?.displayName || instructor?.name || course.instructor}
+                      {instructorName}
                     </h3>
                     <p className="text-blue-600 font-semibold mb-3">
-                      {instructor?.jobTitle || instructor?.role || 'Course Instructor'}
+                      {instructorRole}
                     </p>
-                    {instructor?.bio && <p className="text-slate-500 leading-relaxed mb-4">{instructor.bio}</p>}
-                    {!instructor?.bio && (
-                      <p className="text-slate-400 italic">Expert instructor with proven industry experience.</p>
+                    <p className={`${instructor?.bio ? 'text-slate-500' : 'text-slate-400 italic'} leading-relaxed mb-4`}>
+                      {instructorBio}
+                    </p>
+                    {(instructor?.department || instructorLinks.length > 0 || publicProfileId) && (
+                      <div className="flex flex-wrap items-center justify-center gap-3 lg:justify-start mb-5">
+                        {instructor?.department ? (
+                          <span className="inline-flex items-center rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
+                            {instructor.department}
+                          </span>
+                        ) : null}
+                        {publicProfileId ? (
+                          <Link
+                            to={`/team/${publicProfileId}`}
+                            className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-700 transition hover:border-blue-200 hover:text-blue-600"
+                          >
+                            View Profile
+                          </Link>
+                        ) : null}
+                        {instructorLinks.map((link) => (
+                          <a
+                            key={link.label}
+                            href={link.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-700 transition hover:border-blue-200 hover:text-blue-600"
+                          >
+                            {link.label}
+                          </a>
+                        ))}
+                      </div>
                     )}
                     <div className="grid grid-cols-3 gap-4 mt-6">
                       {[
-                        { label: 'Experience', value: instructor?.experience || '5+ Yrs' },
+                        { label: 'Experience', value: instructorExperience },
                         { label: 'Students', value: enrolledCount > 0 ? `${enrolledCount}+` : 'Growing' },
                         { label: 'Rating', value: '4.9/5' }
                       ].map((stat, i) => (

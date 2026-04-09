@@ -17,6 +17,7 @@ export default function AdminCourses() {
   const blankForm = {
     title: '', category: '', level: 'Beginner',
     description: '',
+    thumbnail: '',
     published: false,
     assignedEmployeeId: '', assignedEmployeeName: ''
   }
@@ -49,6 +50,7 @@ export default function AdminCourses() {
       category: course.category || '',
       level: course.level || 'Beginner',
       description: course.description || '',
+      thumbnail: course.thumbnail || course.image || course.imageUrl || '',
       published: course.published || false,
       assignedEmployeeId: course.assignedEmployeeId || '',
       assignedEmployeeName: course.assignedEmployeeName || ''
@@ -71,7 +73,12 @@ export default function AdminCourses() {
     if (!form.title.trim()) return
     setSaving(true)
     try {
-      const payload = { ...form }
+      const payload = {
+        ...form,
+        title: form.title.trim(),
+        description: form.description.trim(),
+        thumbnail: form.thumbnail.trim(),
+      }
       if (editingCourse) {
         await updateCourse(editingCourse.id, payload)
       } else {
@@ -97,6 +104,9 @@ export default function AdminCourses() {
 
   const getEnrollCount = (courseId) =>
     enrollments.filter(e => e.courseId === courseId && e.status === 'active').length
+
+  const getCourseThumbnail = (course) =>
+    course?.thumbnail || course?.image || course?.imageUrl || ''
 
   const categoryColors = {
     'Trading': 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
@@ -189,8 +199,19 @@ export default function AdminCourses() {
               </div>
 
               {/* Thumbnail */}
-              {course.thumbnail ? (
-                <img src={course.thumbnail} alt={course.title} className="w-full h-28 object-cover rounded-xl mb-3" onError={e => e.target.style.display='none'} />
+              {getCourseThumbnail(course) ? (
+                <div className="relative w-full h-28 overflow-hidden rounded-xl mb-3 bg-gradient-to-br from-blue-900/40 to-purple-900/40">
+                  <div className="absolute inset-0 flex items-center justify-center text-3xl">
+                    {courseCategories.find(c => c.name === course.category)?.icon || '📚'}
+                  </div>
+                  <img
+                    key={getCourseThumbnail(course)}
+                    src={getCourseThumbnail(course)}
+                    alt={course.title}
+                    className="relative z-10 w-full h-full object-cover"
+                    onError={e => { e.currentTarget.style.display = 'none' }}
+                  />
+                </div>
               ) : (
                 <div className="w-full h-28 rounded-xl bg-gradient-to-br from-blue-900/40 to-purple-900/40 flex items-center justify-center mb-3 text-3xl">
                   {courseCategories.find(c => c.name === course.category)?.icon || '📚'}
@@ -316,6 +337,32 @@ export default function AdminCourses() {
               <div>
                 <label className="label">Short Description</label>
                 <textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})} rows={3} placeholder="Brief course description..." className="input resize-none" />
+              </div>
+
+              {/* Thumbnail URL */}
+              <div>
+                <label className="label">Course Image URL</label>
+                <input
+                  value={form.thumbnail}
+                  onChange={e => setForm({ ...form, thumbnail: e.target.value })}
+                  placeholder="https://example.com/course-image.jpg"
+                  className="input"
+                />
+                <p className="text-[11px] text-gray-500 mt-1">Direct image link dalo. Yeh admin course card, public courses page aur student panel me show hoga.</p>
+                <div className="mt-3 relative w-full h-36 overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-blue-900/30 to-purple-900/30">
+                  <div className="absolute inset-0 flex items-center justify-center text-3xl text-white/70">
+                    {courseCategories.find(c => c.name === form.category)?.icon || '🖼️'}
+                  </div>
+                  {form.thumbnail ? (
+                    <img
+                      key={form.thumbnail}
+                      src={form.thumbnail}
+                      alt="Course preview"
+                      className="relative z-10 w-full h-full object-cover"
+                      onError={e => { e.currentTarget.style.display = 'none' }}
+                    />
+                  ) : null}
+                </div>
               </div>
 
               {/* Assign Employee */}

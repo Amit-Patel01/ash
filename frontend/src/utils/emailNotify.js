@@ -23,11 +23,11 @@
  *   trading_enrollment_student — student enrolled in trading course
  */
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_URL || ''
+import { api } from '../config/api'
 
 export const emailNotify = async (type, data) => {
   try {
-    await fetch(`${BACKEND_URL}/api/notify`, {
+    await fetch(api.notify, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type, data })

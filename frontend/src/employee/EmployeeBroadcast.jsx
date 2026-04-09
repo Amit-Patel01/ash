@@ -56,7 +56,7 @@ export default function EmployeeBroadcast() {
       const token = await auth.currentUser?.getIdToken()
       if (!token) throw new Error('Please log in again to continue.')
 
-      const res = await fetch(`${api.base}/admin/broadcast-email`, {
+      const res = await fetch(api.adminBroadcastEmail, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

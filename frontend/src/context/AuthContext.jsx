@@ -27,6 +27,7 @@ import {
   onSnapshot
 } from 'firebase/firestore'
 import { auth, db, firebaseConfig, setUserOnline, setUserOffline } from '../config/firebase'
+import { api } from '../config/api'
 
 import { initializeApp } from 'firebase/app'
 import { getAuth as getSecondaryAuth, signOut as secondarySignOut } from 'firebase/auth'
@@ -137,7 +138,7 @@ export function AuthProvider({ children }) {
 
   const resetPassword = useCallback(async (email, returnUrl) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/auth/forgot-password`, {
+      const response = await fetch(api.forgotPassword, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

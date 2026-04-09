@@ -14,6 +14,7 @@ import {
   serverTimestamp 
 } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import { buildApiUrl } from '../config/api'
 import { emailNotify } from '../utils/emailNotify'
 import { DEFAULT_CERTIFICATE_TEMPLATE, mergeCertificateTemplate } from '../utils/certificateTemplate'
 
@@ -415,7 +416,7 @@ export function StoreProvider({ children }) {
     try { 
       // If updating isLive to true, use our backend API to trigger notifications
       if (updates.hasOwnProperty('isLive')) {
-        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/trading/toggle-live`, {
+        const response = await fetch(buildApiUrl('/api/trading/toggle-live'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ sessionId: id, isLive: updates.isLive })
