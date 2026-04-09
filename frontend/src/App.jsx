@@ -1,5 +1,5 @@
 import { useCallback, lazy, Suspense } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { ErrorBoundary } from 'react-error-boundary'
 
@@ -136,6 +136,8 @@ function RoleRedirect() {
 function AppContent() {
   const { logout } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const hideGlobalChatbot = location.pathname.startsWith('/verify')
 
   const handleLogout = useCallback(async () => {
     await logout()
@@ -241,7 +243,7 @@ function AppContent() {
         </Routes>
       </Suspense>
       {/* Global AI Chatbot Widget */}
-      <AIChatbot />
+      {!hideGlobalChatbot && <AIChatbot />}
     </ErrorBoundary>
   )
 }

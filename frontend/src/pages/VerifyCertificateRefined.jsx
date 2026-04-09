@@ -21,7 +21,7 @@ import { collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { useStore } from '../store/StoreContext'
 import { getDocumentTypeMeta, hexToRgba, mergeCertificateTemplate } from '../utils/certificateTemplate'
-import { downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
+import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
 import { formatCertificateDate, getCertificateDocumentLabel, getCertificateDocumentType } from '../utils/certificateHelpers'
 import CertificateDocument from '../components/certificates/CertificateDocument'
 
@@ -77,6 +77,7 @@ export default function VerifyCertificateRefined() {
   const [copied, setCopied] = useState(false)
   const [downloading, setDownloading] = useState('')
   const certificateRef = useRef(null)
+  const downloadRef = useRef(null)
 
   const documentType = getCertificateDocumentType(certData)
   const documentMeta = getDocumentTypeMeta(documentType)
@@ -160,14 +161,14 @@ export default function VerifyCertificateRefined() {
   }
 
   const handleDownload = async (format) => {
-    if (!certificateRef.current || !certData) return
+    if (!downloadRef.current || !certData) return
 
     try {
       setDownloading(format)
       if (format === 'png') {
-        await downloadCertificatePng(certificateRef.current, certData)
+        await downloadCertificatePng(downloadRef.current, certData)
       } else {
-        await downloadCertificatePdf(certificateRef.current, certData)
+        await downloadCertificatePdf(downloadRef.current, certData)
       }
     } catch (downloadError) {
       console.error(`Document ${format} export failed:`, downloadError)
@@ -514,6 +515,12 @@ export default function VerifyCertificateRefined() {
             animate={{ opacity: 1, y: 0 }}
             className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.16fr)_320px]"
           >
+            <div className="absolute left-[-9999px] top-[-9999px]" aria-hidden="true">
+              <div ref={downloadRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
+                <CertificateDocument certificate={certData} template={activeTemplate} />
+              </div>
+            </div>
+
             <Surface className="p-3 md:p-5">
               <div className="flex flex-wrap items-center justify-between gap-3 px-2 pb-4 md:px-1">
                 <div>

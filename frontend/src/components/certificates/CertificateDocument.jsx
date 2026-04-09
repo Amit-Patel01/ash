@@ -44,9 +44,15 @@ function CornerAccent({ position, accentColor, navyColor }) {
 function DetailChip({ label, value, accentColor }) {
   if (!value) return null
   return (
-    <div className="rounded-2xl border bg-white/80 px-3 py-2 text-left shadow-sm" style={{ borderColor: hexToRgba(accentColor, 0.18) }}>
-      <p className="text-[9px] font-black uppercase tracking-[0.24em] text-slate-400">{label}</p>
-      <p className="mt-1 text-[11px] font-semibold text-slate-700">{value}</p>
+    <div
+      className="rounded-[18px] border px-4 py-2.5 text-left shadow-sm"
+      style={{
+        borderColor: hexToRgba(accentColor, 0.2),
+        background: `linear-gradient(180deg, rgba(255,255,255,0.96), ${hexToRgba(accentColor, 0.05)})`,
+      }}
+    >
+      <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">{label}</p>
+      <p className="mt-1.5 text-[12px] font-semibold leading-snug text-slate-700">{value}</p>
     </div>
   )
 }
@@ -60,7 +66,7 @@ function getDocumentNarrative(documentType, holderName, courseName, template, ce
     return {
       intro: template.summaryLine,
       highlight: holderName,
-      paragraph: `We are pleased to confirm the selection for ${internshipRole} under ${courseName} at ${template.organizationName}. This offer acknowledges eligibility for the upcoming internship / training cycle and remains subject to onboarding completion and reporting compliance.`,
+      paragraph: `We are pleased to confirm the selection for ${internshipRole} under ${courseName} at ${template.organizationName}. This offer confirms eligibility for the upcoming internship or training cycle, subject to onboarding completion and reporting compliance.`,
       chips: [
         { label: 'Role / Track', value: internshipRole },
         { label: 'Joining Date', value: joiningDate },
@@ -73,7 +79,7 @@ function getDocumentNarrative(documentType, holderName, courseName, template, ce
     return {
       intro: template.summaryLine,
       highlight: holderName,
-      paragraph: `${template.bodyPrefix} ${courseName}. The internship tenure covered ${internshipDuration}, guided learning milestones, practical assignments, and verified participation under ${template.organizationName}.`,
+      paragraph: `${template.bodyPrefix} ${courseName}. The internship tenure covered ${internshipDuration}, guided milestones, practical assignments, and verified participation with ${template.organizationName}.`,
       chips: [
         { label: 'Internship Domain', value: internshipRole },
         { label: 'Duration', value: internshipDuration },
@@ -118,7 +124,7 @@ export default function CertificateDocument({ certificate, template, className =
 
   return (
     <div
-      className={`relative isolate aspect-[1.414/1] w-full overflow-hidden rounded-[20px] bg-white text-slate-700 shadow-[0_16px_40px_rgba(15,23,42,0.12)] ${className}`}
+      className={`relative isolate aspect-[1.414/1] w-full overflow-hidden rounded-[22px] bg-white text-slate-700 shadow-[0_20px_48px_rgba(15,23,42,0.14)] ${className}`}
       style={{ containerType: 'inline-size' }}
     >
       <div className="absolute inset-[8px] rounded-[18px] border border-slate-200" />
@@ -144,29 +150,29 @@ export default function CertificateDocument({ certificate, template, className =
       <div className="relative flex h-full flex-col px-[clamp(28px,3cqw,42px)] py-[clamp(22px,2.6cqw,34px)]">
         <header className="grid grid-cols-[1.2fr_auto_1fr] items-start gap-4">
           <div className="min-w-0">
-            <img src={msmeBadge} alt="MSME" className="h-[clamp(42px,5.8cqw,72px)] w-auto object-contain" />
+            <img src={msmeBadge} alt="MSME" className="h-[clamp(48px,6.2cqw,82px)] w-auto object-contain" />
           </div>
 
           <div className="flex justify-center">
-            <img src={brandLogo} alt="Amit Solution Hub" className="h-[clamp(40px,5.6cqw,70px)] w-auto object-contain" />
+            <img src={brandLogo} alt="Amit Solution Hub" className="h-[clamp(46px,6cqw,84px)] w-auto object-contain" />
           </div>
 
           <div className="flex justify-end">
             <div
-              className="rounded-full border px-3 py-1.5 text-right"
+              className="rounded-full border px-4 py-2 text-right shadow-sm"
               style={{
                 borderColor: hexToRgba(accentColor, 0.3),
-                backgroundColor: hexToRgba(accentColor, 0.09),
+                background: `linear-gradient(180deg, rgba(255,255,255,0.96), ${hexToRgba(accentColor, 0.09)})`,
               }}
             >
-              <p className="text-[9px] font-black uppercase tracking-[0.24em] text-slate-500">{activeTemplate.referenceLabel || 'Document ID'}</p>
-              <p className="mt-1 text-[11px] font-black" style={{ color: navyColor }}>{certificateId}</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">{activeTemplate.referenceLabel || 'Document ID'}</p>
+              <p className="mt-1 text-[12px] font-black" style={{ color: navyColor }}>{certificateId}</p>
             </div>
           </div>
         </header>
 
         <div className="mt-[clamp(10px,1.8cqw,18px)] text-center">
-          <p className="text-[clamp(10px,1cqw,13px)] font-black uppercase tracking-[0.42em]" style={{ color: accentColor }}>
+          <p className="text-[clamp(11px,1.1cqw,14px)] font-black uppercase tracking-[0.38em]" style={{ color: accentColor }}>
             {activeTemplate.overline}
           </p>
           <h1
@@ -174,15 +180,15 @@ export default function CertificateDocument({ certificate, template, className =
             style={{
               color: navyColor,
               fontFamily: 'Georgia, "Times New Roman", serif',
-              fontSize: 'clamp(36px, 6.5cqw, 76px)',
+              fontSize: 'clamp(40px, 6.8cqw, 82px)',
             }}
           >
             {activeTemplate.title}
           </h1>
-          <p className="mt-[clamp(6px,0.8cqw,10px)] text-[clamp(14px,1.8cqw,24px)] uppercase tracking-[0.35em] text-slate-400">
+          <p className="mt-[clamp(6px,0.8cqw,10px)] text-[clamp(15px,1.9cqw,26px)] uppercase tracking-[0.32em] text-slate-400">
             {activeTemplate.subtitle}
           </p>
-          <p className="mt-[clamp(10px,1.4cqw,16px)] text-[clamp(14px,1.6cqw,20px)] italic text-slate-500">
+          <p className="mx-auto mt-[clamp(10px,1.4cqw,16px)] max-w-[78%] text-[clamp(15px,1.7cqw,22px)] italic leading-relaxed text-slate-500">
             {narrative.intro}
           </p>
         </div>
@@ -200,17 +206,22 @@ export default function CertificateDocument({ certificate, template, className =
           </p>
         </div>
 
-        <div className="mt-[clamp(12px,1.8cqw,20px)] grid flex-1 grid-cols-[minmax(0,1.5fr)_minmax(160px,0.8fr)] gap-5">
-          <div className="flex flex-col justify-between rounded-[26px] border border-slate-100 bg-white/90 px-[clamp(18px,2cqw,24px)] py-[clamp(16px,1.8cqw,22px)] shadow-[0_8px_24px_rgba(148,163,184,0.12)]">
+        <div className="mt-[clamp(10px,1.4cqw,16px)] grid min-h-0 flex-1 grid-cols-[minmax(0,1.55fr)_minmax(220px,0.9fr)] gap-4">
+          <div
+            className="flex min-h-0 flex-col justify-between rounded-[28px] border border-slate-100 px-[clamp(18px,2cqw,24px)] py-[clamp(16px,1.7cqw,20px)] shadow-[0_10px_28px_rgba(148,163,184,0.13)]"
+            style={{
+              background: `linear-gradient(180deg, rgba(255,255,255,0.98), ${hexToRgba(accentColor, 0.035)})`,
+            }}
+          >
             <div>
               <div className="flex items-center justify-center gap-3 text-center">
                 <span className="h-px w-[12%]" style={{ backgroundColor: hexToRgba(accentColor, 0.55) }} />
-                <p className="text-[10px] font-black uppercase tracking-[0.28em]" style={{ color: accentColor }}>
+                <p className="text-[11px] font-black uppercase tracking-[0.24em]" style={{ color: accentColor }}>
                   {documentLabel}
                 </p>
                 <span className="h-px w-[12%]" style={{ backgroundColor: hexToRgba(accentColor, 0.55) }} />
               </div>
-              <p className="mt-[clamp(12px,1.5cqw,16px)] text-center text-[clamp(12px,1.45cqw,18px)] leading-[1.8] text-slate-600">
+              <p className="mx-auto mt-[clamp(10px,1.2cqw,14px)] max-w-[92%] text-center text-[clamp(14px,1.58cqw,19px)] leading-[1.72] text-slate-600">
                 {narrative.paragraph}
               </p>
             </div>
@@ -222,48 +233,53 @@ export default function CertificateDocument({ certificate, template, className =
             </div>
           </div>
 
-          <div className="flex flex-col justify-between rounded-[26px] border border-slate-100 bg-slate-50/90 px-[clamp(16px,1.8cqw,22px)] py-[clamp(16px,1.8cqw,22px)]">
+          <div
+            className="flex min-h-0 flex-col justify-between rounded-[28px] border border-slate-100 px-[clamp(16px,1.7cqw,22px)] py-[clamp(16px,1.7cqw,20px)]"
+            style={{
+              background: 'linear-gradient(180deg, rgba(248,250,252,0.98), rgba(255,255,255,0.98))',
+            }}
+          >
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-500">Verification</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-500">Verification</p>
               <div className="mt-3 flex justify-center rounded-[22px] border border-slate-200 bg-white p-3 shadow-sm">
-                <QRCodeCanvas value={verifyUrl || certificateId} size={110} level="M" includeMargin={false} />
+                <QRCodeCanvas value={verifyUrl || certificateId} size={112} level="M" includeMargin={false} />
               </div>
-              <p className="mt-3 text-center text-[10px] font-black uppercase tracking-[0.24em]" style={{ color: accentColor }}>
+              <p className="mt-3 text-center text-[11px] font-black uppercase tracking-[0.22em]" style={{ color: accentColor }}>
                 Scan To Verify Online
               </p>
-              <p className="mt-2 text-center text-[10px] leading-5 text-slate-500">{activeTemplate.footerNote}</p>
+              <p className="mt-1.5 text-center text-[10px] leading-4 text-slate-500">{activeTemplate.footerNote}</p>
             </div>
 
-            <div className="mt-4 rounded-[22px] border border-slate-200 bg-white px-4 py-3">
-              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-500">Issued Through</p>
-              <p className="mt-2 text-sm font-semibold text-slate-800">{activeTemplate.organizationName}</p>
-              <p className="mt-1 text-[11px] text-slate-500">{activeTemplate.supportEmail}</p>
+            <div className="mt-3 rounded-[22px] border border-slate-200 bg-white px-4 py-3 shadow-sm">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">Issued Through</p>
+              <p className="mt-2 text-[14px] font-semibold text-slate-800">{activeTemplate.organizationName}</p>
+              <p className="mt-1 text-[12px] text-slate-500">{activeTemplate.supportEmail}</p>
             </div>
           </div>
         </div>
 
-        <footer className="mt-[clamp(12px,1.4cqw,18px)] grid grid-cols-3 items-end gap-5">
+        <footer className="mt-[clamp(8px,1cqw,12px)] grid grid-cols-3 items-end gap-4">
           <div className="text-center">
-            <p className="text-[clamp(16px,1.8cqw,22px)] font-bold text-slate-800">{issueDate}</p>
+            <p className="text-[clamp(18px,1.95cqw,24px)] font-bold text-slate-800">{issueDate}</p>
             <div className="mx-auto mt-2 h-px w-[72%] bg-slate-300" />
-            <p className="mt-2 text-[10px] font-black uppercase tracking-[0.24em] text-slate-500">Date of Issue</p>
+            <p className="mt-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Date of Issue</p>
           </div>
 
           <div className="text-center">
-            <p className="text-[10px] font-black uppercase tracking-[0.24em]" style={{ color: accentColor }}>
+            <p className="text-[11px] font-black uppercase tracking-[0.22em]" style={{ color: accentColor }}>
               {activeTemplate.sealLabel}
             </p>
-            <p className="mt-2 text-[12px] font-semibold text-slate-700">{activeTemplate.issuerName}</p>
-            <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-slate-400">{activeTemplate.issuerRole}</p>
+            <p className="mt-2 text-[13px] font-semibold text-slate-700">{activeTemplate.issuerName}</p>
+            <p className="mt-1 text-[11px] uppercase tracking-[0.15em] text-slate-400">{activeTemplate.issuerRole}</p>
           </div>
 
           <div className="text-center">
-            <div className="flex h-[44px] items-end justify-center">
-              <img src={founderSign} alt={signatureName} className="max-h-[44px] w-auto object-contain" />
+            <div className="flex h-[46px] items-end justify-center">
+              <img src={founderSign} alt={signatureName} className="max-h-[46px] w-auto object-contain" />
             </div>
             <div className="mx-auto mt-2 h-px w-[72%] bg-slate-300" />
-            <p className="mt-2 text-[12px] font-semibold text-slate-800">{signatureName}</p>
-            <p className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">{signatureRole}</p>
+            <p className="mt-2 text-[13px] font-semibold text-slate-800">{signatureName}</p>
+            <p className="mt-1 text-[11px] font-black uppercase tracking-[0.17em] text-slate-500">{signatureRole}</p>
           </div>
         </footer>
       </div>

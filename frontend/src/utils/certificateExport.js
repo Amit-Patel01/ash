@@ -2,6 +2,8 @@ import { toPng } from 'html-to-image'
 import { jsPDF } from 'jspdf'
 import { getCertificateFilename } from './certificateHelpers'
 
+export const CERTIFICATE_EXPORT_WIDTH = 1400
+
 const createImageDataUrl = async (element) => {
   if (!element) {
     throw new Error('Certificate preview is not ready yet.')

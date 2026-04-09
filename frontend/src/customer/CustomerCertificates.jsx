@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import { getDocumentTypeMeta, hexToRgba, mergeCertificateTemplate } from '../utils/certificateTemplate'
-import { downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
+import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
 import { formatCertificateDate, getCertificateDocumentLabel, getCertificateDocumentType } from '../utils/certificateHelpers'
 import CertificateDocument from '../components/certificates/CertificateDocument'
 
@@ -59,7 +59,7 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
 
       {/* Hidden high-res container for downloading */}
       <div className="absolute left-[-9999px] top-[-9999px]">
-        <div ref={previewRef} style={{ width: '1400px' }}>
+        <div ref={previewRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
           <CertificateDocument certificate={certificate} template={template} />
         </div>
       </div>

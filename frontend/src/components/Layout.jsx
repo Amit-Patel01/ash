@@ -6,15 +6,18 @@ import AnnouncementPopup from './AnnouncementPopup'
 
 const Layout = () => {
   const location = useLocation()
+  const hideShellRoutes = ['/chat', '/signup', '/login', '/verify']
   
   // Hide navbar/footer on specific pages
-  const hideNavbar = ['/chat', '/signup', '/login'].some(path => location.pathname.startsWith(path))
-  const hideFooter = ['/chat', '/signup', '/login', '/admin', '/employee'].some(path => location.pathname.startsWith(path))
+  const hideNavbar = hideShellRoutes.some(path => location.pathname.startsWith(path))
+  const hideFooter = [...hideShellRoutes, '/admin', '/employee'].some(path => location.pathname.startsWith(path))
+  const hideAnnouncement = location.pathname.startsWith('/verify')
+  const hideGlowBackground = location.pathname.startsWith('/verify')
 
   return (
     <div className="min-h-screen w-full flex flex-col relative text-slate-900">
-      <GlowBackground />
-      <AnnouncementPopup />
+      {!hideGlowBackground && <GlowBackground />}
+      {!hideAnnouncement && <AnnouncementPopup />}
       
       <div className="relative z-10 flex flex-col min-h-screen w-full overflow-x-hidden">
         {!hideNavbar && <Navbar />}
