@@ -6,7 +6,7 @@ import MobileRequiredPopup from '../components/MobileRequiredPopup'
 const navItems = [
   { path: '/customer', label: 'Dashboard', icon: 'dashboard' },
   { path: '/customer/my-courses', label: 'My Courses', icon: 'book' },
-  { path: '/customer/certificates', label: 'Certificates', icon: 'award' },
+  { path: '/customer/certificates', label: 'Documents', icon: 'award' },
   { path: '/customer/orders', label: 'My Orders', icon: 'orders' },
   { path: '/customer/support', label: 'Support Chat', icon: 'chat' },
   { path: '/customer/profile', label: 'Profile', icon: 'user' },

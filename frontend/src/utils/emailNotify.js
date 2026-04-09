@@ -18,7 +18,8 @@
  *   service_request_user      — user gets ack for service request
  *   sell_request_admin        — admin gets sell project request
  *   sell_request_user         — user gets ack for sell request
- *   certificate_issued        — student gets certificate email
+ *   course_meeting_scheduled  — student gets scheduled meeting info
+ *   certificate_issued        — student gets issued document email
  *   task_assigned             — employee gets task assignment email
  *   trading_enrollment_student — student enrolled in trading course
  */

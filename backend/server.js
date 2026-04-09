@@ -306,11 +306,19 @@ app.post("/reply", async (req, res) => {
   }
 });
 
-// ─── Cron Job: Session Reminders (every 10 min) ───────────────────────────────
-const { sendSessionNotification } = require("./services/notificationService");
-const { getSessionsForReminder, updateSession } = require("./services/firebaseService");
+// ─── Cron Job: Session + Course Plan Reminders (every 5 min) ──────────────────
+const {
+  sendSessionNotification,
+  sendCoursePlanNotification,
+} = require("./services/notificationService");
+const {
+  getSessionsForReminder,
+  getCoursesWithPlanMeetings,
+  getActiveCourseEnrollments,
+  updateCoursePlans,
+} = require("./services/firebaseService");
 
-cron.schedule("*/10 * * * *", async () => {
+cron.schedule("*/5 * * * *", async () => {
   try {
     const now = new Date();
     const todayStr = now.toISOString().split("T")[0];
@@ -323,6 +331,66 @@ cron.schedule("*/10 * * * *", async () => {
 
       if (diffMins > 50 && diffMins <= 70) {
         await sendSessionNotification(session.id, "REMINDER");
+      }
+    }
+
+    const [courses, enrollments] = await Promise.all([
+      getCoursesWithPlanMeetings(),
+      getActiveCourseEnrollments(),
+    ]);
+
+    for (const course of courses) {
+      if (!Array.isArray(course.plans) || course.plans.length === 0) continue;
+
+      const nextPlans = [...course.plans];
+      let plansChanged = false;
+
+      for (let index = 0; index < nextPlans.length; index += 1) {
+        const plan = nextPlans[index];
+        if (!plan?.meetingStartsAt) continue;
+
+        const meetingStartsAt = new Date(plan.meetingStartsAt);
+        if (Number.isNaN(meetingStartsAt.getTime())) continue;
+
+        const diffMins = (meetingStartsAt.getTime() - now.getTime()) / (1000 * 60);
+
+        if (!plan.meetingReminderSentAt && diffMins > 55 && diffMins <= 65) {
+          const reminderSentCount = await sendCoursePlanNotification(
+            course,
+            plan,
+            enrollments,
+            "REMINDER"
+          );
+
+          if (reminderSentCount > 0) {
+            nextPlans[index] = {
+              ...nextPlans[index],
+              meetingReminderSentAt: new Date().toISOString(),
+            };
+            plansChanged = true;
+          }
+        }
+
+        if (!nextPlans[index].meetingLiveSentAt && diffMins <= 5 && diffMins >= -5) {
+          const liveSentCount = await sendCoursePlanNotification(
+            course,
+            nextPlans[index],
+            enrollments,
+            "LIVE_NOW"
+          );
+
+          if (liveSentCount > 0) {
+            nextPlans[index] = {
+              ...nextPlans[index],
+              meetingLiveSentAt: new Date().toISOString(),
+            };
+            plansChanged = true;
+          }
+        }
+      }
+
+      if (plansChanged) {
+        await updateCoursePlans(course.id, nextPlans);
       }
     }
   } catch (error) {

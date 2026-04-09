@@ -86,6 +86,48 @@ const getActiveEnrolledEmails = async () => {
 };
 
 /**
+ * Get all active enrollments for generic courses
+ */
+const getActiveCourseEnrollments = async () => {
+  const snap = await db()
+    .collection("enrollments")
+    .where("status", "==", "active")
+    .get();
+
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+};
+
+/**
+ * Get generic courses that have at least one plan-level meeting configured
+ */
+const getCoursesWithPlanMeetings = async () => {
+  const snap = await db().collection("courses").get();
+
+  return snap.docs
+    .map((d) => ({ id: d.id, ...d.data() }))
+    .filter(
+      (course) =>
+        Array.isArray(course.plans) &&
+        course.plans.some(
+          (plan) => plan && (plan.meetingStartsAt || plan.meetingLink)
+        )
+    );
+};
+
+/**
+ * Update the full plans array for a generic course
+ */
+const updateCoursePlans = async (courseId, plans) => {
+  await db()
+    .collection("courses")
+    .doc(courseId)
+    .update({
+      plans,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+};
+
+/**
  * Certificate helpers
  */
 const getCertificateByUserAndCourse = async (userId, courseName) => {
@@ -135,6 +177,9 @@ module.exports = {
   updateSession,
   getSessionsForReminder,
   getActiveEnrolledEmails,
+  getActiveCourseEnrollments,
+  getCoursesWithPlanMeetings,
+  updateCoursePlans,
   getCertificateByUserAndCourse,
   addCertificate,
   getCertificateById,

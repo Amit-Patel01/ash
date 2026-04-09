@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
+import { getCertificateDocumentLabel } from '../utils/certificateHelpers'
 
 export default function CustomerMyCourses() {
   const { getUserEnrollments, courses, certificates } = useStore()
@@ -30,7 +31,7 @@ export default function CustomerMyCourses() {
       (enrollment.courseTitle && c.title === enrollment.courseTitle)
     )
 
-  const getCourseCertificate = (enrollment, course) => {
+  const getCourseDocuments = (enrollment, course) => {
     const courseNames = [
       course?.title,
       enrollment.courseTitle,
@@ -39,7 +40,41 @@ export default function CustomerMyCourses() {
       .map(normalize)
       .filter(Boolean)
 
-    return myCertificates.find(cert => courseNames.includes(normalize(cert.courseName))) || null
+    return myCertificates.filter(cert =>
+      cert.enrollmentId === enrollment.id ||
+      cert.courseId === course?.id ||
+      courseNames.includes(normalize(cert.courseName))
+    )
+  }
+
+  const getEnrollmentPlan = (course, enrollment) => {
+    const plans = Array.isArray(course?.plans) ? course.plans : []
+    const planKeys = [enrollment.planId, enrollment.planLabel, enrollment.planName]
+      .map(normalize)
+      .filter(Boolean)
+
+    if (planKeys.length === 0) return plans.length === 1 ? plans[0] : null
+
+    return plans.find(plan =>
+      planKeys.includes(normalize(plan.id)) ||
+      planKeys.includes(normalize(plan.label))
+    ) || (plans.length === 1 ? plans[0] : null)
+  }
+
+  const formatMeetingDateTime = (meetingStartsAt, meetingTimezone) => {
+    if (!meetingStartsAt) return ''
+    const parsed = new Date(meetingStartsAt)
+    if (Number.isNaN(parsed.getTime())) return ''
+
+    try {
+      return new Intl.DateTimeFormat('en-IN', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+        timeZone: meetingTimezone || undefined,
+      }).format(parsed)
+    } catch {
+      return parsed.toLocaleString('en-IN')
+    }
   }
 
   if (myEnrollments.length === 0) {
@@ -74,7 +109,7 @@ export default function CustomerMyCourses() {
             to="/customer/certificates"
             className="px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-xl text-sm font-medium text-amber-300 hover:bg-amber-500/15 transition-all"
           >
-            Certificates
+            Documents
           </Link>
           <button onClick={() => navigate('/courses')}
             className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm font-medium text-gray-300 hover:bg-white/10 transition-all">
@@ -97,11 +132,15 @@ export default function CustomerMyCourses() {
             }
           }
           const isExpanded = expandedId === enr.id
+          const enrolledPlan = getEnrollmentPlan(course, enr)
+          const meetingLink = enrolledPlan?.meetingLink || course.meetingLink || ''
+          const meetingDateTime = formatMeetingDateTime(enrolledPlan?.meetingStartsAt, enrolledPlan?.meetingTimezone)
 
           const hasMaterials = Array.isArray(course.materials) && course.materials.length > 0
-          const hasMeetingLink = !!course.meetingLink
-          const certificate = getCourseCertificate(enr, course)
-          const resourcesReady = [hasMeetingLink, hasMaterials, Boolean(certificate)].filter(Boolean).length
+          const hasMeetingLink = !!meetingLink
+          const courseDocuments = getCourseDocuments(enr, course)
+          const primaryDocument = courseDocuments[0] || null
+          const resourcesReady = [hasMeetingLink, hasMaterials, courseDocuments.length > 0].filter(Boolean).length
 
           return (
             <div key={enr.id} className="bg-gray-900/60 border border-white/5 rounded-2xl overflow-hidden hover:border-white/10 transition-all">
@@ -124,19 +163,33 @@ export default function CustomerMyCourses() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <p className="text-[11px] text-gray-500">Enrolled {formatDate(enr.enrolledAt || enr.createdAt)}</p>
                         {(enr.planLabel || enr.planName) && (
-                          <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-semibold text-gray-300">
-                            {enr.planLabel || enr.planName}
-                          </span>
+                          hasMeetingLink ? (
+                            <a
+                              href={meetingLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-semibold text-blue-300 hover:bg-blue-500/20 transition-colors"
+                            >
+                              {enr.planLabel || enr.planName} · Join
+                            </a>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-semibold text-gray-300">
+                              {enr.planLabel || enr.planName}
+                            </span>
+                          )
                         )}
                       </div>
                       {course.instructor && (
                         <p className="text-xs text-gray-500">👨‍🏫 {course.instructor}</p>
                       )}
+                      {meetingDateTime && (
+                        <p className="text-xs text-blue-300 mt-1">Next live session: {meetingDateTime}</p>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 flex-wrap justify-end">
-                      {certificate && (
+                      {courseDocuments.length > 0 && (
                         <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/20">
-                          Certificate Ready
+                          {courseDocuments.length} Document{courseDocuments.length !== 1 ? 's' : ''} Ready
                         </span>
                       )}
                       <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
@@ -154,20 +207,20 @@ export default function CustomerMyCourses() {
                       <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${hasMaterials ? 'bg-purple-500/10 border-purple-500/20 text-purple-300' : 'bg-white/5 border-white/10 text-gray-500'}`}>
                         Materials
                       </span>
-                      <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${certificate ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-white/5 border-white/10 text-gray-500'}`}>
-                        Certificate
+                      <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${courseDocuments.length > 0 ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-white/5 border-white/10 text-gray-500'}`}>
+                        Documents
                       </span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 mt-3 flex-wrap">
                     {hasMeetingLink && (
-                      <a href={course.meetingLink} target="_blank" rel="noopener noreferrer"
+                      <a href={meetingLink} target="_blank" rel="noopener noreferrer"
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 border border-blue-500/20 transition-colors">
                         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
                         </svg>
-                        Join Session
+                        Join {enrolledPlan?.label || enr.planLabel || 'Session'}
                       </a>
                     )}
                     {hasMaterials && (
@@ -182,18 +235,18 @@ export default function CustomerMyCourses() {
                         </svg>
                       </button>
                     )}
-                    {certificate && (
+                    {primaryDocument && (
                       <Link
-                        to={`/verify?id=${certificate.certificate_id}`}
+                        to={`/verify?id=${primaryDocument.certificate_id}`}
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 border border-amber-500/20 transition-colors"
                       >
                         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0Z" />
                         </svg>
-                        View Certificate
+                        View Documents
                       </Link>
                     )}
-                    {!hasMaterials && !hasMeetingLink && (
+                    {!hasMaterials && !hasMeetingLink && courseDocuments.length === 0 && (
                       <button
                         onClick={() => navigate('/customer/support')}
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white/5 text-gray-300 hover:bg-white/10 border border-white/10 transition-colors"
@@ -207,6 +260,27 @@ export default function CustomerMyCourses() {
 
               {isExpanded && hasMaterials && (
                 <div className="px-5 pb-5 border-t border-white/5 pt-4">
+                  {meetingDateTime && (
+                    <div className="mb-4 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
+                      <div className="flex items-center justify-between gap-3 flex-wrap">
+                        <div>
+                          <p className="text-xs font-bold text-blue-300 uppercase tracking-wider mb-1">Plan Session</p>
+                          <p className="text-sm font-semibold text-white">{enrolledPlan?.label || enr.planLabel || 'Live session'}</p>
+                          <p className="text-[11px] text-blue-100/80">{meetingDateTime}</p>
+                        </div>
+                        {hasMeetingLink && (
+                          <a
+                            href={meetingLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-2 rounded-xl bg-blue-500 text-white text-xs font-bold hover:bg-blue-400 transition-colors"
+                          >
+                            Join Meeting
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  )}
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Study Materials</p>
                   <div className="space-y-2">
                     {course.materials.map((mat, i) => (
@@ -227,20 +301,24 @@ export default function CustomerMyCourses() {
                       </a>
                     ))}
                   </div>
-                  {certificate && (
+                  {courseDocuments.length > 0 && (
                     <div className="mt-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20">
-                      <p className="text-xs font-bold text-amber-300 uppercase tracking-wider mb-2">Certificate Issued</p>
-                      <div className="flex items-center justify-between gap-3 flex-wrap">
-                        <div>
-                          <p className="text-sm font-semibold text-white">{certificate.courseName}</p>
-                          <p className="text-[11px] text-amber-200/80">ID: {certificate.certificate_id}</p>
-                        </div>
-                        <Link
-                          to={`/verify?id=${certificate.certificate_id}`}
-                          className="px-3 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-bold hover:bg-amber-400 transition-colors"
-                        >
-                          Verify Certificate
-                        </Link>
+                      <p className="text-xs font-bold text-amber-300 uppercase tracking-wider mb-2">Issued Documents</p>
+                      <div className="space-y-2">
+                        {courseDocuments.map(document => (
+                          <div key={document.id} className="flex items-center justify-between gap-3 flex-wrap rounded-xl border border-amber-500/10 bg-black/10 px-3 py-3">
+                            <div>
+                              <p className="text-sm font-semibold text-white">{getCertificateDocumentLabel(document, document.templateSnapshot)}</p>
+                              <p className="text-[11px] text-amber-200/80">ID: {document.certificate_id}</p>
+                            </div>
+                            <Link
+                              to={`/verify?id=${document.certificate_id}`}
+                              className="px-3 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-bold hover:bg-amber-400 transition-colors"
+                            >
+                              Verify
+                            </Link>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}

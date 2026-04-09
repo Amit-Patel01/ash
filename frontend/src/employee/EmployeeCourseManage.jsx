@@ -1,8 +1,71 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
+import { DOCUMENT_TYPES } from '../utils/certificateTemplate'
+import { emailNotify } from '../utils/emailNotify'
 
-const PLAN_BLANK = { label: '', duration: '', price: '', isFree: false, highlighted: false, features: '' }
+const DEFAULT_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata'
+const PLAN_BLANK = {
+  label: '',
+  duration: '',
+  price: '',
+  isFree: false,
+  highlighted: false,
+  features: '',
+  meetingLink: '',
+  meetingDateTime: '',
+  meetingTimezone: DEFAULT_TIMEZONE,
+}
+
+const normalizeText = (value) => String(value || '').trim().toLowerCase()
+
+const buildPlanId = (label) =>
+  normalizeText(label)
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '') || `plan-${Date.now()}`
+
+const formatDateTimeInput = (value) => {
+  if (!value) return ''
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return ''
+  const timezoneOffset = parsed.getTimezoneOffset() * 60000
+  return new Date(parsed.getTime() - timezoneOffset).toISOString().slice(0, 16)
+}
+
+const formatMeetingPreview = (meetingStartsAt, meetingTimezone = DEFAULT_TIMEZONE) => {
+  if (!meetingStartsAt) return 'No meeting time set'
+  const parsed = new Date(meetingStartsAt)
+  if (Number.isNaN(parsed.getTime())) return 'Invalid meeting time'
+  try {
+    return new Intl.DateTimeFormat('en-IN', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+      timeZone: meetingTimezone || DEFAULT_TIMEZONE,
+    }).format(parsed)
+  } catch {
+    return parsed.toLocaleString('en-IN')
+  }
+}
+
+const matchesPlanEnrollment = (enrollment, plan, course) => {
+  const courseMatches =
+    enrollment.courseId === course.id ||
+    normalizeText(enrollment.courseTitle) === normalizeText(course.title) ||
+    normalizeText(enrollment.courseName) === normalizeText(course.title)
+
+  if (!courseMatches) return false
+
+  const planKeys = [enrollment.planId, enrollment.planLabel, enrollment.planName]
+    .map(normalizeText)
+    .filter(Boolean)
+
+  if (planKeys.length === 0) return (course.plans || []).length <= 1
+
+  return (
+    planKeys.includes(normalizeText(plan?.id)) ||
+    planKeys.includes(normalizeText(plan?.label))
+  )
+}
 
 export default function EmployeeCourseManage() {
   const { courses, updateCourse, enrollments, certificates, issueCertificate, revokeCertificate } = useStore()
@@ -29,13 +92,21 @@ export default function EmployeeCourseManage() {
   const [meetingLink, setMeetingLink] = useState('')
   const [editMeet, setEditMeet] = useState(false)
   const [certificateBusyId, setCertificateBusyId] = useState('')
+  const planMeetingStats = useMemo(() => {
+    const plans = Array.isArray(selectedCourse?.plans) ? selectedCourse.plans : []
+    return {
+      scheduled: plans.filter(plan => plan?.meetingStartsAt).length,
+      linksReady: plans.filter(plan => plan?.meetingLink).length,
+    }
+  }, [selectedCourse])
   const matchesCourseEnrollment = (enrollment, course) =>
     enrollment.courseId === course.id ||
     (enrollment.courseTitle && enrollment.courseTitle === course.title)
 
-  const getEnrollmentCertificate = (enrollment, course) =>
+  const getEnrollmentCertificate = (enrollment, course, documentType = 'certificate') =>
     certificates.find(cert =>
       cert.status === 'approved' &&
+      (cert.documentType || 'certificate') === documentType &&
       cert.userId === enrollment.userId &&
       (
         cert.enrollmentId === enrollment.id ||
@@ -64,7 +135,10 @@ export default function EmployeeCourseManage() {
       price: plan.price || '',
       isFree: plan.isFree || plan.price === 0 || false,
       highlighted: plan.highlighted || false,
-      features: Array.isArray(plan.features) ? plan.features.join('\n') : ''
+      features: Array.isArray(plan.features) ? plan.features.join('\n') : '',
+      meetingLink: plan.meetingLink || '',
+      meetingDateTime: formatDateTimeInput(plan.meetingStartsAt),
+      meetingTimezone: plan.meetingTimezone || DEFAULT_TIMEZONE,
     })
     setEditingPlanIdx(idx)
     setShowPlanModal(true)
@@ -75,14 +149,30 @@ export default function EmployeeCourseManage() {
     setSaving(true)
     try {
       const plans = Array.isArray(selectedCourse.plans) ? [...selectedCourse.plans] : []
+      const existingPlan = editingPlanIdx !== null ? plans[editingPlanIdx] : null
+      const normalizedMeetingLink = planForm.meetingLink.trim()
+      const normalizedMeetingStartsAt = planForm.meetingDateTime ? new Date(planForm.meetingDateTime).toISOString() : ''
+      const normalizedMeetingTimezone = planForm.meetingTimezone || DEFAULT_TIMEZONE
+      const meetingChanged =
+        normalizeText(existingPlan?.meetingLink) !== normalizeText(normalizedMeetingLink) ||
+        (existingPlan?.meetingStartsAt || '') !== normalizedMeetingStartsAt ||
+        (existingPlan?.meetingTimezone || DEFAULT_TIMEZONE) !== normalizedMeetingTimezone
       const planData = {
-        id: planForm.label.toLowerCase().replace(/\s+/g, '-'),
+        ...(existingPlan || {}),
+        id: existingPlan?.id || buildPlanId(planForm.label),
         label: planForm.label.trim(),
         duration: planForm.duration.trim(),
         price: planForm.isFree ? 0 : Number(planForm.price) || 0,
         isFree: planForm.isFree,
         highlighted: planForm.highlighted,
-        features: planForm.features.split('\n').map(s => s.trim()).filter(Boolean)
+        features: planForm.features.split('\n').map(s => s.trim()).filter(Boolean),
+        meetingLink: normalizedMeetingLink,
+        meetingStartsAt: normalizedMeetingStartsAt,
+        meetingTimezone: normalizedMeetingStartsAt ? normalizedMeetingTimezone : '',
+      }
+      if (meetingChanged) {
+        planData.meetingReminderSentAt = ''
+        planData.meetingLiveSentAt = ''
       }
       if (editingPlanIdx !== null) {
         plans[editingPlanIdx] = planData
@@ -90,6 +180,33 @@ export default function EmployeeCourseManage() {
         plans.push(planData)
       }
       await updateCourse(selectedCourse.id, { plans })
+
+      if (meetingChanged && normalizedMeetingStartsAt) {
+        const recipients = courseEnrollments.filter(enrollment =>
+          enrollment.userEmail &&
+          matchesPlanEnrollment(enrollment, planData, selectedCourse)
+        )
+
+        await Promise.all(
+          recipients.map(enrollment =>
+            emailNotify('course_meeting_scheduled', {
+              studentName: enrollment.userName || enrollment.userEmail,
+              studentEmail: enrollment.userEmail,
+              courseTitle: selectedCourse.title,
+              planLabel: planData.label || enrollment.planLabel || enrollment.planName || '',
+              meetingTime: formatMeetingPreview(normalizedMeetingStartsAt, normalizedMeetingTimezone),
+              meetingLink: normalizedMeetingLink || selectedCourse.meetingLink || '',
+              employeeName:
+                userProfile?.displayName ||
+                currentUser?.displayName ||
+                selectedCourse.instructor ||
+                'Instructor',
+              reason: 'schedule_updated',
+            })
+          )
+        )
+      }
+
       setSelectedCourse({ ...selectedCourse, plans })
       setShowPlanModal(false)
     } finally {
@@ -144,9 +261,9 @@ export default function EmployeeCourseManage() {
     ? enrollments.filter(e => e.status === 'active' && matchesCourseEnrollment(e, selectedCourse))
     : []
 
-  const handleIssueCertificate = async (enrollment) => {
+  const handleIssueCertificate = async (enrollment, documentType = 'certificate') => {
     if (!selectedCourse) return
-    setCertificateBusyId(enrollment.id)
+    setCertificateBusyId(`${enrollment.id}:${documentType}`)
     try {
       await issueCertificate(
         {
@@ -159,6 +276,9 @@ export default function EmployeeCourseManage() {
           issuedByUid: currentUser?.uid,
           issuedByName: userProfile?.displayName || currentUser?.displayName || 'Employee',
           issuedByRole: userProfile?.role || 'employee',
+          documentType,
+          internshipRole: selectedCourse.title,
+          internshipDuration: enrollment.planLabel || enrollment.planName || '',
         }
       )
     } finally {
@@ -166,9 +286,9 @@ export default function EmployeeCourseManage() {
     }
   }
 
-  const handleRevokeCertificate = async (certificateId, enrollmentId) => {
+  const handleRevokeCertificate = async (certificateId, enrollmentId, documentType = 'certificate') => {
     if (!window.confirm('Revoke this certificate?')) return
-    setCertificateBusyId(enrollmentId)
+    setCertificateBusyId(`${enrollmentId}:${documentType}`)
     try {
       await revokeCertificate(certificateId)
     } finally {
@@ -246,6 +366,7 @@ export default function EmployeeCourseManage() {
                     {(selectedCourse.plans || []).length} plan{(selectedCourse.plans || []).length !== 1 ? 's' : ''}
                   </p>
                   <p className="text-xs text-gray-500">{courseEnrollments.length} enrolled</p>
+                  <p className="text-[10px] text-gray-600 mt-1">{planMeetingStats.scheduled} scheduled · {planMeetingStats.linksReady} links ready</p>
                 </div>
               </div>
 
@@ -311,6 +432,25 @@ export default function EmployeeCourseManage() {
                               {plan.features.length > 3 && <li className="text-[10px] text-gray-600">+{plan.features.length - 3} more</li>}
                             </ul>
                           )}
+                          <div className="rounded-xl border border-white/5 bg-black/20 p-3 mb-3">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-500 mb-1">Plan Meeting</p>
+                            <p className="text-[11px] text-white">{formatMeetingPreview(plan.meetingStartsAt, plan.meetingTimezone)}</p>
+                            <div className="flex flex-wrap items-center gap-2 mt-2">
+                              <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${plan.meetingLink ? 'bg-blue-500/10 border-blue-500/20 text-blue-300' : 'bg-white/5 border-white/10 text-gray-500'}`}>
+                                {plan.meetingLink ? 'Join link ready' : 'Join link pending'}
+                              </span>
+                              {plan.meetingReminderSentAt && (
+                                <span className="px-2 py-0.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-[10px] font-semibold text-emerald-300">
+                                  Reminder sent
+                                </span>
+                              )}
+                              {plan.meetingLiveSentAt && (
+                                <span className="px-2 py-0.5 rounded-full border border-rose-500/20 bg-rose-500/10 text-[10px] font-semibold text-rose-300">
+                                  Live mail sent
+                                </span>
+                              )}
+                            </div>
+                          </div>
                           <div className="flex gap-1 mt-auto">
                             <button onClick={() => movePlan(idx, -1)} disabled={idx === 0} className="p-1.5 rounded-lg bg-white/5 text-gray-500 hover:bg-white/10 disabled:opacity-30 text-xs">↑</button>
                             <button onClick={() => movePlan(idx, 1)} disabled={idx === (selectedCourse.plans || []).length - 1} className="p-1.5 rounded-lg bg-white/5 text-gray-500 hover:bg-white/10 disabled:opacity-30 text-xs">↓</button>
@@ -356,7 +496,10 @@ export default function EmployeeCourseManage() {
               {activeTab === 'meeting' && (
                 <div className="bg-gray-900/60 border border-white/5 rounded-2xl p-5">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-sm font-bold text-white">Meeting / Live Session Link</h3>
+                    <div>
+                      <h3 className="text-sm font-bold text-white">Default Meeting / Live Session Link</h3>
+                      <p className="text-[11px] text-gray-500 mt-1">Plan-wise links set in the Plans tab will override this default link for matching students.</p>
+                    </div>
                     <button onClick={() => setEditMeet(!editMeet)} className="text-xs font-bold text-blue-400 hover:text-blue-300">{editMeet ? 'Cancel' : 'Edit'}</button>
                   </div>
                   {editMeet ? (
@@ -370,6 +513,23 @@ export default function EmployeeCourseManage() {
                   ) : (
                     <p className="text-sm text-gray-600 italic">No meeting link set. Click Edit to add.</p>
                   )}
+                  {!!selectedCourse.plans?.length && (
+                    <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {selectedCourse.plans.map((plan, idx) => (
+                        <div key={`${plan.id || plan.label || idx}-meeting`} className="rounded-xl border border-white/5 bg-black/20 p-3">
+                          <div className="flex items-center justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-semibold text-white">{plan.label}</p>
+                              <p className="text-[11px] text-gray-500">{formatMeetingPreview(plan.meetingStartsAt, plan.meetingTimezone)}</p>
+                            </div>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${plan.meetingLink ? 'border-blue-500/20 bg-blue-500/10 text-blue-300' : 'border-white/10 bg-white/5 text-gray-500'}`}>
+                              {plan.meetingLink ? 'Plan link ready' : 'Fallback only'}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -380,8 +540,11 @@ export default function EmployeeCourseManage() {
                   {courseEnrollments.length === 0 ? <p className="text-sm text-gray-600 italic py-4">No students enrolled yet</p> : (
                     <div className="space-y-2">
                       {courseEnrollments.map(enr => {
-                        const certificate = getEnrollmentCertificate(enr, selectedCourse)
-                        const busy = certificateBusyId === enr.id
+                        const documents = DOCUMENT_TYPES.map(type => ({
+                          type: type.id,
+                          meta: type,
+                          record: getEnrollmentCertificate(enr, selectedCourse, type.id),
+                        }))
                         return (
                         <div key={enr.id} className="flex flex-col gap-4 p-4 bg-white/[0.02] rounded-xl border border-white/5 lg:flex-row lg:items-center">
                           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
@@ -391,12 +554,11 @@ export default function EmployeeCourseManage() {
                             <p className="text-sm font-medium text-white truncate">{enr.userName || '—'}</p>
                             <p className="text-[10px] text-gray-500">{enr.userEmail} · {enr.planLabel || 'Standard'}</p>
                             <div className="flex flex-wrap items-center gap-2 mt-2">
-                              <span className={`px-2 py-0.5 rounded-full border text-[10px] font-bold ${certificate ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-white/5 border-white/10 text-gray-500'}`}>
-                                {certificate ? 'Certificate Issued' : 'Certificate Pending'}
-                              </span>
-                              {certificate?.certificate_id && (
-                                <span className="text-[10px] font-mono text-gray-400">{certificate.certificate_id}</span>
-                              )}
+                              {documents.map(({ type, meta, record }) => (
+                                <span key={type} className={`px-2 py-0.5 rounded-full border text-[10px] font-bold ${record ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-white/5 border-white/10 text-gray-500'}`}>
+                                  {record ? `${meta.shortLabel} Issued` : `${meta.shortLabel} Pending`}
+                                </span>
+                              ))}
                             </div>
                           </div>
                           <div className="text-left lg:text-right flex-shrink-0">
@@ -404,28 +566,30 @@ export default function EmployeeCourseManage() {
                             {enr.userMobile && <p className="text-[10px] text-gray-500">{enr.userMobile}</p>}
                           </div>
                           <div className="flex flex-wrap items-center gap-2 lg:justify-end">
-                            {certificate ? (
-                              <>
+                            {documents.map(({ type, meta, record }) => {
+                              const busy = certificateBusyId === `${enr.id}:${type}`
+                              const buttonLabel = record ? `Revoke ${meta.shortLabel}` : `Issue ${meta.shortLabel}`
+                              return record ? (
                                 <button
-                                  onClick={() => handleRevokeCertificate(certificate.id, enr.id)}
+                                  key={type}
+                                  onClick={() => handleRevokeCertificate(record.id, enr.id, type)}
                                   disabled={busy}
                                   className="px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-xs font-bold text-red-300 hover:bg-red-500/20 disabled:opacity-50 transition-all"
+                                  title={record.certificate_id || meta.label}
                                 >
-                                  {busy ? 'Updating...' : 'Revoke'}
+                                  {busy ? 'Updating...' : buttonLabel}
                                 </button>
-                                <span className="text-[10px] text-gray-500">
-                                  Issued {certificate.approval_date?.toDate ? certificate.approval_date.toDate().toLocaleDateString('en-IN') : 'recently'}
-                                </span>
-                              </>
-                            ) : (
-                              <button
-                                onClick={() => handleIssueCertificate(enr)}
-                                disabled={busy}
-                                className="px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/20 text-xs font-bold text-emerald-300 hover:bg-emerald-500/25 disabled:opacity-50 transition-all"
-                              >
-                                {busy ? 'Issuing...' : 'Issue Certificate'}
-                              </button>
-                            )}
+                              ) : (
+                                <button
+                                  key={type}
+                                  onClick={() => handleIssueCertificate(enr, type)}
+                                  disabled={busy}
+                                  className="px-3 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/20 text-xs font-bold text-emerald-300 hover:bg-emerald-500/25 disabled:opacity-50 transition-all"
+                                >
+                                  {busy ? 'Issuing...' : buttonLabel}
+                                </button>
+                              )
+                            })}
                           </div>
                         </div>
                       )})}
@@ -478,6 +642,39 @@ export default function EmployeeCourseManage() {
                 <textarea value={planForm.features} onChange={e => setPlanForm({...planForm, features: e.target.value})} rows={5}
                   placeholder="30 Recorded Videos&#10;Weekly Live Sessions&#10;1-on-1 Doubt Clearing&#10;Certificate on Completion&#10;WhatsApp Support Group"
                   className="input resize-none font-mono text-xs" />
+              </div>
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <label className="label">Plan Meeting Link</label>
+                  <input
+                    value={planForm.meetingLink}
+                    onChange={e => setPlanForm({ ...planForm, meetingLink: e.target.value })}
+                    placeholder="https://meet.google.com/... or Zoom link"
+                    className="input"
+                  />
+                  <p className="text-[10px] text-gray-500 mt-1">Students on this plan will join this link directly from their customer panel.</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-[1.6fr,1fr] gap-3">
+                  <div>
+                    <label className="label">Meeting Start Time</label>
+                    <input
+                      type="datetime-local"
+                      value={planForm.meetingDateTime}
+                      onChange={e => setPlanForm({ ...planForm, meetingDateTime: e.target.value })}
+                      className="input"
+                    />
+                    <p className="text-[10px] text-gray-500 mt-1">Reminder mail goes 60 minutes before, and another mail goes when the meeting starts.</p>
+                  </div>
+                  <div>
+                    <label className="label">Timezone</label>
+                    <input
+                      value={planForm.meetingTimezone}
+                      onChange={e => setPlanForm({ ...planForm, meetingTimezone: e.target.value })}
+                      placeholder="Asia/Kolkata"
+                      className="input"
+                    />
+                  </div>
+                </div>
               </div>
               {/* Highlighted */}
               <div className="flex items-center justify-between p-3 bg-white/[0.02] rounded-xl border border-white/5">

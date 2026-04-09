@@ -20,9 +20,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { useStore } from '../store/StoreContext'
-import { hexToRgba, mergeCertificateTemplate } from '../utils/certificateTemplate'
+import { getDocumentTypeMeta, hexToRgba, mergeCertificateTemplate } from '../utils/certificateTemplate'
 import { downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
-import { formatCertificateDate } from '../utils/certificateHelpers'
+import { formatCertificateDate, getCertificateDocumentLabel, getCertificateDocumentType } from '../utils/certificateHelpers'
 import CertificateDocument from '../components/certificates/CertificateDocument'
 
 function Surface({ children, className = '' }) {
@@ -78,13 +78,16 @@ export default function VerifyCertificateRefined() {
   const [downloading, setDownloading] = useState('')
   const certificateRef = useRef(null)
 
+  const documentType = getCertificateDocumentType(certData)
+  const documentMeta = getDocumentTypeMeta(documentType)
   const activeTemplate = useMemo(
-    () => mergeCertificateTemplate(certData?.templateSnapshot || certificateTemplate),
-    [certData?.templateSnapshot, certificateTemplate]
+    () => mergeCertificateTemplate(certData?.templateSnapshot || certificateTemplate, documentType),
+    [certData?.templateSnapshot, certificateTemplate, documentType]
   )
 
   const holderName = certData?.userName || certData?.name || 'Student'
   const courseName = certData?.courseName || certData?.course || 'Verified Course'
+  const documentLabel = getCertificateDocumentLabel(certData, activeTemplate)
   const achievementDate = certData
     ? formatCertificateDate(certData.approval_date || certData.createdAt || certData.date)
     : 'Pending verification'
@@ -93,7 +96,7 @@ export default function VerifyCertificateRefined() {
 
   const portalFeatures = [
     { label: 'QR / Shared Link Ready', value: linkedId ? 'Active' : 'Available' },
-    { label: 'Certificate Preview', value: 'Live' },
+    { label: `${documentMeta.shortLabel} Preview`, value: 'Live' },
     { label: 'Download Formats', value: 'PNG + PDF' },
   ]
 
@@ -120,7 +123,7 @@ export default function VerifyCertificateRefined() {
       const snapshot = await getDocs(q)
 
       if (snapshot.empty) {
-        setError('Certificate not found or not yet approved.')
+        setError('Document not found or not yet approved.')
         setStatus('error')
         return
       }
@@ -133,7 +136,7 @@ export default function VerifyCertificateRefined() {
       setStatus('success')
     } catch (err) {
       console.error('Verification error:', err)
-      setError('An error occurred while verifying the certificate. Please try again.')
+      setError('An error occurred while verifying the document. Please try again.')
       setStatus('error')
     }
   }
@@ -167,7 +170,7 @@ export default function VerifyCertificateRefined() {
         await downloadCertificatePdf(certificateRef.current, certData)
       }
     } catch (downloadError) {
-      console.error(`Certificate ${format} export failed:`, downloadError)
+      console.error(`Document ${format} export failed:`, downloadError)
       window.alert(`Unable to generate ${format.toUpperCase()} right now.`)
     } finally {
       setDownloading('')
@@ -191,7 +194,7 @@ export default function VerifyCertificateRefined() {
             <div className="flex flex-wrap items-center gap-3">
               <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-cyan-200">
                 <ShieldCheck size={14} />
-                Certificate Verification Portal
+                Document Verification Portal
               </div>
               <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/20 bg-amber-400/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-amber-200">
                 <ScanLine size={14} />
@@ -202,10 +205,10 @@ export default function VerifyCertificateRefined() {
             <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_290px]">
               <div>
                 <h1 className="max-w-3xl text-4xl font-black tracking-tight text-white md:text-5xl">
-                  Scan karo, verify karo, aur certificate wahi se download bhi karo.
+                  Scan karo, verify karo, aur document wahi se download bhi karo.
                 </h1>
                 <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-                  QR scan ya shared verification link se aane par certificate direct open ho jayega. Yahin se authenticity check, certificate preview, aur PNG/PDF download available rahega.
+                  QR scan ya shared verification link se aane par document direct open ho jayega. Yahin se authenticity check, preview, aur PNG/PDF download available rahega.
                 </p>
 
                 <div className="mt-6 flex flex-wrap gap-3">
@@ -232,15 +235,15 @@ export default function VerifyCertificateRefined() {
                 <div className="mt-5 space-y-3">
                   <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                     <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Step 1</p>
-                    <p className="mt-2 text-sm text-white">Certificate ka QR scan ya ID paste karein.</p>
+                    <p className="mt-2 text-sm text-white">Document ka QR scan ya ID paste karein.</p>
                   </div>
                   <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                     <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Step 2</p>
-                    <p className="mt-2 text-sm text-white">System certificate ID ko approved record se match karega.</p>
+                        <p className="mt-2 text-sm text-white">System document ID ko approved record se match karega.</p>
                   </div>
                   <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                     <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Step 3</p>
-                    <p className="mt-2 text-sm text-white">Verified certificate preview aur download buttons turant mil jayenge.</p>
+                    <p className="mt-2 text-sm text-white">Verified document preview aur download buttons turant mil jayenge.</p>
                   </div>
                 </div>
               </Surface>
@@ -260,7 +263,7 @@ export default function VerifyCertificateRefined() {
                   <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                   <input
                     type="text"
-                    placeholder={`Enter Certificate ID (${activeTemplate.certificatePrefix}-XXXXXXXX)`}
+                    placeholder={`Enter ${documentMeta.shortLabel} ID (${activeTemplate.certificatePrefix}-XXXXXXXX)`}
                     value={certId}
                     onChange={(event) => setCertId(event.target.value.toUpperCase())}
                     className="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-12 py-4 text-base font-semibold text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
@@ -302,9 +305,9 @@ export default function VerifyCertificateRefined() {
                           <Award size={28} />
                         </div>
                         <div>
-                          <h2 className="text-xl font-black text-white">Ready for secure verification</h2>
-                          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-                            Certificate ID enter karte hi authentic record milega, certificate open hoga, aur user usi page se PNG ya PDF download kar sakega.
+                    <h2 className="text-xl font-black text-white">Ready for secure verification</h2>
+                      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
+                            Document ID enter karte hi authentic record milega, preview open hoga, aur user usi page se PNG ya PDF download kar sakega.
                           </p>
                         </div>
                       </div>
@@ -329,7 +332,7 @@ export default function VerifyCertificateRefined() {
                     <div className="flex items-center gap-4">
                       <div className="h-12 w-12 animate-spin rounded-full border-2 border-cyan-400/20 border-t-cyan-300" />
                       <div>
-                        <p className="text-lg font-black text-white">Checking certificate authenticity...</p>
+                        <p className="text-lg font-black text-white">Checking document authenticity...</p>
                         <p className="mt-1 text-sm text-slate-400">Approved record, issuer details, and downloadable preview load kiye ja rahe hain.</p>
                       </div>
                     </div>
@@ -382,11 +385,11 @@ export default function VerifyCertificateRefined() {
                       <div>
                         <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-emerald-300">
                           <CheckCircle size={14} />
-                          Verified Certificate Found
+                          Verified {documentMeta.shortLabel} Found
                         </div>
                         <h2 className="mt-4 text-3xl font-black text-white">{holderName}</h2>
                         <p className="mt-2 text-base text-slate-300">
-                          Successfully completed <span className="font-semibold text-white">{courseName}</span>
+                          {documentLabel} issued for <span className="font-semibold text-white">{courseName}</span>
                         </p>
                       </div>
 
@@ -397,14 +400,14 @@ export default function VerifyCertificateRefined() {
                           borderColor: hexToRgba(activeTemplate.accentColor, 0.24),
                         }}
                       >
-                        <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-400">Certificate ID</p>
+                        <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-400">{activeTemplate.referenceLabel || 'Document ID'}</p>
                         <p className="mt-2 font-mono text-base font-bold text-cyan-200">{certData.certificate_id}</p>
                         <p className="mt-3 text-xs text-slate-400">This page is safe to share for verification and downloads.</p>
                       </div>
                     </div>
 
                     <div className="mt-6 grid gap-4 md:grid-cols-3">
-                      <DetailRow icon={BookOpen} label="Course Name" value={courseName} />
+                      <DetailRow icon={BookOpen} label="Program / Document" value={`${documentLabel} • ${courseName}`} />
                       <DetailRow icon={Calendar} label="Issue Date" value={achievementDate} />
                       <DetailRow icon={User} label="Issued By" value={`${issuerName} • ${issuerRole}`} />
                     </div>
@@ -425,12 +428,12 @@ export default function VerifyCertificateRefined() {
                   <p className="text-[11px] font-black uppercase tracking-[0.3em] text-cyan-300">Quick Actions</p>
                   <h3 className="mt-3 text-xl font-black text-white">Download or share instantly</h3>
                   <p className="mt-2 text-sm leading-6 text-slate-300">
-                    Verified certificate milte hi yahin se ID copy, PNG export, ya PDF download kiya ja sakta hai.
+                    Verified document milte hi yahin se ID copy, PNG export, ya PDF download kiya ja sakta hai.
                   </p>
 
                   <div className="mt-5 grid gap-3">
                     <ActionButton icon={Copy} onClick={handleCopyId}>
-                      {copied ? 'Copied ID' : 'Copy Certificate ID'}
+                      {copied ? 'Copied ID' : `Copy ${documentMeta.shortLabel} ID`}
                     </ActionButton>
                     <ActionButton
                       icon={FileImage}
@@ -475,12 +478,12 @@ export default function VerifyCertificateRefined() {
                   <p className="text-[11px] font-black uppercase tracking-[0.3em] text-cyan-300">What You Get</p>
                   <div className="mt-4 space-y-3">
                     <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
-                      <p className="text-sm font-semibold text-white">Live certificate preview</p>
-                      <p className="mt-1 text-xs leading-5 text-slate-400">Verification ke baad same certificate design page par render hota hai.</p>
+                      <p className="text-sm font-semibold text-white">Live document preview</p>
+                      <p className="mt-1 text-xs leading-5 text-slate-400">Verification ke baad same approved design page par render hota hai.</p>
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                       <p className="text-sm font-semibold text-white">PNG + PDF exports</p>
-                      <p className="mt-1 text-xs leading-5 text-slate-400">Verified certificate ko direct image ya printable PDF me save kar sakte ho.</p>
+                      <p className="mt-1 text-xs leading-5 text-slate-400">Verified document ko direct image ya printable PDF me save kar sakte ho.</p>
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                       <p className="text-sm font-semibold text-white">Scan-friendly access</p>
@@ -496,7 +499,7 @@ export default function VerifyCertificateRefined() {
                     </div>
                     <div>
                       <p className="text-[11px] font-black uppercase tracking-[0.3em] text-amber-300">Trusted Design</p>
-                      <p className="mt-1 text-sm text-slate-300">Verification successful hote hi branded certificate preview load ho jayega.</p>
+                      <p className="mt-1 text-sm text-slate-300">Verification successful hote hi branded document preview load ho jayega.</p>
                     </div>
                   </div>
                 </Surface>
@@ -515,7 +518,7 @@ export default function VerifyCertificateRefined() {
               <div className="flex flex-wrap items-center justify-between gap-3 px-2 pb-4 md:px-1">
                 <div>
                   <p className="text-[11px] font-black uppercase tracking-[0.3em] text-cyan-300">Verified Preview</p>
-                  <h2 className="mt-2 text-2xl font-black text-white">Certificate Document</h2>
+                  <h2 className="mt-2 text-2xl font-black text-white">{documentLabel}</h2>
                   <p className="mt-1 text-sm text-slate-400">QR scan, direct link, aur manual verification sab ke liye same official preview.</p>
                 </div>
                 <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-emerald-300">
@@ -539,10 +542,10 @@ export default function VerifyCertificateRefined() {
 
             <div className="space-y-4">
               <Surface className="p-5">
-                <p className="text-[11px] font-black uppercase tracking-[0.3em] text-cyan-300">Certificate Details</p>
+                <p className="text-[11px] font-black uppercase tracking-[0.3em] text-cyan-300">Document Details</p>
                 <div className="mt-4 space-y-3">
                   <DetailRow icon={User} label="Holder Name" value={holderName} />
-                  <DetailRow icon={BookOpen} label="Course" value={courseName} />
+                  <DetailRow icon={BookOpen} label="Program / Role" value={courseName} />
                   <DetailRow icon={Calendar} label="Verified On" value={achievementDate} />
                 </div>
               </Surface>
@@ -552,7 +555,7 @@ export default function VerifyCertificateRefined() {
                 <div className="mt-4 space-y-3 text-sm leading-6 text-slate-300">
                   <p>PNG social sharing ya quick proof ke liye best rahega.</p>
                   <p>PDF print aur official submission ke liye better rahega.</p>
-                  <p>Verification link active rehne se anyone certificate authenticity check kar sakta hai.</p>
+                  <p>Verification link active rehne se anyone document authenticity check kar sakta hai.</p>
                 </div>
               </Surface>
             </div>

@@ -16,9 +16,54 @@ import {
 import { db } from '../config/firebase'
 import { buildApiUrl } from '../config/api'
 import { emailNotify } from '../utils/emailNotify'
-import { DEFAULT_CERTIFICATE_TEMPLATE, mergeCertificateTemplate } from '../utils/certificateTemplate'
+import {
+  DEFAULT_CERTIFICATE_TEMPLATE,
+  mergeCertificateTemplate,
+  normalizeCertificateTemplate,
+} from '../utils/certificateTemplate'
 
 const StoreContext = createContext(null)
+
+const normalizeMatchKey = (value) => String(value || '').trim().toLowerCase()
+
+const formatScheduledMeetingTime = (meetingStartsAt, meetingTimezone = 'Asia/Kolkata') => {
+  if (!meetingStartsAt) return ''
+  const parsed = new Date(meetingStartsAt)
+  if (Number.isNaN(parsed.getTime())) return ''
+
+  try {
+    return new Intl.DateTimeFormat('en-IN', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+      timeZone: meetingTimezone || 'Asia/Kolkata',
+    }).format(parsed)
+  } catch {
+    return parsed.toLocaleString('en-IN')
+  }
+}
+
+const isUpcomingScheduledMeeting = (meetingStartsAt) => {
+  if (!meetingStartsAt) return false
+  const parsed = new Date(meetingStartsAt)
+  if (Number.isNaN(parsed.getTime())) return false
+  return parsed.getTime() >= Date.now() - (10 * 60 * 1000)
+}
+
+const resolveEnrollmentMeetingPlan = (course, enrollmentData) => {
+  const plans = Array.isArray(course?.plans) ? course.plans : []
+  const planKeys = [enrollmentData.planId, enrollmentData.planLabel, enrollmentData.planName]
+    .map(normalizeMatchKey)
+    .filter(Boolean)
+
+  if (planKeys.length === 0) {
+    return plans.length === 1 ? plans[0] : null
+  }
+
+  return plans.find(plan =>
+    planKeys.includes(normalizeMatchKey(plan?.id)) ||
+    planKeys.includes(normalizeMatchKey(plan?.label))
+  ) || (plans.length === 1 ? plans[0] : null)
+}
 
 export function StoreProvider({ children }) {
   const [projects, setProjects] = useState([])
@@ -156,7 +201,7 @@ export function StoreProvider({ children }) {
 
     const unsubscribeCertificateTemplate = onSnapshot(doc(db, 'settings', 'certificateTemplate'), (snapshot) => {
       if (snapshot.exists()) {
-        setCertificateTemplate(mergeCertificateTemplate(snapshot.data()))
+        setCertificateTemplate(normalizeCertificateTemplate(snapshot.data()))
       } else {
         setCertificateTemplate(DEFAULT_CERTIFICATE_TEMPLATE)
       }
@@ -525,9 +570,11 @@ export function StoreProvider({ children }) {
   // --- Certificates ---
   const issueCertificate = async (enrollment, meta = {}) => {
     try {
+      const documentType = meta.documentType || 'certificate'
       const courseName = enrollment.courseName || enrollment.courseTitle || enrollment.title || 'Mentorship'
       const existingCertificate = certificates.find(cert =>
         cert.status === 'approved' &&
+        (cert.documentType || 'certificate') === documentType &&
         cert.userId === enrollment.userId &&
         (
           cert.enrollmentId === enrollment.id ||
@@ -538,7 +585,8 @@ export function StoreProvider({ children }) {
 
       if (existingCertificate) return existingCertificate
 
-      const prefix = String(certificateTemplate?.certificatePrefix || 'AP')
+      const activeTemplate = mergeCertificateTemplate(certificateTemplate, documentType)
+      const prefix = String(activeTemplate?.certificatePrefix || 'AP')
         .toUpperCase()
         .replace(/[^A-Z0-9]/g, '')
         .slice(0, 6) || 'AP'
@@ -549,7 +597,7 @@ export function StoreProvider({ children }) {
         result += chars.charAt(Math.floor(Math.random() * chars.length))
       }
       const certId = `${prefix}-${result}`
-      const templateSnapshot = mergeCertificateTemplate(certificateTemplate)
+      const templateSnapshot = activeTemplate
 
       const newCert = {
         userId: enrollment.userId,
@@ -558,6 +606,11 @@ export function StoreProvider({ children }) {
         courseId: enrollment.courseId || '',
         enrollmentId: enrollment.id || '',
         courseName,
+        documentType,
+        documentLabel: activeTemplate.documentLabel,
+        internshipRole: meta.internshipRole || enrollment.planLabel || courseName,
+        internshipDuration: meta.internshipDuration || enrollment.planLabel || '',
+        joiningDate: meta.joiningDate || '',
         status: 'approved',
         certificate_id: certId,
         issuedByUid: meta.issuedByUid || '',
@@ -568,12 +621,14 @@ export function StoreProvider({ children }) {
         createdAt: serverTimestamp()
       }
       const docRef = await addDoc(collection(db, 'certificates'), newCert)
-      // ✉️ Email certificate to student
+      // ✉️ Email issued document to student
       emailNotify('certificate_issued', {
         studentName: enrollment.userName,
         studentEmail: enrollment.userEmail,
         courseName,
-        certId
+        certId,
+        documentType,
+        documentLabel: activeTemplate.documentLabel,
       })
       return { id: docRef.id, ...newCert }
     } catch (err) { console.error("Error issuing certificate:", err); throw err }
@@ -588,7 +643,7 @@ export function StoreProvider({ children }) {
   const updateCertificateTemplate = async (data) => {
     try {
       await setDoc(doc(db, 'settings', 'certificateTemplate'), {
-        ...mergeCertificateTemplate(data),
+        ...normalizeCertificateTemplate(data),
         updatedAt: serverTimestamp()
       })
     } catch (err) { console.error("Error updating certificate template:", err); throw err }
@@ -648,6 +703,18 @@ export function StoreProvider({ children }) {
         [u.uid, u.id, u.employeeId, u.email].filter(Boolean).includes(enrollmentData.assignedEmployeeId)
       )
       const recipientId = assignedEmployee?.uid || enrollmentData.assignedEmployeeId || ''
+      const enrolledCourse = courses.find(course =>
+        course.id === enrollmentData.courseId ||
+        normalizeMatchKey(course.title) === normalizeMatchKey(enrollmentData.courseTitle)
+      ) || null
+      const enrolledPlan = resolveEnrollmentMeetingPlan(enrolledCourse, enrollmentData)
+      const hasScheduledMeeting =
+        enrolledPlan?.meetingStartsAt &&
+        isUpcomingScheduledMeeting(enrolledPlan.meetingStartsAt)
+      const scheduledMeetingTime = hasScheduledMeeting
+        ? formatScheduledMeetingTime(enrolledPlan.meetingStartsAt, enrolledPlan.meetingTimezone)
+        : ''
+      const scheduledJoinUrl = enrolledPlan?.meetingLink || enrolledCourse?.meetingLink || ''
 
       // ✅ Duplicate guard at Firestore level
       const existing = enrollments.find(
@@ -718,6 +785,23 @@ export function StoreProvider({ children }) {
         planLabel: enrollmentData.planLabel || '',
         amount: enrollmentData.amount || 0
       })
+
+      if (hasScheduledMeeting) {
+        emailNotify('course_meeting_scheduled', {
+          studentName: enrollmentData.userName || enrollmentData.userEmail,
+          studentEmail: enrollmentData.userEmail,
+          courseTitle: enrollmentData.courseTitle,
+          planLabel: enrolledPlan?.label || enrollmentData.planLabel || enrollmentData.planName || '',
+          meetingTime: scheduledMeetingTime,
+          meetingLink: scheduledJoinUrl,
+          employeeName:
+            enrolledCourse?.instructor ||
+            assignedEmployee?.displayName ||
+            assignedEmployee?.name ||
+            '',
+          reason: 'new_enrollment',
+        })
+      }
       // ────────────────────────────────────────────────────────────
 
       return { id: docRef.id, ...payload }

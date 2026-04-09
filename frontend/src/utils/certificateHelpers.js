@@ -1,3 +1,5 @@
+import { getDocumentTypeMeta } from './certificateTemplate'
+
 export const formatCertificateDate = (value) => {
   if (!value) return new Date().toLocaleDateString('en-GB')
 
@@ -8,6 +10,12 @@ export const formatCertificateDate = (value) => {
   const parsed = new Date(value)
   return Number.isNaN(parsed.getTime()) ? new Date().toLocaleDateString('en-GB') : parsed.toLocaleDateString('en-GB')
 }
+
+export const getCertificateDocumentType = (certificate) =>
+  certificate?.documentType || certificate?.templateSnapshot?.documentType || 'certificate'
+
+export const getCertificateDocumentLabel = (certificate, template) =>
+  certificate?.documentLabel || template?.documentLabel || getDocumentTypeMeta(getCertificateDocumentType(certificate)).label
 
 export const getCertificateHolderName = (certificate) =>
   certificate?.userName || certificate?.name || 'Student'
@@ -22,8 +30,10 @@ export const getCertificateVerifyUrl = (certificateId) => {
 }
 
 export const getCertificateFilename = (certificate, extension) => {
-  const certId = certificate?.certificate_id || 'certificate'
-  const course = String(certificate?.courseName || certificate?.course || 'course')
+  const certId = certificate?.certificate_id || 'document'
+  const documentType = getCertificateDocumentType(certificate)
+  const documentName = getDocumentTypeMeta(documentType).shortLabel
+  const course = String(certificate?.courseName || certificate?.course || documentName || 'document')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')

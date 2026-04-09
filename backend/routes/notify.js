@@ -53,7 +53,45 @@ const templates = {
     `, 'Go to My Courses', `${SITE_URL}/customer/my-courses`)
   }),
 
-  // 3. Course Enrollment — Employee (new student alert)
+  // 3. Course Meeting Scheduled - Student
+  course_meeting_scheduled: ({
+    studentName,
+    studentEmail,
+    courseTitle,
+    planLabel,
+    meetingTime,
+    meetingLink,
+    employeeName,
+    reason,
+  }) => {
+    const dashboardUrl = `${SITE_URL}/customer/my-courses`
+    const ctaUrl = meetingLink || dashboardUrl
+    const subjectPrefix = reason === 'new_enrollment' ? 'Your Scheduled Session' : 'Session Scheduled'
+    return {
+      to: studentEmail,
+      subject: `📅 ${subjectPrefix} - ${courseTitle}`,
+      html: emailTemplate(`${courseTitle} Session Scheduled`, `
+        <p>Hello <strong>${studentName}</strong>,</p>
+        <p>${reason === 'new_enrollment'
+          ? `You have been enrolled in a batch that already has a scheduled live session for <strong>${courseTitle}</strong>.`
+          : `A live session has been scheduled for your course <strong>${courseTitle}</strong>.`
+        }</p>
+        <div style="margin:24px 0;padding:24px;background:#eff6ff;border-radius:12px;border:1px solid #bfdbfe;">
+          <table style="width:100%;border-collapse:collapse;font-size:14px;">
+            <tr><td style="padding:6px 0;color:#64748b;width:40%;">Course</td><td style="font-weight:700;color:#1e3a8a;">${courseTitle}</td></tr>
+            ${planLabel ? `<tr><td style="padding:6px 0;color:#64748b;">Plan</td><td style="font-weight:600;">${planLabel}</td></tr>` : ''}
+            ${meetingTime ? `<tr><td style="padding:6px 0;color:#64748b;">Meeting Time</td><td style="font-weight:700;color:#0f172a;">${meetingTime}</td></tr>` : ''}
+            ${employeeName ? `<tr><td style="padding:6px 0;color:#64748b;">Instructor</td><td style="font-weight:600;">${employeeName}</td></tr>` : ''}
+            <tr><td style="padding:6px 0;color:#64748b;">Join Link</td><td>${meetingLink ? `<a href="${meetingLink}" style="color:#1d4ed8;font-weight:700;">Open Meeting</a>` : 'Available in your dashboard'}</td></tr>
+          </table>
+        </div>
+        <p>Please join on time and keep your dashboard open for the latest course updates.</p>
+        <p style="font-size:13px;color:#64748b;">You will also receive reminder emails before the session starts.</p>
+      `, meetingLink ? 'Join Meeting' : 'Open My Courses', ctaUrl),
+    }
+  },
+
+  // 4. Course Enrollment — Employee (new student alert)
   enrollment_employee: ({ employeeEmail, employeeName, studentName, studentEmail, studentMobile, courseTitle, planLabel, amount }) => ({
     to: employeeEmail,
     subject: `🎓 New Student Enrolled — ${courseTitle}`,
@@ -74,7 +112,7 @@ const templates = {
     `, 'Manage Course', `${SITE_URL}/employee/course-manage`)
   }),
 
-  // 4. Account Request — Admin
+  // 5. Account Request — Admin
   account_request: ({ requesterName, requesterEmail, requesterPhone, role }) => ({
     to: ADMIN_EMAIL,
     subject: `🆕 New Account Request — ${requesterName}`,
@@ -92,7 +130,7 @@ const templates = {
     `, 'Review in Admin Panel', `${SITE_URL}/admin/account-requests`)
   }),
 
-  // 5. Account Approved — User
+  // 6. Account Approved — User
   account_approved: ({ name, email, role }) => ({
     to: email,
     subject: '✅ Your Account Has Been Approved!',
@@ -107,7 +145,7 @@ const templates = {
     `, 'Login to Dashboard', `${SITE_URL}/employee`)
   }),
 
-  // 6. Service / Custom Request — Admin
+  // 7. Service / Custom Request — Admin
   service_request_admin: ({ clientName, clientEmail, clientPhone, serviceType, message }) => ({
     to: ADMIN_EMAIL,
     subject: `📋 New Service Request — ${clientName}`,
@@ -125,7 +163,7 @@ const templates = {
     `, 'View in Admin Panel', `${SITE_URL}/admin`)
   }),
 
-  // 7. Service Request — User Acknowledgment
+  // 8. Service Request — User Acknowledgment
   service_request_user: ({ clientName, clientEmail, serviceType }) => ({
     to: clientEmail,
     subject: '📋 Service Request Received — Amit Solution Hub',
@@ -139,7 +177,7 @@ const templates = {
     `, 'View Our Services', `${SITE_URL}/services`)
   }),
 
-  // 8. Sell Project Request — Admin
+  // 9. Sell Project Request — Admin
   sell_request_admin: ({ sellerName, sellerEmail, sellerPhone, projectTitle, projectDesc, price }) => ({
     to: ADMIN_EMAIL,
     subject: `💼 New Sell Project Request — ${sellerName}`,
@@ -158,7 +196,7 @@ const templates = {
     `, 'Review in Admin Panel', `${SITE_URL}/admin`)
   }),
 
-  // 9. Sell Request — User Acknowledgment
+  // 10. Sell Request — User Acknowledgment
   sell_request_user: ({ sellerName, sellerEmail, projectTitle }) => ({
     to: sellerEmail,
     subject: '💼 Your Sell Request Received — Amit Solution Hub',
@@ -172,23 +210,24 @@ const templates = {
     `)
   }),
 
-  // 10. Certificate Issued
-  certificate_issued: ({ studentName, studentEmail, courseName, certId }) => ({
+  // 11. Certificate Issued
+  certificate_issued: ({ studentName, studentEmail, courseName, certId, documentType, documentLabel }) => ({
     to: studentEmail,
-    subject: `🏆 Certificate Issued — ${courseName}`,
-    html: emailTemplate('Your Certificate is Ready!', `
+    subject: `🏆 ${documentLabel || (documentType === 'offer_letter' ? 'Offer Letter' : documentType === 'internship_certificate' ? 'Internship Certificate' : 'Certificate')} Issued — ${courseName}`,
+    html: emailTemplate('Your Verified Document is Ready!', `
       <p>Hello <strong>${studentName}</strong>,</p>
-      <p>Congratulations! 🎉 You have successfully completed <strong>${courseName}</strong> and your certificate has been issued.</p>
+      <p>Your <strong>${documentLabel || (documentType === 'offer_letter' ? 'offer letter' : documentType === 'internship_certificate' ? 'internship certificate' : 'certificate')}</strong> for <strong>${courseName}</strong> has been issued successfully.</p>
       <div style="margin:24px 0;padding:24px;background:linear-gradient(135deg,#fef9c3,#fef3c7);border-radius:12px;border:2px solid #fbbf24;text-align:center;">
         <p style="margin:0;font-size:20px;">🏆</p>
-        <p style="margin:8px 0 0;font-size:18px;font-weight:800;color:#78350f;">${courseName}</p>
-        <p style="margin:6px 0 0;font-size:13px;color:#92400e;">Certificate ID: <strong>${certId}</strong></p>
+        <p style="margin:8px 0 0;font-size:18px;font-weight:800;color:#78350f;">${documentLabel || 'Verified Document'}</p>
+        <p style="margin:6px 0 0;font-size:13px;color:#92400e;">Program / Role: <strong>${courseName}</strong></p>
+        <p style="margin:6px 0 0;font-size:13px;color:#92400e;">Document ID: <strong>${certId}</strong></p>
       </div>
-      <p>You can download your certificate from your student dashboard. Add it to your LinkedIn profile and show it to the world!</p>
-    `, 'View My Certificate', `${SITE_URL}/customer/certificates`)
+      <p>You can verify, preview, and download this document from your student dashboard.</p>
+    `, 'View My Documents', `${SITE_URL}/customer/certificates`)
   }),
 
-  // 11. Task Assigned — Employee
+  // 12. Task Assigned — Employee
   task_assigned: ({ employeeName, employeeEmail, taskTitle, taskDesc, dueDate, assignedBy }) => ({
     to: employeeEmail,
     subject: `📌 New Task Assigned — ${taskTitle}`,
@@ -206,7 +245,7 @@ const templates = {
     `, 'View My Tasks', `${SITE_URL}/employee/tasks`)
   }),
 
-  // 12. Trading Enrollment — Student
+  // 13. Trading Enrollment — Student
   trading_enrollment_student: ({ studentName, studentEmail, courseName, sessionDate, amount }) => ({
     to: studentEmail,
     subject: `📈 Trading Mentorship Enrollment Confirmed`,
