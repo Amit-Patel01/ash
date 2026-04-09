@@ -20,6 +20,65 @@ const loadRazorpayScript = () => {
   })
 }
 
+const normalizePlanKey = (value) => String(value || '').trim().toLowerCase()
+const compactPlanKey = (value) => normalizePlanKey(value).replace(/[^a-z0-9]/g, '')
+
+const getPlanIdentity = (source = {}) => {
+  const normalized = [
+    source.planId,
+    source.planLabel,
+    source.planName,
+    source.id,
+    source.label,
+  ]
+    .map(normalizePlanKey)
+    .filter(Boolean)
+
+  const compact = [
+    source.planId,
+    source.planLabel,
+    source.planName,
+    source.id,
+    source.label,
+  ]
+    .map(compactPlanKey)
+    .filter(Boolean)
+
+  const rawAmount =
+    source.amount ??
+    source.price ??
+    (source.isFree ? 0 : undefined)
+  const amount = Number(rawAmount)
+
+  return {
+    normalized,
+    compact,
+    amount: Number.isNaN(amount) ? null : amount,
+  }
+}
+
+const matchesPlanEnrollment = (enrollment, planRef = null) => {
+  if (!planRef) return true
+
+  const enrollmentPlan = getPlanIdentity(enrollment)
+  const targetPlan = getPlanIdentity(planRef)
+  const hasPlanKeys = targetPlan.normalized.length > 0 || targetPlan.compact.length > 0
+
+  if (hasPlanKeys) {
+    const directMatch =
+      targetPlan.normalized.some(key => enrollmentPlan.normalized.includes(key)) ||
+      targetPlan.compact.some(key => enrollmentPlan.compact.includes(key))
+
+    if (directMatch) return true
+  }
+
+  if (targetPlan.amount !== null) {
+    return enrollmentPlan.amount === targetPlan.amount
+  }
+
+  return !hasPlanKeys
+}
+
 export default function CourseEnrollModal({ course, onClose, onSuccess }) {
   const { addEnrollment, isUserEnrolled } = useStore()
   const { currentUser } = useAuth()
@@ -34,8 +93,15 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
   const actualCourseTitle = course.courseTitle || course.title
   const actualPrice = Number(course.price || 0)
   const isFreeCourse = course.isFree || course.price === 0 || course.price === '0' || actualPrice === 0
+  const targetPlanRef = {
+    planId: course.planId || course.id || '',
+    planLabel: course.planLabel || course.label || '',
+    planName: course.planLabel || course.label || actualCourseTitle,
+    amount: actualPrice,
+    isFree: isFreeCourse,
+  }
 
-  const enrolled = currentUser ? isUserEnrolled(currentUser.uid, actualCourseId) : false
+  const enrolled = currentUser ? isUserEnrolled(currentUser.uid, actualCourseId, targetPlanRef) : false
 
   const validateMobile = () => {
     const c = mobile.replace(/\s/g, '')
@@ -58,7 +124,10 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
         where('status', '==', 'active')
       )
       const snap = await getDocs(q)
-      if (!snap.empty) { setSuccess(true); return }
+      const alreadyEnrolled = snap.docs.some(docSnap =>
+        matchesPlanEnrollment(docSnap.data(), targetPlanRef)
+      )
+      if (alreadyEnrolled) { setSuccess(true); return }
 
       if (isFreeCourse) {
         await addEnrollment({

@@ -18,6 +18,7 @@ const PLAN_BLANK = {
 }
 
 const normalizeText = (value) => String(value || '').trim().toLowerCase()
+const compactText = (value) => normalizeText(value).replace(/[^a-z0-9]/g, '')
 
 const buildPlanId = (label) =>
   normalizeText(label)
@@ -58,13 +59,50 @@ const matchesPlanEnrollment = (enrollment, plan, course) => {
   const planKeys = [enrollment.planId, enrollment.planLabel, enrollment.planName]
     .map(normalizeText)
     .filter(Boolean)
+  const compactPlanKeys = [enrollment.planId, enrollment.planLabel, enrollment.planName]
+    .map(compactText)
+    .filter(Boolean)
+  const enrollmentAmount = Number(enrollment.amount)
 
-  if (planKeys.length === 0) return (course.plans || []).length <= 1
+  if (planKeys.length === 0) {
+    if (!Number.isNaN(enrollmentAmount)) {
+      const amountMatches = (course.plans || []).filter(item => {
+        const planAmount = Number(item?.price || 0)
+        const freePlan = item?.isFree || planAmount === 0
+        return freePlan ? enrollmentAmount === 0 : planAmount === enrollmentAmount
+      })
+      if (amountMatches.length === 1) return amountMatches[0]?.id === plan?.id
+    }
+    return (course.plans || []).length <= 1
+  }
 
-  return (
+  const directMatch = (
     planKeys.includes(normalizeText(plan?.id)) ||
-    planKeys.includes(normalizeText(plan?.label))
+    planKeys.includes(normalizeText(plan?.label)) ||
+    planKeys.includes(String((course.plans || []).findIndex(item => item?.id === plan?.id))) ||
+    compactPlanKeys.includes(compactText(plan?.id)) ||
+    compactPlanKeys.includes(compactText(plan?.label))
   )
+
+  if (directMatch) return true
+
+  if (!Number.isNaN(enrollmentAmount)) {
+    const amountMatches = (course.plans || []).filter(item => {
+      const planAmount = Number(item?.price || 0)
+      const freePlan = item?.isFree || planAmount === 0
+      return freePlan ? enrollmentAmount === 0 : planAmount === enrollmentAmount
+    })
+    if (amountMatches.length === 1) return amountMatches[0]?.id === plan?.id
+  }
+
+  return false
+}
+
+const resolvePlanMeetingLink = (course, plan, fallbackLink = '') => {
+  if (plan?.meetingLink) return plan.meetingLink
+  const plans = Array.isArray(course?.plans) ? course.plans : []
+  if (plans.length <= 1) return plan?.meetingLink || fallbackLink || course?.meetingLink || ''
+  return ''
 }
 
 export default function EmployeeCourseManage() {
@@ -195,7 +233,7 @@ export default function EmployeeCourseManage() {
               courseTitle: selectedCourse.title,
               planLabel: planData.label || enrollment.planLabel || enrollment.planName || '',
               meetingTime: formatMeetingPreview(normalizedMeetingStartsAt, normalizedMeetingTimezone),
-              meetingLink: normalizedMeetingLink || selectedCourse.meetingLink || '',
+              meetingLink: resolvePlanMeetingLink(selectedCourse, planData, normalizedMeetingLink),
               employeeName:
                 userProfile?.displayName ||
                 currentUser?.displayName ||
@@ -498,7 +536,11 @@ export default function EmployeeCourseManage() {
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h3 className="text-sm font-bold text-white">Default Meeting / Live Session Link</h3>
-                      <p className="text-[11px] text-gray-500 mt-1">Plan-wise links set in the Plans tab will override this default link for matching students.</p>
+                      <p className="text-[11px] text-gray-500 mt-1">
+                        {(selectedCourse.plans || []).length > 1
+                          ? 'Multi-plan course me student ko sirf uske enrolled plan ka link dikhaya jata hai. Ye default link optional fallback hai.'
+                          : 'Single-plan course me ye link direct student ko dikh sakta hai.'}
+                      </p>
                     </div>
                     <button onClick={() => setEditMeet(!editMeet)} className="text-xs font-bold text-blue-400 hover:text-blue-300">{editMeet ? 'Cancel' : 'Edit'}</button>
                   </div>
@@ -523,7 +565,7 @@ export default function EmployeeCourseManage() {
                               <p className="text-[11px] text-gray-500">{formatMeetingPreview(plan.meetingStartsAt, plan.meetingTimezone)}</p>
                             </div>
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${plan.meetingLink ? 'border-blue-500/20 bg-blue-500/10 text-blue-300' : 'border-white/10 bg-white/5 text-gray-500'}`}>
-                              {plan.meetingLink ? 'Plan link ready' : 'Fallback only'}
+                              {plan.meetingLink ? 'Plan link ready' : 'No plan link set'}
                             </span>
                           </div>
                         </div>

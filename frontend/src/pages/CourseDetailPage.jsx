@@ -559,7 +559,13 @@ export default function CourseDetailPage() {
                             ? 'bg-white text-blue-700 hover:bg-blue-50 shadow-lg'
                             : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/20'
                         }`}>
-                        {enrolled ? '✓ Enrolled' : plan.isFree || plan.price === 0 ? 'Enroll Free' : 'Get Started'}
+                        {currentUser && isUserEnrolled(currentUser.uid, course.id, {
+                          planId: plan.id || i,
+                          planLabel: plan.label,
+                          planName: plan.label,
+                          amount: Number(plan.price || 0),
+                          isFree: plan.isFree || plan.price === 0,
+                        }) ? '✓ Enrolled' : plan.isFree || plan.price === 0 ? 'Enroll Free' : 'Get Started'}
                       </button>
                     </div>
                   ))}

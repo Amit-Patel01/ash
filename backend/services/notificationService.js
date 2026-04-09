@@ -9,6 +9,7 @@ const { logger } = require("../logger");
 const CUSTOMER_DASHBOARD_URL = "https://www.amitsolutionhub.com/customer";
 
 const normalizeText = (value) => String(value || "").trim().toLowerCase();
+const compactText = (value) => normalizeText(value).replace(/[^a-z0-9]/g, "");
 
 const splitIntoBatches = (items, size = 50) => {
   const batches = [];
@@ -45,15 +46,49 @@ const isEnrollmentForCoursePlan = (enrollment, course, plan) => {
   const planKeys = [enrollment.planId, enrollment.planLabel, enrollment.planName]
     .map(normalizeText)
     .filter(Boolean);
+  const compactPlanKeys = [enrollment.planId, enrollment.planLabel, enrollment.planName]
+    .map(compactText)
+    .filter(Boolean);
+  const enrollmentAmount = Number(enrollment.amount);
 
   if (planKeys.length === 0) {
+    if (!Number.isNaN(enrollmentAmount)) {
+      const amountMatches = (course.plans || []).filter((item) => {
+        const planAmount = Number(item?.price || 0);
+        const freePlan = item?.isFree || planAmount === 0;
+        return freePlan ? enrollmentAmount === 0 : planAmount === enrollmentAmount;
+      });
+      if (amountMatches.length === 1) return amountMatches[0]?.id === plan?.id;
+    }
     return (course.plans || []).length <= 1;
   }
 
-  return (
+  const directMatch = (
     planKeys.includes(normalizeText(plan.id)) ||
-    planKeys.includes(normalizeText(plan.label))
+    planKeys.includes(normalizeText(plan.label)) ||
+    planKeys.includes(String((course.plans || []).findIndex((item) => item?.id === plan?.id))) ||
+    compactPlanKeys.includes(compactText(plan.id)) ||
+    compactPlanKeys.includes(compactText(plan.label))
   );
+
+  if (directMatch) return true;
+
+  if (!Number.isNaN(enrollmentAmount)) {
+    const amountMatches = (course.plans || []).filter((item) => {
+      const planAmount = Number(item?.price || 0);
+      const freePlan = item?.isFree || planAmount === 0;
+      return freePlan ? enrollmentAmount === 0 : planAmount === enrollmentAmount;
+    });
+    if (amountMatches.length === 1) return amountMatches[0]?.id === plan?.id;
+  }
+
+  return false;
+};
+
+const resolveCoursePlanMeetingLink = (course, plan) => {
+  if (plan?.meetingLink) return plan.meetingLink;
+  const plans = Array.isArray(course?.plans) ? course.plans : [];
+  return plans.length <= 1 ? (course?.meetingLink || "") : "";
 };
 
 const sendBatchedEmails = async (emails, subject, html) => {
@@ -144,7 +179,8 @@ const sendCoursePlanNotification = async (course, plan, enrollments, type) => {
       plan.meetingTimezone
     );
     const planLabel = plan.label || "Selected plan";
-    const joinUrl = plan.meetingLink || course.meetingLink || CUSTOMER_DASHBOARD_URL;
+    const directJoinUrl = resolveCoursePlanMeetingLink(course, plan);
+    const joinUrl = directJoinUrl || CUSTOMER_DASHBOARD_URL;
     const subject =
       type === "LIVE_NOW"
         ? `🔴 Live Now: ${course.title} (${planLabel})`

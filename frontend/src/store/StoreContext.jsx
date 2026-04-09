@@ -25,6 +25,64 @@ import {
 const StoreContext = createContext(null)
 
 const normalizeMatchKey = (value) => String(value || '').trim().toLowerCase()
+const compactMatchKey = (value) => normalizeMatchKey(value).replace(/[^a-z0-9]/g, '')
+
+const getPlanIdentity = (source = {}) => {
+  const normalized = [
+    source.planId,
+    source.planLabel,
+    source.planName,
+    source.id,
+    source.label,
+  ]
+    .map(normalizeMatchKey)
+    .filter(Boolean)
+
+  const compact = [
+    source.planId,
+    source.planLabel,
+    source.planName,
+    source.id,
+    source.label,
+  ]
+    .map(compactMatchKey)
+    .filter(Boolean)
+
+  const rawAmount =
+    source.amount ??
+    source.price ??
+    (source.isFree ? 0 : undefined)
+  const amount = Number(rawAmount)
+
+  return {
+    normalized,
+    compact,
+    amount: Number.isNaN(amount) ? null : amount,
+  }
+}
+
+const matchesEnrollmentPlan = (enrollment, planRef = null) => {
+  if (!planRef) return true
+
+  const enrollmentPlan = getPlanIdentity(enrollment)
+  const targetPlan = getPlanIdentity(planRef)
+
+  const hasPlanKeys = targetPlan.normalized.length > 0 || targetPlan.compact.length > 0
+
+  if (hasPlanKeys) {
+    const directMatch =
+      targetPlan.normalized.some(key => enrollmentPlan.normalized.includes(key)) ||
+      targetPlan.compact.some(key => enrollmentPlan.compact.includes(key))
+
+    if (directMatch) return true
+  }
+
+  if (targetPlan.amount !== null) {
+    return enrollmentPlan.amount === targetPlan.amount
+  }
+
+  return !hasPlanKeys
+}
 
 const formatScheduledMeetingTime = (meetingStartsAt, meetingTimezone = 'Asia/Kolkata') => {
   if (!meetingStartsAt) return ''
@@ -54,15 +112,50 @@ const resolveEnrollmentMeetingPlan = (course, enrollmentData) => {
   const planKeys = [enrollmentData.planId, enrollmentData.planLabel, enrollmentData.planName]
     .map(normalizeMatchKey)
     .filter(Boolean)
+  const compactPlanKeys = [enrollmentData.planId, enrollmentData.planLabel, enrollmentData.planName]
+    .map(compactMatchKey)
+    .filter(Boolean)
 
   if (planKeys.length === 0) {
+    const enrollmentAmount = Number(enrollmentData.amount)
+    if (!Number.isNaN(enrollmentAmount)) {
+      const amountMatches = plans.filter(plan => {
+        const planAmount = Number(plan?.price || 0)
+        const freePlan = plan?.isFree || planAmount === 0
+        return freePlan ? enrollmentAmount === 0 : planAmount === enrollmentAmount
+      })
+      if (amountMatches.length === 1) return amountMatches[0]
+    }
     return plans.length === 1 ? plans[0] : null
   }
 
-  return plans.find(plan =>
+  const directMatch = plans.find((plan, index) =>
     planKeys.includes(normalizeMatchKey(plan?.id)) ||
-    planKeys.includes(normalizeMatchKey(plan?.label))
-  ) || (plans.length === 1 ? plans[0] : null)
+    planKeys.includes(normalizeMatchKey(plan?.label)) ||
+    planKeys.includes(String(index)) ||
+    compactPlanKeys.includes(compactMatchKey(plan?.id)) ||
+    compactPlanKeys.includes(compactMatchKey(plan?.label))
+  )
+
+  if (directMatch) return directMatch
+
+  const enrollmentAmount = Number(enrollmentData.amount)
+  if (!Number.isNaN(enrollmentAmount)) {
+    const amountMatches = plans.filter(plan => {
+      const planAmount = Number(plan?.price || 0)
+      const freePlan = plan?.isFree || planAmount === 0
+      return freePlan ? enrollmentAmount === 0 : planAmount === enrollmentAmount
+    })
+    if (amountMatches.length === 1) return amountMatches[0]
+  }
+
+  return plans.length === 1 ? plans[0] : null
+}
+
+const resolveCoursePlanMeetingLink = (course, plan) => {
+  if (plan?.meetingLink) return plan.meetingLink
+  const plans = Array.isArray(course?.plans) ? course.plans : []
+  return plans.length <= 1 ? (course?.meetingLink || '') : ''
 }
 
 export function StoreProvider({ children }) {
@@ -714,13 +807,14 @@ export function StoreProvider({ children }) {
       const scheduledMeetingTime = hasScheduledMeeting
         ? formatScheduledMeetingTime(enrolledPlan.meetingStartsAt, enrolledPlan.meetingTimezone)
         : ''
-      const scheduledJoinUrl = enrolledPlan?.meetingLink || enrolledCourse?.meetingLink || ''
+      const scheduledJoinUrl = resolveCoursePlanMeetingLink(enrolledCourse, enrolledPlan)
 
       // ✅ Duplicate guard at Firestore level
       const existing = enrollments.find(
         e => e.userId === enrollmentData.userId &&
              e.courseId === enrollmentData.courseId &&
-             e.status === 'active'
+             e.status === 'active' &&
+             matchesEnrollmentPlan(e, enrollmentData)
       )
       if (existing) return existing // Already enrolled — return silently
 
@@ -824,8 +918,13 @@ export function StoreProvider({ children }) {
     enrollments.filter(e => e.userId === uid && e.status === 'active')
 
   // Check if a user is enrolled in a specific course
-  const isUserEnrolled = (uid, courseId) =>
-    enrollments.some(e => e.userId === uid && e.courseId === courseId && e.status === 'active')
+  const isUserEnrolled = (uid, courseId, planRef = null) =>
+    enrollments.some(e =>
+      e.userId === uid &&
+      e.courseId === courseId &&
+      e.status === 'active' &&
+      matchesEnrollmentPlan(e, planRef)
+    )
 
   // --- Course Categories CRUD ---
   const addCourseCategory = async (data) => {
