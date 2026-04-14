@@ -280,3 +280,5 @@ Caused by: Error
 [2026-04-14 08:38:42] WARN: MySQL environment variables are not configured. User-management APIs will remain unavailable until MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE are set.
 [2026-04-14 08:38:42] WARN: MySQL environment variables are not configured. User-management APIs will remain unavailable until MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE are set.
 [2026-04-14 08:38:43] WARN: MySQL environment variables are not configured. User-management APIs will remain unavailable until MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE are set.
+[2026-04-14 10:31:35] WARN: MySQL configuration is not set. User-management APIs will remain unavailable until MYSQL_HOST/MYSQL_PORT/MYSQL_USER/MYSQL_PASSWORD/MYSQL_DATABASE or MYSQL_URL/DATABASE_URL is provided.
+[2026-04-14 10:40:16] WARN: MySQL configuration is not set. User-management APIs will remain unavailable until MYSQL_HOST/MYSQL_PORT/MYSQL_USER/MYSQL_PASSWORD/MYSQL_DATABASE or MYSQL_URL/DATABASE_URL is provided.

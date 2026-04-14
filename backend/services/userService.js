@@ -89,6 +89,8 @@ const RESET_TOKEN_JOIN_SQL = `
 const FIRESTORE_USER_COLLECTION = "users";
 const FIRESTORE_ACCOUNT_REQUEST_COLLECTION = "accountRequests";
 const FIRESTORE_TEAM_COLLECTION = "team";
+const FIRESTORE_PASSWORD_RESET_COLLECTION = "passwordResetTokens";
+const FIRESTORE_USER_MERGE_AUDIT_COLLECTION = "userMergeAudit";
 
 const createHttpError = (status, message, code = null) => {
   const error = new Error(message);
@@ -99,14 +101,59 @@ const createHttpError = (status, message, code = null) => {
   return error;
 };
 
+const useMysql = () => hasMysqlConfig();
+
 const assertMySqlReady = () => {
-  if (!hasMysqlConfig()) {
+  if (!useMysql()) {
     throw createHttpError(
       503,
       "User management is not available because the MySQL configuration is incomplete.",
       "mysql_unavailable"
     );
   }
+};
+
+const mapFirestoreUser = (docSnap, { includeSensitive = false } = {}) => {
+  if (!docSnap?.exists) return null;
+  const data = docSnap.data() || {};
+
+  const user = {
+    id: docSnap.id,
+    numericId: null,
+    uid: docSnap.id,
+    firebaseUid: docSnap.id,
+    email: normalizeEmail(data.email || ""),
+    phone: normalizePhone(data.phone || ""),
+    displayName: data.displayName || data.name || "",
+    role: normalizeSystemRole(data.role || "customer"),
+    status: normalizeStatus(data.status || "active"),
+    department: data.department || "",
+    jobTitle: data.jobTitle || "",
+    employeeId: data.employeeId || "",
+    joinDate: data.joinDate || "",
+    avatar: data.avatar || data.photoURL || "",
+    avatarSource: data.avatarSource || "",
+    github: data.github || "",
+    linkedin: data.linkedin || "",
+    portfolio: data.portfolio || "",
+    bio: data.bio || "",
+    experience: data.experience || "",
+    skills: Array.isArray(data.skills) ? data.skills : parseSkills(data.skills),
+    showOnTeam: normalizeBoolean(data.showOnTeam),
+    isMentor: normalizeBoolean(data.isMentor),
+    location: data.location || "",
+    cvFileName: data.cvFileName || "",
+    cvFilePath: data.cvFilePath || "",
+    cvUploadedAt: data.cvUploadedAt || null,
+    createdAt: data.createdAt ? toIsoString(data.createdAt.toDate?.() || data.createdAt) : null,
+    updatedAt: data.updatedAt ? toIsoString(data.updatedAt.toDate?.() || data.updatedAt) : null,
+  };
+
+  if (includeSensitive) {
+    user.passwordHash = data.passwordHash || null;
+  }
+
+  return user;
 };
 
 const normalizeEmail = (value = "") => String(value || "").trim().toLowerCase();
@@ -444,7 +491,52 @@ const selectUserByWhere = async (whereSql, params = [], connection = null, { inc
   return rows.length ? mapUserRow(rows[0], { includeSensitive }) : null;
 };
 
+const selectFirestoreUserByWhere = async ({ email = "", phone = "", uid = "" } = {}, { includeSensitive = false } = {}) => {
+  const firestore = getFirestore();
+
+  if (uid) {
+    const snap = await firestore.collection(FIRESTORE_USER_COLLECTION).doc(String(uid)).get();
+    return mapFirestoreUser(snap, { includeSensitive });
+  }
+
+  const normalizedEmail = email ? normalizeEmail(email) : "";
+  const normalizedPhone = phone ? normalizePhone(phone) : "";
+
+  if (normalizedEmail) {
+    const snap = await firestore
+      .collection(FIRESTORE_USER_COLLECTION)
+      .where("email", "==", normalizedEmail)
+      .limit(1)
+      .get();
+    if (!snap.empty) return mapFirestoreUser(snap.docs[0], { includeSensitive });
+  }
+
+  if (normalizedPhone) {
+    const snap = await firestore
+      .collection(FIRESTORE_USER_COLLECTION)
+      .where("phone", "==", normalizedPhone)
+      .limit(1)
+      .get();
+    if (!snap.empty) return mapFirestoreUser(snap.docs[0], { includeSensitive });
+  }
+
+  return null;
+};
+
+const listUsersFromFirestore = async (filters = {}) => {
+  const firestore = getFirestore();
+  let q = firestore.collection(FIRESTORE_USER_COLLECTION);
+  if (filters.role) q = q.where("role", "==", normalizeSystemRole(filters.role));
+  if (filters.status) q = q.where("status", "==", normalizeStatus(filters.status));
+
+  const snap = await q.limit(500).get();
+  return snap.docs.map((doc) => mapFirestoreUser(doc)).filter(Boolean);
+};
+
 const listUsersFromSql = async (filters = {}, connection = null) => {
+  if (!useMysql()) {
+    return listUsersFromFirestore(filters);
+  }
   const clauses = [];
   const params = [];
 
@@ -467,6 +559,23 @@ const listUsersFromSql = async (filters = {}, connection = null) => {
 };
 
 const findUserByIdentifier = async (identifier, { includeSensitive = false, connection = null } = {}) => {
+  if (!useMysql()) {
+    const normalized = String(identifier || "").trim();
+    if (!normalized) return null;
+
+    if (normalized.includes("@")) {
+      return selectFirestoreUserByWhere({ email: normalized }, { includeSensitive });
+    }
+
+    const phone = normalizePhone(normalized);
+    if (phone) {
+      const byPhone = await selectFirestoreUserByWhere({ phone }, { includeSensitive });
+      if (byPhone) return byPhone;
+    }
+
+    return selectFirestoreUserByWhere({ uid: normalized }, { includeSensitive });
+  }
+
   assertMySqlReady();
   const normalized = String(identifier || "").trim();
   if (!normalized) return null;
@@ -494,6 +603,34 @@ const findUserByIdentifier = async (identifier, { includeSensitive = false, conn
 };
 
 const findUserConflict = async ({ email, phone, excludeUserId = null, excludeFirebaseUid = null } = {}) => {
+  if (!useMysql()) {
+    const normalizedEmail = email ? normalizeEmail(email) : "";
+    const normalizedPhone = phone ? normalizePhone(phone) : "";
+
+    const firestore = getFirestore();
+    const legacyDocs = [];
+
+    if (normalizedEmail) {
+      const snap = await firestore
+        .collection(FIRESTORE_USER_COLLECTION)
+        .where("email", "==", normalizedEmail)
+        .limit(2)
+        .get();
+      legacyDocs.push(...snap.docs);
+    }
+    if (normalizedPhone) {
+      const snap = await firestore
+        .collection(FIRESTORE_USER_COLLECTION)
+        .where("phone", "==", normalizedPhone)
+        .limit(2)
+        .get();
+      legacyDocs.push(...snap.docs);
+    }
+
+    const legacyConflict = legacyDocs.find((docSnap) => docSnap.id !== excludeFirebaseUid);
+    return legacyConflict ? mapFirestoreUser(legacyConflict) : null;
+  }
+
   assertMySqlReady();
 
   const normalizedEmail = email ? normalizeEmail(email) : "";
@@ -760,27 +897,41 @@ const getManagedUser = async (identifier, options = {}) => {
   return user || null;
 };
 
-const createResetTokenRecord = async (userId, purpose, requestIp = "", connection = null) => {
+const createResetTokenRecord = async (user, purpose, requestIp = "", connection = null) => {
   const secret = crypto.randomBytes(32).toString("hex");
   const tokenHash = await bcrypt.hash(secret, 12);
   const expiresAt = new Date(Date.now() + PASSWORD_RESET_TTL_MS);
 
+  if (!useMysql()) {
+    const firestore = getFirestore();
+    const ref = firestore.collection(FIRESTORE_PASSWORD_RESET_COLLECTION).doc();
+    await ref.set({
+      userUid: user.firebaseUid || user.uid,
+      email: normalizeEmail(user.email),
+      purpose,
+      tokenHash,
+      expiresAt: admin.firestore.Timestamp.fromDate(expiresAt),
+      usedAt: null,
+      requestIp: requestIp || null,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    return { token: `${ref.id}.${secret}`, expiresAt: expiresAt.toISOString() };
+  }
+
   await query(
     "UPDATE password_reset_tokens SET used_at = NOW() WHERE user_id = ? AND purpose = ? AND used_at IS NULL",
-    [Number(userId), purpose],
+    [Number(user.numericId), purpose],
     connection
   );
 
   const result = await query(
     "INSERT INTO password_reset_tokens (user_id, purpose, token_hash, expires_at, request_ip) VALUES (?, ?, ?, ?, ?)",
-    [Number(userId), purpose, tokenHash, expiresAt, requestIp || null],
+    [Number(user.numericId), purpose, tokenHash, expiresAt, requestIp || null],
     connection
   );
 
-  return {
-    token: `${result.insertId}.${secret}`,
-    expiresAt: expiresAt.toISOString(),
-  };
+  return { token: `${result.insertId}.${secret}`, expiresAt: expiresAt.toISOString() };
 };
 
 const buildResetEmailMarkup = ({ title, greetingName, bodyHtml, ctaLabel, resetLink, supportMessage }) =>
@@ -801,7 +952,7 @@ const buildResetEmailMarkup = ({ title, greetingName, bodyHtml, ctaLabel, resetL
   );
 
 const sendResetEmail = async (user, { purpose = "reset_password", from = "", requestIp = "", intro = null } = {}) => {
-  const tokenRecord = await createResetTokenRecord(user.numericId, purpose, requestIp);
+  const tokenRecord = await createResetTokenRecord(user, purpose, requestIp);
   const resetLink = buildResetUrl(tokenRecord.token, from);
 
   const title =
@@ -856,7 +1007,6 @@ const createFirebaseAuthUser = async (payload) => {
 };
 
 const createManagedUser = async (input, { sendActivationEmail = true, activationFrom = "", requestIp = "", createdBy = null } = {}) => {
-  assertMySqlReady();
   const payload = sanitizeManagedUserInput(input, {
     requirePhone: true,
     roleFallback: input.role || "customer",
@@ -876,13 +1026,53 @@ const createManagedUser = async (input, { sendActivationEmail = true, activation
     const authProvision = await createFirebaseAuthUser(payload);
     firebaseUser = { uid: authProvision.firebaseUid };
 
-    createdUser = await withTransaction(async (connection) =>
-      insertUserRow(connection, {
-        ...payload,
-        firebaseUid: authProvision.firebaseUid,
-        passwordHash: authProvision.passwordHash,
-      })
-    );
+    if (useMysql()) {
+      createdUser = await withTransaction(async (connection) =>
+        insertUserRow(connection, {
+          ...payload,
+          firebaseUid: authProvision.firebaseUid,
+          passwordHash: authProvision.passwordHash,
+        })
+      );
+    } else {
+      const firestore = getFirestore();
+      const ref = firestore.collection(FIRESTORE_USER_COLLECTION).doc(authProvision.firebaseUid);
+      await ref.set(
+        {
+          uid: authProvision.firebaseUid,
+          email: payload.email,
+          phone: payload.phone || "",
+          displayName: payload.displayName,
+          role: payload.role,
+          status: payload.status,
+          department: payload.department || "",
+          jobTitle: payload.jobTitle || "",
+          employeeId: payload.employeeId || "",
+          joinDate: payload.joinDate || "",
+          avatar: payload.avatar || "",
+          photoURL: payload.avatar || "",
+          avatarSource: payload.avatarSource || "",
+          github: payload.github || "",
+          linkedin: payload.linkedin || "",
+          portfolio: payload.portfolio || "",
+          bio: payload.bio || "",
+          experience: payload.experience || "",
+          skills: payload.skills || [],
+          showOnTeam: Boolean(payload.showOnTeam),
+          isMentor: Boolean(payload.isMentor),
+          location: payload.location || "",
+          cvFileName: payload.cvFileName || "",
+          cvFilePath: payload.cvFilePath || "",
+          cvUploadedAt: payload.cvUploadedAt || null,
+          passwordHash: authProvision.passwordHash,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        },
+        { merge: true }
+      );
+      const snap = await ref.get();
+      createdUser = mapFirestoreUser(snap, { includeSensitive: true });
+    }
 
     await syncUserToFirebase(createdUser);
 
@@ -920,7 +1110,6 @@ const createManagedUser = async (input, { sendActivationEmail = true, activation
 };
 
 const updateManagedUser = async (identifier, updates, { updatedBy = null } = {}) => {
-  assertMySqlReady();
   const existingUser = await getManagedUser(identifier, { includeSensitive: true });
   if (!existingUser) {
     throw createHttpError(404, "User not found.", "user_not_found");
@@ -959,17 +1148,56 @@ const updateManagedUser = async (identifier, updates, { updatedBy = null } = {})
     throw error;
   }
 
-  const updatedUser = await withTransaction(async (connection) =>
-    updateUserRow(connection, existingUser.numericId, {
-      ...existingUser,
-      ...merged,
-      firebaseUid: existingUser.firebaseUid,
-      passwordHash: null,
-      cvFileName: updates.cvFileName ?? existingUser.cvFileName,
-      cvFilePath: updates.cvFilePath ?? existingUser.cvFilePath,
-      cvUploadedAt: updates.cvUploadedAt ?? existingUser.cvUploadedAt,
-    })
-  );
+  let updatedUser = null;
+  if (useMysql()) {
+    updatedUser = await withTransaction(async (connection) =>
+      updateUserRow(connection, existingUser.numericId, {
+        ...existingUser,
+        ...merged,
+        firebaseUid: existingUser.firebaseUid,
+        passwordHash: null,
+        cvFileName: updates.cvFileName ?? existingUser.cvFileName,
+        cvFilePath: updates.cvFilePath ?? existingUser.cvFilePath,
+        cvUploadedAt: updates.cvUploadedAt ?? existingUser.cvUploadedAt,
+      })
+    );
+  } else {
+    const uid = existingUser.firebaseUid || existingUser.uid || identifier;
+    const firestore = getFirestore();
+    const ref = firestore.collection(FIRESTORE_USER_COLLECTION).doc(String(uid));
+    await ref.set(
+      {
+        email: merged.email,
+        phone: merged.phone || "",
+        displayName: merged.displayName,
+        role: merged.role,
+        status: merged.status,
+        department: merged.department || "",
+        jobTitle: merged.jobTitle || "",
+        employeeId: merged.employeeId || "",
+        joinDate: merged.joinDate || "",
+        avatar: merged.avatar || "",
+        photoURL: merged.avatar || "",
+        avatarSource: merged.avatarSource || "",
+        github: merged.github || "",
+        linkedin: merged.linkedin || "",
+        portfolio: merged.portfolio || "",
+        bio: merged.bio || "",
+        experience: merged.experience || "",
+        skills: merged.skills || [],
+        showOnTeam: Boolean(merged.showOnTeam),
+        isMentor: Boolean(merged.isMentor),
+        location: merged.location || "",
+        cvFileName: updates.cvFileName ?? existingUser.cvFileName,
+        cvFilePath: updates.cvFilePath ?? existingUser.cvFilePath,
+        cvUploadedAt: updates.cvUploadedAt ?? existingUser.cvUploadedAt,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+    const snap = await ref.get();
+    updatedUser = mapFirestoreUser(snap, { includeSensitive: true });
+  }
 
   await syncUserToFirebase(updatedUser);
   logger.info(`[UserManagement] Updated ${updatedUser.email}${updatedBy?.email ? ` by ${updatedBy.email}` : ""}`);
@@ -977,17 +1205,39 @@ const updateManagedUser = async (identifier, updates, { updatedBy = null } = {})
 };
 
 const deleteManagedUser = async (identifier, { deletedBy = null } = {}) => {
-  assertMySqlReady();
   const user = await getManagedUser(identifier, { includeSensitive: true });
   if (!user) {
     throw createHttpError(404, "User not found.", "user_not_found");
   }
 
-  await withTransaction(async (connection) => {
-    await query("DELETE FROM password_reset_tokens WHERE user_id = ?", [user.numericId], connection);
-    await query("DELETE FROM account_requests WHERE linked_user_id = ?", [user.numericId], connection);
-    await query("DELETE FROM users WHERE id = ?", [user.numericId], connection);
-  });
+  if (useMysql()) {
+    await withTransaction(async (connection) => {
+      await query("DELETE FROM password_reset_tokens WHERE user_id = ?", [user.numericId], connection);
+      await query("DELETE FROM account_requests WHERE linked_user_id = ?", [user.numericId], connection);
+      await query("DELETE FROM users WHERE id = ?", [user.numericId], connection);
+    });
+  } else {
+    const firestore = getFirestore();
+    const uid = user.firebaseUid || user.uid;
+    if (uid) {
+      // best-effort cleanup
+      const tokensSnap = await firestore
+        .collection(FIRESTORE_PASSWORD_RESET_COLLECTION)
+        .where("userUid", "==", uid)
+        .limit(200)
+        .get();
+      await Promise.all(tokensSnap.docs.map((doc) => doc.ref.delete().catch(() => {})));
+
+      const reqSnap = await firestore
+        .collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION)
+        .where("linkedUserId", "==", uid)
+        .limit(200)
+        .get();
+      await Promise.all(reqSnap.docs.map((doc) => doc.ref.set({ linkedUserId: "" }, { merge: true }).catch(() => {})));
+
+      await firestore.collection(FIRESTORE_USER_COLLECTION).doc(uid).delete().catch(() => {});
+    }
+  }
 
   await removeUserFromFirebase(user);
 
@@ -996,8 +1246,6 @@ const deleteManagedUser = async (identifier, { deletedBy = null } = {}) => {
 };
 
 const mergeManagedUsers = async ({ primaryIdentifier, duplicateIdentifier, mergeReason = "", mergedBy = null } = {}) => {
-  assertMySqlReady();
-
   const primaryUser = await getManagedUser(primaryIdentifier, { includeSensitive: true });
   const duplicateUser = await getManagedUser(duplicateIdentifier, { includeSensitive: true });
 
@@ -1008,6 +1256,73 @@ const mergeManagedUsers = async ({ primaryIdentifier, duplicateIdentifier, merge
     throw createHttpError(400, "Choose two different accounts to merge.", "merge_same_account");
   }
 
+  if (!useMysql()) {
+    const firestore = getFirestore();
+    const primaryUid = primaryUser.firebaseUid || primaryUser.uid;
+    const duplicateUid = duplicateUser.firebaseUid || duplicateUser.uid;
+
+    const mergedPayload = {
+      ...primaryUser,
+      phone: primaryUser.phone || duplicateUser.phone,
+      department: primaryUser.department || duplicateUser.department,
+      jobTitle: primaryUser.jobTitle || duplicateUser.jobTitle,
+      employeeId: primaryUser.employeeId || duplicateUser.employeeId,
+      joinDate: primaryUser.joinDate || duplicateUser.joinDate,
+      avatar: primaryUser.avatar || duplicateUser.avatar,
+      avatarSource: primaryUser.avatarSource || duplicateUser.avatarSource,
+      github: primaryUser.github || duplicateUser.github,
+      linkedin: primaryUser.linkedin || duplicateUser.linkedin,
+      portfolio: primaryUser.portfolio || duplicateUser.portfolio,
+      bio: primaryUser.bio || duplicateUser.bio,
+      experience: primaryUser.experience || duplicateUser.experience,
+      skills: primaryUser.skills?.length ? primaryUser.skills : duplicateUser.skills,
+      showOnTeam: primaryUser.showOnTeam || duplicateUser.showOnTeam,
+      isMentor: primaryUser.isMentor || duplicateUser.isMentor,
+      location: primaryUser.location || duplicateUser.location,
+      cvFileName: primaryUser.cvFileName || duplicateUser.cvFileName,
+      cvFilePath: primaryUser.cvFilePath || duplicateUser.cvFilePath,
+      cvUploadedAt: primaryUser.cvUploadedAt || duplicateUser.cvUploadedAt,
+    };
+
+    await firestore.collection(FIRESTORE_USER_COLLECTION).doc(primaryUid).set(
+      {
+        ...buildFirestoreUserPayload(mergedPayload),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+
+    const reqSnap = await firestore
+      .collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION)
+      .where("linkedUserId", "==", duplicateUid)
+      .limit(200)
+      .get();
+    await Promise.all(reqSnap.docs.map((doc) => doc.ref.set({ linkedUserId: primaryUid }, { merge: true }).catch(() => {})));
+
+    await firestore.collection(FIRESTORE_USER_MERGE_AUDIT_COLLECTION).add({
+      survivingUserId: primaryUid,
+      mergedUserId: duplicateUid,
+      mergedByUid: mergedBy?.uid || null,
+      mergedByEmail: mergedBy?.email || null,
+      mergeReason: mergeReason || null,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    await firestore.collection(FIRESTORE_USER_COLLECTION).doc(duplicateUid).delete().catch(() => {});
+    await removeUserFromFirebase(duplicateUser);
+
+    const refreshedSnap = await firestore.collection(FIRESTORE_USER_COLLECTION).doc(primaryUid).get();
+    const refreshed = mapFirestoreUser(refreshedSnap);
+    await syncUserToFirebase(refreshed);
+
+    logger.info(
+      `[UserManagement] Merged ${duplicateUser.email} into ${refreshed.email}${mergedBy?.email ? ` by ${mergedBy.email}` : ""}`
+    );
+
+    return { primaryUser: refreshed, mergedUser: duplicateUser };
+  }
+
+  assertMySqlReady();
   const mergedPayload = {
     ...primaryUser,
     phone: primaryUser.phone || duplicateUser.phone,
@@ -1076,6 +1391,122 @@ const mergeManagedUsers = async ({ primaryIdentifier, duplicateIdentifier, merge
 };
 
 const createAccountRequest = async (input, { requestIp = "" } = {}) => {
+  if (!useMysql()) {
+    const name = String(input.name || input.displayName || "").trim();
+    const email = normalizeEmail(input.email);
+    const phone = normalizePhone(input.phone);
+    const department = String(input.department || "").trim();
+    const requestedRole = String(input.role || input.requestedRole || "Employee").trim();
+    const reason = String(input.reason || "").trim();
+
+    if (!name) throw createHttpError(400, "Full name is required.", "display_name_required");
+    if (!email || !validateEmail(email)) throw createHttpError(400, "A valid email address is required.", "invalid_email");
+    if (!phone || !validatePhone(phone)) throw createHttpError(400, "A valid phone number is required.", "invalid_phone");
+    if (!department) throw createHttpError(400, "Department is required.", "department_required");
+
+    const firestore = getFirestore();
+
+    const existingAccount = await findUserConflict({ email, phone });
+    if (existingAccount) {
+      const requestUid = crypto.randomUUID();
+      const payload = {
+        requestUid,
+        name,
+        email,
+        phone,
+        department,
+        role: requestedRole || "Employee",
+        reason: reason || "",
+        status: "approved",
+        mergeCount: 1,
+        linkedUserId: existingAccount.uid,
+        alreadyExists: true,
+        approvedAt: new Date().toISOString(),
+        rejectedAt: null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      await firestore.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).doc(requestUid).set(payload, { merge: true });
+
+      await sendResetEmail(existingAccount, {
+        purpose: "reset_password",
+        from: "employee",
+        requestIp,
+        intro: `
+          <p style="color: #475569; font-size: 15px; line-height: 1.8;">
+            An employee account request was submitted for your email address. Your account already exists, so we prepared a secure password reset link for you.
+          </p>
+        `,
+      }).catch((error) => {
+        logger.error(`[UserManagement] Failed to send duplicate-account reset email to ${existingAccount.email}: ${error.message}`);
+      });
+
+      return {
+        request: payload,
+        alreadyExists: true,
+        merged: false,
+        message: ACCOUNT_ALREADY_EXISTS_MESSAGE,
+      };
+    }
+
+    // Merge into existing pending request (by email OR phone)
+    const pendingByEmail = await firestore
+      .collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION)
+      .where("email", "==", email)
+      .where("status", "==", "pending")
+      .limit(1)
+      .get();
+    const pendingByPhone = await firestore
+      .collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION)
+      .where("phone", "==", phone)
+      .where("status", "==", "pending")
+      .limit(1)
+      .get();
+
+    const existingPending = (!pendingByEmail.empty && pendingByEmail.docs[0]) || (!pendingByPhone.empty && pendingByPhone.docs[0]) || null;
+    if (existingPending) {
+      const doc = existingPending;
+      const data = doc.data() || {};
+      const next = {
+        ...data,
+        name,
+        department,
+        role: requestedRole || data.role || "Employee",
+        reason: reason || data.reason || "",
+        mergeCount: Number(data.mergeCount || 0) + 1,
+        updatedAt: new Date().toISOString(),
+      };
+      await doc.ref.set(next, { merge: true });
+      return {
+        request: next,
+        merged: true,
+        message: "Your request is already pending review. We updated it with your latest information.",
+      };
+    }
+
+    const requestUid = crypto.randomUUID();
+    const payload = {
+      requestUid,
+      name,
+      email,
+      phone,
+      department,
+      role: requestedRole || "Employee",
+      reason: reason || "",
+      status: "pending",
+      mergeCount: 0,
+      linkedUserId: "",
+      alreadyExists: false,
+      approvedAt: null,
+      rejectedAt: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    await firestore.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).doc(requestUid).set(payload, { merge: true });
+
+    return { request: payload, merged: false, message: "Your request has been submitted successfully." };
+  }
+
   assertMySqlReady();
 
   const name = String(input.name || input.displayName || "").trim();
@@ -1247,6 +1678,65 @@ const getAccountRequest = async (identifier) => {
 };
 
 const approveAccountRequest = async (identifier, actor = null) => {
+  if (!useMysql()) {
+    const firestore = getFirestore();
+    const requestId = String(identifier || "").trim();
+    const docSnap = await firestore.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).doc(requestId).get();
+    if (!docSnap.exists) throw createHttpError(404, "Account request not found.", "request_not_found");
+
+    const request = { id: docSnap.id, ...(docSnap.data() || {}) };
+    if (request.status === "approved" && request.linkedUserId) {
+      return { success: true, alreadyExists: true, request };
+    }
+
+    const existingAccount = await findUserConflict({ email: request.email, phone: request.phone });
+    if (existingAccount) {
+      const updated = {
+        ...request,
+        status: "approved",
+        linkedUserId: existingAccount.uid,
+        approvedAt: new Date().toISOString(),
+        approvedByUid: actor?.uid || "",
+        approvedByEmail: actor?.email || "",
+        updatedAt: new Date().toISOString(),
+      };
+      await docSnap.ref.set(updated, { merge: true });
+      await sendResetEmail(existingAccount, { purpose: "reset_password", from: "employee" }).catch(() => {});
+      return { success: true, alreadyExists: true, request: updated, user: existingAccount };
+    }
+
+    const createdUser = await createManagedUser(
+      {
+        displayName: request.name,
+        email: request.email,
+        phone: request.phone,
+        department: request.department,
+        jobTitle: request.role,
+        role: "employee",
+        status: "active",
+        showOnTeam: false,
+      },
+      {
+        sendActivationEmail: true,
+        activationFrom: "employee",
+        createdBy: actor,
+      }
+    );
+
+    const updated = {
+      ...request,
+      status: "approved",
+      linkedUserId: createdUser.uid,
+      approvedAt: new Date().toISOString(),
+      approvedByUid: actor?.uid || "",
+      approvedByEmail: actor?.email || "",
+      updatedAt: new Date().toISOString(),
+    };
+    await docSnap.ref.set(updated, { merge: true });
+
+    return { success: true, alreadyExists: false, request: updated, user: createdUser };
+  }
+
   assertMySqlReady();
   const request = await getAccountRequest(identifier);
   if (!request) {
@@ -1347,6 +1837,25 @@ const approveAccountRequest = async (identifier, actor = null) => {
 };
 
 const rejectAccountRequest = async (identifier, actor = null) => {
+  if (!useMysql()) {
+    const firestore = getFirestore();
+    const requestId = String(identifier || "").trim();
+    const docSnap = await firestore.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).doc(requestId).get();
+    if (!docSnap.exists) throw createHttpError(404, "Account request not found.", "request_not_found");
+    const request = { id: docSnap.id, ...(docSnap.data() || {}) };
+
+    const updated = {
+      ...request,
+      status: "rejected",
+      rejectedAt: new Date().toISOString(),
+      rejectedByUid: actor?.uid || "",
+      rejectedByEmail: actor?.email || "",
+      updatedAt: new Date().toISOString(),
+    };
+    await docSnap.ref.set(updated, { merge: true });
+    return updated;
+  }
+
   assertMySqlReady();
   const request = await getAccountRequest(identifier);
   if (!request) {
@@ -1373,6 +1882,16 @@ const rejectAccountRequest = async (identifier, actor = null) => {
 };
 
 const deleteAccountRequest = async (identifier) => {
+  if (!useMysql()) {
+    const firestore = getFirestore();
+    const requestId = String(identifier || "").trim();
+    const docSnap = await firestore.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).doc(requestId).get();
+    if (!docSnap.exists) throw createHttpError(404, "Account request not found.", "request_not_found");
+    const request = { id: docSnap.id, ...(docSnap.data() || {}) };
+    await docSnap.ref.delete();
+    return request;
+  }
+
   assertMySqlReady();
   const request = await getAccountRequest(identifier);
   if (!request) {
@@ -1385,14 +1904,13 @@ const deleteAccountRequest = async (identifier) => {
 };
 
 const requestPasswordReset = async ({ email, from = "", requestIp = "" } = {}) => {
-  assertMySqlReady();
   const normalizedEmail = normalizeEmail(email);
   if (!normalizedEmail || !validateEmail(normalizedEmail)) {
     throw createHttpError(400, "A valid email address is required.", "invalid_email");
   }
 
   let user = await findUserByIdentifier(normalizedEmail, { includeSensitive: true });
-  if (!user) {
+  if (!user && useMysql()) {
     user = await materializeLegacyUser(normalizedEmail);
   }
 
@@ -1414,6 +1932,31 @@ const requestPasswordReset = async ({ email, from = "", requestIp = "" } = {}) =
 };
 
 const verifyResetToken = async (token) => {
+  if (!useMysql()) {
+    const normalizedToken = String(token || "").trim();
+    const [tokenId, secret] = normalizedToken.split(".");
+    if (!tokenId || !secret) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
+
+    const firestore = getFirestore();
+    const snap = await firestore.collection(FIRESTORE_PASSWORD_RESET_COLLECTION).doc(tokenId).get();
+    if (!snap.exists) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
+    const data = snap.data() || {};
+    const expiresAt = data.expiresAt?.toDate?.() ? data.expiresAt.toDate() : new Date(data.expiresAt);
+    if (data.usedAt || !expiresAt || expiresAt.getTime() < Date.now()) {
+      throw createHttpError(400, "This password reset link is invalid or has expired.", "expired_reset_token");
+    }
+    const ok = await bcrypt.compare(secret, data.tokenHash || "");
+    if (!ok) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
+
+    return {
+      success: true,
+      email: normalizeEmail(data.email || ""),
+      displayName: data.displayName || "",
+      role: data.role || "customer",
+      expiresAt: toIsoString(expiresAt),
+    };
+  }
+
   assertMySqlReady();
   const normalizedToken = String(token || "").trim();
   const [tokenIdRaw, secret] = normalizedToken.split(".");
@@ -1447,10 +1990,46 @@ const verifyResetToken = async (token) => {
 };
 
 const completePasswordReset = async ({ token, newPassword } = {}) => {
-  assertMySqlReady();
   validatePassword(newPassword);
 
   const normalizedToken = String(token || "").trim();
+
+  if (!useMysql()) {
+    const [tokenId, secret] = normalizedToken.split(".");
+    if (!tokenId || !secret) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
+
+    const firestore = getFirestore();
+    const tokenRef = firestore.collection(FIRESTORE_PASSWORD_RESET_COLLECTION).doc(tokenId);
+    const snap = await tokenRef.get();
+    if (!snap.exists) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
+    const data = snap.data() || {};
+    const expiresAt = data.expiresAt?.toDate?.() ? data.expiresAt.toDate() : new Date(data.expiresAt);
+    if (data.usedAt || !expiresAt || expiresAt.getTime() < Date.now()) {
+      throw createHttpError(400, "This password reset link is invalid or has expired.", "expired_reset_token");
+    }
+    const ok = await bcrypt.compare(secret, data.tokenHash || "");
+    if (!ok) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
+
+    const uid = String(data.userUid || "");
+    if (!uid) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
+
+    await admin.auth().updateUser(uid, { password: newPassword, disabled: false });
+
+    await tokenRef.set(
+      { usedAt: admin.firestore.FieldValue.serverTimestamp(), updatedAt: admin.firestore.FieldValue.serverTimestamp() },
+      { merge: true }
+    );
+
+    // ensure user is active in firestore
+    await firestore.collection(FIRESTORE_USER_COLLECTION).doc(uid).set(
+      { status: "active", updatedAt: admin.firestore.FieldValue.serverTimestamp() },
+      { merge: true }
+    );
+
+    return { success: true, email: normalizeEmail(data.email || "") };
+  }
+
+  assertMySqlReady();
   const [tokenIdRaw] = normalizedToken.split(".");
   const verification = await verifyResetToken(normalizedToken);
   const rows = await query(RESET_TOKEN_JOIN_SQL, [Number(tokenIdRaw)]);
@@ -1477,10 +2056,7 @@ const completePasswordReset = async ({ token, newPassword } = {}) => {
   const refreshedUser = await getManagedUser(user.id, { includeSensitive: true });
   await syncUserToFirebase(refreshedUser);
 
-  return {
-    success: true,
-    email: verification.email,
-  };
+  return { success: true, email: verification.email };
 };
 
 const getOwnProfile = async (firebaseUid) => {

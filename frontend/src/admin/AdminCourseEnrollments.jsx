@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
-import { Search } from 'lucide-react'
 
 export default function AdminCourseEnrollments() {
   const { enrollments, courses, updateEnrollment, deleteEnrollment } = useStore()
@@ -21,11 +20,34 @@ export default function AdminCourseEnrollments() {
     active: enrollments.filter(e => e.status === 'active').length,
     revenue: enrollments.filter(e => e.status === 'active').reduce((s, e) => s + Number(e.amount || 0), 0)
   }
+  const hasFiltersApplied = filterCourse !== 'All' || filterStatus !== 'All' || Boolean(search.trim())
+  const footerLabel = hasFiltersApplied
+    ? `Showing ${filtered.length} of ${enrollments.length} enrollments`
+    : `Showing all ${enrollments.length} enrollments`
 
   const formatDate = (ts) => {
     if (!ts) return '—'
     const d = ts.toDate ? ts.toDate() : new Date(ts)
     return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+  }
+
+  const handleEditEnrollmentName = async (enrollment) => {
+    const currentName = enrollment.userName || ''
+    const nextName = window.prompt('Enter updated student name', currentName)
+    if (nextName === null) return
+
+    const normalized = nextName.trim()
+    if (!normalized) {
+      alert('Student name is required.')
+      return
+    }
+
+    try {
+      await updateEnrollment(enrollment.id, { userName: normalized })
+      alert('Enrollment name updated successfully.')
+    } catch (error) {
+      alert(error?.message || 'Unable to update enrollment name.')
+    }
   }
 
   return (
@@ -39,13 +61,28 @@ export default function AdminCourseEnrollments() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Total Enrollments', value: stats.total, color: 'blue' },
-          { label: 'Active', value: stats.active, color: 'emerald' },
-          { label: 'Total Revenue', value: `₹${stats.revenue.toLocaleString('en-IN')}`, color: 'purple' },
-        ].map(s => (
-          <div key={s.label} className={`bg-${s.color}-500/10 border border-${s.color}-500/20 rounded-2xl p-4`}>
-            <p className={`text-2xl font-black text-${s.color}-400`}>{s.value}</p>
-            <p className="text-xs text-gray-400 mt-1">{s.label}</p>
+          {
+            label: 'Total Enrollments',
+            value: stats.total,
+            cardClass: 'bg-blue-500/10 border-blue-500/20',
+            textClass: 'text-blue-400',
+          },
+          {
+            label: 'Active',
+            value: stats.active,
+            cardClass: 'bg-emerald-500/10 border-emerald-500/20',
+            textClass: 'text-emerald-400',
+          },
+          {
+            label: 'Total Revenue',
+            value: `₹${stats.revenue.toLocaleString('en-IN')}`,
+            cardClass: 'bg-purple-500/10 border-purple-500/20',
+            textClass: 'text-purple-400',
+          },
+        ].map((s) => (
+          <div key={s.label} className={`rounded-2xl border p-4 ${s.cardClass}`}>
+            <p className={`text-2xl font-black ${s.textClass}`}>{s.value}</p>
+            <p className="mt-1 text-xs text-gray-400">{s.label}</p>
           </div>
         ))}
       </div>
@@ -130,6 +167,13 @@ export default function AdminCourseEnrollments() {
                   <td className="px-4 py-3 text-xs text-gray-500">{formatDate(enr.enrolledAt)}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
+                      <button
+                        onClick={() => handleEditEnrollmentName(enr)}
+                        title="Edit student name"
+                        className="p-1.5 rounded-lg bg-blue-500/10 text-blue-300 hover:bg-blue-500/20 transition-colors text-xs"
+                      >
+                        Edit Name
+                      </button>
                       {enr.status === 'active' && (
                         <button
                           onClick={() => updateEnrollment(enr.id, { status: 'cancelled' })}
@@ -155,7 +199,7 @@ export default function AdminCourseEnrollments() {
           </table>
         </div>
         <div className="px-4 py-3 border-t border-white/5 text-xs text-gray-500">
-          Showing {filtered.length} of {enrollments.length} enrollments
+          {footerLabel}
         </div>
       </div>
     </div>

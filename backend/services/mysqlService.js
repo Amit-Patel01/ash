@@ -107,29 +107,71 @@ const USER_MANAGEMENT_SCHEMA = [
   `,
 ];
 
-const hasMysqlConfig = () =>
-  Boolean(
-    process.env.MYSQL_HOST &&
-      process.env.MYSQL_PORT &&
-      process.env.MYSQL_USER &&
-      process.env.MYSQL_PASSWORD &&
-      process.env.MYSQL_DATABASE
-  );
+const parseMysqlUrl = (rawUrl = "") => {
+  const value = String(rawUrl || "").trim();
+  if (!value) return null;
+
+  try {
+    const parsed = new URL(value);
+    const protocol = String(parsed.protocol || "").toLowerCase();
+    if (protocol !== "mysql:" && protocol !== "mysql2:") {
+      return null;
+    }
+
+    return {
+      host: parsed.hostname || "",
+      port: Number(parsed.port || 3306),
+      user: decodeURIComponent(parsed.username || ""),
+      password: decodeURIComponent(parsed.password || ""),
+      database: decodeURIComponent((parsed.pathname || "").replace(/^\//, "")),
+    };
+  } catch {
+    return null;
+  }
+};
+
+const getMysqlConfig = () => {
+  const host = process.env.MYSQL_HOST;
+  const port = process.env.MYSQL_PORT;
+  const user = process.env.MYSQL_USER;
+  const password = process.env.MYSQL_PASSWORD;
+  const database = process.env.MYSQL_DATABASE;
+
+  if (host && port && user && password && database) {
+    return {
+      host,
+      port: Number(port),
+      user,
+      password,
+      database,
+    };
+  }
+
+  const urlConfig = parseMysqlUrl(process.env.MYSQL_URL || process.env.DATABASE_URL);
+  if (urlConfig?.host && urlConfig?.user && urlConfig?.password && urlConfig?.database) {
+    return urlConfig;
+  }
+
+  return null;
+};
+
+const hasMysqlConfig = () => Boolean(getMysqlConfig());
 
 const getPool = () => {
-  if (!hasMysqlConfig()) {
+  const mysqlConfig = getMysqlConfig();
+  if (!mysqlConfig) {
     throw new Error(
-      "MySQL configuration is missing. Set MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE."
+      "MySQL configuration is missing. Set MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE, or set MYSQL_URL / DATABASE_URL."
     );
   }
 
   if (!pool) {
     pool = mysql.createPool({
-      host: process.env.MYSQL_HOST,
-      port: Number(process.env.MYSQL_PORT || 3306),
-      user: process.env.MYSQL_USER,
-      password: process.env.MYSQL_PASSWORD,
-      database: process.env.MYSQL_DATABASE,
+      host: mysqlConfig.host,
+      port: Number(mysqlConfig.port || 3306),
+      user: mysqlConfig.user,
+      password: mysqlConfig.password,
+      database: mysqlConfig.database,
       waitForConnections: true,
       connectionLimit: Number(process.env.MYSQL_CONNECTION_LIMIT || 10),
       queueLimit: 0,
@@ -179,7 +221,7 @@ const query = async (sql, params = [], connection = null) => {
 
 if (!hasMysqlConfig()) {
   logger.warn(
-    "MySQL environment variables are not configured. User-management APIs will remain unavailable until MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE are set."
+    "MySQL configuration is not set. User-management APIs will remain unavailable until MYSQL_HOST/MYSQL_PORT/MYSQL_USER/MYSQL_PASSWORD/MYSQL_DATABASE or MYSQL_URL/DATABASE_URL is provided."
   );
 }
 

@@ -31,6 +31,7 @@ export default function AdminEmployees() {
     displayName: '',
     email: '',
     phone: '',
+    avatar: '',
     jobTitle: '',
     department: '',
     status: 'active',
@@ -80,6 +81,7 @@ export default function AdminEmployees() {
       displayName: '',
       email: '',
       phone: '',
+      avatar: '',
       jobTitle: '',
       department: 'Engineering',
       status: 'active',
@@ -111,6 +113,7 @@ export default function AdminEmployees() {
       displayName: employee.displayName || '',
       email: employee.email || '',
       phone: employee.phone || '',
+      avatar: employee.avatar || '',
       jobTitle: isOtherRole ? 'Other' : (employee.jobTitle || ''),
       department: isOtherDept ? 'Other' : (employee.department || ''),
       status: employee.status || 'active',
@@ -190,7 +193,7 @@ export default function AdminEmployees() {
         department: finalDepartment,
         skills: skillsArray,
         role: 'employee',
-        avatar: formData.displayName.charAt(0).toUpperCase() 
+        avatar: (formData.avatar || '').trim(),
       }
       
       // Clean up local temp fields
@@ -450,7 +453,7 @@ export default function AdminEmployees() {
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                    <div className="flex items-center justify-end gap-1">
                       <button
                         onClick={() => openEditModal(employee)}
                         className="p-2 rounded-lg text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"
@@ -540,14 +543,23 @@ export default function AdminEmployees() {
                 </h2>
                 <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-0.5">Manage credentials and public profile</p>
               </div>
-              <button
-                onClick={() => setShowModal(false)}
-                className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="submit"
+                  form="employeeForm"
+                  className="px-3 py-2 rounded-lg bg-blue-600 text-white text-[11px] font-bold uppercase tracking-wider hover:bg-blue-500 transition-colors"
+                >
+                  {editingEmployee ? 'Save' : 'Create'}
+                </button>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             {/* Modal Tabs */}
@@ -591,6 +603,42 @@ export default function AdminEmployees() {
                           onChange={e => setFormData({ ...formData, email: e.target.value })}
                           required
                           placeholder="email@example.com"
+                          className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-400 mb-1.5">Phone</label>
+                        <input
+                          type="text"
+                          value={formData.phone}
+                          onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                          placeholder="+91 98765 43210"
+                          className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-400 mb-1.5">Employee ID</label>
+                        <input
+                          type="text"
+                          value={formData.employeeId}
+                          onChange={e => setFormData({ ...formData, employeeId: e.target.value })}
+                          placeholder="ASH-001"
+                          className="w-full px-3 py-2.5 bg-white/5 border border-blue-500/20 rounded-xl text-sm text-blue-400 font-mono focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-400 mb-1.5">Profile Photo URL</label>
+                        <input
+                          type="text"
+                          value={formData.avatar}
+                          onChange={e => setFormData({ ...formData, avatar: e.target.value })}
+                          placeholder="https://example.com/avatar.jpg"
                           className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50"
                         />
                       </div>
@@ -645,22 +693,10 @@ export default function AdminEmployees() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-400 mb-1.5">Account Access</label>
-                        <div className="w-full rounded-xl border border-blue-500/20 bg-blue-500/5 px-3 py-3 text-xs leading-5 text-blue-300">
-                          A secure password reset email will be sent after the account is created. No default password is assigned.
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-gray-400 mb-1.5">Employee ID</label>
-                        <input
-                          type="text"
-                          value={formData.employeeId}
-                          onChange={e => setFormData({ ...formData, employeeId: e.target.value })}
-                          placeholder="ASH-001"
-                          className="w-full px-3 py-2.5 bg-white/5 border border-blue-500/20 rounded-xl text-sm text-blue-400 font-mono focus:outline-none"
-                        />
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1.5">Account Access</label>
+                      <div className="w-full rounded-xl border border-blue-500/20 bg-blue-500/5 px-3 py-3 text-xs leading-5 text-blue-300">
+                        A secure password reset email will be sent after the account is created. No default password is assigned.
                       </div>
                     </div>
 
@@ -847,7 +883,7 @@ export default function AdminEmployees() {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-6 bg-gray-900 border-t border-white/5 flex items-center gap-3">
+            <div className="sticky bottom-0 p-6 bg-gray-900 border-t border-white/5 flex items-center gap-3">
               <button
                 type="button"
                 onClick={() => setShowModal(false)}
