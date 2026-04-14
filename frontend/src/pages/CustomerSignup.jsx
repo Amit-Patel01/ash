@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import TermsAndConditions from '../components/TermsAndConditions'
-import { emailNotify } from '../utils/emailNotify'
 
 export default function CustomerSignup() {
   const { signup } = useAuth()
@@ -13,7 +12,7 @@ export default function CustomerSignup() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', password: '', confirmPassword: ''
+    name: '', email: '', phone: ''
   })
 
   // Animate blobs for that premium feel
@@ -23,7 +22,7 @@ export default function CustomerSignup() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!agreed) { setError('You must agree to Terms & Conditions'); return }
-    if (!form.name || !form.email || !form.password) {
+    if (!form.name || !form.email) {
       setError('Please fill all required fields')
       return
     }
@@ -36,44 +35,18 @@ export default function CustomerSignup() {
       setError('Enter a valid 10-digit Indian mobile number (starts with 6-9)')
       return
     }
-    if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match')
-      return
-    }
-    if (form.password.length < 6) {
-      setError('Password should be at least 6 characters')
-      return
-    }
-
     setError('')
     setLoading(true)
 
     try {
-      const user = await signup(form.email, form.password, form.name)
-
-      const { doc, setDoc } = await import('firebase/firestore')
-      const { db } = await import('../config/firebase')
-      await setDoc(doc(db, 'users', user.uid), {
-        uid: user.uid,
+      await signup({
+        name: form.name,
         email: form.email,
-        displayName: form.name,
-        phone: form.phone.replace(/\D/g, ''),
-        role: 'customer',
-        status: 'active',
-        avatar: form.name.charAt(0).toUpperCase(),
-        createdAt: new Date().toISOString()
+        phone: form.phone.replace(/\D/g, '')
       })
-
-      // ✉️ Welcome email
-      emailNotify('welcome', { name: form.name, email: form.email })
-
       setSubmitted(true)
     } catch (err) {
-      if (err.code === 'auth/email-already-in-use') {
-        setError('An account with this email already exists.')
-      } else {
-        setError(err.message || 'Failed to create account.')
-      }
+      setError(err.message || 'Failed to create account.')
     } finally {
       setLoading(false)
     }
@@ -91,8 +64,8 @@ export default function CustomerSignup() {
             <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20">
               <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
             </div>
-            <h2 className="text-3xl font-extrabold text-white mb-3 tracking-tight">Account Created!</h2>
-            <p className="text-slate-400 mb-8 leading-relaxed">Welcome aboard! Your customer account is successfully created. Start exploring professional solutions tailored for you.</p>
+            <h2 className="text-3xl font-extrabold text-white mb-3 tracking-tight">Account Created</h2>
+            <p className="text-slate-400 mb-8 leading-relaxed">Your customer account has been created. Please check your email and reset your password to access your dashboard.</p>
 
             <div className="bg-slate-800/40 backdrop-blur-md rounded-2xl p-5 mb-8 border border-white/5 text-left space-y-3">
               <div className="flex justify-between items-center pb-2 border-b border-white/5">
@@ -110,7 +83,7 @@ export default function CustomerSignup() {
             </div>
 
             <Link to="/login" className="block w-full px-6 py-4 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white rounded-2xl font-bold hover:from-emerald-700 hover:to-cyan-700 shadow-xl shadow-emerald-500/20 transition-all duration-300 text-center transform hover:-translate-y-1">
-              Sign In Now
+              Go to Sign In
             </Link>
           </div>
         </div>
@@ -179,15 +152,8 @@ export default function CustomerSignup() {
               <p className="text-[10px] text-slate-600 ml-1">📞 Required so our team can contact you about your courses</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div className="space-y-2">
-                <label className="block text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Create Password</label>
-                <input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required placeholder="••••••••" className="w-full px-5 py-4 bg-slate-800/50 border border-white/5 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all duration-300 shadow-inner" />
-              </div>
-              <div className="space-y-2">
-                <label className="block text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Confirm Password</label>
-                <input type="password" value={form.confirmPassword} onChange={e => setForm({ ...form, confirmPassword: e.target.value })} required placeholder="••••••••" className="w-full px-5 py-4 bg-slate-800/50 border border-white/5 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all duration-300 shadow-inner" />
-              </div>
+            <div className="rounded-2xl border border-emerald-500/10 bg-emerald-500/5 px-4 py-4 text-sm text-slate-300">
+              We will send a secure password reset link after your account is created. No default password is assigned.
             </div>
 
             <div className="p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-2xl">

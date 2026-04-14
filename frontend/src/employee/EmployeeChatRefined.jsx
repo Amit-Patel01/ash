@@ -7,12 +7,12 @@ export default function EmployeeChatRefined() {
       <EmployeePageHeader
         eyebrow="Communication"
         title="Messages"
-        description="Team members aur customers ke saath conversation yahin se manage karo. Employee panel ke new shell ke saath chat view bhi ab consistent hai."
+        description="Manage conversations with team members and customers in one place. The chat view matches the updated employee panel layout."
       />
 
       <EmployeeSurface
         title="Conversation Panel"
-        description="Live messages, follow-ups aur support replies ke liye embedded chat workspace."
+        description="Embedded workspace for live messages, follow-ups, and support replies."
         className="overflow-hidden p-0"
       >
         <div className="h-[calc(100vh-18rem)] min-h-[38rem]">

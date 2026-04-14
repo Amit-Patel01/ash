@@ -348,7 +348,7 @@ export default function AdminCourses() {
                   placeholder="https://example.com/course-image.jpg"
                   className="input"
                 />
-                <p className="text-[11px] text-gray-500 mt-1">Direct image link dalo. Yeh admin course card, public courses page aur student panel me show hoga.</p>
+                <p className="text-[11px] text-gray-500 mt-1">Enter a direct image URL. It appears on the admin course card, the public courses page, and the student panel.</p>
                 <div className="mt-3 relative w-full h-36 overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-blue-900/30 to-purple-900/30">
                   <div className="absolute inset-0 flex items-center justify-center text-3xl text-white/70">
                     {courseCategories.find(c => c.name === form.category)?.icon || '🖼️'}

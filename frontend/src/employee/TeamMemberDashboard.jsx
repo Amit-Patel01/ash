@@ -144,7 +144,7 @@ export default function TeamMemberDashboard() {
               </div>
             </div>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300">
-              Dashboard ab tasks, assigned courses, student activity aur quick actions ke around organize hai, taaki daily kaam ek hi jagah se manage ho.
+              This dashboard organizes tasks, assigned courses, student activity, and quick actions so day-to-day work can be managed in one place.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-300">{roleLabel}</span>

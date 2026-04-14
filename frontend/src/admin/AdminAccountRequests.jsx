@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
-import { emailNotify } from '../utils/emailNotify'
 
 export default function AdminAccountRequests() {
   const { approveAccountRequest } = useAuth()
@@ -35,16 +34,10 @@ export default function AdminAccountRequests() {
       if (actionType === 'approve') {
         const result = await approveAccountRequest(requestId)
         if (result.success) {
-          // ✉️ Email approved user
-          emailNotify('account_approved', {
-            name: selectedRequest.name,
-            email: selectedRequest.email,
-            role: selectedRequest.role || 'Employee'
-          })
           if (result.alreadyExists) {
-            alert(`User ${selectedRequest.name} already exists. This duplicate request has been marked as approved.`)
+            alert(`An account for ${selectedRequest.name} already exists. A password reset email has been sent.`)
           } else {
-            alert(`Account for ${selectedRequest.name} has been created successfully!`)
+            alert(`Account for ${selectedRequest.name} has been created successfully.`)
           }
         }
       } else if (actionType === 'reject') {

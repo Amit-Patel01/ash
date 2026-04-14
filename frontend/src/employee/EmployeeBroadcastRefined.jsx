@@ -214,12 +214,12 @@ export default function EmployeeBroadcastRefined() {
         <EmployeePageHeader
           eyebrow="Outreach Center"
           title="Student Broadcasts"
-          description="Assigned courses ke enrolled students ko targeted updates bhejne ke liye yeh page use hota hai."
+          description="Use this page to send targeted updates to students enrolled in your assigned courses."
         />
         <EmployeeEmptyState
           icon="📢"
           title="No assigned course audience yet"
-          description="Jaise hi admin aapko course assign karega aur students enroll honge, yahan se direct broadcast bhejna possible ho jayega."
+          description="Once an administrator assigns courses to you and students enroll, you will be able to send broadcasts from here."
         />
       </div>
     )
@@ -230,7 +230,7 @@ export default function EmployeeBroadcastRefined() {
       <EmployeePageHeader
         eyebrow="Outreach Center"
         title="Student Broadcasts"
-        description="Course-wise ya plan-wise audience select karke employees ab direct announcements bhej sakte hain. Yeh flow assigned courses tak limited hai."
+        description="Select audiences by course or plan to send announcements directly to students. Access is limited to your assigned courses."
         stats={[
           { label: 'Assigned courses', value: myCourses.length },
           { label: 'Reachable students', value: reachableStudents },
@@ -239,7 +239,7 @@ export default function EmployeeBroadcastRefined() {
       />
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[0.95fr_1.25fr_0.8fr]">
-        <EmployeeSurface title="Audience Filters" description="Course aur plan select karke exact recipients decide karo.">
+        <EmployeeSurface title="Audience Filters" description="Choose a course and plan to define the exact recipient list.">
           <div className="space-y-5">
             <div>
               <label className="mb-2 block text-xs font-black uppercase tracking-[0.24em] text-slate-500">
@@ -297,7 +297,7 @@ export default function EmployeeBroadcastRefined() {
           </div>
         </EmployeeSurface>
 
-        <EmployeeSurface title="Message Composer" description="Subject aur message type karke selected students ko send karo.">
+        <EmployeeSurface title="Message Composer" description="Enter a subject and message, then send to the selected students.">
           <div className="space-y-4">
             {result && (
               <div className={`rounded-2xl border px-4 py-3 text-sm ${
@@ -341,7 +341,7 @@ export default function EmployeeBroadcastRefined() {
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.24em] text-slate-500">Image Attachment</p>
                   <p className="mt-2 text-sm text-slate-400">
-                    Mail ke andar preview bhi jayega aur chaho to attachment bhi send hoga.
+                    A preview appears in the email body, and you may also send the image as an attachment.
                   </p>
                 </div>
                 <label className="inline-flex cursor-pointer items-center rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15">

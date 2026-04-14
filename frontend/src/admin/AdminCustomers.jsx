@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
 import { auth } from '../config/firebase'
 import { api } from '../config/api'
-import { Search } from 'lucide-react'
 
 const avatarColors = [
   'from-blue-500 to-cyan-500',
@@ -13,11 +12,14 @@ const avatarColors = [
 ]
 
 export default function AdminCustomers() {
-  const { users, updateUser, deleteUser } = useStore()
+  const { users, updateUser, deleteUser, addUser } = useStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [customerToDelete, setCustomerToDelete] = useState(null)
   const [isProcessing, setIsProcessing] = useState(null)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [addForm, setAddForm] = useState({ displayName: '', email: '', phone: '', location: '' })
+  const [addSubmitting, setAddSubmitting] = useState(false)
   const [showBroadcastModal, setShowBroadcastModal] = useState(false)
   const [broadcastTarget, setBroadcastTarget] = useState('enrolled') // 'enrolled' or 'manual'
   const [broadcastManualEmails, setBroadcastManualEmails] = useState('')
@@ -35,14 +37,16 @@ export default function AdminCustomers() {
     return name.includes(query) || email.includes(query)
   })
 
+  const isInactive = (c) => c.status === 'inactive' || c.status === 'banned'
+
   const handleToggleBan = async (customer) => {
-    const newStatus = customer.status === 'banned' ? 'active' : 'banned'
+    const newStatus = isInactive(customer) ? 'active' : 'inactive'
     setIsProcessing(customer.uid)
     try {
       await updateUser(customer.uid, { status: newStatus })
     } catch (err) {
       console.error("Failed to update customer status:", err)
-      alert("Error updating status")
+      alert(err.message || "Unable to update account status. Please try again.")
     } finally {
       setIsProcessing(null)
     }
@@ -61,10 +65,37 @@ export default function AdminCustomers() {
       setShowDeleteModal(false)
     } catch (err) {
       console.error("Failed to delete customer:", err)
-      alert("Error deleting customer")
+      alert(err.message || "Unable to delete this customer. Please try again.")
     } finally {
       setIsProcessing(null)
       setCustomerToDelete(null)
+    }
+  }
+
+  const handleAddCustomer = async (e) => {
+    e.preventDefault()
+    const phoneDigits = (addForm.phone || '').replace(/\D/g, '')
+    if (!addForm.displayName?.trim() || !addForm.email?.trim() || phoneDigits.length < 10) {
+      alert('Please enter full name, email, and a valid phone number.')
+      return
+    }
+    setAddSubmitting(true)
+    try {
+      await addUser({
+        displayName: addForm.displayName.trim(),
+        email: addForm.email.trim(),
+        phone: phoneDigits,
+        role: 'customer',
+        status: 'active',
+        location: (addForm.location || '').trim(),
+      })
+      setShowAddModal(false)
+      setAddForm({ displayName: '', email: '', phone: '', location: '' })
+      alert('Customer account created. A password setup email has been sent to the registered address.')
+    } catch (err) {
+      alert(err.message || 'Unable to create the customer account.')
+    } finally {
+      setAddSubmitting(false)
     }
   }
 
@@ -78,7 +109,14 @@ export default function AdminCustomers() {
             Manage your community members, handle bans, and profile cleanup.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap justify-end">
+          <button
+            type="button"
+            onClick={() => setShowAddModal(true)}
+            className="px-5 py-2.5 rounded-2xl text-xs font-black text-white bg-gradient-to-r from-emerald-600 to-teal-600 shadow-lg shadow-emerald-900/20 hover:shadow-emerald-600/30 uppercase tracking-widest"
+          >
+            Add customer
+          </button>
           <div className="bg-white/5 border border-white/10 rounded-2xl px-4 py-2 flex items-center gap-3">
             <div className="flex -space-x-2">
               {customers.slice(0, 3).map((c, i) => (
@@ -126,7 +164,7 @@ export default function AdminCustomers() {
         <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 flex items-center justify-between">
           <div>
             <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Active Accounts</p>
-            <p className="text-2xl font-black text-white">{customers.filter(c => c.status !== 'banned').length}</p>
+            <p className="text-2xl font-black text-white">{customers.filter(c => !isInactive(c)).length}</p>
           </div>
           <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -163,17 +201,17 @@ export default function AdminCustomers() {
                   <td className="px-6 py-4">
                     <div className="space-y-1">
                       <p className="text-xs font-medium text-gray-400">ID: <span className="text-[10px] font-mono text-blue-400/80">{customer.uid.slice(0, 8)}...</span></p>
-                      <p className="text-[10px] text-gray-500 uppercase tracking-tighter">Registered: {new Date(customer.createdAt).toLocaleDateString()}</p>
+                      <p className="text-[10px] text-gray-500 uppercase tracking-tighter">Registered: {customer.createdAt ? new Date(customer.createdAt).toLocaleDateString() : '—'}</p>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                      customer.status === 'banned' 
-                        ? 'bg-red-500/10 text-red-500 border border-red-500/20' 
+                      isInactive(customer)
+                        ? 'bg-red-500/10 text-red-500 border border-red-500/20'
                         : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
                     }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${customer.status === 'banned' ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'}`} />
-                      {customer.status === 'banned' ? 'Banned' : 'Active'}
+                      <span className={`w-1.5 h-1.5 rounded-full ${isInactive(customer) ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'}`} />
+                      {isInactive(customer) ? 'Inactive' : 'Active'}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -182,15 +220,15 @@ export default function AdminCustomers() {
                         onClick={() => handleToggleBan(customer)}
                         disabled={isProcessing === customer.uid}
                         className={`p-2.5 rounded-xl transition-all ${
-                          customer.status === 'banned'
+                          isInactive(customer)
                             ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
                             : 'bg-amber-500/10 text-amber-500 hover:bg-amber-500/20'
                         }`}
-                        title={customer.status === 'banned' ? 'Unban Account' : 'Ban Account'}
+                        title={isInactive(customer) ? 'Activate account' : 'Deactivate account'}
                       >
                         {isProcessing === customer.uid ? (
                            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                        ) : customer.status === 'banned' ? (
+                        ) : isInactive(customer) ? (
                           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         ) : (
                           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -226,6 +264,64 @@ export default function AdminCustomers() {
           </table>
         </div>
       </div>
+
+           {showAddModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => !addSubmitting && setShowAddModal(false)} />
+          <form
+            onSubmit={handleAddCustomer}
+            className="relative bg-gray-900 border border-white/10 rounded-[2rem] w-full max-w-md p-8 shadow-2xl space-y-4"
+          >
+            <h3 className="text-xl font-black text-white tracking-tight">Add customer</h3>
+            <p className="text-sm text-gray-400">Creates the account in the primary database and Firebase. The customer receives an email to set a password.</p>
+            <div>
+              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Full name</label>
+              <input
+                value={addForm.displayName}
+                onChange={(e) => setAddForm({ ...addForm, displayName: e.target.value })}
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Email</label>
+              <input
+                type="email"
+                value={addForm.email}
+                onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Phone</label>
+              <input
+                value={addForm.phone}
+                onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })}
+                placeholder="Digits only or formatted"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Location (optional)</label>
+              <input
+                value={addForm.location}
+                onChange={(e) => setAddForm({ ...addForm, location: e.target.value })}
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <button type="button" onClick={() => setShowAddModal(false)} disabled={addSubmitting} className="px-4 py-3 rounded-xl bg-white/5 text-gray-400 text-xs font-bold">
+                Cancel
+              </button>
+              <button type="submit" disabled={addSubmitting} className="px-4 py-3 rounded-xl bg-emerald-600 text-white text-xs font-black">
+                {addSubmitting ? 'Creating…' : 'Create account'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (

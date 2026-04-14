@@ -1,6 +1,20 @@
+const fs = require("fs");
+const path = require("path");
 const { sendEmail, emailTemplate } = require("../services/emailService");
 const { getActiveEnrolledEmails, db } = require("../services/firebaseService");
 const { logger } = require("../logger");
+const {
+  listUsersFromSql,
+  createManagedUser,
+  updateManagedUser,
+  deleteManagedUser,
+  mergeManagedUsers,
+  approveAccountRequest,
+  rejectAccountRequest,
+  deleteAccountRequest,
+  listEmployeeCvRecords,
+  getManagedUser,
+} = require("../services/userService");
 
 const dedupeEmails = (emails) => [...new Set(emails.filter(Boolean))];
 const HTML_ESCAPE_MAP = {
@@ -130,6 +144,15 @@ const getAuthorizedCourse = async (requestUser, courseId) => {
   }
 
   return { course };
+};
+
+const handleAdminError = (res, error, fallbackMessage) => {
+  logger.error(error);
+  return res.status(error.status || 500).json({
+    success: false,
+    message: error.message || fallbackMessage,
+    code: error.code || "internal_error",
+  });
 };
 
 /**
@@ -283,4 +306,186 @@ const notifyAccountApproval = async (req, res) => {
   }
 };
 
-module.exports = { broadcastEmail, notifyAccountApproval };
+const listUsers = async (req, res) => {
+  try {
+    const users = await listUsersFromSql({
+      role: req.query.role,
+      status: req.query.status,
+    });
+    return res.json({ success: true, users });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to load users.");
+  }
+};
+
+const createUser = async (req, res) => {
+  try {
+    const role = req.body.role || "customer";
+    const user = await createManagedUser(
+      {
+        ...req.body,
+        role,
+      },
+      {
+        sendActivationEmail: true,
+        activationFrom: role === "employee" ? "employee" : "customer",
+        requestIp: req.ip,
+        createdBy: req.user,
+      }
+    );
+
+    return res.status(201).json({
+      success: true,
+      message:
+        role === "customer"
+          ? "Customer account created. A password setup email has been sent to the registered address."
+          : "Employee account created. A password setup email has been sent to the registered address.",
+      user,
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to create the user.");
+  }
+};
+
+const updateUser = async (req, res) => {
+  try {
+    const user = await updateManagedUser(req.params.userId, req.body, { updatedBy: req.user });
+    return res.json({
+      success: true,
+      message: "User updated successfully.",
+      user,
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to update the user.");
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const user = await deleteManagedUser(req.params.userId, { deletedBy: req.user });
+    return res.json({
+      success: true,
+      message: "User deleted successfully.",
+      user,
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to delete the user.");
+  }
+};
+
+const mergeUsers = async (req, res) => {
+  try {
+    const result = await mergeManagedUsers({
+      primaryIdentifier: req.body.primaryUserId,
+      duplicateIdentifier: req.body.duplicateUserId,
+      mergeReason: req.body.reason,
+      mergedBy: req.user,
+    });
+    return res.json({
+      success: true,
+      message: "Accounts merged successfully.",
+      ...result,
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to merge the accounts.");
+  }
+};
+
+const approveRequest = async (req, res) => {
+  try {
+    const result = await approveAccountRequest(req.params.requestId, req.user);
+    return res.json({
+      success: true,
+      message: result.alreadyExists
+        ? "Account already exists. Please reset your password."
+        : "The account request has been approved successfully.",
+      ...result,
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to approve the account request.");
+  }
+};
+
+const rejectRequest = async (req, res) => {
+  try {
+    const request = await rejectAccountRequest(req.params.requestId, req.user);
+    return res.json({
+      success: true,
+      message: "Account request rejected successfully.",
+      request,
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to reject the account request.");
+  }
+};
+
+const removeRequest = async (req, res) => {
+  try {
+    const request = await deleteAccountRequest(req.params.requestId);
+    return res.json({
+      success: true,
+      message: "Account request deleted successfully.",
+      request,
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to delete the account request.");
+  }
+};
+
+const listEmployeeCvs = async (req, res) => {
+  try {
+    const cvs = await listEmployeeCvRecords();
+    return res.json({ success: true, cvs });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to load employee CV records.");
+  }
+};
+
+/**
+ * GET /api/admin/employee-cvs/:userId/download
+ * Secure download (admin only); file is stored under uploads/cv/
+ */
+const downloadEmployeeCv = async (req, res) => {
+  try {
+    const user = await getManagedUser(req.params.userId);
+    if (!user || user.role !== "employee") {
+      return res.status(404).json({ success: false, message: "Employee not found." });
+    }
+    if (!user.cvFilePath) {
+      return res.status(404).json({ success: false, message: "No CV file is available for this employee." });
+    }
+
+    const baseName = path.basename(String(user.cvFilePath));
+    if (!baseName || baseName === "." || baseName === "..") {
+      return res.status(400).json({ success: false, message: "Invalid file reference." });
+    }
+
+    const cvDir = path.resolve(path.join(__dirname, "..", "uploads", "cv"));
+    const absolute = path.resolve(cvDir, baseName);
+    if (!absolute.startsWith(cvDir)) {
+      return res.status(400).json({ success: false, message: "Invalid file path." });
+    }
+    if (!fs.existsSync(absolute)) {
+      return res.status(404).json({ success: false, message: "The file could not be found on the server." });
+    }
+
+    return res.download(absolute, user.cvFileName || baseName);
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to download the CV file.");
+  }
+};
+
+module.exports = {
+  broadcastEmail,
+  notifyAccountApproval,
+  listUsers,
+  createUser,
+  updateUser,
+  deleteUser,
+  mergeUsers,
+  approveRequest,
+  rejectRequest,
+  removeRequest,
+  listEmployeeCvs,
+  downloadEmployeeCv,
+};

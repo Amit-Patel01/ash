@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { auth } from '../config/firebase'
+import { api } from '../config/api'
 import {
   EmployeeBadge,
   EmployeePageHeader,
@@ -26,8 +28,10 @@ export default function EmployeeProfileRefined() {
   const [passwordForm, setPasswordForm] = useState({ current: '', new: '', confirm: '' })
   const [profileStatus, setProfileStatus] = useState({ type: '', message: '' })
   const [passwordStatus, setPasswordStatus] = useState({ type: '', message: '' })
+  const [cvStatus, setCvStatus] = useState({ type: '', message: '' })
   const [profileLoading, setProfileLoading] = useState(false)
   const [passwordLoading, setPasswordLoading] = useState(false)
+  const [cvLoading, setCvLoading] = useState(false)
 
   useEffect(() => {
     setProfileForm(createProfileForm(userProfile))
@@ -37,6 +41,7 @@ export default function EmployeeProfileRefined() {
   const initials = getEmployeeInitials(displayName)
   const profileLinks = [profileForm.github, profileForm.linkedin, profileForm.portfolio].filter(Boolean).length
   const userId = currentUser?.uid || userProfile?.uid || ''
+  const cvFileName = userProfile?.cvFileName || ''
 
   const profileStats = useMemo(() => ([
     { label: 'Role', value: profileForm.jobTitle || userProfile?.jobTitle || userProfile?.role || 'Employee' },
@@ -62,22 +67,59 @@ export default function EmployeeProfileRefined() {
 
   const handlePasswordSubmit = async (event) => {
     event.preventDefault()
-    if (passwordForm.new !== passwordForm.confirm) {
-      setPasswordStatus({ type: 'error', message: 'New passwords do not match.' })
-      return
-    }
 
     setPasswordLoading(true)
     setPasswordStatus({ type: '', message: '' })
 
     try {
-      await updateUserPassword(passwordForm.current, passwordForm.new)
-      setPasswordStatus({ type: 'success', message: 'Password updated successfully.' })
+      await updateUserPassword()
+      setPasswordStatus({ type: 'success', message: 'A password reset link has been sent to your email address.' })
       setPasswordForm({ current: '', new: '', confirm: '' })
     } catch (error) {
-      setPasswordStatus({ type: 'error', message: error.message || 'Unable to update password.' })
+      setPasswordStatus({ type: 'error', message: error.message || 'Unable to send the password reset email.' })
     } finally {
       setPasswordLoading(false)
+    }
+  }
+
+  const handleCvUpload = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+
+    if (!file) return
+    if (file.size > 5 * 1024 * 1024) {
+      setCvStatus({ type: 'error', message: 'The CV file must be 5 MB or smaller.' })
+      return
+    }
+
+    setCvLoading(true)
+    setCvStatus({ type: '', message: '' })
+
+    try {
+      const token = await auth.currentUser?.getIdToken()
+      if (!token) throw new Error('Please sign in again to continue.')
+
+      const formData = new FormData()
+      formData.append('cv', file)
+
+      const response = await fetch(api.userCvUpload, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      })
+
+      const data = await response.json()
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Unable to upload the CV.')
+      }
+
+      setCvStatus({ type: 'success', message: 'CV uploaded successfully.' })
+    } catch (error) {
+      setCvStatus({ type: 'error', message: error.message || 'Unable to upload the CV.' })
+    } finally {
+      setCvLoading(false)
     }
   }
 
@@ -86,7 +128,7 @@ export default function EmployeeProfileRefined() {
       <EmployeePageHeader
         eyebrow="Account Center"
         title="Profile Settings"
-        description="Employee profile, mentor details aur account security ko ek hi jagah se manage karo."
+        description="Manage your employee profile, mentor details, CV, and account security from one place."
         stats={profileStats}
         actions={
           <div className="flex items-center gap-3 rounded-[24px] border border-white/10 bg-white/[0.04] px-4 py-3">
@@ -106,7 +148,7 @@ export default function EmployeeProfileRefined() {
       />
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.25fr_0.95fr]">
-        <EmployeeSurface title="Public Profile" description="Yeh details aapke employee identity aur mentor presentation ke liye use hoti hain.">
+        <EmployeeSurface title="Public Profile" description="These details support your employee identity and mentor presentation across the platform.">
           {profileStatus.message && (
             <div className={`mb-5 rounded-2xl border px-4 py-3 text-sm ${
               profileStatus.type === 'success'
@@ -180,7 +222,7 @@ export default function EmployeeProfileRefined() {
                 </div>
                 <div className="flex items-end">
                   <div className="w-full rounded-2xl border border-cyan-400/15 bg-cyan-400/[0.07] px-4 py-3 text-sm text-slate-300">
-                    In details ka use course pages aur student-facing mentor sections me ho sakta hai.
+                    These details may appear on course pages and student-facing mentor sections.
                   </div>
                 </div>
               </div>
@@ -233,7 +275,7 @@ export default function EmployeeProfileRefined() {
         </EmployeeSurface>
 
         <div className="space-y-6">
-          <EmployeeSurface title="Profile Snapshot" description="Current employee profile ka quick preview.">
+          <EmployeeSurface title="Profile Snapshot" description="A quick preview of your current employee profile.">
             <div className="rounded-[26px] border border-white/10 bg-white/[0.03] p-5">
               <div className="flex items-center gap-4">
                 <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-white/10 text-lg font-black text-white">
@@ -253,12 +295,37 @@ export default function EmployeeProfileRefined() {
                 </div>
               </div>
               <p className="mt-5 text-sm leading-6 text-slate-400">
-                {profileForm.bio || 'Aapka bio yahan preview hoga. Students aur admins ko expertise aur background samajhne me help milti hai.'}
+                {profileForm.bio || 'Your bio preview will appear here and helps students and administrators understand your expertise and background.'}
               </p>
             </div>
           </EmployeeSurface>
 
-          <EmployeeSurface title="Password & Security" description="Account access secure rakhne ke liye password yahin se change karo.">
+          <EmployeeSurface title="CV Upload" description="Upload your latest CV or resume in PDF, DOC, or DOCX format.">
+            {cvStatus.message && (
+              <div className={`mb-5 rounded-2xl border px-4 py-3 text-sm ${
+                cvStatus.type === 'success'
+                  ? 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300'
+                  : 'border-rose-400/20 bg-rose-400/10 text-rose-300'
+              }`}>
+                {cvStatus.message}
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
+                {cvFileName
+                  ? `Current file: ${cvFileName}`
+                  : 'No CV has been uploaded yet. The founder and administrators will be able to review and download your latest file after upload.'}
+              </div>
+              <label className="inline-flex cursor-pointer items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-5 py-3 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15">
+                {cvLoading ? 'Uploading CV...' : 'Upload CV / Resume'}
+                <input type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="hidden" onChange={handleCvUpload} disabled={cvLoading} />
+              </label>
+              <p className="text-xs text-slate-500">Accepted formats: PDF, DOC, DOCX. Maximum size: 5 MB.</p>
+            </div>
+          </EmployeeSurface>
+
+          <EmployeeSurface title="Password & Security" description="For security, password updates are handled through a secure email reset link.">
             {passwordStatus.message && (
               <div className={`mb-5 rounded-2xl border px-4 py-3 text-sm ${
                 passwordStatus.type === 'success'
@@ -270,42 +337,15 @@ export default function EmployeeProfileRefined() {
             )}
 
             <form onSubmit={handlePasswordSubmit} className="space-y-4">
-              <div>
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-500">Current Password</label>
-                <input
-                  type="password"
-                  value={passwordForm.current}
-                  onChange={(event) => setPasswordForm(current => ({ ...current, current: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
-                  required
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-500">New Password</label>
-                <input
-                  type="password"
-                  value={passwordForm.new}
-                  onChange={(event) => setPasswordForm(current => ({ ...current, new: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
-                  required
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-500">Confirm Password</label>
-                <input
-                  type="password"
-                  value={passwordForm.confirm}
-                  onChange={(event) => setPasswordForm(current => ({ ...current, confirm: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
-                  required
-                />
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
+                We will send a secure password reset link to <span className="font-semibold text-white">{currentUser?.email || userProfile?.email || 'your account email'}</span>.
               </div>
               <button
                 type="submit"
                 disabled={passwordLoading}
                 className="rounded-2xl border border-amber-400/20 bg-amber-400/10 px-5 py-3 text-sm font-semibold text-amber-300 transition hover:bg-amber-400/15 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {passwordLoading ? 'Updating Password...' : 'Change Password'}
+                {passwordLoading ? 'Sending Reset Link...' : 'Send Password Reset Link'}
               </button>
             </form>
           </EmployeeSurface>

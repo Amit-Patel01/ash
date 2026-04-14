@@ -3,34 +3,18 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  sendPasswordResetEmail,
-  verifyPasswordResetCode,
-  confirmPasswordReset,
-  createUserWithEmailAndPassword,
   updateProfile,
-  updatePassword,
-  reauthenticateWithCredential,
-  EmailAuthProvider
 } from 'firebase/auth'
 import {
   collection,
-  addDoc,
   getDocs,
-  query,
-  where,
-  updateDoc,
   doc,
-  deleteDoc,
-  orderBy,
   getDoc,
   setDoc,
   onSnapshot
 } from 'firebase/firestore'
-import { auth, db, firebaseConfig, setUserOnline, setUserOffline } from '../config/firebase'
-import { api } from '../config/api'
-
-import { initializeApp } from 'firebase/app'
-import { getAuth as getSecondaryAuth, signOut as secondarySignOut } from 'firebase/auth'
+import { auth, db, setUserOnline, setUserOffline } from '../config/firebase'
+import { api, readApiJson } from '../config/api'
 
 const AuthContext = createContext(null)
 
@@ -38,6 +22,17 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null)
   const [userProfile, setUserProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  const getAuthHeaders = useCallback(async () => {
+    const token = await auth.currentUser?.getIdToken()
+    if (!token) {
+      throw new Error('Please sign in again to continue.')
+    }
+    return {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  }, [])
 
   // Real-time Auth and Profile syncing
   useEffect(() => {
@@ -73,8 +68,8 @@ export function AuthProvider({ children }) {
             await setDoc(profileRef, profileData)
           }
 
-          // Force logout if banned
-          if (profileData?.status === 'banned') {
+          // Force logout for deactivated accounts
+          if (profileData?.status && profileData.status !== 'active') {
             await signOut(auth)
             setCurrentUser(null)
             setUserProfile(null)
@@ -118,15 +113,19 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
-  const signup = useCallback(async (email, password, name) => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-      const user = userCredential.user
-      await updateProfile(user, { displayName: name })
-      return user
-    } catch (error) {
-      throw error
+  const signup = useCallback(async (payload) => {
+    const response = await fetch(api.registerCustomer, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+
+    const data = await response.json()
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Failed to create account.')
     }
+
+    return data
   }, [])
 
   const logout = useCallback(async () => {
@@ -136,39 +135,57 @@ export function AuthProvider({ children }) {
     await signOut(auth)
   }, [])
 
-  const resetPassword = useCallback(async (email, returnUrl) => {
-    try {
-      const response = await fetch(api.forgotPassword, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          email, 
-          returnUrl: returnUrl || (window.location.origin + '/login')
-        })
-      });
-      const data = await response.json();
-      if (!data.success) throw new Error(data.message);
-      return data;
-    } catch (error) {
-      throw error;
+  const resetPassword = useCallback(async (email, from) => {
+    const response = await fetch(api.forgotPassword, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, from })
+    })
+    const data = await response.json()
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Failed to send reset email.')
     }
-  }, []);
+    return data
+  }, [])
 
-  const verifyResetCode = useCallback(async (code) => {
-    return await verifyPasswordResetCode(auth, code);
-  }, []);
+  const verifyResetCode = useCallback(async (token) => {
+    const response = await fetch(api.verifyResetToken, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token })
+    })
+    const data = await response.json()
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Invalid reset token.')
+    }
+    return data.email
+  }, [])
 
-  const confirmReset = useCallback(async (code, newPassword) => {
-    return await confirmPasswordReset(auth, code, newPassword);
-  }, []);
+  const confirmReset = useCallback(async (token, newPassword) => {
+    const response = await fetch(api.resetPassword, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, password: newPassword })
+    })
+    const data = await response.json()
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Failed to reset password.')
+    }
+    return data
+  }, [])
 
   // User details update
   const updateUserProfile = useCallback(async (uid, data) => {
-    const userRef = doc(db, 'users', uid)
-    await setDoc(userRef, {
-      ...data,
-      updatedAt: new Date().toISOString()
-    }, { merge: true })
+    const headers = await getAuthHeaders()
+    const response = await fetch(api.userProfile, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify(data)
+    })
+    const payload = await response.json()
+    if (!response.ok || !payload.success) {
+      throw new Error(payload.message || 'Failed to update profile.')
+    }
 
     if (auth.currentUser?.uid === uid) {
       const nextDisplayName = data.displayName ?? auth.currentUser.displayName ?? ''
@@ -186,87 +203,49 @@ export function AuthProvider({ children }) {
         })
       }
     }
-  }, [])
 
-  const updateUserPassword = useCallback(async (currentPassword, newPassword) => {
-    const activeUser = auth.currentUser
-    if (!activeUser?.email) {
-      throw new Error('No active user session found.')
+    return payload.profile
+  }, [getAuthHeaders])
+
+  const updateUserPassword = useCallback(async () => {
+    const headers = await getAuthHeaders()
+    const response = await fetch(api.userPasswordReset, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ from: currentUser?.role || 'customer' })
+    })
+    const data = await response.json()
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Failed to send password reset email.')
     }
-
-    const credential = EmailAuthProvider.credential(activeUser.email, currentPassword)
-    await reauthenticateWithCredential(activeUser, credential)
-    await updatePassword(activeUser, newPassword)
-  }, [])
+    return data
+  }, [currentUser?.role, getAuthHeaders])
 
   const createAccountRequest = useCallback(async (requestData) => {
-    try {
-      const usersRef = collection(db, 'users')
-      const userQuery = query(usersRef, where('email', '==', requestData.email))
-      const userSnapshot = await getDocs(userQuery)
-      if (!userSnapshot.empty) {
-        throw new Error('This email is already registered as a member.')
-      }
-
-      const requestsRef = collection(db, 'accountRequests')
-      const q = query(requestsRef, where('email', '==', requestData.email))
-      const querySnapshot = await getDocs(q)
-      const pendingRequest = querySnapshot.docs.find(doc => doc.data().status === 'pending')
-      
-      if (pendingRequest) {
-        await updateDoc(doc(db, 'accountRequests', pendingRequest.id), {
-          ...requestData,
-          updatedAt: new Date().toISOString(),
-          mergeCount: (pendingRequest.data().mergeCount || 0) + 1
-        })
-        return { id: pendingRequest.id, ...requestData, merged: true }
-      }
-
-      const docRef = await addDoc(requestsRef, {
-        ...requestData,
-        status: 'pending',
-        createdAt: new Date().toISOString()
-      })
-      return { id: docRef.id, ...requestData }
-    } catch (error) {
-      throw error
+    const response = await fetch(api.submitAccountRequest, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestData)
+    })
+    const data = await response.json()
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Failed to submit request.')
     }
+    return data
   }, [])
 
   const approveAccountRequest = useCallback(async (requestId) => {
-    const requestRef = doc(db, 'accountRequests', requestId)
-    const requestSnap = await getDoc(requestRef)
-    if (!requestSnap.exists()) throw new Error('Request not found')
-    const request = requestSnap.data()
-
-    const secondaryAppName = `ApprovalApp_${Date.now()}`
-    const secondaryApp = initializeApp(firebaseConfig, secondaryAppName)
-    const secondaryAuth = getSecondaryAuth(secondaryApp)
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(secondaryAuth, request.email, request.password)
-      const newUser = userCredential.user
-      await updateProfile(newUser, { displayName: request.name })
-
-      const userData = {
-        uid: newUser.uid,
-        email: request.email,
-        displayName: request.name,
-        role: request.role || 'employee',
-        department: request.department || '',
-        status: 'active',
-        createdAt: new Date().toISOString()
-      }
-
-      await setDoc(doc(db, 'users', newUser.uid), userData)
-      await updateDoc(requestRef, { status: 'approved', approvedAt: new Date().toISOString() })
-      await secondarySignOut(secondaryAuth)
-
-      return { success: true }
-    } catch (error) {
-      throw error
+    const headers = await getAuthHeaders()
+    const response = await fetch(api.adminApproveAccountRequest(requestId), {
+      method: 'POST',
+      headers
+    })
+    const data = await readApiJson(response)
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Failed to approve request.')
     }
-  }, [])
+    return data
+  }, [getAuthHeaders])
 
   const getAllUsers = useCallback(async () => {
     const querySnapshot = await getDocs(collection(db, 'users'))

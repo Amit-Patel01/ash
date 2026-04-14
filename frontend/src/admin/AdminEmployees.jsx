@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '../store/StoreContext'
-import { Search } from 'lucide-react'
-
+import { auth } from '../config/firebase'
+import { api } from '../config/api'
 const avatarColors = [
   'from-blue-500 to-cyan-500',
   'from-purple-500 to-pink-500',
@@ -15,7 +15,7 @@ const departments = ['Engineering', 'Design', 'Marketing', 'Management', 'Suppor
 const employeeRoles = ['Senior Developer', 'Junior Developer', 'UI/UX Designer', 'Frontend Developer', 'Backend Developer', 'DevOps Engineer', 'Project Manager', 'QA Engineer', 'Content Writer', 'Video Editor', 'Technician', 'Other']
 
 export default function AdminEmployees() {
-  const { users, teamMembers, addUser, updateUser, deleteUser } = useStore()
+  const { users, teamMembers, addUser, updateUser, deleteUser, mergeUsers } = useStore()
   const [showModal, setShowModal] = useState(false)
   const [editingEmployee, setEditingEmployee] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -33,7 +33,6 @@ export default function AdminEmployees() {
     phone: '',
     jobTitle: '',
     department: '',
-    password: '',
     status: 'active',
     joinDate: '',
     employeeId: '',
@@ -55,11 +54,12 @@ export default function AdminEmployees() {
   const [employeeToDelete, setEmployeeToDelete] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
 
-  // Filter users to show all non-admin users (employees, developers, etc.)
-  const employees = users.filter(u => {
-    const role = (u.role || '').toLowerCase()
-    return role !== 'admin' && role !== ''
-  })
+  const [mergePrimaryId, setMergePrimaryId] = useState('')
+  const [mergeDupId, setMergeDupId] = useState('')
+  const [mergeReason, setMergeReason] = useState('')
+  const [mergeBusy, setMergeBusy] = useState(false)
+
+  const employees = users.filter(u => (u.role || '').toLowerCase() === 'employee')
 
   const filteredDepartments = ['All', ...new Set(employees.map(e => e.department).filter(Boolean))]
 
@@ -82,7 +82,6 @@ export default function AdminEmployees() {
       phone: '',
       jobTitle: '',
       department: 'Engineering',
-      password: '',
       status: 'active',
       joinDate: new Date().toISOString().split('T')[0],
       employeeId: '',
@@ -114,7 +113,6 @@ export default function AdminEmployees() {
       phone: employee.phone || '',
       jobTitle: isOtherRole ? 'Other' : (employee.jobTitle || ''),
       department: isOtherDept ? 'Other' : (employee.department || ''),
-      password: employee.password || '',
       status: employee.status || 'active',
       joinDate: employee.joinDate || '',
       employeeId: employee.employeeId || '',
@@ -157,12 +155,11 @@ export default function AdminEmployees() {
           role: 'employee',
           employeeId: member.employeeId || '',
           joinDate: member.joinDate || new Date().toISOString().split('T')[0],
-          password: 'Password123!',
           isMentor: member.isMentor || false,
         }
 
         if (existing) {
-          await updateUser(existing.uid || existing.id, { ...userData, password: existing.password || 'Password123!' })
+          await updateUser(existing.uid || existing.id, userData)
         } else {
           await addUser(userData)
         }
@@ -208,7 +205,7 @@ export default function AdminEmployees() {
       setShowModal(false)
     } catch (err) {
       console.error("Save error:", err)
-      alert("Failed to save employee.")
+      alert(err.message || "Unable to save the employee record.")
     }
   }
 
@@ -225,7 +222,7 @@ export default function AdminEmployees() {
       await deleteUser(id)
       setShowDeleteModal(false)
     } catch (err) {
-      alert("Failed to delete employee.")
+      alert(err.message || "Unable to delete the employee.")
     } finally {
       setDeletingId(null)
       setEmployeeToDelete(null)
@@ -238,6 +235,53 @@ export default function AdminEmployees() {
       await updateUser(id, { status: employee.status === 'active' ? 'inactive' : 'active' })
     } catch (err) {
       console.error("Failed to toggle status:", err)
+      alert(err.message || "Unable to update account status.")
+    }
+  }
+
+  const downloadEmployeeCv = async (employee) => {
+    const id = employee.uid || employee.id
+    try {
+      const token = await auth.currentUser?.getIdToken()
+      if (!token) throw new Error("Please sign in again to continue.")
+      const res = await fetch(api.adminEmployeeCvDownload(id), { headers: { Authorization: `Bearer ${token}` } })
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}))
+        throw new Error(errBody.message || "Unable to download the CV.")
+      }
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = employee.cvFileName || "resume"
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      alert(err.message || "Unable to download the CV.")
+    }
+  }
+
+  const handleMergeAccounts = async (e) => {
+    e.preventDefault()
+    if (!mergePrimaryId.trim() || !mergeDupId.trim()) {
+      alert("Enter the primary account identifier and the duplicate account identifier.")
+      return
+    }
+    if (mergePrimaryId.trim() === mergeDupId.trim()) {
+      alert("Choose two different accounts to merge.")
+      return
+    }
+    setMergeBusy(true)
+    try {
+      await mergeUsers(mergePrimaryId.trim(), mergeDupId.trim(), mergeReason.trim())
+      setMergePrimaryId("")
+      setMergeDupId("")
+      setMergeReason("")
+      alert("The accounts were merged successfully. Firebase and the primary database have been updated.")
+    } catch (err) {
+      alert(err.message || "Unable to merge the accounts.")
+    } finally {
+      setMergeBusy(false)
     }
   }
 
@@ -330,6 +374,7 @@ export default function AdminEmployees() {
                 <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Department</th>
                 <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
                 <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Public Profile</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">CV</th>
                 <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
@@ -392,6 +437,19 @@ export default function AdminEmployees() {
                     )}
                   </td>
                   <td className="px-6 py-4">
+                    {employee.cvFilePath ? (
+                      <button
+                        type="button"
+                        onClick={() => downloadEmployeeCv(employee)}
+                        className="text-xs font-semibold text-cyan-400 hover:text-cyan-300"
+                      >
+                        Download
+                      </button>
+                    ) : (
+                      <span className="text-[10px] text-gray-600">—</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all">
                       <button
                         onClick={() => openEditModal(employee)}
@@ -418,6 +476,54 @@ export default function AdminEmployees() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className="bg-gray-900/50 border border-white/10 rounded-2xl p-6 space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold text-white">Merge duplicate accounts</h2>
+          <p className="text-sm text-gray-400 mt-1">
+            Combine two employee records into one. The primary account is kept; the duplicate is removed from MySQL and Firebase.
+            Use Firebase UID, numeric database ID, email, or phone as identifiers.
+          </p>
+        </div>
+        <form onSubmit={handleMergeAccounts} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">Primary account (kept)</label>
+            <input
+              value={mergePrimaryId}
+              onChange={(e) => setMergePrimaryId(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white"
+              placeholder="UID, ID, email, or phone"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">Duplicate account (removed)</label>
+            <input
+              value={mergeDupId}
+              onChange={(e) => setMergeDupId(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white"
+              placeholder="UID, ID, email, or phone"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-xs font-medium text-gray-500 mb-1">Reason (optional)</label>
+            <input
+              value={mergeReason}
+              onChange={(e) => setMergeReason(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white"
+              placeholder="e.g. duplicate signup"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <button
+              type="submit"
+              disabled={mergeBusy}
+              className="px-4 py-2 rounded-lg bg-amber-600/90 text-white text-sm font-semibold hover:bg-amber-600 disabled:opacity-50"
+            >
+              {mergeBusy ? "Merging…" : "Merge accounts"}
+            </button>
+          </div>
+        </form>
       </div>
 
       {/* Create/Edit Modal */}
@@ -541,15 +647,10 @@ export default function AdminEmployees() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-medium text-gray-400 mb-1.5">Login Password *</label>
-                        <input
-                          type="password"
-                          value={formData.password}
-                          onChange={e => setFormData({ ...formData, password: e.target.value })}
-                          required
-                          placeholder="Password"
-                          className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none"
-                        />
+                        <label className="block text-xs font-medium text-gray-400 mb-1.5">Account Access</label>
+                        <div className="w-full rounded-xl border border-blue-500/20 bg-blue-500/5 px-3 py-3 text-xs leading-5 text-blue-300">
+                          A secure password reset email will be sent after the account is created. No default password is assigned.
+                        </div>
                       </div>
                       <div>
                         <label className="block text-xs font-medium text-gray-400 mb-1.5">Employee ID</label>

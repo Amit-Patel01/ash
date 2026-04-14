@@ -538,8 +538,8 @@ export default function EmployeeCourseManage() {
                       <h3 className="text-sm font-bold text-white">Default Meeting / Live Session Link</h3>
                       <p className="text-[11px] text-gray-500 mt-1">
                         {(selectedCourse.plans || []).length > 1
-                          ? 'Multi-plan course me student ko sirf uske enrolled plan ka link dikhaya jata hai. Ye default link optional fallback hai.'
-                          : 'Single-plan course me ye link direct student ko dikh sakta hai.'}
+                          ? 'For multi-plan courses, students only see the meeting link for the plan they enrolled in. This default link is an optional fallback.'
+                          : 'For single-plan courses, this link may be shown directly to students.'}
                       </p>
                     </div>
                     <button onClick={() => setEditMeet(!editMeet)} className="text-xs font-bold text-blue-400 hover:text-blue-300">{editMeet ? 'Cancel' : 'Edit'}</button>

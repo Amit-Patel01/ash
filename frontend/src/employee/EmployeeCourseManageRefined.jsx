@@ -45,7 +45,7 @@ export default function EmployeeCourseManageRefined() {
       <EmployeePageHeader
         eyebrow="Course Delivery"
         title="Manage Assigned Courses"
-        description="Plans, materials, meeting links, enrolled students aur certificate actions sab ek hi workspace se manage karo."
+        description="Manage plans, materials, meeting links, enrolled students, and certificate actions from a single workspace."
         stats={[
           { label: 'Assigned courses', value: myCourses.length },
           { label: 'Active students', value: activeStudents },

@@ -274,3 +274,9 @@ Caused by: Error
     at NoopTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\NoopTracer.js:54:31)
     at ProxyTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\ProxyTracer.js:27:24)
     at EnabledTraceUtil.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:102:28)
+[2026-04-14 08:36:57] WARN: MySQL environment variables are not configured. User-management APIs will remain unavailable until MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE are set.
+[2026-04-14 08:36:59] WARN: MySQL environment variables are not configured. User-management APIs will remain unavailable until MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE are set.
+[2026-04-14 08:38:42] WARN: MySQL environment variables are not configured. User-management APIs will remain unavailable until MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE are set.
+[2026-04-14 08:38:42] WARN: MySQL environment variables are not configured. User-management APIs will remain unavailable until MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE are set.
+[2026-04-14 08:38:42] WARN: MySQL environment variables are not configured. User-management APIs will remain unavailable until MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE are set.
+[2026-04-14 08:38:43] WARN: MySQL environment variables are not configured. User-management APIs will remain unavailable until MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE are set.

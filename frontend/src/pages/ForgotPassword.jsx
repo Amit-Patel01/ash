@@ -9,8 +9,7 @@ export default function ForgotPassword() {
   
   // URL Params
   const from = searchParams.get('from')
-  const mode = searchParams.get('mode')
-  const oobCode = searchParams.get('oobCode')
+  const resetToken = searchParams.get('token')
   
   // States
   const [email, setEmail] = useState('')
@@ -20,7 +19,7 @@ export default function ForgotPassword() {
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
-  const [verifyingCode, setVerifyingCode] = useState(mode === 'resetPassword')
+  const [verifyingCode, setVerifyingCode] = useState(Boolean(resetToken))
   const [userEmail, setUserEmail] = useState('') // Verified email from code
 
   const getBackPath = () => {
@@ -31,10 +30,10 @@ export default function ForgotPassword() {
 
   // Effect to verify code if in reset mode
   useEffect(() => {
-    if (mode === 'resetPassword' && oobCode) {
+    if (resetToken) {
       const verify = async () => {
         try {
-          const email = await verifyResetCode(oobCode)
+          const email = await verifyResetCode(resetToken)
           setUserEmail(email)
         } catch (err) {
           setError('This password reset link is invalid or has expired.')
@@ -44,15 +43,14 @@ export default function ForgotPassword() {
       }
       verify()
     }
-  }, [mode, oobCode, verifyResetCode])
+  }, [resetToken, verifyResetCode])
 
   const handleRequestReset = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
-      const returnUrl = window.location.origin + getBackPath()
-      await resetPassword(email, returnUrl)
+      await resetPassword(email, from)
       setSent(true)
     } catch (err) {
       let msg = 'Failed to send reset email. Please try again.'
@@ -71,7 +69,7 @@ export default function ForgotPassword() {
     setError('')
     setLoading(true)
     try {
-      await confirmReset(oobCode, newPassword)
+      await confirmReset(resetToken, newPassword)
       setSuccess(true)
       setTimeout(() => navigate(getBackPath()), 3000)
     } catch (err) {
@@ -179,10 +177,10 @@ export default function ForgotPassword() {
             </span>
           </Link>
           <h1 className="text-3xl font-extrabold text-white tracking-tight mb-2">
-            {mode === 'resetPassword' ? 'New Password' : 'Reset Password'}
+            {resetToken ? 'New Password' : 'Reset Password'}
           </h1>
           <p className="text-slate-400 text-sm font-medium">
-            {mode === 'resetPassword' 
+            {resetToken 
               ? `Creating a new password for ${userEmail || 'your account'}` 
               : "Enter your email and we'll send you a recovery link."}
           </p>
@@ -190,7 +188,7 @@ export default function ForgotPassword() {
 
         {/* Form Card */}
         <div className="bg-slate-900/40 backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 sm:p-10 shadow-2xl shadow-black/50">
-          <form onSubmit={mode === 'resetPassword' ? handleConfirmReset : handleRequestReset} className="space-y-6">
+          <form onSubmit={resetToken ? handleConfirmReset : handleRequestReset} className="space-y-6">
             {error && (
               <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl animate-in shake duration-500">
                 <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
@@ -202,7 +200,7 @@ export default function ForgotPassword() {
               </div>
             )}
 
-            {mode === 'resetPassword' ? (
+            {resetToken ? (
               <>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">New Password</label>
@@ -246,7 +244,7 @@ export default function ForgotPassword() {
 
             <button 
               type="submit" 
-              disabled={loading || (mode !== 'resetPassword' && !email)} 
+              disabled={loading || (!resetToken && !email)} 
               className="w-full relative group overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4.5 rounded-2xl font-extrabold text-sm shadow-xl shadow-blue-900/20 hover:shadow-blue-500/30 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -254,13 +252,13 @@ export default function ForgotPassword() {
                 {loading ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span>{mode === 'resetPassword' ? 'Updating Password...' : 'Processing Request...'}</span>
+                    <span>{resetToken ? 'Updating Password...' : 'Processing Request...'}</span>
                   </>
                 ) : (
                   <>
-                    <span>{mode === 'resetPassword' ? 'Update Password' : 'Send Reset Link'}</span>
+                    <span>{resetToken ? 'Update Password' : 'Send Reset Link'}</span>
                     <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d={mode === 'resetPassword' ? "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" : "M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"} />
+                      <path strokeLinecap="round" strokeLinejoin="round" d={resetToken ? "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" : "M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"} />
                     </svg>
                   </>
                 )}

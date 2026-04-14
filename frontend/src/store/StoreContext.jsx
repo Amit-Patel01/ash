@@ -13,8 +13,8 @@ import {
   setDoc,
   serverTimestamp 
 } from 'firebase/firestore'
-import { db } from '../config/firebase'
-import { buildApiUrl } from '../config/api'
+import { auth, db } from '../config/firebase'
+import { api, buildApiUrl, readApiJson } from '../config/api'
 import { emailNotify } from '../utils/emailNotify'
 import {
   DEFAULT_CERTIFICATE_TEMPLATE,
@@ -186,6 +186,17 @@ export function StoreProvider({ children }) {
   const [courseCategories, setCourseCategories] = useState([])
   // ─────────────────────────────────────────────────────────────
   const [loading, setLoading] = useState(true)
+
+  const getAuthorizedHeaders = async () => {
+    const token = await auth.currentUser?.getIdToken()
+    if (!token) {
+      throw new Error('Please sign in again to continue.')
+    }
+    return {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  }
 
   // Real-time Listeners
   useEffect(() => {
@@ -440,67 +451,66 @@ export function StoreProvider({ children }) {
   // --- Unified Users (Employees) Management ---
   const addUser = async (userData) => {
     try {
-      // If no UID is provided, generate a random doc ID (usually handled by Auth, but allowed for seeding/admin)
-      const usersRef = collection(db, 'users')
-      if (userData.uid) {
-        await setDoc(doc(db, 'users', userData.uid), { ...userData, createdAt: serverTimestamp() })
-        return userData
-      } else {
-        const docRef = await addDoc(usersRef, { ...userData, createdAt: serverTimestamp() })
-        return { id: docRef.id, ...userData }
+      const headers = await getAuthorizedHeaders()
+      const response = await fetch(api.adminUsers, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(userData)
+      })
+      const data = await response.json()
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to create the user.')
       }
+      return data.user
     } catch (err) { console.error("Error adding user:", err); throw err }
   }
   const updateUser = async (id, updates) => {
     try { 
-      // Update the user document
-      await updateDoc(doc(db, 'users', id), updates) 
-
-      // Sync with team collection if they are a team member
-      const userSnap = await getDoc(doc(db, 'users', id))
-      if (userSnap.exists()) {
-        const userData = userSnap.data()
-        const teamSnap = await getDocs(query(collection(db, 'team')))
-        const teamMember = teamSnap.docs.find(d => 
-          (d.data().email && userData.email && d.data().email.toLowerCase() === userData.email.toLowerCase()) || 
-          (d.data().employeeId && userData.employeeId && d.data().employeeId === userData.employeeId)
-        )
-        if (teamMember) {
-          await updateDoc(doc(db, 'team', teamMember.id), {
-            name: userData.displayName || userData.name,
-            role: userData.jobTitle,
-            department: userData.department,
-            employeeId: userData.employeeId || '',
-            email: userData.email,
-            github: userData.github || '',
-            linkedin: userData.linkedin || '',
-            portfolio: userData.portfolio || '',
-            avatarSource: userData.avatarSource || 'github',
-            isMentor: userData.isMentor || false,
-            bio: userData.bio || '',
-            status: userData.status === 'active' ? 'Active' : 'Inactive'
-          })
-        }
+      const headers = await getAuthorizedHeaders()
+      const response = await fetch(`${api.adminUsers}/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      })
+      const data = await response.json()
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update the user.')
       }
+      return data.user
     } catch (err) { console.error("Error updating user:", err); throw err }
   }
   const deleteUser = async (id) => {
     try { 
-      // Find and delete from team collection first if they exist there
-      const userSnap = await getDoc(doc(db, 'users', id))
-      if (userSnap.exists()) {
-        const userData = userSnap.data()
-        const teamSnap = await getDocs(query(collection(db, 'team')))
-        const teamMember = teamSnap.docs.find(d => 
-          (d.data().email && userData.email && d.data().email.toLowerCase() === userData.email.toLowerCase()) || 
-          (d.data().employeeId && userData.employeeId && d.data().employeeId === userData.employeeId)
-        )
-        if (teamMember) {
-          await deleteDoc(doc(db, 'team', teamMember.id))
-        }
+      const headers = await getAuthorizedHeaders()
+      const response = await fetch(`${api.adminUsers}/${id}`, {
+        method: 'DELETE',
+        headers
+      })
+      const data = await response.json()
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to delete the user.')
       }
-      await deleteDoc(doc(db, 'users', id)) 
+      return data.user
     } catch (err) { console.error("Error deleting user:", err); throw err }
+  }
+
+  const mergeUsers = async (primaryUserId, duplicateUserId, reason = '') => {
+    try {
+      const headers = await getAuthorizedHeaders()
+      const response = await fetch(api.adminMergeUsers, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ primaryUserId, duplicateUserId, reason }),
+      })
+      const data = await response.json()
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to merge the accounts.')
+      }
+      return data
+    } catch (err) {
+      console.error('Error merging users:', err)
+      throw err
+    }
   }
 
   // --- Services ---
@@ -978,10 +988,28 @@ export function StoreProvider({ children }) {
     try { await updateDoc(doc(db, 'custom_requests', id), { status, processedAt: serverTimestamp() }) } catch (err) { console.error("Error updating service request status:", err); throw err }
   }
   const deleteAccountRequest = async (id) => {
-    try { await deleteDoc(doc(db, 'accountRequests', id)) } catch (err) { console.error("Error deleting account request:", err); throw err }
+    try {
+      const headers = await getAuthorizedHeaders()
+      const response = await fetch(api.adminDeleteAccountRequest(id), {
+        method: 'DELETE',
+        headers
+      })
+      const data = await readApiJson(response)
+      if (!response.ok || !data.success) throw new Error(data.message || 'Failed to delete account request.')
+      return data.request
+    } catch (err) { console.error("Error deleting account request:", err); throw err }
   }
   const rejectAccountRequest = async (id) => {
-    try { await updateDoc(doc(db, 'accountRequests', id), { status: 'rejected', rejectedAt: serverTimestamp() }) } catch (err) { console.error("Error rejecting account request:", err); throw err }
+    try {
+      const headers = await getAuthorizedHeaders()
+      const response = await fetch(api.adminRejectAccountRequest(id), {
+        method: 'POST',
+        headers
+      })
+      const data = await readApiJson(response)
+      if (!response.ok || !data.success) throw new Error(data.message || 'Failed to reject account request.')
+      return data.request
+    } catch (err) { console.error("Error rejecting account request:", err); throw err }
   }
   const deleteSellRequest = async (id) => {
     try { await deleteDoc(doc(db, 'sellRequests', id)) } catch (err) { console.error("Error deleting sell request:", err); throw err }
@@ -999,7 +1027,7 @@ export function StoreProvider({ children }) {
     addOrder, updateOrderStatus, deleteOrder,
     addTask, updateTask, deleteTask,
     addTeamMember, updateTeamMember, deleteTeamMember,
-    addUser, updateUser, deleteUser,
+    addUser, updateUser, deleteUser, mergeUsers,
     services, addService, updateService, deleteService,
     accountRequests, sellRequests, serviceRequests, messages,
     deleteAdminMessage, updateMessageStatus,

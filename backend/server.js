@@ -17,7 +17,7 @@ const { logger } = require("./logger");
 const REQUIRED_ENV = ["RESEND_API_KEY", "RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET"];
 const missingEnv = REQUIRED_ENV.filter((k) => !process.env[k]);
 if (missingEnv.length > 0) {
-  logger.warn(`⚠️  Missing ENV variables: ${missingEnv.join(", ")} — Some features may not work.`);
+  logger.warn(`Missing environment variables: ${missingEnv.join(", ")}. Some features may not work.`);
 }
 
 const geminiEnvKey =
@@ -27,7 +27,7 @@ const geminiEnvKey =
   process.env.GOOGLE_GENAI_API_KEY;
 
 if (!geminiEnvKey) {
-  logger.warn("⚠️  Gemini API key not set — AI chatbot features disabled.");
+  logger.warn("Gemini API key not set; AI chatbot features are disabled.");
 }
 
 // ─── Firebase Admin ──────────────────────────────────────────────────────────
@@ -72,9 +72,9 @@ const loadServiceAccount = () => {
 const serviceAccount = loadServiceAccount();
 if (!admin.apps.length) {
   admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
-  logger.info(`📡 Firebase Admin Initialized (Project: ${serviceAccount.project_id})`);
+  logger.info(`Firebase Admin initialized (project: ${serviceAccount.project_id})`);
   if (serviceAccount.project_id !== "solutionhub-81976") {
-    logger.warn(`⚠️  Project ID mismatch! credentials.json is for: ${serviceAccount.project_id}`);
+    logger.warn(`Project ID mismatch: credentials are for ${serviceAccount.project_id}.`);
   }
 }
 
@@ -151,10 +151,10 @@ app.use("/uploads", express.static(uploadsDir));
 // ─── Health Check ────────────────────────────────────────────────────────────
 app.get("/", (req, res) => {
   res.json({
-    status: "Backend Live 🚀",
+    status: "Backend is running",
     version: "2.0.0",
     timestamp: new Date().toISOString(),
-    features: ["trading", "admin", "auth", "certificates", "ai-chat", "webhook"],
+    features: ["trading", "admin", "auth", "users", "certificates", "ai-chat", "webhook"],
   });
 });
 
@@ -228,9 +228,15 @@ app.post("/api/upload/chat", uploadChat.single("chat-image"), (req, res) => {
 // Multer error handler
 app.use((err, req, res, next) => {
   if (err.code === "LIMIT_FILE_SIZE") {
-    return res.status(400).json({ success: false, message: "File too large. Max size is 5MB." });
+    return res.status(400).json({
+      success: false,
+      message: "The uploaded file is too large. Maximum allowed size is 5 MB unless the endpoint specifies otherwise.",
+    });
   }
   if (err.message?.includes("Only JPG")) {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+  if (err.message?.includes("Only PDF")) {
     return res.status(400).json({ success: false, message: err.message });
   }
   next(err);
@@ -240,6 +246,7 @@ app.use((err, req, res, next) => {
 app.use("/api/trading", require("./routes/trading"));
 app.use("/api/admin", require("./routes/admin"));
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/users", require("./routes/users"));
 app.use("/api/certificates", require("./routes/certificates"));
 app.use("/api/razorpay", require("./routes/razorpay"));
 app.use("/api/ai", require("./routes/ai"));
@@ -410,6 +417,6 @@ app.use((err, req, res, next) => {
 // ─── Start Server ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  logger.info(`🚀 SolutionHub Backend v2.0 running on port ${PORT}`);
-  logger.info(`📦 Modules: trading | admin | auth | certificates | razorpay | ai | webhook`);
+  logger.info(`SolutionHub backend v2.0 listening on port ${PORT}`);
+  logger.info("Modules: trading | admin | auth | users | certificates | razorpay | ai | webhook");
 });

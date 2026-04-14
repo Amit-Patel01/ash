@@ -112,21 +112,13 @@ export default function AdminSettings() {
   const handleChangePassword = async () => {
     setPasswordError('')
     setPasswordSuccess('')
-    if (passwordForm.newPassword.length < 6) {
-      setPasswordError('New password must be at least 6 characters')
-      return
-    }
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      setPasswordError('Passwords do not match')
-      return
-    }
     setSaving(true)
     try {
-      await updateUserPassword(passwordForm.currentPassword, passwordForm.newPassword)
-      setPasswordSuccess('Password updated successfully!')
+      await updateUserPassword()
+      setPasswordSuccess('A password reset link has been sent to your email address.')
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
     } catch (err) {
-      setPasswordError(err.message || 'Failed to update password')
+      setPasswordError(err.message || 'Failed to send the password reset email.')
     } finally {
       setSaving(false)
     }
@@ -343,7 +335,7 @@ export default function AdminSettings() {
             <div className="flex items-start justify-between gap-4 flex-wrap mb-6">
               <div>
                 <h2 className="text-lg font-semibold text-white">Document Customization</h2>
-                <p className="text-sm text-gray-400 mt-1">Course certificate, internship certificate, aur offer letter ke liye alag branding, wording, aur code base yahin se control hogi.</p>
+                <p className="text-sm text-gray-400 mt-1">Course certificates, internship certificates, and offer letters each have their own branding, wording, and code base—all managed from this panel.</p>
               </div>
               <div className="flex items-center gap-2">
                 <label className="text-xs font-medium text-gray-400">Accent Color</label>
@@ -382,7 +374,7 @@ export default function AdminSettings() {
                     ))}
                   </div>
                   <p className="mt-3 text-xs text-gray-500">
-                    Abhi aap <span className="font-semibold text-white">{selectedDocumentMeta.label}</span> customize kar rahe ho.
+                    You are currently customizing the <span className="font-semibold text-white">{selectedDocumentMeta.label}</span>.
                   </p>
                 </div>
 
@@ -396,7 +388,7 @@ export default function AdminSettings() {
                       placeholder="AP"
                       className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
                     />
-                    <p className="mt-1.5 text-[11px] text-gray-500">Selected panel, employee issue action, customer download, aur verify link sab me yahi code base use hogi.</p>
+                    <p className="mt-1.5 text-[11px] text-gray-500">This code base is used across the admin panel, employee issuance actions, customer downloads, and the public verification link.</p>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-gray-400 mb-1.5">Seal Label</label>
@@ -588,7 +580,7 @@ export default function AdminSettings() {
                     </div>
                   </div>
                   <p className="text-sm text-gray-300 mt-4 leading-relaxed">
-                    Employee issue buttons, customer documents panel, aur verify page par yahi selected {selectedDocumentMeta.shortLabel.toLowerCase()} design use hoga. Prefix / code base bhi isi preview ke saath sync rahegi.
+                    The selected {selectedDocumentMeta.shortLabel.toLowerCase()} design is used on employee issuance controls, the customer documents area, and the verification page. The prefix and code base stay in sync with this preview.
                   </p>
                 </div>
 
@@ -660,7 +652,7 @@ export default function AdminSettings() {
       {activeTab === 'security' && (
         <div className="space-y-6">
           <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-6">
-            <h2 className="text-lg font-semibold text-white mb-6">Change Password</h2>
+            <h2 className="text-lg font-semibold text-white mb-6">Password Reset</h2>
             {passwordError && (
               <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
                 <p className="text-sm text-red-400">{passwordError}</p>
@@ -672,38 +664,11 @@ export default function AdminSettings() {
               </div>
             )}
             <div className="max-w-md space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">Current Password</label>
-                <input
-                  type="password"
-                  value={passwordForm.currentPassword}
-                  onChange={e => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                  placeholder="Enter current password"
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">New Password</label>
-                <input
-                  type="password"
-                  value={passwordForm.newPassword}
-                  onChange={e => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                  placeholder="Enter new password"
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">Confirm New Password</label>
-                <input
-                  type="password"
-                  value={passwordForm.confirmPassword}
-                  onChange={e => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                  placeholder="Confirm new password"
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                />
+              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
+                For security, administrator password changes are handled through a secure email reset link sent to <span className="font-semibold text-white">{currentUser?.email || 'your account email'}</span>.
               </div>
               <button onClick={handleChangePassword} className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all">
-                Update Password
+                Send Password Reset Link
               </button>
             </div>
           </div>

@@ -138,7 +138,7 @@ export default function CoursesPage() {
             <div className="rounded-[26px] border border-sky-100 bg-gradient-to-br from-sky-50 to-indigo-50 p-5">
               <div className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">Presentation Note</div>
               <p className="mt-3 text-sm leading-6 text-slate-600">
-                AICTE approval ko main promise nahi kar sakta, lekin yeh layout training details ko cleaner, authentic, and easier to verify banata hai.
+                We do not guarantee AICTE approval status; this layout is designed to present training details clearly, credibly, and in a way that is easier to verify.
               </p>
             </div>
           </div>

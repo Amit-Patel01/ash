@@ -98,7 +98,7 @@ export default function EmployeeTasksRefined() {
       <EmployeePageHeader
         eyebrow="Daily Flow"
         title="Task Workspace"
-        description={`${displayName} ke assigned tasks ab ek clean board me grouped hain. Search, quick status updates aur review visibility sab yahin se manage ho jayega.`}
+        description={`${displayName}'s assigned tasks are grouped on a clear board. Search, quick status updates, and review visibility are all managed here.`}
         stats={[
           { label: 'Visible tasks', value: totalTasks },
           { label: 'In progress', value: activeTasks },
@@ -152,13 +152,13 @@ export default function EmployeeTasksRefined() {
 
       <EmployeeSurface
         title="Task Queue"
-        description="Quick controls se status update karo aur project-by-project context ke saath tasks track karo."
+        description="Update status with quick controls and track tasks with clear project context."
       >
         {myTasks.length === 0 ? (
           <EmployeeEmptyState
             icon="🗂"
             title="No tasks matched this view"
-            description="Search ya filter change karke dekho. Agar fir bhi blank hai to admin se confirm karo ki tasks aapke employee account par assign hue hain."
+            description="Try adjusting the search or filters. If the list is still empty, ask an administrator to confirm that tasks are assigned to your employee account."
           />
         ) : (
           <div className="space-y-4">
@@ -179,7 +179,7 @@ export default function EmployeeTasksRefined() {
                       </div>
                       <h3 className="mt-4 text-lg font-black text-white">{task.title || 'Untitled Task'}</h3>
                       <p className="mt-2 text-sm leading-6 text-slate-400">
-                        {task.description || 'Task description nahi diya gaya hai. Status controls use karke workflow continue rakho.'}
+                        {task.description || 'No task description was provided. Use the status controls to move the workflow forward.'}
                       </p>
                       <div className="mt-4 flex flex-wrap gap-4 text-xs text-slate-500">
                         <span>Assigned to {displayName}</span>

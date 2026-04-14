@@ -56,7 +56,7 @@ export default function EmployeeProjectsRefined() {
         pendingTasks: projectTasks.length - completedTasks - inProgressTasks,
         description:
           storeProject?.description ||
-          'Project summary abhi available nahi hai. Tasks aur delivery progress neeche track ho rahi hai.',
+          'Project summary is not available yet. Tasks and delivery progress are tracked below.',
       }
     }).sort((a, b) => b.totalTasks - a.totalTasks)
   }, [myTasks, projects])
@@ -70,7 +70,7 @@ export default function EmployeeProjectsRefined() {
       <EmployeePageHeader
         eyebrow="Project Map"
         title="Assigned Projects"
-        description="Employee ke saare mapped projects yahan aggregated dikhte hain, taaki task load, completion aur active delivery instantly samajh aaye."
+        description="All mapped projects are aggregated here so you can see workload, completion, and active delivery at a glance."
         stats={[
           { label: 'Projects', value: myProjects.length },
           { label: 'Active', value: activeProjects },
@@ -106,13 +106,13 @@ export default function EmployeeProjectsRefined() {
 
       <EmployeeSurface
         title="Project Contribution Board"
-        description="Har project ke andar aapke assigned tasks se progress build ho rahi hai."
+        description="Progress for each project is driven by the tasks assigned to you."
       >
         {myProjects.length === 0 ? (
           <EmployeeEmptyState
             icon="📁"
             title="No active project mapping yet"
-            description="Jaise hi admin aapke naam ya employee ID par tasks assign karega, projects yahan automatically group ho jayenge."
+            description="When an administrator assigns tasks to your name or employee ID, projects will appear here automatically."
           />
         ) : (
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">

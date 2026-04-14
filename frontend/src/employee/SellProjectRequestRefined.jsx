@@ -69,12 +69,12 @@ export default function SellProjectRequestRefined() {
         <EmployeePageHeader
           eyebrow="Marketplace Desk"
           title="Sell Request Submitted"
-          description="Admin review ke liye aapka project successfully queue me chala gaya hai."
+          description="Your project has been queued successfully for administrator review."
         />
         <EmployeeEmptyState
           icon="✅"
           title={form.projectTitle}
-          description={`Category: ${form.category} | Price: ₹${Number(form.price || 0).toLocaleString('en-IN')}. Approval ke baad yeh marketplace workflow me दिखाई देगा.`}
+          description={`Category: ${form.category} | Price: ₹${Number(form.price || 0).toLocaleString('en-IN')}. After approval it will appear in the marketplace workflow.`}
         />
       </div>
     )
@@ -85,7 +85,7 @@ export default function SellProjectRequestRefined() {
       <EmployeePageHeader
         eyebrow="Marketplace Desk"
         title="Sell Your Project"
-        description="Employee panel se direct project listing request bhejo. Admin approval ke baad yeh marketplace ya custom sales flow me ja sakta hai."
+        description="Submit a project listing request from the employee panel. After administrator approval it can proceed to the marketplace or a custom sales flow."
         stats={[
           { label: 'Category', value: form.category },
           { label: 'Source code', value: form.includeSource ? 'Included' : 'Optional' },
@@ -93,7 +93,7 @@ export default function SellProjectRequestRefined() {
       />
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-        <EmployeeSurface title="Project Listing Form" description="Clear title, pricing aur tech details dena approval ko fast karta hai.">
+        <EmployeeSurface title="Project Listing Form" description="A clear title, pricing, and technical details help speed up approval.">
           {status.message && (
             <div className="mb-5 rounded-2xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-300">
               {status.message}

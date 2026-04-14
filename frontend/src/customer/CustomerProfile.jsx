@@ -137,25 +137,15 @@ export default function CustomerProfile() {
   const handlePasswordSubmit = async (event) => {
     event.preventDefault()
 
-    if (passwordForm.next !== passwordForm.confirm) {
-      setPasswordStatus({ type: 'error', message: 'New passwords do not match.' })
-      return
-    }
-
-    if (passwordForm.next.length < 6) {
-      setPasswordStatus({ type: 'error', message: 'Password must be at least 6 characters.' })
-      return
-    }
-
     setPasswordLoading(true)
     setPasswordStatus({ type: '', message: '' })
 
     try {
-      await updateUserPassword(passwordForm.current, passwordForm.next)
-      setPasswordStatus({ type: 'success', message: 'Password updated successfully.' })
+      await updateUserPassword()
+      setPasswordStatus({ type: 'success', message: 'A password reset link has been sent to your email address.' })
       setPasswordForm({ current: '', next: '', confirm: '' })
     } catch (error) {
-      setPasswordStatus({ type: 'error', message: error.message || 'Unable to update password.' })
+      setPasswordStatus({ type: 'error', message: error.message || 'Unable to send the password reset email.' })
     } finally {
       setPasswordLoading(false)
     }
@@ -177,7 +167,7 @@ export default function CustomerProfile() {
               <p className="text-[11px] font-black uppercase tracking-[0.28em] text-blue-200/80">Account Center</p>
               <h1 className="mt-2 text-3xl font-black tracking-tight text-white">Customer Profile</h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-                Aapka name, phone, profile image, aur password ab yahin se update ho sakta hai. Saved profile image sidebar aur panel header me bhi dikh jayegi.
+                Update your name, phone number, profile image, and account settings from one place. Your saved profile image will also appear across the customer workspace.
               </p>
             </div>
           </div>
@@ -206,7 +196,7 @@ export default function CustomerProfile() {
               <p className="text-[11px] font-black uppercase tracking-[0.28em] text-blue-300">Profile Details</p>
               <h2 className="mt-2 text-2xl font-black text-white">Update your customer profile</h2>
               <p className="mt-2 text-sm leading-6 text-slate-400">
-                Yeh details future enrollments, certificates, aur support conversations me useful rahengi.
+                These details help keep your enrollments, certificates, and support conversations accurate.
               </p>
             </div>
 
@@ -272,7 +262,7 @@ export default function CustomerProfile() {
                     <div>
                       <p className="text-sm font-semibold text-white">Profile Photo</p>
                       <p className="mt-1 text-xs leading-5 text-slate-400">
-                        Upload image ya photo URL paste karke customer panel me apni profile photo dikha sakte ho.
+                        Upload an image or paste a photo URL to update your customer profile picture.
                       </p>
                     </div>
                   </div>
@@ -327,9 +317,9 @@ export default function CustomerProfile() {
           <section className="rounded-[30px] border border-white/10 bg-gray-900/55 p-6 shadow-2xl backdrop-blur-xl">
             <div className="mb-6">
               <p className="text-[11px] font-black uppercase tracking-[0.28em] text-amber-300">Security</p>
-              <h2 className="mt-2 text-2xl font-black text-white">Change Password</h2>
+              <h2 className="mt-2 text-2xl font-black text-white">Password Reset</h2>
               <p className="mt-2 text-sm leading-6 text-slate-400">
-                Current password confirm karke apna account password update kar sakte ho.
+                For security, password changes are handled through a secure email reset link.
               </p>
             </div>
 
@@ -344,44 +334,15 @@ export default function CustomerProfile() {
             )}
 
             <form onSubmit={handlePasswordSubmit} className="space-y-4">
-              <div>
-                <FieldLabel>Current Password</FieldLabel>
-                <input
-                  type="password"
-                  value={passwordForm.current}
-                  onChange={(event) => setPasswordForm(current => ({ ...current, current: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-amber-400/30 focus:outline-none"
-                  required
-                />
-              </div>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <div>
-                  <FieldLabel>New Password</FieldLabel>
-                  <input
-                    type="password"
-                    value={passwordForm.next}
-                    onChange={(event) => setPasswordForm(current => ({ ...current, next: event.target.value }))}
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-amber-400/30 focus:outline-none"
-                    required
-                  />
-                </div>
-                <div>
-                  <FieldLabel>Confirm Password</FieldLabel>
-                  <input
-                    type="password"
-                    value={passwordForm.confirm}
-                    onChange={(event) => setPasswordForm(current => ({ ...current, confirm: event.target.value }))}
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-amber-400/30 focus:outline-none"
-                    required
-                  />
-                </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
+                We will email a secure password reset link to <span className="font-semibold text-white">{currentUser?.email || 'your account email'}</span>.
               </div>
               <button
                 type="submit"
                 disabled={passwordLoading}
                 className="rounded-2xl border border-amber-400/20 bg-amber-400/10 px-5 py-3 text-sm font-semibold text-amber-300 transition hover:bg-amber-400/15 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {passwordLoading ? 'Updating Password...' : 'Update Password'}
+                {passwordLoading ? 'Sending Reset Link...' : 'Send Password Reset Link'}
               </button>
             </form>
           </section>
@@ -418,7 +379,7 @@ export default function CustomerProfile() {
                 <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                   <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">Bio</p>
                   <p className="mt-2 text-sm leading-6 text-slate-300">
-                    {profileForm.bio || 'Aapka short bio yahan preview hoga.'}
+                    {profileForm.bio || 'Your short bio preview will appear here.'}
                   </p>
                 </div>
               </div>
@@ -428,9 +389,9 @@ export default function CustomerProfile() {
           <section className="rounded-[30px] border border-white/10 bg-gray-900/55 p-6 shadow-2xl backdrop-blur-xl">
             <p className="text-[11px] font-black uppercase tracking-[0.28em] text-emerald-300">Why It Matters</p>
             <div className="mt-4 space-y-3 text-sm leading-6 text-slate-300">
-              <p>Updated profile se enrollments aur support conversations me aapki identity clear rehti hai.</p>
-              <p>Profile image save karne ke baad customer sidebar aur top bar dono jagah nayi photo visible hogi.</p>
-              <p>Phone aur location maintain rakhne se course/session coordination aur certificate accuracy better hoti hai.</p>
+              <p>An updated profile keeps your identity clear across enrollments and support conversations.</p>
+              <p>Your saved profile image will appear consistently in the customer sidebar and top navigation.</p>
+              <p>Keeping your phone number and location current improves course coordination and certificate accuracy.</p>
             </div>
           </section>
         </div>

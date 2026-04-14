@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import TermsAndConditions from '../components/TermsAndConditions'
-import { emailNotify } from '../utils/emailNotify'
 
 const departments = ['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Sales', 'Editor', 'Technician', 'Other']
 const roles = ['Developer', 'Designer', 'Project Manager', 'Marketing Executive', 'Support Agent', 'Sales Executive', 'Video Editor', 'Technician', 'Other']
@@ -13,26 +12,23 @@ export default function RequestAccount() {
   const [showTerms, setShowTerms] = useState(false)
   const [agreed, setAgreed] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [submittedMessage, setSubmittedMessage] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     name: '', email: '', phone: '', department: '', role: '', reason: '',
-    password: '', confirmPassword: ''
   })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!agreed) { setError('You must agree to Terms & Conditions'); return }
-    if (!form.name || !form.email || !form.department || !form.role || !form.password) {
+    if (!form.name || !form.email || !form.department || !form.role || !form.phone) {
       setError('Please fill all required fields')
       return
     }
-    if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match');
-      return
-    }
-    if (form.password.length < 6) {
-      setError('Password should be at least 6 characters');
+    const cleanPhone = form.phone.replace(/\D/g, '')
+    if (cleanPhone.length < 10) {
+      setError('Please enter a valid phone number.')
       return
     }
 
@@ -46,14 +42,11 @@ export default function RequestAccount() {
     }
 
     try {
-      await createAccountRequest(submissionData)
-      // ✉️ Notify admin about new account request
-      emailNotify('account_request', {
-        requesterName: submissionData.name,
-        requesterEmail: submissionData.email,
-        requesterPhone: submissionData.phone,
-        role: submissionData.role
+      const result = await createAccountRequest({
+        ...submissionData,
+        phone: cleanPhone,
       })
+      setSubmittedMessage(result.message || 'Your request has been submitted successfully.')
       setSubmitted(true)
     } catch (err) {
       setError(err.message || 'Failed to submit request.')
@@ -70,13 +63,13 @@ export default function RequestAccount() {
             <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-200">
               <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
             </div>
-            <h2 className="text-2xl font-bold text-slate-800 mb-3">Request Submitted!</h2>
-            <p className="text-slate-500 mb-6">Your account creation request has been sent to the admin for approval. You will receive your login credentials via email once approved.</p>
+            <h2 className="text-2xl font-bold text-slate-800 mb-3">Request Submitted</h2>
+            <p className="text-slate-500 mb-6">{submittedMessage || 'Your account creation request has been sent to the administrator for review.'}</p>
             <div className="bg-blue-50 rounded-xl p-4 mb-6 border border-blue-100 text-left">
               <p className="text-sm text-slate-700"><strong>Name:</strong> {form.name}</p>
               <p className="text-sm text-slate-700"><strong>Email:</strong> {form.email}</p>
               <p className="text-sm text-slate-700"><strong>Department:</strong> {form.department}</p>
-              <p className="text-sm text-slate-700"><strong>Status:</strong> Pending Approval</p>
+              <p className="text-sm text-slate-700"><strong>Status:</strong> Awaiting Review</p>
             </div>
             <button onClick={() => navigate('/')} className="w-full px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-200 transition-all">
               Back to Home
@@ -177,15 +170,8 @@ export default function RequestAccount() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Password *</label>
-                <input type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required placeholder="Min 6 characters" className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1.5">Confirm Password *</label>
-                <input type="password" value={form.confirmPassword} onChange={e => setForm({ ...form, confirmPassword: e.target.value })} required placeholder="Re-enter password" className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all" />
-              </div>
+            <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-slate-600">
+              If your request is approved, we will create your account and email you a secure password reset link. No default password will be assigned.
             </div>
 
             <div>

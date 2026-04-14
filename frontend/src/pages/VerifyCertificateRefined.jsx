@@ -206,10 +206,10 @@ export default function VerifyCertificateRefined() {
             <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_290px]">
               <div>
                 <h1 className="max-w-3xl text-4xl font-black tracking-tight text-white md:text-5xl">
-                  Scan karo, verify karo, aur document wahi se download bhi karo.
+                  Scan, verify, and download the document from this page.
                 </h1>
                 <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-                  QR scan ya shared verification link se aane par document direct open ho jayega. Yahin se authenticity check, preview, aur PNG/PDF download available rahega.
+                  Opening via QR code or a shared verification link loads the document directly. Authenticity checks, preview, and PNG or PDF downloads are available here.
                 </p>
 
                 <div className="mt-6 flex flex-wrap gap-3">
@@ -229,22 +229,22 @@ export default function VerifyCertificateRefined() {
                   </div>
                   <div>
                     <p className="text-[11px] font-black uppercase tracking-[0.3em] text-emerald-300">Scan Flow</p>
-                    <p className="mt-1 text-sm text-slate-300">QR code se open hone par ID auto-fill hokar verification start ho sakta hai.</p>
+                    <p className="mt-1 text-sm text-slate-300">When opened from a QR code, the document ID can be filled in automatically to start verification.</p>
                   </div>
                 </div>
 
                 <div className="mt-5 space-y-3">
                   <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                     <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Step 1</p>
-                    <p className="mt-2 text-sm text-white">Document ka QR scan ya ID paste karein.</p>
+                    <p className="mt-2 text-sm text-white">Scan the document QR code or paste the document ID.</p>
                   </div>
                   <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                     <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Step 2</p>
-                        <p className="mt-2 text-sm text-white">System document ID ko approved record se match karega.</p>
+                        <p className="mt-2 text-sm text-white">The system matches the document ID to the approved record.</p>
                   </div>
                   <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                     <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Step 3</p>
-                    <p className="mt-2 text-sm text-white">Verified document preview aur download buttons turant mil jayenge.</p>
+                    <p className="mt-2 text-sm text-white">The verified preview and download actions appear immediately.</p>
                   </div>
                 </div>
               </Surface>
@@ -286,7 +286,7 @@ export default function VerifyCertificateRefined() {
                 </button>
               </div>
               <p className="mt-3 text-xs text-slate-500">
-                QR scan se open hua page bhi isi verification field ko auto-use karta hai.
+                Pages opened from a QR scan also use this verification field automatically.
               </p>
             </motion.form>
 
@@ -308,7 +308,7 @@ export default function VerifyCertificateRefined() {
                         <div>
                     <h2 className="text-xl font-black text-white">Ready for secure verification</h2>
                       <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-                            Document ID enter karte hi authentic record milega, preview open hoga, aur user usi page se PNG ya PDF download kar sakega.
+                            After you enter a valid document ID, the authentic record loads, the preview opens, and PNG or PDF downloads are available on the same page.
                           </p>
                         </div>
                       </div>
@@ -334,7 +334,7 @@ export default function VerifyCertificateRefined() {
                       <div className="h-12 w-12 animate-spin rounded-full border-2 border-cyan-400/20 border-t-cyan-300" />
                       <div>
                         <p className="text-lg font-black text-white">Checking document authenticity...</p>
-                        <p className="mt-1 text-sm text-slate-400">Approved record, issuer details, and downloadable preview load kiye ja rahe hain.</p>
+                        <p className="mt-1 text-sm text-slate-400">Loading the approved record, issuer details, and downloadable preview.</p>
                       </div>
                     </div>
                   </Surface>
@@ -360,7 +360,7 @@ export default function VerifyCertificateRefined() {
                         <div className="mt-4 grid gap-3 md:grid-cols-2">
                           <div className="rounded-2xl border border-red-400/15 bg-black/10 px-4 py-3">
                             <p className="text-[11px] font-black uppercase tracking-[0.28em] text-red-200/60">Check This</p>
-                            <p className="mt-2 text-sm text-white">ID spelling aur prefix exact hona chahiye.</p>
+                            <p className="mt-2 text-sm text-white">The ID spelling and prefix must match exactly.</p>
                           </div>
                           <div className="rounded-2xl border border-red-400/15 bg-black/10 px-4 py-3">
                             <p className="text-[11px] font-black uppercase tracking-[0.28em] text-red-200/60">Still stuck?</p>
@@ -429,7 +429,7 @@ export default function VerifyCertificateRefined() {
                   <p className="text-[11px] font-black uppercase tracking-[0.3em] text-cyan-300">Quick Actions</p>
                   <h3 className="mt-3 text-xl font-black text-white">Download or share instantly</h3>
                   <p className="mt-2 text-sm leading-6 text-slate-300">
-                    Verified document milte hi yahin se ID copy, PNG export, ya PDF download kiya ja sakta hai.
+                    Once verified, you can copy the ID, export PNG, or download PDF from this panel.
                   </p>
 
                   <div className="mt-5 grid gap-3">
@@ -480,15 +480,15 @@ export default function VerifyCertificateRefined() {
                   <div className="mt-4 space-y-3">
                     <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                       <p className="text-sm font-semibold text-white">Live document preview</p>
-                      <p className="mt-1 text-xs leading-5 text-slate-400">Verification ke baad same approved design page par render hota hai.</p>
+                      <p className="mt-1 text-xs leading-5 text-slate-400">After verification, the same approved design is rendered on the page.</p>
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                       <p className="text-sm font-semibold text-white">PNG + PDF exports</p>
-                      <p className="mt-1 text-xs leading-5 text-slate-400">Verified document ko direct image ya printable PDF me save kar sakte ho.</p>
+                      <p className="mt-1 text-xs leading-5 text-slate-400">Save the verified document as an image or a printable PDF.</p>
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                       <p className="text-sm font-semibold text-white">Scan-friendly access</p>
-                      <p className="mt-1 text-xs leading-5 text-slate-400">QR code se aaya user bhi isi page par same verification flow use karega.</p>
+                      <p className="mt-1 text-xs leading-5 text-slate-400">Visitors who arrive via QR code use the same verification flow on this page.</p>
                     </div>
                   </div>
                 </Surface>
@@ -500,7 +500,7 @@ export default function VerifyCertificateRefined() {
                     </div>
                     <div>
                       <p className="text-[11px] font-black uppercase tracking-[0.3em] text-amber-300">Trusted Design</p>
-                      <p className="mt-1 text-sm text-slate-300">Verification successful hote hi branded document preview load ho jayega.</p>
+                      <p className="mt-1 text-sm text-slate-300">After successful verification, the branded document preview loads automatically.</p>
                     </div>
                   </div>
                 </Surface>
@@ -526,7 +526,7 @@ export default function VerifyCertificateRefined() {
                 <div>
                   <p className="text-[11px] font-black uppercase tracking-[0.3em] text-cyan-300">Verified Preview</p>
                   <h2 className="mt-2 text-2xl font-black text-white">{documentLabel}</h2>
-                  <p className="mt-1 text-sm text-slate-400">QR scan, direct link, aur manual verification sab ke liye same official preview.</p>
+                  <p className="mt-1 text-sm text-slate-400">The same official preview is used for QR scans, direct links, and manual verification.</p>
                 </div>
                 <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-emerald-300">
                   Download Enabled
@@ -560,9 +560,9 @@ export default function VerifyCertificateRefined() {
               <Surface className="p-5">
                 <p className="text-[11px] font-black uppercase tracking-[0.3em] text-amber-300">Download Notes</p>
                 <div className="mt-4 space-y-3 text-sm leading-6 text-slate-300">
-                  <p>PNG social sharing ya quick proof ke liye best rahega.</p>
-                  <p>PDF print aur official submission ke liye better rahega.</p>
-                  <p>Verification link active rehne se anyone document authenticity check kar sakta hai.</p>
+                  <p>PNG works well for social sharing or quick proof.</p>
+                  <p>PDF is better for printing and formal submissions.</p>
+                  <p>While the verification link remains active, anyone can confirm document authenticity.</p>
                 </div>
               </Surface>
             </div>
