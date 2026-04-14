@@ -211,15 +211,92 @@ const CSS = `
   }
 `
 
+const SvgIcon = ({ name, size = 20, color = 'currentColor', strokeWidth = 1.9, style = {} }) => {
+  const iconName = typeof name === 'string' ? name : ''
+  const props = {
+    width: size,
+    height: size,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    xmlns: 'http://www.w3.org/2000/svg',
+    style,
+    'aria-hidden': 'true',
+  }
+
+  switch (iconName) {
+    case 'academy':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-4 9 4-9 4-9-4Z" /><path d="M7 10.8v3.2c0 1.8 2.7 3.5 5 3.5s5-1.7 5-3.5v-3.2" /><path d="M21 9v5" /></svg>
+    case 'projects':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M4 14l4-4 4 4 8-8" /><path d="M15 6h5v5" /><path d="M4 20h16" /></svg>
+    case 'briefcase':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><rect x="3.5" y="7" width="17" height="11" rx="2.5" /><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7" /><path d="M3.5 11.5h17" /></svg>
+    case 'certificate':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="4" width="14" height="16" rx="2.5" /><path d="M9 8h6M9 12h6M9 16h3" /><path d="m15.5 17.5 1.5 2 1.5-2" /></svg>
+    case 'mentor':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="8" r="3" /><path d="M4.5 18a4.5 4.5 0 0 1 9 0" /><path d="M16.5 7.5h4M18.5 5.5v4" /></svg>
+    case 'clock':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8" /><path d="M12 8v4l3 2" /></svg>
+    case 'device':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><rect x="7" y="3.5" width="10" height="17" rx="2.5" /><path d="M11 17.5h2" /></svg>
+    case 'status':
+      return <svg {...props} viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill={color} fillOpacity="0.18" /><circle cx="10" cy="10" r="4.5" fill={color} /></svg>
+    case 'office':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M4 20h16" /><path d="M6 20V6.5A1.5 1.5 0 0 1 7.5 5H16a2 2 0 0 1 2 2v13" /><path d="M9 9h1M9 12h1M9 15h1M13 9h1M13 12h1M13 15h1" /></svg>
+    case 'courses':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M5 6.5A2.5 2.5 0 0 1 7.5 4H19v14H7.5A2.5 2.5 0 0 0 5 20V6.5Z" /><path d="M9 8h6M9 11h6" /></svg>
+    case 'comingSoon':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M6 9.5h12v4H6z" /><path d="M8 9.5 10 6h4l2 3.5" /><path d="M8 13.5v4M16 13.5v4" /><path d="M8 9.5l2.2 2.2M12 9.5l2.2 2.2M14.8 9.5 17 11.7" /></svg>
+    case 'check':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="m8.5 12 2.5 2.5 4.5-5" /></svg>
+    case 'trophy':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M8 4h8v2a4 4 0 0 1-8 0V4Z" /><path d="M9 14h6M10 18h4" /><path d="M12 10v4" /><path d="M8 6H5a2 2 0 0 0 2 2h1M16 6h3a2 2 0 0 1-2 2h-1" /></svg>
+    case 'rocket':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M14 4c2.8.8 4.6 3.2 5 6-2.2.6-4.6.2-6.4-1.2C10.8 7 10.1 4.7 10 3c1.3-.1 2.7.1 4 .4Z" /><path d="M10.5 9.5 6 14l-1.5 4.5L9 17l4.5-4.5" /><path d="M6.5 10.5 4 8c.6-1.8 2.2-3.4 4-4l2.5 2.5M13.5 17.5 16 20c1.8-.6 3.4-2.2 4-4l-2.5-2.5" /><circle cx="14.5" cy="8.5" r="1.2" fill={color} stroke="none" /></svg>
+    case 'trading':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M4 16l4-4 3 3 6-7" /><path d="M13 8h4v4" /><path d="M4 20h16" /></svg>
+    case 'web':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><rect x="3.5" y="5" width="17" height="12" rx="2" /><path d="M3.5 9h17M8 19h8" /></svg>
+    case 'python':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M9 4.5h3.5A2.5 2.5 0 0 1 15 7v2.5H9a2 2 0 0 0-2 2V14A2.5 2.5 0 0 0 9.5 16.5H13" /><path d="M15 19.5h-3.5A2.5 2.5 0 0 1 9 17v-2.5h6a2 2 0 0 0 2-2V10A2.5 2.5 0 0 0 14.5 7.5H11" /><circle cx="10" cy="7.5" r="0.8" fill={color} stroke="none" /><circle cx="14" cy="16.5" r="0.8" fill={color} stroke="none" /></svg>
+    case 'marketing':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M4 14V10a2 2 0 0 1 2-2h2l7-3v14l-7-3H6a2 2 0 0 1-2-2Z" /><path d="M15 10.5a4 4 0 0 1 0 3" /><path d="M17.5 8.5a7 7 0 0 1 0 7" /></svg>
+    case 'design':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M12 4a8 8 0 1 0 0 16h1a2 2 0 0 0 2-2 2 2 0 0 1 2-2h1a4 4 0 0 0 0-8 6 6 0 0 0-6-4Z" /><circle cx="7.5" cy="10" r="1" fill={color} stroke="none" /><circle cx="10" cy="7.5" r="1" fill={color} stroke="none" /><circle cx="14" cy="7.5" r="1" fill={color} stroke="none" /><circle cx="16.5" cy="11" r="1" fill={color} stroke="none" /></svg>
+    case 'data':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M5 19V11M10 19V7M15 19v-5M20 19V9" /><path d="M3 19h18" /></svg>
+    case 'ai':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M12 4.5 13.8 8.2 17.5 10 13.8 11.8 12 15.5 10.2 11.8 6.5 10 10.2 8.2 12 4.5Z" /><path d="M18.2 4.8v2.6M19.5 6.1h-2.6" /><path d="M5.4 15.6v2.2M6.5 16.7H4.3" /></svg>
+    default:
+      if (iconName.includes('👨') || iconName.includes('ðŸ‘¨')) {
+        return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="8" r="3" /><path d="M4.5 18a4.5 4.5 0 0 1 9 0" /><path d="M16.5 7.5h4M18.5 5.5v4" /></svg>
+      }
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M5 6.5A2.5 2.5 0 0 1 7.5 4H19v14H7.5A2.5 2.5 0 0 0 5 20V6.5Z" /><path d="M9 8h6M9 11h6M9 14h4" /></svg>
+  }
+}
+
+const getCourseIconName = (course, catMeta) => {
+  const value = `${catMeta?.name || ''} ${catMeta?.icon || ''} ${course?.title || ''}`.toLowerCase()
+
+  if (value.includes('trading') || value.includes('stock') || value.includes('📈')) return 'trading'
+  if (value.includes('web') || value.includes('development') || value.includes('💻')) return 'web'
+  if (value.includes('python') || value.includes('🐍')) return 'python'
+  if (value.includes('marketing') || value.includes('📣')) return 'marketing'
+  if (value.includes('design') || value.includes('🎨') || value.includes('ui/ux')) return 'design'
+  if (value.includes('excel') || value.includes('data') || value.includes('analytics') || value.includes('📊')) return 'data'
+  if (value.includes('ai') || value.includes('artificial intelligence')) return 'ai'
+
+  return 'courses'
+}
+
 
 /* ── Why Choose Us ── */
 const WHY = [
-  { icon: '🎓', bg: 'rgba(29,78,216,.08)',  title: 'Industry-Based Learning',   desc: 'Curriculum aligned with current industry demands and real company workflows.' },
-  { icon: '🛠️', bg: 'rgba(124,58,237,.08)', title: 'Real-World Projects',        desc: 'Work on live projects that build your portfolio and sharpen your skills.' },
-  { icon: '📜', bg: 'rgba(5,150,105,.08)',  title: 'Verified Certification',     desc: 'Receive a valid, verifiable certificate recognized by organizations nationwide.' },
-  { icon: '👨‍🏫', bg: 'rgba(217,119,6,.08)', title: 'Expert Mentorship',          desc: 'Learn directly from experienced professionals with industry backgrounds.' },
-  { icon: '🕐', bg: 'rgba(220,38,38,.08)',  title: 'Flexible Online Schedule',   desc: 'Study at your own pace with recorded sessions available 24/7 anytime.' },
-  { icon: '📱', bg: 'rgba(8,145,178,.08)',  title: 'Dedicated Support',          desc: 'Get personalized support from mentors and our responsive team throughout.' },
+  { icon: 'academy', bg: 'rgba(29,78,216,.08)', title: 'Industry-Based Learning', desc: 'Curriculum aligned with current industry demands and real company workflows.', color: '#1d4ed8' },
+  { icon: 'projects', bg: 'rgba(124,58,237,.08)', title: 'Real-World Projects', desc: 'Work on live projects that build your portfolio and sharpen your skills.', color: '#7c3aed' },
+  { icon: 'certificate', bg: 'rgba(5,150,105,.08)', title: 'Verified Certification', desc: 'Receive a valid, verifiable certificate recognized by organizations nationwide.', color: '#059669' },
+  { icon: 'mentor', bg: 'rgba(217,119,6,.08)', title: 'Expert Mentorship', desc: 'Learn directly from experienced professionals with industry backgrounds.', color: '#d97706' },
+  { icon: 'clock', bg: 'rgba(220,38,38,.08)', title: 'Flexible Online Schedule', desc: 'Study at your own pace with recorded sessions available 24/7 anytime.', color: '#dc2626' },
+  { icon: 'device', bg: 'rgba(8,145,178,.08)', title: 'Dedicated Support', desc: 'Get personalized support from mentors and our responsive team throughout.', color: '#0891b2' },
 ]
 
 
@@ -282,7 +359,7 @@ const Hero = () => {
                 boxShadow:'0 2px 14px rgba(29,78,216,.1)' }}>
                 <span style={{ width:8, height:8, borderRadius:'50%', background:'#22c55e', display:'inline-block', animation:'hp-pulse 2s infinite' }}/>
                 <span style={{ fontSize:13, fontWeight:700, color:'#1d4ed8' }}>
-                  🏫 Applied for AICTE Internship Portal
+                  Applied for AICTE Internship Portal
                 </span>
               </div>
 
@@ -293,9 +370,9 @@ const Hero = () => {
 
               {/* Main headline */}
               <h1 className="hp-in d2" style={{
-                fontFamily:'Syne,sans-serif', fontWeight:800,
+                fontFamily:'Syne,sans-serif', fontWeight:900,
                 fontSize:'clamp(2rem,6vw,3.8rem)', color:'#0f172a',
-                letterSpacing:'-.03em', lineHeight:1.12, marginBottom:20,
+                letterSpacing:'-.045em', lineHeight:1.10, marginBottom:20,
               }}>
                 Industry-Oriented{' '}
                 <span className="hp-grad">Internship Programs</span>
@@ -329,13 +406,13 @@ const Hero = () => {
               {/* Trust pills row */}
               <div className="hp-in d5" style={{ display:'flex', gap:10, flexWrap:'wrap', justifyContent:'center', maxWidth:720, margin:'0 auto' }}>
                 {[
-                  { icon:'🟢', text:'100% Online',             bg:'rgba(5,150,105,.07)',   color:'#059669', border:'rgba(5,150,105,.18)' },
-                  { icon:'🏢', text:'MSME Govt. Certified',    bg:'rgba(124,58,237,.07)',  color:'#7c3aed', border:'rgba(124,58,237,.18)' },
-                  { icon:'📜', text:'Verified Certificate',    bg:'rgba(29,78,216,.07)',   color:'#1d4ed8', border:'rgba(29,78,216,.18)' },
+                  { icon:'status', text:'100% Online', bg:'rgba(5,150,105,.07)', color:'#059669', border:'rgba(5,150,105,.18)' },
+                  { icon:'office', text:'MSME Govt. Certified', bg:'rgba(124,58,237,.07)', color:'#7c3aed', border:'rgba(124,58,237,.18)' },
+                  { icon:'certificate', text:'Verified Certificate', bg:'rgba(29,78,216,.07)', color:'#1d4ed8', border:'rgba(29,78,216,.18)' },
                   { icon:'👨\u200d🏫', text:'Expert Mentorship',  bg:'rgba(217,119,6,.07)',  color:'#b45309', border:'rgba(217,119,6,.18)' },
                 ].map(({ icon, text, bg, color, border }) => (
                   <div key={text} style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'9px 18px', borderRadius:999, background:bg, border:`1px solid ${border}`, color, fontWeight:700, fontSize:13 }}>
-                    <span>{icon}</span> {text}
+                    <SvgIcon name={text === 'Expert Mentorship' ? 'mentor' : icon} size={16} color={color} /> {text}
                   </div>
                 ))}
               </div>
@@ -395,7 +472,7 @@ const Hero = () => {
             <div style={{ maxWidth:1040, margin:'0 auto' }}>
 
               <div style={{ textAlign:'center', marginBottom:36 }}>
-                <div className="hp-pill">🎓 Our Programs</div>
+                <div className="hp-pill"><SvgIcon name="academy" size={14} color="currentColor" /> Our Programs</div>
                 <h2 className="hp-stitle">Internship <span className="hp-grad">Categories</span></h2>
               </div>
 
@@ -433,8 +510,20 @@ const Hero = () => {
                       )}
                       
                       {/* Icon */}
-                      <div style={{ fontSize:48, animation: course.highlighted ? 'hp-float 3s ease-in-out infinite' : 'none' }}>
-                        {catMeta?.icon || '📚'}
+                      <div style={{
+                        width:72,
+                        height:72,
+                        borderRadius:22,
+                        display:'flex',
+                        alignItems:'center',
+                        justifyContent:'center',
+                        color: btnColor,
+                        background:`linear-gradient(145deg, ${btnColor}18, ${btnColor}08)`,
+                        border:`1px solid ${btnColor}22`,
+                        boxShadow:`inset 0 1px 0 rgba(255,255,255,.8), 0 10px 24px ${btnColor}14`,
+                        animation: course.highlighted ? 'hp-float 3s ease-in-out infinite' : 'none',
+                      }}>
+                        <SvgIcon name={getCourseIconName(course, catMeta)} size={34} color={btnColor} strokeWidth={1.8} />
                       </div>
                       
                       <div>
@@ -469,7 +558,9 @@ const Hero = () => {
                   textAlign:'center',
                   gap:16,
                 }}>
-                  <div style={{ fontSize:40, opacity:0.8 }}>🚧</div>
+                  <div style={{ opacity:0.8, color:'#8b5cf6' }}>
+                    <SvgIcon name="comingSoon" size={40} color="#8b5cf6" strokeWidth={1.7} />
+                  </div>
                   <div>
                     <div style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'clamp(1.1rem,2vw,1.4rem)', color:'#334155', marginBottom:6 }}>
                       More Programs <span style={{ color:'#8b5cf6' }}>Soon</span>
@@ -507,7 +598,7 @@ const Hero = () => {
             <div style={{ maxWidth:1040, margin:'0 auto' }}>
 
               <div style={{ textAlign:'center', marginBottom:40 }}>
-                <div className="hp-pill">✅ Why Choose Us</div>
+                <div className="hp-pill"><SvgIcon name="check" size={14} color="currentColor" /> Why Choose Us</div>
                 <h2 className="hp-stitle">Why <span className="hp-grad">AmitSolutionHub?</span></h2>
                 <p style={{ color:'#64748b', fontSize:14, marginTop:10, lineHeight:1.8 }}>
                   We are committed to quality education, real skill-building, and professional growth
@@ -515,9 +606,11 @@ const Hero = () => {
               </div>
 
               <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(min(100%,290px),1fr))', gap:14 }}>
-                {WHY.map(({ icon, bg, title, desc }) => (
+                {WHY.map(({ icon, bg, title, desc, color }) => (
                   <div key={title} className="hp-why-item">
-                    <div className="hp-why-icon" style={{ background:bg }}>{icon}</div>
+                    <div className="hp-why-icon" style={{ background:`linear-gradient(145deg, ${bg}, rgba(255,255,255,.7))`, color, border:`1px solid ${color}18`, boxShadow:`inset 0 1px 0 rgba(255,255,255,.7), 0 10px 22px ${color}12` }}>
+                      <SvgIcon name={icon} size={22} color={color} strokeWidth={2} />
+                    </div>
                     <div>
                       <div style={{ fontWeight:700, fontSize:14, color:'#0f172a', marginBottom:4 }}>{title}</div>
                       <div style={{ fontSize:12, color:'#64748b', lineHeight:1.7 }}>{desc}</div>
@@ -539,7 +632,7 @@ const Hero = () => {
 
                 {/* Left text */}
                 <div>
-                  <div className="hp-pill">📜 Certification</div>
+                  <div className="hp-pill"><SvgIcon name="certificate" size={14} color="currentColor" /> Certification</div>
                   <h2 className="hp-stitle" style={{ marginBottom:16 }}>
                     Get a <span className="hp-grad">Verified Certificate</span>
                   </h2>
@@ -548,12 +641,15 @@ const Hero = () => {
                   </p>
                   <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
                     {[
-                      '✅ Certificate issued within 7 days of completion',
-                      '✅ Shareable on LinkedIn & resume',
-                      '✅ Verifiable online via our portal',
-                      '✅ Co-signed by industry mentor',
+                      'Certificate issued within 7 days of completion',
+                      'Shareable on LinkedIn & resume',
+                      'Verifiable online via our portal',
+                      'Co-signed by industry mentor',
                     ].map(item => (
-                      <div key={item} style={{ fontSize:14, fontWeight:500, color:'#374151', display:'flex', alignItems:'center', gap:8 }}>{item}</div>
+                      <div key={item} style={{ fontSize:14, fontWeight:500, color:'#374151', display:'flex', alignItems:'center', gap:8 }}>
+                        <SvgIcon name="check" size={16} color="#059669" />
+                        <span>{item}</span>
+                      </div>
                     ))}
                   </div>
                   <Link to="/verify" style={{ display:'inline-flex', alignItems:'center', gap:8, marginTop:24, padding:'11px 22px', borderRadius:999, background:'rgba(29,78,216,.08)', border:'1px solid rgba(29,78,216,.2)', color:'#1d4ed8', fontWeight:700, fontSize:14, textDecoration:'none', transition:'all .25s' }}
@@ -565,7 +661,9 @@ const Hero = () => {
 
                 {/* Right: Certificate preview */}
                 <div className="hp-cert">
-                  <div style={{ fontSize:36, marginBottom:12 }}>🏆</div>
+                  <div style={{ color:'#1d4ed8', marginBottom:12 }}>
+                    <SvgIcon name="trophy" size={36} color="#1d4ed8" strokeWidth={1.7} />
+                  </div>
                   <div style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'clamp(1rem,2.5vw,1.3rem)', color:'#1d4ed8', marginBottom:4 }}>
                     Certificate of Completion
                   </div>
@@ -596,8 +694,8 @@ const Hero = () => {
           <section style={{ padding:'0 clamp(16px,5vw,28px) clamp(60px,8vw,80px)' }}>
             <div style={{ maxWidth:1040, margin:'0 auto' }}>
               <div className="hp-trust">
-                <div style={{ background:'rgba(255,255,255,.12)', borderRadius:16, padding:'18px 22px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontSize:46 }}>
-                  🏢
+                <div style={{ background:'rgba(255,255,255,.12)', borderRadius:16, padding:'18px 22px', display:'flex', alignItems:'center', justifyCenter:'center', flexShrink:0, color:'white' }}>
+                  <SvgIcon name="office" size={46} color="white" strokeWidth={1.6} />
                 </div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', marginBottom:8 }}>
@@ -626,7 +724,10 @@ const Hero = () => {
                       <img src={msmeLogo} alt="MSME Logo" style={{ height: 28, background:'white', borderRadius:4, padding:2 }} />
                       <div>
                         <div style={{ fontSize:10, color:'rgba(255,255,255,.65)', fontWeight:600, letterSpacing:'.04em', textTransform:'uppercase', marginBottom:2 }}>Status</div>
-                        <div style={{ fontSize:12, color:'white', fontWeight:800 }}>🟢 Active</div>
+                        <div style={{ fontSize:12, color:'white', fontWeight:800, display:'flex', alignItems:'center', gap:6 }}>
+                          <SvgIcon name="status" size={12} color="#22c55e" />
+                          <span>Active</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -651,7 +752,7 @@ const Hero = () => {
                 position:'relative', overflow:'hidden',
               }}>
                 <div style={{ position:'absolute', top:-60, right:-60, width:200, height:200, borderRadius:'50%', background:'rgba(99,102,241,.06)', pointerEvents:'none' }}/>
-                <div className="hp-pill" style={{ marginBottom:16 }}>🚀 Join Us Today</div>
+                <div className="hp-pill" style={{ marginBottom:16 }}><SvgIcon name="rocket" size={14} color="currentColor" /> Join Us Today</div>
                 <h2 style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'clamp(1.5rem,4vw,2.4rem)', color:'#0f172a', marginBottom:12, letterSpacing:'-.025em', lineHeight:1.18 }}>
                   Start Your <span className="hp-grad">Career Journey</span> Today
                 </h2>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
+import { Search } from 'lucide-react'
 
 export default function AdminCourseEnrollments() {
   const { enrollments, courses, updateEnrollment, deleteEnrollment } = useStore()
@@ -51,11 +52,24 @@ export default function AdminCourseEnrollments() {
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
-        <input
-          value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="Search student, email, course..."
-          className="flex-1 min-w-48 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50"
-        />
+        <div className="relative flex-1 min-w-48 group">
+          <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+            <svg 
+              className="w-4 h-4 text-gray-400 group-focus-within:text-blue-400 transition-all duration-300 ease-in-out transform group-focus-within:scale-110" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor" 
+              strokeWidth={2.5}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+          </div>
+          <input
+            value={search} onChange={e => setSearch(e.target.value)}
+            placeholder="Search student, email, course..."
+            className="w-full pl-14 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.08] focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 ease-in-out"
+          />
+        </div>
         <select value={filterCourse} onChange={e => setFilterCourse(e.target.value)}
           className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50">
           <option value="All">All Courses</option>

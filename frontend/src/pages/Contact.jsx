@@ -8,6 +8,12 @@ import { db } from '../config/firebase'
 const inputClasses =
   'w-full rounded-[24px] border border-slate-200 bg-white px-5 py-4 text-sm text-slate-700 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-sky-300 focus:ring-4 focus:ring-sky-100'
 
+const ContactTabIcon = ({ name, size = 16, color = 'currentColor', strokeWidth = 2 }) => {
+  const props = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', xmlns: 'http://www.w3.org/2000/svg', 'aria-hidden': 'true' }
+  if (name === 'chat') return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M20 14a3 3 0 0 1-3 3H9l-5 4V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7Z" /></svg>
+  return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a15 15 0 0 0 5.5 5.5l1.5-2 4 1.5v3A2 2 0 0 1 18 20C10.8 20 5 14.2 5 7a2 2 0 0 1 1.5-3Z" /></svg>
+}
+
 const Contact = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -90,8 +96,8 @@ const Contact = () => {
         }
         description="Use this page to send project, internship, training, or support enquiries through a cleaner white-glow interface built to look professional on small screens."
         actions={[
-          { label: 'Message the Team', to: '/chat', icon: '💬' },
-          { label: 'Call Support', href: 'tel:+917874248481', variant: 'secondary', icon: '📞' },
+          { label: 'Message the Team', to: '/chat', icon: <ContactTabIcon name="chat" /> },
+          { label: 'Call Support', href: 'tel:+917874248481', variant: 'secondary', icon: <ContactTabIcon name="phone" /> },
         ]}
         pills={['Fast response flow', 'MSME-backed presence', 'Mobile-first contact form', 'Professional public impression']}
         stats={[

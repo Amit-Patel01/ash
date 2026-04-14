@@ -5,45 +5,38 @@ import { useLocation } from 'react-router-dom'
 const AnnouncementPopup = () => {
   const { announcement } = useStore()
   const location = useLocation()
-  const [isVisible, setIsVisible] = useState(false)
-  const [isDismissed, setIsDismissed] = useState(false)
+  const [isDelayedVisible, setIsDelayedVisible] = useState(false)
+
+  const isSensitivePage = ['/admin', '/employee', '/login', '/signup'].some(path => location.pathname.startsWith(path))
+  const isEligible = announcement && announcement.isActive && announcement.message && !isSensitivePage
 
   useEffect(() => {
-    if (!announcement || !announcement.isActive || !announcement.message) {
-      setIsVisible(false)
+    if (!isEligible) {
+      setIsDelayedVisible(false)
       return
     }
 
-    // Check if dismissed in this session
     const dismissedAnnouncements = JSON.parse(sessionStorage.getItem('dismissed_announcements') || '[]')
     if (dismissedAnnouncements.includes(announcement.updatedAt?.seconds || 'default')) {
-      setIsVisible(false)
+      setIsDelayedVisible(false)
       return
     }
 
-    // Hide on sensitive pages
-    const isSensitivePage = ['/admin', '/employee', '/login', '/signup'].some(path => location.pathname.startsWith(path))
-    if (isSensitivePage) {
-      setIsVisible(false)
-      return
-    }
-
-    // Small delay to make it feel more natural
     const timer = setTimeout(() => {
-      setIsVisible(true)
+      setIsDelayedVisible(true)
     }, 1500)
 
     return () => clearTimeout(timer)
-  }, [announcement, location.pathname])
+  }, [isEligible, announcement, location.pathname])
 
   const handleDismiss = () => {
-    setIsVisible(false)
+    setIsDelayedVisible(false)
     const dismissedAnnouncements = JSON.parse(sessionStorage.getItem('dismissed_announcements') || '[]')
     dismissedAnnouncements.push(announcement.updatedAt?.seconds || 'default')
     sessionStorage.setItem('dismissed_announcements', JSON.stringify(dismissedAnnouncements))
   }
 
-  if (!isVisible || isDismissed) return null
+  if (!isEligible || !isDelayedVisible) return null
 
   const getStyles = () => {
     switch (announcement.type) {

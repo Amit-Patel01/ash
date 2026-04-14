@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '../store/StoreContext'
+import { Search } from 'lucide-react'
 
 const avatarColors = [
   'from-blue-500 to-cyan-500',
@@ -46,6 +47,7 @@ export default function AdminEmployees() {
     isMentor: false,
     showOnTeam: false,
     skills: '',
+    bio: '',
   })
 
   // Delete Modal state
@@ -93,6 +95,7 @@ export default function AdminEmployees() {
       isMentor: false,
       showOnTeam: false,
       skills: '',
+      bio: '',
     })
     setActiveTab('basic')
     setShowModal(true)
@@ -125,6 +128,7 @@ export default function AdminEmployees() {
       portfolio: employee.portfolio || '',
       avatarSource: employee.avatarSource || 'github',
       isMentor: employee.isMentor || false,
+      bio: employee.bio || '',
     })
     
     setActiveTab('basic')
@@ -292,16 +296,24 @@ export default function AdminEmployees() {
             </button>
           ))}
         </div>
-        <div className="relative">
-          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search employees..."
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            className="pl-9 pr-3 py-2 w-48 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+            <svg 
+              className="w-4 h-4 text-gray-400 group-focus-within:text-blue-400 transition-all duration-300 ease-in-out transform group-focus-within:scale-110" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor" 
+              strokeWidth={2.5}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            placeholder="Search employees..." 
+            value={searchQuery} 
+            onChange={e => setSearchQuery(e.target.value)} 
+            className="pl-14 pr-4 py-2.5 w-56 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.08] focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 ease-in-out" 
           />
         </div>
       </div>
@@ -326,8 +338,12 @@ export default function AdminEmployees() {
                 <tr key={employee.uid || employee.id} className="hover:bg-white/5 transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${avatarColors[index % avatarColors.length]} flex items-center justify-center text-sm font-bold shadow-lg`}>
-                        {employee.avatar || (employee.displayName ? employee.displayName.charAt(0) : '?')}
+                      <div className={`w-10 h-10 flex-shrink-0 aspect-square rounded-full bg-gradient-to-br ${avatarColors[index % avatarColors.length]} flex items-center justify-center text-sm font-bold shadow-lg overflow-hidden`}>
+                        {employee.avatar && employee.avatar.startsWith('http') ? (
+                          <img src={employee.avatar} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          employee.avatar || (employee.displayName ? employee.displayName.charAt(0) : '?')
+                        )}
                       </div>
                       <div>
                         <p className="text-sm font-medium text-white">{employee.displayName || 'Unknown'}</p>
@@ -606,6 +622,27 @@ export default function AdminEmployees() {
 
                 {activeTab === 'profile' && (
                   <div className="space-y-5 animate-in fade-in slide-in-from-right-2 duration-300">
+                    <div className="flex items-center gap-2 mb-2 p-3 bg-blue-500/5 border border-blue-500/10 rounded-xl">
+                      <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-bold text-white uppercase tracking-wider">Public Profile Details</p>
+                        <p className="text-[9px] text-gray-500">Information shown on the 'About' section cards</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Member Bio / Tagline</label>
+                      <textarea
+                        value={formData.bio}
+                        onChange={e => setFormData({ ...formData, bio: e.target.value })}
+                        placeholder="e.g. Passionate developer with 5+ years of experience in building modern web applications..."
+                        rows={3}
+                        className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 resize-none"
+                      />
+                      <p className="text-[10px] text-gray-500 mt-1">A brief description shown under the name on the public card.</p>
+                    </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Expertise / Skills</label>
                       <input

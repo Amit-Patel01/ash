@@ -5,6 +5,40 @@ import { useAuth } from '../context/AuthContext'
 import PublicPageShell, { PublicGlassCard, PublicSection, PublicSectionHeading } from '../components/public/PublicPageShell'
 import { useStore } from '../store/StoreContext'
 
+const PageIcon = ({ name, size = 18, color = 'currentColor', strokeWidth = 2 }) => {
+  const props = {
+    width: size,
+    height: size,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    xmlns: 'http://www.w3.org/2000/svg',
+    'aria-hidden': 'true',
+  }
+
+  switch (name) {
+    case 'book':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M5 6.5A2.5 2.5 0 0 1 7.5 4H19v14H7.5A2.5 2.5 0 0 0 5 20V6.5Z" /><path d="M9 8h6M9 11h6" /></svg>
+    case 'chat':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M20 14a3 3 0 0 1-3 3H9l-5 4V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7Z" /></svg>
+    case 'search':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg>
+    case 'mentor':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="8" r="3" /><path d="M4.5 18a4.5 4.5 0 0 1 9 0" /><path d="M16.5 7.5h4M18.5 5.5v4" /></svg>
+    case 'clock':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8" /><path d="M12 8v4l3 2" /></svg>
+    default:
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><rect x="4.5" y="5" width="15" height="14" rx="2.2" /><path d="M8 9h8M8 12h8M8 15h5" /></svg>
+  }
+}
+
+const getCategoryIconKey = (value = '') => {
+  const normalized = String(value).toLowerCase()
+  if (normalized.includes('ai')) return 'search'
+  if (normalized.includes('web') || normalized.includes('develop')) return 'book'
+  if (normalized.includes('trading') || normalized.includes('stock')) return 'search'
+  return 'book'
+}
+
 export default function CoursesPage() {
   const { courses, courseCategories, isUserEnrolled } = useStore()
   const { currentUser } = useAuth()
@@ -71,8 +105,8 @@ export default function CoursesPage() {
         }
         description="Every course page now follows a cleaner white-glow layout with transparent details, mentor-led outcomes, and mobile-first browsing so your internship and training presentation feels more credible."
         actions={[
-          { label: 'Browse Programs', to: '/courses#course-catalogue', icon: '📘' },
-          { label: 'Contact for Guidance', to: '/contact', variant: 'secondary', icon: '💬' },
+          { label: 'Browse Programs', to: '/courses#course-catalogue', icon: <PageIcon name="book" size={16} /> },
+          { label: 'Contact for Guidance', to: '/contact', variant: 'secondary', icon: <PageIcon name="chat" size={16} /> },
         ]}
         pills={[
           'Mentor-guided roadmap',
@@ -158,7 +192,10 @@ export default function CoursesPage() {
                         : 'border-slate-200 bg-white text-slate-600 hover:border-sky-200 hover:text-sky-700'
                     }`}
                   >
-                    <span>{categoryMeta?.icon ? `${categoryMeta.icon} ` : ''}{category}</span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <PageIcon name={getCategoryIconKey(categoryMeta?.name || category)} size={14} />
+                      {category}
+                    </span>
                     <span className={`ml-2 rounded-full px-2 py-0.5 text-[11px] ${isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'}`}>
                       {count}
                     </span>
@@ -170,7 +207,9 @@ export default function CoursesPage() {
 
           {filtered.length === 0 ? (
             <PublicGlassCard className="py-16 text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sky-50 text-3xl">🔎</div>
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sky-50 text-sky-600">
+                <PageIcon name="search" size={28} />
+              </div>
               <h3 className="mt-5 text-2xl font-black text-slate-900">No courses matched your search</h3>
               <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600">
                 Clear the current search or choose another category to view more options.
@@ -216,7 +255,7 @@ export default function CoursesPage() {
                           className="flex h-full w-full items-center justify-center text-5xl"
                           style={{ background: `linear-gradient(135deg, ${categoryMeta?.color || '#0284c7'}20, ${categoryMeta?.color || '#6366f1'}40)` }}
                         >
-                          {categoryMeta?.icon || '📚'}
+                          <PageIcon name={getCategoryIconKey(categoryMeta?.name || course.category)} size={44} color={categoryMeta?.color || '#0284c7'} />
                         </div>
                       )}
 
@@ -248,7 +287,10 @@ export default function CoursesPage() {
                     <div className="space-y-5 p-6">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="inline-flex items-center rounded-full border border-sky-100 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">
-                          {categoryMeta?.icon ? `${categoryMeta.icon} ` : ''}{course.category || 'General'}
+                          <span className="inline-flex items-center gap-1.5">
+                            <PageIcon name={getCategoryIconKey(categoryMeta?.name || course.category)} size={14} />
+                            {course.category || 'General'}
+                          </span>
                         </span>
                         {course.level && (
                           <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${levelStyles[course.level] || 'border-slate-200 bg-slate-50 text-slate-600'}`}>
@@ -264,10 +306,16 @@ export default function CoursesPage() {
 
                       <div className="grid gap-2 text-sm text-slate-500 sm:grid-cols-2">
                         <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
-                          👨‍🏫 {course.instructor || 'Mentor Support'}
+                          <span className="inline-flex items-center gap-1.5">
+                            <PageIcon name="mentor" size={14} />
+                            {course.instructor || 'Mentor Support'}
+                          </span>
                         </div>
                         <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
-                          ⏱ {course.duration || 'Flexible Schedule'}
+                          <span className="inline-flex items-center gap-1.5">
+                            <PageIcon name="clock" size={14} />
+                            {course.duration || 'Flexible Schedule'}
+                          </span>
                         </div>
                       </div>
 

@@ -5,6 +5,14 @@ import SEO from '../components/SEO'
 import PublicPageShell, { PublicGlassCard, PublicSection, PublicSectionHeading } from '../components/public/PublicPageShell'
 import { useStore } from '../store/StoreContext'
 
+const TabIcon = ({ name, size = 18, color = 'currentColor', strokeWidth = 2 }) => {
+  const props = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', xmlns: 'http://www.w3.org/2000/svg', 'aria-hidden': 'true' }
+  if (name === 'custom') return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="m12 3 2.4 4.8L20 10l-4 4 1 6-5-2.7L7 20l1-6-4-4 5.6-2.2L12 3Z" /></svg>
+  if (name === 'phone') return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a15 15 0 0 0 5.5 5.5l1.5-2 4 1.5v3A2 2 0 0 1 18 20C10.8 20 5 14.2 5 7a2 2 0 0 1 1.5-3Z" /></svg>
+  if (name === 'box') return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M3.5 7.5 12 3l8.5 4.5V17L12 21l-8.5-4V7.5Z" /><path d="M12 21V11.5M3.5 7.5 12 12l8.5-4.5" /></svg>
+  return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg>
+}
+
 const Projects = () => {
   const { projects: storeProjects, categories: storeCategories } = useStore()
   const [activeCategory, setActiveCategory] = useState('all')
@@ -63,8 +71,8 @@ const Projects = () => {
         }
         description="The projects listing now feels lighter, more professional, and easier to browse on mobile so buyers can quickly compare categories and move to the right detail page."
         actions={[
-          { label: 'Explore Custom Build', to: '/custom-project', icon: '🧩' },
-          { label: 'Talk to Us', to: '/contact', variant: 'secondary', icon: '📞' },
+          { label: 'Explore Custom Build', to: '/custom-project', icon: <TabIcon name="custom" size={16} /> },
+          { label: 'Talk to Us', to: '/contact', variant: 'secondary', icon: <TabIcon name="phone" size={16} /> },
         ]}
         pills={['White-glow catalogue', 'Faster category scanning', 'Prebuilt and custom options', 'Mobile-ready buyer flow']}
         stats={stats}
@@ -120,7 +128,9 @@ const Projects = () => {
 
           {activeProjects.length === 0 ? (
             <PublicGlassCard className="py-16 text-center">
-              <div className="text-5xl">📦</div>
+              <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-sky-50 text-sky-600">
+                <TabIcon name="box" size={30} />
+              </div>
               <h3 className="mt-4 text-2xl font-black text-slate-900">No active projects yet</h3>
               <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600">
                 Once projects are added from admin, they will appear here in the refined public catalogue.
@@ -128,7 +138,9 @@ const Projects = () => {
             </PublicGlassCard>
           ) : filteredProjects.length === 0 ? (
             <PublicGlassCard className="py-16 text-center">
-              <div className="text-5xl">🔎</div>
+              <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-sky-50 text-sky-600">
+                <TabIcon name="search" size={30} />
+              </div>
               <h3 className="mt-4 text-2xl font-black text-slate-900">No projects in this category</h3>
               <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600">Try a different filter or browse all projects.</p>
             </PublicGlassCard>

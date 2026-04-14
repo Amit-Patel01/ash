@@ -134,6 +134,28 @@ const socialLinks = (member) => {
   return links
 }
 
+const ProfileIcon = ({ name, size = 20, color = 'currentColor', strokeWidth = 2 }) => {
+  const props = {
+    width: size,
+    height: size,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    xmlns: 'http://www.w3.org/2000/svg',
+    'aria-hidden': 'true',
+  }
+
+  switch (name) {
+    case 'user':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3.5" /><path d="M4.5 19a7.5 7.5 0 0 1 15 0" /></svg>
+    case 'chat':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M20 14a3 3 0 0 1-3 3H9l-5 4V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7Z" /></svg>
+    case 'back':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M10 7 5 12l5 5" /><path d="M6 12h13" /></svg>
+    default:
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /></svg>
+  }
+}
+
 const PublicEmployeeProfile = () => {
   const { profileId } = useParams()
   const { teamMembers, users } = useStore()
@@ -156,7 +178,9 @@ const PublicEmployeeProfile = () => {
         <SEO title="Team Profile | AmitSolutionHub" description="Public team profile was not found." />
         <div className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(186,230,253,0.55),_transparent_32%),linear-gradient(180deg,_#f8fcff_0%,_#f4f8ff_52%,_#f8fbff_100%)] px-4 pt-32">
           <div className="mx-auto max-w-3xl rounded-[32px] border border-white/90 bg-white/85 p-8 text-center shadow-[0_24px_70px_-34px_rgba(15,23,42,0.35)] backdrop-blur-xl sm:p-12">
-            <div className="text-5xl">🧑‍💼</div>
+            <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-50 text-sky-600">
+              <ProfileIcon name="user" size={34} />
+            </div>
             <h1 className="mt-4 text-3xl font-black text-slate-900">Profile not found</h1>
             <p className="mt-3 text-sm leading-6 text-slate-600">
               The requested employee or mentor profile is unavailable right now. You can go back to the About page and choose another team member.
@@ -198,8 +222,8 @@ const PublicEmployeeProfile = () => {
         }
         description={member.bio}
         actions={[
-          { label: 'Contact Team', to: '/contact', icon: '💬' },
-          { label: 'Back to About', to: '/about#team-section', variant: 'secondary', icon: '↩' },
+          { label: 'Contact Team', to: '/contact', icon: <ProfileIcon name="chat" size={16} /> },
+          { label: 'Back to About', to: '/about#team-section', variant: 'secondary', icon: <ProfileIcon name="back" size={16} /> },
         ]}
         pills={expertise}
         stats={[

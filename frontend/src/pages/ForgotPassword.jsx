@@ -166,8 +166,12 @@ export default function ForgotPassword() {
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-3 group mb-6">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform duration-500">
-              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a3 3 0 01-3 3m-3-3a3 3 0 00-3 3m2.25 4.5a8.25 8.25 0 11-16.5 0 8.25 8.25 0 0116.5 0z" />
+              <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z" strokeOpacity="0.3" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v8M8 12h8" strokeOpacity="0.5" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 3.5c-2.5 1.5-4 4-4 7s1.5 5.5 4 7m6-14c2.5 1.5 4 4 4 7s-1.5 5.5-4 7" />
+                <circle cx="12" cy="12" r="2.5" className="fill-blue-500/20" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" />
               </svg>
             </div>
             <span className="text-2xl font-black text-white tracking-tighter uppercase italic">

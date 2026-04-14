@@ -1,8 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useStore } from '../store/StoreContext'
 
-// defaultServices constant removed - now managed via StoreContext/Firestore
-
 const GRADIENT_MAP = [
   'from-blue-500 via-indigo-500 to-purple-600',
   'from-emerald-500 via-teal-500 to-cyan-600',
@@ -22,6 +20,90 @@ function ServiceIcon({ icon }) {
   return icons[icon] || icons.code
 }
 
+const ServiceForm = ({ formData, setFormData, onCancel, onSubmit, submitLabel }) => (
+  <div className="space-y-4">
+    <div>
+      <label className="block text-xs font-medium text-gray-400 mb-1.5">Service Name</label>
+      <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} placeholder="e.g. Web Development" className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
+    </div>
+    <div>
+      <label className="block text-xs font-medium text-gray-400 mb-1.5">Description</label>
+      <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} rows={2} placeholder="Brief description of the service" className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all resize-none" />
+    </div>
+    <div className="grid grid-cols-2 gap-4">
+      <div>
+        <label className="block text-xs font-medium text-gray-400 mb-1.5">Icon</label>
+        <div className="space-y-2">
+          <select 
+            value={['code', 'tool', 'video', 'support'].includes(formData.icon) ? formData.icon : 'other'} 
+            onChange={e => {
+              const val = e.target.value;
+              setFormData({ ...formData, icon: val === 'other' ? '' : val });
+            }} 
+            className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all"
+          >
+            <option value="code" className="bg-gray-900">Code</option>
+            <option value="tool" className="bg-gray-900">Tool</option>
+            <option value="video" className="bg-gray-900">Video</option>
+            <option value="support" className="bg-gray-900">Support</option>
+            <option value="other" className="bg-gray-900">Other (Custom)</option>
+          </select>
+          {!['code', 'tool', 'video', 'support'].includes(formData.icon) && (
+            <input 
+              type="text" 
+              value={formData.icon} 
+              onChange={e => setFormData({ ...formData, icon: e.target.value })} 
+              placeholder="Enter icon name..." 
+              className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all animate-in fade-in slide-in-from-top-1" 
+            />
+          )}
+        </div>
+      </div>
+      <div>
+        <label className="block text-xs font-medium text-gray-400 mb-1.5">Category</label>
+        <div className="space-y-2">
+          <select 
+            value={['Development', 'Support', 'Creative'].includes(formData.category) ? formData.category : 'other'} 
+            onChange={e => {
+              const val = e.target.value;
+              setFormData({ ...formData, category: val === 'other' ? '' : val });
+            }} 
+            className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all"
+          >
+            <option value="Development" className="bg-gray-900">Development</option>
+            <option value="Support" className="bg-gray-900">Support</option>
+            <option value="Creative" className="bg-gray-900">Creative</option>
+            <option value="other" className="bg-gray-900">Other (Custom)</option>
+          </select>
+          {!['Development', 'Support', 'Creative'].includes(formData.category) && (
+            <input 
+              type="text" 
+              value={formData.category} 
+              onChange={e => setFormData({ ...formData, category: e.target.value })} 
+              placeholder="Enter custom category..." 
+              className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all animate-in fade-in slide-in-from-top-1" 
+            />
+          )}
+        </div>
+      </div>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label className="block text-xs font-medium text-gray-400 mb-1.5">Base Price (INR)</label>
+        <input type="number" value={formData.basePrice} onChange={e => setFormData({ ...formData, basePrice: e.target.value })} placeholder="499" className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
+      </div>
+      <div>
+        <label className="block text-xs font-medium text-gray-400 mb-1.5">Redirect Path (e.g. /services/web)</label>
+        <input type="text" value={formData.path} onChange={e => setFormData({ ...formData, path: e.target.value })} placeholder="/services/details" className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
+      </div>
+    </div>
+    <div className="flex justify-end gap-3 pt-2">
+      <button onClick={onCancel} className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-gray-300 hover:bg-white/10 transition-colors">Cancel</button>
+      <button onClick={onSubmit} className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all">{submitLabel}</button>
+    </div>
+  </div>
+)
+
 export default function AdminServices() {
   const { orders, projects, services, addService, updateService, deleteService } = useStore()
   const [categoryFilter, setCategoryFilter] = useState('All')
@@ -33,7 +115,7 @@ export default function AdminServices() {
     icon: 'code', 
     basePrice: '', 
     category: 'Development', 
-    path: '', // New field
+    path: '', 
     active: true 
   })
 
@@ -60,6 +142,7 @@ export default function AdminServices() {
     try {
       await updateService(id, { active: !service.active })
     } catch (err) {
+      console.error(err)
       alert("Failed to update service status.")
     }
   }
@@ -73,6 +156,7 @@ export default function AdminServices() {
       setShowAddModal(false)
       setFormData({ name: '', description: '', icon: 'code', basePrice: '', category: 'Development', path: '', active: true })
     } catch (err) {
+      console.error(err)
       alert("Failed to add service.")
     }
   }
@@ -86,6 +170,7 @@ export default function AdminServices() {
       setEditingService(null)
       setFormData({ name: '', description: '', icon: 'code', basePrice: '', category: 'Development', path: '', active: true })
     } catch (err) {
+      console.error(err)
       alert("Failed to update service.")
     }
   }
@@ -95,6 +180,7 @@ export default function AdminServices() {
     try {
       await deleteService(id)
     } catch (err) {
+      console.error(err)
       alert("Failed to delete service.")
     }
   }
@@ -107,7 +193,7 @@ export default function AdminServices() {
       icon: service.icon, 
       basePrice: String(service.basePrice), 
       category: service.category, 
-      path: service.path || '', // Load existing path
+      path: service.path || '', 
       active: service.active 
     })
   }
@@ -116,90 +202,6 @@ export default function AdminServices() {
     ? services
     : services.filter(s => s.category === categoryFilter)
 
-  const ServiceForm = ({ onSubmit, submitLabel }) => (
-    <div className="space-y-4">
-      <div>
-        <label className="block text-xs font-medium text-gray-400 mb-1.5">Service Name</label>
-        <input type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} placeholder="e.g. Web Development" className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
-      </div>
-      <div>
-        <label className="block text-xs font-medium text-gray-400 mb-1.5">Description</label>
-        <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} rows={2} placeholder="Brief description of the service" className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all resize-none" />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-medium text-gray-400 mb-1.5">Icon</label>
-          <div className="space-y-2">
-            <select 
-              value={['code', 'tool', 'video', 'support'].includes(formData.icon) ? formData.icon : 'other'} 
-              onChange={e => {
-                const val = e.target.value;
-                setFormData({ ...formData, icon: val === 'other' ? '' : val });
-              }} 
-              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all"
-            >
-              <option value="code" className="bg-gray-900">Code</option>
-              <option value="tool" className="bg-gray-900">Tool</option>
-              <option value="video" className="bg-gray-900">Video</option>
-              <option value="support" className="bg-gray-900">Support</option>
-              <option value="other" className="bg-gray-900">Other (Custom)</option>
-            </select>
-            {!['code', 'tool', 'video', 'support'].includes(formData.icon) && (
-              <input 
-                type="text" 
-                value={formData.icon} 
-                onChange={e => setFormData({ ...formData, icon: e.target.value })} 
-                placeholder="Enter icon name..." 
-                className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all animate-in fade-in slide-in-from-top-1" 
-              />
-            )}
-          </div>
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-400 mb-1.5">Category</label>
-          <div className="space-y-2">
-            <select 
-              value={['Development', 'Support', 'Creative'].includes(formData.category) ? formData.category : 'other'} 
-              onChange={e => {
-                const val = e.target.value;
-                setFormData({ ...formData, category: val === 'other' ? '' : val });
-              }} 
-              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all"
-            >
-              <option value="Development" className="bg-gray-900">Development</option>
-              <option value="Support" className="bg-gray-900">Support</option>
-              <option value="Creative" className="bg-gray-900">Creative</option>
-              <option value="other" className="bg-gray-900">Other (Custom)</option>
-            </select>
-            {!['Development', 'Support', 'Creative'].includes(formData.category) && (
-              <input 
-                type="text" 
-                value={formData.category} 
-                onChange={e => setFormData({ ...formData, category: e.target.value })} 
-                placeholder="Enter custom category..." 
-                className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all animate-in fade-in slide-in-from-top-1" 
-              />
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-xs font-medium text-gray-400 mb-1.5">Base Price (INR)</label>
-          <input type="number" value={formData.basePrice} onChange={e => setFormData({ ...formData, basePrice: e.target.value })} placeholder="499" className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-gray-400 mb-1.5">Redirect Path (e.g. /services/web)</label>
-          <input type="text" value={formData.path} onChange={e => setFormData({ ...formData, path: e.target.value })} placeholder="/services/details" className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 transition-all" />
-        </div>
-      </div>
-      <div className="flex justify-end gap-3 pt-2">
-        <button onClick={() => { setShowAddModal(false); setEditingService(null) }} className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-gray-300 hover:bg-white/10 transition-colors">Cancel</button>
-        <button onClick={onSubmit} className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all">{submitLabel}</button>
-      </div>
-    </div>
-  )
-  
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -249,7 +251,13 @@ export default function AdminServices() {
             </div>
             
             <div className="p-6">
-              <ServiceForm onSubmit={editingService ? handleEdit : handleAdd} submitLabel={editingService ? 'Save Changes' : 'Create Service'} />
+              <ServiceForm 
+                formData={formData}
+                setFormData={setFormData}
+                onCancel={() => { setShowAddModal(false); setEditingService(null) }}
+                onSubmit={editingService ? handleEdit : handleAdd} 
+                submitLabel={editingService ? 'Save Changes' : 'Create Service'} 
+              />
             </div>
           </div>
         </div>
@@ -284,7 +292,6 @@ export default function AdminServices() {
                   : 'border-white/5 opacity-60 hover:opacity-80'
               } bg-gray-900/80 backdrop-blur-xl`}
             >
-              {/* Top gradient blur behind icon */}
               <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${gradient} rounded-full blur-[50px] opacity-10 group-hover:opacity-30 transition-all duration-500`} />
               
               <div className="p-6">
@@ -350,7 +357,6 @@ export default function AdminServices() {
                   </div>
                 </div>
 
-                {/* Toggle Active status at very bottom */}
                 <div className="mt-4 flex items-center justify-between bg-white/[0.02] p-2.5 rounded-xl border border-white/5 group-hover:border-white/10 transition-colors">
                   <span className="text-xs font-semibold text-gray-400">{service.active ? 'Accepting Requests' : 'Currently Hidden'}</span>
                   <label className="relative inline-flex cursor-pointer shadow-inner">
@@ -363,7 +369,6 @@ export default function AdminServices() {
           )
         })}
         
-        {/* Add New Service Card Slot */}
         <button
           onClick={() => { setShowAddModal(true); setEditingService(null); setFormData({ name: '', description: '', icon: 'code', basePrice: '', category: 'Development', path: '', active: true }) }}
           className="group rounded-2xl border-2 border-dashed border-white/10 hover:border-blue-500/40 bg-transparent py-14 flex flex-col items-center justify-center gap-4 text-gray-500 hover:text-blue-400 transition-all duration-300"

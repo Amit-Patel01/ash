@@ -28,7 +28,8 @@ export default function AdminTeam() {
     customImageUrl: '',
     avatarSource: 'github', 
     customDepartment: '',
-    isMentor: false
+    isMentor: false,
+    bio: ''
   }
   
   const [formData, setFormData] = useState(initialForm)
@@ -70,7 +71,8 @@ export default function AdminTeam() {
       customImageUrl: member.customImageUrl || '',
       avatarSource: member.avatarSource || 'github',
       customDepartment: isOther ? member.department : '',
-      isMentor: member.isMentor || false
+      isMentor: member.isMentor || false,
+      bio: member.bio || ''
     })
     setShowModal(true)
   }
@@ -192,9 +194,26 @@ export default function AdminTeam() {
             <button key={dept} onClick={() => setDepartmentFilter(dept)} className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${departmentFilter === dept ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'}`}>{dept}</button>
           ))}
         </div>
-        <div className="relative">
-          <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
-          <input type="text" placeholder="Search team..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-9 pr-3 py-2 w-48 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all" />
+  
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+            <svg 
+              className="w-4 h-4 text-gray-400 group-focus-within:text-blue-400 transition-all duration-300 ease-in-out transform group-focus-within:scale-110" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor" 
+              strokeWidth={2.5}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            placeholder="Search team..." 
+            value={searchQuery} 
+            onChange={e => setSearchQuery(e.target.value)} 
+            className="pl-14 pr-4 py-2.5 w-56 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.08] focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 ease-in-out" 
+          />
         </div>
       </div>
 
@@ -392,8 +411,22 @@ export default function AdminTeam() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-400 mb-1.5">Skills</label>
-                <input type="text" value={formData.skills} onChange={e => setFormData({ ...formData, skills: e.target.value })} placeholder="React, Node.js" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Skills</label>
+                  <input type="text" value={formData.skills} onChange={e => setFormData({ ...formData, skills: e.target.value })} placeholder="React, Node.js" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Bio / Tagline</label>
+                  <input 
+                    type="text"
+                    value={formData.bio} 
+                    onChange={e => setFormData({ ...formData, bio: e.target.value })} 
+                    placeholder="Short bio for the card..." 
+                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50"
+                  />
+                </div>
+              </div>
               </div>
 
               <div className="flex items-center gap-3 pt-2">

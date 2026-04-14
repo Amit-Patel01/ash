@@ -78,6 +78,12 @@ const featuresForService = (category = '') => {
   return ['Flexible scope', 'Professional guidance', 'Reliable delivery']
 }
 
+const TabIcon = ({ name, size = 16, color = 'currentColor', strokeWidth = 2 }) => {
+  const props = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', xmlns: 'http://www.w3.org/2000/svg', 'aria-hidden': 'true' }
+  if (name === 'message') return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M20 14a3 3 0 0 1-3 3H9l-5 4V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7Z" /></svg>
+  return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><rect x="3.5" y="7" width="17" height="11" rx="2.5" /><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7" /><path d="M3.5 11.5h17" /></svg>
+}
+
 const Services = () => {
   const { services, loading } = useStore()
 
@@ -122,8 +128,8 @@ const Services = () => {
         }
         description="This page now uses a softer white-glow layout so service categories, trust cues, and contact paths feel more professional when someone reviews your company online."
         actions={[
-          { label: 'Discuss a Requirement', to: '/contact', icon: '📩' },
-          { label: 'See Projects', to: '/projects', variant: 'secondary', icon: '💼' },
+          { label: 'Discuss a Requirement', to: '/contact', icon: <TabIcon name="message" /> },
+          { label: 'See Projects', to: '/projects', variant: 'secondary', icon: <TabIcon name="briefcase" /> },
         ]}
         pills={['White-glow presentation', 'Trust-first service cards', 'Easy mobile browsing', 'Clear contact handoff']}
         stats={stats}

@@ -87,7 +87,13 @@ export default function EmployeeProfile() {
 
           {/* Mentor/Instructor Profile fields */}
           <div className="md:col-span-2 bg-white/[0.02] rounded-xl border border-white/5 p-4">
-            <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-3">🎓 Instructor / Mentor Profile</p>
+            <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-3 inline-flex items-center gap-2">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 9l9-4 9 4-9 4-9-4Z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7 10.5V14c0 1.7 2.5 3.3 5 3.3s5-1.6 5-3.3v-3.5" />
+              </svg>
+              Instructor / Mentor Profile
+            </p>
             <p className="text-[10px] text-gray-600 mb-4">These details appear on your course page as the instructor profile</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>

@@ -10,7 +10,7 @@ import msmeQR from '../assets/msme-qr.png'
    STYLES
 ══════════════════════════════════════════════════════════ */
 const CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
   .abt { font-family:'Inter',sans-serif; }
   .abt * { box-sizing:border-box; margin:0; padding:0; }
@@ -348,22 +348,28 @@ const CSS = `
   /* ── 3D CAROUSEL STYLES ── */
   .abt-slider-wrap {
     position:relative; width:100%; max-width:1100px; margin:0 auto;
-    height:540px; display:flex; align-items:center; justify-content:center;
+    height:560px; display:flex; align-items:center; justify-content:center;
     overflow:visible; perspective: 1000px;
   }
   .abt-tcard-new {
     position:absolute;
-    width:280px; height:440px;
-    background:white; border-radius:12px;
-    box-shadow:0 15px 35px rgba(0,0,0,0.08); 
+    width:280px; height:480px;
+    background:white; border-radius:24px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.05), 0 1px 8px rgba(0,0,0,0.02); 
     transition:transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease;
     display:flex; flex-direction:column; overflow:hidden;
+    border: 1px solid rgba(0,0,0,0.03);
   }
   .abt-tcard-img-wrap {
-    width:100%; height:240px; position:relative; background:#e2e8f0; flex-shrink:0;
+    width:100%; height:260px; position:relative; background:#f8fafc; flex-shrink:0;
+    overflow: hidden;
   }
   .abt-tcard-img-wrap img, .abt-tc-init-new {
     width:100%; height:100%; object-fit:cover;
+    transition: transform 0.5s ease;
+  }
+  .abt-tcard-new:hover .abt-tcard-img-wrap img {
+    transform: scale(1.05);
   }
   .abt-tc-init-new {
     display:flex; align-items:center; justify-content:center;
@@ -371,28 +377,75 @@ const CSS = `
     background:linear-gradient(135deg,#6366f1,#3b82f6);
   }
   .abt-tcard-role {
-    position:absolute; bottom:-14px; left:16px;
+    position:absolute; bottom:12px; left:12px;
     background:#dc2626; color:white;
-    font-size:11px; font-weight:700;
-    padding:6px 14px; border-radius:6px;
-    box-shadow:0 4px 10px rgba(220,38,38,0.3);
-    z-index:2; text-transform:uppercase; letter-spacing:0.04em;
+    font-size:10px; font-weight:800;
+    padding:5px 12px; border-radius:8px;
+    box-shadow:0 4px 12px rgba(220,38,38,0.25);
+    z-index:2; text-transform:uppercase; letter-spacing:0.06em;
   }
   .abt-tcard-body {
-    flex:1; padding:28px 20px 20px;
+    flex:1; padding:24px 20px;
     display:flex; flex-direction:column;
     text-align:center; align-items:center;
     background:white;
   }
   .abt-tcard-name {
-    color:#be123c; font-family:'Syne',sans-serif;
-    font-size:22px; font-weight:700; margin-bottom:10px;
+    color:#be123c; font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:22px; font-weight:800; margin-bottom:8px;
+    letter-spacing: -0.02em; text-transform: capitalize;
   }
   .abt-tcard-bio {
     font-size:13px; color:#64748b; line-height:1.6;
-    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
-    margin-bottom:14px; flex:1;
+    font-family:'Plus Jakarta Sans',sans-serif;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+    margin-bottom:18px; font-weight: 500;
   }
+  .abt-profile-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 24px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 700;
+    font-size: 13px;
+    border-radius: 99px;
+    text-decoration: none;
+    font-family:'Plus Jakarta Sans',sans-serif;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(59,130,246,0.15);
+    width: 100%;
+  }
+  .abt-profile-btn:hover {
+    background: #dbeafe;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59,130,246,0.12);
+  }
+
+  .abt-portfolio-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 24px;
+    background: #2563eb;
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    border-radius: 99px;
+    text-decoration: none;
+    font-family:'Plus Jakarta Sans',sans-serif;
+    transition: all 0.2s ease;
+    width: 100%;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.2);
+  }
+  .abt-portfolio-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37,99,235,0.3);
+  }
+
   .slider-btn {
     position:absolute; top:50%; transform:translateY(-50%);
     width:48px; height:48px; background:white;
@@ -407,7 +460,7 @@ const CSS = `
 
   /* ══ MOBILE RESPONSIVE ══ */
   @media (min-width:768px) {
-    .abt-tcard-new { width:320px; height:470px; }
+    .abt-tcard-new { width:310px; height:490px; }
     .abt-tcard-img-wrap { height:260px; }
     .slider-btn.prev { left:40px; }
     .slider-btn.next { right:40px; }
@@ -425,12 +478,45 @@ const CSS = `
     
     .slider-btn.prev { left:0px; width:40px; height:40px; }
     .slider-btn.next { right:0px; width:40px; height:40px; }
-    .abt-tcard-new { width:260px; height:420px; }
+    .abt-tcard-new { width:260px; height:460px; }
     .abt-tcard-img-wrap { height:220px; }
-    .abt-slider-wrap { height:480px; }
+    .abt-slider-wrap { height:500px; }
   }
 `
 
+const SvgIcon = ({ name, size = 20, color = 'currentColor', strokeWidth = 2 }) => {
+  const props = {
+    width: size,
+    height: size,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    xmlns: 'http://www.w3.org/2000/svg',
+    'aria-hidden': 'true',
+  }
+
+  switch (name) {
+    case 'building':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M4 20h16" /><path d="M6 20V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13" /><path d="M9 9h1M9 12h1M9 15h1M13 9h1M13 12h1M13 15h1" /></svg>
+    case 'check':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="m8.5 12 2.5 2.5 4.5-5" /></svg>
+    case 'shield':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M12 3 5.5 6v5c0 4 2.7 7.6 6.5 10 3.8-2.4 6.5-6 6.5-10V6L12 3Z" /><path d="m9.5 12 1.7 1.7 3.3-3.4" /></svg>
+    case 'bolt':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M13 3 6 13h4l-1 8 7-10h-4l1-8Z" /></svg>
+    case 'target':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="1.2" fill={color} stroke="none" /></svg>
+    case 'vision':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12Z" /><circle cx="12" cy="12" r="2.8" /></svg>
+    case 'idea':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6M10 21h4" /><path d="M8.3 14.5A5.5 5.5 0 1 1 15.7 14.5c-.8.7-1.2 1.3-1.3 2h-2.8c-.1-.7-.5-1.3-1.3-2Z" /></svg>
+    case 'status':
+      return <svg {...props} viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill={color} fillOpacity="0.2" /><circle cx="10" cy="10" r="4.5" fill={color} /></svg>
+    case 'star':
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.2 6.4 20.2l1.1-6.2L3 9.6l6.2-.9L12 3Z" /></svg>
+    default:
+      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /></svg>
+  }
+}
 /* ══ Typing hook ══ */
 function useTyping(text, speed = 52, delay = 800) {
   const [n, setN] = useState(0)
@@ -446,10 +532,10 @@ function useTyping(text, speed = 52, delay = 800) {
 
 /* ══ Trust Badge Data ══ */
 const TRUST_BADGES = [
-  { icon: '🏢', bg: 'linear-gradient(135deg,#7c3aed,#6d28d9)', title: 'MSME Certified', desc: 'Officially registered under Ministry of MSME, Govt. of India' },
-  { icon: '✅', bg: 'linear-gradient(135deg,#10b981,#059669)', title: 'Trusted by Clients',  desc: 'Serving businesses & individuals across India consistently' },
-  { icon: '🔒', bg: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', title: 'Secure & Reliable', desc: 'Industry-standard security in every project we deliver' },
-  { icon: '⚡', bg: 'linear-gradient(135deg,#f59e0b,#d97706)', title: '24/7 Support Ready', desc: 'Round-the-clock technical assistance for all our clients' },
+  { icon: 'building', bg: 'linear-gradient(135deg,#7c3aed,#6d28d9)', title: 'MSME Certified', desc: 'Officially registered under Ministry of MSME, Govt. of India' },
+  { icon: 'check', bg: 'linear-gradient(135deg,#10b981,#059669)', title: 'Trusted by Clients',  desc: 'Serving businesses & individuals across India consistently' },
+  { icon: 'shield', bg: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', title: 'Secure & Reliable', desc: 'Industry-standard security in every project we deliver' },
+  { icon: 'bolt', bg: 'linear-gradient(135deg,#f59e0b,#d97706)', title: '24/7 Support Ready', desc: 'Round-the-clock technical assistance for all our clients' },
 ]
 
 /* ══ AICTE Credibility Numbers ══ */
@@ -496,6 +582,14 @@ const About = () => {
       if (u.showOnTeam && u.status === 'active' && !seen.has(e))
         out.push({ ...u, displayName: u.displayName, jobTitle: u.jobTitle, id: u.uid || u.id })
     })
+    
+    // Sort by employeeId (numeric string comparison like ASH-001, ASH-002)
+    out.sort((a, b) => {
+      const idA = a.employeeId || 'ZZZ'; // Push those with no ID to the end
+      const idB = b.employeeId || 'ZZZ';
+      return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+    });
+
     return out
   })()
 
@@ -587,30 +681,32 @@ const About = () => {
 
             <div className="abt-tcard-body">
               <h3 className="abt-tcard-name">{m.displayName}</h3>
-              {m.bio && <p className="abt-tcard-bio">{m.bio}</p>}
+              <p className="abt-tcard-bio">{m.bio || 'Professional team member at AmitSolutionHub.'}</p>
 
-              <div style={{ marginTop: 14, marginBottom: 14 }}>
-                <Link
-                  to={`/team/${profileId}`}
-                  className="abt-soc"
-                  style={{ background:'#eff6ff', borderColor:'rgba(59,130,246,.18)', color:'#2563eb', width:'100%', justifyContent:'center' }}
-                >
-                  View Public Profile
-                </Link>
-              </div>
+              <Link
+                to={`/team/${profileId}`}
+                className="abt-profile-btn"
+              >
+                View Public Profile
+              </Link>
               
-              {(m.linkedin || m.portfolio) && (
-                <div className="abt-tc-socials" style={{ marginTop: 'auto' }}>
+              {m.portfolio && (
+                <a
+                  href={m.portfolio}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="abt-portfolio-btn"
+                >
+                  Visit Portfolio
+                </a>
+              )}
+              
+              {m.linkedin && (
+                <div className="abt-tc-socials" style={{ marginTop: 14 }}>
                   {m.linkedin && m.linkedin.includes('linkedin.com') && (
                     <a href={m.linkedin.startsWith('http') ? m.linkedin : `https://linkedin.com/in/${m.linkedin}`}
                       target="_blank" rel="noreferrer" className="abt-tc-soc-btn" style={{ background:'#0a66c2' }}>
                       <svg width="15" height="15" fill="white" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                    </a>
-                  )}
-                  {m.portfolio && (
-                    <a href={m.portfolio.startsWith('http') ? m.portfolio : `https://${m.portfolio}`}
-                      target="_blank" rel="noreferrer" className="abt-tc-soc-btn" style={{ background:'#8b5cf6' }} title="Portfolio">
-                      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                     </a>
                   )}
                 </div>
@@ -822,7 +918,10 @@ const About = () => {
                     <img src={msmeLogo} alt="MSME Logo" style={{ height:26, borderRadius:4, background:'white', padding:3 }} />
                     <div>
                       <div style={{ fontSize:9, color:'rgba(255,255,255,.5)', fontWeight:700, textTransform:'uppercase', letterSpacing:'.08em' }}>Status</div>
-                      <div style={{ fontSize:12, color:'white', fontWeight:800 }}>🟢 Active</div>
+                      <div style={{ fontSize:12, color:'white', fontWeight:800, display:'inline-flex', alignItems:'center', gap:6 }}>
+                        <SvgIcon name="status" size={12} color="#22c55e" />
+                        Active
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -842,7 +941,9 @@ const About = () => {
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,220px),1fr))', gap:14 }}>
               {TRUST_BADGES.map(({ icon, bg, title, desc }) => (
                 <div key={title} className="abt-trust">
-                  <div className="abt-trust-icon" style={{ background:bg }}>{icon}</div>
+                  <div className="abt-trust-icon" style={{ background:bg }}>
+                    <SvgIcon name={icon} size={22} color="white" />
+                  </div>
                   <div>
                     <div style={{ fontWeight:700,fontSize:14,color:'#0f172a',marginBottom:3 }}>{title}</div>
                     <div style={{ fontSize:12,color:'#64748b',lineHeight:1.6 }}>{desc}</div>
@@ -865,17 +966,17 @@ const About = () => {
             </div>
             <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,230px),1fr))',gap:18 }}>
               <div className="abt-mv" style={{ background:'linear-gradient(135deg,#6366f1,#4f46e5)',boxShadow:'0 8px 32px rgba(99,102,241,.28)' }}>
-                <div style={{ fontSize:30,marginBottom:14 }}>🎯</div>
+                <div style={{ color:'white', marginBottom:14 }}><SvgIcon name="target" size={30} color="white" /></div>
                 <h3 style={{ fontFamily:'Syne,sans-serif',fontSize:'1rem',fontWeight:800,marginBottom:10 }}>Mission</h3>
                 <p style={{ fontSize:13,lineHeight:1.85,opacity:.9 }}>To build reliable, practical digital solutions that solve real-world problems efficiently and at scale.</p>
               </div>
               <div className="abt-mv" style={{ background:'linear-gradient(135deg,#3b82f6,#1d4ed8)',boxShadow:'0 8px 32px rgba(59,130,246,.28)' }}>
-                <div style={{ fontSize:30,marginBottom:14 }}>🔭</div>
+                <div style={{ color:'white', marginBottom:14 }}><SvgIcon name="vision" size={30} color="white" /></div>
                 <h3 style={{ fontFamily:'Syne,sans-serif',fontSize:'1rem',fontWeight:800,marginBottom:10 }}>Vision</h3>
                 <p style={{ fontSize:13,lineHeight:1.85,opacity:.9 }}>To grow AmitSolutionHub into a trusted, full-spectrum tech platform combining development, hardware, and mentorship.</p>
               </div>
               <div className="abt-glass" style={{ padding:'clamp(22px,4vw,32px)' }}>
-                <div style={{ fontSize:30,marginBottom:14 }}>💡</div>
+                <div style={{ color:'#6366f1', marginBottom:14 }}><SvgIcon name="idea" size={30} color="#6366f1" /></div>
                 <h3 style={{ fontFamily:'Syne,sans-serif',fontSize:'1rem',fontWeight:800,color:'#0f172a',marginBottom:14 }}>Core Values</h3>
                 <div style={{ display:'flex',flexWrap:'wrap',gap:8 }}>
                   {['Security First','Creativity','Growth','Learning','Performance'].map(v => (
@@ -931,8 +1032,9 @@ const About = () => {
               borderRadius:'clamp(18px,4vw,26px)',
               padding:'clamp(32px,6vw,52px) clamp(20px,5vw,40px)',
             }}>
-              <p style={{ fontSize:13,color:'#94a3b8',fontStyle:'italic',marginBottom:12 }}>
-                ⭐ "Building Solutions. Solving Problems. Creating Impact."
+              <p style={{ fontSize:13,color:'#94a3b8',fontStyle:'italic',marginBottom:12, display:'inline-flex', alignItems:'center', gap:6 }}>
+                <SvgIcon name="star" size={14} color="#f59e0b" />
+                "Building Solutions. Solving Problems. Creating Impact."
               </p>
               <h2 style={{ fontFamily:'Syne,sans-serif',fontWeight:800,fontSize:'clamp(1.3rem,3.5vw,1.9rem)',color:'#0f172a',marginBottom:10,letterSpacing:'-.02em' }}>
                 Let's Build Something <span className="abt-grad">Amazing</span>

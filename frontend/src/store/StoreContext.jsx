@@ -477,6 +477,7 @@ export function StoreProvider({ children }) {
             portfolio: userData.portfolio || '',
             avatarSource: userData.avatarSource || 'github',
             isMentor: userData.isMentor || false,
+            bio: userData.bio || '',
             status: userData.status === 'active' ? 'Active' : 'Inactive'
           })
         }

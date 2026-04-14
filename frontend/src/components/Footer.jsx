@@ -92,37 +92,61 @@ const Footer = () => {
               <ul className="space-y-4 text-gray-400 text-sm">
                 <li>
                   <Link to="/" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
-                    <span className="w-1.5 h-1.5 bg-blue-500/50 rounded-full group-hover:bg-blue-400 transition-colors"></span>
+                    <span className="inline-flex items-center justify-center text-blue-500/70 group-hover:text-blue-400 transition-colors">
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4.2" />
+                      </svg>
+                    </span>
                     Home
                   </Link>
                 </li>
                 <li>
                   <Link to="/about" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
-                    <span className="w-1.5 h-1.5 bg-blue-500/50 rounded-full group-hover:bg-blue-400 transition-colors"></span>
+                    <span className="inline-flex items-center justify-center text-blue-500/70 group-hover:text-blue-400 transition-colors">
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4.2" />
+                      </svg>
+                    </span>
                     About
                   </Link>
                 </li>
                 <li>
                   <Link to="/courses" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
-                    <span className="w-1.5 h-1.5 bg-blue-500/50 rounded-full group-hover:bg-blue-400 transition-colors"></span>
+                    <span className="inline-flex items-center justify-center text-blue-500/70 group-hover:text-blue-400 transition-colors">
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4.2" />
+                      </svg>
+                    </span>
                     Courses
                   </Link>
                 </li>
                 <li>
                   <Link to="/services" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
-                    <span className="w-1.5 h-1.5 bg-blue-500/50 rounded-full group-hover:bg-blue-400 transition-colors"></span>
+                    <span className="inline-flex items-center justify-center text-blue-500/70 group-hover:text-blue-400 transition-colors">
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4.2" />
+                      </svg>
+                    </span>
                     Services
                   </Link>
                 </li>
                 <li>
                   <Link to="/projects" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
-                    <span className="w-1.5 h-1.5 bg-blue-500/50 rounded-full group-hover:bg-blue-400 transition-colors"></span>
+                    <span className="inline-flex items-center justify-center text-blue-500/70 group-hover:text-blue-400 transition-colors">
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4.2" />
+                      </svg>
+                    </span>
                     Projects
                   </Link>
                 </li>
                 <li>
                   <Link to="/contact" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
-                    <span className="w-1.5 h-1.5 bg-blue-500/50 rounded-full group-hover:bg-blue-400 transition-colors"></span>
+                    <span className="inline-flex items-center justify-center text-blue-500/70 group-hover:text-blue-400 transition-colors">
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4.2" />
+                      </svg>
+                    </span>
                     Contact
                   </Link>
                 </li>
@@ -137,25 +161,41 @@ const Footer = () => {
               <ul className="space-y-4 text-gray-400 text-sm">
                 <li>
                   <Link to="/privacy-policy" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
-                    <span className="w-1.5 h-1.5 bg-gray-600/50 rounded-full group-hover:bg-gray-400 transition-colors"></span>
+                    <span className="inline-flex items-center justify-center text-slate-500 group-hover:text-blue-300 transition-colors">
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4.2" />
+                      </svg>
+                    </span>
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
                   <Link to="/terms-of-service" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
-                    <span className="w-1.5 h-1.5 bg-gray-600/50 rounded-full group-hover:bg-gray-400 transition-colors"></span>
+                    <span className="inline-flex items-center justify-center text-slate-500 group-hover:text-blue-300 transition-colors">
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4.2" />
+                      </svg>
+                    </span>
                     Terms of Service
                   </Link>
                 </li>
                 <li>
                   <Link to="/refund-policy" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
-                    <span className="w-1.5 h-1.5 bg-gray-600/50 rounded-full group-hover:bg-gray-400 transition-colors"></span>
+                    <span className="inline-flex items-center justify-center text-slate-500 group-hover:text-blue-300 transition-colors">
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4.2" />
+                      </svg>
+                    </span>
                     Refund Policy
                   </Link>
                 </li>
                 <li>
                   <Link to="/grievance" className="hover:text-blue-400 hover:translate-x-1 transition-all inline-flex items-center gap-2.5 group">
-                    <span className="w-1.5 h-1.5 bg-gray-600/50 rounded-full group-hover:bg-gray-400 transition-colors"></span>
+                    <span className="inline-flex items-center justify-center text-slate-500 group-hover:text-blue-300 transition-colors">
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <circle cx="12" cy="12" r="4.2" />
+                      </svg>
+                    </span>
                     Grievance
                   </Link>
                 </li>
@@ -169,15 +209,30 @@ const Footer = () => {
               </h3>
               <div className="space-y-5 text-gray-400 text-sm">
                 <a href="mailto:support@amitsolutionhub.com" className="flex items-center justify-center md:justify-start gap-4 group hover:text-white transition-all">
-                  <span className="w-10 h-10 bg-white/5 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500/10 group-hover:text-blue-400 transition-all border border-white/5 group-hover:border-blue-500/20 shadow-lg">📧</span>
+                  <span className="w-10 h-10 bg-white/5 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500/10 group-hover:text-blue-400 transition-all border border-white/5 group-hover:border-blue-500/20 shadow-lg">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5A2.5 2.5 0 0 1 5.5 5h13A2.5 2.5 0 0 1 21 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 16.5v-9Z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m4 8 8 6 8-6" />
+                    </svg>
+                  </span>
                   <span className="group-hover:translate-x-1 transition-transform font-medium">support@amitsolutionhub.com</span>
                 </a>
                 <a href="tel:+917874248481" className="flex items-center justify-center md:justify-start gap-4 group hover:text-white transition-all">
-                  <span className="w-10 h-10 bg-white/5 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500/10 group-hover:text-blue-400 transition-all border border-white/5 group-hover:border-blue-500/20 shadow-lg">📱</span>
+                  <span className="w-10 h-10 bg-white/5 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500/10 group-hover:text-blue-400 transition-all border border-white/5 group-hover:border-blue-500/20 shadow-lg">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} aria-hidden="true">
+                      <rect x="7.5" y="3.5" width="9" height="17" rx="2.2" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M11 17.5h2" />
+                    </svg>
+                  </span>
                   <span className="group-hover:translate-x-1 transition-transform font-medium">+91 7874248481</span>
                 </a>
                 <div className="flex items-center justify-center md:justify-start gap-4 group">
-                  <span className="w-10 h-10 bg-white/5 rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/5 shadow-lg">📍</span>
+                  <span className="w-10 h-10 bg-white/5 rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/5 shadow-lg">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11Z" />
+                      <circle cx="12" cy="10" r="2.5" />
+                    </svg>
+                  </span>
                   <span className="font-medium">Godhra, Gujarat, India</span>
                 </div>
               </div>
