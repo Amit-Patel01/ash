@@ -792,6 +792,12 @@ export default function AdminEmployees() {
                       <p className="text-[10px] text-gray-500 mt-1">Separate skills with commas</p>
                     </div>
 
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-3">
+                        Public links and collaboration path
+                      </p>
+                    </div>
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">GitHub Username</label>
@@ -836,6 +842,33 @@ export default function AdminEmployees() {
                         <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">CV / Resume</label>
+                      <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                        {editingEmployee?.cvFilePath ? (
+                          <div className="flex items-center justify-between gap-3 flex-wrap">
+                            <div className="min-w-0">
+                              <p className="truncate text-xs font-semibold text-cyan-300">
+                                {editingEmployee.cvFileName || 'resume'}
+                              </p>
+                              <p className="mt-1 text-[10px] text-gray-500 truncate">{editingEmployee.cvFilePath}</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => downloadEmployeeCv(editingEmployee)}
+                              className="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-300 hover:bg-cyan-500/20 transition-all uppercase tracking-wider"
+                            >
+                              Download CV
+                            </button>
+                          </div>
+                        ) : (
+                          <p className="text-xs text-gray-500">
+                            No CV has been uploaded yet. The employee can upload it from their profile.
+                          </p>
+                        )}
                       </div>
                     </div>
 

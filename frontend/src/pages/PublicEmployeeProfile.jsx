@@ -131,6 +131,20 @@ const socialLinks = (member) => {
     })
   }
 
+  if (member.cvFilePath) {
+    const rawCvPath = String(member.cvFilePath).trim()
+    const cvHref = rawCvPath.startsWith('http')
+      ? rawCvPath
+      : rawCvPath.startsWith('/')
+        ? rawCvPath
+        : `/${rawCvPath}`
+
+    links.push({
+      label: 'CV',
+      href: cvHref,
+    })
+  }
+
   return links
 }
 
