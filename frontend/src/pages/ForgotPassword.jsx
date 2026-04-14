@@ -215,6 +215,9 @@ export default function ForgotPassword() {
                     required 
                     className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300 text-sm font-medium"
                   />
+                  <p className="text-xs text-slate-500 ml-1">
+                    Use at least {MIN_PASSWORD_LENGTH} characters.
+                  </p>
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Confirm Password</label>
