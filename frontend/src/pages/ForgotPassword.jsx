@@ -6,6 +6,7 @@ export default function ForgotPassword() {
   const { resetPassword, verifyResetCode, confirmReset } = useAuth()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+  const MIN_PASSWORD_LENGTH = 8
   
   // URL Params
   const from = searchParams.get('from')
@@ -64,7 +65,9 @@ export default function ForgotPassword() {
   const handleConfirmReset = async (e) => {
     e.preventDefault()
     if (newPassword !== confirmPassword) return setError('Passwords do not match.')
-    if (newPassword.length < 6) return setError('Password must be at least 6 characters.')
+    if (newPassword.length < MIN_PASSWORD_LENGTH) {
+      return setError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`)
+    }
     
     setError('')
     setLoading(true)
@@ -73,7 +76,7 @@ export default function ForgotPassword() {
       setSuccess(true)
       setTimeout(() => navigate(getBackPath()), 3000)
     } catch (err) {
-      setError('Failed to reset password. The link may have expired.')
+      setError(err.message || 'Failed to reset password. The link may have expired.')
     } finally {
       setLoading(false)
     }
