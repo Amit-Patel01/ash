@@ -7,6 +7,7 @@ export default function ForgotPassword() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const MIN_PASSWORD_LENGTH = 8
+  const passwordNotice = `Password must be at least ${MIN_PASSWORD_LENGTH} characters long. You can use letters, numbers, and symbols.`
   
   // URL Params
   const from = searchParams.get('from')
@@ -205,6 +206,11 @@ export default function ForgotPassword() {
 
             {resetToken ? (
               <>
+                <div className="rounded-2xl border border-blue-500/20 bg-blue-500/10 px-4 py-3">
+                  <p className="text-sm text-blue-200 leading-relaxed">
+                    {passwordNotice}
+                  </p>
+                </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">New Password</label>
                   <input 
@@ -216,7 +222,7 @@ export default function ForgotPassword() {
                     className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300 text-sm font-medium"
                   />
                   <p className="text-xs text-slate-500 ml-1">
-                    Use at least {MIN_PASSWORD_LENGTH} characters.
+                    {passwordNotice}
                   </p>
                 </div>
                 <div className="space-y-2">
