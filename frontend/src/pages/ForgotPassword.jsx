@@ -76,7 +76,7 @@ export default function ForgotPassword() {
       setSuccess(true)
       setTimeout(() => navigate(getBackPath()), 3000)
     } catch (err) {
-      setError(err.message || 'Failed to reset password. The link may have expired.')
+      setError(err.message || 'Failed to reset password. The link may have expired. (Eg. use like abc123)')
     } finally {
       setLoading(false)
     }
