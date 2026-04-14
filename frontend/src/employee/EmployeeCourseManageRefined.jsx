@@ -39,15 +39,18 @@ export default function EmployeeCourseManageRefined() {
     certificate.status === 'approved' &&
     myCourses.some(course => certificate.courseId === course.id || certificate.courseName === course.title)
   ).length
+  const canCreateCourses = Boolean(userProfile?.employeeId || currentUser?.employeeId || memberData?.employeeId)
 
   return (
     <div className="space-y-6">
       <EmployeePageHeader
         eyebrow="Course Delivery"
-        title="Manage Assigned Courses"
-        description="Manage plans, materials, meeting links, enrolled students, and certificate actions from a single workspace."
+        title={canCreateCourses ? 'Manage Your Courses' : 'Manage Assigned Courses'}
+        description={canCreateCourses
+          ? 'Create draft courses, then manage plans, materials, meeting links, enrolled students, and certificate actions from one workspace.'
+          : 'Manage plans, materials, meeting links, enrolled students, and certificate actions from a single workspace.'}
         stats={[
-          { label: 'Assigned courses', value: myCourses.length },
+          { label: canCreateCourses ? 'Your courses' : 'Assigned courses', value: myCourses.length },
           { label: 'Active students', value: activeStudents },
           { label: 'Issued certificates', value: activeCertificates },
         ]}

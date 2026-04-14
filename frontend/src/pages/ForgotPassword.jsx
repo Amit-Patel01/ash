@@ -56,7 +56,14 @@ export default function ForgotPassword() {
       setSent(true)
     } catch (err) {
       let msg = 'Failed to send reset email. Please try again.'
-      if (err.message.includes('not found')) msg = 'No account found with this email.'
+      const rawMessage = String(err?.message || '').toLowerCase()
+      if (
+        rawMessage.includes('not found') ||
+        rawMessage.includes('no user record corresponding') ||
+        rawMessage.includes('provided identifier')
+      ) {
+        msg = 'No account found with this email.'
+      }
       setError(msg)
     } finally {
       setLoading(false)

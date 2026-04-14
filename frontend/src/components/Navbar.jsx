@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import brandLogo from '../assets/brand-logo.png'
 import { useAuth } from '../context/AuthContext'
@@ -6,6 +6,8 @@ import { useAuth } from '../context/AuthContext'
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [isHidden, setIsHidden] = useState(false)
+  const lastScrollYRef = useRef(0)
   const location = useLocation()
   const navigate = useNavigate()
   const { currentUser, logout } = useAuth()
@@ -17,15 +19,27 @@ const Navbar = () => {
 
   useEffect(() => {
     setIsOpen(false)
+    setIsHidden(false)
+    lastScrollYRef.current = window.scrollY
   }, [location])
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20)
+      const currentScrollY = window.scrollY
+      const scrollingDown = currentScrollY > lastScrollYRef.current
+      const shouldHideNavbar = scrollingDown && currentScrollY > 120 && !isOpen
+
+      setScrolled(currentScrollY > 20)
+      setIsHidden(currentScrollY <= 20 ? false : shouldHideNavbar)
+      lastScrollYRef.current = currentScrollY
     }
+
+    lastScrollYRef.current = window.scrollY
+    handleScroll()
+
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isOpen])
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -37,7 +51,7 @@ const Navbar = () => {
   ]
 
   return (
-    <nav className={`fixed left-0 right-0 z-[140] transition-all duration-500 ease-in-out top-0 ${scrolled
+    <nav className={`fixed left-0 right-0 z-[140] transform-gpu transition-all duration-500 ease-in-out top-0 ${isHidden ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'} ${scrolled
         ? 'py-2 lg:py-3'
         : 'py-4 lg:py-6'
       }`}>

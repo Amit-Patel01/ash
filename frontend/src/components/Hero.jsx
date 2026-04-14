@@ -548,7 +548,7 @@ const Hero = () => {
                   )
                 })}
 
-                {/* Coming Soon / View All banner */}
+                {/* Programs / View All banner */}
                 <div style={{
                   display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
                   padding:'32px 24px',
@@ -563,10 +563,10 @@ const Hero = () => {
                   </div>
                   <div>
                     <div style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'clamp(1.1rem,2vw,1.4rem)', color:'#334155', marginBottom:6 }}>
-                      More Programs <span style={{ color:'#8b5cf6' }}>Soon</span>
+                      More Programs <span style={{ color:'#8b5cf6' }}>Live</span>
                     </div>
                     <p style={{ fontSize:12, color:'#64748b', lineHeight:1.6, maxWidth:320, margin:'0 auto 16px' }}>
-                      Web Development, AI, Data Science, UI/UX, and Cyber Security internships launching shortly.
+                      Web Development, AI, Data Science, UI/UX, and Cyber Security internships are now open for enrollment.
                     </p>
                   </div>
                   

@@ -75,10 +75,10 @@ const Popup = () => {
 
         <div>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.75rem' }}>
-            Something New is Coming!
+            Our Programs Are Live!
           </h2>
           <p style={{ fontSize: '1.125rem', marginBottom: '1rem' }}>
-            Soon you will be able to learn from our courses and download source codes at low cost.
+            You can now learn from our courses and download source codes at affordable prices.
           </p>
           <p style={{ fontSize: '1.25rem', fontWeight: '600', color: '#fde047' }}>
             Stay connected with AmitSolutionHub!

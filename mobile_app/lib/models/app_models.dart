@@ -679,6 +679,101 @@ class TaskItem {
   }
 }
 
+class ProjectItem {
+  const ProjectItem({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.longDescription,
+    required this.slug,
+    required this.categoryName,
+    required this.categorySlug,
+    required this.imageUrl,
+    required this.status,
+    required this.active,
+    required this.isFeatured,
+    required this.projectOnlyPrice,
+    required this.projectWithSourcePrice,
+    required this.sales,
+    required this.sellerEmail,
+    required this.createdAt,
+  });
+
+  final String id;
+  final String title;
+  final String description;
+  final String longDescription;
+  final String slug;
+  final String categoryName;
+  final String categorySlug;
+  final String imageUrl;
+  final String status;
+  final bool active;
+  final bool isFeatured;
+  final double projectOnlyPrice;
+  final double projectWithSourcePrice;
+  final int sales;
+  final String sellerEmail;
+  final DateTime? createdAt;
+
+  factory ProjectItem.fromMap(String id, Map<String, dynamic> data) {
+    final title = (data['title'] ?? data['name'] ?? 'Project').toString();
+    final categoryName =
+        (data['category_name'] ?? data['categoryName'] ?? data['category'] ?? 'General')
+            .toString();
+    final status = (data['status'] ?? 'active').toString();
+    final active = parseFlag(
+      data['is_active'] ?? data['isActive'],
+      fallback: const {'active', 'published', 'live'}.contains(normalizeText(status)),
+    );
+    final projectOnlyPrice = parseAmount(
+      data['price_project_only'] ?? data['priceProjectOnly'] ?? data['price'],
+    );
+    final projectWithSourcePrice = parseAmount(
+      data['price_with_source'] ??
+          data['priceWithSource'] ??
+          data['sourcePrice'] ??
+          data['price_project_only'] ??
+          data['priceProjectOnly'] ??
+          data['price'],
+    );
+
+    return ProjectItem(
+      id: id,
+      title: title,
+      description: (data['description'] ?? data['summary'] ?? '').toString(),
+      longDescription:
+          (data['longDescription'] ?? data['details'] ?? data['fullDescription'] ?? '')
+              .toString(),
+      slug: (data['slug'] ?? compactText(title)).toString(),
+      categoryName: categoryName,
+      categorySlug:
+          (data['category_slug'] ?? data['categorySlug'] ?? compactText(categoryName))
+              .toString(),
+      imageUrl:
+          (data['image_url'] ?? data['thumbnail'] ?? data['imageUrl'] ?? '').toString(),
+      status: status,
+      active: active,
+      isFeatured: parseFlag(
+        data['is_featured'] ?? data['featured'] ?? data['isFeatured'],
+      ),
+      projectOnlyPrice: projectOnlyPrice,
+      projectWithSourcePrice: projectWithSourcePrice <= 0
+          ? projectOnlyPrice
+          : projectWithSourcePrice,
+      sales: parseCount(data['sales']),
+      sellerEmail:
+          (data['seller_email'] ?? data['sellerEmail'] ?? data['createdByEmail'] ?? '')
+              .toString(),
+      createdAt: parseDateTime(data['createdAt']),
+    );
+  }
+
+  bool matchesSeller(AppUser user) {
+    return normalizeText(sellerEmail) == normalizeText(user.email);
+  }
+}
+
 class CertificateItem {
   const CertificateItem({
     required this.id,

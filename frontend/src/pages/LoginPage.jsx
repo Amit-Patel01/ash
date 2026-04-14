@@ -40,9 +40,16 @@ export default function LoginPage() {
     } catch (err) {
       console.error(err)
       let msg = 'Invalid email or password.'
+      const rawMessage = String(err?.message || '').toLowerCase()
       if (err.code === 'auth/user-not-found') msg = 'No account found with this email.'
       if (err.code === 'auth/wrong-password') msg = 'Incorrect password.'
       if (err.code === 'auth/invalid-credential') msg = 'Invalid email or password.'
+      if (
+        rawMessage.includes('no user record corresponding') ||
+        rawMessage.includes('provided identifier')
+      ) {
+        msg = 'No account found with this email.'
+      }
       setError(msg)
     } finally {
       setLoading(false)

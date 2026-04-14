@@ -9,7 +9,7 @@
       "source_file": "backend\\ecosystem.config.js",
       "source_location": "L1",
       "id": "backend_ecosystem_config_js",
-      "community": 144,
+      "community": 143,
       "norm_label": "ecosystem.config.js"
     },
     {
@@ -18,7 +18,7 @@
       "source_file": "backend\\logger.js",
       "source_location": "L1",
       "id": "backend_logger_js",
-      "community": 145,
+      "community": 144,
       "norm_label": "logger.js"
     },
     {
@@ -585,7 +585,7 @@
       "source_file": "backend\\routes\\admin.js",
       "source_location": "L1",
       "id": "backend_routes_admin_js",
-      "community": 146,
+      "community": 145,
       "norm_label": "admin.js"
     },
     {
@@ -594,7 +594,7 @@
       "source_file": "backend\\routes\\ai.js",
       "source_location": "L1",
       "id": "backend_routes_ai_js",
-      "community": 147,
+      "community": 146,
       "norm_label": "ai.js"
     },
     {
@@ -603,7 +603,7 @@
       "source_file": "backend\\routes\\auth.js",
       "source_location": "L1",
       "id": "backend_routes_auth_js",
-      "community": 148,
+      "community": 147,
       "norm_label": "auth.js"
     },
     {
@@ -612,7 +612,7 @@
       "source_file": "backend\\routes\\certificates.js",
       "source_location": "L1",
       "id": "backend_routes_certificates_js",
-      "community": 149,
+      "community": 148,
       "norm_label": "certificates.js"
     },
     {
@@ -621,7 +621,7 @@
       "source_file": "backend\\routes\\notify.js",
       "source_location": "L1",
       "id": "backend_routes_notify_js",
-      "community": 150,
+      "community": 149,
       "norm_label": "notify.js"
     },
     {
@@ -630,7 +630,7 @@
       "source_file": "backend\\routes\\projects.js",
       "source_location": "L1",
       "id": "backend_routes_projects_js",
-      "community": 151,
+      "community": 150,
       "norm_label": "projects.js"
     },
     {
@@ -639,7 +639,7 @@
       "source_file": "backend\\routes\\razorpay.js",
       "source_location": "L1",
       "id": "backend_routes_razorpay_js",
-      "community": 152,
+      "community": 151,
       "norm_label": "razorpay.js"
     },
     {
@@ -648,7 +648,7 @@
       "source_file": "backend\\routes\\trading.js",
       "source_location": "L1",
       "id": "backend_routes_trading_js",
-      "community": 153,
+      "community": 152,
       "norm_label": "trading.js"
     },
     {
@@ -657,7 +657,7 @@
       "source_file": "backend\\routes\\users.js",
       "source_location": "L1",
       "id": "backend_routes_users_js",
-      "community": 154,
+      "community": 153,
       "norm_label": "users.js"
     },
     {
@@ -666,7 +666,7 @@
       "source_file": "backend\\routes\\webhook.js",
       "source_location": "L1",
       "id": "backend_routes_webhook_js",
-      "community": 155,
+      "community": 154,
       "norm_label": "webhook.js"
     },
     {
@@ -936,7 +936,7 @@
       "source_file": "backend\\services\\mysqlService.js",
       "source_location": "L1",
       "id": "backend_services_mysqlservice_js",
-      "community": 15,
+      "community": 16,
       "norm_label": "mysqlservice.js"
     },
     {
@@ -945,7 +945,7 @@
       "source_file": "backend\\services\\mysqlService.js",
       "source_location": "L110",
       "id": "mysqlservice_parsemysqlurl",
-      "community": 15,
+      "community": 16,
       "norm_label": "parsemysqlurl()"
     },
     {
@@ -954,7 +954,7 @@
       "source_file": "backend\\services\\mysqlService.js",
       "source_location": "L133",
       "id": "mysqlservice_getmysqlconfig",
-      "community": 15,
+      "community": 16,
       "norm_label": "getmysqlconfig()"
     },
     {
@@ -963,7 +963,7 @@
       "source_file": "backend\\services\\mysqlService.js",
       "source_location": "L158",
       "id": "mysqlservice_hasmysqlconfig",
-      "community": 15,
+      "community": 16,
       "norm_label": "hasmysqlconfig()"
     },
     {
@@ -972,7 +972,7 @@
       "source_file": "backend\\services\\mysqlService.js",
       "source_location": "L160",
       "id": "mysqlservice_getpool",
-      "community": 15,
+      "community": 16,
       "norm_label": "getpool()"
     },
     {
@@ -981,7 +981,7 @@
       "source_file": "backend\\services\\mysqlService.js",
       "source_location": "L186",
       "id": "mysqlservice_ensureusermanagementschema",
-      "community": 15,
+      "community": 16,
       "norm_label": "ensureusermanagementschema()"
     },
     {
@@ -990,7 +990,7 @@
       "source_file": "backend\\services\\mysqlService.js",
       "source_location": "L198",
       "id": "mysqlservice_withtransaction",
-      "community": 15,
+      "community": 16,
       "norm_label": "withtransaction()"
     },
     {
@@ -999,7 +999,7 @@
       "source_file": "backend\\services\\mysqlService.js",
       "source_location": "L215",
       "id": "mysqlservice_query",
-      "community": 15,
+      "community": 16,
       "norm_label": "query()"
     },
     {
@@ -1737,7 +1737,7 @@
       "source_file": "frontend\\eslint.config.js",
       "source_location": "L1",
       "id": "frontend_eslint_config_js",
-      "community": 156,
+      "community": 155,
       "norm_label": "eslint.config.js"
     },
     {
@@ -1746,7 +1746,7 @@
       "source_file": "frontend\\postcss.config.js",
       "source_location": "L1",
       "id": "frontend_postcss_config_js",
-      "community": 157,
+      "community": 156,
       "norm_label": "postcss.config.js"
     },
     {
@@ -1755,7 +1755,7 @@
       "source_file": "frontend\\tailwind.config.js",
       "source_location": "L1",
       "id": "frontend_tailwind_config_js",
-      "community": 158,
+      "community": 157,
       "norm_label": "tailwind.config.js"
     },
     {
@@ -1764,7 +1764,7 @@
       "source_file": "frontend\\vite.config.js",
       "source_location": "L1",
       "id": "frontend_vite_config_js",
-      "community": 159,
+      "community": 158,
       "norm_label": "vite.config.js"
     },
     {
@@ -1773,70 +1773,79 @@
       "source_file": "frontend\\src\\App.jsx",
       "source_location": "L1",
       "id": "frontend_src_app_jsx",
-      "community": 16,
+      "community": 13,
       "norm_label": "app.jsx"
+    },
+    {
+      "label": "AppShellFallback()",
+      "file_type": "code",
+      "source_file": "frontend\\src\\App.jsx",
+      "source_location": "L87",
+      "id": "app_appshellfallback",
+      "community": 13,
+      "norm_label": "appshellfallback()"
     },
     {
       "label": "getHomePathForRole()",
       "file_type": "code",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L87",
+      "source_location": "L100",
       "id": "app_gethomepathforrole",
-      "community": 16,
+      "community": 13,
       "norm_label": "gethomepathforrole()"
     },
     {
       "label": "ProtectedAdmin()",
       "file_type": "code",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L94",
+      "source_location": "L107",
       "id": "app_protectedadmin",
-      "community": 16,
+      "community": 13,
       "norm_label": "protectedadmin()"
     },
     {
       "label": "ProtectedEmployee()",
       "file_type": "code",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L107",
+      "source_location": "L120",
       "id": "app_protectedemployee",
-      "community": 16,
+      "community": 13,
       "norm_label": "protectedemployee()"
     },
     {
       "label": "ProtectedCustomer()",
       "file_type": "code",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L118",
+      "source_location": "L131",
       "id": "app_protectedcustomer",
-      "community": 16,
+      "community": 13,
       "norm_label": "protectedcustomer()"
     },
     {
       "label": "RoleRedirect()",
       "file_type": "code",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L129",
+      "source_location": "L142",
       "id": "app_roleredirect",
-      "community": 16,
+      "community": 13,
       "norm_label": "roleredirect()"
     },
     {
       "label": "AppContent()",
       "file_type": "code",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L136",
+      "source_location": "L149",
       "id": "app_appcontent",
-      "community": 16,
+      "community": 13,
       "norm_label": "appcontent()"
     },
     {
       "label": "App()",
       "file_type": "code",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L254",
+      "source_location": "L267",
       "id": "app_app",
-      "community": 16,
+      "community": 13,
       "norm_label": "app()"
     },
     {
@@ -1845,7 +1854,7 @@
       "source_file": "frontend\\src\\main.jsx",
       "source_location": "L1",
       "id": "frontend_src_main_jsx",
-      "community": 160,
+      "community": 159,
       "norm_label": "main.jsx"
     },
     {
@@ -2461,30 +2470,12 @@
       "norm_label": "layout()"
     },
     {
-      "label": "LoadingScreen.jsx",
-      "file_type": "code",
-      "source_file": "frontend\\src\\components\\LoadingScreen.jsx",
-      "source_location": "L1",
-      "id": "frontend_src_components_loadingscreen_jsx",
-      "community": 92,
-      "norm_label": "loadingscreen.jsx"
-    },
-    {
-      "label": "LoadingScreen()",
-      "file_type": "code",
-      "source_file": "frontend\\src\\components\\LoadingScreen.jsx",
-      "source_location": "L3",
-      "id": "loadingscreen_loadingscreen",
-      "community": 92,
-      "norm_label": "loadingscreen()"
-    },
-    {
       "label": "MobileRequiredPopup.jsx",
       "file_type": "code",
       "source_file": "frontend\\src\\components\\MobileRequiredPopup.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_mobilerequiredpopup_jsx",
-      "community": 93,
+      "community": 92,
       "norm_label": "mobilerequiredpopup.jsx"
     },
     {
@@ -2493,7 +2484,7 @@
       "source_file": "frontend\\src\\components\\MobileRequiredPopup.jsx",
       "source_location": "L6",
       "id": "mobilerequiredpopup_mobilerequiredpopup",
-      "community": 93,
+      "community": 92,
       "norm_label": "mobilerequiredpopup()"
     },
     {
@@ -2502,7 +2493,7 @@
       "source_file": "frontend\\src\\components\\Navbar.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_navbar_jsx",
-      "community": 94,
+      "community": 93,
       "norm_label": "navbar.jsx"
     },
     {
@@ -2511,7 +2502,7 @@
       "source_file": "frontend\\src\\components\\Navbar.jsx",
       "source_location": "L6",
       "id": "navbar_navbar",
-      "community": 94,
+      "community": 93,
       "norm_label": "navbar()"
     },
     {
@@ -2556,7 +2547,7 @@
       "source_file": "frontend\\src\\components\\Popup.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_popup_jsx",
-      "community": 95,
+      "community": 94,
       "norm_label": "popup.jsx"
     },
     {
@@ -2565,7 +2556,7 @@
       "source_file": "frontend\\src\\components\\Popup.jsx",
       "source_location": "L3",
       "id": "popup_popup",
-      "community": 95,
+      "community": 94,
       "norm_label": "popup()"
     },
     {
@@ -2574,7 +2565,7 @@
       "source_file": "frontend\\src\\components\\ProjectCard.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_projectcard_jsx",
-      "community": 96,
+      "community": 95,
       "norm_label": "projectcard.jsx"
     },
     {
@@ -2583,7 +2574,7 @@
       "source_file": "frontend\\src\\components\\ProjectCard.jsx",
       "source_location": "L3",
       "id": "projectcard_projectcard",
-      "community": 96,
+      "community": 95,
       "norm_label": "projectcard()"
     },
     {
@@ -2592,7 +2583,7 @@
       "source_file": "frontend\\src\\components\\SEO.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_seo_jsx",
-      "community": 97,
+      "community": 96,
       "norm_label": "seo.jsx"
     },
     {
@@ -2601,7 +2592,7 @@
       "source_file": "frontend\\src\\components\\SEO.jsx",
       "source_location": "L3",
       "id": "seo_seo",
-      "community": 97,
+      "community": 96,
       "norm_label": "seo()"
     },
     {
@@ -2610,7 +2601,7 @@
       "source_file": "frontend\\src\\components\\Services.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_services_jsx",
-      "community": 23,
+      "community": 27,
       "norm_label": "services.jsx"
     },
     {
@@ -2619,7 +2610,7 @@
       "source_file": "frontend\\src\\pages\\Services.jsx",
       "source_location": "L87",
       "id": "services_services",
-      "community": 23,
+      "community": 27,
       "norm_label": "services()"
     },
     {
@@ -2628,7 +2619,7 @@
       "source_file": "frontend\\src\\components\\TeamMemberCard.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_teammembercard_jsx",
-      "community": 98,
+      "community": 97,
       "norm_label": "teammembercard.jsx"
     },
     {
@@ -2637,7 +2628,7 @@
       "source_file": "frontend\\src\\components\\TeamMemberCard.jsx",
       "source_location": "L3",
       "id": "teammembercard_teammembercard",
-      "community": 98,
+      "community": 97,
       "norm_label": "teammembercard()"
     },
     {
@@ -2646,7 +2637,7 @@
       "source_file": "frontend\\src\\components\\TermsAndConditions.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_termsandconditions_jsx",
-      "community": 99,
+      "community": 98,
       "norm_label": "termsandconditions.jsx"
     },
     {
@@ -2655,7 +2646,7 @@
       "source_file": "frontend\\src\\components\\TermsAndConditions.jsx",
       "source_location": "L3",
       "id": "termsandconditions_termsandconditions",
-      "community": 99,
+      "community": 98,
       "norm_label": "termsandconditions()"
     },
     {
@@ -2709,7 +2700,7 @@
       "source_file": "frontend\\src\\components\\public\\PublicPageShell.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_public_publicpageshell_jsx",
-      "community": 24,
+      "community": 23,
       "norm_label": "publicpageshell.jsx"
     },
     {
@@ -2718,7 +2709,7 @@
       "source_file": "frontend\\src\\components\\public\\PublicPageShell.jsx",
       "source_location": "L3",
       "id": "publicpageshell_joinclasses",
-      "community": 24,
+      "community": 23,
       "norm_label": "joinclasses()"
     },
     {
@@ -2727,7 +2718,7 @@
       "source_file": "frontend\\src\\components\\public\\PublicPageShell.jsx",
       "source_location": "L5",
       "id": "publicpageshell_actionbutton",
-      "community": 24,
+      "community": 23,
       "norm_label": "actionbutton()"
     },
     {
@@ -2736,7 +2727,7 @@
       "source_file": "frontend\\src\\components\\public\\PublicPageShell.jsx",
       "source_location": "L35",
       "id": "publicpageshell_publicglasscard",
-      "community": 24,
+      "community": 23,
       "norm_label": "publicglasscard()"
     },
     {
@@ -2745,7 +2736,7 @@
       "source_file": "frontend\\src\\components\\public\\PublicPageShell.jsx",
       "source_location": "L48",
       "id": "publicpageshell_publicsection",
-      "community": 24,
+      "community": 23,
       "norm_label": "publicsection()"
     },
     {
@@ -2754,7 +2745,7 @@
       "source_file": "frontend\\src\\components\\public\\PublicPageShell.jsx",
       "source_location": "L59",
       "id": "publicpageshell_publicsectionheading",
-      "community": 24,
+      "community": 23,
       "norm_label": "publicsectionheading()"
     },
     {
@@ -2763,7 +2754,7 @@
       "source_file": "frontend\\src\\components\\public\\PublicPageShell.jsx",
       "source_location": "L76",
       "id": "publicpageshell_publicpageshell",
-      "community": 24,
+      "community": 23,
       "norm_label": "publicpageshell()"
     },
     {
@@ -2934,7 +2925,7 @@
       "source_file": "frontend\\src\\customer\\CustomerLayout.jsx",
       "source_location": "L1",
       "id": "frontend_src_customer_customerlayout_jsx",
-      "community": 100,
+      "community": 99,
       "norm_label": "customerlayout.jsx"
     },
     {
@@ -2943,7 +2934,7 @@
       "source_file": "frontend\\src\\customer\\CustomerLayout.jsx",
       "source_location": "L25",
       "id": "customerlayout_customerlayout",
-      "community": 100,
+      "community": 99,
       "norm_label": "customerlayout()"
     },
     {
@@ -2952,7 +2943,7 @@
       "source_file": "frontend\\src\\customer\\CustomerMyCourses.jsx",
       "source_location": "L1",
       "id": "frontend_src_customer_customermycourses_jsx",
-      "community": 101,
+      "community": 100,
       "norm_label": "customermycourses.jsx"
     },
     {
@@ -2961,7 +2952,7 @@
       "source_file": "frontend\\src\\customer\\CustomerMyCourses.jsx",
       "source_location": "L7",
       "id": "customermycourses_customermycourses",
-      "community": 101,
+      "community": 100,
       "norm_label": "customermycourses()"
     },
     {
@@ -2970,7 +2961,7 @@
       "source_file": "frontend\\src\\customer\\CustomerOrders.jsx",
       "source_location": "L1",
       "id": "frontend_src_customer_customerorders_jsx",
-      "community": 102,
+      "community": 101,
       "norm_label": "customerorders.jsx"
     },
     {
@@ -2979,7 +2970,7 @@
       "source_file": "frontend\\src\\customer\\CustomerOrders.jsx",
       "source_location": "L5",
       "id": "customerorders_customerorders",
-      "community": 102,
+      "community": 101,
       "norm_label": "customerorders()"
     },
     {
@@ -2988,7 +2979,7 @@
       "source_file": "frontend\\src\\customer\\CustomerOverview.jsx",
       "source_location": "L1",
       "id": "frontend_src_customer_customeroverview_jsx",
-      "community": 103,
+      "community": 102,
       "norm_label": "customeroverview.jsx"
     },
     {
@@ -2997,7 +2988,7 @@
       "source_file": "frontend\\src\\customer\\CustomerOverview.jsx",
       "source_location": "L6",
       "id": "customeroverview_customeroverview",
-      "community": 103,
+      "community": 102,
       "norm_label": "customeroverview()"
     },
     {
@@ -3006,7 +2997,7 @@
       "source_file": "frontend\\src\\customer\\CustomerProfile.jsx",
       "source_location": "L1",
       "id": "frontend_src_customer_customerprofile_jsx",
-      "community": 25,
+      "community": 24,
       "norm_label": "customerprofile.jsx"
     },
     {
@@ -3015,7 +3006,7 @@
       "source_file": "frontend\\src\\customer\\CustomerProfile.jsx",
       "source_location": "L6",
       "id": "customerprofile_createprofileform",
-      "community": 25,
+      "community": 24,
       "norm_label": "createprofileform()"
     },
     {
@@ -3024,7 +3015,7 @@
       "source_file": "frontend\\src\\customer\\CustomerProfile.jsx",
       "source_location": "L14",
       "id": "customerprofile_getinitials",
-      "community": 25,
+      "community": 24,
       "norm_label": "getinitials()"
     },
     {
@@ -3033,7 +3024,7 @@
       "source_file": "frontend\\src\\customer\\CustomerProfile.jsx",
       "source_location": "L22",
       "id": "customerprofile_sanitizefilename",
-      "community": 25,
+      "community": 24,
       "norm_label": "sanitizefilename()"
     },
     {
@@ -3042,7 +3033,7 @@
       "source_file": "frontend\\src\\customer\\CustomerProfile.jsx",
       "source_location": "L29",
       "id": "customerprofile_formatjoineddate",
-      "community": 25,
+      "community": 24,
       "norm_label": "formatjoineddate()"
     },
     {
@@ -3051,7 +3042,7 @@
       "source_file": "frontend\\src\\customer\\CustomerProfile.jsx",
       "source_location": "L46",
       "id": "customerprofile_fieldlabel",
-      "community": 25,
+      "community": 24,
       "norm_label": "fieldlabel()"
     },
     {
@@ -3060,7 +3051,7 @@
       "source_file": "frontend\\src\\customer\\CustomerProfile.jsx",
       "source_location": "L50",
       "id": "customerprofile_customerprofile",
-      "community": 25,
+      "community": 24,
       "norm_label": "customerprofile()"
     },
     {
@@ -3069,7 +3060,7 @@
       "source_file": "frontend\\src\\customer\\CustomerSupport.jsx",
       "source_location": "L1",
       "id": "frontend_src_customer_customersupport_jsx",
-      "community": 104,
+      "community": 103,
       "norm_label": "customersupport.jsx"
     },
     {
@@ -3078,7 +3069,7 @@
       "source_file": "frontend\\src\\customer\\CustomerSupport.jsx",
       "source_location": "L6",
       "id": "customersupport_customersupport",
-      "community": 104,
+      "community": 103,
       "norm_label": "customersupport()"
     },
     {
@@ -3087,7 +3078,7 @@
       "source_file": "frontend\\src\\editing\\EditingService.jsx",
       "source_location": "L1",
       "id": "frontend_src_editing_editingservice_jsx",
-      "community": 105,
+      "community": 104,
       "norm_label": "editingservice.jsx"
     },
     {
@@ -3096,7 +3087,7 @@
       "source_file": "frontend\\src\\editing\\EditingService.jsx",
       "source_location": "L5",
       "id": "editingservice_editingservice",
-      "community": 105,
+      "community": 104,
       "norm_label": "editingservice()"
     },
     {
@@ -3105,7 +3096,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeBroadcast.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_employeebroadcast_jsx",
-      "community": 106,
+      "community": 105,
       "norm_label": "employeebroadcast.jsx"
     },
     {
@@ -3114,7 +3105,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeBroadcast.jsx",
       "source_location": "L7",
       "id": "employeebroadcast_employeebroadcast",
-      "community": 106,
+      "community": 105,
       "norm_label": "employeebroadcast()"
     },
     {
@@ -3123,7 +3114,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeBroadcastRefined.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_employeebroadcastrefined_jsx",
-      "community": 107,
+      "community": 106,
       "norm_label": "employeebroadcastrefined.jsx"
     },
     {
@@ -3132,7 +3123,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeBroadcastRefined.jsx",
       "source_location": "L19",
       "id": "employeebroadcastrefined_employeebroadcastrefined",
-      "community": 107,
+      "community": 106,
       "norm_label": "employeebroadcastrefined()"
     },
     {
@@ -3141,7 +3132,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeChat.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_employeechat_jsx",
-      "community": 108,
+      "community": 107,
       "norm_label": "employeechat.jsx"
     },
     {
@@ -3150,7 +3141,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeChat.jsx",
       "source_location": "L3",
       "id": "employeechat_employeechat",
-      "community": 108,
+      "community": 107,
       "norm_label": "employeechat()"
     },
     {
@@ -3159,7 +3150,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeChatRefined.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_employeechatrefined_jsx",
-      "community": 109,
+      "community": 108,
       "norm_label": "employeechatrefined.jsx"
     },
     {
@@ -3168,7 +3159,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeChatRefined.jsx",
       "source_location": "L4",
       "id": "employeechatrefined_employeechatrefined",
-      "community": 109,
+      "community": 108,
       "norm_label": "employeechatrefined()"
     },
     {
@@ -3177,79 +3168,79 @@
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_employeecoursemanage_jsx",
-      "community": 13,
+      "community": 14,
       "norm_label": "employeecoursemanage.jsx"
     },
     {
       "label": "normalizeText()",
       "file_type": "code",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L20",
+      "source_location": "L37",
       "id": "employeecoursemanage_normalizetext",
-      "community": 13,
+      "community": 14,
       "norm_label": "normalizetext()"
     },
     {
       "label": "compactText()",
       "file_type": "code",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L21",
+      "source_location": "L38",
       "id": "employeecoursemanage_compacttext",
-      "community": 13,
+      "community": 14,
       "norm_label": "compacttext()"
     },
     {
       "label": "buildPlanId()",
       "file_type": "code",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L23",
+      "source_location": "L40",
       "id": "employeecoursemanage_buildplanid",
-      "community": 13,
+      "community": 14,
       "norm_label": "buildplanid()"
     },
     {
       "label": "formatDateTimeInput()",
       "file_type": "code",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L28",
+      "source_location": "L45",
       "id": "employeecoursemanage_formatdatetimeinput",
-      "community": 13,
+      "community": 14,
       "norm_label": "formatdatetimeinput()"
     },
     {
       "label": "formatMeetingPreview()",
       "file_type": "code",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L36",
+      "source_location": "L53",
       "id": "employeecoursemanage_formatmeetingpreview",
-      "community": 13,
+      "community": 14,
       "norm_label": "formatmeetingpreview()"
     },
     {
       "label": "matchesPlanEnrollment()",
       "file_type": "code",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L51",
+      "source_location": "L68",
       "id": "employeecoursemanage_matchesplanenrollment",
-      "community": 13,
+      "community": 14,
       "norm_label": "matchesplanenrollment()"
     },
     {
       "label": "resolvePlanMeetingLink()",
       "file_type": "code",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L101",
+      "source_location": "L118",
       "id": "employeecoursemanage_resolveplanmeetinglink",
-      "community": 13,
+      "community": 14,
       "norm_label": "resolveplanmeetinglink()"
     },
     {
       "label": "EmployeeCourseManage()",
       "file_type": "code",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L108",
+      "source_location": "L125",
       "id": "employeecoursemanage_employeecoursemanage",
-      "community": 13,
+      "community": 14,
       "norm_label": "employeecoursemanage()"
     },
     {
@@ -3258,7 +3249,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeCourseManageRefined.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_employeecoursemanagerefined_jsx",
-      "community": 110,
+      "community": 109,
       "norm_label": "employeecoursemanagerefined.jsx"
     },
     {
@@ -3267,7 +3258,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeCourseManageRefined.jsx",
       "source_location": "L13",
       "id": "employeecoursemanagerefined_employeecoursemanagerefined",
-      "community": 110,
+      "community": 109,
       "norm_label": "employeecoursemanagerefined()"
     },
     {
@@ -3276,7 +3267,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeHomeDashboard.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_employeehomedashboard_jsx",
-      "community": 26,
+      "community": 25,
       "norm_label": "employeehomedashboard.jsx"
     },
     {
@@ -3285,7 +3276,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeHomeDashboard.jsx",
       "source_location": "L6",
       "id": "employeehomedashboard_normalize",
-      "community": 26,
+      "community": 25,
       "norm_label": "normalize()"
     },
     {
@@ -3294,7 +3285,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeHomeDashboard.jsx",
       "source_location": "L7",
       "id": "employeehomedashboard_isdone",
-      "community": 26,
+      "community": 25,
       "norm_label": "isdone()"
     },
     {
@@ -3303,7 +3294,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeHomeDashboard.jsx",
       "source_location": "L8",
       "id": "employeehomedashboard_isprogress",
-      "community": 26,
+      "community": 25,
       "norm_label": "isprogress()"
     },
     {
@@ -3312,7 +3303,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeHomeDashboard.jsx",
       "source_location": "L10",
       "id": "employeehomedashboard_gettimevalue",
-      "community": 26,
+      "community": 25,
       "norm_label": "gettimevalue()"
     },
     {
@@ -3321,7 +3312,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeHomeDashboard.jsx",
       "source_location": "L18",
       "id": "employeehomedashboard_formattimeago",
-      "community": 26,
+      "community": 25,
       "norm_label": "formattimeago()"
     },
     {
@@ -3330,7 +3321,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeHomeDashboard.jsx",
       "source_location": "L28",
       "id": "employeehomedashboard_employeehomedashboard",
-      "community": 26,
+      "community": 25,
       "norm_label": "employeehomedashboard()"
     },
     {
@@ -3339,7 +3330,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeLayout.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_employeelayout_jsx",
-      "community": 111,
+      "community": 110,
       "norm_label": "employeelayout.jsx"
     },
     {
@@ -3348,7 +3339,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeLayout.jsx",
       "source_location": "L29",
       "id": "employeelayout_employeelayout",
-      "community": 111,
+      "community": 110,
       "norm_label": "employeelayout()"
     },
     {
@@ -3357,7 +3348,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeLogin.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_employeelogin_jsx",
-      "community": 112,
+      "community": 111,
       "norm_label": "employeelogin.jsx"
     },
     {
@@ -3366,7 +3357,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeLogin.jsx",
       "source_location": "L7",
       "id": "employeelogin_employeelogin",
-      "community": 112,
+      "community": 111,
       "norm_label": "employeelogin()"
     },
     {
@@ -3375,7 +3366,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeOverview.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_employeeoverview_jsx",
-      "community": 113,
+      "community": 112,
       "norm_label": "employeeoverview.jsx"
     },
     {
@@ -3384,7 +3375,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeOverview.jsx",
       "source_location": "L3",
       "id": "employeeoverview_employeeoverview",
-      "community": 113,
+      "community": 112,
       "norm_label": "employeeoverview()"
     },
     {
@@ -3438,7 +3429,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeProfile.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_employeeprofile_jsx",
-      "community": 114,
+      "community": 113,
       "norm_label": "employeeprofile.jsx"
     },
     {
@@ -3447,7 +3438,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeProfile.jsx",
       "source_location": "L4",
       "id": "employeeprofile_employeeprofile",
-      "community": 114,
+      "community": 113,
       "norm_label": "employeeprofile()"
     },
     {
@@ -3483,7 +3474,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeProjects.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_employeeprojects_jsx",
-      "community": 115,
+      "community": 114,
       "norm_label": "employeeprojects.jsx"
     },
     {
@@ -3492,7 +3483,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeProjects.jsx",
       "source_location": "L5",
       "id": "employeeprojects_employeeprojects",
-      "community": 115,
+      "community": 114,
       "norm_label": "employeeprojects()"
     },
     {
@@ -3537,7 +3528,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeTasks.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_employeetasks_jsx",
-      "community": 116,
+      "community": 115,
       "norm_label": "employeetasks.jsx"
     },
     {
@@ -3546,7 +3537,7 @@
       "source_file": "frontend\\src\\employee\\EmployeeTasks.jsx",
       "source_location": "L22",
       "id": "employeetasks_employeetasks",
-      "community": 116,
+      "community": 115,
       "norm_label": "employeetasks()"
     },
     {
@@ -3690,7 +3681,7 @@
       "source_file": "frontend\\src\\employee\\SellProjectRequest.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_sellprojectrequest_jsx",
-      "community": 117,
+      "community": 116,
       "norm_label": "sellprojectrequest.jsx"
     },
     {
@@ -3699,7 +3690,7 @@
       "source_file": "frontend\\src\\employee\\SellProjectRequest.jsx",
       "source_location": "L7",
       "id": "sellprojectrequest_sellprojectrequest",
-      "community": 117,
+      "community": 116,
       "norm_label": "sellprojectrequest()"
     },
     {
@@ -3708,7 +3699,7 @@
       "source_file": "frontend\\src\\employee\\SellProjectRequestRefined.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_sellprojectrequestrefined_jsx",
-      "community": 118,
+      "community": 117,
       "norm_label": "sellprojectrequestrefined.jsx"
     },
     {
@@ -3717,7 +3708,7 @@
       "source_file": "frontend\\src\\employee\\SellProjectRequestRefined.jsx",
       "source_location": "L13",
       "id": "sellprojectrequestrefined_sellprojectrequestrefined",
-      "community": 118,
+      "community": 117,
       "norm_label": "sellprojectrequestrefined()"
     },
     {
@@ -3726,7 +3717,7 @@
       "source_file": "frontend\\src\\employee\\TeamMemberDashboard.jsx",
       "source_location": "L1",
       "id": "frontend_src_employee_teammemberdashboard_jsx",
-      "community": 27,
+      "community": 26,
       "norm_label": "teammemberdashboard.jsx"
     },
     {
@@ -3735,7 +3726,7 @@
       "source_file": "frontend\\src\\employee\\TeamMemberDashboard.jsx",
       "source_location": "L6",
       "id": "teammemberdashboard_normalize",
-      "community": 27,
+      "community": 26,
       "norm_label": "normalize()"
     },
     {
@@ -3744,7 +3735,7 @@
       "source_file": "frontend\\src\\employee\\TeamMemberDashboard.jsx",
       "source_location": "L7",
       "id": "teammemberdashboard_isdone",
-      "community": 27,
+      "community": 26,
       "norm_label": "isdone()"
     },
     {
@@ -3753,7 +3744,7 @@
       "source_file": "frontend\\src\\employee\\TeamMemberDashboard.jsx",
       "source_location": "L8",
       "id": "teammemberdashboard_isprogress",
-      "community": 27,
+      "community": 26,
       "norm_label": "isprogress()"
     },
     {
@@ -3762,7 +3753,7 @@
       "source_file": "frontend\\src\\employee\\TeamMemberDashboard.jsx",
       "source_location": "L10",
       "id": "teammemberdashboard_gettimevalue",
-      "community": 27,
+      "community": 26,
       "norm_label": "gettimevalue()"
     },
     {
@@ -3771,7 +3762,7 @@
       "source_file": "frontend\\src\\employee\\TeamMemberDashboard.jsx",
       "source_location": "L18",
       "id": "teammemberdashboard_formattimeago",
-      "community": 27,
+      "community": 26,
       "norm_label": "formattimeago()"
     },
     {
@@ -3780,7 +3771,7 @@
       "source_file": "frontend\\src\\employee\\TeamMemberDashboard.jsx",
       "source_location": "L28",
       "id": "teammemberdashboard_teammemberdashboard",
-      "community": 27,
+      "community": 26,
       "norm_label": "teammemberdashboard()"
     },
     {
@@ -3825,7 +3816,7 @@
       "source_file": "frontend\\src\\pages\\AboutTradingMentorship.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_abouttradingmentorship_jsx",
-      "community": 119,
+      "community": 118,
       "norm_label": "abouttradingmentorship.jsx"
     },
     {
@@ -3834,7 +3825,7 @@
       "source_file": "frontend\\src\\pages\\AboutTradingMentorship.jsx",
       "source_location": "L3",
       "id": "abouttradingmentorship_abouttradingmentorship",
-      "community": 119,
+      "community": 118,
       "norm_label": "abouttradingmentorship()"
     },
     {
@@ -3843,7 +3834,7 @@
       "source_file": "frontend\\src\\pages\\ChatPage.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_chatpage_jsx",
-      "community": 120,
+      "community": 119,
       "norm_label": "chatpage.jsx"
     },
     {
@@ -3852,7 +3843,7 @@
       "source_file": "frontend\\src\\pages\\ChatPage.jsx",
       "source_location": "L8",
       "id": "chatpage_chatpage",
-      "community": 120,
+      "community": 119,
       "norm_label": "chatpage()"
     },
     {
@@ -3888,7 +3879,7 @@
       "source_file": "frontend\\src\\pages\\ComingSoon.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_comingsoon_jsx",
-      "community": 121,
+      "community": 120,
       "norm_label": "comingsoon.jsx"
     },
     {
@@ -3897,7 +3888,7 @@
       "source_file": "frontend\\src\\pages\\ComingSoon.jsx",
       "source_location": "L4",
       "id": "comingsoon_comingsoon",
-      "community": 121,
+      "community": 120,
       "norm_label": "comingsoon()"
     },
     {
@@ -4041,7 +4032,7 @@
       "source_file": "frontend\\src\\pages\\CustomerSignup.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_customersignup_jsx",
-      "community": 122,
+      "community": 121,
       "norm_label": "customersignup.jsx"
     },
     {
@@ -4050,7 +4041,7 @@
       "source_file": "frontend\\src\\pages\\CustomerSignup.jsx",
       "source_location": "L6",
       "id": "customersignup_customersignup",
-      "community": 122,
+      "community": 121,
       "norm_label": "customersignup()"
     },
     {
@@ -4059,7 +4050,7 @@
       "source_file": "frontend\\src\\pages\\CustomProject.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_customproject_jsx",
-      "community": 123,
+      "community": 122,
       "norm_label": "customproject.jsx"
     },
     {
@@ -4068,7 +4059,7 @@
       "source_file": "frontend\\src\\pages\\CustomProject.jsx",
       "source_location": "L6",
       "id": "customproject_customproject",
-      "community": 123,
+      "community": 122,
       "norm_label": "customproject()"
     },
     {
@@ -4077,7 +4068,7 @@
       "source_file": "frontend\\src\\pages\\help.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_help_jsx",
-      "community": 124,
+      "community": 123,
       "norm_label": "help.jsx"
     },
     {
@@ -4086,7 +4077,7 @@
       "source_file": "frontend\\src\\pages\\help.jsx",
       "source_location": "L1",
       "id": "help_services",
-      "community": 124,
+      "community": 123,
       "norm_label": "services()"
     },
     {
@@ -4095,7 +4086,7 @@
       "source_file": "frontend\\src\\pages\\LoginPage.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_loginpage_jsx",
-      "community": 125,
+      "community": 124,
       "norm_label": "loginpage.jsx"
     },
     {
@@ -4104,7 +4095,7 @@
       "source_file": "frontend\\src\\pages\\LoginPage.jsx",
       "source_location": "L7",
       "id": "loginpage_loginpage",
-      "community": 125,
+      "community": 124,
       "norm_label": "loginpage()"
     },
     {
@@ -4113,7 +4104,7 @@
       "source_file": "frontend\\src\\pages\\ProjectDetails.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_projectdetails_jsx",
-      "community": 126,
+      "community": 125,
       "norm_label": "projectdetails.jsx"
     },
     {
@@ -4122,7 +4113,7 @@
       "source_file": "frontend\\src\\pages\\ProjectDetails.jsx",
       "source_location": "L7",
       "id": "projectdetails_projectdetails",
-      "community": 126,
+      "community": 125,
       "norm_label": "projectdetails()"
     },
     {
@@ -4158,7 +4149,7 @@
       "source_file": "frontend\\src\\pages\\PublicEmployeeProfile.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_publicemployeeprofile_jsx",
-      "community": 14,
+      "community": 15,
       "norm_label": "publicemployeeprofile.jsx"
     },
     {
@@ -4167,7 +4158,7 @@
       "source_file": "frontend\\src\\pages\\PublicEmployeeProfile.jsx",
       "source_location": "L7",
       "id": "publicemployeeprofile_normalize",
-      "community": 14,
+      "community": 15,
       "norm_label": "normalize()"
     },
     {
@@ -4176,7 +4167,7 @@
       "source_file": "frontend\\src\\pages\\PublicEmployeeProfile.jsx",
       "source_location": "L9",
       "id": "publicemployeeprofile_normalizeteam",
-      "community": 14,
+      "community": 15,
       "norm_label": "normalizeteam()"
     },
     {
@@ -4185,7 +4176,7 @@
       "source_file": "frontend\\src\\pages\\PublicEmployeeProfile.jsx",
       "source_location": "L72",
       "id": "publicemployeeprofile_getmemberkeys",
-      "community": 14,
+      "community": 15,
       "norm_label": "getmemberkeys()"
     },
     {
@@ -4194,7 +4185,7 @@
       "source_file": "frontend\\src\\pages\\PublicEmployeeProfile.jsx",
       "source_location": "L82",
       "id": "publicemployeeprofile_getmemberkey",
-      "community": 14,
+      "community": 15,
       "norm_label": "getmemberkey()"
     },
     {
@@ -4203,7 +4194,7 @@
       "source_file": "frontend\\src\\pages\\PublicEmployeeProfile.jsx",
       "source_location": "L84",
       "id": "publicemployeeprofile_getimageurl",
-      "community": 14,
+      "community": 15,
       "norm_label": "getimageurl()"
     },
     {
@@ -4212,7 +4203,7 @@
       "source_file": "frontend\\src\\pages\\PublicEmployeeProfile.jsx",
       "source_location": "L110",
       "id": "publicemployeeprofile_sociallinks",
-      "community": 14,
+      "community": 15,
       "norm_label": "sociallinks()"
     },
     {
@@ -4221,7 +4212,7 @@
       "source_file": "frontend\\src\\pages\\PublicEmployeeProfile.jsx",
       "source_location": "L151",
       "id": "publicemployeeprofile_profileicon",
-      "community": 14,
+      "community": 15,
       "norm_label": "profileicon()"
     },
     {
@@ -4230,7 +4221,7 @@
       "source_file": "frontend\\src\\pages\\PublicEmployeeProfile.jsx",
       "source_location": "L173",
       "id": "publicemployeeprofile_publicemployeeprofile",
-      "community": 14,
+      "community": 15,
       "norm_label": "publicemployeeprofile()"
     },
     {
@@ -4239,7 +4230,7 @@
       "source_file": "frontend\\src\\pages\\RequestAccount.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_requestaccount_jsx",
-      "community": 127,
+      "community": 126,
       "norm_label": "requestaccount.jsx"
     },
     {
@@ -4248,7 +4239,7 @@
       "source_file": "frontend\\src\\pages\\RequestAccount.jsx",
       "source_location": "L9",
       "id": "requestaccount_requestaccount",
-      "community": 127,
+      "community": 126,
       "norm_label": "requestaccount()"
     },
     {
@@ -4257,7 +4248,7 @@
       "source_file": "frontend\\src\\pages\\RoleSelect.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_roleselect_jsx",
-      "community": 128,
+      "community": 127,
       "norm_label": "roleselect.jsx"
     },
     {
@@ -4266,7 +4257,7 @@
       "source_file": "frontend\\src\\pages\\RoleSelect.jsx",
       "source_location": "L3",
       "id": "roleselect_roleselect",
-      "community": 128,
+      "community": 127,
       "norm_label": "roleselect()"
     },
     {
@@ -4275,7 +4266,7 @@
       "source_file": "frontend\\src\\pages\\Services.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_services_jsx",
-      "community": 23,
+      "community": 27,
       "norm_label": "services.jsx"
     },
     {
@@ -4284,7 +4275,7 @@
       "source_file": "frontend\\src\\pages\\Services.jsx",
       "source_location": "L30",
       "id": "services_accentbycategory",
-      "community": 23,
+      "community": 27,
       "norm_label": "accentbycategory()"
     },
     {
@@ -4293,7 +4284,7 @@
       "source_file": "frontend\\src\\pages\\Services.jsx",
       "source_location": "L64",
       "id": "services_routeforservice",
-      "community": 23,
+      "community": 27,
       "norm_label": "routeforservice()"
     },
     {
@@ -4302,7 +4293,7 @@
       "source_file": "frontend\\src\\pages\\Services.jsx",
       "source_location": "L73",
       "id": "services_featuresforservice",
-      "community": 23,
+      "community": 27,
       "norm_label": "featuresforservice()"
     },
     {
@@ -4311,7 +4302,7 @@
       "source_file": "frontend\\src\\pages\\Services.jsx",
       "source_location": "L81",
       "id": "services_tabicon",
-      "community": 23,
+      "community": 27,
       "norm_label": "tabicon()"
     },
     {
@@ -4320,7 +4311,7 @@
       "source_file": "frontend\\src\\pages\\VerifyCertificate.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_verifycertificate_jsx",
-      "community": 161,
+      "community": 160,
       "norm_label": "verifycertificate.jsx"
     },
     {
@@ -4374,7 +4365,7 @@
       "source_file": "frontend\\src\\pages\\legal\\GrievanceCell.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_legal_grievancecell_jsx",
-      "community": 129,
+      "community": 128,
       "norm_label": "grievancecell.jsx"
     },
     {
@@ -4383,7 +4374,7 @@
       "source_file": "frontend\\src\\pages\\legal\\GrievanceCell.jsx",
       "source_location": "L4",
       "id": "grievancecell_grievancecell",
-      "community": 129,
+      "community": 128,
       "norm_label": "grievancecell()"
     },
     {
@@ -4392,7 +4383,7 @@
       "source_file": "frontend\\src\\pages\\legal\\PrivacyPolicy.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_legal_privacypolicy_jsx",
-      "community": 130,
+      "community": 129,
       "norm_label": "privacypolicy.jsx"
     },
     {
@@ -4401,7 +4392,7 @@
       "source_file": "frontend\\src\\pages\\legal\\PrivacyPolicy.jsx",
       "source_location": "L4",
       "id": "privacypolicy_privacypolicy",
-      "community": 130,
+      "community": 129,
       "norm_label": "privacypolicy()"
     },
     {
@@ -4410,7 +4401,7 @@
       "source_file": "frontend\\src\\pages\\legal\\RefundPolicy.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_legal_refundpolicy_jsx",
-      "community": 131,
+      "community": 130,
       "norm_label": "refundpolicy.jsx"
     },
     {
@@ -4419,7 +4410,7 @@
       "source_file": "frontend\\src\\pages\\legal\\RefundPolicy.jsx",
       "source_location": "L4",
       "id": "refundpolicy_refundpolicy",
-      "community": 131,
+      "community": 130,
       "norm_label": "refundpolicy()"
     },
     {
@@ -4428,7 +4419,7 @@
       "source_file": "frontend\\src\\pages\\legal\\TermsOfService.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_legal_termsofservice_jsx",
-      "community": 132,
+      "community": 131,
       "norm_label": "termsofservice.jsx"
     },
     {
@@ -4437,7 +4428,7 @@
       "source_file": "frontend\\src\\pages\\legal\\TermsOfService.jsx",
       "source_location": "L4",
       "id": "termsofservice_termsofservice",
-      "community": 132,
+      "community": 131,
       "norm_label": "termsofservice()"
     },
     {
@@ -4545,7 +4536,7 @@
       "source_file": "frontend\\src\\technicalsupport\\RepairService.jsx",
       "source_location": "L1",
       "id": "frontend_src_technicalsupport_repairservice_jsx",
-      "community": 133,
+      "community": 132,
       "norm_label": "repairservice.jsx"
     },
     {
@@ -4554,7 +4545,7 @@
       "source_file": "frontend\\src\\technicalsupport\\RepairService.jsx",
       "source_location": "L5",
       "id": "repairservice_repairservice",
-      "community": 133,
+      "community": 132,
       "norm_label": "repairservice()"
     },
     {
@@ -4563,7 +4554,7 @@
       "source_file": "frontend\\src\\technicalsupport\\TechSupport.jsx",
       "source_location": "L1",
       "id": "frontend_src_technicalsupport_techsupport_jsx",
-      "community": 134,
+      "community": 133,
       "norm_label": "techsupport.jsx"
     },
     {
@@ -4572,7 +4563,7 @@
       "source_file": "frontend\\src\\technicalsupport\\TechSupport.jsx",
       "source_location": "L5",
       "id": "techsupport_techsupport",
-      "community": 134,
+      "community": 133,
       "norm_label": "techsupport()"
     },
     {
@@ -4770,7 +4761,7 @@
       "source_file": "frontend\\src\\utils\\emailNotify.js",
       "source_location": "L1",
       "id": "frontend_src_utils_emailnotify_js",
-      "community": 135,
+      "community": 134,
       "norm_label": "emailnotify.js"
     },
     {
@@ -4779,7 +4770,7 @@
       "source_file": "frontend\\src\\utils\\emailNotify.js",
       "source_location": "L29",
       "id": "emailnotify_emailnotify",
-      "community": 135,
+      "community": 134,
       "norm_label": "emailnotify()"
     },
     {
@@ -4788,7 +4779,7 @@
       "source_file": "frontend\\src\\web-service\\WebService.jsx",
       "source_location": "L1",
       "id": "frontend_src_web_service_webservice_jsx",
-      "community": 136,
+      "community": 135,
       "norm_label": "webservice.jsx"
     },
     {
@@ -4797,7 +4788,7 @@
       "source_file": "frontend\\src\\web-service\\WebService.jsx",
       "source_location": "L5",
       "id": "webservice_webservice",
-      "community": 136,
+      "community": 135,
       "norm_label": "webservice()"
     },
     {
@@ -4806,7 +4797,7 @@
       "source_file": "mobile_app\\android\\build.gradle.kts",
       "source_location": "L1",
       "id": "mobile_app_android_build_gradle_kts",
-      "community": 162,
+      "community": 161,
       "norm_label": "build.gradle.kts"
     },
     {
@@ -4815,7 +4806,7 @@
       "source_file": "mobile_app\\android\\settings.gradle.kts",
       "source_location": "L1",
       "id": "mobile_app_android_settings_gradle_kts",
-      "community": 163,
+      "community": 162,
       "norm_label": "settings.gradle.kts"
     },
     {
@@ -4824,7 +4815,7 @@
       "source_file": "mobile_app\\android\\app\\build.gradle.kts",
       "source_location": "L1",
       "id": "mobile_app_android_app_build_gradle_kts",
-      "community": 164,
+      "community": 163,
       "norm_label": "build.gradle.kts"
     },
     {
@@ -4860,7 +4851,7 @@
       "source_file": "mobile_app\\android\\app\\src\\main\\kotlin\\com\\solutionhub\\mobile_app\\MainActivity.kt",
       "source_location": "L1",
       "id": "mobile_app_android_app_src_main_kotlin_com_solutionhub_mobile_app_mainactivity_kt",
-      "community": 137,
+      "community": 136,
       "norm_label": "mainactivity.kt"
     },
     {
@@ -4869,7 +4860,7 @@
       "source_file": "mobile_app\\android\\app\\src\\main\\kotlin\\com\\solutionhub\\mobile_app\\MainActivity.kt",
       "source_location": "L5",
       "id": "mainactivity_mainactivity",
-      "community": 137,
+      "community": 136,
       "norm_label": "mainactivity"
     },
     {
@@ -4950,7 +4941,7 @@
       "source_file": "mobile_app\\ios\\Runner\\GeneratedPluginRegistrant.h",
       "source_location": "L1",
       "id": "mobile_app_ios_runner_generatedpluginregistrant_h",
-      "community": 165,
+      "community": 164,
       "norm_label": "generatedpluginregistrant.h"
     },
     {
@@ -4977,7 +4968,7 @@
       "source_file": "mobile_app\\ios\\Runner\\Runner-Bridging-Header.h",
       "source_location": "L1",
       "id": "mobile_app_ios_runner_runner_bridging_header_h",
-      "community": 166,
+      "community": 165,
       "norm_label": "runner-bridging-header.h"
     },
     {
@@ -5319,7 +5310,7 @@
       "source_file": "mobile_app\\lib\\config\\app_config.dart",
       "source_location": null,
       "id": "mobile_app_lib_config_app_config_dart",
-      "community": 138,
+      "community": 137,
       "norm_label": "app_config.dart"
     },
     {
@@ -5328,7 +5319,7 @@
       "source_file": "mobile_app\\lib\\config\\app_config.dart",
       "source_location": null,
       "id": "mobile_app_lib_config_app_config_dart_appconfig",
-      "community": 138,
+      "community": 137,
       "norm_label": "appconfig"
     },
     {
@@ -7542,7 +7533,7 @@
       "source_file": "mobile_app\\linux\\flutter\\generated_plugin_registrant.cc",
       "source_location": "L1",
       "id": "mobile_app_linux_flutter_generated_plugin_registrant_cc",
-      "community": 139,
+      "community": 138,
       "norm_label": "generated_plugin_registrant.cc"
     },
     {
@@ -7551,7 +7542,7 @@
       "source_file": "mobile_app\\linux\\flutter\\generated_plugin_registrant.cc",
       "source_location": "L11",
       "id": "generated_plugin_registrant_fl_register_plugins",
-      "community": 139,
+      "community": 138,
       "norm_label": "fl_register_plugins()"
     },
     {
@@ -7560,7 +7551,7 @@
       "source_file": "mobile_app\\linux\\flutter\\generated_plugin_registrant.h",
       "source_location": "L1",
       "id": "mobile_app_linux_flutter_generated_plugin_registrant_h",
-      "community": 167,
+      "community": 166,
       "norm_label": "generated_plugin_registrant.h"
     },
     {
@@ -7569,7 +7560,7 @@
       "source_file": "mobile_app\\linux\\runner\\main.cc",
       "source_location": "L1",
       "id": "mobile_app_linux_runner_main_cc",
-      "community": 140,
+      "community": 139,
       "norm_label": "main.cc"
     },
     {
@@ -7578,7 +7569,7 @@
       "source_file": "mobile_app\\linux\\runner\\main.cc",
       "source_location": "L3",
       "id": "main_main",
-      "community": 140,
+      "community": 139,
       "norm_label": "main()"
     },
     {
@@ -7677,7 +7668,7 @@
       "source_file": "mobile_app\\linux\\runner\\my_application.h",
       "source_location": "L1",
       "id": "mobile_app_linux_runner_my_application_h",
-      "community": 168,
+      "community": 167,
       "norm_label": "my_application.h"
     },
     {
@@ -7686,7 +7677,7 @@
       "source_file": "mobile_app\\macos\\Flutter\\GeneratedPluginRegistrant.swift",
       "source_location": "L1",
       "id": "mobile_app_macos_flutter_generatedpluginregistrant_swift",
-      "community": 141,
+      "community": 140,
       "norm_label": "generatedpluginregistrant.swift"
     },
     {
@@ -7695,7 +7686,7 @@
       "source_file": "mobile_app\\macos\\Flutter\\GeneratedPluginRegistrant.swift",
       "source_location": "L16",
       "id": "generatedpluginregistrant_registergeneratedplugins",
-      "community": 141,
+      "community": 140,
       "norm_label": "registergeneratedplugins()"
     },
     {
@@ -7776,7 +7767,7 @@
       "source_file": "mobile_app\\windows\\flutter\\generated_plugin_registrant.cc",
       "source_location": "L1",
       "id": "mobile_app_windows_flutter_generated_plugin_registrant_cc",
-      "community": 142,
+      "community": 141,
       "norm_label": "generated_plugin_registrant.cc"
     },
     {
@@ -7785,7 +7776,7 @@
       "source_file": "mobile_app\\windows\\flutter\\generated_plugin_registrant.cc",
       "source_location": "L16",
       "id": "generated_plugin_registrant_registerplugins",
-      "community": 142,
+      "community": 141,
       "norm_label": "registerplugins()"
     },
     {
@@ -7794,7 +7785,7 @@
       "source_file": "mobile_app\\windows\\flutter\\generated_plugin_registrant.h",
       "source_location": "L1",
       "id": "mobile_app_windows_flutter_generated_plugin_registrant_h",
-      "community": 169,
+      "community": 168,
       "norm_label": "generated_plugin_registrant.h"
     },
     {
@@ -7857,7 +7848,7 @@
       "source_file": "mobile_app\\windows\\runner\\main.cpp",
       "source_location": "L1",
       "id": "mobile_app_windows_runner_main_cpp",
-      "community": 143,
+      "community": 142,
       "norm_label": "main.cpp"
     },
     {
@@ -7866,7 +7857,7 @@
       "source_file": "mobile_app\\windows\\runner\\main.cpp",
       "source_location": "L8",
       "id": "main_wwinmain",
-      "community": 143,
+      "community": 142,
       "norm_label": "wwinmain()"
     },
     {
@@ -7875,7 +7866,7 @@
       "source_file": "mobile_app\\windows\\runner\\resource.h",
       "source_location": "L1",
       "id": "mobile_app_windows_runner_resource_h",
-      "community": 170,
+      "community": 169,
       "norm_label": "resource.h"
     },
     {
@@ -7920,7 +7911,7 @@
       "source_file": "mobile_app\\windows\\runner\\utils.h",
       "source_location": "L1",
       "id": "mobile_app_windows_runner_utils_h",
-      "community": 171,
+      "community": 170,
       "norm_label": "utils.h"
     },
     {
@@ -8118,7 +8109,7 @@
       "source_file": "mobile_app\\windows\\runner\\win32_window.h",
       "source_location": "L1",
       "id": "mobile_app_windows_runner_win32_window_h",
-      "community": 172,
+      "community": 171,
       "norm_label": "win32_window.h"
     }
   ],
@@ -13182,6 +13173,18 @@
       "source_location": "L87",
       "weight": 1.0,
       "_src": "frontend_src_app_jsx",
+      "_tgt": "app_appshellfallback",
+      "source": "frontend_src_app_jsx",
+      "target": "app_appshellfallback",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend\\src\\App.jsx",
+      "source_location": "L100",
+      "weight": 1.0,
+      "_src": "frontend_src_app_jsx",
       "_tgt": "app_gethomepathforrole",
       "source": "frontend_src_app_jsx",
       "target": "app_gethomepathforrole",
@@ -13191,7 +13194,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L94",
+      "source_location": "L107",
       "weight": 1.0,
       "_src": "frontend_src_app_jsx",
       "_tgt": "app_protectedadmin",
@@ -13203,7 +13206,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L107",
+      "source_location": "L120",
       "weight": 1.0,
       "_src": "frontend_src_app_jsx",
       "_tgt": "app_protectedemployee",
@@ -13215,7 +13218,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L118",
+      "source_location": "L131",
       "weight": 1.0,
       "_src": "frontend_src_app_jsx",
       "_tgt": "app_protectedcustomer",
@@ -13227,7 +13230,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L129",
+      "source_location": "L142",
       "weight": 1.0,
       "_src": "frontend_src_app_jsx",
       "_tgt": "app_roleredirect",
@@ -13239,7 +13242,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L136",
+      "source_location": "L149",
       "weight": 1.0,
       "_src": "frontend_src_app_jsx",
       "_tgt": "app_appcontent",
@@ -13251,7 +13254,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L254",
+      "source_location": "L267",
       "weight": 1.0,
       "_src": "frontend_src_app_jsx",
       "_tgt": "app_app",
@@ -13263,7 +13266,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L102",
+      "source_location": "L115",
       "weight": 1.0,
       "_src": "app_protectedadmin",
       "_tgt": "app_gethomepathforrole",
@@ -13275,7 +13278,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L113",
+      "source_location": "L126",
       "weight": 1.0,
       "_src": "app_protectedemployee",
       "_tgt": "app_gethomepathforrole",
@@ -13287,7 +13290,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L124",
+      "source_location": "L137",
       "weight": 1.0,
       "_src": "app_protectedcustomer",
       "_tgt": "app_gethomepathforrole",
@@ -13299,7 +13302,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\App.jsx",
-      "source_location": "L133",
+      "source_location": "L146",
       "weight": 1.0,
       "_src": "app_roleredirect",
       "_tgt": "app_gethomepathforrole",
@@ -13845,18 +13848,6 @@
       "_tgt": "layout_layout",
       "source": "frontend_src_components_layout_jsx",
       "target": "layout_layout",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend\\src\\components\\LoadingScreen.jsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "_src": "frontend_src_components_loadingscreen_jsx",
-      "_tgt": "loadingscreen_loadingscreen",
-      "source": "frontend_src_components_loadingscreen_jsx",
-      "target": "loadingscreen_loadingscreen",
       "confidence_score": 1.0
     },
     {
@@ -14535,7 +14526,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L20",
+      "source_location": "L37",
       "weight": 1.0,
       "_src": "frontend_src_employee_employeecoursemanage_jsx",
       "_tgt": "employeecoursemanage_normalizetext",
@@ -14547,7 +14538,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L21",
+      "source_location": "L38",
       "weight": 1.0,
       "_src": "frontend_src_employee_employeecoursemanage_jsx",
       "_tgt": "employeecoursemanage_compacttext",
@@ -14559,7 +14550,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L23",
+      "source_location": "L40",
       "weight": 1.0,
       "_src": "frontend_src_employee_employeecoursemanage_jsx",
       "_tgt": "employeecoursemanage_buildplanid",
@@ -14571,7 +14562,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L28",
+      "source_location": "L45",
       "weight": 1.0,
       "_src": "frontend_src_employee_employeecoursemanage_jsx",
       "_tgt": "employeecoursemanage_formatdatetimeinput",
@@ -14583,7 +14574,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L36",
+      "source_location": "L53",
       "weight": 1.0,
       "_src": "frontend_src_employee_employeecoursemanage_jsx",
       "_tgt": "employeecoursemanage_formatmeetingpreview",
@@ -14595,7 +14586,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L51",
+      "source_location": "L68",
       "weight": 1.0,
       "_src": "frontend_src_employee_employeecoursemanage_jsx",
       "_tgt": "employeecoursemanage_matchesplanenrollment",
@@ -14607,7 +14598,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L101",
+      "source_location": "L118",
       "weight": 1.0,
       "_src": "frontend_src_employee_employeecoursemanage_jsx",
       "_tgt": "employeecoursemanage_resolveplanmeetinglink",
@@ -14619,7 +14610,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L108",
+      "source_location": "L125",
       "weight": 1.0,
       "_src": "frontend_src_employee_employeecoursemanage_jsx",
       "_tgt": "employeecoursemanage_employeecoursemanage",
@@ -14631,7 +14622,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L21",
+      "source_location": "L38",
       "weight": 1.0,
       "_src": "employeecoursemanage_compacttext",
       "_tgt": "employeecoursemanage_normalizetext",
@@ -14643,7 +14634,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L24",
+      "source_location": "L41",
       "weight": 1.0,
       "_src": "employeecoursemanage_buildplanid",
       "_tgt": "employeecoursemanage_normalizetext",
@@ -14655,7 +14646,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L54",
+      "source_location": "L71",
       "weight": 1.0,
       "_src": "employeecoursemanage_matchesplanenrollment",
       "_tgt": "employeecoursemanage_normalizetext",
@@ -14667,7 +14658,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\employee\\EmployeeCourseManage.jsx",
-      "source_location": "L83",
+      "source_location": "L100",
       "weight": 1.0,
       "_src": "employeecoursemanage_matchesplanenrollment",
       "_tgt": "employeecoursemanage_compacttext",

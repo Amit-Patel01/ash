@@ -1,0 +1,274 @@
+SOLUTIONHUB PROJECT STRUCTURE
+=============================
+
+This document gives a clear English overview of the current project structure, with a focus on the frontend and backend parts of the repository.
+
+
+1. High-Level Overview
+----------------------
+
+This repository is organized around two main application layers:
+
+- `frontend/`
+  A React + Vite web application for public users, customers, employees, and admins.
+
+- `backend/`
+  An Express-based API and service layer that handles authentication, user management, payments, notifications, certificates, and other business logic.
+
+Other folders such as `graphify-out/`, `mobile_app/`, and internal tooling folders exist in the repository, but this file focuses mainly on the frontend and backend application structure.
+
+
+2. Frontend Overview
+--------------------
+
+Frontend stack:
+
+- React 19
+- Vite
+- React Router
+- Firebase client SDK
+- Tailwind CSS
+- Framer Motion
+
+Main frontend entry files:
+
+- `frontend/index.html`
+  Main HTML shell used by Vite.
+
+- `frontend/src/main.jsx`
+  React application bootstrap file.
+
+- `frontend/src/App.jsx`
+  Main application router and top-level layout setup.
+
+- `frontend/src/index.css`
+- `frontend/src/App.css`
+  Global styles.
+
+
+3. Frontend Folder Structure
+----------------------------
+
+`frontend/`
+
+- `dist/`
+  Production build output.
+
+- `public/`
+  Static public assets.
+
+- `src/`
+  Main application source code.
+
+- `package.json`
+  Frontend scripts and dependencies.
+
+- `vite.config.js`
+  Vite configuration.
+
+- `tailwind.config.js`
+- `postcss.config.js`
+  Styling and build configuration.
+
+- `vercel.json`
+  Deployment and header configuration.
+
+
+4. Frontend src/ Structure
+--------------------------
+
+`frontend/src/admin/`
+- Admin panel pages such as dashboard, courses, customers, employees, settings, services, tasks, and team management.
+
+`frontend/src/assets/`
+- Images, logos, videos, and branding resources used across the UI.
+
+`frontend/src/components/`
+- Reusable UI components shared by multiple pages.
+- Includes items such as navbar, footer, hero section, popup components, SEO helper, chatbot, cards, and certificate/public components.
+
+`frontend/src/config/`
+- Frontend configuration files.
+- Includes API setup and Firebase client configuration.
+
+`frontend/src/context/`
+- React context providers for shared app state.
+- Includes authentication, chat, and theme contexts.
+
+`frontend/src/customer/`
+- Customer-facing dashboard pages.
+- Includes customer overview, profile, orders, certificates, support, and enrolled courses.
+
+`frontend/src/editing/`
+- Pages related to editing services.
+
+`frontend/src/employee/`
+- Employee panel pages and utilities.
+- Includes employee dashboard, tasks, projects, course management, broadcasts, chat, profile, login, and helper utilities.
+
+`frontend/src/modules/`
+- Reserved modular area for feature grouping or future expansion.
+
+`frontend/src/pages/`
+- Public-facing route pages.
+- Includes login, signup, forgot password, courses, course detail, checkout, contact, about, projects, certificate verification, and legal/help pages.
+
+`frontend/src/store/`
+- Central store and shared data logic.
+- `StoreContext.jsx` is the main shared state/data access layer for the frontend.
+
+`frontend/src/technicalsupport/`
+- Technical support and repair service pages.
+
+`frontend/src/utils/`
+- Utility modules for certificates, exports, templates, and email helpers.
+
+`frontend/src/web-service/`
+- Web service related page(s).
+
+
+5. Frontend Responsibility Summary
+----------------------------------
+
+The frontend handles:
+
+- Public website pages
+- Authentication screens
+- Customer dashboard
+- Employee dashboard
+- Admin dashboard
+- Course browsing and course management UI
+- Certificate viewing and verification
+- Chat and notification-related interfaces
+
+
+6. Backend Overview
+-------------------
+
+Backend stack:
+
+- Node.js
+- Express
+- Firebase Admin SDK
+- MySQL
+- Razorpay
+- Nodemailer / Resend
+- Winston logging
+
+Main backend entry file:
+
+- `backend/server.js`
+  Starts the Express server, loads middleware, and mounts API routes.
+
+
+7. Backend Folder Structure
+---------------------------
+
+`backend/`
+
+- `controllers/`
+  Request handlers for major backend domains such as admin, auth, certificates, payments, trading, and users.
+
+- `database/`
+  Database schema files and SQL setup assets.
+
+- `logs/`
+  Application log files such as combined and error logs.
+
+- `middlewares/`
+  Shared Express middleware.
+- Includes authentication and role-based access control middleware.
+
+- `routes/`
+  Route definitions that connect API endpoints to controllers and services.
+- Includes routes for admin, auth, certificates, notifications, projects, payments, AI, users, and webhooks.
+
+- `services/`
+  Core business logic and integrations.
+- Includes services for AI, email, Firebase, MySQL, notifications, queues, roles, storage, and user workflows.
+
+- `sql/`
+  Additional SQL scripts for database setup and user-management schema.
+
+- `uploads/`
+  Uploaded files storage area.
+- Currently includes a `cv/` folder.
+
+- `utils/`
+  Utility helpers used by backend services.
+
+- `.env` / `.env.example`
+  Backend environment configuration.
+
+- `ecosystem.config.js`
+  PM2 process configuration.
+
+- `logger.js`
+  Logging setup.
+
+- `credentials.json`
+  Service credential file reference used by backend integrations.
+
+- `package.json`
+  Backend scripts and dependencies.
+
+
+8. Backend Responsibility Summary
+---------------------------------
+
+The backend handles:
+
+- Authentication and password reset flows
+- User creation and conflict checks
+- Admin operations
+- Certificate generation and approval workflows
+- Course-related server-side logic
+- Email notifications
+- Payment integration with Razorpay
+- Notification dispatching
+- AI-related service endpoints
+- MySQL and Firebase Admin integration
+
+
+9. Typical Request Flow
+-----------------------
+
+In simple terms, the project works like this:
+
+1. The React frontend renders pages and dashboards.
+2. The frontend uses Firebase client features and/or calls backend API routes.
+3. The Express backend receives requests through `routes/`.
+4. Controllers validate and delegate work to `services/`.
+5. Services interact with Firebase Admin, MySQL, email providers, storage, or payment services.
+6. The backend returns data or status back to the frontend.
+
+
+10. Quick Map of Important Entry Points
+--------------------------------------
+
+Frontend:
+
+- `frontend/src/main.jsx`
+- `frontend/src/App.jsx`
+- `frontend/src/store/StoreContext.jsx`
+- `frontend/src/context/AuthContext.jsx`
+
+Backend:
+
+- `backend/server.js`
+- `backend/routes/`
+- `backend/controllers/`
+- `backend/services/`
+
+
+11. Short Summary
+-----------------
+
+This project is a full-stack platform with:
+
+- A React/Vite frontend for public users, customers, employees, and admins
+- An Express backend for API logic, authentication, payments, certificates, and notifications
+- Firebase-based integrations on both client and server sides
+- MySQL support for additional persistence and management workflows
+
+If needed, this file can later be expanded into a more detailed developer handbook with API routes, database notes, and deployment steps.

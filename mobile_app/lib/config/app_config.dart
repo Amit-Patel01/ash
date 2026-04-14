@@ -8,6 +8,8 @@ class AppConfig {
     'SOLUTIONHUB_API_BASE_URL',
     defaultValue: 'https://www.amitsolutionhub.com',
   );
+  static const String projectsUrl = '$websiteUrl/projects';
+  static const String customProjectUrl = '$websiteUrl/custom-project';
   static const String supportRoute = '/contact';
   static const String aiChatRoute = '/api/ai/chat';
   static const String aiStatusRoute = '/api/ai/status';

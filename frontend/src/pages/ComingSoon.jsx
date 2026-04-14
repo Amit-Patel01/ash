@@ -31,11 +31,11 @@ const ComingSoon = () => {
         </div>
 
         <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight">
-          Coming <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Soon</span>
+          Programs <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Are Live</span>
         </h1>
         
         <p className="text-lg md:text-xl text-slate-300 mb-10 leading-relaxed max-w-lg mx-auto">
-          We're polishing this feature to provide you with the best experience possible. Something amazing is being built!
+          Our latest programs are now active. Explore the available courses and internships to get started today.
         </p>
 
         {/* Info Box */}
@@ -46,17 +46,17 @@ const ComingSoon = () => {
             </svg>
           </div>
           <p className="text-sm text-slate-400">
-            Our engineers are working hard on this specific module. Please stay tuned for updates.
+            Web Development, AI, Data Science, UI/UX, and Cyber Security programs are available now.
           </p>
         </div>
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
-            to="/services"
+            to="/courses"
             className="w-full sm:w-auto px-10 py-4 bg-white text-slate-900 font-bold rounded-full hover:bg-blue-50 shadow-xl transition-all active:scale-95"
           >
-            Explore Other Services
+            Explore Courses
           </Link>
           <Link
             to="/"
@@ -68,7 +68,7 @@ const ComingSoon = () => {
 
         {/* Footer Text */}
         <p className="mt-16 text-slate-500 text-sm font-medium tracking-widest uppercase">
-          Amit Solution Hub &bull; Innovation in Progress
+          Amit Solution Hub &bull; Programs Open Now
         </p>
       </div>
     </section>

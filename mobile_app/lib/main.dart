@@ -8,6 +8,7 @@ import 'config/app_config.dart';
 import 'config/firebase_options.dart';
 import 'screens/auth_screen.dart';
 import 'screens/home_shell.dart';
+import 'screens/launch_experience_screen.dart';
 import 'screens/setup_screen.dart';
 import 'services/auth_service.dart';
 import 'services/backend_api_service.dart';
@@ -130,13 +131,35 @@ class SolutionHubMobileApp extends StatelessWidget {
                   }
 
                   if (!session.isAuthenticated) {
-                    return const AuthScreen();
+                    return const _LoggedOutExperience();
                   }
 
                   return const HomeShell();
                 },
               ),
       ),
+    );
+  }
+}
+
+class _LoggedOutExperience extends StatefulWidget {
+  const _LoggedOutExperience();
+
+  @override
+  State<_LoggedOutExperience> createState() => _LoggedOutExperienceState();
+}
+
+class _LoggedOutExperienceState extends State<_LoggedOutExperience> {
+  bool _showAuth = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_showAuth) {
+      return const AuthScreen();
+    }
+
+    return LaunchExperienceScreen(
+      onContinue: () => setState(() => _showAuth = true),
     );
   }
 }

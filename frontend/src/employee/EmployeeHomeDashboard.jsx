@@ -42,6 +42,7 @@ export default function EmployeeHomeDashboard() {
   const roleLabel = userProfile?.jobTitle || memberData?.role || (userProfile?.role === 'mentor' ? 'Mentor' : 'Employee')
   const departmentLabel = userProfile?.department || memberData?.department || 'Operations'
   const employeeId = userProfile?.employeeId || currentUser?.employeeId || memberData?.employeeId || ''
+  const canCreateCourses = Boolean(employeeId)
   const employeeEmail = currentUser?.email || userProfile?.email || memberData?.email || ''
   const initials = displayName.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part.charAt(0).toUpperCase()).join('') || 'EM'
 
@@ -187,11 +188,16 @@ export default function EmployeeHomeDashboard() {
 
         <div className="rounded-[28px] border border-white/10 bg-gray-900/70 p-6 shadow-2xl shadow-black/20">
           <div className="flex items-center justify-between gap-3">
-            <div><h2 className="text-lg font-black text-white">Course Delivery Board</h2><p className="mt-1 text-sm text-slate-400">Meeting links, materials and student load.</p></div>
-            <Link to="/employee/course-manage" className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-slate-200 transition hover:bg-white/10 hover:text-white">Manage now</Link>
+            <div><h2 className="text-lg font-black text-white">Course Delivery Board</h2><p className="mt-1 text-sm text-slate-400">Create courses, then manage meeting links, materials, and student load.</p></div>
+            <div className="flex flex-wrap items-center gap-2">
+              {canCreateCourses && (
+                <Link to="/employee/course-manage?create=1" className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-200 transition hover:bg-emerald-400/20 hover:text-white">Add course</Link>
+              )}
+              <Link to="/employee/course-manage" className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-slate-200 transition hover:bg-white/10 hover:text-white">Manage now</Link>
+            </div>
           </div>
           <div className="mt-6 space-y-3">
-            {courseCards.length === 0 ? <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] px-4 py-10 text-center"><p className="text-sm font-semibold text-white">No courses assigned yet</p><p className="mt-2 text-sm text-slate-500">Ask admin to assign a course so you can manage materials and meeting links.</p></div> : courseCards.slice(0, 4).map(course => (
+            {courseCards.length === 0 ? <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] px-4 py-10 text-center"><p className="text-sm font-semibold text-white">{canCreateCourses ? 'No courses yet' : 'No courses assigned yet'}</p><p className="mt-2 text-sm text-slate-500">{canCreateCourses ? 'Use Add course to create your first draft course from this dashboard.' : 'Ask admin to assign a course so you can manage materials and meeting links.'}</p></div> : courseCards.slice(0, 4).map(course => (
               <div key={course.id} className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 transition hover:border-emerald-400/20 hover:bg-white/[0.05]">
                 <div className="flex items-start justify-between gap-3"><div><p className="text-sm font-semibold text-white">{course.title}</p><p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-500">{course.category}</p></div><span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-xs font-bold text-emerald-300">{course.studentCount} students</span></div>
                 <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
@@ -227,8 +233,11 @@ export default function EmployeeHomeDashboard() {
             <p className="mt-1 text-sm text-slate-400">Jump straight to the pages you use most.</p>
             <div className="mt-5 space-y-3">
               {[
+                ...(canCreateCourses
+                  ? [{ to: '/employee/course-manage?create=1', label: 'Add Course', caption: 'Create a new draft course from your employee panel' }]
+                  : []),
                 { to: '/employee/tasks', label: 'Open Tasks', caption: 'Track pending and completed work' },
-                { to: '/employee/course-manage', label: 'Manage Courses', caption: 'Update materials and meeting links' },
+                { to: '/employee/course-manage', label: 'Manage Courses', caption: 'Update your course details, materials, and meeting links' },
                 { to: '/employee/broadcast', label: 'Send Broadcast', caption: 'Email enrolled students quickly' },
                 { to: '/employee/chat', label: 'Open Messages', caption: 'Respond to team communication' },
               ].map(link => (

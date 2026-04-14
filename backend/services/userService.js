@@ -1914,6 +1914,22 @@ const requestPasswordReset = async ({ email, from = "", requestIp = "" } = {}) =
     user = await materializeLegacyUser(normalizedEmail);
   }
 
+  // Fallback: Direct database search in MySQL for edge cases (case sensitivity, normalization issues)
+  if (!user && useMysql()) {
+    assertMySqlReady();
+    try {
+      const rows = await query(
+        `SELECT ${USER_COLUMN_SQL} FROM users u WHERE LOWER(u.email) = LOWER(?) LIMIT 1`,
+        [normalizedEmail]
+      );
+      if (rows.length > 0) {
+        user = mapUserRow(rows[0], { includeSensitive: true });
+      }
+    } catch (err) {
+      logger.warn("Direct email lookup failed in password reset:", err.message);
+    }
+  }
+
   if (!user) {
     throw createHttpError(404, "No account found with this email.", "user_not_found");
   }

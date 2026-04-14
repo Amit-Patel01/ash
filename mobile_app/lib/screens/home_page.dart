@@ -12,10 +12,22 @@ import '../widgets/brand_logo.dart';
 import '../widgets/modern_ui.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.user, required this.onNavigate});
+  const HomePage({
+    super.key,
+    required this.user,
+    required this.onNavigate,
+    required this.onOpenProjects,
+    required this.onOpenInbox,
+    required this.onOpenServiceHub,
+    this.onOpenAdminWorkspace,
+  });
 
   final AppUser user;
   final ValueChanged<int> onNavigate;
+  final VoidCallback onOpenProjects;
+  final VoidCallback onOpenInbox;
+  final VoidCallback onOpenServiceHub;
+  final VoidCallback? onOpenAdminWorkspace;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -357,7 +369,7 @@ class _HomePageState extends State<HomePage> {
     BuildContext context,
     SessionController session,
   ) {
-    return [
+    final items = <_ActionItem>[
       _ActionItem(
         label: 'Permissions',
         caption: 'Allow device alerts',
@@ -371,6 +383,20 @@ class _HomePageState extends State<HomePage> {
             const SnackBar(content: Text('Permissions status updated.')),
           );
         },
+      ),
+      _ActionItem(
+        label: 'Projects',
+        caption: 'Marketplace and delivery',
+        icon: Icons.folder_copy_outlined,
+        color: SolutionHubTheme.tertiary,
+        onTap: widget.onOpenProjects,
+      ),
+      _ActionItem(
+        label: 'Inbox',
+        caption: 'Chat and support',
+        icon: Icons.forum_outlined,
+        color: SolutionHubTheme.success,
+        onTap: widget.onOpenInbox,
       ),
       _ActionItem(
         label: widget.user.isCustomer ? 'Certificates' : 'Tasks',
@@ -389,13 +415,30 @@ class _HomePageState extends State<HomePage> {
         onTap: () => widget.onNavigate(3),
       ),
       _ActionItem(
+        label: widget.user.isAdmin ? 'Admin Center' : 'Service Hub',
+        caption: widget.user.isAdmin
+            ? 'Operations and review'
+            : 'Payments and support tools',
+        icon: widget.user.isAdmin
+            ? Icons.admin_panel_settings_outlined
+            : Icons.hub_outlined,
+        color: widget.user.isAdmin
+            ? SolutionHubTheme.warning
+            : SolutionHubTheme.primary,
+        onTap: widget.user.isAdmin
+            ? (widget.onOpenAdminWorkspace ?? widget.onOpenServiceHub)
+            : widget.onOpenServiceHub,
+      ),
+      _ActionItem(
         label: 'Website',
         caption: 'Open SolutionHub',
         icon: Icons.language_rounded,
-        color: SolutionHubTheme.tertiary,
+        color: Colors.white70,
         onTap: () => _openExternal(AppConfig.websiteUrl),
       ),
     ];
+
+    return items;
   }
 
   Future<void> _openExternal(String url) async {

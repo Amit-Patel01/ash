@@ -1,10 +1,27 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import { DOCUMENT_TYPES } from '../utils/certificateTemplate'
 import { emailNotify } from '../utils/emailNotify'
 
 const DEFAULT_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata'
+const COURSE_BLANK = {
+  title: '',
+  category: '',
+  level: 'Beginner',
+  description: '',
+  thumbnail: '',
+}
+const FALLBACK_CATEGORIES = [
+  'Trading',
+  'Web Development',
+  'Python',
+  'Digital Marketing',
+  'Graphic Design',
+  'Excel / Data',
+  'Other',
+]
 const PLAN_BLANK = {
   label: '',
   duration: '',
@@ -106,17 +123,45 @@ const resolvePlanMeetingLink = (course, plan, fallbackLink = '') => {
 }
 
 export default function EmployeeCourseManage() {
-  const { courses, updateCourse, enrollments, certificates, issueCertificate, revokeCertificate } = useStore()
+  const {
+    courses,
+    addCourse,
+    updateCourse,
+    enrollments,
+    certificates,
+    issueCertificate,
+    revokeCertificate,
+    courseCategories,
+  } = useStore()
   const { currentUser, userProfile } = useAuth()
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  const assignedEmployeeIds = [currentUser?.uid, userProfile?.uid, userProfile?.employeeId].filter(Boolean)
-  const myCourses = courses.filter(c =>
-    assignedEmployeeIds.includes(c.assignedEmployeeId) ||
-    assignedEmployeeIds.includes(c.assignedEmployeeRef)
+  const displayName = userProfile?.displayName || currentUser?.displayName || 'Employee'
+  const employeeId = userProfile?.employeeId || currentUser?.employeeId || ''
+  const employeeKeys = useMemo(
+    () => [...new Set([currentUser?.uid, userProfile?.uid, employeeId].filter(Boolean))],
+    [currentUser?.uid, userProfile?.uid, employeeId]
   )
+  const myCourses = useMemo(() => courses.filter(course =>
+    employeeKeys.includes(course.assignedEmployeeId) ||
+    employeeKeys.includes(course.assignedEmployeeRef)
+  ), [courses, employeeKeys])
   const [selectedCourse, setSelectedCourse] = useState(null)
   const [saving, setSaving] = useState(false)
   const [activeTab, setActiveTab] = useState('plans') // plans | materials | meeting | students
+  const [courseForm, setCourseForm] = useState(COURSE_BLANK)
+  const [showCourseModal, setShowCourseModal] = useState(false)
+  const [courseSaving, setCourseSaving] = useState(false)
+  const canCreateCourses = Boolean(employeeId)
+  const availableCategories = useMemo(() => {
+    const fromStore = courseCategories.map(category => category?.name).filter(Boolean)
+    return fromStore.length > 0 ? fromStore : FALLBACK_CATEGORIES
+  }, [courseCategories])
+  const visibleCourses = useMemo(() => {
+    if (!selectedCourse?.id) return myCourses
+    const alreadyListed = myCourses.some(course => course.id === selectedCourse.id)
+    return alreadyListed ? myCourses : [selectedCourse, ...myCourses]
+  }, [myCourses, selectedCourse])
 
   // ─── Plan states ───────────────────────────────────
   const [planForm, setPlanForm] = useState(PLAN_BLANK)
@@ -159,6 +204,56 @@ export default function EmployeeCourseManage() {
     setActiveTab('plans')
     setEditMeet(false)
   }
+
+  const openCreateCourse = () => {
+    if (!canCreateCourses) return
+    setCourseForm(COURSE_BLANK)
+    setShowCourseModal(true)
+  }
+
+  const closeCreateCourse = () => {
+    setShowCourseModal(false)
+    setCourseForm(COURSE_BLANK)
+  }
+
+  const saveCourseDraft = async (event) => {
+    event?.preventDefault()
+    if (!canCreateCourses || !courseForm.title.trim() || !courseForm.category) return
+    setCourseSaving(true)
+    try {
+      const primaryEmployeeKey = currentUser?.uid || userProfile?.uid || employeeId
+      const secondaryEmployeeKey = employeeId || userProfile?.uid || currentUser?.uid || ''
+      const createdCourse = await addCourse({
+        title: courseForm.title.trim(),
+        category: courseForm.category,
+        level: courseForm.level || 'Beginner',
+        description: courseForm.description.trim(),
+        thumbnail: courseForm.thumbnail.trim(),
+        assignedEmployeeId: primaryEmployeeKey,
+        assignedEmployeeRef: secondaryEmployeeKey,
+        assignedEmployeeName: displayName,
+        instructor: displayName,
+        published: false,
+        plans: [],
+        materials: [],
+        meetingLink: '',
+      })
+      openCourse(createdCourse)
+      closeCreateCourse()
+    } catch (error) {
+      alert(error?.message || 'Failed to create course')
+    } finally {
+      setCourseSaving(false)
+    }
+  }
+
+  useEffect(() => {
+    if (!canCreateCourses || searchParams.get('create') !== '1') return
+    openCreateCourse()
+    const next = new URLSearchParams(searchParams)
+    next.delete('create')
+    setSearchParams(next, { replace: true })
+  }, [canCreateCourses, searchParams, setSearchParams])
 
   // ─── Plans CRUD ─────────────────────────────────────
   const openAddPlan = () => {
@@ -334,34 +429,59 @@ export default function EmployeeCourseManage() {
     }
   }
 
-  if (myCourses.length === 0) {
-    return (
-      <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-white">My Assigned Courses</h1>
-        <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-14 text-center">
-          <div className="text-5xl mb-4">📋</div>
-          <h3 className="text-xl font-bold text-white mb-2">No courses assigned</h3>
-          <p className="text-gray-400 text-sm">Ask the admin to assign you as instructor for a course</p>
-        </div>
-      </div>
-    )
-  }
-
   const TABS = [
     { id: 'plans', label: '💰 Plans', title: 'Duration Plans & Pricing' },
     { id: 'materials', label: '📄 Materials', title: 'Study Materials' },
     { id: 'meeting', label: '📹 Session Link', title: 'Meeting / Session Link' },
     { id: 'students', label: '👥 Students', title: 'Enrolled Students' },
   ]
+  const emptyStateTitle = canCreateCourses ? 'Create your first course' : 'No courses assigned'
+  const emptyStateBody = canCreateCourses
+    ? 'Use Add Course to create a draft course. After that you can manage plans, materials, meeting links, and students here.'
+    : 'Ask the admin to assign you as instructor for a course.'
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-white">My Assigned Courses</h1>
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">My Courses</h1>
+          <p className="mt-1 text-sm text-gray-400">
+            {canCreateCourses
+              ? 'Create draft courses from your employee panel and manage delivery details from one place.'
+              : 'Manage your assigned course plans, materials, meeting links, and student activity.'}
+          </p>
+        </div>
+        {canCreateCourses && (
+          <button
+            onClick={openCreateCourse}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5 text-sm font-bold text-white transition-all hover:shadow-lg"
+          >
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Add Course
+          </button>
+        )}
+      </div>
+
+      {canCreateCourses && (
+        <div className="flex items-start gap-3 rounded-2xl border border-blue-500/20 bg-blue-500/10 px-4 py-3 text-sm text-blue-200">
+          <svg className="mt-0.5 h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>New courses created from this panel are saved as drafts first. Add plans, materials, and meeting links here after creating the course.</span>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Course list */}
         <div className="lg:col-span-1 space-y-2">
-          {myCourses.map(course => {
+          {visibleCourses.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-white/10 bg-gray-900/40 px-4 py-8 text-center">
+              <p className="text-sm font-semibold text-white">{emptyStateTitle}</p>
+              <p className="mt-2 text-xs text-gray-500">{emptyStateBody}</p>
+            </div>
+          ) : visibleCourses.map(course => {
             const cnt = enrollments.filter(e => e.status === 'active' && matchesCourseEnrollment(e, course)).length
             const planCount = (course.plans || []).length
             return (
@@ -389,7 +509,23 @@ export default function EmployeeCourseManage() {
         <div className="lg:col-span-3">
           {!selectedCourse ? (
             <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-14 text-center">
-              <p className="text-gray-500">Select a course to manage</p>
+              <div className="text-5xl mb-4">{visibleCourses.length === 0 ? '📚' : '👈'}</div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                {visibleCourses.length === 0 ? emptyStateTitle : 'Select a course to manage'}
+              </h3>
+              <p className="text-gray-400 text-sm max-w-lg mx-auto">
+                {visibleCourses.length === 0
+                  ? emptyStateBody
+                  : 'Choose a course from the left to update its plans, materials, meeting links, and enrolled students.'}
+              </p>
+              {canCreateCourses && visibleCourses.length === 0 && (
+                <button
+                  onClick={openCreateCourse}
+                  className="mt-5 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-blue-700"
+                >
+                  Create Course
+                </button>
+              )}
             </div>
           ) : (
             <div className="space-y-4">
@@ -397,7 +533,9 @@ export default function EmployeeCourseManage() {
               <div className="bg-gray-900/60 border border-white/5 rounded-2xl p-5 flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-bold text-white">{selectedCourse.title}</h2>
-                  <p className="text-sm text-gray-400">{selectedCourse.category} · {selectedCourse.level}</p>
+                  <p className="text-sm text-gray-400">
+                    {[selectedCourse.category, selectedCourse.level].filter(Boolean).join(' · ') || 'Course details'}
+                  </p>
                 </div>
                 <div className="text-right">
                   <p className="text-xl font-black text-blue-400">
@@ -742,10 +880,117 @@ export default function EmployeeCourseManage() {
         </div>
       )}
 
+      {showCourseModal && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-10 overflow-y-auto">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={closeCreateCourse} />
+          <div className="relative mb-10 w-full max-w-2xl rounded-2xl border border-white/10 bg-gray-900 shadow-2xl">
+            <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-2xl border-b border-white/5 bg-gray-900 px-6 py-4">
+              <div>
+                <h2 className="text-lg font-bold text-white">Create New Course</h2>
+                <p className="mt-1 text-xs text-gray-500">This course will be assigned to your employee account automatically.</p>
+              </div>
+              <button onClick={closeCreateCourse} className="rounded-lg p-1.5 text-gray-400 hover:bg-white/10 hover:text-white">✕</button>
+            </div>
+            <form onSubmit={saveCourseDraft} className="space-y-4 p-6">
+              <div className="flex items-start gap-2 rounded-xl border border-amber-500/20 bg-amber-500/10 p-3 text-xs text-amber-200">
+                <span className="text-base leading-none">💡</span>
+                <span>Start with the basic course details here. After saving, use this same page to add plans, materials, and live session links.</span>
+              </div>
+
+              <div>
+                <label className="label">Course Title *</label>
+                <input
+                  value={courseForm.title}
+                  onChange={event => setCourseForm({ ...courseForm, title: event.target.value })}
+                  required
+                  placeholder="e.g. Full Stack Web Development"
+                  className="input"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="label">Category *</label>
+                  <select
+                    value={courseForm.category}
+                    onChange={event => setCourseForm({ ...courseForm, category: event.target.value })}
+                    required
+                    className="input"
+                  >
+                    <option value="">Select Category</option>
+                    {availableCategories.map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="label">Level</label>
+                  <select
+                    value={courseForm.level}
+                    onChange={event => setCourseForm({ ...courseForm, level: event.target.value })}
+                    className="input"
+                  >
+                    <option>Beginner</option>
+                    <option>Intermediate</option>
+                    <option>Advanced</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="label">Short Description</label>
+                <textarea
+                  value={courseForm.description}
+                  onChange={event => setCourseForm({ ...courseForm, description: event.target.value })}
+                  rows={3}
+                  placeholder="Brief course description for students..."
+                  className="input resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="label">Course Image URL</label>
+                <input
+                  value={courseForm.thumbnail}
+                  onChange={event => setCourseForm({ ...courseForm, thumbnail: event.target.value })}
+                  placeholder="https://example.com/course-image.jpg"
+                  className="input"
+                />
+                <p className="mt-1 text-[11px] text-gray-500">Optional. This image can be used later on course cards and listing pages.</p>
+              </div>
+
+              <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
+                <p className="text-sm font-semibold text-white">Assigned Instructor</p>
+                <p className="mt-1 text-sm text-gray-400">{displayName}</p>
+                <p className="mt-1 text-[11px] text-gray-500">Employee ID: {employeeId || 'Not set'}</p>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={closeCreateCourse}
+                  className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-bold text-gray-400 transition-all hover:bg-white/10"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={courseSaving || !courseForm.title.trim() || !courseForm.category}
+                  className="flex-[2] rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-sm font-bold text-white transition-all hover:shadow-lg disabled:opacity-50"
+                >
+                  {courseSaving ? 'Creating...' : 'Create Course'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <style>{`
         .label { display: block; font-size: 0.75rem; font-weight: 600; color: #9ca3af; margin-bottom: 6px; }
         .input { width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-size: 0.875rem; color: white; outline: none; transition: border-color 0.2s; }
         .input:focus { border-color: rgba(59,130,246,0.5); }
+        .input option { background: #111827; color: white; }
       `}</style>
     </div>
   )

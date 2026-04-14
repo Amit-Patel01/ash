@@ -267,6 +267,43 @@ class SolutionHubRepository {
     });
   }
 
+  Stream<List<ProjectItem>> watchProjects() {
+    return _firestore.collection('projects').snapshots().map((snapshot) {
+      final items = snapshot.docs
+          .map((doc) => ProjectItem.fromMap(doc.id, doc.data()))
+          .toList()
+        ..sort((left, right) {
+          if (left.isFeatured != right.isFeatured) {
+            return right.isFeatured ? 1 : -1;
+          }
+          return _sortByDateDescending(left, right);
+        });
+      return items;
+    });
+  }
+
+  Stream<List<AppUser>> watchUsers() {
+    return _firestore.collection('users').snapshots().map((snapshot) {
+      final items = snapshot.docs
+          .map(
+            (doc) => AppUser.fromMap(
+              uid: doc.id,
+              email: (doc.data()['email'] ?? '').toString(),
+              fallbackName:
+                  (doc.data()['displayName'] ?? doc.data()['name'] ?? '').toString(),
+              data: doc.data(),
+            ),
+          )
+          .toList()
+        ..sort((left, right) {
+          final byRole = left.role.toLowerCase().compareTo(right.role.toLowerCase());
+          if (byRole != 0) return byRole;
+          return left.displayName.toLowerCase().compareTo(right.displayName.toLowerCase());
+        });
+      return items;
+    });
+  }
+
   Future<void> updateTaskStatus({
     required String id,
     required String status,

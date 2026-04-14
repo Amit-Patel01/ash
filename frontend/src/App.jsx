@@ -84,6 +84,19 @@ const AboutTradingMentorship = lazy(() => import('./pages/AboutTradingMentorship
 
 const employeeRoles = ['employee', 'mentor']
 
+function AppShellFallback() {
+  return (
+    <div
+      aria-hidden="true"
+      style={{
+        minHeight: '100vh',
+        width: '100%',
+        background: 'linear-gradient(160deg,#f0f7ff 0%,#faf8ff 50%,#eff6ff 100%)',
+      }}
+    />
+  )
+}
+
 const getHomePathForRole = (role) => {
   if (role === 'admin') return '/admin'
   if (role === 'customer') return '/customer'
@@ -156,7 +169,7 @@ function AppContent() {
         <button onClick={() => window.location.reload()} style={{ marginTop: 20, padding: '10px 20px', background: '#3b82f6', color: 'white', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>Refresh Page</button>
       </div>
     }>
-      <Suspense fallback={null}>
+      <Suspense fallback={<AppShellFallback />}>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Hero />} />
