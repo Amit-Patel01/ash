@@ -1,10 +1,7 @@
-import { useMemo, useRef, useState } from 'react'
-import { Award, ExternalLink, FileImage, FileText, QrCode, ShieldCheck } from 'lucide-react'
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
-import CertificateDocument from '../components/certificates/CertificateDocument'
-import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
 
 const normalize = (value) => String(value || '').trim().toLowerCase()
 const isDone = (status) => ['done', 'completed', 'complete', 'closed'].includes(normalize(status))
@@ -28,21 +25,82 @@ const formatTimeAgo = (value) => {
   return new Date(time).toLocaleDateString('en-IN')
 }
 
-const formatIssuedDate = (value) => {
-  const time = getTimeValue(value)
-  if (!time) return 'Pending'
-  return new Date(time).toLocaleDateString('en-IN', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
+/* ─── Stat card icon definitions ────────────────────────────────── */
+const statDefinitions = [
+  {
+    key: 'tasks',
+    label: 'Total Tasks',
+    gradient: 'linear-gradient(135deg,#3b82f6,#6366f1)',
+    glow: 'rgba(99,102,241,0.35)',
+    iconPath: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01',
+  },
+  {
+    key: 'projects',
+    label: 'Projects',
+    gradient: 'linear-gradient(135deg,#8b5cf6,#a855f7)',
+    glow: 'rgba(168,85,247,0.35)',
+    iconPath: 'M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z',
+  },
+  {
+    key: 'courses',
+    label: 'Courses',
+    gradient: 'linear-gradient(135deg,#f59e0b,#f97316)',
+    glow: 'rgba(245,158,11,0.35)',
+    iconPath: 'M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25',
+  },
+  {
+    key: 'students',
+    label: 'Students',
+    gradient: 'linear-gradient(135deg,#10b981,#06b6d4)',
+    glow: 'rgba(16,185,129,0.35)',
+    iconPath: 'M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z',
+  },
+]
+
+function StatCard({ label, value, hint, gradient, glow, iconPath }) {
+  return (
+    <div
+      className="group relative overflow-hidden rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1"
+      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}
+      onMouseEnter={e => e.currentTarget.style.boxShadow = `0 8px 32px ${glow}, 0 4px 24px rgba(0,0,0,0.3)`}
+      onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.3)'}
+    >
+      {/* Subtle gradient overlay on hover */}
+      <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" style={{ background: gradient.replace('135deg', '145deg').replace(')', ', transparent)'), opacity: 0.05 }} />
+
+      <div className="relative flex items-start justify-between">
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">{label}</p>
+          <p className="mt-3 text-4xl font-black text-white tracking-tight">{value}</p>
+          <p className="mt-1.5 text-[12px] font-medium text-slate-500">{hint}</p>
+        </div>
+        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl" style={{ background: gradient, boxShadow: `0 4px 16px ${glow}` }}>
+          <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <path strokeLinecap="round" strokeLinejoin="round" d={iconPath} />
+          </svg>
+        </div>
+      </div>
+
+      {/* Bottom accent line */}
+      <div className="absolute bottom-0 left-0 h-[2px] w-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: gradient }} />
+    </div>
+  )
+}
+
+function ProgressBar({ progress, gradient = 'linear-gradient(90deg,#10b981,#06b6d4)' }) {
+  return (
+    <div className="h-1.5 w-full overflow-hidden rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+      <div
+        className="h-full rounded-full transition-all duration-700 ease-out"
+        style={{ width: `${progress}%`, background: gradient }}
+      />
+    </div>
+  )
 }
 
 export default function EmployeeHomeDashboard() {
   const { currentUser, userProfile } = useAuth()
-  const { tasks, projects, teamMembers, courses, enrollments, certificates, certificateTemplate } = useStore()
-  const [certificateDownloading, setCertificateDownloading] = useState('')
-  const certificateDownloadRef = useRef(null)
+  const { tasks, projects, teamMembers, courses, enrollments } = useStore()
 
   const memberData = useMemo(() => {
     const currentEmail = normalize(currentUser?.email)
@@ -57,7 +115,6 @@ export default function EmployeeHomeDashboard() {
   const roleLabel = userProfile?.jobTitle || memberData?.role || (userProfile?.role === 'mentor' ? 'Mentor' : 'Employee')
   const departmentLabel = userProfile?.department || memberData?.department || 'Operations'
   const employeeId = userProfile?.employeeId || currentUser?.employeeId || memberData?.employeeId || ''
-  const canCreateCourses = Boolean(employeeId)
   const employeeEmail = currentUser?.email || userProfile?.email || memberData?.email || ''
   const initials = displayName.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part.charAt(0).toUpperCase()).join('') || 'EM'
 
@@ -94,10 +151,6 @@ export default function EmployeeHomeDashboard() {
     () => [...new Set([currentUser?.uid, userProfile?.uid, employeeId].filter(Boolean))],
     [currentUser?.uid, userProfile?.uid, employeeId]
   )
-  const certificateIdentityKeys = useMemo(
-    () => [...new Set([currentUser?.uid, userProfile?.uid, employeeId, employeeEmail].filter(Boolean).map(normalize))],
-    [currentUser?.uid, userProfile?.uid, employeeEmail, employeeId]
-  )
 
   const courseCards = useMemo(() => courses
     .filter(course => employeeKeys.includes(course.assignedEmployeeId) || employeeKeys.includes(course.assignedEmployeeRef))
@@ -123,320 +176,310 @@ export default function EmployeeHomeDashboard() {
     .flatMap(course => course.students.map(item => ({ ...item, courseTitle: item.courseTitle || course.title })))
     .sort((a, b) => getTimeValue(b.enrolledAt) - getTimeValue(a.enrolledAt))
     .slice(0, 5), [courseCards])
-  const assignedCertificates = useMemo(() => certificates
-    .filter((certificate) => {
-      if (certificate.source !== 'qr') return false
-
-      const assignmentKeys = [
-        certificate.assignedEmployeeUid,
-        certificate.assignedEmployeeId,
-        certificate.assignedEmployeeRef,
-        certificate.assignedEmployeeEmail,
-      ]
-        .filter(Boolean)
-        .map(normalize)
-
-      return assignmentKeys.some((key) => certificateIdentityKeys.includes(key))
-    })
-    .sort((left, right) =>
-      getTimeValue(right.updatedAt || right.createdAt || right.approval_date || right.rawDate || right.date) -
-      getTimeValue(left.updatedAt || left.createdAt || left.approval_date || left.rawDate || left.date)
-    ), [certificateIdentityKeys, certificates])
-  const latestAssignedCertificate = assignedCertificates[0] || null
-
-  const handleCertificateDownload = async (format) => {
-    if (!certificateDownloadRef.current || !latestAssignedCertificate) return
-
-    try {
-      setCertificateDownloading(format)
-      if (format === 'png') {
-        await downloadCertificatePng(certificateDownloadRef.current, latestAssignedCertificate)
-      } else {
-        await downloadCertificatePdf(certificateDownloadRef.current, latestAssignedCertificate)
-      }
-    } catch (error) {
-      console.error(`Employee certificate ${format} export failed:`, error)
-      window.alert(`Unable to generate ${format.toUpperCase()} right now.`)
-    } finally {
-      setCertificateDownloading('')
-    }
-  }
 
   const totalTasks = myTasks.length
   const completedTasks = myTasks.filter(task => isDone(task.status)).length
   const inProgressTasks = myTasks.filter(task => isProgress(task.status)).length
   const pendingTasks = totalTasks - completedTasks - inProgressTasks
   const readyCourses = courseCards.filter(course => course.meetingReady && course.materials > 0).length
+  const activeStudents = courseCards.reduce((sum, course) => sum + course.studentCount, 0)
 
   const stats = [
-    { label: 'Tasks', value: totalTasks, hint: `${pendingTasks} pending` },
-    { label: 'Projects', value: myProjects.length, hint: `${inProgressTasks} in progress` },
-    { label: 'Courses', value: courseCards.length, hint: `${readyCourses} delivery ready` },
-    { label: 'Certificates', value: assignedCertificates.length, hint: assignedCertificates.length ? 'assigned to you' : 'waiting for issue' },
+    { key: 'tasks', value: totalTasks, hint: `${pendingTasks} pending` },
+    { key: 'projects', value: myProjects.length, hint: `${inProgressTasks} in progress` },
+    { key: 'courses', value: courseCards.length, hint: `${readyCourses} delivery ready` },
+    { key: 'students', value: activeStudents, hint: `${recentActivity.length} recent activity` },
+  ]
+
+  const taskOverviewBars = [
+    { label: 'Pending', count: pendingTasks, color: '#64748b', gradient: 'linear-gradient(90deg,#64748b,#94a3b8)' },
+    { label: 'In Progress', count: inProgressTasks, color: '#f59e0b', gradient: 'linear-gradient(90deg,#f59e0b,#fbbf24)' },
+    { label: 'Completed', count: completedTasks, color: '#10b981', gradient: 'linear-gradient(90deg,#10b981,#34d399)' },
   ]
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-5 duration-500">
-      <section className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.22),_transparent_30%),linear-gradient(135deg,_rgba(15,23,42,0.98),_rgba(3,7,18,0.96))] p-6 shadow-2xl shadow-black/20 lg:p-8">
-        <div className="absolute -right-8 top-0 h-40 w-40 rounded-full bg-cyan-400/10 blur-3xl" />
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-3xl">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-lg font-black text-white">{initials}</div>
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.3em] text-emerald-300">Employee Workspace</p>
-                <h1 className="text-3xl font-black tracking-tight text-white lg:text-4xl">{displayName}</h1>
-              </div>
-            </div>
-            <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300">
-              This dashboard organizes tasks, assigned courses, student activity, and quick actions so day-to-day work can be managed in one place.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-300">{roleLabel}</span>
-              <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-300">{departmentLabel}</span>
-              {employeeId && <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-200">ID {employeeId}</span>}
-            </div>
-          </div>
+    <div className="space-y-7" style={{ animation: 'fadeInUp 0.5s ease forwards' }}>
 
-          <div className="grid grid-cols-2 gap-3 lg:min-w-[320px]">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4"><p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Pending</p><p className="mt-2 text-2xl font-black text-white">{pendingTasks}</p><p className="mt-1 text-xs text-slate-400">Tasks waiting</p></div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4"><p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Ready Courses</p><p className="mt-2 text-2xl font-black text-white">{readyCourses}</p><p className="mt-1 text-xs text-slate-400">Meeting + materials set</p></div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4"><p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Recent Activity</p><p className="mt-2 text-2xl font-black text-white">{recentActivity.length}</p><p className="mt-1 text-xs text-slate-400">Latest enrollments</p></div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4"><p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Support</p><p className="mt-2 truncate text-sm font-semibold text-white">{employeeEmail || 'Employee account'}</p><p className="mt-1 text-xs text-slate-400">Live notifications enabled</p></div>
-          </div>
-        </div>
-      </section>
+      {/* ── Hero Banner ─────────────────────────────────────────── */}
+      <section
+        className="relative overflow-hidden rounded-3xl p-6 lg:p-8"
+        style={{
+          background: 'linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(6,182,212,0.08) 50%, rgba(2,6,23,0.95) 100%)',
+          border: '1px solid rgba(16,185,129,0.2)',
+          boxShadow: '0 0 60px rgba(16,185,129,0.08), 0 8px 32px rgba(0,0,0,0.4)',
+        }}
+      >
+        {/* Ambient blobs */}
+        <div className="pointer-events-none absolute -top-10 -right-10 h-56 w-56 rounded-full opacity-20" style={{ background: 'radial-gradient(circle, #06b6d4, transparent 70%)', filter: 'blur(40px)' }} />
+        <div className="pointer-events-none absolute -bottom-8 -left-8 h-40 w-40 rounded-full opacity-15" style={{ background: 'radial-gradient(circle, #10b981, transparent 70%)', filter: 'blur(30px)' }} />
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {stats.map(stat => (
-          <div key={stat.label} className="rounded-3xl border border-white/10 bg-gray-900/70 p-5 shadow-xl">
-            <p className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-400">{stat.label}</p>
-            <p className="mt-3 text-4xl font-black text-white">{stat.value}</p>
-            <p className="mt-2 text-sm text-slate-400">{stat.hint}</p>
-          </div>
-        ))}
-      </section>
-
-      <section className="rounded-[28px] border border-white/10 bg-gray-900/70 p-6 shadow-2xl shadow-black/20">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          {/* Left: identity */}
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-cyan-200">
-              <Award size={14} />
-              My Certificates
+            <div className="flex items-center gap-4 mb-4">
+              <div
+                className="flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-black text-white"
+                style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.4), rgba(6,182,212,0.4))', border: '1px solid rgba(16,185,129,0.3)', boxShadow: '0 4px 20px rgba(16,185,129,0.2)' }}
+              >
+                {initials}
+              </div>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.35em] text-emerald-400 mb-1">Employee Workspace</p>
+                <h1 className="text-2xl font-black tracking-tight text-white lg:text-3xl">{displayName}</h1>
+              </div>
             </div>
-            <h2 className="mt-4 text-2xl font-black text-white">Certificates assigned to your employee profile</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-400">
-              When admin assigns a QR certificate to your account, it appears here automatically with preview and download options.
+
+            <p className="text-sm leading-6 text-slate-400 mb-4">
+              Your central hub for tasks, courses, student activity and team communication — all in one focused workspace.
             </p>
+
+            <div className="flex flex-wrap gap-2">
+              <span className="rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-300" style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.25)' }}>
+                {roleLabel}
+              </span>
+              <span className="rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300" style={{ background: 'rgba(6,182,212,0.12)', border: '1px solid rgba(6,182,212,0.25)' }}>
+                {departmentLabel}
+              </span>
+              {employeeId && (
+                <span className="rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-300" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                  ID {employeeId}
+                </span>
+              )}
+            </div>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-              <p className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-500">Assigned</p>
-              <p className="mt-2 text-3xl font-black text-white">{assignedCertificates.length}</p>
-              <p className="mt-1 text-sm text-slate-400">Certificates mapped to your ID or email</p>
+
+          {/* Right: mini stat tiles */}
+          <div className="grid grid-cols-2 gap-3 lg:min-w-[280px]">
+            {[
+              { label: 'Pending Tasks', value: pendingTasks, color: '#64748b' },
+              { label: 'Ready Courses', value: readyCourses, color: '#10b981' },
+              { label: 'Recent Activity', value: recentActivity.length, color: '#6366f1' },
+              { label: 'Support Email', value: employeeEmail ? '✓ Active' : '—', color: '#06b6d4', small: true },
+            ].map(tile => (
+              <div key={tile.label} className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <p className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-500">{tile.label}</p>
+                <p className={`mt-2 font-black text-white ${tile.small ? 'text-sm mt-3' : 'text-2xl'}`}>{tile.value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Stat Cards ─────────────────────────────────────────── */}
+      <section className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+        {stats.map((stat, i) => {
+          const def = statDefinitions.find(d => d.key === stat.key)
+          return (
+            <StatCard
+              key={stat.key}
+              label={def.label}
+              value={stat.value}
+              hint={stat.hint}
+              gradient={def.gradient}
+              glow={def.glow}
+              iconPath={def.iconPath}
+            />
+          )
+        })}
+      </section>
+
+      {/* ── Main Content Grid ─────────────────────────────────── */}
+      <section className="grid grid-cols-1 gap-6 xl:grid-cols-[1.1fr_1.1fr_0.85fr]">
+
+        {/* Task Pipeline */}
+        <div className="rounded-3xl p-6" style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)', boxShadow: '0 4px 32px rgba(0,0,0,0.3)' }}>
+          <div className="flex items-start justify-between gap-3 mb-6">
+            <div>
+              <h2 className="text-base font-black text-white">Task Pipeline</h2>
+              <p className="mt-0.5 text-[12px] text-slate-500">Status breakdown of your workload</p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-              <p className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-500">Latest Status</p>
-              <p className="mt-2 text-3xl font-black text-white">{latestAssignedCertificate?.status === 'revoked' ? 'Revoked' : latestAssignedCertificate ? 'Active' : 'None'}</p>
-              <p className="mt-1 text-sm text-slate-400">Live from the QR certificate module</p>
+            <Link
+              to="/employee/tasks"
+              className="flex-shrink-0 rounded-xl px-3 py-1.5 text-[11px] font-bold text-slate-300 transition-all hover:text-white"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+            >
+              Open Board →
+            </Link>
+          </div>
+
+          {/* Task bars */}
+          <div className="space-y-4">
+            {taskOverviewBars.map(item => (
+              <div key={item.label}>
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full" style={{ background: item.color }} />
+                    <span className="text-[12px] font-semibold text-slate-300">{item.label}</span>
+                  </div>
+                  <span className="text-[12px] font-black text-white">{item.count}</span>
+                </div>
+                <ProgressBar progress={totalTasks ? Math.round((item.count / totalTasks) * 100) : 0} gradient={item.gradient} />
+              </div>
+            ))}
+          </div>
+
+          {/* Completion rate ring-like display */}
+          {totalTasks > 0 && (
+            <div className="mt-6 flex items-center gap-4 rounded-2xl p-4" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.12)' }}>
+              <div className="text-center">
+                <p className="text-3xl font-black text-emerald-400">{Math.round((completedTasks / totalTasks) * 100)}%</p>
+                <p className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-500 mt-0.5">Complete</p>
+              </div>
+              <div className="h-10 w-px" style={{ background: 'rgba(255,255,255,0.07)' }} />
+              <p className="text-[12px] text-slate-400 leading-5">{completedTasks} of {totalTasks} tasks completed across {myProjects.length} projects</p>
             </div>
+          )}
+
+          {/* Projects */}
+          <div className="mt-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">Projects</h3>
+              <span className="text-[10px] text-slate-600">{myProjects.length} mapped</span>
+            </div>
+            {myProjects.length === 0 ? (
+              <div className="rounded-2xl px-4 py-8 text-center text-[12px] text-slate-600" style={{ border: '1px dashed rgba(255,255,255,0.08)' }}>
+                No project assignments yet
+              </div>
+            ) : myProjects.slice(0, 4).map(project => (
+              <div key={project.id} className="rounded-2xl p-4 mb-2 transition-all" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="flex items-center justify-between gap-3 mb-2">
+                  <p className="text-[13px] font-semibold text-white truncate">{project.name}</p>
+                  <span
+                    className="rounded-full px-2 py-0.5 text-[10px] font-black text-sky-300 flex-shrink-0"
+                    style={{ background: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.2)' }}
+                  >
+                    {project.progress}%
+                  </span>
+                </div>
+                <ProgressBar progress={project.progress} gradient="linear-gradient(90deg,#38bdf8,#06b6d4)" />
+                <p className="mt-1.5 text-[10px] text-slate-600">{project.completed}/{project.total} tasks done</p>
+              </div>
+            ))}
           </div>
         </div>
 
-        {latestAssignedCertificate ? (
-          <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1.16fr)_320px]">
-            <div className="rounded-[28px] border border-white/10 bg-slate-950/40 p-3 md:p-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 px-2 pb-4">
-                <div>
-                  <p className="text-[11px] font-black uppercase tracking-[0.28em] text-cyan-300">Latest Assigned Certificate</p>
-                  <h3 className="mt-2 text-2xl font-black text-white">{latestAssignedCertificate.certificateTypeLabel || latestAssignedCertificate.certificateType || 'Certificate'}</h3>
-                  <p className="mt-1 text-sm text-slate-400">Holder: {latestAssignedCertificate.userName || latestAssignedCertificate.name || displayName}</p>
-                </div>
-                <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-cyan-200">
-                  {latestAssignedCertificate.certificate_id}
-                </div>
-              </div>
-
-              <div className="overflow-x-auto">
-                <div className="mx-auto w-full" style={{ maxWidth: 'min(100%, calc((100vh - 18rem) * 1.414))' }}>
-                  <CertificateDocument certificate={latestAssignedCertificate} template={certificateTemplate} />
-                </div>
-              </div>
-
-              <div className="absolute left-[-9999px] top-[-9999px]" aria-hidden="true">
-                <div ref={certificateDownloadRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
-                  <CertificateDocument certificate={latestAssignedCertificate} template={certificateTemplate} />
-                </div>
-              </div>
+        {/* Course Delivery Board */}
+        <div className="rounded-3xl p-6" style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)', boxShadow: '0 4px 32px rgba(0,0,0,0.3)' }}>
+          <div className="flex items-start justify-between gap-3 mb-6">
+            <div>
+              <h2 className="text-base font-black text-white">Course Delivery Board</h2>
+              <p className="mt-0.5 text-[12px] text-slate-500">Meeting links, materials and student load</p>
             </div>
+            <Link
+              to="/employee/course-manage"
+              className="flex-shrink-0 rounded-xl px-3 py-1.5 text-[11px] font-bold text-slate-300 transition-all hover:text-white"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+            >
+              Manage →
+            </Link>
+          </div>
 
-            <div className="space-y-4">
-              <div className="rounded-[28px] border border-white/10 bg-slate-950/60 p-5">
-                <p className="text-[11px] font-black uppercase tracking-[0.28em] text-emerald-300">Quick Actions</p>
-                <div className="mt-4 grid gap-3">
-                  <Link
-                    to={`/verify/${encodeURIComponent(latestAssignedCertificate.certificate_id)}`}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm font-semibold text-cyan-200 transition hover:bg-cyan-400/15"
-                  >
-                    <ExternalLink size={16} />
-                    Open Verify Page
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={() => handleCertificateDownload('png')}
-                    disabled={certificateDownloading === 'png'}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm font-semibold text-cyan-200 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <FileImage size={16} />
-                    {certificateDownloading === 'png' ? 'Generating PNG...' : 'Download PNG'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleCertificateDownload('pdf')}
-                    disabled={certificateDownloading === 'pdf'}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-200 transition hover:bg-amber-400/15 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <FileText size={16} />
-                    {certificateDownloading === 'pdf' ? 'Generating PDF...' : 'Download PDF'}
-                  </button>
-                </div>
+          <div className="space-y-3">
+            {courseCards.length === 0 ? (
+              <div className="rounded-2xl px-4 py-10 text-center" style={{ border: '1px dashed rgba(255,255,255,0.08)' }}>
+                <p className="text-[13px] font-semibold text-white mb-1">No courses assigned yet</p>
+                <p className="text-[12px] text-slate-600">Ask admin to assign a course to manage it here.</p>
               </div>
+            ) : courseCards.slice(0, 4).map(course => (
+              <div
+                key={course.id}
+                className="rounded-2xl p-4 transition-all duration-200"
+                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-semibold text-white truncate">{course.title}</p>
+                    <p className="mt-0.5 text-[10px] uppercase tracking-[0.2em] text-slate-600">{course.category}</p>
+                  </div>
+                  <span
+                    className="rounded-full px-2.5 py-0.5 text-[10px] font-bold text-emerald-300 flex-shrink-0"
+                    style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.2)' }}
+                  >
+                    {course.studentCount} students
+                  </span>
+                </div>
 
-              <div className="rounded-[28px] border border-white/10 bg-slate-950/60 p-5">
-                <p className="text-[11px] font-black uppercase tracking-[0.28em] text-cyan-300">Certificate Registry</p>
-                <div className="mt-4 space-y-3">
-                  {assignedCertificates.slice(0, 4).map((certificate) => (
-                    <div key={certificate.id} className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-white">{certificate.certificateTypeLabel || certificate.certificateType || 'Certificate'}</p>
-                          <p className="mt-1 break-all font-mono text-xs text-cyan-200">{certificate.certificate_id}</p>
-                        </div>
-                        <span className={`rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] ${
-                          certificate.status === 'revoked'
-                            ? 'border-amber-400/20 bg-amber-400/10 text-amber-200'
-                            : 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300'
-                        }`}>
-                          {certificate.status === 'revoked' ? 'Revoked' : 'Active'}
-                        </span>
-                      </div>
-                      <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-slate-400">
-                        <div className="rounded-xl border border-white/8 bg-black/20 px-3 py-2">
-                          <p className="font-black uppercase tracking-[0.16em] text-slate-500">Issued</p>
-                          <p className="mt-1 text-sm font-semibold text-white">{formatIssuedDate(certificate.rawDate || certificate.date || certificate.approval_date || certificate.createdAt)}</p>
-                        </div>
-                        <div className="rounded-xl border border-white/8 bg-black/20 px-3 py-2">
-                          <p className="font-black uppercase tracking-[0.16em] text-slate-500">Source</p>
-                          <p className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-white">
-                            <QrCode size={14} className="text-cyan-200" />
-                            QR Module
-                          </p>
-                        </div>
-                      </div>
-                      <Link
-                        to={`/verify/${encodeURIComponent(certificate.certificate_id)}`}
-                        className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-cyan-200 transition hover:text-cyan-100"
-                      >
-                        <ShieldCheck size={15} />
-                        View certificate
-                      </Link>
+                <div className="mt-3 grid grid-cols-3 gap-2">
+                  {[
+                    { val: course.plans, lbl: 'Plans' },
+                    { val: course.materials, lbl: 'Materials' },
+                    { val: course.meetingReady ? 'Ready' : 'Pending', lbl: 'Meeting', colored: true, ready: course.meetingReady },
+                  ].map(item => (
+                    <div key={item.lbl} className="rounded-xl py-2 text-center" style={{ background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                      <p className={`text-[13px] font-black ${item.colored ? (item.ready ? 'text-emerald-400' : 'text-amber-400') : 'text-white'}`}>{item.val}</p>
+                      <p className="mt-0.5 text-[9px] text-slate-600">{item.lbl}</p>
                     </div>
                   ))}
                 </div>
               </div>
-            </div>
-          </div>
-        ) : (
-          <div className="mt-6 rounded-[28px] border border-dashed border-white/10 bg-white/[0.03] px-6 py-14 text-center">
-            <p className="text-lg font-semibold text-white">No certificates assigned yet.</p>
-            <p className="mt-2 text-sm text-slate-400">As soon as admin issues a QR certificate to your employee profile, it will show up here with verify and download actions.</p>
-          </div>
-        )}
-      </section>
-
-      <section className="grid grid-cols-1 gap-6 xl:grid-cols-[1.1fr_1.1fr_0.9fr]">
-        <div className="rounded-[28px] border border-white/10 bg-gray-900/70 p-6 shadow-2xl shadow-black/20">
-          <div className="flex items-center justify-between gap-3">
-            <div><h2 className="text-lg font-black text-white">Task Pipeline</h2><p className="mt-1 text-sm text-slate-400">What needs attention right now.</p></div>
-            <Link to="/employee/tasks" className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-slate-200 transition hover:bg-white/10 hover:text-white">Open board</Link>
-          </div>
-          <div className="mt-6 space-y-4">
-            {[{ label: 'Pending', count: pendingTasks, tone: 'bg-sky-400' }, { label: 'In Progress', count: inProgressTasks, tone: 'bg-amber-400' }, { label: 'Completed', count: completedTasks, tone: 'bg-emerald-400' }].map(item => (
-              <div key={item.label} className="space-y-2">
-                <div className="flex items-center justify-between text-sm"><span className="font-semibold text-slate-200">{item.label}</span><span className="text-slate-400">{item.count}</span></div>
-                <div className="h-2 overflow-hidden rounded-full bg-white/5"><div className={`h-full rounded-full ${item.tone}`} style={{ width: totalTasks ? `${Math.round((item.count / totalTasks) * 100)}%` : '0%' }} /></div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 space-y-3">
-            <div className="flex items-center justify-between"><h3 className="text-sm font-black uppercase tracking-[0.25em] text-slate-400">Projects</h3><span className="text-xs text-slate-500">{myProjects.length} mapped</span></div>
-            {myProjects.length === 0 ? <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-slate-500">No project assignments mapped to your tasks yet.</div> : myProjects.slice(0, 4).map(project => (
-              <div key={project.id} className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
-                <div className="flex items-center justify-between gap-3"><div><p className="text-sm font-semibold text-white">{project.name}</p><p className="mt-1 text-xs text-slate-400">{project.completed}/{project.total} tasks completed</p></div><span className="rounded-full bg-white/5 px-2.5 py-1 text-xs font-bold text-sky-300">{project.progress}%</span></div>
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/5"><div className="h-full rounded-full bg-gradient-to-r from-sky-400 to-cyan-400" style={{ width: `${project.progress}%` }} /></div>
-              </div>
             ))}
           </div>
         </div>
 
-        <div className="rounded-[28px] border border-white/10 bg-gray-900/70 p-6 shadow-2xl shadow-black/20">
-          <div className="flex items-center justify-between gap-3">
-            <div><h2 className="text-lg font-black text-white">Course Delivery Board</h2><p className="mt-1 text-sm text-slate-400">Create courses, then manage meeting links, materials, and student load.</p></div>
-            <div className="flex flex-wrap items-center gap-2">
-              {canCreateCourses && (
-                <Link to="/employee/course-manage?create=1" className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-200 transition hover:bg-emerald-400/20 hover:text-white">Add course</Link>
-              )}
-              <Link to="/employee/course-manage" className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-slate-200 transition hover:bg-white/10 hover:text-white">Manage now</Link>
-            </div>
-          </div>
-          <div className="mt-6 space-y-3">
-            {courseCards.length === 0 ? <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] px-4 py-10 text-center"><p className="text-sm font-semibold text-white">{canCreateCourses ? 'No courses yet' : 'No courses assigned yet'}</p><p className="mt-2 text-sm text-slate-500">{canCreateCourses ? 'Use Add course to create your first draft course from this dashboard.' : 'Ask admin to assign a course so you can manage materials and meeting links.'}</p></div> : courseCards.slice(0, 4).map(course => (
-              <div key={course.id} className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 transition hover:border-emerald-400/20 hover:bg-white/[0.05]">
-                <div className="flex items-start justify-between gap-3"><div><p className="text-sm font-semibold text-white">{course.title}</p><p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-500">{course.category}</p></div><span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-xs font-bold text-emerald-300">{course.studentCount} students</span></div>
-                <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
-                  <div className="rounded-xl border border-white/8 bg-black/20 px-3 py-2 text-center"><p className="font-black text-white">{course.plans}</p><p className="mt-1 text-slate-500">Plans</p></div>
-                  <div className="rounded-xl border border-white/8 bg-black/20 px-3 py-2 text-center"><p className="font-black text-white">{course.materials}</p><p className="mt-1 text-slate-500">Materials</p></div>
-                  <div className="rounded-xl border border-white/8 bg-black/20 px-3 py-2 text-center"><p className={`font-black ${course.meetingReady ? 'text-emerald-300' : 'text-amber-300'}`}>{course.meetingReady ? 'Ready' : 'Pending'}</p><p className="mt-1 text-slate-500">Meeting</p></div>
+        {/* Right column */}
+        <div className="space-y-5">
+          {/* Latest Student Activity */}
+          <div className="rounded-3xl p-5" style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)', boxShadow: '0 4px 32px rgba(0,0,0,0.3)' }}>
+            <h2 className="text-[13px] font-black text-white mb-0.5">Student Activity</h2>
+            <p className="text-[11px] text-slate-500 mb-4">Recent enrollments on your courses</p>
+
+            <div className="space-y-2.5">
+              {recentActivity.length === 0 ? (
+                <div className="rounded-2xl px-4 py-8 text-center text-[12px] text-slate-600" style={{ border: '1px dashed rgba(255,255,255,0.08)' }}>
+                  Activity will appear here automatically
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          <div className="rounded-[28px] border border-white/10 bg-gray-900/70 p-6 shadow-2xl shadow-black/20">
-            <h2 className="text-lg font-black text-white">Latest Student Activity</h2>
-            <p className="mt-1 text-sm text-slate-400">Recent enrollments on your assigned courses.</p>
-            <div className="mt-5 space-y-3">
-              {recentActivity.length === 0 ? <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.03] px-4 py-8 text-center text-sm text-slate-500">New student activity will appear here automatically.</div> : recentActivity.map(activity => (
-                <div key={activity.id} className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
-                  <div className="flex items-start justify-between gap-3"><div><p className="text-sm font-semibold text-white">{activity.userName || activity.studentName || 'Student enrolled'}</p><p className="mt-1 text-xs text-slate-400">{activity.courseTitle}</p></div><span className="text-[11px] text-slate-500">{formatTimeAgo(activity.enrolledAt)}</span></div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {activity.planLabel && <span className="rounded-full bg-violet-500/10 px-2.5 py-1 text-[11px] font-bold text-violet-300">{activity.planLabel}</span>}
-                    {Number(activity.amount || 0) > 0 && <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold text-emerald-300">₹{Number(activity.amount).toLocaleString('en-IN')}</span>}
-                    {Number(activity.amount || 0) === 0 && <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold text-emerald-300">FREE</span>}
+              ) : recentActivity.map(activity => (
+                <div key={activity.id} className="rounded-2xl p-3.5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-[12px] font-semibold text-white truncate">{activity.userName || activity.studentName || 'Student enrolled'}</p>
+                      <p className="text-[10px] text-slate-500 truncate mt-0.5">{activity.courseTitle}</p>
+                    </div>
+                    <span className="text-[10px] text-slate-600 flex-shrink-0">{formatTimeAgo(activity.enrolledAt)}</span>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {activity.planLabel && (
+                      <span className="rounded-full px-2 py-0.5 text-[9px] font-bold text-violet-300" style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.2)' }}>
+                        {activity.planLabel}
+                      </span>
+                    )}
+                    <span className="rounded-full px-2 py-0.5 text-[9px] font-bold text-emerald-300" style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                      {Number(activity.amount || 0) > 0 ? `₹${Number(activity.amount).toLocaleString('en-IN')}` : 'FREE'}
+                    </span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-white/10 bg-gray-900/70 p-6 shadow-2xl shadow-black/20">
-            <h2 className="text-lg font-black text-white">Quick Actions</h2>
-            <p className="mt-1 text-sm text-slate-400">Jump straight to the pages you use most.</p>
-            <div className="mt-5 space-y-3">
+          {/* Quick Actions */}
+          <div className="rounded-3xl p-5" style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)', boxShadow: '0 4px 32px rgba(0,0,0,0.3)' }}>
+            <h2 className="text-[13px] font-black text-white mb-0.5">Quick Actions</h2>
+            <p className="text-[11px] text-slate-500 mb-4">Jump to pages you use most</p>
+
+            <div className="space-y-2">
               {[
-                ...(canCreateCourses
-                  ? [{ to: '/employee/course-manage?create=1', label: 'Add Course', caption: 'Create a new draft course from your employee panel' }]
-                  : []),
-                { to: '/employee/tasks', label: 'Open Tasks', caption: 'Track pending and completed work' },
-                { to: '/employee/course-manage', label: 'Manage Courses', caption: 'Update your course details, materials, and meeting links' },
-                { to: '/employee/broadcast', label: 'Send Broadcast', caption: 'Email enrolled students quickly' },
-                { to: '/employee/chat', label: 'Open Messages', caption: 'Respond to team communication' },
+                { to: '/employee/tasks', label: 'Open Tasks', caption: 'Track pending and completed work', color: '#3b82f6' },
+                { to: '/employee/course-manage', label: 'Manage Courses', caption: 'Update materials and meeting links', color: '#f59e0b' },
+                { to: '/employee/broadcast', label: 'Send Broadcast', caption: 'Email enrolled students quickly', color: '#ec4899' },
+                { to: '/employee/chat', label: 'Open Messages', caption: 'Respond to team communication', color: '#06b6d4' },
               ].map(link => (
-                <Link key={link.to} to={link.to} className="block rounded-2xl border border-white/8 bg-white/[0.03] p-4 transition hover:border-cyan-400/20 hover:bg-white/[0.06]">
-                  <p className="text-sm font-semibold text-white">{link.label}</p>
-                  <p className="mt-1 text-sm text-slate-400">{link.caption}</p>
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="group flex items-center gap-3 rounded-2xl p-3.5 transition-all duration-200"
+                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = `${link.color}30`; e.currentTarget.style.background = `${link.color}08`; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
+                >
+                  <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: link.color }} />
+                  <div className="min-w-0">
+                    <p className="text-[12px] font-semibold text-white">{link.label}</p>
+                    <p className="text-[10px] text-slate-500 truncate">{link.caption}</p>
+                  </div>
+                  <svg className="w-3.5 h-3.5 text-slate-600 group-hover:text-slate-300 ml-auto flex-shrink-0 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
                 </Link>
               ))}
             </div>
