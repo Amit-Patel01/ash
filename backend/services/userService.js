@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const path = require("path");
+const fs = require("fs");
 const bcrypt = require("bcryptjs");
 const admin = require("firebase-admin");
 const { logger } = require("../logger");
@@ -2113,6 +2114,11 @@ const uploadEmployeeCv = async (firebaseUid, file) => {
   }
   if (user.role !== "employee" && user.role !== "admin") {
     throw createHttpError(403, "Only employee profiles can upload a CV.", "invalid_role");
+  }
+
+  // Verify the file was actually saved to disk
+  if (!file.path || !fs.existsSync(file.path)) {
+    throw createHttpError(500, "CV file upload failed - file not saved to disk.", "file_save_failed");
   }
 
   const relativePath = `/uploads/cv/${path.basename(file.filename)}`;

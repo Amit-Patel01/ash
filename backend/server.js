@@ -145,7 +145,9 @@ app.use("/api/", apiLimiter);
 
 // ─── Static File Serving (Uploads) ───────────────────────────────────────────
 const uploadsDir = path.join(__dirname, "uploads");
+const cvDir = path.join(uploadsDir, "cv");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+if (!fs.existsSync(cvDir)) fs.mkdirSync(cvDir, { recursive: true });
 app.use("/uploads", express.static(uploadsDir));
 
 // ─── Health Check ────────────────────────────────────────────────────────────
