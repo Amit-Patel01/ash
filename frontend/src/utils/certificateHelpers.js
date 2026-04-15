@@ -26,7 +26,7 @@ export const getCertificateCourseName = (certificate, template) =>
 export const getCertificateVerifyUrl = (certificateId) => {
   if (!certificateId) return ''
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
-  return `${origin}/verify?id=${encodeURIComponent(certificateId)}`
+  return `${origin}/verify/${encodeURIComponent(certificateId)}`
 }
 
 export const getCertificateFilename = (certificate, extension) => {

@@ -89,9 +89,23 @@ export default function VerifyCertificateRefined() {
     () => mergeCertificateTemplate(certData?.templateSnapshot || certificateTemplate, documentType),
     [certData?.templateSnapshot, certificateTemplate, documentType]
   )
+  const previewCertificate = useMemo(() => {
+    if (!certData) return null
+    if (!isQrCertificate) return certData
+
+    const qrLabel = certData?.certificateTypeLabel || certData?.certificateType || 'Certificate'
+    return {
+      ...certData,
+      documentType: 'certificate',
+      documentLabel: qrLabel,
+      course: qrLabel,
+      courseName: qrLabel,
+      approval_date: certData?.rawDate || certData?.date || certData?.approval_date || certData?.createdAt,
+    }
+  }, [certData, isQrCertificate])
 
   const holderName = certData?.userName || certData?.name || 'Student'
-  const courseName = certData?.certificateType || certData?.courseName || certData?.course || 'Verified Certificate'
+  const courseName = certData?.certificateTypeLabel || certData?.certificateType || certData?.courseName || certData?.course || 'Verified Certificate'
   const documentLabel = isQrCertificate
     ? (certData?.certificateTypeLabel || certData?.certificateType || 'QR Certificate')
     : getCertificateDocumentLabel(certData, activeTemplate)
@@ -106,8 +120,8 @@ export default function VerifyCertificateRefined() {
 
   const portalFeatures = [
     { label: 'QR / Shared Link Ready', value: linkedId ? 'Active' : 'Available' },
-    { label: isQrCertificate ? 'Status Lookup' : `${documentMeta.shortLabel} Preview`, value: 'Live' },
-    { label: 'Download Formats', value: isQrCertificate ? 'ID Only' : 'PNG + PDF' },
+    { label: isQrCertificate ? 'Certificate Preview' : `${documentMeta.shortLabel} Preview`, value: 'Live' },
+    { label: 'Download Formats', value: 'PNG + PDF' },
   ]
 
   const verifyCertificate = async (incomingId = certId, options = {}) => {
@@ -162,14 +176,14 @@ export default function VerifyCertificateRefined() {
   }
 
   const handleDownload = async (format) => {
-    if (!downloadRef.current || !certData) return
+    if (!downloadRef.current || !previewCertificate) return
 
     try {
       setDownloading(format)
       if (format === 'png') {
-        await downloadCertificatePng(downloadRef.current, certData)
+        await downloadCertificatePng(downloadRef.current, previewCertificate)
       } else {
-        await downloadCertificatePdf(downloadRef.current, certData)
+        await downloadCertificatePdf(downloadRef.current, previewCertificate)
       }
     } catch (downloadError) {
       console.error(`Document ${format} export failed:`, downloadError)
@@ -457,11 +471,11 @@ export default function VerifyCertificateRefined() {
                     {isQrCertificate ? 'Verification Actions' : 'Quick Actions'}
                   </p>
                   <h3 className="mt-3 text-xl font-black text-white">
-                    {isQrCertificate ? 'Copy or review the certificate ID' : 'Download or share instantly'}
+                    {isQrCertificate ? 'Copy, download, or review instantly' : 'Download or share instantly'}
                   </h3>
                   <p className="mt-2 text-sm leading-6 text-slate-300">
                     {isQrCertificate
-                      ? 'QR certificates surface status and identity details here. Copy the ID to share or verify again later.'
+                      ? 'QR certificates now include the same preview and download flow. Copy the ID or export the document from this panel.'
                       : 'Once verified, you can copy the ID, export PNG, or download PDF from this panel.'}
                   </p>
 
@@ -469,7 +483,7 @@ export default function VerifyCertificateRefined() {
                     <ActionButton icon={Copy} onClick={handleCopyId}>
                       {copied ? 'Copied ID' : `Copy ${documentMeta.shortLabel} ID`}
                     </ActionButton>
-                    {!isQrCertificate ? (
+                    {previewCertificate ? (
                       <ActionButton
                         icon={FileImage}
                         onClick={() => handleDownload('png')}
@@ -479,7 +493,7 @@ export default function VerifyCertificateRefined() {
                         {downloading === 'png' ? 'Generating PNG...' : 'Download PNG'}
                       </ActionButton>
                     ) : null}
-                    {!isQrCertificate ? (
+                    {previewCertificate ? (
                       <ActionButton
                         icon={FileText}
                         onClick={() => handleDownload('pdf')}
@@ -557,7 +571,7 @@ export default function VerifyCertificateRefined() {
           </motion.aside>
         </div>
 
-        {status === 'success' && certData && !isQrCertificate && (
+        {status === 'success' && previewCertificate && (
           <motion.section
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
@@ -565,7 +579,7 @@ export default function VerifyCertificateRefined() {
           >
             <div className="absolute left-[-9999px] top-[-9999px]" aria-hidden="true">
               <div ref={downloadRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
-                <CertificateDocument certificate={certData} template={activeTemplate} />
+                <CertificateDocument certificate={previewCertificate} template={activeTemplate} />
               </div>
             </div>
 
@@ -588,7 +602,7 @@ export default function VerifyCertificateRefined() {
                     style={{ maxWidth: 'min(100%, calc((100vh - 18rem) * 1.414))' }}
                   >
                     <div ref={certificateRef}>
-                      <CertificateDocument certificate={certData} template={activeTemplate} />
+                      <CertificateDocument certificate={previewCertificate} template={activeTemplate} />
                     </div>
                   </div>
                 </div>
@@ -600,7 +614,7 @@ export default function VerifyCertificateRefined() {
                 <p className="text-[11px] font-black uppercase tracking-[0.3em] text-cyan-300">Document Details</p>
                 <div className="mt-4 space-y-3">
                   <DetailRow icon={User} label="Holder Name" value={holderName} />
-                  <DetailRow icon={BookOpen} label="Program / Role" value={courseName} />
+                  <DetailRow icon={BookOpen} label={isQrCertificate ? 'Certificate Type' : 'Program / Role'} value={isQrCertificate ? documentLabel : courseName} />
                   <DetailRow icon={Calendar} label="Verified On" value={achievementDate} />
                 </div>
               </Surface>

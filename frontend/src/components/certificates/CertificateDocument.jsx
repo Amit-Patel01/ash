@@ -58,9 +58,26 @@ function DetailChip({ label, value, accentColor }) {
 }
 
 function getDocumentNarrative(documentType, holderName, courseName, template, certificate) {
+  const isQrCertificate = certificate?.source === 'qr' || String(certificate?.certificate_id || '').startsWith('QR-')
   const internshipRole = certificate?.internshipRole || courseName
   const internshipDuration = certificate?.internshipDuration || certificate?.planLabel || certificate?.duration || 'Structured program tenure'
   const joiningDate = formatCertificateDate(certificate?.joiningDate || certificate?.approval_date || certificate?.createdAt)
+  const issueDate = formatCertificateDate(certificate?.rawDate || certificate?.approval_date || certificate?.createdAt || certificate?.date)
+
+  if (isQrCertificate) {
+    return {
+      intro: 'This verified certificate is proudly presented to',
+      highlight: holderName,
+      paragraph:
+        certificate?.certificateText ||
+        `In recognition of ${holderName} for receiving the ${certificate?.certificateTypeLabel || courseName || 'verified certificate'} from ${template.organizationName}.`,
+      chips: [
+        { label: 'Certificate Type', value: certificate?.certificateTypeLabel || courseName },
+        { label: 'Issue Date', value: issueDate },
+        { label: 'Status', value: certificate?.statusDisplay || 'Active' },
+      ],
+    }
+  }
 
   if (documentType === 'offer_letter') {
     return {
@@ -113,6 +130,8 @@ export default function CertificateDocument({ certificate, template, className =
   const issueDate = formatCertificateDate(certificate?.approval_date || certificate?.createdAt || certificate?.date)
   const signatureName = activeTemplate.signatureName || certificate?.issuedByName || 'Amit Patel'
   const signatureRole = activeTemplate.signatureRole || certificate?.issuedByRole || 'Authorized Signatory'
+  const signatureImage = certificate?.signatureImageUrl || founderSign
+  const stampImage = certificate?.stampImageUrl || ''
   const narrative = getDocumentNarrative(documentType, holderName, courseName, activeTemplate, certificate)
 
   const holderFontSize =
@@ -266,16 +285,22 @@ export default function CertificateDocument({ certificate, template, className =
           </div>
 
           <div className="text-center">
-            <p className="text-[11px] font-black uppercase tracking-[0.22em]" style={{ color: accentColor }}>
-              {activeTemplate.sealLabel}
-            </p>
+            {stampImage ? (
+              <div className="flex h-[56px] items-end justify-center">
+                <img src={stampImage} alt="Official stamp" className="max-h-[56px] w-auto object-contain" />
+              </div>
+            ) : (
+              <p className="text-[11px] font-black uppercase tracking-[0.22em]" style={{ color: accentColor }}>
+                {activeTemplate.sealLabel}
+              </p>
+            )}
             <p className="mt-2 text-[13px] font-semibold text-slate-700">{activeTemplate.issuerName}</p>
             <p className="mt-1 text-[11px] uppercase tracking-[0.15em] text-slate-400">{activeTemplate.issuerRole}</p>
           </div>
 
           <div className="text-center">
             <div className="flex h-[46px] items-end justify-center">
-              <img src={founderSign} alt={signatureName} className="max-h-[46px] w-auto object-contain" />
+              <img src={signatureImage} alt={signatureName} className="max-h-[46px] w-auto object-contain" />
             </div>
             <div className="mx-auto mt-2 h-px w-[72%] bg-slate-300" />
             <p className="mt-2 text-[13px] font-semibold text-slate-800">{signatureName}</p>

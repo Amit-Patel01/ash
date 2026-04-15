@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
-import { Link2, PencilLine, Plus, QrCode, RefreshCcw, ShieldCheck, ShieldOff, Trash2, Upload } from 'lucide-react'
+import { FileImage, FileText, Link2, PencilLine, Plus, QrCode, RefreshCcw, ShieldCheck, ShieldOff, Trash2, Upload } from 'lucide-react'
 import { useStore } from '../store/StoreContext'
 import { auth } from '../config/firebase'
 import { api, readApiJson } from '../config/api'
+import CertificateDocument from '../components/certificates/CertificateDocument'
+import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
 
 const CERTIFICATE_TYPES = [
   {
@@ -32,6 +34,15 @@ const createInitialForm = () => ({
   certificateText: getTypeMeta('LOR').defaultText,
   signatureImageUrl: '',
   stampImageUrl: '',
+})
+
+const mapCertificateToForm = (certificate = {}) => ({
+  name: certificate.name || certificate.userName || '',
+  certificateType: certificate.certificateType || 'LOR',
+  date: certificate.rawDate || certificate.date || new Date().toISOString().slice(0, 10),
+  certificateText: certificate.certificateText || getTypeMeta(certificate.certificateType || 'LOR').defaultText,
+  signatureImageUrl: certificate.signatureImageUrl || '',
+  stampImageUrl: certificate.stampImageUrl || '',
 })
 
 const formatDisplayDate = (value) => {
@@ -66,6 +77,7 @@ function StatCard({ label, value, tone = 'cyan' }) {
 export default function AdminQrCertificates() {
   const {
     qrCertificates,
+    certificateTemplate,
     createQrCertificate,
     updateQrCertificate,
     toggleQrCertificateStatus,
@@ -74,18 +86,49 @@ export default function AdminQrCertificates() {
 
   const [form, setForm] = useState(createInitialForm)
   const [editingId, setEditingId] = useState('')
+  const [previewCertificateId, setPreviewCertificateId] = useState('')
   const [busyId, setBusyId] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [uploadingField, setUploadingField] = useState('')
+  const [downloading, setDownloading] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const downloadRef = useRef(null)
 
   const activeCount = qrCertificates.filter(certificate => certificate.status === 'active').length
   const revokedCount = qrCertificates.filter(certificate => certificate.status === 'revoked').length
+  const editingCertificate = useMemo(
+    () => qrCertificates.find((certificate) => certificate.id === editingId) || null,
+    [editingId, qrCertificates]
+  )
+  const previewType = getTypeMeta(form.certificateType)
+  const previewCertificate = useMemo(() => ({
+    id: editingCertificate?.id || '',
+    source: 'qr',
+    status: editingCertificate?.status || 'active',
+    statusDisplay: editingCertificate?.status === 'revoked' ? 'Revoked' : 'Active',
+    isValid: editingCertificate?.status !== 'revoked',
+    certificate_id: previewCertificateId || editingCertificate?.certificate_id || 'QR-PREVIEW',
+    name: form.name || 'Certificate Holder',
+    userName: form.name || 'Certificate Holder',
+    certificateType: form.certificateType,
+    certificateTypeLabel: previewType.label,
+    documentLabel: previewType.label,
+    course: previewType.label,
+    courseName: previewType.label,
+    rawDate: form.date || new Date().toISOString().slice(0, 10),
+    date: form.date || new Date().toISOString().slice(0, 10),
+    certificateText: form.certificateText || previewType.defaultText,
+    signatureImageUrl: form.signatureImageUrl || '',
+    stampImageUrl: form.stampImageUrl || '',
+    verifyUrl: buildVerifyUrl(previewCertificateId || editingCertificate?.certificate_id || 'QR-PREVIEW'),
+  }), [editingCertificate, form, previewCertificateId, previewType])
+  const canDownloadPreview = Boolean(form.name.trim() && form.certificateText.trim())
 
   const resetForm = () => {
     setForm(createInitialForm())
     setEditingId('')
+    setPreviewCertificateId('')
   }
 
   const handleChange = (key, value) => {
@@ -152,13 +195,17 @@ export default function AdminQrCertificates() {
 
     try {
       if (editingId) {
-        await updateQrCertificate(editingId, form)
+        const savedCertificate = await updateQrCertificate(editingId, form)
+        setForm(mapCertificateToForm(savedCertificate))
+        setPreviewCertificateId(savedCertificate.certificate_id || '')
         setMessage('QR certificate updated.')
       } else {
-        await createQrCertificate(form)
+        const savedCertificate = await createQrCertificate(form)
+        setEditingId(savedCertificate.id || '')
+        setForm(mapCertificateToForm(savedCertificate))
+        setPreviewCertificateId(savedCertificate.certificate_id || '')
         setMessage('QR certificate created.')
       }
-      resetForm()
     } catch (submitError) {
       setError(submitError.message || 'Unable to save QR certificate.')
     } finally {
@@ -168,17 +215,31 @@ export default function AdminQrCertificates() {
 
   const handleEdit = (certificate) => {
     setEditingId(certificate.id)
-    setForm({
-      name: certificate.name || certificate.userName || '',
-      certificateType: certificate.certificateType || 'LOR',
-      date: certificate.rawDate || certificate.date || new Date().toISOString().slice(0, 10),
-      certificateText: certificate.certificateText || getTypeMeta(certificate.certificateType || 'LOR').defaultText,
-      signatureImageUrl: certificate.signatureImageUrl || '',
-      stampImageUrl: certificate.stampImageUrl || '',
-    })
+    setPreviewCertificateId(certificate.certificate_id || '')
+    setForm(mapCertificateToForm(certificate))
     setMessage('')
     setError('')
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handlePreviewDownload = async (format) => {
+    if (!downloadRef.current || !canDownloadPreview) return
+
+    setDownloading(format)
+    setMessage('')
+    setError('')
+
+    try {
+      if (format === 'png') {
+        await downloadCertificatePng(downloadRef.current, previewCertificate)
+      } else {
+        await downloadCertificatePdf(downloadRef.current, previewCertificate)
+      }
+    } catch (downloadError) {
+      setError(downloadError.message || `Unable to download ${format.toUpperCase()}.`)
+    } finally {
+      setDownloading('')
+    }
   }
 
   const handleToggleStatus = async (certificate) => {
@@ -330,11 +391,20 @@ export default function AdminQrCertificates() {
                   </label>
                 </div>
                 {form.signatureImageUrl ? (
-                  <img
-                    src={form.signatureImageUrl}
-                    alt="Signature preview"
-                    className="mt-4 h-24 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
-                  />
+                  <div className="mt-4 space-y-3">
+                    <img
+                      src={form.signatureImageUrl}
+                      alt="Signature preview"
+                      className="h-24 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleChange('signatureImageUrl', '')}
+                      className="inline-flex rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10"
+                    >
+                      Remove Signature
+                    </button>
+                  </div>
                 ) : (
                   <div className="mt-4 rounded-2xl border border-dashed border-white/10 px-4 py-8 text-center text-sm text-slate-500">
                     No signature uploaded
@@ -360,11 +430,20 @@ export default function AdminQrCertificates() {
                   </label>
                 </div>
                 {form.stampImageUrl ? (
-                  <img
-                    src={form.stampImageUrl}
-                    alt="Stamp preview"
-                    className="mt-4 h-24 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
-                  />
+                  <div className="mt-4 space-y-3">
+                    <img
+                      src={form.stampImageUrl}
+                      alt="Stamp preview"
+                      className="h-24 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleChange('stampImageUrl', '')}
+                      className="inline-flex rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10"
+                    >
+                      Remove Stamp
+                    </button>
+                  </div>
                 ) : (
                   <div className="mt-4 rounded-2xl border border-dashed border-white/10 px-4 py-8 text-center text-sm text-slate-500">
                     No stamp uploaded
@@ -396,23 +475,80 @@ export default function AdminQrCertificates() {
           </form>
         </section>
 
-        <aside className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
-          <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Module Notes</p>
-          <div className="mt-4 space-y-4 text-sm leading-6 text-slate-300">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-              <p className="font-semibold text-white">Auto-generated IDs</p>
-              <p className="mt-1 text-slate-400">Every new record gets a unique `QR-` certificate ID from the backend.</p>
+        <div className="space-y-6">
+          <aside className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Live Preview</p>
+                <h3 className="mt-2 text-2xl font-black text-white">Certificate image preview</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-400">
+                  Form me jo details bharoge, wahi yahan certificate image ke roop me dikhega. Save ke baad real `QR-` ID ke saath same preview download bhi ho jayega.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-3 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-cyan-200">
+                {previewCertificate.certificate_id}
+              </div>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-              <p className="font-semibold text-white">Verification link</p>
-              <p className="mt-1 text-slate-400">Each QR points to `/verify/{'{certificate_id}'}` and reuses the shared verifier.</p>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={() => handlePreviewDownload('png')}
+                disabled={!canDownloadPreview || downloading === 'png'}
+                className="inline-flex items-center gap-2 rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm font-semibold text-cyan-200 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <FileImage size={16} />
+                {downloading === 'png' ? 'Generating PNG...' : 'Download PNG'}
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePreviewDownload('pdf')}
+                disabled={!canDownloadPreview || downloading === 'pdf'}
+                className="inline-flex items-center gap-2 rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-200 transition hover:bg-amber-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <FileText size={16} />
+                {downloading === 'pdf' ? 'Generating PDF...' : 'Download PDF'}
+              </button>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-              <p className="font-semibold text-white">Revocation support</p>
-              <p className="mt-1 text-slate-400">Revoked certificates stay searchable but show a revoked status on the public verify page.</p>
+
+            <div className="mt-5 overflow-hidden rounded-[30px] border border-white/10 bg-slate-950/40 p-3">
+              <div className="overflow-x-auto">
+                <div className="mx-auto w-full">
+                  <CertificateDocument certificate={previewCertificate} template={certificateTemplate} />
+                </div>
+              </div>
             </div>
-          </div>
-        </aside>
+
+            <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
+              <p className="font-semibold text-white">Verify link preview</p>
+              <p className="mt-1 break-all text-slate-400">{buildVerifyUrl(previewCertificate.certificate_id)}</p>
+            </div>
+
+            <div className="absolute left-[-9999px] top-[-9999px]" aria-hidden="true">
+              <div ref={downloadRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
+                <CertificateDocument certificate={previewCertificate} template={certificateTemplate} />
+              </div>
+            </div>
+          </aside>
+
+          <aside className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
+            <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Module Notes</p>
+            <div className="mt-4 space-y-4 text-sm leading-6 text-slate-300">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
+                <p className="font-semibold text-white">Auto-generated IDs</p>
+                <p className="mt-1 text-slate-400">Every new record gets a unique `QR-` certificate ID from the backend.</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
+                <p className="font-semibold text-white">Verification link</p>
+                <p className="mt-1 text-slate-400">Each QR points to `/verify/{'{certificate_id}'}` and reuses the shared verifier.</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
+                <p className="font-semibold text-white">Revocation support</p>
+                <p className="mt-1 text-slate-400">Revoked certificates stay searchable but show a revoked status on the public verify page.</p>
+              </div>
+            </div>
+          </aside>
+        </div>
       </div>
 
       <section className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">

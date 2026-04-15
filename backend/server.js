@@ -148,9 +148,13 @@ app.use("/api/", apiLimiter);
 // ─── Static File Serving (Uploads) ───────────────────────────────────────────
 const uploadsDir = path.join(__dirname, "uploads");
 const cvDir = path.join(uploadsDir, "cv");
+const frontendDistDir = path.join(__dirname, "..", "frontend", "dist");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 if (!fs.existsSync(cvDir)) fs.mkdirSync(cvDir, { recursive: true });
 app.use("/uploads", express.static(uploadsDir));
+if (fs.existsSync(frontendDistDir)) {
+  app.use(express.static(frontendDistDir));
+}
 
 // ─── Health Check ────────────────────────────────────────────────────────────
 app.get("/", (req, res) => {
@@ -414,6 +418,17 @@ cron.schedule("*/5 * * * *", async () => {
     logger.error("Cron job error:", error);
   }
 });
+
+// ─── SPA Fallback For Frontend Routes ────────────────────────────────────────
+if (fs.existsSync(frontendDistDir)) {
+  app.get(/^\/(?!api(?:\/|$)|uploads(?:\/|$)).*/, (req, res, next) => {
+    if (!req.accepts("html")) {
+      return next();
+    }
+
+    return res.sendFile(path.join(frontendDistDir, "index.html"));
+  });
+}
 
 // ─── Global Error Handler ─────────────────────────────────────────────────────
 app.use((err, req, res, next) => {

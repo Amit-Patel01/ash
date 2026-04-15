@@ -1,11 +1,11 @@
 # Graph Report - .  (2026-04-15)
 
 ## Corpus Check
-- 200 files · ~378,193 words
+- 200 files · ~379,988 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1026 nodes · 1305 edges · 177 communities detected
+- 1028 nodes · 1311 edges · 177 communities detected
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
@@ -206,16 +206,16 @@
 ## Communities
 
 ### Community 0 - "Community 0"
-Cohesion: 0.03
-Nodes (82): AccentIconBubble, build, CertificatesPage, _CertificatesPageState, EmptyStateCard, initState, launchUrl, ListView (+74 more)
+Cohesion: 0.02
+Nodes (100): _AdminActionCard, AdminWorkspacePage, _AdminWorkspacePageState, build, EmptyStateCard, GlassCard, initState, InkWell (+92 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.03
-Nodes (65): admin_workspace_page.dart, certificates_page.dart, chat_page.dart, courses_page.dart, home_page.dart, BrandLogo, build, _closeDrawerAndRun (+57 more)
-
-### Community 2 - "Community 2"
 Cohesion: 0.14
 Nodes (58): approveAccountRequest(), assertMySqlReady(), buildFirestoreAccountRequestPayload(), buildFirestoreUserPayload(), buildResetEmailMarkup(), buildResetUrl(), buildTeamPayload(), completePasswordReset() (+50 more)
+
+### Community 2 - "Community 2"
+Cohesion: 0.04
+Nodes (52): config/firebase_options.dart, dart:io, DefaultFirebaseOptions, AuthScreen, _BootstrapLoader, BrandLogo, build, CircularProgressIndicator (+44 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.04
@@ -226,8 +226,8 @@ Cohesion: 0.05
 Nodes (42): dart:async, local_notification_service.dart, Align, build, ChatPage, _ChatPageState, _ChatRoomCard, ChatThreadPage (+34 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.06
-Nodes (38): config/firebase_options.dart, dart:io, DefaultFirebaseOptions, AuthScreen, _BootstrapLoader, BrandLogo, build, CircularProgressIndicator (+30 more)
+Cohesion: 0.05
+Nodes (37): admin_workspace_page.dart, certificates_page.dart, chat_page.dart, courses_page.dart, home_page.dart, BrandLogo, build, _closeDrawerAndRun (+29 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.07
@@ -238,24 +238,24 @@ Cohesion: 0.18
 Nodes (21): approveRequest(), broadcastEmail(), buildBroadcastContent(), createUser(), dedupeEmails(), deleteUser(), downloadEmployeeCv(), escapeHtml() (+13 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.1
-Nodes (20): AccentIconBubble, build, Container, EmptyStateCard, GlassCard, _InfoTile, initState, launchUrl (+12 more)
-
-### Community 9 - "Community 9"
 Cohesion: 0.17
 Nodes (16): Create(), Destroy(), EnableFullDpiSupportIfAvailable(), GetClientArea(), GetThisFromHandle(), GetWindowClass(), MessageHandler(), OnCreate() (+8 more)
 
-### Community 10 - "Community 10"
+### Community 9 - "Community 9"
 Cohesion: 0.21
 Nodes (17): buildVerifyResponseData(), buildVerifyUrl(), createQrCertificate(), generateCertificateId(), generateUniqueCertificateId(), getBaseUrl(), isQrCertificateId(), isValidPublicCertificateId() (+9 more)
 
-### Community 11 - "Community 11"
+### Community 10 - "Community 10"
 Cohesion: 0.19
 Nodes (19): addCertificate(), createCertificateRecord(), createEnrollment(), db(), deleteCertificate(), findCertificateByPublicId(), getActiveCourseEnrollments(), getActiveEnrolledEmails() (+11 more)
 
+### Community 11 - "Community 11"
+Cohesion: 0.11
+Nodes (17): Align, _AssistantMessage, build, Container, didUpdateWidget, dispose, initState, launchUrl (+9 more)
+
 ### Community 12 - "Community 12"
 Cohesion: 0.12
-Nodes (16): _AdminActionCard, AdminWorkspacePage, _AdminWorkspacePageState, build, EmptyStateCard, GlassCard, initState, InkWell (+8 more)
+Nodes (15): AccentIconBubble, AppBackdrop, build, Container, DecoratedBox, EmptyStateCard, GlassCard, _GlowOrb (+7 more)
 
 ### Community 13 - "Community 13"
 Cohesion: 0.23
@@ -295,59 +295,59 @@ Nodes (7): ensureUserManagementSchema(), getMysqlConfig(), getPool(), hasMysqlCo
 
 ### Community 22 - "Community 22"
 Cohesion: 0.39
-Nodes (5): CourseDetailPage(), fade(), getInstructorImage(), getInstructorLinks(), useInView()
+Nodes (5): AdminQrCertificates(), buildVerifyUrl(), createInitialForm(), getTypeMeta(), mapCertificateToForm()
 
 ### Community 23 - "Community 23"
+Cohesion: 0.39
+Nodes (5): CourseDetailPage(), fade(), getInstructorImage(), getInstructorLinks(), useInView()
+
+### Community 24 - "Community 24"
 Cohesion: 0.32
 Nodes (3): getCertificateDocumentLabel(), getCertificateDocumentType(), getCertificateFilename()
 
-### Community 24 - "Community 24"
+### Community 25 - "Community 25"
 Cohesion: 0.43
 Nodes (5): mergeCertificateTemplate(), mergeVariant(), normalizeCertificateTemplate(), pickLegacyTemplateOverrides(), updateTemplateVariant()
 
-### Community 25 - "Community 25"
+### Community 26 - "Community 26"
 Cohesion: 0.33
 Nodes (2): loadServiceAccount(), normalizeServiceAccount()
 
-### Community 26 - "Community 26"
+### Community 27 - "Community 27"
 Cohesion: 0.52
 Nodes (6): forgotPassword(), handleControllerError(), registerCustomer(), resetPassword(), submitAccountRequest(), verifyPasswordResetToken()
 
-### Community 27 - "Community 27"
+### Community 28 - "Community 28"
 Cohesion: 0.38
 Nodes (4): compactPlanKey(), getPlanIdentity(), matchesPlanEnrollment(), normalizePlanKey()
 
-### Community 28 - "Community 28"
+### Community 29 - "Community 29"
 Cohesion: 0.29
 Nodes (1): Services()
 
-### Community 29 - "Community 29"
+### Community 30 - "Community 30"
 Cohesion: 0.48
 Nodes (5): ActionButton(), joinClasses(), PublicGlassCard(), PublicSection(), PublicSectionHeading()
 
-### Community 30 - "Community 30"
+### Community 31 - "Community 31"
 Cohesion: 0.33
 Nodes (2): CustomerProfile(), formatJoinedDate()
-
-### Community 31 - "Community 31"
-Cohesion: 0.43
-Nodes (5): formatTimeAgo(), getTimeValue(), isDone(), isProgress(), normalize()
 
 ### Community 32 - "Community 32"
 Cohesion: 0.43
 Nodes (5): formatTimeAgo(), getTimeValue(), isDone(), isProgress(), normalize()
 
 ### Community 33 - "Community 33"
+Cohesion: 0.43
+Nodes (5): formatTimeAgo(), getTimeValue(), isDone(), isProgress(), normalize()
+
+### Community 34 - "Community 34"
 Cohesion: 0.29
 Nodes (2): AppDelegate, FlutterAppDelegate
 
-### Community 34 - "Community 34"
+### Community 35 - "Community 35"
 Cohesion: 0.6
 Nodes (5): getMyProfile(), handleError(), sendMyPasswordReset(), updateMyProfile(), uploadMyCv()
-
-### Community 35 - "Community 35"
-Cohesion: 0.33
-Nodes (0): 
 
 ### Community 36 - "Community 36"
 Cohesion: 0.33
@@ -1122,17 +1122,17 @@ Nodes (0):
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `package:flutter/material.dart` connect `Community 0` to `Community 1`, `Community 3`, `Community 4`, `Community 5`, `Community 8`, `Community 12`?**
+- **Why does `package:flutter/material.dart` connect `Community 0` to `Community 2`, `Community 3`, `Community 4`, `Community 5`, `Community 11`, `Community 12`?**
   _High betweenness centrality (0.030) - this node is a cross-community bridge._
-- **Why does `../models/app_models.dart` connect `Community 4` to `Community 0`, `Community 1`, `Community 3`, `Community 5`, `Community 8`, `Community 12`?**
+- **Why does `../models/app_models.dart` connect `Community 4` to `Community 0`, `Community 2`, `Community 3`, `Community 5`, `Community 11`?**
   _High betweenness centrality (0.029) - this node is a cross-community bridge._
 - **Why does `package:cloud_firestore/cloud_firestore.dart` connect `Community 4` to `Community 6`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
+  _High betweenness centrality (0.019) - this node is a cross-community bridge._
 - **What connects `MainActivity`, `Intercept NOTIFY_DEBUGGER_ABOUT_RX_PAGES and touch the pages.`, `-registerWithRegistry` to the rest of the system?**
   _329 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.03 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.02 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.03 - nodes in this community are weakly interconnected._
-- **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.14 - nodes in this community are weakly interconnected._
+- **Should `Community 2` be split into smaller, more focused modules?**
+  _Cohesion score 0.04 - nodes in this community are weakly interconnected._
