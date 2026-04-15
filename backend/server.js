@@ -158,7 +158,7 @@ if (fs.existsSync(frontendDistDir)) {
     res.sendFile(path.join(frontendDistDir, 'index.html'));
   });
 }
-// ─── Health Check ────────────────────────────────────────────────────────────
+// ─── Health Check ────────────────────────────────────────────────────────── 
 app.get("/", (req, res) => {
   res.json({
     status: "Backend is running",
@@ -204,12 +204,6 @@ const uploadChat = multer({
   },
 });
 
-const uploadCertificateAsset = multer({
-  storage: makeStorage("certificates", "cert-asset-"),
-  limits: { fileSize: 2 * 1024 * 1024 },
-  fileFilter: imageFilter,
-});
-
 const getBaseUrl = (req) => {
   const proto = req.headers["x-forwarded-proto"] || req.protocol;
   return `${proto}://${req.get("host")}`;
@@ -239,11 +233,6 @@ app.post("/api/upload/broadcast", uploadBroadcast.single("broadcast-image"), (re
 app.post("/api/upload/chat", uploadChat.single("chat-image"), (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
   res.json({ success: true, url: `${getBaseUrl(req)}/uploads/chat/${req.file.filename}` });
-});
-
-app.post("/api/upload/certificate-asset", upload.single("asset"), (req, res) => {
-  if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
-  res.json({ success: true, url: `${getBaseUrl(req)}/uploads/certificates/${req.file.filename}` });
 });
 
 // Multer error handler

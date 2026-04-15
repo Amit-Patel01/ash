@@ -60,7 +60,8 @@ const formatDisplayDate = (value) => {
 }
 
 const buildVerifyUrl = (certificateId, fallback = '') => {
-  if (!certificateId || typeof window === 'undefined') return fallback || ''
+  if (fallback) return fallback
+  if (!certificateId || typeof window === 'undefined') return ''
 
   const hostname = window.location.hostname
   const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
