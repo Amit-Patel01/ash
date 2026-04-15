@@ -60,6 +60,10 @@
       "destination": "https://backend-5u1w.onrender.com/uploads/$1"
     },
     {
+      "source": "/verify/:path*",
+      "destination": "/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
