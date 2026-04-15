@@ -25,7 +25,10 @@ export const getCertificateCourseName = (certificate, template) =>
 
 export const getCertificateVerifyUrl = (certificateId) => {
   if (!certificateId) return ''
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  const isBrowser = typeof window !== 'undefined'
+  const hostname = isBrowser ? window.location.hostname : ''
+  const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
+  const origin = isLocalhost && isBrowser ? window.location.origin : 'https://www.amitsolutionhub.com'
   return `${origin}/verify/${encodeURIComponent(certificateId)}`
 }
 

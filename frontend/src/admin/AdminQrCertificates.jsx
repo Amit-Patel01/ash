@@ -60,7 +60,7 @@ const formatDisplayDate = (value) => {
 }
 
 const buildVerifyUrl = (certificateId, fallback = '') => {
-  if (fallback) return fallback
+  if (fallback && !fallback.includes('backend-5u1w')) return fallback
   if (!certificateId || typeof window === 'undefined') return ''
 
   const hostname = window.location.hostname
