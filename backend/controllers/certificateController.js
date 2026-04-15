@@ -50,12 +50,17 @@ const serializeCertificateDate = (value) => {
   return "N/A";
 };
 
-const getBaseUrl = (req) => {
+const getFrontendUrl = (req) => {
+  const url = process.env.FRONTEND_URL || process.env.APP_URL;
+  if (url) {
+    return String(url).replace(/\/+$/, "");
+  }
+
   const proto = req.headers["x-forwarded-proto"] || req.protocol;
   return `${proto}://${req.get("host")}`;
 };
 
-const buildVerifyUrl = (req, certId) => `${getBaseUrl(req)}/verify/${encodeURIComponent(certId)}`;
+const buildVerifyUrl = (req, certId) => `${getFrontendUrl(req)}/verify/${encodeURIComponent(certId)}`;
 
 const normalizeQrCertificateType = (value) => {
   const normalized = String(value || "").trim();

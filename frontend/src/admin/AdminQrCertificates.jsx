@@ -59,8 +59,7 @@ const formatDisplayDate = (value) => {
   return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleDateString('en-IN')
 }
 
-const buildVerifyUrl = (certificateId, fallback = '') => {
-  if (fallback) return fallback
+const buildVerifyUrl = (certificateId) => {
   if (!certificateId || typeof window === 'undefined') return ''
   return `${window.location.origin}/verify/${encodeURIComponent(certificateId)}`
 }
@@ -702,7 +701,7 @@ export default function AdminQrCertificates() {
         ) : (
           <div className="mt-6 grid gap-5 xl:grid-cols-2">
             {qrCertificates.map((certificate) => {
-              const verifyUrl = buildVerifyUrl(certificate.certificate_id, certificate.verifyUrl)
+              const verifyUrl = buildVerifyUrl(certificate.certificate_id)
               const isBusy = busyId === certificate.id
               const isActive = certificate.status === 'active'
 
