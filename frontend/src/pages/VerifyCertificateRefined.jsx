@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   Search,
   ShieldCheck,
@@ -17,9 +17,8 @@ import {
   Sparkles,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { collection, query, where, getDocs } from 'firebase/firestore'
-import { db } from '../config/firebase'
 import { useStore } from '../store/StoreContext'
+import { api, readApiJson } from '../config/api'
 import { getDocumentTypeMeta, hexToRgba, mergeCertificateTemplate } from '../utils/certificateTemplate'
 import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
 import { formatCertificateDate, getCertificateDocumentLabel, getCertificateDocumentType } from '../utils/certificateHelpers'
@@ -67,9 +66,11 @@ function DetailRow({ icon: Icon, label, value }) {
 }
 
 export default function VerifyCertificateRefined() {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const { certificateId: routeCertificateId = '' } = useParams()
+  const [searchParams] = useSearchParams()
   const { certificateTemplate } = useStore()
-  const linkedId = searchParams.get('id') || ''
+  const linkedId = String(routeCertificateId || searchParams.get('id') || '').trim()
   const [certId, setCertId] = useState(linkedId || '')
   const [status, setStatus] = useState('idle')
   const [certData, setCertData] = useState(null)
@@ -78,27 +79,35 @@ export default function VerifyCertificateRefined() {
   const [downloading, setDownloading] = useState('')
   const certificateRef = useRef(null)
   const downloadRef = useRef(null)
+  const isQrCertificate = certData?.source === 'qr' || String(certData?.certificate_id || '').startsWith('QR-')
+  const documentType = isQrCertificate ? 'certificate' : getCertificateDocumentType(certData)
+  const documentMeta = isQrCertificate
+    ? { shortLabel: 'Certificate' }
+    : getDocumentTypeMeta(documentType)
 
-  const documentType = getCertificateDocumentType(certData)
-  const documentMeta = getDocumentTypeMeta(documentType)
   const activeTemplate = useMemo(
     () => mergeCertificateTemplate(certData?.templateSnapshot || certificateTemplate, documentType),
     [certData?.templateSnapshot, certificateTemplate, documentType]
   )
 
   const holderName = certData?.userName || certData?.name || 'Student'
-  const courseName = certData?.courseName || certData?.course || 'Verified Course'
-  const documentLabel = getCertificateDocumentLabel(certData, activeTemplate)
+  const courseName = certData?.certificateType || certData?.courseName || certData?.course || 'Verified Certificate'
+  const documentLabel = isQrCertificate
+    ? (certData?.certificateTypeLabel || certData?.certificateType || 'QR Certificate')
+    : getCertificateDocumentLabel(certData, activeTemplate)
   const achievementDate = certData
-    ? formatCertificateDate(certData.approval_date || certData.createdAt || certData.date)
+    ? formatCertificateDate(certData.rawDate || certData.approval_date || certData.createdAt || certData.date)
     : 'Pending verification'
   const issuerName = certData?.issuedByName || activeTemplate.issuerName
   const issuerRole = certData?.issuedByRole || activeTemplate.issuerRole
+  const statusLabel = certData?.statusDisplay || certData?.status || 'Unknown'
+  const verificationTone = certData?.isValid === false ? 'warning' : 'success'
+  const inputPrefix = certId.startsWith('QR-') || isQrCertificate ? 'QR' : activeTemplate.certificatePrefix
 
   const portalFeatures = [
     { label: 'QR / Shared Link Ready', value: linkedId ? 'Active' : 'Available' },
-    { label: `${documentMeta.shortLabel} Preview`, value: 'Live' },
-    { label: 'Download Formats', value: 'PNG + PDF' },
+    { label: isQrCertificate ? 'Status Lookup' : `${documentMeta.shortLabel} Preview`, value: 'Live' },
+    { label: 'Download Formats', value: isQrCertificate ? 'ID Only' : 'PNG + PDF' },
   ]
 
   const verifyCertificate = async (incomingId = certId, options = {}) => {
@@ -107,7 +116,7 @@ export default function VerifyCertificateRefined() {
     if (!normalizedId) return
 
     if (syncUrl && normalizedId !== linkedId) {
-      setSearchParams({ id: normalizedId }, { replace: true })
+      navigate(`/verify/${encodeURIComponent(normalizedId)}`, { replace: true })
     }
 
     setCertId(normalizedId)
@@ -116,24 +125,16 @@ export default function VerifyCertificateRefined() {
     setError('')
 
     try {
-      const q = query(
-        collection(db, 'certificates'),
-        where('certificate_id', '==', normalizedId),
-        where('status', '==', 'approved')
-      )
-      const snapshot = await getDocs(q)
+      const response = await fetch(api.certificateVerify(normalizedId))
+      const payload = await readApiJson(response)
 
-      if (snapshot.empty) {
-        setError('Document not found or not yet approved.')
+      if (!response.ok || !payload.success || !payload.data) {
+        setError(payload.message || 'Document not found or not yet approved.')
         setStatus('error')
         return
       }
 
-      const certDoc = snapshot.docs[0]
-      setCertData({
-        id: certDoc.id,
-        ...certDoc.data(),
-      })
+      setCertData(payload.data)
       setStatus('success')
     } catch (err) {
       console.error('Verification error:', err)
@@ -264,7 +265,7 @@ export default function VerifyCertificateRefined() {
                   <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                   <input
                     type="text"
-                    placeholder={`Enter ${documentMeta.shortLabel} ID (${activeTemplate.certificatePrefix}-XXXXXXXX)`}
+                    placeholder={`Enter ${documentMeta.shortLabel} ID (${inputPrefix}-XXXXXXXX)`}
                     value={certId}
                     onChange={(event) => setCertId(event.target.value.toUpperCase())}
                     className="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-12 py-4 text-base font-semibold text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
@@ -314,7 +315,7 @@ export default function VerifyCertificateRefined() {
                       </div>
                       <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left">
                         <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Example Format</p>
-                        <p className="mt-2 font-mono text-sm font-bold text-cyan-200">{activeTemplate.certificatePrefix}-EBGF3DZT</p>
+                        <p className="mt-2 font-mono text-sm font-bold text-cyan-200">{inputPrefix}-EBGF3DZT</p>
                       </div>
                     </div>
                   </Surface>
@@ -384,14 +385,32 @@ export default function VerifyCertificateRefined() {
                   <Surface className="p-6">
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                       <div>
-                        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-emerald-300">
-                          <CheckCircle size={14} />
-                          Verified {documentMeta.shortLabel} Found
+                        <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] ${
+                          verificationTone === 'warning'
+                            ? 'border-amber-400/20 bg-amber-400/10 text-amber-200'
+                            : 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300'
+                        }`}>
+                          {verificationTone === 'warning' ? <ShieldAlert size={14} /> : <CheckCircle size={14} />}
+                          {verificationTone === 'warning' ? `${documentMeta.shortLabel} Record Found` : `Verified ${documentMeta.shortLabel} Found`}
                         </div>
+                        {isQrCertificate ? (
+                          <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-cyan-200">
+                            <QrCode size={14} />
+                            QR Verified Certificate
+                          </div>
+                        ) : null}
                         <h2 className="mt-4 text-3xl font-black text-white">{holderName}</h2>
                         <p className="mt-2 text-base text-slate-300">
-                          {documentLabel} issued for <span className="font-semibold text-white">{courseName}</span>
+                          {isQrCertificate
+                            ? `${documentLabel} record opened through the QR verification flow.`
+                            : `${documentLabel} issued for `}
+                          {!isQrCertificate ? <span className="font-semibold text-white">{courseName}</span> : null}
                         </p>
+                        {isQrCertificate ? (
+                          <p className="mt-2 text-sm text-slate-400">
+                            Public status: <span className="font-semibold text-white">{statusLabel}</span>
+                          </p>
+                        ) : null}
                       </div>
 
                       <div
@@ -408,9 +427,17 @@ export default function VerifyCertificateRefined() {
                     </div>
 
                     <div className="mt-6 grid gap-4 md:grid-cols-3">
-                      <DetailRow icon={BookOpen} label="Program / Document" value={`${documentLabel} • ${courseName}`} />
+                      <DetailRow
+                        icon={BookOpen}
+                        label={isQrCertificate ? 'Certificate Type' : 'Program / Document'}
+                        value={isQrCertificate ? documentLabel : `${documentLabel} • ${courseName}`}
+                      />
                       <DetailRow icon={Calendar} label="Issue Date" value={achievementDate} />
-                      <DetailRow icon={User} label="Issued By" value={`${issuerName} • ${issuerRole}`} />
+                      <DetailRow
+                        icon={isQrCertificate ? ShieldCheck : User}
+                        label={isQrCertificate ? 'Status' : 'Issued By'}
+                        value={isQrCertificate ? statusLabel : `${issuerName} • ${issuerRole}`}
+                      />
                     </div>
                   </Surface>
                 </motion.div>
@@ -426,32 +453,42 @@ export default function VerifyCertificateRefined() {
             {status === 'success' && certData ? (
               <>
                 <Surface className="p-5">
-                  <p className="text-[11px] font-black uppercase tracking-[0.3em] text-cyan-300">Quick Actions</p>
-                  <h3 className="mt-3 text-xl font-black text-white">Download or share instantly</h3>
+                  <p className="text-[11px] font-black uppercase tracking-[0.3em] text-cyan-300">
+                    {isQrCertificate ? 'Verification Actions' : 'Quick Actions'}
+                  </p>
+                  <h3 className="mt-3 text-xl font-black text-white">
+                    {isQrCertificate ? 'Copy or review the certificate ID' : 'Download or share instantly'}
+                  </h3>
                   <p className="mt-2 text-sm leading-6 text-slate-300">
-                    Once verified, you can copy the ID, export PNG, or download PDF from this panel.
+                    {isQrCertificate
+                      ? 'QR certificates surface status and identity details here. Copy the ID to share or verify again later.'
+                      : 'Once verified, you can copy the ID, export PNG, or download PDF from this panel.'}
                   </p>
 
                   <div className="mt-5 grid gap-3">
                     <ActionButton icon={Copy} onClick={handleCopyId}>
                       {copied ? 'Copied ID' : `Copy ${documentMeta.shortLabel} ID`}
                     </ActionButton>
-                    <ActionButton
-                      icon={FileImage}
-                      onClick={() => handleDownload('png')}
-                      disabled={downloading === 'png'}
-                      tone="cyan"
-                    >
-                      {downloading === 'png' ? 'Generating PNG...' : 'Download PNG'}
-                    </ActionButton>
-                    <ActionButton
-                      icon={FileText}
-                      onClick={() => handleDownload('pdf')}
-                      disabled={downloading === 'pdf'}
-                      tone="amber"
-                    >
-                      {downloading === 'pdf' ? 'Generating PDF...' : 'Download PDF'}
-                    </ActionButton>
+                    {!isQrCertificate ? (
+                      <ActionButton
+                        icon={FileImage}
+                        onClick={() => handleDownload('png')}
+                        disabled={downloading === 'png'}
+                        tone="cyan"
+                      >
+                        {downloading === 'png' ? 'Generating PNG...' : 'Download PNG'}
+                      </ActionButton>
+                    ) : null}
+                    {!isQrCertificate ? (
+                      <ActionButton
+                        icon={FileText}
+                        onClick={() => handleDownload('pdf')}
+                        disabled={downloading === 'pdf'}
+                        tone="amber"
+                      >
+                        {downloading === 'pdf' ? 'Generating PDF...' : 'Download PDF'}
+                      </ActionButton>
+                    ) : null}
                   </div>
                 </Surface>
 
@@ -460,18 +497,29 @@ export default function VerifyCertificateRefined() {
                   <div className="mt-4 space-y-3">
                     <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
                       <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Status</p>
-                      <p className="mt-2 text-sm font-semibold text-white">{activeTemplate.sealLabel}</p>
+                      <p className="mt-2 text-sm font-semibold text-white">{isQrCertificate ? statusLabel : activeTemplate.sealLabel}</p>
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
-                      <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Organization</p>
-                      <p className="mt-2 text-sm font-semibold text-white">{activeTemplate.organizationName}</p>
+                      <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">
+                        {isQrCertificate ? 'Certificate Type' : 'Organization'}
+                      </p>
+                      <p className="mt-2 text-sm font-semibold text-white">{isQrCertificate ? documentLabel : activeTemplate.organizationName}</p>
                     </div>
                     <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
-                      <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Support</p>
-                      <p className="mt-2 text-sm font-semibold text-white">{activeTemplate.supportEmail}</p>
+                      <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">
+                        {isQrCertificate ? 'Verification Mode' : 'Support'}
+                      </p>
+                      <p className="mt-2 text-sm font-semibold text-white">{isQrCertificate ? 'QR Scan / Direct Link' : activeTemplate.supportEmail}</p>
                     </div>
                   </div>
                 </Surface>
+
+                {isQrCertificate && certData?.certificateText ? (
+                  <Surface className="p-5">
+                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-cyan-300">Certificate Text</p>
+                    <p className="mt-4 text-sm leading-7 text-slate-300">{certData.certificateText}</p>
+                  </Surface>
+                ) : null}
               </>
             ) : (
               <>
@@ -509,7 +557,7 @@ export default function VerifyCertificateRefined() {
           </motion.aside>
         </div>
 
-        {status === 'success' && certData && (
+        {status === 'success' && certData && !isQrCertificate && (
           <motion.section
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
@@ -566,6 +614,83 @@ export default function VerifyCertificateRefined() {
                 </div>
               </Surface>
             </div>
+          </motion.section>
+        )}
+
+        {status === 'success' && certData && isQrCertificate && (
+          <motion.section
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.16fr)_320px]"
+          >
+            <Surface className="p-6">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-[0.3em] text-cyan-300">QR Verification Details</p>
+                  <h2 className="mt-2 text-2xl font-black text-white">{documentLabel}</h2>
+                  <p className="mt-1 text-sm text-slate-400">This record uses the shared verification page, but it belongs to the separate QR certificate module.</p>
+                </div>
+                <div className={`rounded-2xl border px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] ${
+                  certData?.isValid === false
+                    ? 'border-amber-400/20 bg-amber-400/10 text-amber-200'
+                    : 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300'
+                }`}>
+                  {certData?.isValid === false ? 'Revoked Record' : 'Active Record'}
+                </div>
+              </div>
+
+              <div className="mt-6 grid gap-4 md:grid-cols-2">
+                <DetailRow icon={User} label="Name" value={holderName} />
+                <DetailRow icon={BookOpen} label="Certificate Type" value={documentLabel} />
+                <DetailRow icon={Calendar} label="Date" value={achievementDate} />
+                <DetailRow icon={ShieldCheck} label="Status" value={statusLabel} />
+              </div>
+
+              {certData?.certificateText ? (
+                <div className="mt-6 rounded-3xl border border-white/10 bg-white/[0.03] px-5 py-5">
+                  <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">What Is Written Inside</p>
+                  <p className="mt-3 text-sm leading-7 text-slate-300">{certData.certificateText}</p>
+                </div>
+              ) : null}
+            </Surface>
+
+            <Surface className="p-5">
+              <p className="text-[11px] font-black uppercase tracking-[0.3em] text-amber-300">Public Status</p>
+              <div className="mt-4 space-y-3 text-sm leading-6 text-slate-300">
+                <p>Certificate ID: <span className="font-mono font-bold text-cyan-200">{certData.certificate_id}</span></p>
+                <p>Source: QR verification module</p>
+                <p>
+                  Status meaning: {certData?.isValid === false
+                    ? 'this certificate record exists, but it has been revoked by the admin.'
+                    : 'this certificate is active and currently valid.'}
+                </p>
+              </div>
+
+              {(certData?.signatureImageUrl || certData?.stampImageUrl) ? (
+                <div className="mt-5 grid gap-4 md:grid-cols-2">
+                  {certData?.signatureImageUrl ? (
+                    <div className="rounded-3xl border border-white/10 bg-white/[0.03] px-4 py-4">
+                      <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Signature</p>
+                      <img
+                        src={certData.signatureImageUrl}
+                        alt="Uploaded signature"
+                        className="mt-3 h-24 w-full rounded-2xl bg-white object-contain p-2"
+                      />
+                    </div>
+                  ) : null}
+                  {certData?.stampImageUrl ? (
+                    <div className="rounded-3xl border border-white/10 bg-white/[0.03] px-4 py-4">
+                      <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Stamp</p>
+                      <img
+                        src={certData.stampImageUrl}
+                        alt="Uploaded stamp"
+                        className="mt-3 h-24 w-full rounded-2xl bg-white object-contain p-2"
+                      />
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+            </Surface>
           </motion.section>
         )}
       </div>

@@ -52,6 +52,7 @@ const AdminSellRequests = lazy(() => import('./admin/AdminSellRequests'))
 const AdminServiceRequests = lazy(() => import('./admin/AdminServiceRequests'))
 const AdminSettings = lazy(() => import('./admin/AdminSettings'))
 const AdminCustomers = lazy(() => import('./admin/AdminCustomers'))
+const AdminQrCertificates = lazy(() => import('./admin/AdminQrCertificates'))
 
 const EmployeeLogin = lazy(() => import('./employee/EmployeeLogin'))
 const RequestAccount = lazy(() => import('./pages/RequestAccount'))
@@ -196,6 +197,7 @@ function AppContent() {
             <Route path="signup" element={<CustomerSignup />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="verify" element={<VerifyCertificate />} />
+            <Route path="verify/:certificateId" element={<VerifyCertificate />} />
             
             {/* Legal Pages */}
             <Route path="privacy-policy" element={<PrivacyPolicy />} />
@@ -216,6 +218,7 @@ function AppContent() {
             <Route path="team" element={<AdminTeam />} />
             <Route path="employees" element={<AdminEmployees />} />
             <Route path="customers" element={<AdminCustomers />} />
+            <Route path="qr-certificates" element={<AdminQrCertificates />} />
             <Route path="sales" element={<AdminSales />} />
             <Route path="account-requests" element={<AdminAccountRequests />} />
             <Route path="service-requests" element={<AdminServiceRequests />} />

@@ -186,6 +186,7 @@ export function StoreProvider({ children }) {
   const [courseCategories, setCourseCategories] = useState([])
   // ─────────────────────────────────────────────────────────────
   const [loading, setLoading] = useState(true)
+  const qrCertificates = certificates.filter(certificate => certificate.source === 'qr')
 
   const getAuthorizedHeaders = async () => {
     const token = await auth.currentUser?.getIdToken()
@@ -744,6 +745,69 @@ export function StoreProvider({ children }) {
     } catch (err) { console.error("Error revoking certificate:", err); throw err }
   }
 
+  const createQrCertificate = async (payload) => {
+    try {
+      const headers = await getAuthorizedHeaders()
+      const response = await fetch(api.adminQrCertificates, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload)
+      })
+      const data = await readApiJson(response)
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to create QR certificate.')
+      }
+      return data.certificate
+    } catch (err) { console.error("Error creating QR certificate:", err); throw err }
+  }
+
+  const updateQrCertificate = async (id, payload) => {
+    try {
+      const headers = await getAuthorizedHeaders()
+      const response = await fetch(api.adminQrCertificate(id), {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(payload)
+      })
+      const data = await readApiJson(response)
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update QR certificate.')
+      }
+      return data.certificate
+    } catch (err) { console.error("Error updating QR certificate:", err); throw err }
+  }
+
+  const toggleQrCertificateStatus = async (id, status) => {
+    try {
+      const headers = await getAuthorizedHeaders()
+      const response = await fetch(api.adminQrCertificateStatus(id), {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ status })
+      })
+      const data = await readApiJson(response)
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update QR certificate status.')
+      }
+      return data.certificate
+    } catch (err) { console.error("Error toggling QR certificate status:", err); throw err }
+  }
+
+  const deleteQrCertificate = async (id) => {
+    try {
+      const headers = await getAuthorizedHeaders()
+      const response = await fetch(api.adminQrCertificate(id), {
+        method: 'DELETE',
+        headers
+      })
+      const data = await readApiJson(response)
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to delete QR certificate.')
+      }
+      return data.certificate
+    } catch (err) { console.error("Error deleting QR certificate:", err); throw err }
+  }
+
   const updateCertificateTemplate = async (data) => {
     try {
       await setDoc(doc(db, 'settings', 'certificateTemplate'), {
@@ -1041,7 +1105,8 @@ export function StoreProvider({ children }) {
     employeePermissions, updateEmployeePermissions, getEmployeePermissions,
     mentorProfile, updateMentorProfile,
     tradingCurriculum, addCurriculumModule, updateCurriculumModule, deleteCurriculumModule, seedDefaultCurriculum,
-    certificates, certificateTemplate, issueCertificate, revokeCertificate, updateCertificateTemplate,
+    certificates, qrCertificates, certificateTemplate, issueCertificate, revokeCertificate,
+    createQrCertificate, updateQrCertificate, toggleQrCertificateStatus, deleteQrCertificate, updateCertificateTemplate,
     getActiveProjects, getTotalRevenue, getPendingOrders,
     announcement, updateAnnouncement,
     // ── Generic Course System ──

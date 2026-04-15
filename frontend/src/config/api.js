@@ -44,6 +44,7 @@ export const api = {
   uploadPayment: buildApiUrl('/api/upload/payment'),
   uploadTeam: buildApiUrl('/api/upload/team'),
   uploadProject: buildApiUrl('/api/upload/project'),
+  uploadCertificateAsset: buildApiUrl('/api/upload/certificate-asset'),
   uploadBroadcast: buildApiUrl('/api/upload/broadcast'),
   contact: buildApiUrl('/contact'),
   reply: buildApiUrl('/reply'),
@@ -66,6 +67,13 @@ export const api = {
   adminEmployeeCvs: buildApiUrl('/api/admin/employee-cvs'),
   adminEmployeeCvDownload: (userId) =>
     buildApiUrl(`/api/admin/employee-cvs/${encodeURIComponent(userId)}/download`),
+  certificateVerify: (certificateId) =>
+    buildApiUrl(`/api/certificates/verify/${encodeURIComponent(certificateId)}`),
+  adminQrCertificates: buildApiUrl('/api/certificates/qr'),
+  adminQrCertificate: (docId) =>
+    buildApiUrl(`/api/certificates/qr/${encodeURIComponent(docId)}`),
+  adminQrCertificateStatus: (docId) =>
+    buildApiUrl(`/api/certificates/qr/${encodeURIComponent(docId)}/status`),
   userProfile: buildApiUrl('/api/users/me'),
   userPasswordReset: buildApiUrl('/api/users/me/password-reset'),
   userCvUpload: buildApiUrl('/api/users/me/cv'),

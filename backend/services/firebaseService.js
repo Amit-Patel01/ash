@@ -168,6 +168,29 @@ const getCertificateByPublicId = async (certId) => {
   return snap.empty ? null : snap.docs[0].data();
 };
 
+const findCertificateByPublicId = async (certId) => {
+  const snap = await db()
+    .collection("certificates")
+    .where("certificate_id", "==", certId)
+    .limit(1)
+    .get();
+
+  return snap.empty ? null : { id: snap.docs[0].id, ...snap.docs[0].data() };
+};
+
+const createCertificateRecord = async (data) => {
+  const ref = await db().collection("certificates").add({
+    ...data,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+
+  return ref.id;
+};
+
+const deleteCertificate = async (certDocId) => {
+  await db().collection("certificates").doc(certDocId).delete();
+};
+
 module.exports = {
   db,
   savePayment,
@@ -185,4 +208,7 @@ module.exports = {
   getCertificateById,
   updateCertificate,
   getCertificateByPublicId,
+  findCertificateByPublicId,
+  createCertificateRecord,
+  deleteCertificate,
 };

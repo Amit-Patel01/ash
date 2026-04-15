@@ -27,6 +27,7 @@ const navGroups = [
     items: [
       { path: '/admin/customers', label: 'All Students', icon: 'group' },
       { path: '/admin/course-enrollments', label: 'Enrollments', icon: 'book' },
+      { path: '/admin/qr-certificates', label: 'QR Certificates', icon: 'award' },
       { path: '/admin/account-requests', label: 'Account Requests', icon: 'userPlus', permission: 'can_approve_accounts' },
     ]
   },
@@ -171,6 +172,7 @@ export default function AdminLayout({ onLogout }) {
     if (q.includes('project')) navigate('/admin/projects')
     else if (q.includes('task')) navigate('/admin/tasks')
     else if (q.includes('employee')) navigate('/admin/employees')
+    else if (q.includes('certificate') || q.includes('qr')) navigate('/admin/qr-certificates')
     else if (q.includes('sale') || q.includes('order')) navigate('/admin/sales')
     else if (q.includes('message')) navigate('/admin/messages')
     else if (q.includes('setting')) navigate('/admin/settings')
