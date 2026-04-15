@@ -2,6 +2,7 @@ import { QRCodeCanvas } from 'qrcode.react'
 import msmeBadge from '../../assets/msme.png'
 import brandLogo from '../../assets/brand-logo.png'
 import founderSign from '../../assets/founder-sign.png'
+import stempImage from './Stemp.png'
 import { hexToRgba, mergeCertificateTemplate } from '../../utils/certificateTemplate'
 import {
   formatCertificateDate,
@@ -131,7 +132,7 @@ export default function CertificateDocument({ certificate, template, className =
   const signatureName = activeTemplate.signatureName || certificate?.issuedByName || 'Amit Patel'
   const signatureRole = activeTemplate.signatureRole || certificate?.issuedByRole || 'Authorized Signatory'
   const signatureImage = certificate?.signatureImageUrl || founderSign
-  const stampImage = certificate?.stampImageUrl || ''
+  const stampImage = certificate?.stampImageUrl ? certificate.stampImageUrl : stempImage
   const narrative = getDocumentNarrative(documentType, holderName, courseName, activeTemplate, certificate)
 
   const holderFontSize =
