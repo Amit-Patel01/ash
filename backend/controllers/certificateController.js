@@ -51,16 +51,23 @@ const serializeCertificateDate = (value) => {
 };
 
 const getFrontendUrl = (req) => {
-  const url = process.env.FRONTEND_URL || process.env.APP_URL;
-  if (url) {
-    return String(url).replace(/\/+$/, "");
+  // Priority: env FRONTEND_URL -> APP_URL -> production default -> localhost fallback
+  if (process.env.FRONTEND_URL) {
+    return process.env.FRONTEND_URL.replace(/\/$/, ''); // Remove trailing slash
   }
-
-  const proto = req.headers["x-forwarded-proto"] || req.protocol;
-  return `${proto}://${req.get("host")}`;
+  
+  if (process.env.APP_URL) {
+    return process.env.APP_URL.replace(/\/$/, '');
+  }
+  
+  // Production default
+  return 'https://www.amitsolutionhub.com';
 };
 
-const buildVerifyUrl = (req, certId) => `${getFrontendUrl(req)}/verify/${encodeURIComponent(certId)}`;
+const buildVerifyUrl = (req, certId) => {
+  const baseUrl = getFrontendUrl(req);
+  return `${baseUrl}/verify/${encodeURIComponent(certId)}`;
+};
 
 const normalizeQrCertificateType = (value) => {
   const normalized = String(value || "").trim();
@@ -298,14 +305,29 @@ const sendAssignedCertificateEmail = async (certificate, req, { updated = false 
   `;
 
   try {
-    await sendEmail({
+    const emailResult = await sendEmail({
       to: assignedEmployeeEmail,
       subject,
       html: emailTemplate(subject, content, "Open Certificate", certificateView.verifyUrl),
     });
+    
+    if (!emailResult.success) {
+      logger.error("QR certificate assignment email failed:", {
+        email: assignedEmployeeEmail,
+        certificateId: certificateView.certificate_id,
+        error: emailResult.error,
+      });
+      return false;
+    }
+    
+    logger.info("QR certificate assignment email sent:", {
+      email: assignedEmployeeEmail,
+      certificateId: certificateView.certificate_id,
+      emailId: emailResult.id,
+    });
     return true;
   } catch (error) {
-    logger.error("QR certificate assignment email error:", error);
+    logger.error("QR certificate assignment email exception:", error);
     return false;
   }
 };
@@ -398,24 +420,35 @@ const updateCertificateStatus = async (req, res) => {
  */
 const verifyCertificate = async (req, res) => {
   const certId = normalizeCertificateId(req.params.certId);
+  
+  logger.info("Certificate verification started:", { certId });
 
   if (!isValidPublicCertificateId(certId)) {
+    logger.warn("Invalid certificate ID format:", { certId });
     return res.status(400).json({ success: false, message: "Invalid certificate ID format" });
   }
 
   try {
+    logger.info("Searching for certificate:", { certId });
     const certData = await findCertificateByPublicId(certId);
 
     if (!certData) {
+      logger.warn("Certificate not found:", { certId });
       return res.status(404).json({ success: false, message: "Certificate not found" });
     }
+    
+    logger.info("Certificate found successfully:", { 
+      certId, 
+      certificateType: certData.certificateType,
+      status: certData.status 
+    });
 
     res.json({
       success: true,
       data: buildVerifyResponseData(certData, req),
     });
   } catch (error) {
-    logger.error("Certificate verify error:", error);
+    logger.error("Certificate verify error:", { certId, error: error.message });
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

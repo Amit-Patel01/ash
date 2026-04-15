@@ -59,9 +59,15 @@ const formatDisplayDate = (value) => {
   return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleDateString('en-IN')
 }
 
-const buildVerifyUrl = (certificateId) => {
+const buildVerifyUrl = (certificateId, fallback = '') => {
+  if (fallback) return fallback
   if (!certificateId || typeof window === 'undefined') return ''
-  return `${window.location.origin}/verify/${encodeURIComponent(certificateId)}`
+
+  const hostname = window.location.hostname
+  const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
+  const frontendOrigin = isLocalhost ? window.location.origin : 'https://www.amitsolutionhub.com'
+
+  return `${frontendOrigin}/verify/${encodeURIComponent(certificateId)}`
 }
 
 function StatCard({ label, value, tone = 'cyan' }) {
@@ -701,7 +707,7 @@ export default function AdminQrCertificates() {
         ) : (
           <div className="mt-6 grid gap-5 xl:grid-cols-2">
             {qrCertificates.map((certificate) => {
-              const verifyUrl = buildVerifyUrl(certificate.certificate_id)
+              const verifyUrl = buildVerifyUrl(certificate.certificate_id, certificate.verifyUrl)
               const isBusy = busyId === certificate.id
               const isActive = certificate.status === 'active'
 

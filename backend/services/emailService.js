@@ -54,18 +54,55 @@ const emailTemplate = (subject, content, ctaText = null, ctaUrl = null) => `
 `;
 
 /**
+ * Validate email format
+ */
+const isValidEmail = (email) => {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
+  return emailPattern.test(String(email).trim());
+};
+
+/**
  * Send a transactional email via Resend
  * @param {Object} opts - { to, subject, html, text?, attachments? }
+ * @returns {Promise<{success: boolean, id?: string, error?: string}>}
  */
 const sendEmail = async ({ to, subject, html, text, attachments }) => {
-  return resend.emails.send({
-    from: "Amit Solution Hub <support@amitsolutionhub.com>",
-    to,
-    subject,
-    html: html || undefined,
-    text: text || undefined,
-    attachments: attachments || undefined,
-  });
+  try {
+    // Validate recipient email
+    if (!to || !isValidEmail(to)) {
+      return { success: false, error: `Invalid recipient email: ${to}` };
+    }
+
+    // Validate subject and content
+    if (!subject || !subject.trim()) {
+      return { success: false, error: "Email subject is required" };
+    }
+
+    if (!html && !text) {
+      return { success: false, error: "Email content (html or text) is required" };
+    }
+
+    const result = await resend.emails.send({
+      from: process.env.FROM_EMAIL || "Amit Solution Hub <support@amitsolutionhub.com>",
+      to,
+      subject,
+      html: html || undefined,
+      text: text || undefined,
+      attachments: attachments || undefined,
+    });
+
+    // Check if Resend returned an error
+    if (result.error) {
+      return { success: false, error: result.error.message || String(result.error) };
+    }
+
+    // Return success with email ID
+    return { success: true, id: result.id };
+  } catch (error) {
+    const errorMessage = error?.message || String(error);
+    console.error("Email send error:", errorMessage);
+    return { success: false, error: errorMessage };
+  }
 };
 
 module.exports = { resend, emailTemplate, sendEmail };

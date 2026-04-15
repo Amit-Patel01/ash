@@ -9,8 +9,6 @@ const cron = require("node-cron");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const multer = require("multer");
-const { verifyFirebaseToken } = require("./middlewares/authMiddleware");
-const { adminOnly } = require("./middlewares/rbacMiddleware");
 
 // ─── Logger (first so everything can log) ───────────────────────────────────
 const { logger } = require("./logger");
@@ -147,15 +145,19 @@ app.use("/api/", apiLimiter);
 
 // ─── Static File Serving (Uploads) ───────────────────────────────────────────
 const uploadsDir = path.join(__dirname, "uploads");
-const cvDir = path.join(uploadsDir, "cv");
-const frontendDistDir = path.join(__dirname, "..", "frontend", "dist");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
-if (!fs.existsSync(cvDir)) fs.mkdirSync(cvDir, { recursive: true });
 app.use("/uploads", express.static(uploadsDir));
+// ─── Frontend Static Files (optional) ────────────────────────────────────────
+const frontendDistDir = path.join(__dirname, "..", "frontend", "dist");
 if (fs.existsSync(frontendDistDir)) {
   app.use(express.static(frontendDistDir));
+  app.get("/*", (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+      return next();
+    }
+    res.sendFile(path.join(frontendDistDir, 'index.html'));
+  });
 }
-
 // ─── Health Check ────────────────────────────────────────────────────────────
 app.get("/", (req, res) => {
   res.json({
@@ -191,7 +193,6 @@ const imageFilter = (req, file, cb) => {
 const upload = multer({ storage: makeStorage("payments"), limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: imageFilter });
 const uploadTeam = multer({ storage: makeStorage("team", "team-"), limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: imageFilter });
 const uploadProject = multer({ storage: makeStorage("projects", "project-"), limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: imageFilter });
-const uploadCertificateAsset = multer({ storage: makeStorage("certificates", "cert-"), limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: imageFilter });
 const uploadBroadcast = multer({ storage: makeStorage("broadcasts", "broadcast-"), limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: imageFilter });
 const uploadChat = multer({
   storage: makeStorage("chat", "chat-"),
@@ -222,11 +223,6 @@ app.post("/api/upload/team", uploadTeam.single("photo"), (req, res) => {
 app.post("/api/upload/project", uploadProject.single("image"), (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
   res.json({ success: true, url: `${getBaseUrl(req)}/uploads/projects/${req.file.filename}` });
-});
-
-app.post("/api/upload/certificate-asset", verifyFirebaseToken, adminOnly, uploadCertificateAsset.single("asset"), (req, res) => {
-  if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
-  res.json({ success: true, url: `${getBaseUrl(req)}/uploads/certificates/${req.file.filename}` });
 });
 
 app.post("/api/upload/broadcast", uploadBroadcast.single("broadcast-image"), (req, res) => {
@@ -418,17 +414,6 @@ cron.schedule("*/5 * * * *", async () => {
     logger.error("Cron job error:", error);
   }
 });
-
-// ─── SPA Fallback For Frontend Routes ────────────────────────────────────────
-if (fs.existsSync(frontendDistDir)) {
-  app.get(/^\/(?!api(?:\/|$)|uploads(?:\/|$)).*/, (req, res, next) => {
-    if (!req.accepts("html")) {
-      return next();
-    }
-
-    return res.sendFile(path.join(frontendDistDir, "index.html"));
-  });
-}
 
 // ─── Global Error Handler ─────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
