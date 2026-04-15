@@ -2,6 +2,7 @@ import { QRCodeCanvas } from 'qrcode.react'
 import msmeBadge from '../../assets/msme.png'
 import brandLogo from '../../assets/brand-logo.png'
 import founderSign from '../../assets/founder-sign.png'
+import defaultStampImage from './Stemp.png'
 import { hexToRgba, mergeCertificateTemplate } from '../../utils/certificateTemplate'
 import {
   formatCertificateDate,
@@ -131,7 +132,7 @@ export default function CertificateDocument({ certificate, template, className =
   const signatureName = activeTemplate.signatureName || certificate?.issuedByName || 'Amit Patel'
   const signatureRole = activeTemplate.signatureRole || certificate?.issuedByRole || 'Authorized Signatory'
   const signatureImage = certificate?.signatureImageUrl || founderSign
-  const stampImage = certificate?.stampImageUrl || ''
+  const stampImage = certificate?.stampImageUrl || defaultStampImage
   const narrative = getDocumentNarrative(documentType, holderName, courseName, activeTemplate, certificate)
 
   const holderFontSize =
@@ -173,7 +174,7 @@ export default function CertificateDocument({ certificate, template, className =
           </div>
 
           <div className="flex justify-center">
-            <img src={brandLogo} alt="Amit Solution Hub" className="h-[clamp(46px,6cqw,84px)] w-auto object-contain" />
+            <img src={brandLogo} alt="Amit Solution Hub" className="h-[clamp(60px,8cqw,108px)] w-auto object-contain" />
           </div>
 
           <div className="flex justify-end">
@@ -286,8 +287,8 @@ export default function CertificateDocument({ certificate, template, className =
 
           <div className="text-center">
             {stampImage ? (
-              <div className="flex h-[56px] items-end justify-center">
-                <img src={stampImage} alt="Official stamp" className="max-h-[56px] w-auto object-contain" />
+              <div className="flex h-[68px] items-end justify-center">
+                <img src={stampImage} alt="Official stamp" className="max-h-[68px] w-auto object-contain" />
               </div>
             ) : (
               <p className="text-[11px] font-black uppercase tracking-[0.22em]" style={{ color: accentColor }}>
@@ -299,8 +300,8 @@ export default function CertificateDocument({ certificate, template, className =
           </div>
 
           <div className="text-center">
-            <div className="flex h-[46px] items-end justify-center">
-              <img src={signatureImage} alt={signatureName} className="max-h-[46px] w-auto object-contain" />
+            <div className="flex h-[80px] items-end justify-center">
+              <img src={signatureImage} alt={signatureName} className="max-h-[80px] w-auto object-contain" />
             </div>
             <div className="mx-auto mt-2 h-px w-[72%] bg-slate-300" />
             <p className="mt-2 text-[13px] font-semibold text-slate-800">{signatureName}</p>

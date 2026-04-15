@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
-import { FileImage, FileText, Link2, PencilLine, Plus, QrCode, RefreshCcw, ShieldCheck, ShieldOff, Trash2, Upload } from 'lucide-react'
+import { FileImage, FileText, Link2, Mail, PencilLine, Plus, QrCode, RefreshCcw, ShieldCheck, ShieldOff, Trash2, Upload, UserRound } from 'lucide-react'
 import { useStore } from '../store/StoreContext'
 import { auth } from '../config/firebase'
 import { api, readApiJson } from '../config/api'
@@ -32,6 +32,10 @@ const createInitialForm = () => ({
   certificateType: 'LOR',
   date: new Date().toISOString().slice(0, 10),
   certificateText: getTypeMeta('LOR').defaultText,
+  assignedEmployeeUid: '',
+  assignedEmployeeId: '',
+  assignedEmployeeName: '',
+  assignedEmployeeEmail: '',
   signatureImageUrl: '',
   stampImageUrl: '',
 })
@@ -41,6 +45,10 @@ const mapCertificateToForm = (certificate = {}) => ({
   certificateType: certificate.certificateType || 'LOR',
   date: certificate.rawDate || certificate.date || new Date().toISOString().slice(0, 10),
   certificateText: certificate.certificateText || getTypeMeta(certificate.certificateType || 'LOR').defaultText,
+  assignedEmployeeUid: certificate.assignedEmployeeUid || '',
+  assignedEmployeeId: certificate.assignedEmployeeId || '',
+  assignedEmployeeName: certificate.assignedEmployeeName || '',
+  assignedEmployeeEmail: certificate.assignedEmployeeEmail || '',
   signatureImageUrl: certificate.signatureImageUrl || '',
   stampImageUrl: certificate.stampImageUrl || '',
 })
@@ -78,6 +86,7 @@ export default function AdminQrCertificates() {
   const {
     qrCertificates,
     certificateTemplate,
+    users,
     createQrCertificate,
     updateQrCertificate,
     toggleQrCertificateStatus,
@@ -94,6 +103,17 @@ export default function AdminQrCertificates() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const downloadRef = useRef(null)
+  const employeeOptions = useMemo(() => {
+    const prioritized = users.filter((user) => ['employee', 'mentor'].includes(String(user.role || '').trim().toLowerCase()))
+    const fallback = users.filter((user) => !['admin', 'customer'].includes(String(user.role || '').trim().toLowerCase()))
+    const pool = prioritized.length > 0 ? prioritized : fallback
+
+    return [...pool].sort((left, right) => {
+      const leftLabel = left.displayName || left.name || left.email || left.employeeId || ''
+      const rightLabel = right.displayName || right.name || right.email || right.employeeId || ''
+      return leftLabel.localeCompare(rightLabel)
+    })
+  }, [users])
 
   const activeCount = qrCertificates.filter(certificate => certificate.status === 'active').length
   const revokedCount = qrCertificates.filter(certificate => certificate.status === 'revoked').length
@@ -101,6 +121,21 @@ export default function AdminQrCertificates() {
     () => qrCertificates.find((certificate) => certificate.id === editingId) || null,
     [editingId, qrCertificates]
   )
+  const selectedEmployeeValue = useMemo(() => {
+    const currentKeys = [form.assignedEmployeeUid, form.assignedEmployeeId, form.assignedEmployeeEmail]
+      .filter(Boolean)
+      .map((value) => String(value))
+    if (currentKeys.length === 0) return ''
+
+    const match = employeeOptions.find((employee) =>
+      [employee.uid, employee.id, employee.employeeId, employee.email]
+        .filter(Boolean)
+        .map((value) => String(value))
+        .some((value) => currentKeys.includes(value))
+    )
+
+    return match ? (match.uid || match.id || match.employeeId || match.email || '') : ''
+  }, [employeeOptions, form.assignedEmployeeEmail, form.assignedEmployeeId, form.assignedEmployeeUid])
   const previewType = getTypeMeta(form.certificateType)
   const previewCertificate = useMemo(() => ({
     id: editingCertificate?.id || '',
@@ -119,6 +154,10 @@ export default function AdminQrCertificates() {
     rawDate: form.date || new Date().toISOString().slice(0, 10),
     date: form.date || new Date().toISOString().slice(0, 10),
     certificateText: form.certificateText || previewType.defaultText,
+    assignedEmployeeUid: form.assignedEmployeeUid || '',
+    assignedEmployeeId: form.assignedEmployeeId || '',
+    assignedEmployeeName: form.assignedEmployeeName || '',
+    assignedEmployeeEmail: form.assignedEmployeeEmail || '',
     signatureImageUrl: form.signatureImageUrl || '',
     stampImageUrl: form.stampImageUrl || '',
     verifyUrl: buildVerifyUrl(previewCertificateId || editingCertificate?.certificate_id || 'QR-PREVIEW'),
@@ -133,6 +172,33 @@ export default function AdminQrCertificates() {
 
   const handleChange = (key, value) => {
     setForm(current => ({ ...current, [key]: value }))
+  }
+
+  const handleAssignedEmployeeChange = (selectedValue) => {
+    const selectedEmployee = employeeOptions.find((employee) =>
+      [employee.uid, employee.id, employee.employeeId, employee.email]
+        .filter(Boolean)
+        .map((value) => String(value))
+        .includes(String(selectedValue || ''))
+    ) || null
+
+    setForm((current) => {
+      const nextAssignedEmployeeName = selectedEmployee
+        ? (selectedEmployee.displayName || selectedEmployee.name || selectedEmployee.email || selectedEmployee.employeeId || '')
+        : ''
+      const nextName = !current.name.trim() || current.name.trim() === String(current.assignedEmployeeName || '').trim()
+        ? nextAssignedEmployeeName
+        : current.name
+
+      return {
+        ...current,
+        name: nextName,
+        assignedEmployeeUid: selectedEmployee?.uid || selectedEmployee?.id || '',
+        assignedEmployeeId: selectedEmployee?.employeeId || '',
+        assignedEmployeeName: nextAssignedEmployeeName,
+        assignedEmployeeEmail: selectedEmployee?.email || '',
+      }
+    })
   }
 
   const handleCertificateTypeChange = (nextType) => {
@@ -198,13 +264,21 @@ export default function AdminQrCertificates() {
         const savedCertificate = await updateQrCertificate(editingId, form)
         setForm(mapCertificateToForm(savedCertificate))
         setPreviewCertificateId(savedCertificate.certificate_id || '')
-        setMessage('QR certificate updated.')
+        setMessage(
+          savedCertificate.assignmentEmailSent
+            ? 'QR certificate updated and employee notified by email.'
+            : 'QR certificate updated.'
+        )
       } else {
         const savedCertificate = await createQrCertificate(form)
         setEditingId(savedCertificate.id || '')
         setForm(mapCertificateToForm(savedCertificate))
         setPreviewCertificateId(savedCertificate.certificate_id || '')
-        setMessage('QR certificate created.')
+        setMessage(
+          savedCertificate.assignmentEmailSent
+            ? 'QR certificate created and employee notified by email.'
+            : 'QR certificate created.'
+        )
       }
     } catch (submitError) {
       setError(submitError.message || 'Unable to save QR certificate.')
@@ -360,6 +434,67 @@ export default function AdminQrCertificates() {
               />
             </label>
 
+            <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold text-white">Assign Employee</p>
+                  <p className="mt-1 text-xs leading-5 text-slate-400">
+                    Assigned QR certificates appear on that employee&apos;s dashboard, and an email goes out automatically after save.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-3 py-2 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-200">
+                  Optional
+                </div>
+              </div>
+
+              <div className="mt-4 grid gap-4 md:grid-cols-[minmax(0,1fr)_260px]">
+                <label className="block">
+                  <span className="text-sm font-semibold text-slate-300">Employee / Team Member</span>
+                  <select
+                    value={selectedEmployeeValue}
+                    onChange={(event) => handleAssignedEmployeeChange(event.target.value)}
+                    className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white focus:border-cyan-400/30 focus:outline-none"
+                  >
+                    <option value="">No employee assigned</option>
+                    {employeeOptions.map((employee) => {
+                      const optionValue = employee.uid || employee.id || employee.employeeId || employee.email || ''
+                      const optionLabel = employee.displayName || employee.name || employee.email || employee.employeeId || 'Employee'
+                      return (
+                        <option key={optionValue} value={optionValue}>
+                          {optionLabel}{employee.employeeId ? ` (${employee.employeeId})` : ''}{employee.role ? ` - ${employee.role}` : ''}
+                        </option>
+                      )
+                    })}
+                  </select>
+                </label>
+
+                <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
+                  <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-500">Assigned Details</p>
+                  {form.assignedEmployeeName || form.assignedEmployeeEmail || form.assignedEmployeeId ? (
+                    <div className="mt-3 space-y-2 text-sm text-slate-300">
+                      {form.assignedEmployeeName ? (
+                        <div className="flex items-center gap-2">
+                          <UserRound size={15} className="text-cyan-200" />
+                          <span>{form.assignedEmployeeName}</span>
+                        </div>
+                      ) : null}
+                      {form.assignedEmployeeId ? (
+                        <p className="font-mono text-xs text-slate-400">{form.assignedEmployeeId}</p>
+                      ) : null}
+                      {form.assignedEmployeeEmail ? (
+                        <div className="flex items-center gap-2 break-all text-xs text-slate-400">
+                          <Mail size={14} className="shrink-0 text-cyan-200" />
+                          <span>{form.assignedEmployeeEmail}</span>
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : (
+                    <p className="mt-3 text-sm text-slate-500">Certificate will stay unassigned until you select an employee.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <label className="block">
               <span className="text-sm font-semibold text-slate-300">Certificate Text</span>
               <textarea
@@ -395,7 +530,7 @@ export default function AdminQrCertificates() {
                     <img
                       src={form.signatureImageUrl}
                       alt="Signature preview"
-                      className="h-24 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
+                      className="h-28 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
                     />
                     <button
                       type="button"
@@ -434,7 +569,7 @@ export default function AdminQrCertificates() {
                     <img
                       src={form.stampImageUrl}
                       alt="Stamp preview"
-                      className="h-24 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
+                      className="h-28 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
                     />
                     <button
                       type="button"
@@ -519,11 +654,6 @@ export default function AdminQrCertificates() {
               </div>
             </div>
 
-            <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
-              <p className="font-semibold text-white">Verify link preview</p>
-              <p className="mt-1 break-all text-slate-400">{buildVerifyUrl(previewCertificate.certificate_id)}</p>
-            </div>
-
             <div className="absolute left-[-9999px] top-[-9999px]" aria-hidden="true">
               <div ref={downloadRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
                 <CertificateDocument certificate={previewCertificate} template={certificateTemplate} />
@@ -541,6 +671,10 @@ export default function AdminQrCertificates() {
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
                 <p className="font-semibold text-white">Verification link</p>
                 <p className="mt-1 text-slate-400">Each QR points to `/verify/{'{certificate_id}'}` and reuses the shared verifier.</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
+                <p className="font-semibold text-white">Employee delivery</p>
+                <p className="mt-1 text-slate-400">When assigned, the certificate appears on the employee dashboard and the employee receives an email on save.</p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
                 <p className="font-semibold text-white">Revocation support</p>
@@ -592,6 +726,15 @@ export default function AdminQrCertificates() {
                       <h3 className="mt-4 text-2xl font-black text-white">{certificate.name || certificate.userName}</h3>
                       <p className="mt-2 text-sm text-slate-300">{certificate.certificateTypeLabel || getTypeMeta(certificate.certificateType).label}</p>
                       <p className="mt-4 break-all font-mono text-sm font-bold text-cyan-200">{certificate.certificate_id}</p>
+                      {certificate.assignedEmployeeName ? (
+                        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-slate-300">
+                          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-slate-300">
+                            Assigned Employee
+                          </span>
+                          <span>{certificate.assignedEmployeeName}</span>
+                          {certificate.assignedEmployeeId ? <span className="font-mono text-xs text-slate-500">{certificate.assignedEmployeeId}</span> : null}
+                        </div>
+                      ) : null}
                       {certificate.certificateText ? (
                         <p className="mt-4 line-clamp-4 text-sm leading-6 text-slate-400">{certificate.certificateText}</p>
                       ) : null}
@@ -621,14 +764,14 @@ export default function AdminQrCertificates() {
                             <img
                               src={certificate.signatureImageUrl}
                               alt="Signature"
-                              className="h-16 rounded-2xl border border-white/10 bg-white p-2 object-contain"
+                              className="h-20 rounded-2xl border border-white/10 bg-white p-2 object-contain"
                             />
                           ) : null}
                           {certificate.stampImageUrl ? (
                             <img
                               src={certificate.stampImageUrl}
                               alt="Stamp"
-                              className="h-16 rounded-2xl border border-white/10 bg-white p-2 object-contain"
+                              className="h-20 rounded-2xl border border-white/10 bg-white p-2 object-contain"
                             />
                           ) : null}
                         </div>

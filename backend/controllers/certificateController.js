@@ -8,6 +8,7 @@ const {
   createCertificateRecord,
   deleteCertificate,
 } = require("../services/firebaseService");
+const { sendEmail, emailTemplate } = require("../services/emailService");
 const { logger } = require("../logger");
 const admin = require("firebase-admin");
 
@@ -21,6 +22,7 @@ const QR_RECORD_ACTIVE = "active";
 const QR_RECORD_REVOKED = "revoked";
 const QR_ID_PATTERN = /^QR-[A-Z0-9]{5,32}$/;
 const PUBLIC_CERTIFICATE_ID_PATTERN = /^[A-Z0-9]{2,10}-[A-Z0-9]{4,32}$/;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
 
 const normalizeCertificateId = (value) => String(value || "").trim().toUpperCase();
 
@@ -69,6 +71,8 @@ const normalizeCertificateDateInput = (value) => {
 
   return parsed.toISOString().slice(0, 10);
 };
+
+const normalizeOptionalText = (value) => String(value || "").trim();
 
 const validateQrCertificateInput = (payload = {}, { partial = false } = {}) => {
   const errors = [];
@@ -145,6 +149,47 @@ const validateQrCertificateInput = (payload = {}, { partial = false } = {}) => {
     }
   }
 
+  const assignmentFieldsTouched =
+    !partial ||
+    ["assignedEmployeeUid", "assignedEmployeeId", "assignedEmployeeName", "assignedEmployeeEmail"].some((key) =>
+      Object.prototype.hasOwnProperty.call(payload, key)
+    );
+
+  if (assignmentFieldsTouched) {
+    const assignedEmployeeUid = normalizeOptionalText(payload.assignedEmployeeUid);
+    const assignedEmployeeId = normalizeOptionalText(payload.assignedEmployeeId);
+    const assignedEmployeeName = normalizeOptionalText(payload.assignedEmployeeName);
+    const assignedEmployeeEmail = normalizeOptionalText(payload.assignedEmployeeEmail).toLowerCase();
+
+    if (assignedEmployeeUid.length > 160) {
+      errors.push("Assigned employee UID is too long.");
+    } else {
+      updates.assignedEmployeeUid = assignedEmployeeUid;
+    }
+
+    if (assignedEmployeeId.length > 160) {
+      errors.push("Assigned employee ID is too long.");
+    } else {
+      updates.assignedEmployeeId = assignedEmployeeId;
+    }
+
+    if (assignedEmployeeName.length > 160) {
+      errors.push("Assigned employee name is too long.");
+    } else {
+      updates.assignedEmployeeName = assignedEmployeeName;
+    }
+
+    if (assignedEmployeeEmail.length > 320) {
+      errors.push("Assigned employee email is too long.");
+    } else if (assignedEmployeeEmail && !EMAIL_PATTERN.test(assignedEmployeeEmail)) {
+      errors.push("Assigned employee email must be valid.");
+    } else {
+      updates.assignedEmployeeEmail = assignedEmployeeEmail;
+    }
+
+    updates.assignedEmployeeRef = assignedEmployeeUid || assignedEmployeeId || assignedEmployeeEmail || "";
+  }
+
   return { errors, updates };
 };
 
@@ -206,6 +251,11 @@ const buildVerifyResponseData = (certificate, req) => {
     certificateText: certificate?.certificateText || "",
     signatureImageUrl: certificate?.signatureImageUrl || "",
     stampImageUrl: certificate?.stampImageUrl || "",
+    assignedEmployeeUid: certificate?.assignedEmployeeUid || "",
+    assignedEmployeeId: certificate?.assignedEmployeeId || "",
+    assignedEmployeeRef: certificate?.assignedEmployeeRef || "",
+    assignedEmployeeName: certificate?.assignedEmployeeName || "",
+    assignedEmployeeEmail: certificate?.assignedEmployeeEmail || "",
     status: rawStatus || "unknown",
     statusDisplay,
     source,
@@ -213,6 +263,46 @@ const buildVerifyResponseData = (certificate, req) => {
     isValid,
     verifyUrl: buildVerifyUrl(req, certificateId),
   };
+};
+
+const sendAssignedCertificateEmail = async (certificate, req, { updated = false } = {}) => {
+  const assignedEmployeeEmail = normalizeOptionalText(certificate?.assignedEmployeeEmail).toLowerCase();
+
+  if (!assignedEmployeeEmail || !EMAIL_PATTERN.test(assignedEmployeeEmail)) {
+    return false;
+  }
+
+  const certificateView = buildVerifyResponseData(certificate, req);
+  const employeeName =
+    certificate?.assignedEmployeeName ||
+    certificateView.name ||
+    "Team Member";
+  const subject = updated
+    ? `Certificate updated for ${employeeName}`
+    : `New certificate assigned to ${employeeName}`;
+  const content = `
+    <p>Hello ${employeeName},</p>
+    <p>${updated ? "Your QR certificate has been updated." : "A new QR certificate has been assigned to you."}</p>
+    <div style="margin: 24px 0; padding: 20px; border: 1px solid #e2e8f0; border-radius: 14px; background: #f8fafc;">
+      <p style="margin: 0 0 10px;"><strong>Certificate ID:</strong> ${certificateView.certificate_id}</p>
+      <p style="margin: 0 0 10px;"><strong>Certificate Type:</strong> ${certificateView.certificateTypeLabel}</p>
+      <p style="margin: 0 0 10px;"><strong>Date:</strong> ${certificateView.date}</p>
+      <p style="margin: 0;"><strong>Status:</strong> ${certificateView.statusDisplay}</p>
+    </div>
+    <p>You can open the certificate preview, verify it online, and download it from your employee dashboard or the verification page.</p>
+  `;
+
+  try {
+    await sendEmail({
+      to: assignedEmployeeEmail,
+      subject,
+      html: emailTemplate(subject, content, "Open Certificate", certificateView.verifyUrl),
+    });
+    return true;
+  } catch (error) {
+    logger.error("QR certificate assignment email error:", error);
+    return false;
+  }
 };
 
 /**
@@ -346,10 +436,14 @@ const createQrCertificate = async (req, res) => {
 
     const id = await createCertificateRecord(record);
     const created = await getCertificateById(id);
+    const assignmentEmailSent = await sendAssignedCertificateEmail(created, req);
 
     return res.status(201).json({
       success: true,
-      certificate: buildVerifyResponseData(created, req),
+      certificate: {
+        ...buildVerifyResponseData(created, req),
+        assignmentEmailSent,
+      },
     });
   } catch (error) {
     logger.error("QR certificate create error:", error);
@@ -384,10 +478,14 @@ const updateQrCertificate = async (req, res) => {
     });
 
     const updated = await getCertificateById(docId);
+    const assignmentEmailSent = await sendAssignedCertificateEmail(updated, req, { updated: true });
 
     return res.json({
       success: true,
-      certificate: buildVerifyResponseData(updated, req),
+      certificate: {
+        ...buildVerifyResponseData(updated, req),
+        assignmentEmailSent,
+      },
     });
   } catch (error) {
     logger.error("QR certificate update error:", error);

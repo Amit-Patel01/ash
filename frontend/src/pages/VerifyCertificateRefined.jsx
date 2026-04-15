@@ -688,7 +688,7 @@ export default function VerifyCertificateRefined() {
                       <img
                         src={certData.signatureImageUrl}
                         alt="Uploaded signature"
-                        className="mt-3 h-24 w-full rounded-2xl bg-white object-contain p-2"
+                        className="mt-3 h-28 w-full rounded-2xl bg-white object-contain p-2"
                       />
                     </div>
                   ) : null}
@@ -698,7 +698,7 @@ export default function VerifyCertificateRefined() {
                       <img
                         src={certData.stampImageUrl}
                         alt="Uploaded stamp"
-                        className="mt-3 h-24 w-full rounded-2xl bg-white object-contain p-2"
+                        className="mt-3 h-28 w-full rounded-2xl bg-white object-contain p-2"
                       />
                     </div>
                   ) : null}
