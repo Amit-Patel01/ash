@@ -16,6 +16,7 @@ import {
 import { auth, db } from '../config/firebase'
 import { api, buildApiUrl, readApiJson } from '../config/api'
 import { emailNotify } from '../utils/emailNotify'
+import { isEnrollmentClosed, normalizeEnrollmentDeadline } from '../utils/enrollmentDeadline'
 import { normalizeLearningType } from '../utils/learningType'
 import {
   DEFAULT_CERTIFICATE_TEMPLATE,
@@ -322,7 +323,11 @@ export function StoreProvider({ children }) {
     // ── Generic Course System Listeners ──────────────────────────
     const unsubscribeGenericCourses = onSnapshot(
       query(collection(db, 'courses'), orderBy('createdAt', 'desc')),
-      (snapshot) => setCourses(snapshot.docs.map(d => ({ id: d.id, ...d.data() }))),
+      (snapshot) => setCourses(snapshot.docs.map(d => ({
+        id: d.id,
+        ...d.data(),
+        enrollmentDeadline: normalizeEnrollmentDeadline(d.data()?.enrollmentDeadline),
+      }))),
       (error) => console.error("Courses snapshot error:", error)
     )
 
@@ -843,6 +848,7 @@ export function StoreProvider({ children }) {
       const payload = {
         ...courseData,
         deliveryType: normalizeLearningType(courseData),
+        enrollmentDeadline: normalizeEnrollmentDeadline(courseData.enrollmentDeadline),
         slug,
         published: courseData.published ?? false,
         highlighted: courseData.highlighted ?? false,
@@ -857,7 +863,11 @@ export function StoreProvider({ children }) {
 
   const updateCourse = async (id, updates) => {
     try {
-      await updateDoc(doc(db, 'courses', id), { ...updates, updatedAt: serverTimestamp() })
+      await updateDoc(doc(db, 'courses', id), {
+        ...updates,
+        enrollmentDeadline: normalizeEnrollmentDeadline(updates.enrollmentDeadline),
+        updatedAt: serverTimestamp()
+      })
     } catch (err) { console.error('Error updating course:', err); throw err }
   }
 
@@ -877,6 +887,10 @@ export function StoreProvider({ children }) {
         course.id === enrollmentData.courseId ||
         normalizeMatchKey(course.title) === normalizeMatchKey(enrollmentData.courseTitle)
       ) || null
+      const enrollmentSource = enrolledCourse || enrollmentData
+      if (isEnrollmentClosed(enrollmentSource)) {
+        throw new Error('Enrollment for this program has closed.')
+      }
       const enrolledPlan = resolveEnrollmentMeetingPlan(enrolledCourse, enrollmentData)
       const hasScheduledMeeting =
         enrolledPlan?.meetingStartsAt &&

@@ -404,7 +404,7 @@ export default function EmployeeBroadcastRefined() {
 
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
               <p className="text-sm text-slate-400">
-                Broadcast jayega to <span className="font-semibold text-white">{filteredEnrollments.length}</span> student{filteredEnrollments.length !== 1 ? 's' : ''}
+                This broadcast will be sent to <span className="font-semibold text-white">{filteredEnrollments.length}</span> student{filteredEnrollments.length !== 1 ? 's' : ''}
                 {form.imageUrl ? <span className="text-slate-500"> with image</span> : null}
               </p>
               <button
@@ -418,7 +418,7 @@ export default function EmployeeBroadcastRefined() {
           </div>
         </EmployeeSurface>
 
-        <EmployeeSurface title="Selected Students" description="Current filters ke basis par yeh recipients message receive karenge.">
+        <EmployeeSurface title="Selected Students" description="The students listed here match your current filters and will receive this message.">
           {!filteredEnrollments.length ? (
             <EmployeeEmptyState
               icon="👥"

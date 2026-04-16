@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import CourseEnrollModal from '../components/CourseEnrollModal'
+import { formatEnrollmentDeadline, isEnrollmentClosed, isPlanEnrollmentClosed } from '../utils/enrollmentDeadline'
 import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
 
 // Intersection observer hook
@@ -217,6 +218,18 @@ export default function CourseDetailPage() {
     (enrollment.courseTitle && enrollment.courseTitle === course.title)
   const enrolled = currentUser ? isUserEnrolled(currentUser.uid, course.id) : false
   const enrolledCount = enrollments.filter(e => e.status === 'active' && matchesCourseEnrollment(e)).length
+  const enrollmentClosed = isEnrollmentClosed(course)
+  const enrollmentDeadlineText = formatEnrollmentDeadline(course.enrollmentDeadline)
+  const actionLabel = learningType === 'webinar' ? 'Registration' : 'Enrollment'
+  const closedActionLabel = `${actionLabel} Closed`
+  const primaryCtaLabel = enrolled
+    ? `Already Registered - View ${itemLabel}`
+    : course.isFree
+      ? (learningType === 'webinar' ? 'Register for Free' : 'Enroll for Free')
+      : (learningType === 'webinar' ? 'Register Now' : 'Enroll Now')
+  const deadlineSummary = enrollmentDeadlineText
+    ? (enrollmentClosed ? `${actionLabel} closed on ${enrollmentDeadlineText}` : `${actionLabel} closes on ${enrollmentDeadlineText}`)
+    : ''
 
   const plans = Array.isArray(course.plans) && course.plans.length > 0 ? course.plans : null
   const features = Array.isArray(course.features) ? course.features : []
@@ -347,20 +360,35 @@ export default function CourseDetailPage() {
                 {course.duration && <span>⏱ {course.duration}</span>}
                 {enrolledCount > 0 && <span>👥 {enrolledCount} Enrolled</span>}
                 {instructorName && <span>👨‍🏫 {instructorName}</span>}
+                {deadlineSummary && (
+                  <span className={`rounded-full px-3 py-1 text-xs font-bold ${enrollmentClosed ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}`}>
+                    {deadlineSummary}
+                  </span>
+                )}
               </div>
 
               {/* CTA */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="#pricing"
-                  className="group inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg shadow-xl bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 transition-all duration-300">
-                  {enrolled ? `✓ Already Registered — View ${itemLabel}` : `${course.isFree ? (learningType === 'webinar' ? 'Register for Free' : 'Enroll for Free') : (learningType === 'webinar' ? 'Register Now' : 'Enroll Now')}`}
-                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                  </svg>
-                </a>
+                {enrollmentClosed && !enrolled ? (
+                  <button
+                    type="button"
+                    disabled
+                    className="inline-flex items-center gap-2 rounded-full bg-slate-200 px-8 py-4 text-lg font-bold text-slate-500 shadow-sm"
+                  >
+                    {closedActionLabel}
+                  </button>
+                ) : (
+                  <a href="#pricing"
+                    className="group inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg shadow-xl bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 transition-all duration-300">
+                    {primaryCtaLabel}
+                    <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </a>
+                )}
                 {features.length > 0 && (
                   <a href="#features" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg border-2 border-slate-200 text-slate-700 hover:bg-slate-50 transition-all">
-                    View Details
+                    View Curriculum
                   </a>
                 )}
               </div>
@@ -368,7 +396,7 @@ export default function CourseDetailPage() {
               {/* Trust badges */}
               <div className="flex flex-wrap items-center justify-center gap-6 mt-10 text-sm text-slate-500">
                 {[
-                  enrolledCount > 0 ? `${enrolledCount}+ Students Enrolled` : 'Be the First to Enroll',
+                  deadlineSummary || (enrolledCount > 0 ? `${enrolledCount}+ Students Enrolled` : 'Open for New Learners'),
                   course.duration ? `${course.duration} Program` : 'Flexible Duration',
                   'Expert-Led Training',
                   '7-Day Refund Policy'
@@ -513,14 +541,43 @@ export default function CourseDetailPage() {
                   Choose Your <span className="text-blue-600">Plan</span>
                 </h2>
                 <p className="text-slate-500 max-w-xl mx-auto">
-                  {plans ? `Select the plan that best fits your goals and schedule for this ${learningType}` : `${learningType === 'webinar' ? 'Register now to reserve your webinar access' : 'Enroll now to get full access to all course content'}`}
+                  {enrollmentClosed && !enrolled
+                    ? `${actionLabel} has closed for this ${learningType}. You can still review the full program details below.`
+                    : plans
+                      ? `Select the plan that best fits your goals and schedule for this ${learningType}.`
+                      : learningType === 'webinar'
+                        ? 'Register now to reserve your webinar access.'
+                        : 'Enroll now to get full access to the complete course content.'}
                 </p>
+                {deadlineSummary && (
+                  <p className={`mt-4 inline-flex rounded-full px-4 py-2 text-xs font-bold ${enrollmentClosed ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}`}>
+                    {deadlineSummary}
+                  </p>
+                )}
               </div>
 
               {plans ? (
                 /* Multiple Plans */
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                  {plans.map((plan, i) => (
+                  {plans.map((plan, i) => {
+                    const planAlreadyEnrolled = currentUser && isUserEnrolled(currentUser.uid, course.id, {
+                      planId: plan.id || i,
+                      planLabel: plan.label,
+                      planName: plan.label,
+                      amount: Number(plan.price || 0),
+                      isFree: plan.isFree || plan.price === 0,
+                    })
+                    const planClosed = isPlanEnrollmentClosed(plan, course)
+                    const disablePlanAction = planClosed && !planAlreadyEnrolled
+                    const planButtonLabel = planAlreadyEnrolled
+                      ? 'Registered'
+                      : disablePlanAction
+                        ? closedActionLabel
+                        : plan.isFree || plan.price === 0
+                          ? (learningType === 'webinar' ? 'Register Free' : 'Enroll Free')
+                          : (learningType === 'webinar' ? 'Reserve Your Spot' : 'Get Started')
+
+                    return (
                     <div key={plan.id || i}
                       className={`relative rounded-3xl border-2 p-7 transition-all duration-300 hover:-translate-y-1 ${
                         plan.highlighted
@@ -533,7 +590,12 @@ export default function CourseDetailPage() {
                         </div>
                       )}
                       <h3 className={`text-xl font-black mb-1 ${plan.highlighted ? 'text-white' : 'text-slate-900'}`}>{plan.label}</h3>
-                      <p className={`text-sm mb-5 ${plan.highlighted ? 'text-blue-200' : 'text-slate-400'}`}>{plan.duration}</p>
+                      <p className={`text-sm mb-2 ${plan.highlighted ? 'text-blue-200' : 'text-slate-400'}`}>{plan.duration}</p>
+                      {plan.enrollmentDeadline && (
+                        <p className={`text-xs mb-3 ${plan.highlighted ? 'text-blue-100' : 'text-slate-500'}`}>
+                          Enrollment closes: {formatEnrollmentDeadline(plan.enrollmentDeadline)}
+                        </p>
+                      )}
                       <div className="mb-6">
                         {plan.price === 0 || plan.isFree ? (
                           <span className={`text-4xl font-black ${plan.highlighted ? 'text-white' : 'text-emerald-600'}`}>FREE</span>
@@ -559,22 +621,23 @@ export default function CourseDetailPage() {
                         </ul>
                       )}
                       <button
-                        onClick={() => setSelectedPlan({ ...course, ...plan, courseId: course.id, courseTitle: course.title, planLabel: plan.label, planId: plan.id || i, assignedEmployeeId: course.assignedEmployeeId || '' })}
-                        className={`w-full py-3.5 rounded-2xl font-bold text-sm transition-all hover:scale-105 ${
-                          plan.highlighted
-                            ? 'bg-white text-blue-700 hover:bg-blue-50 shadow-lg'
-                            : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-500/20'
+                        type="button"
+                        disabled={disablePlanAction}
+                        onClick={() => {
+                          if (disablePlanAction) return
+                          setSelectedPlan({ ...course, ...plan, courseId: course.id, courseTitle: course.title, planLabel: plan.label, planId: plan.id || i, assignedEmployeeId: course.assignedEmployeeId || '' })
+                        }}
+                        className={`w-full py-3.5 rounded-2xl font-bold text-sm transition-all ${
+                          disablePlanAction
+                            ? 'cursor-not-allowed bg-slate-200 text-slate-500'
+                            : plan.highlighted
+                              ? 'bg-white text-blue-700 hover:bg-blue-50 hover:scale-105 shadow-lg'
+                              : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 shadow-md shadow-blue-500/20'
                         }`}>
-                        {currentUser && isUserEnrolled(currentUser.uid, course.id, {
-                          planId: plan.id || i,
-                          planLabel: plan.label,
-                          planName: plan.label,
-                          amount: Number(plan.price || 0),
-                          isFree: plan.isFree || plan.price === 0,
-                        }) ? `✓ Registered` : plan.isFree || plan.price === 0 ? (learningType === 'webinar' ? 'Register Free' : 'Enroll Free') : (learningType === 'webinar' ? 'Reserve Spot' : 'Get Started')}
+                        {planButtonLabel}
                       </button>
                     </div>
-                  ))}
+                  )})}
                 </div>
               ) : (
                 /* Single price / free */
@@ -601,9 +664,19 @@ export default function CourseDetailPage() {
                         ))}
                       </ul>
                     )}
-                    <button onClick={() => setSelectedPlan(course)}
-                      className="w-full py-4 bg-white text-blue-700 font-bold rounded-2xl hover:bg-blue-50 transition-all hover:scale-105 shadow-lg text-lg">
-                      {enrolled ? '✓ Already Registered' : course.isFree || course.price === 0 ? (learningType === 'webinar' ? 'Register for Free' : 'Enroll for Free') : (learningType === 'webinar' ? 'Register Now' : 'Enroll Now')}
+                    <button
+                      type="button"
+                      disabled={enrollmentClosed && !enrolled}
+                      onClick={() => {
+                        if (enrollmentClosed && !enrolled) return
+                        setSelectedPlan(course)
+                      }}
+                      className={`w-full py-4 font-bold rounded-2xl transition-all shadow-lg text-lg ${
+                        enrollmentClosed && !enrolled
+                          ? 'cursor-not-allowed bg-slate-200 text-slate-500'
+                          : 'bg-white text-blue-700 hover:bg-blue-50 hover:scale-105'
+                      }`}>
+                      {enrolled ? 'Already Registered' : enrollmentClosed ? closedActionLabel : course.isFree || course.price === 0 ? (learningType === 'webinar' ? 'Register for Free' : 'Enroll for Free') : (learningType === 'webinar' ? 'Register Now' : 'Enroll Now')}
                     </button>
                   </div>
                 </div>
@@ -639,23 +712,33 @@ export default function CourseDetailPage() {
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.05),transparent_60%)]" />
             <div className="relative z-10 max-w-3xl mx-auto text-center">
               <h2 className="text-3xl md:text-5xl font-extrabold mb-6 text-white">
-                Ready to Level Up Your Skills?
+                Ready to Build Your Next Skill?
               </h2>
               <p className="text-blue-100 text-lg max-w-xl mx-auto mb-10">
-                Join our growing community of learners and start your journey today.
+                Join our growing community of learners and take the next step with a structured, mentor-led program.
               </p>
-              <a href="#pricing"
-                className="inline-flex items-center gap-3 px-10 py-5 rounded-full font-bold text-xl shadow-2xl bg-white text-blue-700 hover:bg-blue-50 hover:scale-105 transition-all duration-300">
-                {learningType === 'webinar' ? 'Register Now' : 'Enroll Now'}
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </a>
+              {enrollmentClosed && !enrolled ? (
+                <button
+                  type="button"
+                  disabled
+                  className="inline-flex items-center gap-3 rounded-full bg-white/70 px-10 py-5 text-xl font-bold text-slate-500 shadow-2xl"
+                >
+                  {closedActionLabel}
+                </button>
+              ) : (
+                <a href="#pricing"
+                  className="inline-flex items-center gap-3 px-10 py-5 rounded-full font-bold text-xl shadow-2xl bg-white text-blue-700 hover:bg-blue-50 hover:scale-105 transition-all duration-300">
+                  {learningType === 'webinar' ? 'Register Now' : 'Enroll Now'}
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </a>
+              )}
             </div>
           </section>
 
           {/* WhatsApp float */}
-          <a href={`https://wa.me/918799246225?text=Hi, I am interested in the ${learningType}: ${encodeURIComponent(course.title)}`}
+          <a href={`https://wa.me/918799246225?text=Hello, I would like to learn more about this ${learningType}: ${encodeURIComponent(course.title)}`}
             target="_blank" rel="noopener noreferrer"
             className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform" style={{ background: '#25D366' }}>
             <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">

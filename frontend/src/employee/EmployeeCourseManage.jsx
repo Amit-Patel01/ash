@@ -4,6 +4,7 @@ import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import { DOCUMENT_TYPES } from '../utils/certificateTemplate'
 import { emailNotify } from '../utils/emailNotify'
+import { formatEnrollmentDeadline, isEnrollmentClosed, normalizeEnrollmentDeadline } from '../utils/enrollmentDeadline'
 import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
 
 const DEFAULT_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata'
@@ -14,6 +15,7 @@ const COURSE_BLANK = {
   level: 'Beginner',
   description: '',
   thumbnail: '',
+  enrollmentDeadline: '',
 }
 const FALLBACK_CATEGORIES = [
   'Trading',
@@ -34,6 +36,7 @@ const PLAN_BLANK = {
   meetingLink: '',
   meetingDateTime: '',
   meetingTimezone: DEFAULT_TIMEZONE,
+  enrollmentDeadline: '',
 }
 
 const normalizeText = (value) => String(value || '').trim().toLowerCase()
@@ -232,6 +235,7 @@ export default function EmployeeCourseManage() {
         level: courseForm.level || 'Beginner',
         description: courseForm.description.trim(),
         thumbnail: courseForm.thumbnail.trim(),
+        enrollmentDeadline: normalizeEnrollmentDeadline(courseForm.enrollmentDeadline),
         assignedEmployeeId: primaryEmployeeKey,
         assignedEmployeeRef: secondaryEmployeeKey,
         assignedEmployeeName: displayName,
@@ -275,6 +279,7 @@ export default function EmployeeCourseManage() {
       meetingLink: plan.meetingLink || '',
       meetingDateTime: formatDateTimeInput(plan.meetingStartsAt),
       meetingTimezone: plan.meetingTimezone || DEFAULT_TIMEZONE,
+      enrollmentDeadline: normalizeEnrollmentDeadline(plan.enrollmentDeadline),
     })
     setEditingPlanIdx(idx)
     setShowPlanModal(true)
@@ -305,6 +310,7 @@ export default function EmployeeCourseManage() {
         meetingLink: normalizedMeetingLink,
         meetingStartsAt: normalizedMeetingStartsAt,
         meetingTimezone: normalizedMeetingStartsAt ? normalizedMeetingTimezone : '',
+        enrollmentDeadline: normalizeEnrollmentDeadline(planForm.enrollmentDeadline),
       }
       if (meetingChanged) {
         planData.meetingReminderSentAt = ''
@@ -487,6 +493,8 @@ export default function EmployeeCourseManage() {
           ) : visibleCourses.map(course => {
             const cnt = enrollments.filter(e => e.status === 'active' && matchesCourseEnrollment(e, course)).length
             const planCount = (course.plans || []).length
+            const enrollmentClosed = isEnrollmentClosed(course)
+            const deadlineText = formatEnrollmentDeadline(course.enrollmentDeadline)
             return (
               <button key={course.id} onClick={() => openCourse(course)}
                 className={`w-full text-left p-4 rounded-2xl border transition-all ${selectedCourse?.id === course.id ? 'border-blue-500/50 bg-blue-500/10' : 'border-white/5 bg-gray-900/50 hover:border-white/10'}`}>
@@ -501,6 +509,11 @@ export default function EmployeeCourseManage() {
                       <span>·</span>
                       <span>{cnt} students</span>
                     </div>
+                    {deadlineText && (
+                      <p className={`mt-1 text-[10px] font-semibold ${enrollmentClosed ? 'text-rose-300' : 'text-amber-300'}`}>
+                        {enrollmentClosed ? `Enrollment closed on ${deadlineText}` : `Enrollment closes on ${deadlineText}`}
+                      </p>
+                    )}
                   </div>
                 </div>
               </button>
@@ -539,6 +552,13 @@ export default function EmployeeCourseManage() {
                   <p className="text-sm text-gray-400">
                     {[selectedCourse.category, selectedCourse.level].filter(Boolean).join(' · ') || 'Course details'}
                   </p>
+                  {selectedCourse.enrollmentDeadline && (
+                    <p className={`mt-1 text-xs font-semibold ${isEnrollmentClosed(selectedCourse) ? 'text-rose-300' : 'text-amber-300'}`}>
+                      {isEnrollmentClosed(selectedCourse)
+                        ? `Enrollment closed on ${formatEnrollmentDeadline(selectedCourse.enrollmentDeadline)}`
+                        : `Enrollment closes on ${formatEnrollmentDeadline(selectedCourse.enrollmentDeadline)}`}
+                    </p>
+                  )}
                 </div>
                 <div className="text-right">
                   <p className="text-xl font-black text-blue-400">
@@ -596,6 +616,9 @@ export default function EmployeeCourseManage() {
                             <div>
                               <h4 className="font-bold text-white">{plan.label}</h4>
                               <p className="text-xs text-gray-500">{plan.duration}</p>
+                              {plan.enrollmentDeadline && (
+                                <p className="text-[10px] text-amber-400 mt-1">Deadline: {formatEnrollmentDeadline(plan.enrollmentDeadline)}</p>
+                              )}
                             </div>
                             <p className={`text-lg font-black ${plan.highlighted ? 'text-blue-400' : 'text-white'}`}>
                               {plan.isFree || plan.price === 0 ? 'FREE' : `₹${Number(plan.price).toLocaleString('en-IN')}`}
@@ -858,6 +881,16 @@ export default function EmployeeCourseManage() {
                     />
                   </div>
                 </div>
+                <div>
+                  <label className="label">Enrollment Deadline</label>
+                  <input
+                    type="date"
+                    value={planForm.enrollmentDeadline}
+                    onChange={e => setPlanForm({ ...planForm, enrollmentDeadline: e.target.value })}
+                    className="input"
+                  />
+                  <p className="text-[10px] text-gray-500 mt-1">Leave empty to use course deadline. Enrollment for this plan will close after this date.</p>
+                </div>
               </div>
               {/* Highlighted */}
               <div className="flex items-center justify-between p-3 bg-white/[0.02] rounded-xl border border-white/5">
@@ -948,6 +981,16 @@ export default function EmployeeCourseManage() {
                     <option>Intermediate</option>
                     <option>Advanced</option>
                   </select>
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="label">Enrollment Deadline</label>
+                  <input
+                    type="date"
+                    value={courseForm.enrollmentDeadline}
+                    onChange={event => setCourseForm({ ...courseForm, enrollmentDeadline: event.target.value })}
+                    className="input"
+                  />
+                  <p className="mt-1 text-[11px] text-gray-500">Leave this empty if students should be able to enroll at any time.</p>
                 </div>
               </div>
 

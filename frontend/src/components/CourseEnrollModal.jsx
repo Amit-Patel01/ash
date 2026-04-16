@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '../config/firebase'
 import { api } from '../config/api'
+import { isEnrollmentClosed } from '../utils/enrollmentDeadline'
+import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
@@ -93,6 +95,10 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
   const actualCourseTitle = course.courseTitle || course.title
   const actualPrice = Number(course.price || 0)
   const isFreeCourse = course.isFree || course.price === 0 || course.price === '0' || actualPrice === 0
+  const learningType = normalizeLearningType(course)
+  const itemLabel = getLearningTypeLabel(course)
+  const actionLabel = learningType === 'webinar' ? 'Registration' : 'Enrollment'
+  const enrollmentClosed = isEnrollmentClosed(course)
   const targetPlanRef = {
     planId: course.planId || course.id || '',
     planLabel: course.planLabel || course.label || '',
@@ -112,6 +118,10 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
 
   const handleEnroll = async () => {
     if (!currentUser) { navigate('/login'); return }
+    if (enrollmentClosed) {
+      setError(`${actionLabel} for this program has closed.`)
+      return
+    }
     if (!validateMobile()) return
     setSubmitting(true)
     setError('')
@@ -223,7 +233,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
       }
     } catch (err) {
       console.error(err)
-      setError('Enrollment failed. Please try again.')
+      setError(err?.message || `${actionLabel} failed. Please try again.`)
     } finally {
       setSubmitting(false)
     }
@@ -242,13 +252,28 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Already Enrolled! 🎓</h3>
-            <p className="text-slate-500 text-sm mb-1">You're already enrolled in</p>
+            <h3 className="text-xl font-bold text-slate-900 mb-2">Already Enrolled</h3>
+            <p className="text-slate-500 text-sm mb-1">You are already enrolled in</p>
             <p className="font-bold text-blue-600 mb-5">{actualCourseTitle}</p>
             <div className="flex gap-3">
               <button onClick={onClose} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition-all">Close</button>
-              <button onClick={() => navigate('/customer/my-courses')} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all">My Courses →</button>
+              <button onClick={() => navigate('/customer/my-courses')} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all">My Courses</button>
             </div>
+          </div>
+        ) : enrollmentClosed ? (
+          <div className="p-10 text-center">
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-rose-50">
+              <svg className="h-10 w-10 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0 3h.008v.008H12v-.008zm8.25-.758A9 9 0 1112 3a9 9 0 018.25 9.992z" />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-xl font-bold text-slate-900">{actionLabel} Closed</h3>
+            <p className="mb-5 text-sm text-slate-500">
+              {actionLabel} for <span className="font-semibold text-slate-700">{actualCourseTitle}</span> is no longer available.
+            </p>
+            <button onClick={onClose} className="w-full py-3 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition-all">
+              Close
+            </button>
           </div>
         ) : success ? (
           <div className="p-10 text-center">
@@ -260,12 +285,12 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
                 </svg>
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-slate-900 mb-2">Enrolled Successfully! 🎉</h3>
-            <p className="text-slate-500 mb-1">You are now enrolled in</p>
+            <h3 className="text-2xl font-bold text-slate-900 mb-2">{learningType === 'webinar' ? 'Registration Confirmed' : 'Enrollment Confirmed'}</h3>
+            <p className="text-slate-500 mb-1">You now have access to</p>
             <p className="font-bold text-blue-600 mb-5">{actualCourseTitle}</p>
             <div className="flex gap-3">
               <button onClick={onClose} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition-all">Close</button>
-              <button onClick={() => navigate('/customer/my-courses')} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all">View My Courses →</button>
+              <button onClick={() => navigate('/customer/my-courses')} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all">View My Courses</button>
             </div>
           </div>
         ) : (
@@ -274,7 +299,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-blue-200 text-xs font-bold uppercase tracking-widest mb-1">Enrolling in</p>
+                  <p className="text-blue-200 text-xs font-bold uppercase tracking-widest mb-1">{actionLabel} For</p>
                   <h3 className="text-xl font-bold leading-tight">{actualCourseTitle}</h3>
                   {course.category && <p className="text-blue-200 text-sm mt-1">{course.category}</p>}
                 </div>
@@ -287,7 +312,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
                 <span className="text-3xl font-black">
                   {isFreeCourse ? 'FREE' : `₹${actualPrice.toLocaleString('en-IN')}`}
                 </span>
-                <span className="text-blue-200 text-xs">one-time</span>
+                <span className="text-blue-200 text-xs">{itemLabel}</span>
               </div>
             </div>
 
@@ -336,16 +361,16 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
                 className="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 disabled:opacity-50 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2"
               >
                 {submitting ? (
-                  <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Enrolling...</>
+                  <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Processing...</>
                 ) : isFreeCourse ? (
-                  'Enroll for Free →'
+                  learningType === 'webinar' ? 'Register for Free' : 'Enroll for Free'
                 ) : (
-                  'Enroll Now →'
+                  learningType === 'webinar' ? 'Register Now' : 'Enroll Now'
                 )}
               </button>
 
               {!isFreeCourse && (
-                <p className="text-center text-xs text-slate-400">🛡️ Secure enrollment · Powered by Razorpay</p>
+                <p className="text-center text-xs text-slate-400">Secure checkout powered by Razorpay</p>
               )}
             </div>
           </>

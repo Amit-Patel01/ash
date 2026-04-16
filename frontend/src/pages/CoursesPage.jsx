@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import PublicPageShell, { PublicGlassCard, PublicSection, PublicSectionHeading } from '../components/public/PublicPageShell'
 import { useStore } from '../store/StoreContext'
+import { formatEnrollmentDeadline, isEnrollmentClosed } from '../utils/enrollmentDeadline'
 import { getLearningTypeLabel } from '../utils/learningType'
 
 const PageIcon = ({ name, size = 18, color = 'currentColor', strokeWidth = 2 }) => {
@@ -99,12 +100,12 @@ export default function CoursesPage() {
         badge="Industry-Ready Learning"
         title={
           <>
-            Choose a course that looks
-            <span className="bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent"> professional online </span>
-            and works for real careers
+            Choose a learning path that builds
+            <span className="bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent"> real skills </span>
+            for real careers
           </>
         }
-        description="Every course page now follows a cleaner white-glow layout with transparent details, mentor-led outcomes, and mobile-first browsing so your internship and training presentation feels more credible."
+        description="Browse structured courses and webinars with mentor support, clear outcomes, and a polished mobile-friendly experience from discovery to enrollment."
         actions={[
           { label: 'Browse Programs', to: '/courses#course-catalogue', icon: <PageIcon name="book" size={16} /> },
           { label: 'Contact for Guidance', to: '/contact', variant: 'secondary', icon: <PageIcon name="chat" size={16} /> },
@@ -125,9 +126,9 @@ export default function CoursesPage() {
 
             <div className="grid gap-3">
               {[
-                { title: 'Transparent Structure', desc: 'Category, mentor, duration, pricing, and highlights stay visible even on small screens.' },
-                { title: 'Credible Presentation', desc: 'White glass cards, clean spacing, and focused copy make the catalogue look more professional.' },
-                { title: 'Student Clarity', desc: 'Learners can quickly understand what they will get before they enroll.' },
+                { title: 'Transparent Structure', desc: 'Category, mentor, duration, pricing, and enrollment status remain easy to scan on every screen size.' },
+                { title: 'Credible Presentation', desc: 'Clean cards, focused copy, and consistent spacing give the catalogue a more professional feel.' },
+                { title: 'Student Clarity', desc: 'Learners can quickly understand what is included before they commit to a program.' },
               ].map((item) => (
                 <div key={item.title} className="rounded-3xl border border-slate-200/80 bg-white/90 p-4 shadow-[0_18px_38px_-30px_rgba(15,23,42,0.55)]">
                   <div className="text-sm font-bold text-slate-900">{item.title}</div>
@@ -233,6 +234,9 @@ export default function CoursesPage() {
                 const categoryMeta = getCategoryMeta(course.category)
                 const planPrices = Array.isArray(course.plans) ? course.plans.map((plan) => Number(plan.price) || 0) : []
                 const startingPrice = planPrices.length > 0 ? Math.min(...planPrices) : Number(course.price || 0)
+                const enrollmentClosed = isEnrollmentClosed(course)
+                const deadlineText = formatEnrollmentDeadline(course.enrollmentDeadline)
+                const actionLabel = getLearningTypeLabel(course) === 'Webinar' ? 'Registration' : 'Enrollment'
 
                 return (
                   <button
@@ -276,6 +280,11 @@ export default function CoursesPage() {
                             Enrolled
                           </span>
                         )}
+                        {!isEnrolled && enrollmentClosed && (
+                          <span className="rounded-full bg-rose-500/90 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white">
+                            {actionLabel} Closed
+                          </span>
+                        )}
                       </div>
 
                       {Array.isArray(course.plans) && course.plans.length > 0 && (
@@ -306,6 +315,11 @@ export default function CoursesPage() {
                       <div>
                         <h3 className="text-xl font-black leading-tight text-slate-900">{course.title}</h3>
                         <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">{course.description}</p>
+                        {deadlineText && (
+                          <p className={`mt-3 text-xs font-semibold ${enrollmentClosed ? 'text-rose-600' : 'text-amber-700'}`}>
+                            {enrollmentClosed ? `${actionLabel} closed on ${deadlineText}` : `${actionLabel} closes on ${deadlineText}`}
+                          </p>
+                        )}
                       </div>
 
                       <div className="grid gap-2 text-sm text-slate-500 sm:grid-cols-2">
@@ -333,8 +347,14 @@ export default function CoursesPage() {
                           </div>
                         </div>
 
-                        <div className={`inline-flex rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${isEnrolled ? 'border border-emerald-200 bg-emerald-50 text-emerald-700' : 'bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-[0_16px_32px_-18px_rgba(37,99,235,0.85)]'}`}>
-                          {isEnrolled ? 'View Course' : 'View Details'}
+                        <div className={`inline-flex rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
+                          isEnrolled
+                            ? 'border border-emerald-200 bg-emerald-50 text-emerald-700'
+                            : enrollmentClosed
+                              ? 'border border-rose-200 bg-rose-50 text-rose-700'
+                              : 'bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-[0_16px_32px_-18px_rgba(37,99,235,0.85)]'
+                        }`}>
+                          {isEnrolled ? 'Continue' : enrollmentClosed ? `${actionLabel} Closed` : 'View Details'}
                         </div>
                       </div>
                     </div>

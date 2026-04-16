@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '../store/StoreContext'
+import { formatEnrollmentDeadline, isEnrollmentClosed, normalizeEnrollmentDeadline } from '../utils/enrollmentDeadline'
 import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
 
 export default function AdminCourses() {
@@ -20,6 +21,7 @@ export default function AdminCourses() {
     title: '', category: '', level: 'Beginner',
     description: '',
     thumbnail: '',
+    enrollmentDeadline: '',
     published: false,
     assignedEmployeeId: '', assignedEmployeeName: ''
   }
@@ -54,6 +56,7 @@ export default function AdminCourses() {
       level: course.level || 'Beginner',
       description: course.description || '',
       thumbnail: course.thumbnail || course.image || course.imageUrl || '',
+      enrollmentDeadline: normalizeEnrollmentDeadline(course.enrollmentDeadline),
       published: course.published || false,
       assignedEmployeeId: course.assignedEmployeeId || '',
       assignedEmployeeName: course.assignedEmployeeName || ''
@@ -82,6 +85,7 @@ export default function AdminCourses() {
         title: form.title.trim(),
         description: form.description.trim(),
         thumbnail: form.thumbnail.trim(),
+        enrollmentDeadline: normalizeEnrollmentDeadline(form.enrollmentDeadline),
       }
       if (editingCourse) {
         await updateCourse(editingCourse.id, payload)
@@ -189,7 +193,12 @@ export default function AdminCourses() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {filtered.map(course => (
+          {filtered.map(course => {
+            const enrollmentClosed = isEnrollmentClosed(course)
+            const deadlineText = formatEnrollmentDeadline(course.enrollmentDeadline)
+            const actionLabel = normalizeLearningType(course) === 'webinar' ? 'Registration' : 'Enrollment'
+
+            return (
             <div key={course.id}
               className={`relative bg-gray-900/50 border rounded-2xl p-5 transition-all group ${
                 course.published ? 'border-emerald-500/20 hover:border-emerald-500/40' : 'border-white/5 opacity-70 hover:border-white/10'
@@ -239,6 +248,11 @@ export default function AdminCourses() {
 
               <h3 className="font-bold text-white mb-1 line-clamp-1">{course.title}</h3>
               <p className="text-xs text-gray-500 mb-3 line-clamp-2">{course.description}</p>
+              {deadlineText && (
+                <p className={`mb-3 text-[11px] font-semibold ${enrollmentClosed ? 'text-rose-300' : 'text-amber-300'}`}>
+                  {enrollmentClosed ? `${actionLabel} closed on ${deadlineText}` : `${actionLabel} closes on ${deadlineText}`}
+                </p>
+              )}
 
               {/* Stats row */}
               <div className="flex items-center justify-between mb-3 text-xs">
@@ -289,7 +303,7 @@ export default function AdminCourses() {
                 </button>
               </div>
             </div>
-          ))}
+          )})}
         </div>
       )}
 
@@ -344,6 +358,16 @@ export default function AdminCourses() {
                   <select value={form.level} onChange={e => setForm({...form, level: e.target.value})} className="input">
                     <option>Beginner</option><option>Intermediate</option><option>Advanced</option>
                   </select>
+                </div>
+                <div className="col-span-2">
+                  <label className="label">Enrollment Deadline</label>
+                  <input
+                    type="date"
+                    value={form.enrollmentDeadline}
+                    onChange={e => setForm({ ...form, enrollmentDeadline: e.target.value })}
+                    className="input"
+                  />
+                  <p className="text-[11px] text-gray-500 mt-1">Leave this empty to keep enrollment open without a deadline.</p>
                 </div>
               </div>
 
