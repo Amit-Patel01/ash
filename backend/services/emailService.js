@@ -1,6 +1,11 @@
 const nodemailer = require("nodemailer");
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const OWNER_NOTIFICATION_EMAIL =
+  process.env.OWNER_NOTIFICATION_EMAIL ||
+  process.env.ADMIN_NOTIFICATION_EMAIL ||
+  "amitpatel0729@gmail.com";
+
 if (!RESEND_API_KEY) {
   console.warn("WARNING: RESEND_API_KEY is not set. Resend email delivery is disabled.");
 }
@@ -108,6 +113,21 @@ const isValidEmail = (email) => {
   return emailPattern.test(String(email).trim());
 };
 
+const buildOwnerBccList = (to) => {
+  if (!isValidEmail(OWNER_NOTIFICATION_EMAIL)) {
+    return undefined;
+  }
+
+  const normalizedTo = String(to || "").trim().toLowerCase();
+  const normalizedOwner = OWNER_NOTIFICATION_EMAIL.trim().toLowerCase();
+
+  if (normalizedTo === normalizedOwner) {
+    return undefined;
+  }
+
+  return [OWNER_NOTIFICATION_EMAIL];
+};
+
 /**
  * Send a transactional email via Resend
  * @param {Object} opts - { to, subject, html, text?, attachments? }
@@ -130,12 +150,14 @@ const sendEmail = async ({ to, subject, html, text, attachments }) => {
     }
 
     const from = process.env.FROM_EMAIL || "Amit Solution Hub <support@amitsolutionhub.com>";
+    const bcc = buildOwnerBccList(to);
     const resendClient = getResendClient();
 
     if (resendClient) {
       const result = await resendClient.emails.send({
         from,
         to,
+        bcc,
         subject,
         html: html || undefined,
         text: text || undefined,
@@ -154,6 +176,7 @@ const sendEmail = async ({ to, subject, html, text, attachments }) => {
       const result = await transport.sendMail({
         from,
         to,
+        bcc,
         subject,
         html: html || undefined,
         text: text || undefined,

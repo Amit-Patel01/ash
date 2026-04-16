@@ -20,7 +20,6 @@ const Contact = () => {
     lastName: '',
     email: '',
     mobile: '',
-    github: '',
     message: '',
   })
   const [status, setStatus] = useState('')
@@ -65,7 +64,6 @@ const Contact = () => {
         lastName: '',
         email: '',
         mobile: '',
-        github: '',
         message: '',
       })
 
@@ -224,16 +222,6 @@ const Contact = () => {
                     value={formData.mobile}
                     onChange={handleChange}
                     placeholder="Mobile Number (+91...)"
-                    required
-                    className={inputClasses}
-                  />
-
-                  <input
-                    type="url"
-                    name="github"
-                    value={formData.github}
-                    onChange={handleChange}
-                    placeholder="GitHub or portfolio URL"
                     required
                     className={inputClasses}
                   />
