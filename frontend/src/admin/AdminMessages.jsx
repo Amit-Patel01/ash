@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
 import { api } from '../config/api'
 
@@ -59,6 +58,8 @@ export default function AdminMessages() {
   const [replyText, setReplyText] = useState('')
   const [replyingTo, setReplyingTo] = useState(null)
   const [liveIndicator, setLiveIndicator] = useState(true)
+  const [deletingId, setDeletingId] = useState(null)
+  const [bulkDeleting, setBulkDeleting] = useState(false)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -97,10 +98,38 @@ export default function AdminMessages() {
     e.stopPropagation()
     if (!window.confirm('Are you sure you want to delete this message?')) return
     try {
+      setDeletingId(id)
       await deleteAdminMessage(id)
       if (selectedMessage?.id === id) setSelectedMessage(null)
+      if (replyingTo?.id === id) {
+        setReplyingTo(null)
+        setReplyText('')
+      }
     } catch (err) {
       console.error(err)
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
+  const deleteAllMessages = async () => {
+    if (filteredMessages.length === 0 || bulkDeleting) return
+
+    const filterLabel =
+      filter === 'all' ? 'all messages' : filter === 'unread' ? 'all unread messages' : 'all starred messages'
+
+    if (!window.confirm(`Are you sure you want to delete ${filterLabel} (${filteredMessages.length})?`)) return
+
+    try {
+      setBulkDeleting(true)
+      await Promise.all(filteredMessages.map(message => deleteAdminMessage(message.id)))
+      setSelectedMessage(null)
+      setReplyingTo(null)
+      setReplyText('')
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setBulkDeleting(false)
     }
   }
 
@@ -188,6 +217,16 @@ export default function AdminMessages() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {filteredMessages.length > 0 && (
+            <button
+              onClick={deleteAllMessages}
+              disabled={bulkDeleting}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 border border-red-500/20 rounded-xl text-sm font-medium text-red-300 hover:bg-red-500/15 transition-all disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+              {bulkDeleting ? 'Deleting...' : filter === 'all' ? 'Delete All' : `Delete ${filter}`}
+            </button>
+          )}
           <button onClick={() => setShowCompose(!showCompose)} className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
             Compose
@@ -246,6 +285,14 @@ export default function AdminMessages() {
                         <button onClick={(e) => toggleStar(message.id, e)} className={`p-1 rounded hover:bg-white/5 ${message.starred ? 'text-amber-400' : 'text-gray-600 hover:text-gray-400'}`}>
                           <svg className="w-4 h-4" fill={message.starred ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>
                         </button>
+                        <button
+                          onClick={(e) => deleteMessage(message.id, e)}
+                          disabled={deletingId === message.id || bulkDeleting}
+                          className="p-1 rounded text-gray-600 hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+                          title="Delete message"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                        </button>
                       </div>
                     </div>
                     <p className={`text-sm ${isUnread ? 'text-white font-medium' : 'text-gray-300'}`}>{message.subject || 'Inquiry'}</p>
@@ -269,9 +316,9 @@ export default function AdminMessages() {
                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.125l2.25 2.25m0 0l2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
                             Archive
                           </button>
-                          <button onClick={(e) => deleteMessage(message.id, e)} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 text-red-400 rounded-lg text-xs font-medium hover:bg-red-500/20 transition-colors">
+                          <button onClick={(e) => deleteMessage(message.id, e)} disabled={deletingId === message.id || bulkDeleting} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 text-red-400 rounded-lg text-xs font-medium hover:bg-red-500/20 transition-colors disabled:cursor-not-allowed disabled:opacity-50">
                             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
-                            Delete
+                            {deletingId === message.id ? 'Deleting...' : 'Delete'}
                           </button>
                         </div>
                       </div>
