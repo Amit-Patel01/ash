@@ -3,6 +3,7 @@ import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 import { getCertificateDocumentLabel } from '../utils/certificateHelpers'
+import { getLearningTypeLabel } from '../utils/learningType'
 
 export default function CustomerMyCourses() {
   const { getUserEnrollments, courses, certificates } = useStore()
@@ -36,6 +37,7 @@ export default function CustomerMyCourses() {
     id: enrollment.courseId || enrollment.id,
     title: enrollment.courseTitle || enrollment.courseName || enrollment.courseId || 'Course',
     category: enrollment.category || 'Course',
+    deliveryType: enrollment.deliveryType || 'course',
     instructor: enrollment.instructor || '',
     materials: [],
     meetingLink: '',
@@ -157,8 +159,8 @@ export default function CustomerMyCourses() {
         <h1 className="text-2xl font-bold text-white">My Courses</h1>
         <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-14 text-center">
           <div className="text-5xl mb-4">📚</div>
-          <h3 className="text-xl font-bold text-white mb-2">No courses yet</h3>
-          <p className="text-gray-400 text-sm mb-6">Browse our courses and enroll to start learning</p>
+          <h3 className="text-xl font-bold text-white mb-2">No programs yet</h3>
+          <p className="text-gray-400 text-sm mb-6">Browse our courses and webinars to start learning</p>
           <button onClick={() => navigate('/courses')}
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-2xl hover:shadow-lg hover:shadow-blue-500/25 transition-all">
             Browse Courses
@@ -177,7 +179,7 @@ export default function CustomerMyCourses() {
         <div>
           <h1 className="text-2xl font-bold text-white">My Courses</h1>
           <p className="text-sm text-gray-400 mt-1">
-            {myCourseGroups.length} course{myCourseGroups.length !== 1 ? 's' : ''} • {myEnrollments.length} active plan{myEnrollments.length !== 1 ? 's' : ''}
+            {myCourseGroups.length} program{myCourseGroups.length !== 1 ? 's' : ''} • {myEnrollments.length} active plan{myEnrollments.length !== 1 ? 's' : ''}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -265,6 +267,9 @@ export default function CustomerMyCourses() {
                       <p className="text-xs text-gray-500 mb-1">{group.enrollments[0]?.category || course.category}</p>
                       <h3 className="font-bold text-white mb-1">{course.title}</h3>
                       <div className="flex items-center gap-2 flex-wrap">
+                        <span className="px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-[10px] font-semibold text-sky-300">
+                          {getLearningTypeLabel(course)}
+                        </span>
                         <p className="text-[11px] text-gray-500">
                           {group.enrollments.length} active plan{group.enrollments.length !== 1 ? 's' : ''}
                         </p>

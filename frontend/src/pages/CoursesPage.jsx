@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import PublicPageShell, { PublicGlassCard, PublicSection, PublicSectionHeading } from '../components/public/PublicPageShell'
 import { useStore } from '../store/StoreContext'
+import { getLearningTypeLabel } from '../utils/learningType'
 
 const PageIcon = ({ name, size = 18, color = 'currentColor', strokeWidth = 2 }) => {
   const props = {
@@ -73,7 +74,7 @@ export default function CoursesPage() {
   }
 
   const stats = [
-    { value: `${published.length}+`, label: 'Published Courses' },
+    { value: `${published.length}+`, label: 'Published Programs' },
     { value: `${Math.max(allCategories.length - 1, 1)}`, label: 'Skill Tracks' },
     { value: '100%', label: 'Mobile Friendly Access' },
   ]
@@ -90,7 +91,7 @@ export default function CoursesPage() {
         <title>Courses | Amit Solution Hub</title>
         <meta
           name="description"
-          content="Browse Amit Solution Hub courses with industry-focused learning paths, mentor support, and verifiable outcomes."
+          content="Browse Amit Solution Hub courses and webinars with industry-focused learning paths, mentor support, and verifiable outcomes."
         />
       </Helmet>
 
@@ -148,8 +149,8 @@ export default function CoursesPage() {
           <PublicGlassCard className="space-y-6 p-5 sm:p-7">
             <PublicSectionHeading
               badge="Search and Filter"
-              title="Find the right course faster"
-              description="Use a simple search and category filter to shortlist the best program without losing context on mobile."
+              title="Find the right program faster"
+              description="Use a simple search and category filter to shortlist the best course or webinar without losing context on mobile."
             />
 
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
@@ -210,7 +211,7 @@ export default function CoursesPage() {
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sky-50 text-sky-600">
                 <PageIcon name="search" size={28} />
               </div>
-              <h3 className="mt-5 text-2xl font-black text-slate-900">No courses matched your search</h3>
+              <h3 className="mt-5 text-2xl font-black text-slate-900">No programs matched your search</h3>
               <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600">
                 Clear the current search or choose another category to view more options.
               </p>
@@ -286,6 +287,9 @@ export default function CoursesPage() {
 
                     <div className="space-y-5 p-6">
                       <div className="flex flex-wrap items-center gap-2">
+                        <span className="inline-flex items-center rounded-full border border-rose-100 bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">
+                          {getLearningTypeLabel(course)}
+                        </span>
                         <span className="inline-flex items-center rounded-full border border-sky-100 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">
                           <span className="inline-flex items-center gap-1.5">
                             <PageIcon name={getCategoryIconKey(categoryMeta?.name || course.category)} size={14} />

@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import CourseEnrollModal from '../components/CourseEnrollModal'
+import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
 
 // Intersection observer hook
 function useInView() {
@@ -181,6 +182,15 @@ export default function CourseDetailPage() {
     if (courses.length > 0 && !course) navigate('/courses', { replace: true })
   }, [courses, course, navigate])
 
+  const catMeta = courseCategories.find(c => c.name === course?.category)
+  const learningType = normalizeLearningType(course)
+  const itemLabel = getLearningTypeLabel(course)
+  const assignedEmployeeIds = [course?.assignedEmployeeId, course?.assignedEmployeeRef].filter(Boolean)
+  const { instructor, publicProfileId } = useMemo(
+    () => resolveInstructorProfile(course, users, teamMembers),
+    [course, users, teamMembers]
+  )
+
   if (!course) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -191,13 +201,6 @@ export default function CourseDetailPage() {
       </div>
     )
   }
-
-  const catMeta = courseCategories.find(c => c.name === course.category)
-  const assignedEmployeeIds = [course.assignedEmployeeId, course.assignedEmployeeRef].filter(Boolean)
-  const { instructor, publicProfileId } = useMemo(
-    () => resolveInstructorProfile(course, users, teamMembers),
-    [course, users, teamMembers]
-  )
   const instructorImage = getInstructorImage(instructor)
   const instructorLinks = getInstructorLinks(instructor)
   const instructorName =
@@ -205,8 +208,8 @@ export default function CourseDetailPage() {
     instructor?.name ||
     course.assignedEmployeeName ||
     course.instructor ||
-    'Course Instructor'
-  const instructorRole = instructor?.jobTitle || instructor?.role || 'Course Instructor'
+    `${itemLabel} Instructor`
+  const instructorRole = instructor?.jobTitle || instructor?.role || `${itemLabel} Instructor`
   const instructorBio = instructor?.bio || 'Expert instructor with proven industry experience.'
   const instructorExperience = instructor?.experience || '5+ Years'
   const matchesCourseEnrollment = (enrollment) =>
@@ -219,7 +222,7 @@ export default function CourseDetailPage() {
   const features = Array.isArray(course.features) ? course.features : []
   const curriculum = Array.isArray(course.curriculum) ? course.curriculum : []
   const faq = Array.isArray(course.faq) ? course.faq : [
-    { q: 'Who is this course designed for?', a: `This course is designed for ${course.level || 'all levels'} learners who want to excel in ${course.category || 'this field'}.` },
+    { q: `Who is this ${learningType} designed for?`, a: `This ${learningType} is designed for ${course.level || 'all levels'} learners who want to excel in ${course.category || 'this field'}.` },
     { q: 'Do I need any prior experience?', a: course.level === 'Beginner' ? 'No prior experience required. We start from the basics.' : 'Some basic knowledge is recommended.' },
     { q: 'Are sessions recorded?', a: 'Yes, all live sessions are recorded and shared with enrolled students.' },
     { q: 'What is the refund policy?', a: 'We offer a 7-day money-back guarantee if you are not satisfied.' },
@@ -315,6 +318,9 @@ export default function CourseDetailPage() {
                 <span className="text-sm font-bold" style={{ color: catMeta?.color || '#3b82f6' }}>
                   {course.category}
                 </span>
+                <span className="rounded-full bg-slate-950/5 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-slate-600">
+                  {itemLabel}
+                </span>
                 {course.badge && (
                   <>
                     <span className="text-slate-200">·</span>
@@ -347,7 +353,7 @@ export default function CourseDetailPage() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="#pricing"
                   className="group inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg shadow-xl bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 transition-all duration-300">
-                  {enrolled ? '✓ Already Enrolled — View Details' : `${course.isFree ? 'Enroll for Free' : 'Enroll Now'}`}
+                  {enrolled ? `✓ Already Registered — View ${itemLabel}` : `${course.isFree ? (learningType === 'webinar' ? 'Register for Free' : 'Enroll for Free') : (learningType === 'webinar' ? 'Register Now' : 'Enroll Now')}`}
                   <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                   </svg>
@@ -384,7 +390,7 @@ export default function CourseDetailPage() {
               <div className={`max-w-6xl mx-auto ${fade(featVisible)}`}>
                 <div className="text-center mb-14">
                   <h2 className="text-3xl md:text-5xl font-extrabold mb-4">What You'll <span className="text-blue-600">Get</span></h2>
-                  <p className="text-slate-500 max-w-xl mx-auto">Everything included in this course</p>
+                  <p className="text-slate-500 max-w-xl mx-auto">Everything included in this {learningType}</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {features.map((feat, i) => (
@@ -407,7 +413,7 @@ export default function CourseDetailPage() {
             <section id="curriculum" className="py-20 px-4 bg-white">
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-14">
-                  <h2 className="text-3xl md:text-5xl font-extrabold mb-4">Course <span className="text-blue-600">Curriculum</span></h2>
+                  <h2 className="text-3xl md:text-5xl font-extrabold mb-4">{itemLabel} <span className="text-blue-600">Curriculum</span></h2>
                   <p className="text-slate-500 max-w-xl mx-auto">A comprehensive, structured learning path</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -507,7 +513,7 @@ export default function CourseDetailPage() {
                   Choose Your <span className="text-blue-600">Plan</span>
                 </h2>
                 <p className="text-slate-500 max-w-xl mx-auto">
-                  {plans ? 'Select the plan that best fits your goals and schedule' : 'Enroll now to get full access to all course content'}
+                  {plans ? `Select the plan that best fits your goals and schedule for this ${learningType}` : `${learningType === 'webinar' ? 'Register now to reserve your webinar access' : 'Enroll now to get full access to all course content'}`}
                 </p>
               </div>
 
@@ -565,7 +571,7 @@ export default function CourseDetailPage() {
                           planName: plan.label,
                           amount: Number(plan.price || 0),
                           isFree: plan.isFree || plan.price === 0,
-                        }) ? '✓ Enrolled' : plan.isFree || plan.price === 0 ? 'Enroll Free' : 'Get Started'}
+                        }) ? `✓ Registered` : plan.isFree || plan.price === 0 ? (learningType === 'webinar' ? 'Register Free' : 'Enroll Free') : (learningType === 'webinar' ? 'Reserve Spot' : 'Get Started')}
                       </button>
                     </div>
                   ))}
@@ -597,7 +603,7 @@ export default function CourseDetailPage() {
                     )}
                     <button onClick={() => setSelectedPlan(course)}
                       className="w-full py-4 bg-white text-blue-700 font-bold rounded-2xl hover:bg-blue-50 transition-all hover:scale-105 shadow-lg text-lg">
-                      {enrolled ? '✓ Already Enrolled' : course.isFree || course.price === 0 ? 'Enroll for Free' : 'Enroll Now'}
+                      {enrolled ? '✓ Already Registered' : course.isFree || course.price === 0 ? (learningType === 'webinar' ? 'Register for Free' : 'Enroll for Free') : (learningType === 'webinar' ? 'Register Now' : 'Enroll Now')}
                     </button>
                   </div>
                 </div>
@@ -640,7 +646,7 @@ export default function CourseDetailPage() {
               </p>
               <a href="#pricing"
                 className="inline-flex items-center gap-3 px-10 py-5 rounded-full font-bold text-xl shadow-2xl bg-white text-blue-700 hover:bg-blue-50 hover:scale-105 transition-all duration-300">
-                Enroll Now
+                {learningType === 'webinar' ? 'Register Now' : 'Enroll Now'}
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
@@ -649,7 +655,7 @@ export default function CourseDetailPage() {
           </section>
 
           {/* WhatsApp float */}
-          <a href="https://wa.me/918799246225?text=Hi, I am interested in the course: {course.title}"
+          <a href={`https://wa.me/918799246225?text=Hi, I am interested in the ${learningType}: ${encodeURIComponent(course.title)}`}
             target="_blank" rel="noopener noreferrer"
             className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform" style={{ background: '#25D366' }}>
             <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">

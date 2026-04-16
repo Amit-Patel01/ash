@@ -4,9 +4,11 @@ import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import { DOCUMENT_TYPES } from '../utils/certificateTemplate'
 import { emailNotify } from '../utils/emailNotify'
+import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
 
 const DEFAULT_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata'
 const COURSE_BLANK = {
+  deliveryType: 'course',
   title: '',
   category: '',
   level: 'Beginner',
@@ -224,6 +226,7 @@ export default function EmployeeCourseManage() {
       const primaryEmployeeKey = currentUser?.uid || userProfile?.uid || employeeId
       const secondaryEmployeeKey = employeeId || userProfile?.uid || currentUser?.uid || ''
       const createdCourse = await addCourse({
+        deliveryType: normalizeLearningType(courseForm),
         title: courseForm.title.trim(),
         category: courseForm.category,
         level: courseForm.level || 'Beginner',
@@ -898,7 +901,7 @@ export default function EmployeeCourseManage() {
               </div>
 
               <div>
-                <label className="label">Course Title *</label>
+                <label className="label">{getLearningTypeLabel(courseForm)} Title *</label>
                 <input
                   value={courseForm.title}
                   onChange={event => setCourseForm({ ...courseForm, title: event.target.value })}
@@ -909,6 +912,17 @@ export default function EmployeeCourseManage() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="label">Type</label>
+                  <select
+                    value={courseForm.deliveryType}
+                    onChange={event => setCourseForm({ ...courseForm, deliveryType: event.target.value })}
+                    className="input"
+                  >
+                    <option value="course">Course</option>
+                    <option value="webinar">Webinar</option>
+                  </select>
+                </div>
                 <div>
                   <label className="label">Category *</label>
                   <select
@@ -923,7 +937,7 @@ export default function EmployeeCourseManage() {
                     ))}
                   </select>
                 </div>
-                <div>
+                <div className="sm:col-span-2">
                   <label className="label">Level</label>
                   <select
                     value={courseForm.level}

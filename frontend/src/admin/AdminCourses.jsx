@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '../store/StoreContext'
+import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
 
 export default function AdminCourses() {
   const {
@@ -15,6 +16,7 @@ export default function AdminCourses() {
   const [seeded, setSeeded] = useState(false)
 
   const blankForm = {
+    deliveryType: 'course',
     title: '', category: '', level: 'Beginner',
     description: '',
     thumbnail: '',
@@ -46,6 +48,7 @@ export default function AdminCourses() {
   const openEdit = (course) => {
     setEditingCourse(course)
     setForm({
+      deliveryType: normalizeLearningType(course),
       title: course.title || '',
       category: course.category || '',
       level: course.level || 'Beginner',
@@ -75,6 +78,7 @@ export default function AdminCourses() {
     try {
       const payload = {
         ...form,
+        deliveryType: normalizeLearningType(form),
         title: form.title.trim(),
         description: form.description.trim(),
         thumbnail: form.thumbnail.trim(),
@@ -86,7 +90,7 @@ export default function AdminCourses() {
         await addCourse(payload)
       }
       setShowModal(false)
-    } catch (err) {
+    } catch {
       alert('Failed to save course')
     } finally {
       setSaving(false)
@@ -223,6 +227,9 @@ export default function AdminCourses() {
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${getCatColor(course.category)}`}>
                   {course.category || 'Uncategorized'}
                 </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/10 text-sky-300 border border-sky-500/20">
+                  {getLearningTypeLabel(course)}
+                </span>
                 {course.badge && (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
                     {course.badge}
@@ -309,12 +316,19 @@ export default function AdminCourses() {
 
               {/* Title */}
               <div>
-                <label className="label">Course Title *</label>
+                <label className="label">{getLearningTypeLabel(form)} Title *</label>
                 <input value={form.title} onChange={e => setForm({...form, title: e.target.value})} required placeholder="e.g. Full Stack Web Development" className="input" />
               </div>
 
-              {/* Category + Level */}
+              {/* Type + Category + Level */}
               <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="label">Type</label>
+                  <select value={form.deliveryType} onChange={e => setForm({...form, deliveryType: e.target.value})} className="input">
+                    <option value="course">Course</option>
+                    <option value="webinar">Webinar</option>
+                  </select>
+                </div>
                 <div>
                   <label className="label">Category *</label>
                   <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} required className="input">
@@ -325,7 +339,7 @@ export default function AdminCourses() {
                     }
                   </select>
                 </div>
-                <div>
+                <div className="col-span-2">
                   <label className="label">Level</label>
                   <select value={form.level} onChange={e => setForm({...form, level: e.target.value})} className="input">
                     <option>Beginner</option><option>Intermediate</option><option>Advanced</option>

@@ -16,6 +16,7 @@ import {
 import { auth, db } from '../config/firebase'
 import { api, buildApiUrl, readApiJson } from '../config/api'
 import { emailNotify } from '../utils/emailNotify'
+import { normalizeLearningType } from '../utils/learningType'
 import {
   DEFAULT_CERTIFICATE_TEMPLATE,
   mergeCertificateTemplate,
@@ -841,6 +842,7 @@ export function StoreProvider({ children }) {
       const slug = courseData.slug || generateSlug(courseData.title)
       const payload = {
         ...courseData,
+        deliveryType: normalizeLearningType(courseData),
         slug,
         published: courseData.published ?? false,
         highlighted: courseData.highlighted ?? false,
