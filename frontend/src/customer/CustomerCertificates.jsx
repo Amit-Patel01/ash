@@ -58,7 +58,7 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
       </div>
 
       {/* Hidden high-res container for downloading — must be fixed+invisible so container queries resolve */}
-      <div style={{ position: 'fixed', top: 0, left: 0, visibility: 'hidden', pointerEvents: 'none', zIndex: -1 }}>
+      <div style={{ position: 'fixed', top: '-9999px', left: 0, pointerEvents: 'none', zIndex: -9999 }}>
         <div ref={previewRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
           <CertificateDocument certificate={certificate} template={template} />
         </div>

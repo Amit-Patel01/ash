@@ -242,7 +242,13 @@ app.use("/api/", apiLimiter);
 // ─── Static File Serving (Uploads) ───────────────────────────────────────────
 const uploadsDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
-app.use("/uploads", express.static(uploadsDir));
+// /uploads must send CORS headers so html2canvas can fetch images crossOrigin without tainting the canvas
+app.use("/uploads", (req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  next();
+}, express.static(uploadsDir));
 // ─── Frontend Static Files (optional) ────────────────────────────────────────
 const frontendDistDir = path.join(__dirname, "..", "frontend", "dist");
 const frontendIndexPath = path.join(frontendDistDir, "index.html");

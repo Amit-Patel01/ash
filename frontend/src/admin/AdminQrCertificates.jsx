@@ -758,7 +758,7 @@ export default function AdminQrCertificates() {
           </div>
 
           {/* Hidden high-res export container — must be fixed+invisible so container queries resolve */}
-          <div aria-hidden="true" style={{ position: 'fixed', top: 0, left: 0, visibility: 'hidden', pointerEvents: 'none', zIndex: -1 }}>
+          <div aria-hidden="true" style={{ position: 'fixed', top: '-9999px', left: 0, pointerEvents: 'none', zIndex: -9999 }}>
             <div ref={downloadRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
               <CertificateDocument certificate={previewCertificate} template={certificateTemplate} />
             </div>
@@ -972,7 +972,7 @@ export default function AdminQrCertificates() {
       </section>
 
       {/* Hidden container for dynamic exports — must be fixed+invisible so container queries resolve */}
-      <div aria-hidden="true" style={{ position: 'fixed', top: 0, left: 0, visibility: 'hidden', pointerEvents: 'none', zIndex: -1 }}>
+      <div aria-hidden="true" style={{ position: 'fixed', top: '-9999px', left: 0, pointerEvents: 'none', zIndex: -9999 }}>
         {exportTarget && (
           <div ref={exportRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px`, background: 'white' }}>
             <CertificateDocument certificate={exportTarget} template={certificateTemplate} />
