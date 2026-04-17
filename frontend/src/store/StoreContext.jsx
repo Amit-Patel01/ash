@@ -165,7 +165,7 @@ export function StoreProvider({ children }) {
   const [categories, setCategories] = useState([])
   const [orders, setOrders] = useState([])
   const [tasks, setTasks] = useState([])
-  const [teamMembers, setTeamMembers] = useState([])
+  const [manualEmployees, setManualEmployees] = useState([])
   const [users, setUsers] = useState([]) // Unified Users state
   const [services, setServices] = useState([])
   const [accountRequests, setAccountRequests] = useState([])
@@ -225,8 +225,8 @@ export function StoreProvider({ children }) {
       setTasks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
     }, (error) => console.error("Tasks snapshot error:", error))
 
-    const unsubscribeTeam = onSnapshot(collection(db, 'team'), (snapshot) => {
-      setTeamMembers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+    const unsubscribeTeam = onSnapshot(collection(db, 'employees'), (snapshot) => {
+      setManualEmployees(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
     }, (error) => console.error("Team snapshot error:", error))
 
     // Unified Users Listener - Removed orderBy to ensure all users are fetched even if createdAt is missing
@@ -441,18 +441,18 @@ export function StoreProvider({ children }) {
     try { await deleteDoc(doc(db, 'tasks', id)) } catch (err) { console.error("Error deleting task:", err); throw err }
   }
 
-  // --- Team Members ---
-  const addTeamMember = async (member) => {
+  // --- Manual Employee Profiles (Team Cards) ---
+  const addManualEmployee = async (member) => {
     try {
-      const docRef = await addDoc(collection(db, 'team'), { ...member, createdAt: serverTimestamp() })
+      const docRef = await addDoc(collection(db, 'employees'), { ...member, createdAt: serverTimestamp() })
       return { id: docRef.id, ...member }
-    } catch (err) { console.error("Error adding team member:", err); throw err }
+    } catch (err) { console.error("Error adding employee record:", err); throw err }
   }
-  const updateTeamMember = async (id, updates) => {
-    try { await updateDoc(doc(db, 'team', id), updates) } catch (err) { console.error("Error updating team member:", err); throw err }
+  const updateManualEmployee = async (id, updates) => {
+    try { await updateDoc(doc(db, 'employees', id), updates) } catch (err) { console.error("Error updating employee record:", err); throw err }
   }
-  const deleteTeamMember = async (id) => {
-    try { await deleteDoc(doc(db, 'team', id)) } catch (err) { console.error("Error deleting team member:", err); throw err }
+  const deleteManualEmployee = async (id) => {
+    try { await deleteDoc(doc(db, 'employees', id)) } catch (err) { console.error("Error deleting employee record:", err); throw err }
   }
 
   // --- Unified Users (Employees) Management ---
@@ -1102,11 +1102,13 @@ export function StoreProvider({ children }) {
   }
 
   const value = {
-    projects, categories, orders, tasks, teamMembers, users,
+    projects, categories, orders, tasks, manualEmployees, teamMembers: manualEmployees, users,
     addProject, updateProject, deleteProject,
     addOrder, updateOrderStatus, deleteOrder,
     addTask, updateTask, deleteTask,
-    addTeamMember, updateTeamMember, deleteTeamMember,
+    addManualEmployee, addTeamMember: addManualEmployee,
+    updateManualEmployee, updateTeamMember: updateManualEmployee,
+    deleteManualEmployee, deleteTeamMember: deleteManualEmployee,
     addUser, updateUser, deleteUser, mergeUsers,
     services, addService, updateService, deleteService,
     accountRequests, sellRequests, serviceRequests, messages,

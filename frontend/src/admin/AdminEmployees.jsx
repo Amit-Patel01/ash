@@ -15,7 +15,7 @@ const departments = ['Engineering', 'Design', 'Marketing', 'Management', 'Suppor
 const employeeRoles = ['Senior Developer', 'Junior Developer', 'UI/UX Designer', 'Frontend Developer', 'Backend Developer', 'DevOps Engineer', 'Project Manager', 'QA Engineer', 'Content Writer', 'Video Editor', 'Technician', 'Other']
 
 export default function AdminEmployees() {
-  const { users, teamMembers, addUser, updateUser, deleteUser, mergeUsers } = useStore()
+  const { users, addUser, updateUser, deleteUser, mergeUsers } = useStore()
   const [showModal, setShowModal] = useState(false)
   const [editingEmployee, setEditingEmployee] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -48,6 +48,7 @@ export default function AdminEmployees() {
     showOnTeam: false,
     skills: '',
     bio: '',
+    cvFilePath: '',
   })
 
   // Delete Modal state
@@ -97,6 +98,7 @@ export default function AdminEmployees() {
       showOnTeam: false,
       skills: '',
       bio: '',
+      cvFilePath: '',
     })
     setActiveTab('basic')
     setShowModal(true)
@@ -130,52 +132,13 @@ export default function AdminEmployees() {
       avatarSource: employee.avatarSource || 'github',
       isMentor: employee.isMentor || false,
       bio: employee.bio || '',
+      cvFilePath: employee.cvFilePath || '',
     })
     
     setActiveTab('basic')
     setShowModal(true)
   }
 
-  const handleSyncTeam = async () => {
-    if (!window.confirm("This will migrate all members from the 'Team' list into 'Employees'. Continue?")) return
-    setIsSyncing(true)
-    try {
-      let count = 0
-      for (const member of teamMembers) {
-        const existing = users.find(u => u.email === member.email)
-        const userData = {
-          displayName: member.name,
-          email: member.email,
-          jobTitle: member.role,
-          department: member.department,
-          status: member.status === 'Active' ? 'active' : 'inactive',
-          skills: member.skills || [],
-          github: member.github || '',
-          linkedin: member.linkedin || '',
-          portfolio: member.portfolio || '',
-          avatarSource: member.avatarSource || 'github',
-          showOnTeam: true,
-          role: 'employee',
-          employeeId: member.employeeId || '',
-          joinDate: member.joinDate || new Date().toISOString().split('T')[0],
-          isMentor: member.isMentor || false,
-        }
-
-        if (existing) {
-          await updateUser(existing.uid || existing.id, userData)
-        } else {
-          await addUser(userData)
-        }
-        count++
-      }
-      alert(`Successfully synced ${count} members!`)
-    } catch (err) {
-      console.error(err)
-      alert("Failed to sync team data.")
-    } finally {
-      setIsSyncing(false)
-    }
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -293,27 +256,13 @@ export default function AdminEmployees() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Employees</h1>
+          <h1 className="text-2xl font-bold text-white">Staff Accounts</h1>
           <p className="text-sm text-gray-400 mt-1">
             {employees.length} employees | {employees.filter(e => e.status === 'active').length} active
-            {users.length > 0 && <span className="ml-2 text-blue-400 font-medium">(Total: {users.length})</span>}
+            {users.length > 0 && <span className="ml-2 text-blue-400 font-medium">(Total System Users: {users.length})</span>}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {teamMembers.length > 0 && (
-             <button
-              onClick={handleSyncTeam}
-              disabled={isSyncing}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/10 transition-all disabled:opacity-50"
-            >
-              {isSyncing ? (
-                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              ) : (
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-              )}
-              Sync Team Data
-            </button>
-          )}
           <button
             onClick={openCreateModal}
             className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all"
@@ -376,7 +325,7 @@ export default function AdminEmployees() {
                 <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Job Title</th>
                 <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Department</th>
                 <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Public Profile</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Team</th>
                 <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">CV</th>
                 <th className="text-right px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
               </tr>
@@ -441,13 +390,15 @@ export default function AdminEmployees() {
                   </td>
                   <td className="px-6 py-4">
                     {employee.cvFilePath ? (
-                      <button
-                        type="button"
-                        onClick={() => downloadEmployeeCv(employee)}
-                        className="text-xs font-semibold text-cyan-400 hover:text-cyan-300"
+                      <a
+                        href={employee.cvFilePath}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
                       >
-                        Download
-                      </button>
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                        View
+                      </a>
                     ) : (
                       <span className="text-[10px] text-gray-600">—</span>
                     )}
@@ -541,7 +492,7 @@ export default function AdminEmployees() {
                 <h2 className="text-lg font-semibold text-white">
                   {editingEmployee ? 'Edit Employee' : 'Add New Employee'}
                 </h2>
-                <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-0.5">Manage credentials and public profile</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-0.5">Manage credentials and team visibility</p>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -574,7 +525,7 @@ export default function AdminEmployees() {
                 onClick={() => setActiveTab('profile')}
                 className={`px-4 py-2 text-xs font-bold transition-all border-b-2 ${activeTab === 'profile' ? 'text-blue-400 border-blue-500' : 'text-gray-500 border-transparent hover:text-gray-300'}`}
               >
-                PUBLIC TEAM PROFILE
+                TEAM PROFILE
               </button>
             </div>
 
@@ -742,8 +693,8 @@ export default function AdminEmployees() {
                       {/* Visibility Switch */}
                       <div className="flex items-center justify-between p-3 bg-blue-500/5 border border-blue-500/20 rounded-xl">
                         <div>
-                          <p className="text-[11px] font-bold text-white">Show on About Page</p>
-                          <p className="text-[9px] text-gray-400">Public visibility</p>
+                          <p className="text-[11px] font-bold text-white">Add to Team</p>
+                          <p className="text-[9px] text-gray-400">Show this staff account in About</p>
                         </div>
                         <button
                           type="button"
@@ -764,8 +715,8 @@ export default function AdminEmployees() {
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                       </div>
                       <div>
-                        <p className="text-[11px] font-bold text-white uppercase tracking-wider">Public Profile Details</p>
-                        <p className="text-[9px] text-gray-500">Information shown on the 'About' section cards</p>
+                        <p className="text-[11px] font-bold text-white uppercase tracking-wider">Team Card Details</p>
+                        <p className="text-[9px] text-gray-500">Information shown on the About page team cards</p>
                       </div>
                     </div>
 
@@ -778,7 +729,7 @@ export default function AdminEmployees() {
                         rows={3}
                         className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500/50 resize-none"
                       />
-                      <p className="text-[10px] text-gray-500 mt-1">A brief description shown under the name on the public card.</p>
+                      <p className="text-[10px] text-gray-500 mt-1">A brief description shown under the name on the team card.</p>
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">Expertise / Skills</label>
@@ -846,30 +797,21 @@ export default function AdminEmployees() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider">CV / Resume</label>
-                      <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                        {editingEmployee?.cvFilePath ? (
-                          <div className="flex items-center justify-between gap-3 flex-wrap">
-                            <div className="min-w-0">
-                              <p className="truncate text-xs font-semibold text-cyan-300">
-                                {editingEmployee.cvFileName || 'resume'}
-                              </p>
-                              <p className="mt-1 text-[10px] text-gray-500 truncate">{editingEmployee.cvFilePath}</p>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => downloadEmployeeCv(editingEmployee)}
-                              className="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-300 hover:bg-cyan-500/20 transition-all uppercase tracking-wider"
-                            >
-                              Download CV
-                            </button>
-                          </div>
-                        ) : (
-                          <p className="text-xs text-gray-500">
-                            No CV has been uploaded yet. The employee can upload it from their profile.
-                          </p>
-                        )}
+                      <label className="block text-xs font-bold text-gray-400 mb-1.5 uppercase tracking-wider text-cyan-500">CV / Resume (Google Drive Link)</label>
+                      <div className="relative">
+                        <input
+                          type="url"
+                          value={formData.cvFilePath}
+                          onChange={e => setFormData({ ...formData, cvFilePath: e.target.value })}
+                          placeholder="https://drive.google.com/..."
+                          className="w-full pl-9 pr-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500/50"
+                        />
+                        <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.172 13.828a4 4 0 015.656 0l4-4a4 4 0 10-5.656-5.656l-1.102 1.101" />
+                        </svg>
                       </div>
+                      <p className="text-[10px] text-gray-500 mt-1">Provide a direct link to the Google Drive file or public resume URL.</p>
                     </div>
 
                     <div className="bg-white/5 p-4 rounded-xl border border-white/5">

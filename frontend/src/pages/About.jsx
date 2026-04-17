@@ -264,6 +264,26 @@ const CSS = `
     text-align:center; padding:0 20px; line-height:1.25;
   }
 
+  .abt-tcard-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    z-index: 5;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .abt-tcard-badge.mentor {
+    background: linear-gradient(135deg, rgba(245,158,11,0.9), rgba(217,119,6,0.9));
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
   /* job title */
   .abt-tc-job {
     font-size:11px; font-weight:700; color:#6366f1;
@@ -550,52 +570,33 @@ const AICTE_STATS = [
    COMPONENT
 ══════════════════════════════════════════════════════════ */
 const About = () => {
-  const { users, teamMembers } = useStore()
+  const { users } = useStore()
   const [loaded, setLoaded] = useState(false)
-  const [activeIndexTeam, setActiveIndexTeam] = useState(0)
-  const [activeIndexMentor, setActiveIndexMentor] = useState(0)
+  const [activeIndex, setActiveIndex] = useState(0)
   const role = useTyping('Full-Stack Developer & Tech Entrepreneur')
 
   /* ── Team merge (real Firebase data only) ── */
   const finalTeam = (() => {
-    const out = [], seen = new Set()
-    const safeT = Array.isArray(teamMembers) ? teamMembers : []
-    const safeU = Array.isArray(users) ? users : []
-    safeT.forEach(m => {
-      if (!m) return
-      const em = (m.email || '').toLowerCase()
-      const lu = safeU.find(u =>
-        (u.employeeId && m.employeeId && u.employeeId === m.employeeId) ||
-        (u.email && em && u.email.toLowerCase() === em)
-      )
-      if (lu) {
-        out.push({ ...m, ...lu, displayName: lu.displayName || m.name, jobTitle: lu.jobTitle || m.role, id: m.id || lu.uid })
-        if (em) seen.add(em)
-      } else {
-        out.push({ ...m, displayName: m.name, jobTitle: m.role })
-        if (em) seen.add(em)
-      }
-    })
-    safeU.forEach(u => {
-      if (!u) return
-      const e = (u.email || '').toLowerCase()
-      if (u.showOnTeam && u.status === 'active' && !seen.has(e))
-        out.push({ ...u, displayName: u.displayName, jobTitle: u.jobTitle, id: u.uid || u.id })
-    })
-    
-    // Sort by employeeId (numeric string comparison like ASH-001, ASH-002)
+    const safeUsers = Array.isArray(users) ? users : []
+    const out = safeUsers
+      .filter((user) => user?.showOnTeam && user?.status === 'active')
+      .map((user) => ({
+        ...user,
+        id: user.uid || user.id,
+        displayName: user.displayName || user.name || 'Team Member',
+        jobTitle: user.jobTitle || user.role || 'Team Member',
+      }))
+
     out.sort((a, b) => {
-      const idA = a.employeeId || 'ZZZ'; // Push those with no ID to the end
-      const idB = b.employeeId || 'ZZZ';
-      return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
-    });
+      const idA = a.employeeId || 'ZZZ'
+      const idB = b.employeeId || 'ZZZ'
+      return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' })
+    })
 
     return out
   })()
 
-  const mentors = finalTeam.filter(m => m.isMentor === true);
-
-  const regularTeam = finalTeam.filter(m => !m.isMentor);
+  const sortedTeam = finalTeam;
 
   const getImageUrl = m => {
     if (!m) return null
@@ -617,11 +618,11 @@ const About = () => {
     return null
   }
 
-  const nextSlideTeam = () => setActiveIndexTeam(i => (regularTeam.length > 0 ? (i + 1) % regularTeam.length : 0))
-  const prevSlideTeam = () => setActiveIndexTeam(i => (regularTeam.length > 0 ? (i === 0 ? regularTeam.length - 1 : i - 1) : 0))
+  const nextSlide = () => setActiveIndex(i => (sortedTeam.length > 0 ? (i + 1) % sortedTeam.length : 0))
+  const prevSlide = () => setActiveIndex(i => (sortedTeam.length > 0 ? (i === 0 ? sortedTeam.length - 1 : i - 1) : 0))
 
-  const nextSlideMentor = () => setActiveIndexMentor(i => (mentors.length > 0 ? (i + 1) % mentors.length : 0))
-  const prevSlideMentor = () => setActiveIndexMentor(i => (mentors.length > 0 ? (i === 0 ? mentors.length - 1 : i - 1) : 0))
+  const nextSlideMentor = nextSlide;
+  const prevSlideMentor = prevSlide;
 
   const renderSlider = (teamArray, activeIdx, prevFn, nextFn) => (
     <div className="abt-slider-wrap">
@@ -676,6 +677,7 @@ const About = () => {
               >
                 {(m.displayName || 'U').charAt(0)}
               </div>
+              {m.isMentor && <div className="abt-tcard-badge mentor">Mentor</div>}
               <div className="abt-tcard-role">{m.jobTitle || m.role || 'Team Member'}</div>
             </div>
 
@@ -687,7 +689,7 @@ const About = () => {
                 to={`/team/${profileId}`}
                 className="abt-profile-btn"
               >
-                View Public Profile
+                View Team Profile
               </Link>
               
               {m.portfolio && (
@@ -987,36 +989,19 @@ const About = () => {
             </div>
           </section>
 
-          {/* ═══ MENTORS ════════════════════════════════════════════════ */}
-          {mentors.length > 0 && (
+          {/* ═══ TEAM ════════════════════════════════════════════════ */}
+          {sortedTeam.length > 0 && (
             <>
               <div className="abt-div"/>
-              <section id="mentor-section" style={{ marginBottom:'clamp(40px,6vw,60px)', scrollMarginTop:100 }}>
-                <div style={{ textAlign:'center', marginBottom:36 }}>
-                  <div className="abt-pill" style={{ marginBottom:14 }}>Guidance & Leadership</div>
-                  <h2 className="abt-stitle">Meet our <span className="abt-grad">Mentors</span></h2>
-                  <p style={{ color:'#64748b',fontSize:14,marginTop:10,lineHeight:1.7 }}>
-                    The visionary leaders guiding <strong style={{ color:'#6366f1' }}>AmitSolutionHub</strong>
-                  </p>
-                </div>
-                {renderSlider(mentors, activeIndexMentor, prevSlideMentor, nextSlideMentor)}
-              </section>
-            </>
-          )}
-
-          {/* ═══ TEAM ════════════════════════════════════════════════ */}
-          {regularTeam.length > 0 && (
-            <>
-              {mentors.length === 0 && <div className="abt-div"/>}
               <section id="team-section" style={{ marginBottom:'clamp(40px,6vw,60px)', scrollMarginTop:100 }}>
                 <div style={{ textAlign:'center', marginBottom:36 }}>
-                  <div className="abt-pill" style={{ marginBottom:14 }}>Our People</div>
+                  <div className="abt-pill" style={{ marginBottom:14 }}>Guidance & Delivery</div>
                   <h2 className="abt-stitle">Meet the <span className="abt-grad">Team</span></h2>
                   <p style={{ color:'#64748b',fontSize:14,marginTop:10,lineHeight:1.7 }}>
-                    The talented professionals powering <strong style={{ color:'#6366f1' }}>AmitSolutionHub</strong>
+                    The talented professionals and mentors powering <strong style={{ color:'#6366f1' }}>AmitSolutionHub</strong>
                   </p>
                 </div>
-                {renderSlider(regularTeam, activeIndexTeam, prevSlideTeam, nextSlideTeam)}
+                {renderSlider(sortedTeam, activeIndex, prevSlide, nextSlide)}
               </section>
             </>
           )}

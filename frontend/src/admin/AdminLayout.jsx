@@ -16,10 +16,11 @@ const navGroups = [
     ]
   },
   {
-    label: 'Employees',
+    label: 'Personnel',
     items: [
-      { path: '/admin/employees', label: 'All Employees', icon: 'badge', permission: 'can_manage_employees' },
-      { path: '/admin/customers', label: 'Students', icon: 'group' },
+      { path: '/admin/employees', label: 'Staff Accounts', icon: 'badge', permission: 'can_manage_employees' },
+      { path: '/admin/team', label: 'Team (About Page)', icon: 'group', permission: 'can_manage_employees' },
+      { path: '/admin/customers', label: 'Students', icon: 'person' },
     ]
   },
   {

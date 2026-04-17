@@ -6,67 +6,29 @@ import { useStore } from '../store/StoreContext'
 
 const normalize = (value) => String(value || '').trim().toLowerCase()
 
-const normalizeTeam = (teamMembers = [], users = []) => {
-  const output = []
-  const seen = new Set()
-  const safeTeam = Array.isArray(teamMembers) ? teamMembers : []
+const normalizeTeam = (users = []) => {
   const safeUsers = Array.isArray(users) ? users : []
 
-  safeTeam.forEach((member) => {
-    if (!member) return
-
-    const memberEmail = normalize(member.email)
-    const userMatch =
-      safeUsers.find(
-        (user) =>
-          (user.uid && member.uid && user.uid === member.uid) ||
-          (user.employeeId && member.employeeId && user.employeeId === member.employeeId) ||
-          (user.email && memberEmail && normalize(user.email) === memberEmail)
-      ) || null
-
-    output.push({
-      ...member,
-      ...userMatch,
-      id: member.id || userMatch?.uid || userMatch?.id,
-      uid: userMatch?.uid || member.uid || '',
-      displayName: userMatch?.displayName || member.displayName || member.name || 'Team Member',
-      name: member.name || userMatch?.name || userMatch?.displayName || 'Team Member',
-      email: member.email || userMatch?.email || '',
-      department: userMatch?.department || member.department || 'Core Team',
-      jobTitle: userMatch?.jobTitle || member.jobTitle || member.role || userMatch?.role || 'Team Member',
+  return safeUsers
+    .filter((user) => user?.showOnTeam && user?.status === 'active')
+    .map((user) => ({
+      ...user,
+      id: user.uid || user.id,
+      uid: user.uid || '',
+      displayName: user.displayName || user.name || 'Team Member',
+      name: user.name || user.displayName || 'Team Member',
+      email: user.email || '',
+      department: user.department || 'Core Team',
+      jobTitle: user.jobTitle || user.role || 'Team Member',
       bio:
-        userMatch?.bio ||
-        member.bio ||
+        user.bio ||
         'Focused on practical execution, learner support, and reliable digital delivery.',
+    }))
+    .sort((left, right) => {
+      const leftId = left.employeeId || 'ZZZ'
+      const rightId = right.employeeId || 'ZZZ'
+      return leftId.localeCompare(rightId, undefined, { numeric: true, sensitivity: 'base' })
     })
-
-    if (memberEmail) seen.add(memberEmail)
-  })
-
-  safeUsers.forEach((user) => {
-    if (!user) return
-
-    const userEmail = normalize(user.email)
-    if (user.showOnTeam && user.status === 'active' && !seen.has(userEmail)) {
-      output.push({
-        ...user,
-        id: user.uid || user.id,
-        uid: user.uid || '',
-        displayName: user.displayName || user.name || 'Team Member',
-        name: user.name || user.displayName || 'Team Member',
-        email: user.email || '',
-        department: user.department || 'Core Team',
-        jobTitle: user.jobTitle || user.role || 'Team Member',
-        bio:
-          user.bio ||
-          'Focused on practical execution, learner support, and reliable digital delivery.',
-      })
-
-      if (userEmail) seen.add(userEmail)
-    }
-  })
-
-  return output
 }
 
 const getMemberKeys = (member) =>
@@ -172,9 +134,9 @@ const ProfileIcon = ({ name, size = 20, color = 'currentColor', strokeWidth = 2 
 
 const PublicEmployeeProfile = () => {
   const { profileId } = useParams()
-  const { teamMembers, users } = useStore()
+  const { users } = useStore()
 
-  const profiles = useMemo(() => normalizeTeam(teamMembers, users), [teamMembers, users])
+  const profiles = useMemo(() => normalizeTeam(users), [users])
 
   const member = useMemo(() => {
     const decodedId = normalize(decodeURIComponent(profileId || ''))
@@ -189,7 +151,7 @@ const PublicEmployeeProfile = () => {
   if (!member) {
     return (
       <>
-        <SEO title="Team Profile | AmitSolutionHub" description="Public team profile was not found." />
+        <SEO title="Team Profile | AmitSolutionHub" description="The requested team profile was not found." />
         <div className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(186,230,253,0.55),_transparent_32%),linear-gradient(180deg,_#f8fcff_0%,_#f4f8ff_52%,_#f8fbff_100%)] px-4 pt-32">
           <div className="mx-auto max-w-3xl rounded-[32px] border border-white/90 bg-white/85 p-8 text-center shadow-[0_24px_70px_-34px_rgba(15,23,42,0.35)] backdrop-blur-xl sm:p-12">
             <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-50 text-sky-600">
@@ -217,14 +179,14 @@ const PublicEmployeeProfile = () => {
     member.department,
     member.jobTitle,
     member.isMentor ? 'Mentor Support' : 'Team Delivery',
-    member.email ? 'Direct Contact Info' : 'Public Profile',
+    member.email ? 'Direct Contact Info' : 'Team Profile',
   ].filter(Boolean)
 
   return (
     <>
       <SEO
         title={`${member.displayName} | AmitSolutionHub`}
-        description={`View the public profile for ${member.displayName}, ${member.jobTitle}, at AmitSolutionHub.`}
+        description={`View the team profile for ${member.displayName}, ${member.jobTitle}, at AmitSolutionHub.`}
       />
 
       <PublicPageShell
@@ -249,7 +211,7 @@ const PublicEmployeeProfile = () => {
           <div className="space-y-5">
             <div>
               <div className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">Profile Summary</div>
-              <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-900">Public-facing team identity with a cleaner white-glow presentation</h3>
+              <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-900">Team identity with a cleaner white-glow presentation</h3>
             </div>
 
             <div className="rounded-[28px] border border-white/90 bg-white/90 p-5">
@@ -285,7 +247,7 @@ const PublicEmployeeProfile = () => {
 
             <div className="grid gap-3">
               {[
-                'Professional public profile for trust building',
+                'Professional team profile for trust building',
                 'Easy mobile viewing without login access',
                 'Useful for team credibility and internship presentation',
               ].map((point) => (
@@ -304,7 +266,7 @@ const PublicEmployeeProfile = () => {
               <PublicSectionHeading
                 badge="About This Member"
                 title="Role, focus, and working style"
-                description="This public profile helps visitors understand who supports the work behind your projects, courses, and mentorship delivery."
+                description="This team profile helps visitors understand who supports the work behind your projects, courses, and mentorship delivery."
               />
 
               <div className="space-y-4">

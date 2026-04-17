@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
-import { useAuth } from '../context/AuthContext'
 
 const avatarColors = ['from-blue-500 to-cyan-500', 'from-purple-500 to-pink-500', 'from-emerald-500 to-teal-500', 'from-orange-500 to-amber-500', 'from-red-500 to-rose-500', 'from-indigo-500 to-violet-500']
 
 export default function AdminTeam() {
-  const { teamMembers, addTeamMember, updateTeamMember, deleteTeamMember, tasks: storeTasks } = useStore()
-  const { createTeamMemberAccount, resetPassword } = useAuth()
+  const { users = [], updateUser, tasks: storeTasks = [] } = useStore()
+  
   const [departmentFilter, setDepartmentFilter] = useState('All')
   const [showingFilter, setShowingFilter] = useState('all') // 'all' | 'about'
   const [searchQuery, setSearchQuery] = useState('')
@@ -25,11 +24,13 @@ export default function AdminTeam() {
     github: '', 
     linkedin: '', 
     portfolio: '',
+    cvFilePath: '',
     customImageUrl: '',
     avatarSource: 'github', 
     customDepartment: '',
     isMentor: false,
-    bio: ''
+    bio: '',
+    showOnTeam: true,
   }
   
   const [formData, setFormData] = useState(initialForm)
@@ -39,19 +40,27 @@ export default function AdminTeam() {
   const [memberToDelete, setMemberToDelete] = useState(null)
   const [deletingId, setDeletingId] = useState(null)
 
-  const departments = ['All', ...new Set(teamMembers.map(m => m.department))]
+  const safeMembers = (Array.isArray(users) ? users : [])
+    .filter((user) => (user?.role || '').toLowerCase() === 'employee' && user?.showOnTeam)
+    .map((user) => ({
+      ...user,
+      id: user.uid || user.id,
+      name: user.displayName || user.name || '',
+      role: user.jobTitle || user.role || '',
+      status: user.status === 'active' ? 'Active' : 'Inactive',
+    }))
+  const departments = ['All', ...new Set(safeMembers.map(m => m.department))]
 
-  const filteredMembers = teamMembers.filter(member => {
+  const filteredMembers = safeMembers.filter(member => {
+    if (!member) return false
     const matchesDept = departmentFilter === 'All' || member.department === departmentFilter
-    const matchesSearch = member.name.toLowerCase().includes(searchQuery.toLowerCase()) || member.role.toLowerCase().includes(searchQuery.toLowerCase())
+    const nameStr = member.name || member.displayName || ''
+    const roleStr = member.role || ''
+    const matchesSearch = nameStr.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         roleStr.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesAbout = showingFilter === 'all' || (showingFilter === 'about' && member.isMentor)
     return matchesDept && matchesSearch && matchesAbout
   })
-
-  const openCreate = () => {
-    setFormData({ ...initialForm, joinDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) })
-    setShowModal(true)
-  }
 
   const openEdit = (member) => {
     setEditingMember(member)
@@ -68,11 +77,13 @@ export default function AdminTeam() {
       github: member.github || '',
       linkedin: member.linkedin || '',
       portfolio: member.portfolio || '',
+      cvFilePath: member.cvFilePath || '',
       customImageUrl: member.customImageUrl || '',
       avatarSource: member.avatarSource || 'github',
       customDepartment: isOther ? member.department : '',
       isMentor: member.isMentor || false,
-      bio: member.bio || ''
+      bio: member.bio || '',
+      showOnTeam: member.showOnTeam !== false,
     })
     setShowModal(true)
   }
@@ -82,29 +93,31 @@ export default function AdminTeam() {
     const skillsArr = formData.skills.split(',').map(s => s.trim()).filter(Boolean)
     try {
       const finalDept = formData.department === 'Other' ? formData.customDepartment : formData.department
-      const payload = { 
-        ...formData, 
-        department: finalDept, 
-        skills: skillsArr, 
+      const payload = {
+        displayName: formData.name.trim(),
+        jobTitle: formData.role.trim(),
+        email: formData.email.trim(),
+        employeeId: formData.employeeId.trim(),
+        department: finalDept,
+        status: formData.status === 'Active' ? 'active' : 'inactive',
+        skills: skillsArr,
         avatar: formData.name.charAt(0).toUpperCase(),
-        // Store customImageUrl into linkedin field for avatar, keep linkedin separately
+        github: formData.github || '',
         linkedin: formData.linkedin || '',
         portfolio: formData.portfolio || '',
+        cvFilePath: formData.cvFilePath || '',
         customImageUrl: formData.customImageUrl || '',
+        avatarSource: formData.avatarSource || 'github',
+        joinDate: formData.joinDate || '',
+        isMentor: Boolean(formData.isMentor),
+        bio: formData.bio || '',
+        showOnTeam: Boolean(formData.showOnTeam),
+        role: 'employee',
       }
 
       // Clean up temp fields
-      delete payload.customDepartment
-
-      if (!editingMember) {
-        await addTeamMember({
-          ...payload,
-          tasksCompleted: 0,
-          projectsActive: 0,
-          performance: 0
-        })
-      } else {
-        await updateTeamMember(editingMember.id, payload)
+      if (editingMember) {
+        await updateUser(editingMember.id, payload)
       }
 
       setShowModal(false)
@@ -124,10 +137,10 @@ export default function AdminTeam() {
     if (!memberToDelete) return
     setDeletingId(memberToDelete.id)
     try {
-      await deleteTeamMember(memberToDelete.id)
+      await updateUser(memberToDelete.id, { showOnTeam: false })
       setShowDeleteModal(false)
     } catch (err) {
-      alert("Failed to delete team member.")
+      alert("Failed to remove team member.")
     } finally {
       setDeletingId(null)
       setMemberToDelete(null)
@@ -136,35 +149,34 @@ export default function AdminTeam() {
 
   const toggleStatus = async (member) => {
     try {
-      await updateTeamMember(member.id, { status: member.status === 'Active' ? 'On Leave' : 'Active' })
+      await updateUser(member.id, { status: member.status === 'Active' ? 'inactive' : 'active' })
     } catch (err) {
       console.error("Failed to toggle status:", err)
     }
   }
 
   const getImageUrl = (member) => {
-    if (!member) return null;
-    const { github, customImageUrl, avatarSource } = member;
-    if (avatarSource === 'custom' && customImageUrl) return customImageUrl;
-    if (avatarSource === 'linkedin' && customImageUrl) return customImageUrl; // backward compat
+    if (!member) return null
+    const { github, customImageUrl, avatarSource, linkedin } = member
+    if (avatarSource === 'custom' && customImageUrl) return customImageUrl
+    if (avatarSource === 'linkedin' && linkedin && !linkedin.includes('linkedin.com')) return linkedin
     if (github) {
-       if (github.startsWith('http')) return github;
-       return `https://github.com/${github}.png`;
+      if (github.startsWith('http')) return github
+      return `https://github.com/${github}.png`
     }
-    return null;
+    return null
   }
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Team</h1>
-          <p className="text-sm text-gray-400 mt-1">{teamMembers.length} team members across {departments.length - 1} departments</p>
+          <h1 className="text-2xl font-bold text-white">Team (About Us)</h1>
+          <p className="text-sm text-gray-400 mt-1">{safeMembers.length} profiles for the website</p>
         </div>
-        <button onClick={openCreate} className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-          Add Member
-        </button>
+        <div className="rounded-xl border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-xs font-medium text-blue-200">
+          Team members come from `Staff Accounts` with `Add to Team` enabled.
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -183,7 +195,7 @@ export default function AdminTeam() {
             <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
               showingFilter === 'about' ? 'bg-purple-500/30 text-purple-300' : 'bg-white/10 text-gray-500'
             }`}>
-              {teamMembers.filter(m => m.isMentor).length}
+              {safeMembers.filter(m => m.isMentor).length}
             </span>
           </button>
 
@@ -222,7 +234,7 @@ export default function AdminTeam() {
           <div key={member.id} className="group bg-gray-900/50 backdrop-blur-sm border border-white/5 rounded-2xl p-6 hover:border-white/10 transition-all duration-300">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                {member.github || member.linkedin ? (
+                {getImageUrl(member) ? (
                   <img src={getImageUrl(member)} alt={member.name} className="w-12 h-12 rounded-xl object-cover shadow-lg" />
                 ) : (
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${avatarColors[index % avatarColors.length]} flex items-center justify-center text-lg font-bold shadow-lg`}>{member.avatar}</div>
@@ -266,8 +278,8 @@ export default function AdminTeam() {
 
             <div className="flex items-center justify-between pt-4 border-t border-white/5">
               <div className="flex items-center gap-4 text-xs text-gray-400">
-                <span><span className="text-white font-medium">{storeTasks?.filter(t => t.assignee === member.name).length || 0}</span> tasks</span>
-                <span><span className="text-white font-medium">{[...new Set(storeTasks?.filter(t => t.assignee === member.name).map(t => t.project))].length || 0}</span> projs</span>
+                <span><span className="text-white font-medium">{(storeTasks || []).filter(t => t && t.assignee === member.name).length || 0}</span> tasks</span>
+                <span><span className="text-white font-medium">{[...new Set((storeTasks || []).filter(t => t && t.assignee === member.name).map(t => t.project))].filter(Boolean).length || 0}</span> projs</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-16 bg-white/5 rounded-full h-1.5 overflow-hidden">
@@ -286,7 +298,7 @@ export default function AdminTeam() {
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowModal(false)} />
           <div className="relative bg-gray-900 border border-white/10 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="sticky top-0 bg-gray-900 border-b border-white/5 px-6 py-4 flex items-center justify-between z-10">
-              <h2 className="text-lg font-semibold text-white">{editingMember ? 'Edit Member' : 'Add Member'}</h2>
+              <h2 className="text-lg font-semibold text-white">{editingMember ? 'Edit Team Member' : 'Team Member'}</h2>
               <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
             </div>
             
@@ -299,7 +311,7 @@ export default function AdminTeam() {
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-xl p-3">
                   <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Custom Image URL (for avatar)</label>
-                  <input type="text" value={formData.customImageUrl} onChange={e => setFormData({ ...formData, customImageUrl: e.target.value })} placeholder="https://..." className="w-full bg-transparent text-sm text-white focus:outline-none" />
+                  <input type="url" value={formData.customImageUrl} onChange={e => setFormData({ ...formData, customImageUrl: e.target.value })} placeholder="https://..." className="w-full bg-transparent text-sm text-white focus:outline-none" />
                 </div>
               </div>
 
@@ -315,6 +327,19 @@ export default function AdminTeam() {
                     className="w-full bg-transparent text-sm text-white focus:outline-none placeholder-gray-600"
                   />
                 </div>
+                <div className="bg-white/5 border border-cyan-500/20 rounded-xl p-3">
+                  <label className="block text-[10px] font-black text-cyan-400/70 uppercase tracking-widest mb-2">CV / Resume Drive Link</label>
+                  <input
+                    type="url"
+                    value={formData.cvFilePath}
+                    onChange={e => setFormData({ ...formData, cvFilePath: e.target.value })}
+                    placeholder="https://drive.google.com/..."
+                    className="w-full bg-transparent text-sm text-white focus:outline-none placeholder-gray-600"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
                 <div className="bg-white/5 border border-purple-500/20 rounded-xl p-3">
                   <label className="block text-[10px] font-black text-purple-400/70 uppercase tracking-widest mb-2">🌍 Portfolio URL</label>
                   <input
@@ -331,7 +356,7 @@ export default function AdminTeam() {
               <div className="flex items-center justify-between gap-4 bg-white/5 p-3 rounded-xl border border-white/5">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center overflow-hidden">
-                    {formData.github || formData.customImageUrl ? <img src={getImageUrl({ ...formData, linkedin: formData.customImageUrl })} alt="P" className="w-full h-full object-cover" /> : <span className="text-[10px] text-gray-600">NULL</span>}
+                    {getImageUrl(formData) ? <img src={getImageUrl(formData)} alt="P" className="w-full h-full object-cover" /> : <span className="text-[10px] text-gray-600">NULL</span>}
                   </div>
                   <span className="text-[11px] font-bold text-gray-300">Photo Source</span>
                 </div>
@@ -405,16 +430,15 @@ export default function AdminTeam() {
                   <label className="block text-xs font-medium text-gray-400 mb-1.5">Status</label>
                   <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })} className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none">
                     <option value="Active" className="bg-gray-900">Active</option>
-                    <option value="On Leave" className="bg-gray-900">On Leave</option>
+                    <option value="Inactive" className="bg-gray-900">Inactive</option>
                   </select>
                 </div>
               </div>
 
-              <div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5">Skills</label>
-                  <input type="text" value={formData.skills} onChange={e => setFormData({ ...formData, skills: e.target.value })} placeholder="React, Node.js" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none" />
+                  <input type="text" value={formData.skills} onChange={e => setFormData({ ...formData, skills: e.target.value })} placeholder="React, Node.js" className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5">Bio / Tagline</label>
@@ -426,7 +450,6 @@ export default function AdminTeam() {
                     className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50"
                   />
                 </div>
-              </div>
               </div>
 
               <div className="flex items-center gap-3 pt-2">
@@ -442,8 +465,8 @@ export default function AdminTeam() {
       {showDeleteModal && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
           <div className="bg-gray-900 border border-red-500/20 rounded-2xl w-full max-w-sm p-6 text-center">
-            <h3 className="text-xl font-bold text-white mb-2">Remove Member?</h3>
-            <p className="text-sm text-gray-400 mb-6">Are you sure you want to remove <span className="text-white">"{memberToDelete?.name}"</span>?</p>
+            <h3 className="text-xl font-bold text-white mb-2">Remove From Team?</h3>
+            <p className="text-sm text-gray-400 mb-6">Are you sure you want to hide <span className="text-white">"{memberToDelete?.name}"</span> from the team section?</p>
             <div className="flex flex-col gap-3">
               <button onClick={confirmDelete} className="w-full py-3 bg-red-600 text-white rounded-xl font-bold">{deletingId ? 'Removing...' : 'Yes, Remove'}</button>
               <button onClick={() => setShowDeleteModal(false)} className="w-full py-3 bg-white/5 text-gray-400 rounded-xl">Cancel</button>

@@ -20,6 +20,7 @@ const createProfileForm = (profile) => ({
   github: profile?.github || '',
   linkedin: profile?.linkedin || '',
   portfolio: profile?.portfolio || '',
+  cvFilePath: profile?.cvFilePath || '',
 })
 
 export default function EmployeeProfileRefined() {
@@ -82,46 +83,6 @@ export default function EmployeeProfileRefined() {
     }
   }
 
-  const handleCvUpload = async (event) => {
-    const file = event.target.files?.[0]
-    event.target.value = ''
-
-    if (!file) return
-    if (file.size > 5 * 1024 * 1024) {
-      setCvStatus({ type: 'error', message: 'The CV file must be 5 MB or smaller.' })
-      return
-    }
-
-    setCvLoading(true)
-    setCvStatus({ type: '', message: '' })
-
-    try {
-      const token = await auth.currentUser?.getIdToken()
-      if (!token) throw new Error('Please sign in again to continue.')
-
-      const formData = new FormData()
-      formData.append('cv', file)
-
-      const response = await fetch(api.userCvUpload, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: formData
-      })
-
-      const data = await response.json()
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Unable to upload the CV.')
-      }
-
-      setCvStatus({ type: 'success', message: 'CV uploaded successfully.' })
-    } catch (error) {
-      setCvStatus({ type: 'error', message: error.message || 'Unable to upload the CV.' })
-    } finally {
-      setCvLoading(false)
-    }
-  }
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
@@ -300,28 +261,42 @@ export default function EmployeeProfileRefined() {
             </div>
           </EmployeeSurface>
 
-          <EmployeeSurface title="CV Upload" description="Upload your latest CV or resume in PDF, DOC, or DOCX format.">
-            {cvStatus.message && (
-              <div className={`mb-5 rounded-2xl border px-4 py-3 text-sm ${
-                cvStatus.type === 'success'
-                  ? 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300'
-                  : 'border-rose-400/20 bg-rose-400/10 text-rose-300'
-              }`}>
-                {cvStatus.message}
-              </div>
-            )}
-
+          <EmployeeSurface title="CV / Resume Link" description="Add your Google Drive link or external URL for your CV.">
             <div className="space-y-4">
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
-                {cvFileName
-                  ? `Current file: ${cvFileName}`
-                  : 'No CV has been uploaded yet. The founder and administrators will be able to review and download your latest file after upload.'}
+                Instead of uploading a file, you can now provide a direct <strong>Google Drive link</strong> or any public URL to your latest resume.
               </div>
-              <label className="inline-flex cursor-pointer items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-5 py-3 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15">
-                {cvLoading ? 'Uploading CV...' : 'Upload CV / Resume'}
-                <input type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="hidden" onChange={handleCvUpload} disabled={cvLoading} />
-              </label>
-              <p className="text-xs text-slate-500">Accepted formats: PDF, DOC, DOCX. Maximum size: 5 MB.</p>
+              <div>
+                <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-cyan-500">Google Drive Link</label>
+                <div className="relative">
+                  <input
+                    type="url"
+                    value={profileForm.cvFilePath}
+                    onChange={(event) => setProfileForm(current => ({ ...current, cvFilePath: event.target.value }))}
+                    placeholder="https://drive.google.com/..."
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none pr-12"
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                    <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.172 13.828a4 4 0 015.656 0l4-4a4 4 0 10-5.656-5.656l-1.102 1.101" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              {profileForm.cvFilePath && (
+                <a
+                  href={profileForm.cvFilePath}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                  Test Link
+                </a>
+              )}
             </div>
           </EmployeeSurface>
 
