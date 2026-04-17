@@ -23,6 +23,11 @@ const CERTIFICATE_TYPES = [
     label: 'Appreciation Certificate',
     defaultText: 'This certificate is presented in appreciation of the holder for valuable contribution, sincerity, and professional attitude. The effort and commitment shown during the engagement are gratefully acknowledged by Amit Solution Hub.',
   },
+  {
+    value: 'Other',
+    label: 'Other Certificate',
+    defaultText: 'This certificate is proudly presented to acknowledge the holder\'s effort, performance, or participation. The organization recognizes and appreciates their valuable contribution.',
+  },
 ]
 
 const getTypeMeta = (value) => CERTIFICATE_TYPES.find((type) => type.value === value) || CERTIFICATE_TYPES[0]
@@ -453,25 +458,40 @@ export default function AdminQrCertificates() {
               </div>
 
               <div className="mt-4 grid gap-4 md:grid-cols-[minmax(0,1fr)_260px]">
-                <label className="block">
-                  <span className="text-sm font-semibold text-slate-300">Employee / Team Member</span>
-                  <select
-                    value={selectedEmployeeValue}
-                    onChange={(event) => handleAssignedEmployeeChange(event.target.value)}
-                    className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white focus:border-cyan-400/30 focus:outline-none"
-                  >
-                    <option value="">No employee assigned</option>
-                    {employeeOptions.map((employee) => {
-                      const optionValue = employee.uid || employee.id || employee.employeeId || employee.email || ''
-                      const optionLabel = employee.displayName || employee.name || employee.email || employee.employeeId || 'Employee'
-                      return (
-                        <option key={optionValue} value={optionValue}>
-                          {optionLabel}{employee.employeeId ? ` (${employee.employeeId})` : ''}{employee.role ? ` - ${employee.role}` : ''}
-                        </option>
-                      )
-                    })}
-                  </select>
-                </label>
+                <div className="block">
+                  <label className="block">
+                    <span className="text-sm font-semibold text-slate-300">Employee / Team Member</span>
+                    <select
+                      value={selectedEmployeeValue}
+                      onChange={(event) => handleAssignedEmployeeChange(event.target.value)}
+                      className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white focus:border-cyan-400/30 focus:outline-none"
+                    >
+                      <option value="">No employee assigned (External User)</option>
+                      {employeeOptions.map((employee) => {
+                        const optionValue = employee.uid || employee.id || employee.employeeId || employee.email || ''
+                        const optionLabel = employee.displayName || employee.name || employee.email || employee.employeeId || 'Employee'
+                        return (
+                          <option key={optionValue} value={optionValue}>
+                            {optionLabel}{employee.employeeId ? ` (${employee.employeeId})` : ''}{employee.role ? ` - ${employee.role}` : ''}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </label>
+
+                  {!selectedEmployeeValue && (
+                    <label className="block mt-4">
+                      <span className="text-xs font-semibold text-slate-400">External User Email (to send certificate)</span>
+                      <input
+                        type="email"
+                        value={form.assignedEmployeeEmail}
+                        onChange={(event) => handleChange('assignedEmployeeEmail', event.target.value)}
+                        placeholder="email@example.com (Optional)"
+                        className="mt-1 w-full rounded-xl border border-white/10 bg-slate-900/50 px-4 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-cyan-400/30 focus:outline-none"
+                      />
+                    </label>
+                  )}
+                </div>
 
                 <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
                   <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-500">Assigned Details</p>

@@ -16,6 +16,7 @@ const QR_CERTIFICATE_TYPES = {
   LOR: "Letter of Recommendation",
   LOA: "Letter of Achievement",
   Appreciation: "Appreciation Certificate",
+  Other: "Other Certificate",
 };
 const QR_RECORD_SOURCE = "qr";
 const QR_RECORD_ACTIVE = "active";
