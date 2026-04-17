@@ -60,6 +60,10 @@ export const api = {
   notify: buildApiUrl('/api/notify'),
   adminBroadcastEmail: buildApiUrl('/api/admin/broadcast-email'),
   adminUsers: buildApiUrl('/api/admin/users'),
+  adminUserLookup: (email) =>
+    buildApiUrl(`/api/admin/users/lookup?email=${encodeURIComponent(email)}`),
+  adminDeleteUserByEmail: (email) =>
+    buildApiUrl(`/api/admin/users/by-email?email=${encodeURIComponent(email)}`),
   adminMergeUsers: buildApiUrl('/api/admin/users/merge'),
   adminApproveAccountRequest: (requestId) => buildApiUrl(`/api/admin/account-requests/${requestId}/approve`),
   adminRejectAccountRequest: (requestId) => buildApiUrl(`/api/admin/account-requests/${requestId}/reject`),

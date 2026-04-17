@@ -4,9 +4,11 @@ const {
   broadcastEmail,
   notifyAccountApproval,
   listUsers,
+  lookupUserByEmail,
   createUser,
   updateUser,
   deleteUser,
+  deleteUserByEmail,
   mergeUsers,
   approveRequest,
   rejectRequest,
@@ -20,6 +22,8 @@ const { adminOnly, employeeOrAdmin } = require("../middlewares/rbacMiddleware");
 router.post("/broadcast-email", verifyFirebaseToken, employeeOrAdmin, broadcastEmail);
 router.post("/notify-account-approval", verifyFirebaseToken, adminOnly, notifyAccountApproval);
 router.get("/users", verifyFirebaseToken, adminOnly, listUsers);
+router.get("/users/lookup", verifyFirebaseToken, adminOnly, lookupUserByEmail);
+router.delete("/users/by-email", verifyFirebaseToken, adminOnly, deleteUserByEmail);
 router.post("/users", verifyFirebaseToken, adminOnly, createUser);
 router.patch("/users/:userId", verifyFirebaseToken, adminOnly, updateUser);
 router.delete("/users/:userId", verifyFirebaseToken, adminOnly, deleteUser);

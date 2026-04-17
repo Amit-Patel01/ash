@@ -1,11 +1,11 @@
 # Graph Report - .  (2026-04-17)
 
 ## Corpus Check
-- 201 files · ~426,635 words
+- 201 files · ~426,805 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1044 nodes · 1332 edges · 177 communities detected
+- 1046 nodes · 1336 edges · 176 communities detected
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
@@ -186,7 +186,6 @@
 - [[_COMMUNITY_Community 173|Community 173]]
 - [[_COMMUNITY_Community 174|Community 174]]
 - [[_COMMUNITY_Community 175|Community 175]]
-- [[_COMMUNITY_Community 176|Community 176]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `getFirestore()` - 20 edges
@@ -197,8 +196,8 @@
 6. `useMysql()` - 16 edges
 7. `toIsoString()` - 15 edges
 8. `createAccountRequest()` - 14 edges
-9. `assertMySqlReady()` - 13 edges
-10. `mapFirestoreUser()` - 13 edges
+9. `handleAdminError()` - 13 edges
+10. `assertMySqlReady()` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
 - None detected - all connections are within the same source files.
@@ -207,31 +206,31 @@
 
 ### Community 0 - "Community 0"
 Cohesion: 0.02
-Nodes (102): AccentIconBubble, build, CertificatesPage, _CertificatesPageState, EmptyStateCard, initState, launchUrl, ListView (+94 more)
+Nodes (123): _AdminActionCard, AdminWorkspacePage, _AdminWorkspacePageState, build, EmptyStateCard, GlassCard, initState, InkWell (+115 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.03
-Nodes (72): ../config/app_config.dart, dart:convert, AuthScreen, _AuthScreenState, BrandLogo, build, _buildLoginForm, _buildSignupForm (+64 more)
+Cohesion: 0.02
+Nodes (89): config/firebase_options.dart, dart:async, dart:io, local_notification_service.dart, DefaultFirebaseOptions, AuthScreen, _BootstrapLoader, BrandLogo (+81 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.04
-Nodes (55): config/firebase_options.dart, dart:async, dart:io, local_notification_service.dart, DefaultFirebaseOptions, AuthScreen, _BootstrapLoader, BrandLogo (+47 more)
-
-### Community 3 - "Community 3"
 Cohesion: 0.14
 Nodes (58): approveAccountRequest(), assertMySqlReady(), buildFirestoreAccountRequestPayload(), buildFirestoreUserPayload(), buildResetEmailMarkup(), buildResetUrl(), buildTeamPayload(), completePasswordReset() (+50 more)
 
-### Community 4 - "Community 4"
+### Community 3 - "Community 3"
 Cohesion: 0.04
-Nodes (53): admin_workspace_page.dart, certificates_page.dart, chat_page.dart, courses_page.dart, home_page.dart, BrandLogo, build, _closeDrawerAndRun (+45 more)
+Nodes (51): ../config/app_config.dart, dart:convert, AuthScreen, _AuthScreenState, BrandLogo, build, _buildLoginForm, _buildSignupForm (+43 more)
+
+### Community 4 - "Community 4"
+Cohesion: 0.05
+Nodes (37): admin_workspace_page.dart, certificates_page.dart, chat_page.dart, courses_page.dart, home_page.dart, BrandLogo, build, _closeDrawerAndRun (+29 more)
 
 ### Community 5 - "Community 5"
 Cohesion: 0.07
 Nodes (29): AnnouncementItem, AppNotificationItem, AppUser, CertificateItem, ChatMessageItem, ChatParticipantInfo, ChatRoomItem, compactText (+21 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.18
-Nodes (21): approveRequest(), broadcastEmail(), buildBroadcastContent(), createUser(), dedupeEmails(), deleteUser(), downloadEmployeeCv(), escapeHtml() (+13 more)
+Cohesion: 0.16
+Nodes (23): approveRequest(), broadcastEmail(), buildBroadcastContent(), createUser(), dedupeEmails(), deleteUser(), deleteUserByEmail(), downloadEmployeeCv() (+15 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.2
@@ -246,168 +245,168 @@ Cohesion: 0.19
 Nodes (19): addCertificate(), createCertificateRecord(), createEnrollment(), db(), deleteCertificate(), findCertificateByPublicId(), getActiveCourseEnrollments(), getActiveEnrolledEmails() (+11 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.11
-Nodes (17): Align, _AssistantMessage, build, Container, didUpdateWidget, dispose, initState, launchUrl (+9 more)
+Cohesion: 0.12
+Nodes (15): AccentIconBubble, AppBackdrop, build, Container, DecoratedBox, EmptyStateCard, GlassCard, _GlowOrb (+7 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.12
-Nodes (16): _AdminActionCard, AdminWorkspacePage, _AdminWorkspacePageState, build, EmptyStateCard, GlassCard, initState, InkWell (+8 more)
-
-### Community 12 - "Community 12"
 Cohesion: 0.23
 Nodes (6): formatTimeAgo(), getEmployeeIdentitySet(), getEmployeeMemberData(), getTimeValue(), normalize(), taskBelongsToEmployee()
 
-### Community 13 - "Community 13"
+### Community 12 - "Community 12"
 Cohesion: 0.22
 Nodes (4): compactMatchKey(), getPlanIdentity(), matchesEnrollmentPlan(), normalizeMatchKey()
 
-### Community 14 - "Community 14"
+### Community 13 - "Community 13"
 Cohesion: 0.38
 Nodes (9): compactText(), formatMeetingDateTime(), isEnrollmentForCoursePlan(), normalizeText(), resolveCoursePlanMeetingLink(), sendBatchedEmails(), sendCoursePlanNotification(), sendSessionNotification() (+1 more)
 
-### Community 15 - "Community 15"
+### Community 14 - "Community 14"
 Cohesion: 0.29
 Nodes (5): getHomePathForRole(), ProtectedAdmin(), ProtectedCustomer(), ProtectedEmployee(), RoleRedirect()
 
-### Community 16 - "Community 16"
+### Community 15 - "Community 15"
 Cohesion: 0.2
 Nodes (0): 
 
-### Community 17 - "Community 17"
+### Community 16 - "Community 16"
 Cohesion: 0.36
 Nodes (6): buildChatContents(), chatWithAI(), extractTextFromResponse(), generateText(), getRecommendations(), postJson()
 
-### Community 18 - "Community 18"
+### Community 17 - "Community 17"
 Cohesion: 0.33
 Nodes (4): buildPlanId(), compactText(), matchesPlanEnrollment(), normalizeText()
 
-### Community 19 - "Community 19"
+### Community 18 - "Community 18"
 Cohesion: 0.31
 Nodes (5): formatTimeAgo(), getTimeValue(), isDone(), isProgress(), normalize()
 
-### Community 20 - "Community 20"
+### Community 19 - "Community 19"
 Cohesion: 0.31
 Nodes (5): getImageUrl(), getMemberKey(), getMemberKeys(), PublicEmployeeProfile(), socialLinks()
 
-### Community 21 - "Community 21"
+### Community 20 - "Community 20"
 Cohesion: 0.36
 Nodes (4): AdminQrCertificates(), createInitialForm(), getTypeMeta(), mapCertificateToForm()
 
-### Community 22 - "Community 22"
+### Community 21 - "Community 21"
 Cohesion: 0.39
 Nodes (5): CourseDetailPage(), fade(), getInstructorImage(), getInstructorLinks(), useInView()
 
-### Community 23 - "Community 23"
+### Community 22 - "Community 22"
 Cohesion: 0.32
 Nodes (3): getCertificateDocumentLabel(), getCertificateDocumentType(), getCertificateFilename()
 
-### Community 24 - "Community 24"
+### Community 23 - "Community 23"
 Cohesion: 0.43
 Nodes (5): mergeCertificateTemplate(), mergeVariant(), normalizeCertificateTemplate(), pickLegacyTemplateOverrides(), updateTemplateVariant()
 
-### Community 25 - "Community 25"
+### Community 24 - "Community 24"
 Cohesion: 0.52
 Nodes (6): forgotPassword(), handleControllerError(), registerCustomer(), resetPassword(), submitAccountRequest(), verifyPasswordResetToken()
 
-### Community 26 - "Community 26"
+### Community 25 - "Community 25"
 Cohesion: 0.33
 Nodes (2): ChatPanel(), formatTime()
 
-### Community 27 - "Community 27"
+### Community 26 - "Community 26"
 Cohesion: 0.38
 Nodes (4): compactPlanKey(), getPlanIdentity(), matchesPlanEnrollment(), normalizePlanKey()
 
-### Community 28 - "Community 28"
+### Community 27 - "Community 27"
 Cohesion: 0.29
 Nodes (1): Services()
 
-### Community 29 - "Community 29"
+### Community 28 - "Community 28"
 Cohesion: 0.48
 Nodes (5): ActionButton(), joinClasses(), PublicGlassCard(), PublicSection(), PublicSectionHeading()
 
-### Community 30 - "Community 30"
+### Community 29 - "Community 29"
 Cohesion: 0.33
 Nodes (2): CustomerProfile(), formatJoinedDate()
 
-### Community 31 - "Community 31"
+### Community 30 - "Community 30"
 Cohesion: 0.43
 Nodes (5): formatTimeAgo(), getTimeValue(), isDone(), isProgress(), normalize()
 
-### Community 32 - "Community 32"
+### Community 31 - "Community 31"
 Cohesion: 0.29
 Nodes (2): AppDelegate, FlutterAppDelegate
 
-### Community 33 - "Community 33"
+### Community 32 - "Community 32"
 Cohesion: 0.4
 Nodes (2): loadServiceAccount(), normalizeServiceAccount()
 
-### Community 34 - "Community 34"
+### Community 33 - "Community 33"
 Cohesion: 0.6
 Nodes (5): getMyProfile(), handleError(), sendMyPasswordReset(), updateMyProfile(), uploadMyCv()
 
-### Community 35 - "Community 35"
+### Community 34 - "Community 34"
 Cohesion: 0.8
 Nodes (5): formatEnrollmentDeadline(), isEnrollmentClosed(), isPlanEnrollmentClosed(), normalizeEnrollmentDeadline(), toLocalDateKey()
 
-### Community 36 - "Community 36"
+### Community 35 - "Community 35"
 Cohesion: 0.33
 Nodes (1): FlutterWindow()
 
-### Community 37 - "Community 37"
+### Community 36 - "Community 36"
 Cohesion: 0.5
 Nodes (2): CertificateDocument(), getDocumentNarrative()
+
+### Community 37 - "Community 37"
+Cohesion: 0.4
+Nodes (0): 
 
 ### Community 38 - "Community 38"
 Cohesion: 0.4
 Nodes (0): 
 
 ### Community 39 - "Community 39"
-Cohesion: 0.4
-Nodes (0): 
-
-### Community 40 - "Community 40"
 Cohesion: 0.6
 Nodes (3): getPriority(), getStatus(), TaskCard()
 
-### Community 41 - "Community 41"
+### Community 40 - "Community 40"
 Cohesion: 0.4
 Nodes (0): 
 
-### Community 42 - "Community 42"
+### Community 41 - "Community 41"
 Cohesion: 0.7
 Nodes (4): createImageDataUrl(), downloadCertificatePdf(), downloadCertificatePng(), downloadDataUrl()
 
-### Community 43 - "Community 43"
+### Community 42 - "Community 42"
 Cohesion: 0.4
 Nodes (2): GeneratedPluginRegistrant, -registerWithRegistry
 
-### Community 44 - "Community 44"
+### Community 43 - "Community 43"
 Cohesion: 0.4
 Nodes (2): RunnerTests, XCTestCase
 
-### Community 45 - "Community 45"
+### Community 44 - "Community 44"
 Cohesion: 0.4
 Nodes (4): InitializationSettings, LocalNotificationService, NotificationDetails, package:flutter_local_notifications/flutter_local_notifications.dart
+
+### Community 45 - "Community 45"
+Cohesion: 0.5
+Nodes (0): 
 
 ### Community 46 - "Community 46"
 Cohesion: 0.5
 Nodes (0): 
 
 ### Community 47 - "Community 47"
-Cohesion: 0.5
-Nodes (0): 
-
-### Community 48 - "Community 48"
 Cohesion: 0.83
 Nodes (3): enrichDecodedUser(), optionalAuth(), verifyFirebaseToken()
 
-### Community 49 - "Community 49"
+### Community 48 - "Community 48"
 Cohesion: 0.67
 Nodes (2): isValidEmail(), sendEmail()
 
-### Community 50 - "Community 50"
+### Community 49 - "Community 49"
 Cohesion: 0.67
 Nodes (2): processPaymentJob(), processQueue()
+
+### Community 50 - "Community 50"
+Cohesion: 0.5
+Nodes (0): 
 
 ### Community 51 - "Community 51"
 Cohesion: 0.5
@@ -426,36 +425,36 @@ Cohesion: 0.5
 Nodes (0): 
 
 ### Community 55 - "Community 55"
-Cohesion: 0.5
-Nodes (0): 
-
-### Community 56 - "Community 56"
 Cohesion: 0.67
 Nodes (2): About(), useTyping()
 
-### Community 57 - "Community 57"
+### Community 56 - "Community 56"
 Cohesion: 0.5
 Nodes (0): 
 
-### Community 58 - "Community 58"
+### Community 57 - "Community 57"
 Cohesion: 0.83
 Nodes (3): getLearningTypeLabel(), getLearningTypePluralLabel(), normalizeLearningType()
 
-### Community 59 - "Community 59"
+### Community 58 - "Community 58"
 Cohesion: 0.5
 Nodes (2): handle_new_rx_page(), Intercept NOTIFY_DEBUGGER_ABOUT_RX_PAGES and touch the pages.
 
-### Community 60 - "Community 60"
+### Community 59 - "Community 59"
 Cohesion: 0.5
 Nodes (3): ConnectivityService, _hasConnection, package:connectivity_plus/connectivity_plus.dart
 
-### Community 61 - "Community 61"
+### Community 60 - "Community 60"
 Cohesion: 0.5
 Nodes (2): MainFlutterWindow, NSWindow
 
-### Community 62 - "Community 62"
+### Community 61 - "Community 61"
 Cohesion: 0.67
 Nodes (2): GetCommandLineArguments(), Utf8FromUtf16()
+
+### Community 62 - "Community 62"
+Cohesion: 0.67
+Nodes (0): 
 
 ### Community 63 - "Community 63"
 Cohesion: 0.67
@@ -518,7 +517,7 @@ Cohesion: 0.67
 Nodes (0): 
 
 ### Community 78 - "Community 78"
-Cohesion: 0.67
+Cohesion: 1.0
 Nodes (0): 
 
 ### Community 79 - "Community 79"
@@ -767,15 +766,15 @@ Nodes (0):
 
 ### Community 140 - "Community 140"
 Cohesion: 1.0
-Nodes (0): 
+Nodes (1): MainActivity
 
 ### Community 141 - "Community 141"
 Cohesion: 1.0
-Nodes (1): MainActivity
+Nodes (1): AppConfig
 
 ### Community 142 - "Community 142"
 Cohesion: 1.0
-Nodes (1): AppConfig
+Nodes (0): 
 
 ### Community 143 - "Community 143"
 Cohesion: 1.0
@@ -909,224 +908,220 @@ Nodes (0):
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 176 - "Community 176"
-Cohesion: 1.0
-Nodes (0): 
-
 ## Knowledge Gaps
 - **329 isolated node(s):** `MainActivity`, `Intercept NOTIFY_DEBUGGER_ABOUT_RX_PAGES and touch the pages.`, `-registerWithRegistry`, `SolutionHubMobileApp`, `_LoggedOutExperience` (+324 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `Community 79`** (2 nodes): `rbacMiddleware.js`, `requireRole()`
+- **Thin community `Community 78`** (2 nodes): `rbacMiddleware.js`, `requireRole()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 80`** (2 nodes): `storageService.js`, `uploadToFirebase()`
+- **Thin community `Community 79`** (2 nodes): `storageService.js`, `uploadToFirebase()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 81`** (2 nodes): `driveService.js`, `uploadToDrive()`
+- **Thin community `Community 80`** (2 nodes): `driveService.js`, `uploadToDrive()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 82`** (2 nodes): `AdminAccountRequests()`, `AdminAccountRequests.jsx`
+- **Thin community `Community 81`** (2 nodes): `AdminAccountRequests()`, `AdminAccountRequests.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 83`** (2 nodes): `AdminCourseCategories()`, `AdminCourseCategories.jsx`
+- **Thin community `Community 82`** (2 nodes): `AdminCourseCategories()`, `AdminCourseCategories.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 84`** (2 nodes): `AdminCourseEnrollments()`, `AdminCourseEnrollments.jsx`
+- **Thin community `Community 83`** (2 nodes): `AdminCourseEnrollments()`, `AdminCourseEnrollments.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 85`** (2 nodes): `AdminCourses()`, `AdminCourses.jsx`
+- **Thin community `Community 84`** (2 nodes): `AdminCourses()`, `AdminCourses.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 86`** (2 nodes): `AdminCustomers()`, `AdminCustomers.jsx`
+- **Thin community `Community 85`** (2 nodes): `AdminCustomers()`, `AdminCustomers.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 87`** (2 nodes): `AdminEmployees()`, `AdminEmployees.jsx`
+- **Thin community `Community 86`** (2 nodes): `AdminEmployees()`, `AdminEmployees.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 88`** (2 nodes): `AdminLayout()`, `AdminLayout.jsx`
+- **Thin community `Community 87`** (2 nodes): `AdminLayout()`, `AdminLayout.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 89`** (2 nodes): `AdminLogin()`, `AdminLogin.jsx`
+- **Thin community `Community 88`** (2 nodes): `AdminLogin()`, `AdminLogin.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 90`** (2 nodes): `AdminProjects()`, `AdminProjects.jsx`
+- **Thin community `Community 89`** (2 nodes): `AdminProjects()`, `AdminProjects.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 91`** (2 nodes): `AdminSales()`, `AdminSales.jsx`
+- **Thin community `Community 90`** (2 nodes): `AdminSales()`, `AdminSales.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 92`** (2 nodes): `AdminSellRequests()`, `AdminSellRequests.jsx`
+- **Thin community `Community 91`** (2 nodes): `AdminSellRequests()`, `AdminSellRequests.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 93`** (2 nodes): `AdminServiceRequests()`, `AdminServiceRequests.jsx`
+- **Thin community `Community 92`** (2 nodes): `AdminServiceRequests()`, `AdminServiceRequests.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 94`** (2 nodes): `AdminSettings()`, `AdminSettings.jsx`
+- **Thin community `Community 93`** (2 nodes): `AdminSettings()`, `AdminSettings.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 95`** (2 nodes): `AdminTeam()`, `AdminTeam.jsx`
+- **Thin community `Community 94`** (2 nodes): `AdminTeam()`, `AdminTeam.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 96`** (2 nodes): `AnnouncementPopup()`, `AnnouncementPopup.jsx`
+- **Thin community `Community 95`** (2 nodes): `AnnouncementPopup()`, `AnnouncementPopup.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 97`** (2 nodes): `Footer()`, `Footer.jsx`
+- **Thin community `Community 96`** (2 nodes): `Footer()`, `Footer.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 98`** (2 nodes): `GlowBackground.jsx`, `GlowBackground()`
+- **Thin community `Community 97`** (2 nodes): `GlowBackground.jsx`, `GlowBackground()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 99`** (2 nodes): `Layout.jsx`, `Layout()`
+- **Thin community `Community 98`** (2 nodes): `Layout.jsx`, `Layout()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 100`** (2 nodes): `MobileRequiredPopup.jsx`, `MobileRequiredPopup()`
+- **Thin community `Community 99`** (2 nodes): `MobileRequiredPopup.jsx`, `MobileRequiredPopup()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 101`** (2 nodes): `Navbar.jsx`, `Navbar()`
+- **Thin community `Community 100`** (2 nodes): `Navbar.jsx`, `Navbar()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 102`** (2 nodes): `Popup.jsx`, `Popup()`
+- **Thin community `Community 101`** (2 nodes): `Popup.jsx`, `Popup()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 103`** (2 nodes): `ProjectCard.jsx`, `ProjectCard()`
+- **Thin community `Community 102`** (2 nodes): `ProjectCard.jsx`, `ProjectCard()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 104`** (2 nodes): `SEO.jsx`, `SEO()`
+- **Thin community `Community 103`** (2 nodes): `SEO.jsx`, `SEO()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 105`** (2 nodes): `TeamMemberCard.jsx`, `TeamMemberCard()`
+- **Thin community `Community 104`** (2 nodes): `TeamMemberCard.jsx`, `TeamMemberCard()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 106`** (2 nodes): `TermsAndConditions.jsx`, `TermsAndConditions()`
+- **Thin community `Community 105`** (2 nodes): `TermsAndConditions.jsx`, `TermsAndConditions()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 107`** (2 nodes): `CustomerLayout()`, `CustomerLayout.jsx`
+- **Thin community `Community 106`** (2 nodes): `CustomerLayout()`, `CustomerLayout.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 108`** (2 nodes): `CustomerMyCourses()`, `CustomerMyCourses.jsx`
+- **Thin community `Community 107`** (2 nodes): `CustomerMyCourses()`, `CustomerMyCourses.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 109`** (2 nodes): `CustomerOrders()`, `CustomerOrders.jsx`
+- **Thin community `Community 108`** (2 nodes): `CustomerOrders()`, `CustomerOrders.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 110`** (2 nodes): `CustomerOverview()`, `CustomerOverview.jsx`
+- **Thin community `Community 109`** (2 nodes): `CustomerOverview()`, `CustomerOverview.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 111`** (2 nodes): `CustomerSupport()`, `CustomerSupport.jsx`
+- **Thin community `Community 110`** (2 nodes): `CustomerSupport()`, `CustomerSupport.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 112`** (2 nodes): `EditingService()`, `EditingService.jsx`
+- **Thin community `Community 111`** (2 nodes): `EditingService()`, `EditingService.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 113`** (2 nodes): `EmployeeBroadcast()`, `EmployeeBroadcast.jsx`
+- **Thin community `Community 112`** (2 nodes): `EmployeeBroadcast()`, `EmployeeBroadcast.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 114`** (2 nodes): `EmployeeBroadcastRefined()`, `EmployeeBroadcastRefined.jsx`
+- **Thin community `Community 113`** (2 nodes): `EmployeeBroadcastRefined()`, `EmployeeBroadcastRefined.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 115`** (2 nodes): `EmployeeChat()`, `EmployeeChat.jsx`
+- **Thin community `Community 114`** (2 nodes): `EmployeeChat()`, `EmployeeChat.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 116`** (2 nodes): `EmployeeChatRefined()`, `EmployeeChatRefined.jsx`
+- **Thin community `Community 115`** (2 nodes): `EmployeeChatRefined()`, `EmployeeChatRefined.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 117`** (2 nodes): `EmployeeCourseManageRefined()`, `EmployeeCourseManageRefined.jsx`
+- **Thin community `Community 116`** (2 nodes): `EmployeeCourseManageRefined()`, `EmployeeCourseManageRefined.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 118`** (2 nodes): `EmployeeLayout()`, `EmployeeLayout.jsx`
+- **Thin community `Community 117`** (2 nodes): `EmployeeLayout()`, `EmployeeLayout.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 119`** (2 nodes): `EmployeeLogin()`, `EmployeeLogin.jsx`
+- **Thin community `Community 118`** (2 nodes): `EmployeeLogin()`, `EmployeeLogin.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 120`** (2 nodes): `EmployeeOverview()`, `EmployeeOverview.jsx`
+- **Thin community `Community 119`** (2 nodes): `EmployeeOverview()`, `EmployeeOverview.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 121`** (2 nodes): `SellProjectRequest.jsx`, `SellProjectRequest()`
+- **Thin community `Community 120`** (2 nodes): `SellProjectRequest.jsx`, `SellProjectRequest()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 122`** (2 nodes): `SellProjectRequestRefined.jsx`, `SellProjectRequestRefined()`
+- **Thin community `Community 121`** (2 nodes): `SellProjectRequestRefined.jsx`, `SellProjectRequestRefined()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 123`** (2 nodes): `AboutTradingMentorship()`, `AboutTradingMentorship.jsx`
+- **Thin community `Community 122`** (2 nodes): `AboutTradingMentorship()`, `AboutTradingMentorship.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 124`** (2 nodes): `ChatPage()`, `ChatPage.jsx`
+- **Thin community `Community 123`** (2 nodes): `ChatPage()`, `ChatPage.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 125`** (2 nodes): `ComingSoon()`, `ComingSoon.jsx`
+- **Thin community `Community 124`** (2 nodes): `ComingSoon()`, `ComingSoon.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 126`** (2 nodes): `CustomerSignup()`, `CustomerSignup.jsx`
+- **Thin community `Community 125`** (2 nodes): `CustomerSignup()`, `CustomerSignup.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 127`** (2 nodes): `CustomProject()`, `CustomProject.jsx`
+- **Thin community `Community 126`** (2 nodes): `CustomProject()`, `CustomProject.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 128`** (2 nodes): `help.jsx`, `Services()`
+- **Thin community `Community 127`** (2 nodes): `help.jsx`, `Services()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 129`** (2 nodes): `LoginPage.jsx`, `LoginPage()`
+- **Thin community `Community 128`** (2 nodes): `LoginPage.jsx`, `LoginPage()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 130`** (2 nodes): `ProjectDetails.jsx`, `ProjectDetails()`
+- **Thin community `Community 129`** (2 nodes): `ProjectDetails.jsx`, `ProjectDetails()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 131`** (2 nodes): `RequestAccount.jsx`, `RequestAccount()`
+- **Thin community `Community 130`** (2 nodes): `RequestAccount.jsx`, `RequestAccount()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 132`** (2 nodes): `RoleSelect.jsx`, `RoleSelect()`
+- **Thin community `Community 131`** (2 nodes): `RoleSelect.jsx`, `RoleSelect()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 133`** (2 nodes): `GrievanceCell.jsx`, `GrievanceCell()`
+- **Thin community `Community 132`** (2 nodes): `GrievanceCell.jsx`, `GrievanceCell()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 134`** (2 nodes): `PrivacyPolicy.jsx`, `PrivacyPolicy()`
+- **Thin community `Community 133`** (2 nodes): `PrivacyPolicy.jsx`, `PrivacyPolicy()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 135`** (2 nodes): `RefundPolicy.jsx`, `RefundPolicy()`
+- **Thin community `Community 134`** (2 nodes): `RefundPolicy.jsx`, `RefundPolicy()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 136`** (2 nodes): `TermsOfService.jsx`, `TermsOfService()`
+- **Thin community `Community 135`** (2 nodes): `TermsOfService.jsx`, `TermsOfService()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 137`** (2 nodes): `RepairService.jsx`, `RepairService()`
+- **Thin community `Community 136`** (2 nodes): `RepairService.jsx`, `RepairService()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 138`** (2 nodes): `TechSupport.jsx`, `TechSupport()`
+- **Thin community `Community 137`** (2 nodes): `TechSupport.jsx`, `TechSupport()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 139`** (2 nodes): `emailNotify()`, `emailNotify.js`
+- **Thin community `Community 138`** (2 nodes): `emailNotify()`, `emailNotify.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 140`** (2 nodes): `WebService.jsx`, `WebService()`
+- **Thin community `Community 139`** (2 nodes): `WebService.jsx`, `WebService()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 141`** (2 nodes): `MainActivity`, `MainActivity.kt`
+- **Thin community `Community 140`** (2 nodes): `MainActivity`, `MainActivity.kt`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 142`** (2 nodes): `app_config.dart`, `AppConfig`
+- **Thin community `Community 141`** (2 nodes): `app_config.dart`, `AppConfig`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 143`** (2 nodes): `fl_register_plugins()`, `generated_plugin_registrant.cc`
+- **Thin community `Community 142`** (2 nodes): `fl_register_plugins()`, `generated_plugin_registrant.cc`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 144`** (2 nodes): `main()`, `main.cc`
+- **Thin community `Community 143`** (2 nodes): `main()`, `main.cc`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 145`** (2 nodes): `RegisterGeneratedPlugins()`, `GeneratedPluginRegistrant.swift`
+- **Thin community `Community 144`** (2 nodes): `RegisterGeneratedPlugins()`, `GeneratedPluginRegistrant.swift`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 146`** (2 nodes): `RegisterPlugins()`, `generated_plugin_registrant.cc`
+- **Thin community `Community 145`** (2 nodes): `RegisterPlugins()`, `generated_plugin_registrant.cc`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 147`** (2 nodes): `wWinMain()`, `main.cpp`
+- **Thin community `Community 146`** (2 nodes): `wWinMain()`, `main.cpp`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 148`** (1 nodes): `ecosystem.config.js`
+- **Thin community `Community 147`** (1 nodes): `ecosystem.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 149`** (1 nodes): `logger.js`
+- **Thin community `Community 148`** (1 nodes): `logger.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 150`** (1 nodes): `admin.js`
+- **Thin community `Community 149`** (1 nodes): `admin.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 151`** (1 nodes): `ai.js`
+- **Thin community `Community 150`** (1 nodes): `ai.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 152`** (1 nodes): `auth.js`
+- **Thin community `Community 151`** (1 nodes): `auth.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 153`** (1 nodes): `certificates.js`
+- **Thin community `Community 152`** (1 nodes): `certificates.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 154`** (1 nodes): `notify.js`
+- **Thin community `Community 153`** (1 nodes): `notify.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 155`** (1 nodes): `projects.js`
+- **Thin community `Community 154`** (1 nodes): `projects.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 156`** (1 nodes): `razorpay.js`
+- **Thin community `Community 155`** (1 nodes): `razorpay.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 157`** (1 nodes): `trading.js`
+- **Thin community `Community 156`** (1 nodes): `trading.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 158`** (1 nodes): `users.js`
+- **Thin community `Community 157`** (1 nodes): `users.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 159`** (1 nodes): `webhook.js`
+- **Thin community `Community 158`** (1 nodes): `webhook.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 160`** (1 nodes): `eslint.config.js`
+- **Thin community `Community 159`** (1 nodes): `eslint.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 161`** (1 nodes): `postcss.config.js`
+- **Thin community `Community 160`** (1 nodes): `postcss.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 162`** (1 nodes): `tailwind.config.js`
+- **Thin community `Community 161`** (1 nodes): `tailwind.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 163`** (1 nodes): `vite.config.js`
+- **Thin community `Community 162`** (1 nodes): `vite.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 164`** (1 nodes): `main.jsx`
+- **Thin community `Community 163`** (1 nodes): `main.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 165`** (1 nodes): `VerifyCertificate.jsx`
+- **Thin community `Community 164`** (1 nodes): `VerifyCertificate.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 166`** (1 nodes): `build.gradle.kts`
+- **Thin community `Community 165`** (1 nodes): `build.gradle.kts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 167`** (1 nodes): `settings.gradle.kts`
+- **Thin community `Community 166`** (1 nodes): `settings.gradle.kts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 168`** (1 nodes): `build.gradle.kts`
+- **Thin community `Community 167`** (1 nodes): `build.gradle.kts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 169`** (1 nodes): `GeneratedPluginRegistrant.h`
+- **Thin community `Community 168`** (1 nodes): `GeneratedPluginRegistrant.h`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 170`** (1 nodes): `Runner-Bridging-Header.h`
+- **Thin community `Community 169`** (1 nodes): `Runner-Bridging-Header.h`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 171`** (1 nodes): `generated_plugin_registrant.h`
+- **Thin community `Community 170`** (1 nodes): `generated_plugin_registrant.h`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 172`** (1 nodes): `my_application.h`
+- **Thin community `Community 171`** (1 nodes): `my_application.h`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 173`** (1 nodes): `generated_plugin_registrant.h`
+- **Thin community `Community 172`** (1 nodes): `generated_plugin_registrant.h`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 174`** (1 nodes): `resource.h`
+- **Thin community `Community 173`** (1 nodes): `resource.h`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 175`** (1 nodes): `utils.h`
+- **Thin community `Community 174`** (1 nodes): `utils.h`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 176`** (1 nodes): `win32_window.h`
+- **Thin community `Community 175`** (1 nodes): `win32_window.h`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `package:flutter/material.dart` connect `Community 1` to `Community 0`, `Community 2`, `Community 4`, `Community 10`, `Community 11`?**
+- **Why does `package:flutter/material.dart` connect `Community 0` to `Community 1`, `Community 10`, `Community 3`, `Community 4`?**
   _High betweenness centrality (0.029) - this node is a cross-community bridge._
-- **Why does `../models/app_models.dart` connect `Community 0` to `Community 1`, `Community 2`, `Community 4`, `Community 10`, `Community 11`?**
+- **Why does `../models/app_models.dart` connect `Community 1` to `Community 0`, `Community 3`, `Community 4`?**
   _High betweenness centrality (0.028) - this node is a cross-community bridge._
-- **Why does `package:cloud_firestore/cloud_firestore.dart` connect `Community 0` to `Community 5`?**
+- **Why does `package:cloud_firestore/cloud_firestore.dart` connect `Community 1` to `Community 5`?**
   _High betweenness centrality (0.019) - this node is a cross-community bridge._
 - **What connects `MainActivity`, `Intercept NOTIFY_DEBUGGER_ABOUT_RX_PAGES and touch the pages.`, `-registerWithRegistry` to the rest of the system?**
   _329 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.02 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.03 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.02 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
-  _Cohesion score 0.04 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.14 - nodes in this community are weakly interconnected._

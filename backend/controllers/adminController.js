@@ -318,6 +318,29 @@ const listUsers = async (req, res) => {
   }
 };
 
+const lookupUserByEmail = async (req, res) => {
+  const email = String(req.query.email || "").trim().toLowerCase();
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: "Email query is required.",
+      code: "email_required",
+    });
+  }
+
+  try {
+    const user = await getManagedUser(email);
+    return res.json({
+      success: true,
+      exists: Boolean(user),
+      email,
+      user: user || null,
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to look up the user.");
+  }
+};
+
 const createUser = async (req, res) => {
   try {
     const role = req.body.role || "customer";
@@ -366,6 +389,38 @@ const deleteUser = async (req, res) => {
     return res.json({
       success: true,
       message: "User deleted successfully.",
+      user,
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to delete the user.");
+  }
+};
+
+const deleteUserByEmail = async (req, res) => {
+  const email = String(req.query.email || "").trim().toLowerCase();
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: "Email query is required.",
+      code: "email_required",
+    });
+  }
+
+  try {
+    const existingUser = await getManagedUser(email);
+    if (!existingUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+        code: "user_not_found",
+      });
+    }
+
+    const user = await deleteManagedUser(email, { deletedBy: req.user });
+    return res.json({
+      success: true,
+      message: "User deleted successfully.",
+      email,
       user,
     });
   } catch (error) {
@@ -479,9 +534,11 @@ module.exports = {
   broadcastEmail,
   notifyAccountApproval,
   listUsers,
+  lookupUserByEmail,
   createUser,
   updateUser,
   deleteUser,
+  deleteUserByEmail,
   mergeUsers,
   approveRequest,
   rejectRequest,
