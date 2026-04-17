@@ -11,6 +11,7 @@ import {
   getCertificateDocumentType,
   getCertificateHolderName,
   getCertificateVerifyUrl,
+  normalizeCertificateAssetUrl,
 } from '../../utils/certificateHelpers'
 
 function CornerAccent({ position, accentColor, navyColor }) {
@@ -131,8 +132,8 @@ export default function CertificateDocument({ certificate, template, className =
   const issueDate = formatCertificateDate(certificate?.approval_date || certificate?.createdAt || certificate?.date)
   const signatureName = activeTemplate.signatureName || certificate?.issuedByName || 'Amit Patel'
   const signatureRole = activeTemplate.signatureRole || certificate?.issuedByRole || 'Authorized Signatory'
-  const signatureImage = certificate?.signatureImageUrl || founderSign
-  const stampImage = certificate?.stampImageUrl ? certificate.stampImageUrl : stempImage
+  const signatureImage = normalizeCertificateAssetUrl(certificate?.signatureImageUrl) || founderSign
+  const stampImage = normalizeCertificateAssetUrl(certificate?.stampImageUrl) || stempImage
   const narrative = getDocumentNarrative(documentType, holderName, courseName, activeTemplate, certificate)
 
   const holderFontSize =

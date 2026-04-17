@@ -6,6 +6,7 @@ import { auth } from '../config/firebase'
 import { api, readApiJson } from '../config/api'
 import CertificateDocument from '../components/certificates/CertificateDocument'
 import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
+import { normalizeCertificateAssetUrl } from '../utils/certificateHelpers'
 
 const CERTIFICATE_TYPES = [
   {
@@ -318,7 +319,7 @@ export default function AdminQrCertificates() {
         throw new Error(data.message || 'Failed to upload image.')
       }
 
-      setForm((current) => ({ ...current, [field]: data.url }))
+      setForm((current) => ({ ...current, [field]: normalizeCertificateAssetUrl(data.url) }))
       setMessage(`${field === 'signatureImageUrl' ? 'Signature' : 'Stamp'} uploaded.`)
     } catch (uploadError) {
       setError(uploadError.message || 'Unable to upload image.')

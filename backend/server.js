@@ -356,7 +356,7 @@ app.post("/api/upload/chat", uploadChat.single("chat-image"), (req, res) => {
 
 app.post("/api/upload/certificate-asset", upload.single("asset"), (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
-  res.json({ success: true, url: `${getBaseUrl(req)}/uploads/certificates/${req.file.filename}` });
+  res.json({ success: true, url: `/uploads/certificates/${req.file.filename}` });
 });
 
 // Multer error handler

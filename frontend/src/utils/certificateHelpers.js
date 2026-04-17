@@ -1,5 +1,10 @@
 import { getDocumentTypeMeta } from './certificateTemplate'
 
+const KNOWN_UPLOAD_HOSTS = new Set([
+  'backend-5u1w.onrender.com',
+  'solutionhub-1.onrender.com',
+])
+
 export const formatCertificateDate = (value) => {
   if (!value) return new Date().toLocaleDateString('en-GB')
 
@@ -30,6 +35,26 @@ export const getCertificateVerifyUrl = (certificateId) => {
   const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
   const origin = isLocalhost && isBrowser ? window.location.origin : 'https://www.amitsolutionhub.com'
   return `${origin}/verify/${encodeURIComponent(certificateId)}`
+}
+
+export const normalizeCertificateAssetUrl = (value) => {
+  const rawValue = String(value || '').trim()
+  if (!rawValue) return ''
+
+  if (rawValue.startsWith('/uploads/')) {
+    return rawValue
+  }
+
+  try {
+    const parsed = new URL(rawValue)
+    if (parsed.pathname.startsWith('/uploads/') && KNOWN_UPLOAD_HOSTS.has(parsed.hostname)) {
+      return parsed.pathname
+    }
+  } catch {
+    return rawValue
+  }
+
+  return rawValue
 }
 
 export const getCertificateFilename = (certificate, extension) => {
