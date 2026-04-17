@@ -246,12 +246,33 @@ app.use("/uploads", express.static(uploadsDir));
 // ─── Frontend Static Files (optional) ────────────────────────────────────────
 const frontendDistDir = path.join(__dirname, "..", "frontend", "dist");
 if (fs.existsSync(frontendDistDir)) {
-  app.use(express.static(frontendDistDir));
-  app.get(/(.*)/, (req, res, next) => {
-    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
-      return next();
+  // Serve static files from the React frontend build directory
+  app.use(express.static(path.join(__dirname, '../frontend/dist'), {
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.html')) {
+        // Never cache index.html to ensure users always get the latest bundle hashes
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+      } else if (filePath.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$/)) {
+        // Cache assets with hashes for 1 year
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      }
     }
-    res.sendFile(path.join(frontendDistDir, 'index.html'));
+  }));
+
+  // Route for any other request to serve the React index.html (SPA routing)
+  app.get('*', (req, res) => {
+    const indexPath = path.join(__dirname, '../frontend/dist/index.html');
+    
+    // Also set no-cache for index.html when served via the wildcard route
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    
+    res.sendFile(indexPath);
   });
 }
 // ─── Health Check ────────────────────────────────────────────────────────────
