@@ -4,101 +4,89 @@ import { getCertificateFilename } from './certificateHelpers'
 
 export const CERTIFICATE_EXPORT_WIDTH = 1400
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
+// A/W = 1.414/1  →  H = W / 1.414
+const CERTIFICATE_ASPECT = 1.414
 
-const waitForNextPaint = () =>
-  new Promise((resolve) => {
-    window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(resolve)
-      })
-    })
-  })
+// ── Small helpers ──────────────────────────────────────────────────────────────
 
-const getExportDimensions = (element) => ({
-  width: Math.ceil(element.scrollWidth || element.offsetWidth || element.clientWidth || 1123),
-  height: Math.ceil(element.scrollHeight || element.offsetHeight || element.clientHeight || 794),
-})
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 /**
- * html-to-image options shared for PNG and PDF renders.
- * cacheBust forces fresh fetches so CORS headers are always received,
- * preventing canvas taint that broke the old html2canvas approach.
+ * Get element dimensions.
+ * getBoundingClientRect().width/height is reliable for position:fixed elements
+ * even when they are off-screen. We fall back to offsetWidth/offsetHeight and
+ * finally compute height from the known certificate aspect ratio.
  */
-const getHtmlToImageOptions = (width, height, pixelRatio) => ({
-  width,
-  height,
-  pixelRatio,
-  backgroundColor: '#ffffff',
-  cacheBust: true,       // bypass cache → always gets fresh CORS headers
-  skipAutoScale: false,
-  includeQueryParams: false,
-  fetchRequestInit: { mode: 'cors', cache: 'no-cache' },
-  // Fonts are handled natively by html-to-image via SVG foreignObject
-})
+const getDimensions = (element) => {
+  const rect = element.getBoundingClientRect()
+  const width = Math.ceil(rect.width || element.offsetWidth || CERTIFICATE_EXPORT_WIDTH)
+  const height = Math.ceil(
+    rect.height || element.offsetHeight || Math.round(width / CERTIFICATE_ASPECT)
+  )
+  return { width, height }
+}
 
-// ── Core PNG renderer ──────────────────────────────────────────────────────────
+// ── Core capture ───────────────────────────────────────────────────────────────
 
-const renderCertificatePng = async (element) => {
-  if (!element) {
-    throw new Error('Certificate element is not ready yet.')
+const capturePng = async (element) => {
+  if (!element) throw new Error('Certificate element is not ready.')
+
+  // Wait for all fonts to load
+  if (document.fonts?.ready) await document.fonts.ready
+
+  // Give browser 200 ms to resolve aspect-ratio & container-query layout
+  await sleep(200)
+
+  const { width, height } = getDimensions(element)
+
+  if (!width || !height || height < 10) {
+    throw new Error(`Certificate dimensions invalid (${width}×${height}). Please try again.`)
   }
 
-  if (document.fonts?.ready) {
-    await document.fonts.ready
+  const opts = {
+    width,
+    height,
+    pixelRatio: 2,              // 2× resolution for crisp output
+    backgroundColor: '#ffffff',
+    cacheBust: true,            // fresh CORS-enabled fetch for all images
   }
 
-  await waitForNextPaint()
-
-  const { width, height } = getExportDimensions(element)
-
-  if (!width || !height) {
-    throw new Error('Certificate has no dimensions. Please wait for it to render fully.')
-  }
-
-  const pixelRatio = Math.max(2, Math.min(window.devicePixelRatio || 2, 3))
-  const opts = getHtmlToImageOptions(width, height, pixelRatio)
-
-  // html-to-image quirk: call twice — first warms up embedded font/image cache,
-  // second produces a fully-resolved output. Only the second result is used.
+  // html-to-image quirk: first call loads fonts/images into SVG embed cache;
+  // only the second call returns a fully-resolved result.
   await toPng(element, opts).catch(() => {})
   const dataUrl = await toPng(element, opts)
+
+  if (!dataUrl || dataUrl === 'data:,') {
+    throw new Error('Failed to capture certificate image.')
+  }
 
   return { dataUrl, width, height }
 }
 
-// ── Blob download helper ───────────────────────────────────────────────────────
+// ── Download helpers ───────────────────────────────────────────────────────────
 
-const downloadBlob = (blob, filename) => {
-  const objectUrl = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = objectUrl
-  link.download = filename
-  document.body.appendChild(link)
-  link.click()
-  link.remove()
-  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000)
+/**
+ * Trigger a browser download for a data-URL without any Blob conversion.
+ * Works in all modern browsers.
+ */
+const triggerDownload = (dataUrl, filename) => {
+  const a = document.createElement('a')
+  a.href = dataUrl
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
 }
 
-const dataUrlToBlob = (dataUrl) => {
-  const [header, base64] = dataUrl.split(',')
-  const mime = header.match(/:(.*?);/)[1]
-  const binary = atob(base64)
-  const buffer = new Uint8Array(binary.length)
-  for (let i = 0; i < binary.length; i++) buffer[i] = binary.charCodeAt(i)
-  return new Blob([buffer], { type: mime })
-}
-
-// ── Public exports ─────────────────────────────────────────────────────────────
+// ── Public API ─────────────────────────────────────────────────────────────────
 
 export const downloadCertificatePng = async (element, certificate) => {
-  const { dataUrl } = await renderCertificatePng(element)
-  const blob = dataUrlToBlob(dataUrl)
-  downloadBlob(blob, getCertificateFilename(certificate, 'png'))
+  const { dataUrl } = await capturePng(element)
+  triggerDownload(dataUrl, getCertificateFilename(certificate, 'png'))
 }
 
 export const downloadCertificatePdf = async (element, certificate) => {
-  const { dataUrl, width, height } = await renderCertificatePng(element)
+  const { dataUrl, width, height } = await capturePng(element)
 
   const pdf = new jsPDF({
     orientation: width >= height ? 'landscape' : 'portrait',
