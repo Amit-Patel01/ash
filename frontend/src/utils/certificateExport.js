@@ -1,37 +1,91 @@
-import { toPng } from 'html-to-image'
+import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
 import { getCertificateFilename } from './certificateHelpers'
 
 export const CERTIFICATE_EXPORT_WIDTH = 1400
 
-const createImageDataUrl = async (element) => {
+const waitForNextPaint = () =>
+  new Promise((resolve) => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(resolve)
+    })
+  })
+
+const waitForImages = async (element) => {
+  const images = Array.from(element.querySelectorAll('img'))
+  if (images.length === 0) return
+
+  await Promise.all(
+    images.map((image) => {
+      if (image.complete) return Promise.resolve()
+
+      return new Promise((resolve) => {
+        const done = () => resolve()
+        image.addEventListener('load', done, { once: true })
+        image.addEventListener('error', done, { once: true })
+      })
+    })
+  )
+}
+
+const getExportDimensions = (element) => ({
+  width: Math.ceil(element.scrollWidth || element.offsetWidth || element.clientWidth || 1123),
+  height: Math.ceil(element.scrollHeight || element.offsetHeight || element.clientHeight || 794),
+})
+
+const renderCertificateCanvas = async (element) => {
   if (!element) {
     throw new Error('Certificate preview is not ready yet.')
   }
 
-  return toPng(element, {
-    cacheBust: true,
+  if (document.fonts?.ready) {
+    await document.fonts.ready
+  }
+
+  await waitForImages(element)
+  await waitForNextPaint()
+
+  const { width, height } = getExportDimensions(element)
+
+  return html2canvas(element, {
     backgroundColor: '#ffffff',
-    pixelRatio: Math.max(2, Math.min(window.devicePixelRatio || 2, 3)),
+    scale: Math.max(2, Math.min(window.devicePixelRatio || 2, 3)),
+    useCORS: true,
+    allowTaint: false,
+    logging: false,
+    width,
+    height,
+    windowWidth: width,
+    windowHeight: height,
   })
 }
 
-const downloadDataUrl = (dataUrl, filename) => {
+const downloadBlob = (blob, filename) => {
+  const objectUrl = URL.createObjectURL(blob)
   const link = document.createElement('a')
-  link.href = dataUrl
+  link.href = objectUrl
   link.download = filename
+  document.body.appendChild(link)
   link.click()
+  link.remove()
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000)
 }
 
 export const downloadCertificatePng = async (element, certificate) => {
-  const dataUrl = await createImageDataUrl(element)
-  downloadDataUrl(dataUrl, getCertificateFilename(certificate, 'png'))
+  const canvas = await renderCertificateCanvas(element)
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
+
+  if (!blob) {
+    throw new Error('Unable to generate the PNG file.')
+  }
+
+  downloadBlob(blob, getCertificateFilename(certificate, 'png'))
 }
 
 export const downloadCertificatePdf = async (element, certificate) => {
-  const dataUrl = await createImageDataUrl(element)
-  const width = element.offsetWidth || 1123
-  const height = element.offsetHeight || 794
+  const canvas = await renderCertificateCanvas(element)
+  const { width, height } = getExportDimensions(element)
+  const dataUrl = canvas.toDataURL('image/png')
 
   const pdf = new jsPDF({
     orientation: width >= height ? 'landscape' : 'portrait',

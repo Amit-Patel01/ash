@@ -164,17 +164,18 @@ export default function CertificateDocument({ certificate, template, className =
       <img
         src={brandLogo}
         alt="Amit Solution Hub watermark"
+        crossOrigin="anonymous"
         className="pointer-events-none absolute left-1/2 top-1/2 w-[34%] -translate-x-1/2 -translate-y-1/2 opacity-[0.045]"
       />
 
       <div className="relative flex h-full flex-col px-[clamp(28px,3cqw,42px)] py-[clamp(22px,2.6cqw,34px)]">
         <header className="grid grid-cols-[1.2fr_auto_1fr] items-start gap-4">
           <div className="min-w-0">
-            <img src={msmeBadge} alt="MSME" className="h-[clamp(48px,6.2cqw,82px)] w-auto object-contain" />
+            <img src={msmeBadge} alt="MSME" crossOrigin="anonymous" className="h-[clamp(48px,6.2cqw,82px)] w-auto object-contain" />
           </div>
 
           <div className="flex justify-center">
-            <img src={brandLogo} alt="Amit Solution Hub" className="h-[clamp(46px,6cqw,84px)] w-auto object-contain" />
+            <img src={brandLogo} alt="Amit Solution Hub" crossOrigin="anonymous" className="h-[clamp(46px,6cqw,84px)] w-auto object-contain" />
           </div>
 
           <div className="flex justify-end">
@@ -288,7 +289,7 @@ export default function CertificateDocument({ certificate, template, className =
           <div className="text-center">
             {stampImage ? (
               <div className="flex h-[68px] items-end justify-center">
-                <img src={stampImage} alt="Official stamp" className="max-h-[68px] w-auto object-contain" />
+                <img src={stampImage} alt="Official stamp" crossOrigin="anonymous" className="max-h-[68px] w-auto object-contain" />
               </div>
             ) : (
               <p className="text-[11px] font-black uppercase tracking-[0.22em]" style={{ color: accentColor }}>
@@ -301,7 +302,7 @@ export default function CertificateDocument({ certificate, template, className =
 
           <div className="text-center">
             <div className="flex h-[58px] items-end justify-center">
-              <img src={signatureImage} alt={signatureName} className="max-h-[58px] w-auto object-contain" />
+              <img src={signatureImage} alt={signatureName} crossOrigin="anonymous" className="max-h-[58px] w-auto object-contain" />
             </div>
             <div className="mx-auto mt-2 h-px w-[72%] bg-slate-300" />
             <p className="mt-2 text-[13px] font-semibold text-slate-800">{signatureName}</p>
