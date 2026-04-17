@@ -79,6 +79,7 @@ export const api = {
   adminQrCertificateStatus: (docId) =>
     buildApiUrl(`/api/certificates/qr/${encodeURIComponent(docId)}/status`),
   userProfile: buildApiUrl('/api/users/me'),
+  userEmailChange: buildApiUrl('/api/users/me/email-change'),
   userPasswordReset: buildApiUrl('/api/users/me/password-reset'),
   userCvUpload: buildApiUrl('/api/users/me/cv'),
   aiChat: buildApiUrl('/api/ai/chat'),

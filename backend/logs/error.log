@@ -1530,3 +1530,177 @@ Caused by: Error
     at NoopTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\NoopTracer.js:54:31)
     at ProxyTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\ProxyTracer.js:27:24)
     at EnabledTraceUtil.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:102:28)
+[2026-04-17 22:45:01] ERROR: Cron job error: 9 FAILED_PRECONDITION: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solutionhub-81976/firestore/indexes?create_composite=Cllwcm9qZWN0cy9zb2x1dGlvbmh1Yi04MTk3Ni9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvdHJhZGluZ1Nlc3Npb25zL2luZGV4ZXMvXxABGggKBGRhdGUQARoQCgxyZW1pbmRlclNlbnQQARoMCghfX25hbWVfXxAB
+Error: 9 FAILED_PRECONDITION: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solutionhub-81976/firestore/indexes?create_composite=Cllwcm9qZWN0cy9zb2x1dGlvbmh1Yi04MTk3Ni9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvdHJhZGluZ1Nlc3Npb25zL2luZGV4ZXMvXxABGggKBGRhdGUQARoQCgxyZW1pbmRlclNlbnQQARoMCghfX25hbWVfXxAB
+    at callErrorFromStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\call.js:32:19)
+    at Object.onReceiveStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client.js:359:73)
+    at Object.onReceiveStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client-interceptors.js:327:181)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\resolving-call.js:135:78
+    at process.processTicksAndRejections (node:internal/process/task_queues:84:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client.js:342:32)
+    at ServiceClientImpl.<anonymous> (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\make-client.js:105:19)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\v1\firestore_client.js:242:33
+    at D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streamingApiCaller.js:38:28
+    at D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\normalCalls\timeout.js:44:16
+    at Object.request (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streaming.js:234:40)
+    at makeRequest (D:\Github-project upload\solutionhub\backend\node_modules\retry-request\index.js:159:28)
+    at retryRequest (D:\Github-project upload\solutionhub\backend\node_modules\retry-request\index.js:119:5)
+    at StreamProxy.setStream (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streaming.js:225:37)
+    at StreamingApiCaller.call (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streamingApiCaller.js:54:16)
+Caused by: Error
+    at QueryUtil._getResponse (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query-util.js:44:23)
+    at Query._getResponse (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:784:32)
+    at Query._get (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:777:35)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:745:43
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:110:30
+    at NoopContextManager.with (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\context\NoopContextManager.js:14:19)
+    at ContextAPI.with (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\api\context.js:51:46)
+    at NoopTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\NoopTracer.js:54:31)
+    at ProxyTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\ProxyTracer.js:27:24)
+    at EnabledTraceUtil.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:102:28)
+[2026-04-17 22:45:03] ERROR: Cron job error: 9 FAILED_PRECONDITION: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solutionhub-81976/firestore/indexes?create_composite=Cllwcm9qZWN0cy9zb2x1dGlvbmh1Yi04MTk3Ni9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvdHJhZGluZ1Nlc3Npb25zL2luZGV4ZXMvXxABGggKBGRhdGUQARoQCgxyZW1pbmRlclNlbnQQARoMCghfX25hbWVfXxAB
+Error: 9 FAILED_PRECONDITION: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solutionhub-81976/firestore/indexes?create_composite=Cllwcm9qZWN0cy9zb2x1dGlvbmh1Yi04MTk3Ni9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvdHJhZGluZ1Nlc3Npb25zL2luZGV4ZXMvXxABGggKBGRhdGUQARoQCgxyZW1pbmRlclNlbnQQARoMCghfX25hbWVfXxAB
+    at callErrorFromStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\call.js:32:19)
+    at Object.onReceiveStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client.js:359:73)
+    at Object.onReceiveStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client-interceptors.js:327:181)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\resolving-call.js:135:78
+    at process.processTicksAndRejections (node:internal/process/task_queues:84:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client.js:342:32)
+    at ServiceClientImpl.<anonymous> (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\make-client.js:105:19)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\v1\firestore_client.js:242:33
+    at D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streamingApiCaller.js:38:28
+    at D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\normalCalls\timeout.js:44:16
+    at Object.request (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streaming.js:234:40)
+    at makeRequest (D:\Github-project upload\solutionhub\backend\node_modules\retry-request\index.js:159:28)
+    at retryRequest (D:\Github-project upload\solutionhub\backend\node_modules\retry-request\index.js:119:5)
+    at StreamProxy.setStream (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streaming.js:225:37)
+    at StreamingApiCaller.call (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streamingApiCaller.js:54:16)
+Caused by: Error
+    at QueryUtil._getResponse (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query-util.js:44:23)
+    at Query._getResponse (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:784:32)
+    at Query._get (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:777:35)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:745:43
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:110:30
+    at NoopContextManager.with (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\context\NoopContextManager.js:14:19)
+    at ContextAPI.with (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\api\context.js:51:46)
+    at NoopTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\NoopTracer.js:54:31)
+    at ProxyTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\ProxyTracer.js:27:24)
+    at EnabledTraceUtil.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:102:28)
+[2026-04-17 22:50:00] ERROR: Cron job error: 9 FAILED_PRECONDITION: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solutionhub-81976/firestore/indexes?create_composite=Cllwcm9qZWN0cy9zb2x1dGlvbmh1Yi04MTk3Ni9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvdHJhZGluZ1Nlc3Npb25zL2luZGV4ZXMvXxABGggKBGRhdGUQARoQCgxyZW1pbmRlclNlbnQQARoMCghfX25hbWVfXxAB
+Error: 9 FAILED_PRECONDITION: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solutionhub-81976/firestore/indexes?create_composite=Cllwcm9qZWN0cy9zb2x1dGlvbmh1Yi04MTk3Ni9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvdHJhZGluZ1Nlc3Npb25zL2luZGV4ZXMvXxABGggKBGRhdGUQARoQCgxyZW1pbmRlclNlbnQQARoMCghfX25hbWVfXxAB
+    at callErrorFromStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\call.js:32:19)
+    at Object.onReceiveStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client.js:359:73)
+    at Object.onReceiveStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client-interceptors.js:327:181)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\resolving-call.js:135:78
+    at process.processTicksAndRejections (node:internal/process/task_queues:84:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client.js:342:32)
+    at ServiceClientImpl.<anonymous> (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\make-client.js:105:19)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\v1\firestore_client.js:242:33
+    at D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streamingApiCaller.js:38:28
+    at D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\normalCalls\timeout.js:44:16
+    at Object.request (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streaming.js:234:40)
+    at makeRequest (D:\Github-project upload\solutionhub\backend\node_modules\retry-request\index.js:159:28)
+    at retryRequest (D:\Github-project upload\solutionhub\backend\node_modules\retry-request\index.js:119:5)
+    at StreamProxy.setStream (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streaming.js:225:37)
+    at StreamingApiCaller.call (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streamingApiCaller.js:54:16)
+Caused by: Error
+    at QueryUtil._getResponse (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query-util.js:44:23)
+    at Query._getResponse (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:784:32)
+    at Query._get (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:777:35)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:745:43
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:110:30
+    at NoopContextManager.with (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\context\NoopContextManager.js:14:19)
+    at ContextAPI.with (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\api\context.js:51:46)
+    at NoopTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\NoopTracer.js:54:31)
+    at ProxyTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\ProxyTracer.js:27:24)
+    at EnabledTraceUtil.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:102:28)
+[2026-04-17 22:50:02] ERROR: Cron job error: 9 FAILED_PRECONDITION: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solutionhub-81976/firestore/indexes?create_composite=Cllwcm9qZWN0cy9zb2x1dGlvbmh1Yi04MTk3Ni9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvdHJhZGluZ1Nlc3Npb25zL2luZGV4ZXMvXxABGggKBGRhdGUQARoQCgxyZW1pbmRlclNlbnQQARoMCghfX25hbWVfXxAB
+Error: 9 FAILED_PRECONDITION: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solutionhub-81976/firestore/indexes?create_composite=Cllwcm9qZWN0cy9zb2x1dGlvbmh1Yi04MTk3Ni9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvdHJhZGluZ1Nlc3Npb25zL2luZGV4ZXMvXxABGggKBGRhdGUQARoQCgxyZW1pbmRlclNlbnQQARoMCghfX25hbWVfXxAB
+    at callErrorFromStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\call.js:32:19)
+    at Object.onReceiveStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client.js:359:73)
+    at Object.onReceiveStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client-interceptors.js:327:181)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\resolving-call.js:135:78
+    at process.processTicksAndRejections (node:internal/process/task_queues:84:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client.js:342:32)
+    at ServiceClientImpl.<anonymous> (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\make-client.js:105:19)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\v1\firestore_client.js:242:33
+    at D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streamingApiCaller.js:38:28
+    at D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\normalCalls\timeout.js:44:16
+    at Object.request (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streaming.js:234:40)
+    at makeRequest (D:\Github-project upload\solutionhub\backend\node_modules\retry-request\index.js:159:28)
+    at retryRequest (D:\Github-project upload\solutionhub\backend\node_modules\retry-request\index.js:119:5)
+    at StreamProxy.setStream (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streaming.js:225:37)
+    at StreamingApiCaller.call (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streamingApiCaller.js:54:16)
+Caused by: Error
+    at QueryUtil._getResponse (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query-util.js:44:23)
+    at Query._getResponse (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:784:32)
+    at Query._get (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:777:35)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:745:43
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:110:30
+    at NoopContextManager.with (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\context\NoopContextManager.js:14:19)
+    at ContextAPI.with (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\api\context.js:51:46)
+    at NoopTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\NoopTracer.js:54:31)
+    at ProxyTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\ProxyTracer.js:27:24)
+    at EnabledTraceUtil.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:102:28)
+[2026-04-17 22:55:00] ERROR: Cron job error: 9 FAILED_PRECONDITION: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solutionhub-81976/firestore/indexes?create_composite=Cllwcm9qZWN0cy9zb2x1dGlvbmh1Yi04MTk3Ni9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvdHJhZGluZ1Nlc3Npb25zL2luZGV4ZXMvXxABGggKBGRhdGUQARoQCgxyZW1pbmRlclNlbnQQARoMCghfX25hbWVfXxAB
+Error: 9 FAILED_PRECONDITION: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solutionhub-81976/firestore/indexes?create_composite=Cllwcm9qZWN0cy9zb2x1dGlvbmh1Yi04MTk3Ni9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvdHJhZGluZ1Nlc3Npb25zL2luZGV4ZXMvXxABGggKBGRhdGUQARoQCgxyZW1pbmRlclNlbnQQARoMCghfX25hbWVfXxAB
+    at callErrorFromStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\call.js:32:19)
+    at Object.onReceiveStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client.js:359:73)
+    at Object.onReceiveStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client-interceptors.js:327:181)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\resolving-call.js:135:78
+    at process.processTicksAndRejections (node:internal/process/task_queues:84:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client.js:342:32)
+    at ServiceClientImpl.<anonymous> (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\make-client.js:105:19)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\v1\firestore_client.js:242:33
+    at D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streamingApiCaller.js:38:28
+    at D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\normalCalls\timeout.js:44:16
+    at Object.request (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streaming.js:234:40)
+    at makeRequest (D:\Github-project upload\solutionhub\backend\node_modules\retry-request\index.js:159:28)
+    at retryRequest (D:\Github-project upload\solutionhub\backend\node_modules\retry-request\index.js:119:5)
+    at StreamProxy.setStream (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streaming.js:225:37)
+    at StreamingApiCaller.call (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streamingApiCaller.js:54:16)
+Caused by: Error
+    at QueryUtil._getResponse (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query-util.js:44:23)
+    at Query._getResponse (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:784:32)
+    at Query._get (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:777:35)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:745:43
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:110:30
+    at NoopContextManager.with (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\context\NoopContextManager.js:14:19)
+    at ContextAPI.with (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\api\context.js:51:46)
+    at NoopTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\NoopTracer.js:54:31)
+    at ProxyTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\ProxyTracer.js:27:24)
+    at EnabledTraceUtil.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:102:28)
+[2026-04-17 22:55:01] ERROR: Cron job error: 9 FAILED_PRECONDITION: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solutionhub-81976/firestore/indexes?create_composite=Cllwcm9qZWN0cy9zb2x1dGlvbmh1Yi04MTk3Ni9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvdHJhZGluZ1Nlc3Npb25zL2luZGV4ZXMvXxABGggKBGRhdGUQARoQCgxyZW1pbmRlclNlbnQQARoMCghfX25hbWVfXxAB
+Error: 9 FAILED_PRECONDITION: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/solutionhub-81976/firestore/indexes?create_composite=Cllwcm9qZWN0cy9zb2x1dGlvbmh1Yi04MTk3Ni9kYXRhYmFzZXMvKGRlZmF1bHQpL2NvbGxlY3Rpb25Hcm91cHMvdHJhZGluZ1Nlc3Npb25zL2luZGV4ZXMvXxABGggKBGRhdGUQARoQCgxyZW1pbmRlclNlbnQQARoMCghfX25hbWVfXxAB
+    at callErrorFromStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\call.js:32:19)
+    at Object.onReceiveStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client.js:359:73)
+    at Object.onReceiveStatus (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client-interceptors.js:327:181)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\resolving-call.js:135:78
+    at process.processTicksAndRejections (node:internal/process/task_queues:84:11)
+for call at
+    at ServiceClientImpl.makeServerStreamRequest (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\client.js:342:32)
+    at ServiceClientImpl.<anonymous> (D:\Github-project upload\solutionhub\backend\node_modules\@grpc\grpc-js\build\src\make-client.js:105:19)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\v1\firestore_client.js:242:33
+    at D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streamingApiCaller.js:38:28
+    at D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\normalCalls\timeout.js:44:16
+    at Object.request (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streaming.js:234:40)
+    at makeRequest (D:\Github-project upload\solutionhub\backend\node_modules\retry-request\index.js:159:28)
+    at retryRequest (D:\Github-project upload\solutionhub\backend\node_modules\retry-request\index.js:119:5)
+    at StreamProxy.setStream (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streaming.js:225:37)
+    at StreamingApiCaller.call (D:\Github-project upload\solutionhub\backend\node_modules\google-gax\build\src\streamingCalls\streamingApiCaller.js:54:16)
+Caused by: Error
+    at QueryUtil._getResponse (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query-util.js:44:23)
+    at Query._getResponse (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:784:32)
+    at Query._get (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:777:35)
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\reference\query.js:745:43
+    at D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:110:30
+    at NoopContextManager.with (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\context\NoopContextManager.js:14:19)
+    at ContextAPI.with (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\api\context.js:51:46)
+    at NoopTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\NoopTracer.js:54:31)
+    at ProxyTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\ProxyTracer.js:27:24)
+    at EnabledTraceUtil.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:102:28)

@@ -3,6 +3,7 @@ const fs = require("fs");
 const multer = require("multer");
 const {
   getOwnProfile,
+  changeOwnEmail,
   updateOwnProfile,
   uploadEmployeeCv,
   requestPasswordReset,
@@ -69,6 +70,20 @@ const updateMyProfile = async (req, res) => {
   }
 };
 
+const changeMyEmail = async (req, res) => {
+  try {
+    const nextEmail = req.body?.email;
+    const profile = await changeOwnEmail(req.user.uid, nextEmail);
+    return res.json({
+      success: true,
+      message: "Email updated successfully.",
+      profile,
+    });
+  } catch (error) {
+    return handleError(res, error, "Unable to update the email.");
+  }
+};
+
 const sendMyPasswordReset = async (req, res) => {
   try {
     const result = await requestPasswordReset({
@@ -106,6 +121,7 @@ const uploadMyCv = async (req, res) => {
 module.exports = {
   cvUpload,
   getMyProfile,
+  changeMyEmail,
   updateMyProfile,
   sendMyPasswordReset,
   uploadMyCv,

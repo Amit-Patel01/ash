@@ -1,8 +1,11 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import {
   signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
   signOut,
   onAuthStateChanged,
+  reload,
   updateProfile,
 } from 'firebase/auth'
 import {
@@ -113,6 +116,28 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
+  const loginWithGoogle = useCallback(async () => {
+    const provider = new GoogleAuthProvider()
+    provider.setCustomParameters({ prompt: 'select_account' })
+    let credential
+    try {
+      credential = await signInWithPopup(auth, provider)
+    } catch (err) {
+      throw err
+    }
+    const user = credential.user
+    // Check if this Google account has an existing SolutionHub profile
+    const profileSnap = await getDoc(doc(db, 'users', user.uid))
+    if (!profileSnap.exists()) {
+      // No account found — sign them out immediately and signal the UI
+      await signOut(auth)
+      const err = new Error('NO_ACCOUNT')
+      err.code = 'auth/no-account'
+      throw err
+    }
+    return user
+  }, [])
+
   const signup = useCallback(async (payload) => {
     const response = await fetch(api.registerCustomer, {
       method: 'POST',
@@ -207,6 +232,31 @@ export function AuthProvider({ children }) {
     return payload.profile
   }, [getAuthHeaders])
 
+  const updateUserEmail = useCallback(async (email) => {
+    const headers = await getAuthHeaders()
+    const response = await fetch(api.userEmailChange, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ email })
+    })
+    const payload = await response.json()
+    if (!response.ok || !payload.success) {
+      throw new Error(payload.message || 'Failed to update email.')
+    }
+
+    if (auth.currentUser) {
+      await reload(auth.currentUser)
+      await auth.currentUser.getIdToken(true)
+    }
+
+    if (payload.profile) {
+      setCurrentUser(prev => ({ ...(prev || {}), ...payload.profile }))
+      setUserProfile(prev => ({ ...(prev || {}), ...payload.profile }))
+    }
+
+    return payload.profile
+  }, [getAuthHeaders])
+
   const updateUserPassword = useCallback(async () => {
     const headers = await getAuthHeaders()
     const response = await fetch(api.userPasswordReset, {
@@ -263,8 +313,8 @@ export function AuthProvider({ children }) {
 
   const value = {
     currentUser, userProfile, loading,
-    login, signup, logout, resetPassword, verifyResetCode, confirmReset,
-    updateUserProfile, updateUserPassword, createAccountRequest, approveAccountRequest, getAllUsers,
+    login, loginWithGoogle, signup, logout, resetPassword, verifyResetCode, confirmReset,
+    updateUserProfile, updateUserEmail, updateUserPassword, createAccountRequest, approveAccountRequest, getAllUsers,
     hasPermission, isAdmin, isEmployee
   }
 

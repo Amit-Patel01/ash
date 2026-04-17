@@ -12,11 +12,15 @@ import {
 import CertificateDocument from '../components/certificates/CertificateDocument'
 
 export default function AdminSettings() {
-  const { currentUser, updateUserProfile, updateUserPassword } = useAuth()
+  const { currentUser, updateUserProfile, updateUserEmail, updateUserPassword } = useAuth()
   const { announcement, updateAnnouncement, certificateTemplate, updateCertificateTemplate } = useStore()
   const [activeTab, setActiveTab] = useState('profile')
   const [saving, setSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState('')
+  const [profileError, setProfileError] = useState('')
+  const [emailSaving, setEmailSaving] = useState(false)
+  const [emailError, setEmailError] = useState('')
+  const [emailSuccess, setEmailSuccess] = useState('')
 
   const [profileForm, setProfileForm] = useState({
     displayName: currentUser?.displayName || '',
@@ -73,6 +77,15 @@ export default function AdminSettings() {
     setCertificateForm(normalizeCertificateTemplate(certificateTemplate))
   }, [certificateTemplate])
 
+  useEffect(() => {
+    setProfileForm({
+      displayName: currentUser?.displayName || '',
+      email: currentUser?.email || '',
+      phone: currentUser?.phone || '',
+      bio: currentUser?.bio || '',
+    })
+  }, [currentUser])
+
   const [notificationPrefs, setNotificationPrefs] = useState(() => {
     try {
       const saved = localStorage.getItem('notification_prefs')
@@ -93,6 +106,7 @@ export default function AdminSettings() {
   const handleSaveProfile = async () => {
     setSaving(true)
     setSaveSuccess('')
+    setProfileError('')
     try {
       await updateUserProfile(currentUser.uid, {
         displayName: profileForm.displayName,
@@ -103,9 +117,25 @@ export default function AdminSettings() {
       setTimeout(() => setSaveSuccess(''), 3000)
     } catch (err) {
       console.error('Failed to save profile:', err)
-      alert('Failed: ' + (err.message || 'Error updating profile'))
+      setProfileError(err.message || 'Error updating profile')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleChangeEmail = async () => {
+    setEmailSaving(true)
+    setEmailError('')
+    setEmailSuccess('')
+    try {
+      await updateUserEmail(profileForm.email)
+      setEmailSuccess('Admin email updated successfully.')
+      setTimeout(() => setEmailSuccess(''), 4000)
+    } catch (err) {
+      console.error('Failed to update email:', err)
+      setEmailError(err.message || 'Failed to update email.')
+    } finally {
+      setEmailSaving(false)
     }
   }
 
@@ -205,6 +235,11 @@ export default function AdminSettings() {
                 <p className="text-sm text-emerald-400">{saveSuccess}</p>
               </div>
             )}
+            {profileError && (
+              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+                <p className="text-sm text-red-400">{profileError}</p>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -221,9 +256,11 @@ export default function AdminSettings() {
                 <input
                   type="email"
                   value={profileForm.email}
-                  disabled
-                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-gray-500 cursor-not-allowed"
+                  onChange={e => setProfileForm({ ...profileForm, email: e.target.value })}
+                  placeholder="admin@example.com"
+                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
                 />
+                <p className="mt-1.5 text-[11px] text-gray-500">Use the Security tab if you want to update the admin login email.</p>
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-400 mb-1.5">Phone</label>
@@ -651,6 +688,42 @@ export default function AdminSettings() {
 
       {activeTab === 'security' && (
         <div className="space-y-6">
+          <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-6">
+            <h2 className="text-lg font-semibold text-white mb-6">Change Admin Email</h2>
+            {emailError && (
+              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+                <p className="text-sm text-red-400">{emailError}</p>
+              </div>
+            )}
+            {emailSuccess && (
+              <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                <p className="text-sm text-emerald-400">{emailSuccess}</p>
+              </div>
+            )}
+            <div className="max-w-md space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">New Admin Email</label>
+                <input
+                  type="email"
+                  value={profileForm.email}
+                  onChange={e => setProfileForm({ ...profileForm, email: e.target.value })}
+                  placeholder="admin@example.com"
+                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
+                />
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
+                This updates the admin login email in both the app profile and Firebase authentication. Use the new email for future sign-ins.
+              </div>
+              <button
+                onClick={handleChangeEmail}
+                disabled={emailSaving}
+                className="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-xl text-sm font-medium text-white hover:shadow-lg hover:shadow-emerald-500/25 transition-all disabled:opacity-50"
+              >
+                {emailSaving ? 'Updating...' : 'Update Admin Email'}
+              </button>
+            </div>
+          </div>
+
           <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-6">
             <h2 className="text-lg font-semibold text-white mb-6">Password Reset</h2>
             {passwordError && (

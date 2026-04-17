@@ -2088,6 +2088,17 @@ const getOwnProfile = async (firebaseUid) => {
   return user;
 };
 
+const changeOwnEmail = async (firebaseUid, nextEmail) => {
+  const normalizedEmail = normalizeEmail(nextEmail);
+  if (!normalizedEmail || !validateEmail(normalizedEmail)) {
+    throw createHttpError(400, "A valid email address is required.", "invalid_email");
+  }
+
+  return updateManagedUser(firebaseUid, {
+    email: normalizedEmail,
+  });
+};
+
 const updateOwnProfile = async (firebaseUid, updates) => {
   const allowedUpdates = {
     displayName: updates.displayName,
@@ -2170,6 +2181,7 @@ module.exports = {
   verifyResetToken,
   completePasswordReset,
   getOwnProfile,
+  changeOwnEmail,
   updateOwnProfile,
   uploadEmployeeCv,
   listEmployeeCvRecords,
