@@ -100,17 +100,33 @@ export const downloadCertificatePng = async (element, certificate) => {
 }
 
 export const downloadCertificatePdf = async (element, certificate) => {
-  const canvas = await renderCertificateCanvas(element)
-  const { width, height } = getExportDimensions(element)
-  const dataUrl = canvas.toDataURL('image/png')
+  try {
+    const canvas = await renderCertificateCanvas(element)
+    if (!canvas) {
+      throw new Error('Failed to render certificate canvas.')
+    }
 
-  const pdf = new jsPDF({
-    orientation: width >= height ? 'landscape' : 'portrait',
-    unit: 'px',
-    format: [width, height],
-    compress: true,
-  })
+    const { width, height } = getExportDimensions(element)
+    if (width === 0 || height === 0) {
+      throw new Error('Certificate dimensions are invalid.')
+    }
 
-  pdf.addImage(dataUrl, 'PNG', 0, 0, width, height, undefined, 'FAST')
-  pdf.save(getCertificateFilename(certificate, 'pdf'))
+    const dataUrl = canvas.toDataURL('image/png')
+    if (!dataUrl || dataUrl === 'data:,') {
+      throw new Error('Failed to convert canvas to image data.')
+    }
+
+    const pdf = new jsPDF({
+      orientation: width >= height ? 'landscape' : 'portrait',
+      unit: 'px',
+      format: [width, height],
+      compress: true,
+    })
+
+    pdf.addImage(dataUrl, 'PNG', 0, 0, width, height, undefined, 'FAST')
+    pdf.save(getCertificateFilename(certificate, 'pdf'))
+  } catch (error) {
+    console.error('PDF generation error:', error)
+    throw new Error(`Unable to generate PDF: ${error.message}`)
+  }
 }

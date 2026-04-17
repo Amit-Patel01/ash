@@ -577,7 +577,8 @@ export default function VerifyCertificateRefined() {
             animate={{ opacity: 1, y: 0 }}
             className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.16fr)_320px]"
           >
-            <div className="absolute left-[-9999px] top-[-9999px]" aria-hidden="true">
+            {/* Hidden high-res export container — must be fixed+invisible so container queries resolve */}
+            <div aria-hidden="true" style={{ position: 'fixed', top: 0, left: 0, visibility: 'hidden', pointerEvents: 'none', zIndex: -1 }}>
               <div ref={downloadRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
                 <CertificateDocument certificate={previewCertificate} template={activeTemplate} />
               </div>
