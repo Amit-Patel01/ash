@@ -83,8 +83,7 @@ const app = express();
 app.disable("x-powered-by");
 app.set('trust proxy', 1);
 
-// ─── UNDER MAINTENANCE MODE ───────────────────────────────────────────────────
-const UNDER_MAINTENANCE = true; // Set to true to enable
+const UNDER_MAINTENANCE = false; // Set to true to enable
 
 if (UNDER_MAINTENANCE) {
   app.use((req, res, next) => {
