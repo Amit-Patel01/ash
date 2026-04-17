@@ -47,17 +47,34 @@ const renderCertificateCanvas = async (element) => {
 
   const { width, height } = getExportDimensions(element)
 
-  return html2canvas(element, {
-    backgroundColor: '#ffffff',
-    scale: Math.max(2, Math.min(window.devicePixelRatio || 2, 3)),
-    useCORS: true,
-    allowTaint: false,
-    logging: false,
-    width,
-    height,
-    windowWidth: width,
-    windowHeight: height,
-  })
+  // Patch getContext so html2canvas internal getImageData calls use willReadFrequently
+  const _origGetContext = HTMLCanvasElement.prototype.getContext
+  HTMLCanvasElement.prototype.getContext = function patchedGetContext(type, attrs) {
+    if (type === '2d') {
+      attrs = { willReadFrequently: true, ...attrs }
+    }
+    return _origGetContext.call(this, type, attrs)
+  }
+
+  let canvasResult
+  try {
+    canvasResult = await html2canvas(element, {
+      backgroundColor: '#ffffff',
+      scale: Math.max(2, Math.min(window.devicePixelRatio || 2, 3)),
+      useCORS: true,
+      allowTaint: false,
+      logging: false,
+      width,
+      height,
+      windowWidth: width,
+      windowHeight: height,
+    })
+  } finally {
+    // Always restore the original method
+    HTMLCanvasElement.prototype.getContext = _origGetContext
+  }
+
+  return canvasResult
 }
 
 const downloadBlob = (blob, filename) => {
