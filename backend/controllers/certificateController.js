@@ -106,11 +106,13 @@ const validateQrCertificateInput = (payload = {}, { partial = false } = {}) => {
   if (!partial || Object.prototype.hasOwnProperty.call(payload, "certificateType")) {
     const certificateType = normalizeQrCertificateType(payload.certificateType);
     if (!certificateType) {
-      errors.push("Certificate type must be LOR, LOA, or Appreciation.");
+      errors.push("Certificate type must be LOR, LOA, Appreciation, or Other.");
     } else {
       updates.certificateType = certificateType;
-      updates.certificateTypeLabel = QR_CERTIFICATE_TYPES[certificateType];
-      updates.documentLabel = QR_CERTIFICATE_TYPES[certificateType];
+      updates.certificateTypeLabel = certificateType === "Other" && payload.customTitle 
+        ? String(payload.customTitle).trim()
+        : QR_CERTIFICATE_TYPES[certificateType];
+      updates.documentLabel = updates.certificateTypeLabel;
     }
   }
 

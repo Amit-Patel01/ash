@@ -35,6 +35,7 @@ const getTypeMeta = (value) => CERTIFICATE_TYPES.find((type) => type.value === v
 const createInitialForm = () => ({
   name: '',
   certificateType: 'LOR',
+  customTitle: '',
   date: new Date().toISOString().slice(0, 10),
   certificateText: getTypeMeta('LOR').defaultText,
   assignedEmployeeUid: '',
@@ -48,6 +49,7 @@ const createInitialForm = () => ({
 const mapCertificateToForm = (certificate = {}) => ({
   name: certificate.name || certificate.userName || '',
   certificateType: certificate.certificateType || 'LOR',
+  customTitle: certificate.certificateType === 'Other' ? (certificate.documentLabel || '') : '',
   date: certificate.rawDate || certificate.date || new Date().toISOString().slice(0, 10),
   certificateText: certificate.certificateText || getTypeMeta(certificate.certificateType || 'LOR').defaultText,
   assignedEmployeeUid: certificate.assignedEmployeeUid || '',
@@ -157,10 +159,10 @@ export default function AdminQrCertificates() {
     name: form.name || 'Certificate Holder',
     userName: form.name || 'Certificate Holder',
     certificateType: form.certificateType,
-    certificateTypeLabel: previewType.label,
-    documentLabel: previewType.label,
-    course: previewType.label,
-    courseName: previewType.label,
+    certificateTypeLabel: form.certificateType === 'Other' && form.customTitle ? form.customTitle : previewType.label,
+    documentLabel: form.certificateType === 'Other' && form.customTitle ? form.customTitle : previewType.label,
+    course: form.certificateType === 'Other' && form.customTitle ? form.customTitle : previewType.label,
+    courseName: form.certificateType === 'Other' && form.customTitle ? form.customTitle : previewType.label,
     rawDate: form.date || new Date().toISOString().slice(0, 10),
     date: form.date || new Date().toISOString().slice(0, 10),
     certificateText: form.certificateText || previewType.defaultText,
@@ -224,6 +226,7 @@ export default function AdminQrCertificates() {
         ...current,
         certificateType: nextType,
         certificateText: nextText,
+        customTitle: nextType !== 'Other' ? '' : current.customTitle,
       }
     })
   }
@@ -431,6 +434,20 @@ export default function AdminQrCertificates() {
                   ))}
                 </select>
               </label>
+
+              {form.certificateType === 'Other' && (
+                <label className="block md:col-span-2">
+                  <span className="text-sm font-semibold text-slate-300">Custom Purpose / Title</span>
+                  <input
+                    type="text"
+                    value={form.customTitle}
+                    onChange={(event) => handleChange('customTitle', event.target.value)}
+                    placeholder="e.g. Winner Certificate, Codefest Participation"
+                    className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                    required
+                  />
+                </label>
+              )}
             </div>
 
             <label className="block max-w-sm">
@@ -725,7 +742,7 @@ export default function AdminQrCertificates() {
             <p className="mt-2 text-sm text-slate-400">Create the first record from the form above and it will appear here automatically.</p>
           </div>
         ) : (
-          <div className="mt-6 grid gap-5 xl:grid-cols-2">
+          <div className="mt-6 flex flex-col gap-6">
             {qrCertificates.map((certificate) => {
               const verifyUrl = buildVerifyUrl(certificate.certificate_id, certificate.verifyUrl)
               const isBusy = busyId === certificate.id
