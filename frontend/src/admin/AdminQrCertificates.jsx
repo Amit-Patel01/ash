@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
-import { FileImage, FileText, Link2, Mail, PencilLine, Plus, QrCode, RefreshCcw, ShieldCheck, ShieldOff, Trash2, Upload, UserRound } from 'lucide-react'
+import { ChevronDown, Download, FileImage, FileText, Link2, Mail, PencilLine, Plus, QrCode, RefreshCcw, ShieldCheck, ShieldOff, Trash2, Upload, UserRound } from 'lucide-react'
 import { useStore } from '../store/StoreContext'
 import { auth } from '../config/firebase'
 import { api, readApiJson } from '../config/api'
@@ -129,6 +129,27 @@ export default function AdminQrCertificates() {
 
   const activeCount = qrCertificates.filter(certificate => certificate.status === 'active').length
   const revokedCount = qrCertificates.filter(certificate => certificate.status === 'revoked').length
+  const groupedCertificates = useMemo(() => {
+    const groups = {}
+    qrCertificates.forEach(cert => {
+      const name = cert.name || cert.userName || 'Unknown'
+      if (!groups[name]) groups[name] = []
+      groups[name].push(cert)
+    })
+    
+    const sortedNames = Object.keys(groups).sort()
+    
+    sortedNames.forEach(name => {
+      groups[name].sort((a, b) => {
+        const dateA = new Date(a.rawDate || a.date).getTime()
+        const dateB = new Date(b.rawDate || b.date).getTime()
+        return dateB - dateA
+      })
+    })
+    
+    return { groups, sortedNames }
+  }, [qrCertificates])
+
   const editingCertificate = useMemo(
     () => qrCertificates.find((certificate) => certificate.id === editingId) || null,
     [editingId, qrCertificates]
@@ -175,6 +196,46 @@ export default function AdminQrCertificates() {
     verifyUrl: buildVerifyUrl(previewCertificateId || editingCertificate?.certificate_id || 'QR-PREVIEW'),
   }), [editingCertificate, form, previewCertificateId, previewType])
   const canDownloadPreview = Boolean(form.name.trim() && form.certificateText.trim())
+
+  const [exportTarget, setExportTarget] = useState(null)
+  const [exportFormat, setExportFormat] = useState('')
+  const exportRef = useRef(null)
+
+  useEffect(() => {
+    if (exportTarget && exportFormat && exportRef.current) {
+      const processExport = async () => {
+        try {
+          if (exportFormat === 'png') {
+            await downloadCertificatePng(exportRef.current, exportTarget)
+          } else {
+            await downloadCertificatePdf(exportRef.current, exportTarget)
+          }
+        } catch (err) {
+          setError(err.message || 'Export failed')
+        } finally {
+          setExportTarget(null)
+          setExportFormat('')
+        }
+      }
+      setTimeout(processExport, 100)
+    }
+  }, [exportTarget, exportFormat])
+
+  const triggerExport = (certificate, format) => {
+    const typeMeta = getTypeMeta(certificate.certificateType)
+    setExportTarget({
+      ...certificate,
+      source: 'qr',
+      statusDisplay: certificate.status === 'revoked' ? 'Revoked' : 'Active',
+      isValid: certificate.status !== 'revoked',
+      certificateTypeLabel: certificate.certificateType === 'Other' && certificate.documentLabel ? certificate.documentLabel : typeMeta.label,
+      documentLabel: certificate.certificateType === 'Other' && certificate.documentLabel ? certificate.documentLabel : typeMeta.label,
+      course: certificate.certificateType === 'Other' && certificate.documentLabel ? certificate.documentLabel : typeMeta.label,
+      courseName: certificate.certificateType === 'Other' && certificate.documentLabel ? certificate.documentLabel : typeMeta.label,
+      verifyUrl: buildVerifyUrl(certificate.certificate_id, certificate.verifyUrl)
+    })
+    setExportFormat(format)
+  }
 
   const resetForm = () => {
     setForm(createInitialForm())
@@ -736,21 +797,40 @@ export default function AdminQrCertificates() {
           <p className="text-sm text-slate-400">Create, edit, revoke, or delete without affecting manual certificates.</p>
         </div>
 
-        {qrCertificates.length === 0 ? (
+        {groupedCertificates.sortedNames.length === 0 ? (
           <div className="mt-6 rounded-[28px] border border-dashed border-white/10 bg-white/[0.03] px-6 py-16 text-center">
             <p className="text-lg font-semibold text-white">No QR certificates yet.</p>
             <p className="mt-2 text-sm text-slate-400">Create the first record from the form above and it will appear here automatically.</p>
           </div>
         ) : (
           <div className="mt-6 flex flex-col gap-6">
-            {qrCertificates.map((certificate) => {
-              const verifyUrl = buildVerifyUrl(certificate.certificate_id, certificate.verifyUrl)
-              const isBusy = busyId === certificate.id
-              const isActive = certificate.status === 'active'
+            {groupedCertificates.sortedNames.map((name) => (
+              <details key={name} className="group rounded-[28px] border border-white/10 bg-slate-950/40" open={groupedCertificates.sortedNames.length < 5}>
+                <summary className="flex cursor-pointer select-none items-center justify-between p-5 list-none [&::-webkit-details-marker]:hidden">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-400/10 text-cyan-200">
+                      <UserRound size={22} />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">{name}</h3>
+                      <p className="mt-1 text-sm text-slate-400">{groupedCertificates.groups[name].length} Certificate(s)</p>
+                    </div>
+                  </div>
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/5 text-slate-400 transition-transform group-open:rotate-180">
+                    <ChevronDown size={20} />
+                  </div>
+                </summary>
+                
+                <div className="border-t border-white/5 p-5 pt-0">
+                  <div className="mt-5 flex flex-col gap-5">
+                    {groupedCertificates.groups[name].map((certificate) => {
+                      const verifyUrl = buildVerifyUrl(certificate.certificate_id, certificate.verifyUrl)
+                      const isBusy = busyId === certificate.id
+                      const isActive = certificate.status === 'active'
 
-              return (
-                <article key={certificate.id} className="rounded-[28px] border border-white/10 bg-white/[0.03] p-5">
-                  <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+                      return (
+                        <article key={certificate.id} className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
+                          <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.24em] text-cyan-200">
@@ -825,11 +905,11 @@ export default function AdminQrCertificates() {
                     </div>
                   </div>
 
-                  <div className="mt-5 flex flex-wrap gap-3">
+                  <div className="mt-5 flex flex-wrap gap-2 md:gap-3">
                     <button
                       type="button"
                       onClick={() => handleEdit(certificate)}
-                      disabled={isBusy}
+                      disabled={isBusy || exportTarget?.id === certificate.id}
                       className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       <PencilLine size={16} />
@@ -838,8 +918,28 @@ export default function AdminQrCertificates() {
 
                     <button
                       type="button"
+                      onClick={() => triggerExport(certificate, 'png')}
+                      disabled={isBusy || exportTarget?.id === certificate.id}
+                      className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <Download size={16} />
+                      {exportTarget?.id === certificate.id && exportFormat === 'png' ? 'Exporting...' : 'PNG'}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => triggerExport(certificate, 'pdf')}
+                      disabled={isBusy || exportTarget?.id === certificate.id}
+                      className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <Download size={16} />
+                      {exportTarget?.id === certificate.id && exportFormat === 'pdf' ? 'Exporting...' : 'PDF'}
+                    </button>
+
+                    <button
+                      type="button"
                       onClick={() => handleToggleStatus(certificate)}
-                      disabled={isBusy}
+                      disabled={isBusy || exportTarget?.id === certificate.id}
                       className={`inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
                         isActive
                           ? 'border-amber-400/20 bg-amber-400/10 text-amber-200 hover:bg-amber-400/15'
@@ -853,7 +953,7 @@ export default function AdminQrCertificates() {
                     <button
                       type="button"
                       onClick={() => handleDelete(certificate)}
-                      disabled={isBusy}
+                      disabled={isBusy || exportTarget?.id === certificate.id}
                       className="inline-flex items-center gap-2 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-200 transition hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       <Trash2 size={16} />
@@ -864,8 +964,22 @@ export default function AdminQrCertificates() {
               )
             })}
           </div>
+        </div>
+      </details>
+    ))}
+          </div>
         )}
       </section>
+
+      {/* Hidden container for dynamic exports without interacting with Preview */}
+      <div className="absolute left-[-9999px] top-[-9999px]" aria-hidden="true">
+        {exportTarget && (
+          <div ref={exportRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px`, background: 'white' }}>
+            <CertificateDocument certificate={exportTarget} template={certificateTemplate} />
+          </div>
+        )}
+      </div>
+
     </div>
   )
 }
