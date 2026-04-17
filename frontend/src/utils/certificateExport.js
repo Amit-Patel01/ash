@@ -7,7 +7,9 @@ export const CERTIFICATE_EXPORT_WIDTH = 1400
 const waitForNextPaint = () =>
   new Promise((resolve) => {
     window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(resolve)
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(resolve)
+      })
     })
   })
 
