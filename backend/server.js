@@ -245,6 +245,14 @@ if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 app.use("/uploads", express.static(uploadsDir));
 // ─── Frontend Static Files (optional) ────────────────────────────────────────
 const frontendDistDir = path.join(__dirname, "..", "frontend", "dist");
+const frontendIndexPath = path.join(frontendDistDir, "index.html");
+const sendFrontendIndex = (res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.sendFile(frontendIndexPath);
+};
+
 if (fs.existsSync(frontendDistDir)) {
   // Serve static files from the React frontend build directory
   app.use(express.static(path.join(__dirname, '../frontend/dist'), {
@@ -262,18 +270,6 @@ if (fs.existsSync(frontendDistDir)) {
       }
     }
   }));
-
-  // Route for any other request to serve the React index.html (SPA routing)
-  app.get('*', (req, res) => {
-    const indexPath = path.join(__dirname, '../frontend/dist/index.html');
-    
-    // Also set no-cache for index.html when served via the wildcard route
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
-    
-    res.sendFile(indexPath);
-  });
 }
 // ─── Health Check ────────────────────────────────────────────────────────────
 app.get("/", (req, res) => {
@@ -389,6 +385,12 @@ app.use("/api/certificates", require("./routes/certificates"));
 app.use("/api/razorpay", require("./routes/razorpay"));
 app.use("/api/ai", require("./routes/ai"));
 app.use("/api/notify", require("./routes/notify"));
+
+if (fs.existsSync(frontendDistDir)) {
+  app.get("/{*frontendPath}", (req, res) => {
+    sendFrontendIndex(res);
+  });
+}
 
 // ─── Legacy Contact & Reply Routes (kept at root for backward compat) ─────────
 const { sendEmail, emailTemplate } = require("./services/emailService");
