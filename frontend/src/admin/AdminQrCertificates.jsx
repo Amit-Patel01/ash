@@ -757,7 +757,8 @@ export default function AdminQrCertificates() {
             </div>
           </div>
 
-          <div className="absolute left-[-9999px] top-[-9999px]" aria-hidden="true">
+          {/* Hidden high-res export container — must be fixed+invisible so container queries resolve */}
+          <div aria-hidden="true" style={{ position: 'fixed', top: 0, left: 0, visibility: 'hidden', pointerEvents: 'none', zIndex: -1 }}>
             <div ref={downloadRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
               <CertificateDocument certificate={previewCertificate} template={certificateTemplate} />
             </div>
