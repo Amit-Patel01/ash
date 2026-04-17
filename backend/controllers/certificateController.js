@@ -51,13 +51,7 @@ const serializeCertificateDate = (value) => {
 };
 
 const getFrontendUrl = (req) => {
-  // If request is coming from localhost, return localhost frontend URL (Vite default is 5173)
-  const host = req.get("host") || "";
-  if (host.includes("localhost") || host.includes("127.0.0.1")) {
-    return "http://localhost:5173";
-  }
-
-  // Priority: env FRONTEND_URL -> APP_URL -> production default
+  // Priority: env FRONTEND_URL -> APP_URL -> production default -> localhost fallback
   if (process.env.FRONTEND_URL) {
     return process.env.FRONTEND_URL.replace(/\/$/, ''); // Remove trailing slash
   }

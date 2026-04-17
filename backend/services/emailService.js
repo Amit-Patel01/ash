@@ -1,63 +1,11 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const OWNER_NOTIFICATION_EMAIL =
-  process.env.OWNER_NOTIFICATION_EMAIL ||
-  process.env.ADMIN_NOTIFICATION_EMAIL ||
-  "amitpatel0729@gmail.com";
-
 if (!RESEND_API_KEY) {
-  console.warn("WARNING: RESEND_API_KEY is not set. Resend email delivery is disabled.");
+  console.warn("⚠️  WARNING: RESEND_API_KEY is not set. Emailing will fail.");
 }
 
-let resend = null;
-let resendInitAttempted = false;
-let resendInitError = null;
-let smtpTransport = null;
-let smtpInitAttempted = false;
-
-const getResendClient = () => {
-  if (resendInitAttempted) return resend;
-  resendInitAttempted = true;
-
-  if (!RESEND_API_KEY) {
-    return null;
-  }
-
-  try {
-    const { Resend } = require("resend");
-    resend = new Resend(RESEND_API_KEY);
-    return resend;
-  } catch (error) {
-    resendInitError = error;
-    console.error("Failed to initialize Resend client:", error?.message || String(error));
-    resend = null;
-    return null;
-  }
-};
-
-const getSmtpTransport = () => {
-  if (smtpInitAttempted) return smtpTransport;
-  smtpInitAttempted = true;
-
-  const host = process.env.SMTP_HOST || process.env.MAIL_HOST;
-  const port = Number(process.env.SMTP_PORT || process.env.MAIL_PORT || 587);
-  const user = process.env.SMTP_USER || process.env.MAIL_USER;
-  const pass = process.env.SMTP_PASS || process.env.MAIL_PASS;
-
-  if (!host || !user || !pass) {
-    return null;
-  }
-
-  smtpTransport = nodemailer.createTransport({
-    host,
-    port,
-    secure: port === 465,
-    auth: { user, pass },
-  });
-
-  return smtpTransport;
-};
+const resend = new Resend(RESEND_API_KEY || "re_dummy_key_to_prevent_crash");
 
 /**
  * Premium Email Template Wrapper
@@ -113,21 +61,6 @@ const isValidEmail = (email) => {
   return emailPattern.test(String(email).trim());
 };
 
-const buildOwnerBccList = (to) => {
-  if (!isValidEmail(OWNER_NOTIFICATION_EMAIL)) {
-    return undefined;
-  }
-
-  const normalizedTo = String(to || "").trim().toLowerCase();
-  const normalizedOwner = OWNER_NOTIFICATION_EMAIL.trim().toLowerCase();
-
-  if (normalizedTo === normalizedOwner) {
-    return undefined;
-  }
-
-  return [OWNER_NOTIFICATION_EMAIL];
-};
-
 /**
  * Send a transactional email via Resend
  * @param {Object} opts - { to, subject, html, text?, attachments? }
@@ -149,57 +82,22 @@ const sendEmail = async ({ to, subject, html, text, attachments }) => {
       return { success: false, error: "Email content (html or text) is required" };
     }
 
-    const from = process.env.FROM_EMAIL || "Amit Solution Hub <support@amitsolutionhub.com>";
-    const bcc = buildOwnerBccList(to);
-    const resendClient = getResendClient();
+    const result = await resend.emails.send({
+      from: process.env.FROM_EMAIL || "Amit Solution Hub <support@amitsolutionhub.com>",
+      to,
+      subject,
+      html: html || undefined,
+      text: text || undefined,
+      attachments: attachments || undefined,
+    });
 
-    if (resendClient) {
-      const result = await resendClient.emails.send({
-        from,
-        to,
-        bcc,
-        subject,
-        html: html || undefined,
-        text: text || undefined,
-        attachments: attachments || undefined,
-      });
-
-      if (!result.error) {
-        return { success: true, id: result.id };
-      }
-
-      console.error("Resend API returned an error:", result.error.message || String(result.error));
+    // Check if Resend returned an error
+    if (result.error) {
+      return { success: false, error: result.error.message || String(result.error) };
     }
 
-    const transport = getSmtpTransport();
-    if (transport) {
-      const result = await transport.sendMail({
-        from,
-        to,
-        bcc,
-        subject,
-        html: html || undefined,
-        text: text || undefined,
-        attachments: attachments || undefined,
-      });
-
-      return {
-        success: true,
-        id: result.messageId || result.response || "smtp-sent",
-      };
-    }
-
-    if (resendInitError) {
-      return {
-        success: false,
-        error: `Email service unavailable: ${resendInitError.message || String(resendInitError)}`,
-      };
-    }
-
-    return {
-      success: false,
-      error: "Email service unavailable: configure RESEND_API_KEY or SMTP credentials.",
-    };
+    // Return success with email ID
+    return { success: true, id: result.id };
   } catch (error) {
     const errorMessage = error?.message || String(error);
     console.error("Email send error:", errorMessage);

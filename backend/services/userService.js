@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const admin = require("firebase-admin");
 const { logger } = require("../logger");
 const { sendEmail, emailTemplate } = require("./emailService");
+const { hasMysqlConfig, query, withTransaction } = require("./mysqlService");
 
 const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000;
 const DEFAULT_SITE_URL = (process.env.APP_URL || "https://www.amitsolutionhub.com").replace(/\/+$/, "");
@@ -101,7 +102,7 @@ const createHttpError = (status, message, code = null) => {
   return error;
 };
 
-const useMysql = () => false;
+const useMysql = () => hasMysqlConfig();
 
 const assertMySqlReady = () => {
   if (!useMysql()) {
@@ -892,10 +893,6 @@ const materializeLegacyUser = async (identifier) => {
 const getManagedUser = async (identifier, options = {}) => {
   let user = await findUserByIdentifier(identifier, options);
   if (user) return user;
-
-  if (!useMysql()) {
-    return null;
-  }
 
   user = await materializeLegacyUser(identifier);
   return user || null;

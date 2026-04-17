@@ -277,12 +277,12 @@ app.use("/api/notify", require("./routes/notify"));
 const { sendEmail, emailTemplate } = require("./services/emailService");
 
 app.post("/contact", async (req, res) => {
-  const { firstName, lastName, email, mobile, message } = req.body;
+  const { firstName, lastName, email, mobile, github, message } = req.body;
   try {
     await sendEmail({
       to: "amitpatel07029@gmail.com",
       subject: `New Contact from ${firstName}`,
-      text: `Name: ${firstName} ${lastName}\nEmail: ${email}\nMobile: ${mobile || "N/A"}\nMessage: ${message}`,
+      text: `Name: ${firstName} ${lastName}\nEmail: ${email}\nMobile: ${mobile || "N/A"}\nGitHub: ${github || "N/A"}\nMessage: ${message}`,
     });
 
     await sendEmail({
