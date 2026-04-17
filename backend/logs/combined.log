@@ -698,3 +698,8 @@ Caused by: Error
     at NoopTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\NoopTracer.js:54:31)
     at ProxyTracer.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@opentelemetry\api\build\src\trace\ProxyTracer.js:27:24)
     at EnabledTraceUtil.startActiveSpan (D:\Github-project upload\solutionhub\backend\node_modules\@google-cloud\firestore\build\src\telemetry\enabled-trace-util.js:102:28)
+[2026-04-17 07:15:46] INFO: Firebase Admin initialized (project: solutionhub-81976)
+[2026-04-17 07:15:47] WARN: MySQL configuration is not set. User-management APIs will remain unavailable until MYSQL_HOST/MYSQL_PORT/MYSQL_USER/MYSQL_PASSWORD/MYSQL_DATABASE or MYSQL_URL/DATABASE_URL is provided.
+[2026-04-17 07:15:47] INFO: [AI] Gemini configured with model gemini-2.5-flash using GEMINI_API_KEY.
+[2026-04-17 07:15:47] INFO: SolutionHub backend v2.0 listening on port 5000
+[2026-04-17 07:15:47] INFO: Modules: trading | admin | auth | users | certificates | razorpay | ai | webhook
