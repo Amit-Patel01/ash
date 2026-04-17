@@ -40,7 +40,7 @@ const capturePng = async (element) => {
   const { width, height } = getDimensions(element)
 
   if (!width || !height || height < 10) {
-    throw new Error(`Certificate dimensions invalid (${width}×${height}). Please try again.`)
+    throw new Error(`Certificate dimensions invalid (${width}\u00d7${height}). Please try again.`)
   }
 
   const opts = {
@@ -51,10 +51,21 @@ const capturePng = async (element) => {
     cacheBust: true,            // fresh CORS-enabled fetch for all images
   }
 
-  // html-to-image quirk: first call loads fonts/images into SVG embed cache;
-  // only the second call returns a fully-resolved result.
-  await toPng(element, opts).catch(() => {})
-  const dataUrl = await toPng(element, opts)
+  // Temporarily move the element to top:0 so html-to-image's internal
+  // getBoundingClientRect() maps to a valid viewport region (not -9999px).
+  const parent = element.parentElement
+  const origStyle = parent ? parent.style.top : null
+  if (parent && origStyle !== null) parent.style.top = '0px'
+
+  let dataUrl
+  try {
+    // html-to-image quirk: first call loads fonts/images into SVG embed cache;
+    // only the second call returns a fully-resolved result.
+    await toPng(element, opts).catch(() => {})
+    dataUrl = await toPng(element, opts)
+  } finally {
+    if (parent && origStyle !== null) parent.style.top = origStyle
+  }
 
   if (!dataUrl || dataUrl === 'data:,') {
     throw new Error('Failed to capture certificate image.')
