@@ -219,14 +219,7 @@ const allowedOrigins = Array.from(
 
 app.use(
   cors({
-    origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      logger.warn(`Blocked CORS origin: ${origin}`);
-      return callback(new Error("Origin not allowed by CORS"));
-    },
+    origin: "*",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: false,
