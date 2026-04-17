@@ -971,8 +971,8 @@ export default function AdminQrCertificates() {
         )}
       </section>
 
-      {/* Hidden container for dynamic exports without interacting with Preview */}
-      <div className="absolute left-[-9999px] top-[-9999px]" aria-hidden="true">
+      {/* Hidden container for dynamic exports — must be fixed+invisible so container queries resolve */}
+      <div aria-hidden="true" style={{ position: 'fixed', top: 0, left: 0, visibility: 'hidden', pointerEvents: 'none', zIndex: -1 }}>
         {exportTarget && (
           <div ref={exportRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px`, background: 'white' }}>
             <CertificateDocument certificate={exportTarget} template={certificateTemplate} />
