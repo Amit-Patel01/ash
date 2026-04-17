@@ -1,11 +1,11 @@
-# Graph Report - .  (2026-04-16)
+# Graph Report - .  (2026-04-17)
 
 ## Corpus Check
-- 202 files · ~426,553 words
+- 201 files · ~425,952 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1054 nodes · 1352 edges · 178 communities detected
+- 1047 nodes · 1342 edges · 178 communities detected
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
@@ -192,9 +192,9 @@
 ## God Nodes (most connected - your core abstractions)
 1. `getFirestore()` - 20 edges
 2. `db()` - 19 edges
-3. `package:flutter/material.dart` - 18 edges
-4. `createHttpError()` - 17 edges
-5. `useMysql()` - 17 edges
+3. `useMysql()` - 18 edges
+4. `package:flutter/material.dart` - 18 edges
+5. `createHttpError()` - 17 edges
 6. `findUserConflict()` - 17 edges
 7. `assertMySqlReady()` - 15 edges
 8. `toIsoString()` - 15 edges
@@ -207,20 +207,20 @@
 ## Communities
 
 ### Community 0 - "Community 0"
-Cohesion: 0.01
-Nodes (163): ../config/app_config.dart, dart:convert, _AdminActionCard, AdminWorkspacePage, _AdminWorkspacePageState, build, EmptyStateCard, GlassCard (+155 more)
+Cohesion: 0.02
+Nodes (132): ../config/app_config.dart, dart:convert, _AdminActionCard, AdminWorkspacePage, _AdminWorkspacePageState, build, EmptyStateCard, GlassCard (+124 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.14
 Nodes (58): approveAccountRequest(), assertMySqlReady(), buildFirestoreAccountRequestPayload(), buildFirestoreUserPayload(), buildResetEmailMarkup(), buildResetUrl(), buildTeamPayload(), completePasswordReset() (+50 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.05
-Nodes (42): dart:async, local_notification_service.dart, Align, build, ChatPage, _ChatPageState, _ChatRoomCard, ChatThreadPage (+34 more)
+Cohesion: 0.04
+Nodes (52): AccentIconBubble, build, Container, EmptyStateCard, GlassCard, _InfoTile, initState, launchUrl (+44 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.06
-Nodes (37): config/firebase_options.dart, dart:io, DefaultFirebaseOptions, AuthScreen, _BootstrapLoader, BrandLogo, build, CircularProgressIndicator (+29 more)
+Cohesion: 0.05
+Nodes (42): config/firebase_options.dart, dart:async, dart:io, local_notification_service.dart, DefaultFirebaseOptions, AuthScreen, _BootstrapLoader, BrandLogo (+34 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.05
@@ -235,12 +235,12 @@ Cohesion: 0.18
 Nodes (21): approveRequest(), broadcastEmail(), buildBroadcastContent(), createUser(), dedupeEmails(), deleteUser(), downloadEmployeeCv(), escapeHtml() (+13 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.2
-Nodes (19): buildVerifyResponseData(), buildVerifyUrl(), createQrCertificate(), generateCertificateId(), generateUniqueCertificateId(), getFrontendUrl(), isQrCertificateId(), isValidPublicCertificateId() (+11 more)
+Cohesion: 0.09
+Nodes (22): Align, build, ChatPage, _ChatPageState, _ChatRoomCard, ChatThreadPage, _ChatThreadPageState, dispose (+14 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.09
-Nodes (19): dark, SolutionHubTheme, TextStyle, AccentIconBubble, AppBackdrop, build, Container, DecoratedBox (+11 more)
+Cohesion: 0.2
+Nodes (19): buildVerifyResponseData(), buildVerifyUrl(), createQrCertificate(), generateCertificateId(), generateUniqueCertificateId(), getFrontendUrl(), isQrCertificateId(), isValidPublicCertificateId() (+11 more)
 
 ### Community 9 - "Community 9"
 Cohesion: 0.17
@@ -251,48 +251,48 @@ Cohesion: 0.19
 Nodes (19): addCertificate(), createCertificateRecord(), createEnrollment(), db(), deleteCertificate(), findCertificateByPublicId(), getActiveCourseEnrollments(), getActiveEnrolledEmails() (+11 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.11
-Nodes (17): Align, _AssistantMessage, build, Container, didUpdateWidget, dispose, initState, launchUrl (+9 more)
+Cohesion: 0.12
+Nodes (15): AccentIconBubble, AppBackdrop, build, Container, DecoratedBox, EmptyStateCard, GlassCard, _GlowOrb (+7 more)
 
 ### Community 12 - "Community 12"
+Cohesion: 0.12
+Nodes (15): build, Container, _CourseCard, CoursesPage, _CoursesPageState, GlassCard, _InfoTile, initState (+7 more)
+
+### Community 13 - "Community 13"
 Cohesion: 0.23
 Nodes (6): formatTimeAgo(), getEmployeeIdentitySet(), getEmployeeMemberData(), getTimeValue(), normalize(), taskBelongsToEmployee()
 
-### Community 13 - "Community 13"
+### Community 14 - "Community 14"
 Cohesion: 0.22
 Nodes (4): compactMatchKey(), getPlanIdentity(), matchesEnrollmentPlan(), normalizeMatchKey()
 
-### Community 14 - "Community 14"
+### Community 15 - "Community 15"
 Cohesion: 0.38
 Nodes (9): compactText(), formatMeetingDateTime(), isEnrollmentForCoursePlan(), normalizeText(), resolveCoursePlanMeetingLink(), sendBatchedEmails(), sendCoursePlanNotification(), sendSessionNotification() (+1 more)
 
-### Community 15 - "Community 15"
+### Community 16 - "Community 16"
 Cohesion: 0.2
 Nodes (0): 
 
-### Community 16 - "Community 16"
+### Community 17 - "Community 17"
 Cohesion: 0.36
 Nodes (6): buildChatContents(), chatWithAI(), extractTextFromResponse(), generateText(), getRecommendations(), postJson()
 
-### Community 17 - "Community 17"
+### Community 18 - "Community 18"
 Cohesion: 0.33
 Nodes (5): getHomePathForRole(), ProtectedAdmin(), ProtectedCustomer(), ProtectedEmployee(), RoleRedirect()
 
-### Community 18 - "Community 18"
+### Community 19 - "Community 19"
 Cohesion: 0.33
 Nodes (4): buildPlanId(), compactText(), matchesPlanEnrollment(), normalizeText()
 
-### Community 19 - "Community 19"
+### Community 20 - "Community 20"
 Cohesion: 0.31
 Nodes (5): formatTimeAgo(), getTimeValue(), isDone(), isProgress(), normalize()
 
-### Community 20 - "Community 20"
+### Community 21 - "Community 21"
 Cohesion: 0.31
 Nodes (5): getImageUrl(), getMemberKey(), getMemberKeys(), PublicEmployeeProfile(), socialLinks()
-
-### Community 21 - "Community 21"
-Cohesion: 0.54
-Nodes (7): ensureUserManagementSchema(), getMysqlConfig(), getPool(), hasMysqlConfig(), parseMysqlUrl(), query(), withTransaction()
 
 ### Community 22 - "Community 22"
 Cohesion: 0.36
@@ -355,36 +355,36 @@ Cohesion: 0.6
 Nodes (5): getMyProfile(), handleError(), sendMyPasswordReset(), updateMyProfile(), uploadMyCv()
 
 ### Community 37 - "Community 37"
+Cohesion: 0.8
+Nodes (5): formatEnrollmentDeadline(), isEnrollmentClosed(), isPlanEnrollmentClosed(), normalizeEnrollmentDeadline(), toLocalDateKey()
+
+### Community 38 - "Community 38"
 Cohesion: 0.33
 Nodes (1): FlutterWindow()
 
-### Community 38 - "Community 38"
+### Community 39 - "Community 39"
 Cohesion: 0.5
 Nodes (2): CertificateDocument(), getDocumentNarrative()
-
-### Community 39 - "Community 39"
-Cohesion: 0.4
-Nodes (0): 
 
 ### Community 40 - "Community 40"
 Cohesion: 0.4
 Nodes (0): 
 
 ### Community 41 - "Community 41"
-Cohesion: 0.6
-Nodes (3): getPriority(), getStatus(), TaskCard()
-
-### Community 42 - "Community 42"
 Cohesion: 0.4
 Nodes (0): 
 
+### Community 42 - "Community 42"
+Cohesion: 0.6
+Nodes (3): getPriority(), getStatus(), TaskCard()
+
 ### Community 43 - "Community 43"
-Cohesion: 0.7
-Nodes (4): createImageDataUrl(), downloadCertificatePdf(), downloadCertificatePng(), downloadDataUrl()
+Cohesion: 0.4
+Nodes (0): 
 
 ### Community 44 - "Community 44"
-Cohesion: 0.8
-Nodes (4): formatEnrollmentDeadline(), isEnrollmentClosed(), normalizeEnrollmentDeadline(), toLocalDateKey()
+Cohesion: 0.7
+Nodes (4): createImageDataUrl(), downloadCertificatePdf(), downloadCertificatePng(), downloadDataUrl()
 
 ### Community 45 - "Community 45"
 Cohesion: 0.4
@@ -1121,17 +1121,17 @@ Nodes (0):
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `package:flutter/material.dart` connect `Community 0` to `Community 2`, `Community 3`, `Community 4`, `Community 8`, `Community 11`?**
+- **Why does `package:flutter/material.dart` connect `Community 0` to `Community 2`, `Community 3`, `Community 4`, `Community 7`, `Community 11`, `Community 12`?**
   _High betweenness centrality (0.029) - this node is a cross-community bridge._
-- **Why does `../models/app_models.dart` connect `Community 2` to `Community 0`, `Community 3`, `Community 11`, `Community 4`?**
+- **Why does `../models/app_models.dart` connect `Community 2` to `Community 0`, `Community 3`, `Community 4`, `Community 7`, `Community 12`?**
   _High betweenness centrality (0.028) - this node is a cross-community bridge._
 - **Why does `package:cloud_firestore/cloud_firestore.dart` connect `Community 2` to `Community 5`?**
-  _High betweenness centrality (0.018) - this node is a cross-community bridge._
+  _High betweenness centrality (0.019) - this node is a cross-community bridge._
 - **What connects `MainActivity`, `Intercept NOTIFY_DEBUGGER_ABOUT_RX_PAGES and touch the pages.`, `-registerWithRegistry` to the rest of the system?**
   _329 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.01 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.02 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
   _Cohesion score 0.14 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
-  _Cohesion score 0.05 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.04 - nodes in this community are weakly interconnected._
