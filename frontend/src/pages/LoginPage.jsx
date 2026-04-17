@@ -57,6 +57,32 @@ export default function LoginPage() {
     }
   }
 
+  const handleGoogleSignIn = async () => {
+    setError('')
+    setGoogleLoading(true)
+    try {
+      const user = await loginWithGoogle()
+      const profileSnap = await getDoc(doc(db, 'users', user.uid))
+      const profile = profileSnap.data()
+      if (redirectPath) {
+        navigate(redirectPath)
+        return
+      }
+      if (profile?.role === 'admin') navigate('/admin')
+      else if (profile?.role === 'customer') navigate('/customer')
+      else navigate('/employee')
+    } catch (err) {
+      if (err.code === 'auth/no-account') {
+        navigate('/join-us?reason=google-no-account')
+      } else if (err.code !== 'auth/popup-closed-by-user') {
+        setError('Google sign-in failed. Please try again.')
+        console.error(err)
+      }
+    } finally {
+      setGoogleLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen w-full relative flex items-center justify-center p-4 bg-[#030712] overflow-hidden selection:bg-blue-500/30 selection:text-blue-200">
       {/* Background Animated Blobs */}
