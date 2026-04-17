@@ -703,3 +703,7 @@ Caused by: Error
 [2026-04-17 07:15:47] INFO: [AI] Gemini configured with model gemini-2.5-flash using GEMINI_API_KEY.
 [2026-04-17 07:15:47] INFO: SolutionHub backend v2.0 listening on port 5000
 [2026-04-17 07:15:47] INFO: Modules: trading | admin | auth | users | certificates | razorpay | ai | webhook
+[2026-04-17 19:45:12] INFO: Firebase Admin initialized (project: solutionhub-81976)
+[2026-04-17 19:45:12] INFO: [AI] Gemini configured with model gemini-2.5-flash using GEMINI_API_KEY.
+[2026-04-17 19:45:12] INFO: SolutionHub backend v2.0 listening on port 5000
+[2026-04-17 19:45:12] INFO: Modules: trading | admin | auth | users | certificates | razorpay | ai | webhook

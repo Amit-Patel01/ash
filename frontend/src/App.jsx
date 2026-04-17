@@ -148,7 +148,7 @@ function RoleRedirect() {
 }
 
 function AppContent() {
-  const UNDER_MAINTENANCE = true; // Set to true to enable maintenance mode on frontend
+  const UNDER_MAINTENANCE = false; // Set to true to enable maintenance mode on frontend
 
   if (UNDER_MAINTENANCE) {
     return (

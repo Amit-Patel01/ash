@@ -5,7 +5,6 @@ const bcrypt = require("bcryptjs");
 const admin = require("firebase-admin");
 const { logger } = require("../logger");
 const { sendEmail, emailTemplate } = require("./emailService");
-const { hasMysqlConfig, query, withTransaction } = require("./mysqlService");
 
 const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000;
 const DEFAULT_SITE_URL = (process.env.APP_URL || "https://www.amitsolutionhub.com").replace(/\/+$/, "");
@@ -102,16 +101,10 @@ const createHttpError = (status, message, code = null) => {
   return error;
 };
 
-const useMysql = () => hasMysqlConfig();
+const useMysql = () => false;
 
 const assertMySqlReady = () => {
-  if (!useMysql()) {
-    throw createHttpError(
-      503,
-      "User management is not available because the MySQL configuration is incomplete.",
-      "mysql_unavailable"
-    );
-  }
+  // MySQL is intentionally disabled.
 };
 
 const mapFirestoreUser = (docSnap, { includeSensitive = false } = {}) => {
