@@ -450,7 +450,7 @@ export default function AdminQrCertificates() {
         </div>
       </section>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_420px]">
+      <div className="flex flex-col gap-6">
         <section className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -713,79 +713,77 @@ export default function AdminQrCertificates() {
           </form>
         </section>
 
-        <div className="space-y-6">
-          <aside className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Live Preview</p>
-                <h3 className="mt-2 text-2xl font-black text-white">Certificate image preview</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-400">
-                  Form me jo details bharoge, wahi yahan certificate image ke roop me dikhega. Save ke baad real `QR-` ID ke saath same preview download bhi ho jayega.
-                </p>
-              </div>
-              <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-3 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-cyan-200">
-                {previewCertificate.certificate_id}
-              </div>
+        <aside className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Live Preview</p>
+              <h3 className="mt-2 text-2xl font-black text-white">Certificate image preview</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-400">
+                Form me jo details bharoge, wahi yahan certificate image ke roop me dikhega. Save ke baad real `QR-` ID ke saath same preview download bhi ho jayega.
+              </p>
             </div>
-
-            <div className="mt-5 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={() => handlePreviewDownload('png')}
-                disabled={!canDownloadPreview || downloading === 'png'}
-                className="inline-flex items-center gap-2 rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm font-semibold text-cyan-200 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <FileImage size={16} />
-                {downloading === 'png' ? 'Generating PNG...' : 'Download PNG'}
-              </button>
-              <button
-                type="button"
-                onClick={() => handlePreviewDownload('pdf')}
-                disabled={!canDownloadPreview || downloading === 'pdf'}
-                className="inline-flex items-center gap-2 rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-200 transition hover:bg-amber-400/15 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <FileText size={16} />
-                {downloading === 'pdf' ? 'Generating PDF...' : 'Download PDF'}
-              </button>
+            <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-3 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-cyan-200">
+              {previewCertificate.certificate_id}
             </div>
+          </div>
 
-            <div className="mt-5 overflow-hidden rounded-[30px] border border-white/10 bg-slate-950/40 p-3">
-              <div className="overflow-x-auto">
-                <div className="mx-auto w-full">
-                  <CertificateDocument certificate={previewCertificate} template={certificateTemplate} />
-                </div>
-              </div>
-            </div>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => handlePreviewDownload('png')}
+              disabled={!canDownloadPreview || downloading === 'png'}
+              className="inline-flex items-center gap-2 rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm font-semibold text-cyan-200 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <FileImage size={16} />
+              {downloading === 'png' ? 'Generating PNG...' : 'Download PNG'}
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePreviewDownload('pdf')}
+              disabled={!canDownloadPreview || downloading === 'pdf'}
+              className="inline-flex items-center gap-2 rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-200 transition hover:bg-amber-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <FileText size={16} />
+              {downloading === 'pdf' ? 'Generating PDF...' : 'Download PDF'}
+            </button>
+          </div>
 
-            <div className="absolute left-[-9999px] top-[-9999px]" aria-hidden="true">
-              <div ref={downloadRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
+          <div className="mt-5 overflow-hidden rounded-[30px] border border-white/10 bg-slate-950/40 p-3">
+            <div className="overflow-x-auto">
+              <div className="mx-auto w-fit min-w-full">
                 <CertificateDocument certificate={previewCertificate} template={certificateTemplate} />
               </div>
             </div>
-          </aside>
+          </div>
 
-          <aside className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
-            <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Module Notes</p>
-            <div className="mt-4 space-y-4 text-sm leading-6 text-slate-300">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-                <p className="font-semibold text-white">Auto-generated IDs</p>
-                <p className="mt-1 text-slate-400">Every new record gets a unique `QR-` certificate ID from the backend.</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-                <p className="font-semibold text-white">Verification link</p>
-                <p className="mt-1 text-slate-400">Each QR points to `/verify/{'{certificate_id}'}` and reuses the shared verifier.</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-                <p className="font-semibold text-white">Employee delivery</p>
-                <p className="mt-1 text-slate-400">When assigned, the certificate appears on the employee dashboard and the employee receives an email on save.</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-                <p className="font-semibold text-white">Revocation support</p>
-                <p className="mt-1 text-slate-400">Revoked certificates stay searchable but show a revoked status on the public verify page.</p>
-              </div>
+          <div className="absolute left-[-9999px] top-[-9999px]" aria-hidden="true">
+            <div ref={downloadRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
+              <CertificateDocument certificate={previewCertificate} template={certificateTemplate} />
             </div>
-          </aside>
-        </div>
+          </div>
+        </aside>
+
+        <section className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
+          <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Module Notes</p>
+          <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4 text-sm leading-6 text-slate-300">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
+              <p className="font-semibold text-white">Auto-generated IDs</p>
+              <p className="mt-1 text-slate-400">Every new record gets a unique `QR-` certificate ID from the backend.</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
+              <p className="font-semibold text-white">Verification link</p>
+              <p className="mt-1 text-slate-400">Each QR points to `/verify/{'{certificate_id}'}` and reuses the shared verifier.</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
+              <p className="font-semibold text-white">Employee delivery</p>
+              <p className="mt-1 text-slate-400">When assigned, the certificate appears on the employee dashboard and the employee receives an email on save.</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
+              <p className="font-semibold text-white">Revocation support</p>
+              <p className="mt-1 text-slate-400">Revoked certificates stay searchable but show a revoked status on the public verify page.</p>
+            </div>
+          </div>
+        </section>
       </div>
 
       <section className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
