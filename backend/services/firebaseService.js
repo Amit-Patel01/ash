@@ -68,9 +68,10 @@ const getSessionsForReminder = async (dateStr) => {
   const snap = await db()
     .collection("tradingSessions")
     .where("date", "==", dateStr)
-    .where("reminderSent", "!=", true)
     .get();
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  return snap.docs
+    .map((d) => ({ id: d.id, ...d.data() }))
+    .filter((session) => session.reminderSent !== true);
 };
 
 /**

@@ -143,10 +143,8 @@ export default function VerifyCertificateRefined() {
       const payload = await readApiJson(response)
 
       if (!response.ok) {
-        const errorData = await response.json();
-        // If there's a debug message (like a missing index link), show it!
-        const errorMessage = errorData.debug || errorData.message || 'Verification failed';
-        throw new Error(errorMessage);
+        const errorMessage = payload.debug || payload.message || 'Verification failed'
+        throw new Error(errorMessage)
       }
 
       if (!payload.success || !payload.data) {
@@ -159,7 +157,7 @@ export default function VerifyCertificateRefined() {
       setStatus('success')
     } catch (err) {
       console.error('Verification error:', err)
-      setError('An error occurred while verifying the document. Please try again.')
+      setError(err.message || 'An error occurred while verifying the document. Please try again.')
       setStatus('error')
     }
   }

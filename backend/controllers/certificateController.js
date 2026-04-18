@@ -477,6 +477,8 @@ const verifyCertificate = async (req, res) => {
     logger.error("Certificate verify error:", errorDetails);
 
     let debugMessage = error.message;
+    let statusCode = 500;
+    let publicMessage = "Internal server error";
     if (error.code === 9 || error.message?.includes("index")) {
       // Try to find the link in the message
       const linkMatch = error.message?.match(/https:\/\/console\.firebase\.google\.com[^\s]*/);
@@ -484,12 +486,14 @@ const verifyCertificate = async (req, res) => {
         debugMessage = `MISSING_INDEX: Please create the index here: ${linkMatch[0]}`;
       }
     } else if (error.code === 8 || error.message?.includes("quota")) {
+      statusCode = 503;
+      publicMessage = "Verification is temporarily unavailable. Please try again shortly.";
       debugMessage = "QUOTA_EXCEEDED: Your Firebase project has hit its free tier limits.";
     }
 
-    res.status(500).json({ 
+    res.status(statusCode).json({
       success: false, 
-      message: "Internal server error",
+      message: publicMessage,
       debug: debugMessage,
       code: error.code
     });
