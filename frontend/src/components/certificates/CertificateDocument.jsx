@@ -349,7 +349,7 @@ export default function CertificateDocument({ certificate, template, className =
                 </div>
               </div>
               <p
-                className="mt-[1.2cqw] text-center font-black uppercase tracking-[0.18cqw]"
+                className="mt-[1.1cqw] text-center font-black uppercase tracking-[0.25cqw]"
                 style={{ color: accentColor, fontSize: 'clamp(8px, 0.9cqw, 13px)' }}
               >
                 Scan To Verify Online

@@ -41,14 +41,18 @@ const serializeCertificateDate = (value) => {
   }
 
   if (typeof value?.toDate === "function") {
-    return value.toDate().toLocaleDateString("en-IN");
+    try {
+      return value.toDate().toLocaleDateString("en-IN");
+    } catch (e) {
+      return String(value);
+    }
   }
 
   if (value instanceof Date) {
     return value.toLocaleDateString("en-IN");
   }
 
-  return "N/A";
+  return String(value || "N/A");
 };
 
 const getFrontendUrl = (req) => {
@@ -274,10 +278,10 @@ const buildVerifyResponseData = (certificate, req) => {
     certificateText: certificate?.certificateText || "",
     signatureImageUrl: certificate?.signatureImageUrl || "",
     stampImageUrl: certificate?.stampImageUrl || "",
-    // Signatory fallbacks
-    signatoryName: certificate.signatoryName || "Amit Patel",
-    signatoryRole: certificate.signatoryRole || "Managing Director",
-    signatureImage: certificate.signatureImage || "/signature.png",
+    // Signatory fallbacks (defensive access)
+    signatoryName: certificate?.signatoryName || "Amit Patel",
+    signatoryRole: certificate?.signatoryRole || "Managing Director",
+    signatureImage: certificate?.signatureImage || "/signature.png",
     assignedEmployeeUid: certificate?.assignedEmployeeUid || "",
     assignedEmployeeId: certificate?.assignedEmployeeId || "",
     assignedEmployeeRef: certificate?.assignedEmployeeRef || "",
@@ -463,8 +467,12 @@ const verifyCertificate = async (req, res) => {
       data: buildVerifyResponseData(certData, req),
     });
   } catch (error) {
-    logger.error("Certificate verify error:", { certId, error: error.message });
-    res.status(500).json({ success: false, message: "Internal server error" });
+    logger.error("Certificate verify error:", { certId, error: error.message, stack: error.stack });
+    res.status(500).json({ 
+      success: false, 
+      message: "Internal server error",
+      debug: error.message // Temporarily expose for debugging
+    });
   }
 };
 
