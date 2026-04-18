@@ -142,7 +142,14 @@ export default function VerifyCertificateRefined() {
       const response = await fetch(api.certificateVerify(normalizedId))
       const payload = await readApiJson(response)
 
-      if (!response.ok || !payload.success || !payload.data) {
+      if (!response.ok) {
+        const errorData = await response.json();
+        // If there's a debug message (like a missing index link), show it!
+        const errorMessage = errorData.debug || errorData.message || 'Verification failed';
+        throw new Error(errorMessage);
+      }
+
+      if (!payload.success || !payload.data) {
         setError(payload.message || 'Document not found or not yet approved.')
         setStatus('error')
         return
