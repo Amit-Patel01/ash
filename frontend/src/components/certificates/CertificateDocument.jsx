@@ -47,14 +47,27 @@ function DetailChip({ label, value, accentColor }) {
   if (!value) return null
   return (
     <div
-      className="rounded-[18px] border px-4 py-2.5 text-left shadow-sm"
+      className="border shadow-sm"
       style={{
         borderColor: hexToRgba(accentColor, 0.2),
         background: `linear-gradient(180deg, rgba(255,255,255,0.96), ${hexToRgba(accentColor, 0.05)})`,
+        borderRadius: 'clamp(8px, 1.2cqw, 18px)',
+        padding: 'clamp(4px, 0.5cqw, 8px) clamp(8px, 0.9cqw, 16px)',
+        textAlign: 'left',
       }}
     >
-      <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">{label}</p>
-      <p className="mt-1.5 text-[12px] font-semibold leading-snug text-slate-700">{value}</p>
+      <p
+        className="font-black uppercase tracking-[0.22em] text-slate-400"
+        style={{ fontSize: 'clamp(7px, 0.75cqw, 10px)' }}
+      >
+        {label}
+      </p>
+      <p
+        className="mt-0.5 font-semibold leading-tight text-slate-700"
+        style={{ fontSize: 'clamp(9px, 0.9cqw, 13px)' }}
+      >
+        {value}
+      </p>
     </div>
   )
 }
@@ -138,18 +151,28 @@ export default function CertificateDocument({ certificate, template, className =
 
   const holderFontSize =
     holderName.length > 28
-      ? 'clamp(28px, 4cqw, 48px)'
+      ? 'clamp(26px, 3.6cqw, 42px)'
       : holderName.length > 18
-        ? 'clamp(34px, 4.8cqw, 58px)'
-        : 'clamp(42px, 6cqw, 72px)'
+        ? 'clamp(30px, 4.2cqw, 52px)'
+        : 'clamp(34px, 5cqw, 64px)'
+
+  const borderRadiusBase = 'clamp(14px, 2cqw, 22px)'
+  const standardGap = '1.8cqw'
+  const titleGap = '0.6cqw'
 
   return (
     <div
-      className={`relative isolate aspect-[1.414/1] w-full overflow-hidden rounded-[22px] bg-white text-slate-700 shadow-[0_20px_48px_rgba(15,23,42,0.14)] ${className}`}
-      style={{ containerType: 'inline-size' }}
+      className={`relative isolate aspect-[1.414/1] w-full overflow-hidden bg-white text-slate-700 shadow-[0_20px_48px_rgba(15,23,42,0.14)] ${className}`}
+      style={{ containerType: 'inline-size', borderRadius: borderRadiusBase }}
     >
-      <div className="absolute inset-[8px] rounded-[18px] border border-slate-200" />
-      <div className="absolute inset-[18px] rounded-[14px] border border-slate-100" />
+      <div
+        className="absolute inset-[0.8cqw] border border-slate-200"
+        style={{ borderRadius: 'calc(0.85 * ' + borderRadiusBase + ')' }}
+      />
+      <div
+        className="absolute inset-[1.6cqw] border border-slate-100"
+        style={{ borderRadius: 'calc(0.7 * ' + borderRadiusBase + ')' }}
+      />
       <CornerAccent position="top-left" accentColor={accentColor} navyColor={navyColor} />
       <CornerAccent position="top-right" accentColor={accentColor} navyColor={navyColor} />
       <CornerAccent position="bottom-left" accentColor={accentColor} navyColor={navyColor} />
@@ -158,7 +181,7 @@ export default function CertificateDocument({ certificate, template, className =
       <div
         className="pointer-events-none absolute inset-0"
         style={{
-          background: `radial-gradient(circle at top, ${hexToRgba(accentColor, 0.15)}, transparent 30%), radial-gradient(circle at bottom, ${hexToRgba(navyColor, 0.08)}, transparent 35%)`,
+          background: `radial-gradient(circle at 50% 0%, ${hexToRgba(accentColor, 0.1)}, transparent 35%), radial-gradient(circle at 50% 100%, ${hexToRgba(navyColor, 0.04)}, transparent 35%)`,
         }}
       />
 
@@ -166,148 +189,267 @@ export default function CertificateDocument({ certificate, template, className =
         src={brandLogo}
         alt="Amit Solution Hub watermark"
         crossOrigin="anonymous"
-        className="pointer-events-none absolute left-1/2 top-1/2 w-[34%] -translate-x-1/2 -translate-y-1/2 opacity-[0.045]"
+        className="pointer-events-none absolute left-1/2 top-1/2 w-[34%] -translate-x-1/2 -translate-y-1/2 opacity-[0.03]"
       />
 
-      <div className="relative flex h-full flex-col px-[clamp(28px,3cqw,42px)] py-[clamp(22px,2.6cqw,34px)]">
-        <header className="grid grid-cols-[1.2fr_auto_1fr] items-start gap-4">
-          <div className="min-w-0">
-            <img src={msmeBadge} alt="MSME" crossOrigin="anonymous" className="h-[clamp(48px,6.2cqw,82px)] w-auto object-contain" />
+      <div className="relative flex h-full flex-col p-[3.8cqw]">
+        <header className="grid grid-cols-3 items-start shrink-0">
+          <div className="flex justify-start">
+            <img src={msmeBadge} alt="MSME" crossOrigin="anonymous" className="h-[clamp(44px,5.4cqw,72px)] w-auto object-contain" />
           </div>
 
           <div className="flex justify-center">
-            <img src={brandLogo} alt="Amit Solution Hub" crossOrigin="anonymous" className="h-[clamp(46px,6cqw,84px)] w-auto object-contain" />
+            <img src={brandLogo} alt="Amit Solution Hub" crossOrigin="anonymous" className="h-[clamp(42px,5.2cqw,76px)] w-auto object-contain" />
           </div>
 
           <div className="flex justify-end">
             <div
-              className="rounded-full border px-4 py-2 text-right shadow-sm"
+              className="border text-right shadow-sm"
               style={{
-                borderColor: hexToRgba(accentColor, 0.3),
-                background: `linear-gradient(180deg, rgba(255,255,255,0.96), ${hexToRgba(accentColor, 0.09)})`,
+                borderColor: hexToRgba(accentColor, 0.15),
+                background: `linear-gradient(180deg, rgba(255,255,255,0.95), ${hexToRgba(accentColor, 0.04)})`,
+                borderRadius: 'clamp(12px, 1.5cqw, 32px)',
+                padding: 'clamp(6px, 0.8cqw, 12px) clamp(10px, 1.2cqw, 20px)',
               }}
             >
-              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">{activeTemplate.referenceLabel || 'Document ID'}</p>
-              <p className="mt-1 text-[12px] font-black" style={{ color: navyColor }}>{certificateId}</p>
+              <p
+                className="font-black uppercase tracking-[0.22em] text-slate-400"
+                style={{ fontSize: 'clamp(6.5px, 0.7cqw, 10px)' }}
+              >
+                {activeTemplate.referenceLabel || 'Certificate ID'}
+              </p>
+              <p
+                className="mt-0.5 font-black"
+                style={{ color: navyColor, fontSize: 'clamp(9px, 0.95cqw, 14px)' }}
+              >
+                {certificateId}
+              </p>
             </div>
           </div>
         </header>
 
-        <div className="mt-[clamp(10px,1.8cqw,18px)] text-center">
-          <p className="text-[clamp(11px,1.1cqw,14px)] font-black uppercase tracking-[0.38em]" style={{ color: accentColor }}>
-            {activeTemplate.overline}
-          </p>
-          <h1
-            className="mt-[clamp(8px,1cqw,14px)] font-bold uppercase leading-none"
+        <div className="mt-[2cqw] text-center shrink-0">
+          <p
+            className="font-bold uppercase tracking-[0.3cqw]"
             style={{
-              color: navyColor,
-              fontFamily: 'Georgia, "Times New Roman", serif',
-              fontSize: 'clamp(40px, 6.8cqw, 82px)',
+              color: accentColor,
+              fontSize: 'clamp(9px, 1.1cqw, 14px)',
+              fontFamily: 'Georgia, serif',
             }}
           >
-            {activeTemplate.title}
-          </h1>
-          <p className="mt-[clamp(6px,0.8cqw,10px)] text-[clamp(15px,1.9cqw,26px)] uppercase tracking-[0.32em] text-slate-400">
-            {activeTemplate.subtitle}
+            OFFICIAL CERTIFICATION
           </p>
-          <p className="mx-auto mt-[clamp(10px,1.4cqw,16px)] max-w-[78%] text-[clamp(15px,1.7cqw,22px)] italic leading-relaxed text-slate-500">
+          <div style={{ marginTop: titleGap }}>
+            <h1
+              className="font-bold uppercase leading-none"
+              style={{
+                color: navyColor,
+                fontFamily: 'Georgia, serif',
+                fontSize: 'clamp(44px, 7.2cqw, 92px)',
+              }}
+            >
+              CERTIFICATE
+            </h1>
+            <p
+              className="font-bold uppercase tracking-[0.18cqw] text-slate-400"
+              style={{
+                marginTop: titleGap,
+                fontFamily: 'Georgia, serif',
+                fontSize: 'clamp(12px, 1.7cqw, 24px)',
+              }}
+            >
+              OF ACHIEVEMENT
+            </p>
+          </div>
+          <p
+            className="mx-auto max-w-[85%] italic leading-snug text-slate-500"
+            style={{ fontSize: 'clamp(14px, 1.6cqw, 21px)', marginTop: standardGap }}
+          >
             {narrative.intro}
           </p>
-        </div>
-
-        <div className="mt-[clamp(12px,1.6cqw,20px)] text-center">
           <p
-            className="font-bold leading-none"
+            className="font-bold leading-tight"
             style={{
               color: navyColor,
-              fontFamily: 'Georgia, "Times New Roman", serif',
+              fontFamily: 'Georgia, serif',
               fontSize: holderFontSize,
+              marginTop: titleGap,
             }}
           >
             {narrative.highlight}
           </p>
         </div>
 
-        <div className="mt-[clamp(10px,1.4cqw,16px)] grid min-h-0 flex-1 grid-cols-[minmax(0,1.55fr)_minmax(220px,0.9fr)] gap-4">
+        <div className="mt-[2.5cqw] grid min-h-0 flex-1 grid-cols-[0.65fr_0.35fr] gap-[2cqw]">
           <div
-            className="flex min-h-0 flex-col justify-between rounded-[28px] border border-slate-100 px-[clamp(18px,2cqw,24px)] py-[clamp(16px,1.7cqw,20px)] shadow-[0_10px_28px_rgba(148,163,184,0.13)]"
+            className="flex min-h-0 flex-col justify-between border border-slate-100 shadow-[0_10px_32px_rgba(15,23,42,0.06)]"
             style={{
-              background: `linear-gradient(180deg, rgba(255,255,255,0.98), ${hexToRgba(accentColor, 0.035)})`,
+              background: `linear-gradient(180deg, rgba(255,255,255,0.98), ${hexToRgba(accentColor, 0.03)})`,
+              borderRadius: 'clamp(14px, 1.8cqw, 24px)',
+              padding: 'clamp(14px, 1.8cqw, 26px) clamp(16px, 2.2cqw, 32px)',
             }}
           >
-            <div>
-              <div className="flex items-center justify-center gap-3 text-center">
-                <span className="h-px w-[12%]" style={{ backgroundColor: hexToRgba(accentColor, 0.55) }} />
-                <p className="text-[11px] font-black uppercase tracking-[0.24em]" style={{ color: accentColor }}>
+            <div className="flex-1">
+              <div className="flex items-center gap-[0.8cqw]">
+                <span className="h-px w-8" style={{ backgroundColor: hexToRgba(accentColor, 0.5) }} />
+                <p
+                  className="font-black uppercase tracking-[0.2cqw]"
+                  style={{ color: accentColor, fontSize: 'clamp(8px, 0.9cqw, 13px)' }}
+                >
                   {documentLabel}
                 </p>
-                <span className="h-px w-[12%]" style={{ backgroundColor: hexToRgba(accentColor, 0.55) }} />
               </div>
-              <p className="mx-auto mt-[clamp(10px,1.2cqw,14px)] max-w-[92%] text-center text-[clamp(14px,1.58cqw,19px)] leading-[1.72] text-slate-600">
+              <p
+                className="mt-[1.2cqw] text-left leading-[1.72] text-slate-600"
+                style={{ fontSize: 'clamp(12px, 1.45cqw, 19px)', textAlign: 'justify' }}
+              >
                 {narrative.paragraph}
               </p>
             </div>
 
-            <div className="mt-4 grid grid-cols-3 gap-3">
+            <div className="mt-[1.5cqw] grid grid-cols-3 gap-[1cqw]">
               {narrative.chips.map((item) => (
-                <DetailChip key={item.label} label={item.label} value={item.value} accentColor={accentColor} />
+                <DetailChip
+                  key={item.label}
+                  label={item.label}
+                  value={item.value}
+                  accentColor={accentColor}
+                />
               ))}
             </div>
           </div>
 
           <div
-            className="flex min-h-0 flex-col justify-between rounded-[28px] border border-slate-100 px-[clamp(16px,1.7cqw,22px)] py-[clamp(16px,1.7cqw,20px)]"
+            className="flex min-h-0 flex-col justify-start border border-slate-100"
             style={{
               background: 'linear-gradient(180deg, rgba(248,250,252,0.98), rgba(255,255,255,0.98))',
+              borderRadius: 'clamp(14px, 1.8cqw, 24px)',
+              padding: 'clamp(14px, 1.8cqw, 26px)',
             }}
           >
-            <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-500">Verification</p>
-              <div className="mt-3 flex justify-center rounded-[22px] border border-slate-200 bg-white p-3 shadow-sm">
-                <QRCodeCanvas value={verifyUrl || certificateId} size={112} level="M" includeMargin={false} />
+            <div className="flex flex-col items-center justify-start">
+              <p
+                className="mb-[1.2cqw] font-black uppercase tracking-[0.2cqw] text-slate-400"
+                style={{ fontSize: 'clamp(8px, 0.9cqw, 13px)' }}
+              >
+                Verification
+              </p>
+              <div
+                className="flex justify-center border border-slate-200 bg-white p-[0.8cqw] shadow-sm"
+                style={{ borderRadius: 'clamp(10px, 1.3cqw, 20px)' }}
+              >
+                <div style={{ width: 'clamp(64px, 9.5cqw, 128px)' }}>
+                  <QRCodeCanvas
+                    value={verifyUrl || certificateId}
+                    size={256}
+                    style={{ width: '100%', height: 'auto' }}
+                    level="M"
+                    includeMargin={false}
+                  />
+                </div>
               </div>
-              <p className="mt-3 text-center text-[11px] font-black uppercase tracking-[0.22em]" style={{ color: accentColor }}>
+              <p
+                className="mt-[1.2cqw] text-center font-black uppercase tracking-[0.18cqw]"
+                style={{ color: accentColor, fontSize: 'clamp(8px, 0.9cqw, 13px)' }}
+              >
                 Scan To Verify Online
               </p>
-              <p className="mt-1.5 text-center text-[10px] leading-4 text-slate-500">{activeTemplate.footerNote}</p>
             </div>
 
-            <div className="mt-3 rounded-[22px] border border-slate-200 bg-white px-4 py-3 shadow-sm">
-              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">Issued Through</p>
-              <p className="mt-2 text-[14px] font-semibold text-slate-800">{activeTemplate.organizationName}</p>
-              <p className="mt-1 text-[12px] text-slate-500">{activeTemplate.supportEmail}</p>
+            <div
+              className="mt-auto border border-slate-200 bg-white shadow-sm"
+              style={{
+                padding: 'clamp(10px, 1.2cqw, 20px)',
+                borderRadius: 'clamp(10px, 1.3cqw, 18px)',
+              }}
+            >
+              <p
+                className="font-black text-slate-400 uppercase tracking-widest"
+                style={{ fontSize: 'clamp(6px, 0.65cqw, 9px)' }}
+              >
+                Issued Through
+              </p>
+              <p
+                className="mt-1.5 font-semibold text-slate-800"
+                style={{ fontSize: 'clamp(10px, 1.1cqw, 14px)' }}
+              >
+                {activeTemplate.organizationName}
+              </p>
+              <p
+                className="mt-0.5 text-slate-400"
+                style={{ fontSize: 'clamp(8px, 0.85cqw, 11px)' }}
+              >
+                {activeTemplate.supportEmail}
+              </p>
             </div>
           </div>
         </div>
 
-        <footer className="mt-[clamp(8px,1cqw,12px)] grid grid-cols-3 items-end gap-4">
-          <div className="text-center">
-            <p className="text-[clamp(18px,1.95cqw,24px)] font-bold text-slate-800">{issueDate}</p>
-            <div className="mx-auto mt-2 h-px w-[72%] bg-slate-300" />
-            <p className="mt-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Date of Issue</p>
-          </div>
-
-          <div className="text-center">
-            {stampImage ? (
-              <div className="flex h-[68px] items-end justify-center">
-                <img src={stampImage} alt="Official stamp" crossOrigin="anonymous" className="max-h-[68px] w-auto object-contain" />
-              </div>
-            ) : (
-              <p className="text-[11px] font-black uppercase tracking-[0.22em]" style={{ color: accentColor }}>
-                {activeTemplate.sealLabel}
+        <footer className="mt-[3.5cqw] grid grid-cols-3 items-end shrink-0">
+          <div className="flex flex-col items-start text-left">
+            <div className="flex h-[6cqw] items-end">
+              <p
+                className="font-bold text-slate-800"
+                style={{ fontSize: 'clamp(14px, 2cqw, 24px)' }}
+              >
+                {issueDate}
               </p>
-            )}
-            <p className="mt-2 text-[13px] font-semibold text-slate-700">{activeTemplate.issuerName}</p>
-            <p className="mt-1 text-[11px] uppercase tracking-[0.15em] text-slate-400">{activeTemplate.issuerRole}</p>
+            </div>
+            <div className="mt-[0.6cqw] h-px w-full bg-slate-200" />
+            <p
+              className="mt-[0.8cqw] font-black uppercase tracking-[0.2cqw] text-slate-400"
+              style={{ fontSize: 'clamp(7px, 0.75cqw, 10px)' }}
+            >
+              Date of Issue
+            </p>
           </div>
 
-          <div className="text-center">
-            <div className="flex h-[58px] items-end justify-center">
-              <img src={signatureImage} alt={signatureName} crossOrigin="anonymous" className="max-h-[58px] w-auto object-contain" />
+          <div className="flex flex-col items-center text-center">
+            <div className="flex h-[6cqw] items-end justify-center">
+              <img
+                src={stampImage}
+                alt="Official stamp"
+                crossOrigin="anonymous"
+                className="max-h-full w-auto object-contain brightness-[0.98] contrast-[1.05]"
+              />
             </div>
-            <div className="mx-auto mt-2 h-px w-[72%] bg-slate-300" />
-            <p className="mt-2 text-[13px] font-semibold text-slate-800">{signatureName}</p>
-            <p className="mt-1 text-[11px] font-black uppercase tracking-[0.17em] text-slate-500">{signatureRole}</p>
+            <div className="mt-[0.6cqw] h-px w-full opacity-0" />
+            <p
+              className="mt-[0.8cqw] font-semibold text-slate-800"
+              style={{ fontSize: 'clamp(10px, 1cqw, 14px)' }}
+            >
+              {activeTemplate.issuerName || signatureName}
+            </p>
+            <p
+              className="mt-0.5 font-bold uppercase tracking-[0.1cqw] text-slate-400"
+              style={{ fontSize: 'clamp(7px, 0.65cqw, 9px)' }}
+            >
+              {activeTemplate.issuerRole || 'Founder & Director'}
+            </p>
+          </div>
+
+          <div className="flex flex-col items-end text-right">
+            <div className="flex h-[6cqw] items-end justify-end">
+              <img
+                src={signatureImage}
+                alt={signatureName}
+                crossOrigin="anonymous"
+                className="max-h-full w-auto object-contain"
+              />
+            </div>
+            <div className="mt-[0.6cqw] h-px w-full bg-slate-200" />
+            <p
+              className="mt-[0.8cqw] font-semibold text-slate-800"
+              style={{ fontSize: 'clamp(10px, 1cqw, 14px)' }}
+            >
+              {signatureName}
+            </p>
+            <p
+              className="mt-0.5 font-bold uppercase tracking-[0.1cqw] text-slate-400"
+              style={{ fontSize: 'clamp(7px, 0.65cqw, 9px)' }}
+            >
+              {signatureRole}
+            </p>
           </div>
         </footer>
       </div>
