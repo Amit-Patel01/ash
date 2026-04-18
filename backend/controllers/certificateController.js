@@ -148,11 +148,19 @@ const validateQrCertificateInput = (payload = {}, { partial = false } = {}) => {
 
   if (Object.prototype.hasOwnProperty.call(payload, "signatureImageUrl")) {
     const signatureImageUrl = String(payload.signatureImageUrl || "").trim();
-    if (signatureImageUrl && signatureImageUrl.length > 1000) {
-      errors.push("Signature image URL is too long.");
+    if (signatureImageUrl && !signatureImageUrl.startsWith("/")) {
+      errors.push("Signature image URL must be a relative path.");
     } else {
       updates.signatureImageUrl = signatureImageUrl;
     }
+  }
+
+  // Handle signatory customization
+  if (Object.prototype.hasOwnProperty.call(payload, "signatoryName")) {
+    updates.signatoryName = String(payload.signatoryName || "").trim();
+  }
+  if (Object.prototype.hasOwnProperty.call(payload, "signatoryRole")) {
+    updates.signatoryRole = String(payload.signatoryRole || "").trim();
   }
 
   if (Object.prototype.hasOwnProperty.call(payload, "stampImageUrl")) {
@@ -266,6 +274,10 @@ const buildVerifyResponseData = (certificate, req) => {
     certificateText: certificate?.certificateText || "",
     signatureImageUrl: certificate?.signatureImageUrl || "",
     stampImageUrl: certificate?.stampImageUrl || "",
+    // Signatory fallbacks
+    signatoryName: certificate.signatoryName || "Amit Patel",
+    signatoryRole: certificate.signatoryRole || "Managing Director",
+    signatureImage: certificate.signatureImage || "/signature.png",
     assignedEmployeeUid: certificate?.assignedEmployeeUid || "",
     assignedEmployeeId: certificate?.assignedEmployeeId || "",
     assignedEmployeeRef: certificate?.assignedEmployeeRef || "",
@@ -475,6 +487,11 @@ const createQrCertificate = async (req, res) => {
       verifyUrl: buildVerifyUrl(req, certificateId),
     };
 
+    // Handle uploaded signature image
+    if (req.file) {
+      record.signatureImage = `/uploads/certificates/${req.file.filename}`;
+    }
+
     const id = await createCertificateRecord(record);
     const created = await getCertificateById(id);
     const assignmentEmailSent = await sendAssignedCertificateEmail(created, req);
@@ -511,12 +528,19 @@ const updateQrCertificate = async (req, res) => {
       return res.status(404).json({ success: false, message: "QR certificate not found" });
     }
 
-    await updateCertificate(docId, {
+    const dataToUpdate = {
       ...updates,
       verifyUrl: buildVerifyUrl(req, certificate.certificate_id),
       updatedByUid: req.user?.uid || "",
       updatedByEmail: req.user?.email || "",
-    });
+    };
+
+    // Handle uploaded signature image
+    if (req.file) {
+      dataToUpdate.signatureImage = `/uploads/certificates/${req.file.filename}`;
+    }
+
+    await updateCertificate(docId, dataToUpdate);
 
     const updated = await getCertificateById(docId);
     const assignmentEmailSent = await sendAssignedCertificateEmail(updated, req, { updated: true });

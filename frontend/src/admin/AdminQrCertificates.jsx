@@ -44,6 +44,8 @@ const createInitialForm = () => ({
   assignedEmployeeName: '',
   assignedEmployeeEmail: '',
   signatureImageUrl: '',
+  signatoryName: '',
+  signatoryRole: '',
   stampImageUrl: '',
 })
 
@@ -58,6 +60,8 @@ const mapCertificateToForm = (certificate = {}) => ({
   assignedEmployeeName: certificate.assignedEmployeeName || '',
   assignedEmployeeEmail: certificate.assignedEmployeeEmail || '',
   signatureImageUrl: certificate.signatureImageUrl || '',
+  signatoryName: certificate.signatoryName || '',
+  signatoryRole: certificate.signatoryRole || '',
   stampImageUrl: certificate.stampImageUrl || '',
 })
 
@@ -193,6 +197,8 @@ export default function AdminQrCertificates() {
     assignedEmployeeName: form.assignedEmployeeName || '',
     assignedEmployeeEmail: form.assignedEmployeeEmail || '',
     signatureImageUrl: form.signatureImageUrl || '',
+    signatoryName: form.signatoryName || '',
+    signatoryRole: form.signatoryRole || '',
     stampImageUrl: form.stampImageUrl || '',
     verifyUrl: buildVerifyUrl(previewCertificateId || editingCertificate?.certificate_id || 'QR-PREVIEW'),
   }), [editingCertificate, form, previewCertificateId, previewType])
@@ -615,12 +621,12 @@ export default function AdminQrCertificates() {
               <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-white">Signature Upload</p>
-                    <p className="mt-1 text-xs text-slate-400">Optional signer image for the verify page.</p>
+                    <p className="text-sm font-semibold text-white">Signature Customization</p>
+                    <p className="mt-1 text-xs text-slate-400">Add custom name/role and upload sign image.</p>
                   </div>
                   <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
                     <Upload size={16} />
-                    {uploadingField === 'signatureImageUrl' ? 'Uploading...' : 'Upload'}
+                    {uploadingField === 'signatureImageUrl' ? 'Uploading...' : 'Upload Sign'}
                     <input
                       type="file"
                       accept="image/png,image/jpeg,image/webp"
@@ -629,6 +635,30 @@ export default function AdminQrCertificates() {
                     />
                   </label>
                 </div>
+
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <label className="block">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Signatory Name</span>
+                    <input
+                      type="text"
+                      value={form.signatoryName}
+                      onChange={(e) => handleChange('signatoryName', e.target.value)}
+                      placeholder="e.g. Amit Patel"
+                      className="mt-1.5 w-full rounded-xl border border-white/5 bg-black/20 px-4 py-2 text-sm text-white placeholder:text-slate-600 focus:border-cyan-400/30 focus:outline-none"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Signatory Role</span>
+                    <input
+                      type="text"
+                      value={form.signatoryRole}
+                      onChange={(e) => handleChange('signatoryRole', e.target.value)}
+                      placeholder="e.g. Founder & Director"
+                      className="mt-1.5 w-full rounded-xl border border-white/5 bg-black/20 px-4 py-2 text-sm text-white placeholder:text-slate-600 focus:border-cyan-400/30 focus:outline-none"
+                    />
+                  </label>
+                </div>
+
                 {form.signatureImageUrl ? (
                   <div className="mt-4 space-y-3">
                     <img
@@ -641,12 +671,12 @@ export default function AdminQrCertificates() {
                       onClick={() => handleChange('signatureImageUrl', '')}
                       className="inline-flex rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10"
                     >
-                      Remove Signature
+                      Remove Signature Image
                     </button>
                   </div>
                 ) : (
-                  <div className="mt-4 rounded-2xl border border-dashed border-white/10 px-4 py-8 text-center text-sm text-slate-500">
-                    No signature uploaded
+                  <div className="mt-4 rounded-2xl border border-dashed border-white/10 px-4 py-6 text-center text-xs text-slate-500">
+                    No custom signature image (using default)
                   </div>
                 )}
               </div>

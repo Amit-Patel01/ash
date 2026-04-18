@@ -12,6 +12,8 @@ const {
 const { verifyFirebaseToken } = require("../middlewares/authMiddleware");
 const { adminOnly } = require("../middlewares/rbacMiddleware");
 
+const { uploadCertificateAsset } = require("../middlewares/uploadMiddleware");
+
 // POST /api/certificates/request
 router.post("/request", requestCertificate);
 
@@ -19,8 +21,8 @@ router.post("/request", requestCertificate);
 router.patch("/update-status", updateCertificateStatus);
 
 // QR certificate admin routes
-router.post("/qr", verifyFirebaseToken, adminOnly, createQrCertificate);
-router.patch("/qr/:docId", verifyFirebaseToken, adminOnly, updateQrCertificate);
+router.post("/qr", verifyFirebaseToken, adminOnly, uploadCertificateAsset.single("signatureImage"), createQrCertificate);
+router.patch("/qr/:docId", verifyFirebaseToken, adminOnly, uploadCertificateAsset.single("signatureImage"), updateQrCertificate);
 router.patch("/qr/:docId/status", verifyFirebaseToken, adminOnly, updateQrCertificateStatus);
 router.delete("/qr/:docId", verifyFirebaseToken, adminOnly, removeQrCertificate);
 
