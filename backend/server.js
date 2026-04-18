@@ -363,7 +363,11 @@ app.use("/api/ai", require("./routes/ai"));
 app.use("/api/notify", require("./routes/notify"));
 
 if (fs.existsSync(frontendDistDir)) {
-  app.get("/{*frontendPath}", (req, res) => {
+  app.get("*", (req, res) => {
+    // Exclude /api routes just in case, though they are defined above
+    if (req.path.startsWith("/api")) {
+      return res.status(404).json({ success: false, message: "API endpoint not found" });
+    }
     sendFrontendIndex(res);
   });
 }
