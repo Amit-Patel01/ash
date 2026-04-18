@@ -11,19 +11,22 @@ const logger = createLogger({
   format: format.combine(
     format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     format.errors({ stack: true }),
-    format.printf(({ timestamp, level, message, stack }) =>
-      stack
-        ? `[${timestamp}] ${level.toUpperCase()}: ${message}\n${stack}`
-        : `[${timestamp}] ${level.toUpperCase()}: ${message}`
-    )
+    format.printf(({ timestamp, level, message, stack, ...meta }) => {
+      const metaStr = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : "";
+      return stack
+        ? `[${timestamp}] ${level.toUpperCase()}: ${message}${metaStr}\n${stack}`
+        : `[${timestamp}] ${level.toUpperCase()}: ${message}${metaStr}`;
+    })
   ),
   transports: [
     new transports.Console({
       format: format.combine(
         format.colorize(),
         format.printf(
-          ({ timestamp, level, message }) =>
-            `[${timestamp}] ${level}: ${message}`
+          ({ timestamp, level, message, ...meta }) => {
+            const metaStr = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : "";
+            return `[${timestamp}] ${level}: ${message}${metaStr}`;
+          }
         )
       ),
     }),

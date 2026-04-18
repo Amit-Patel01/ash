@@ -467,11 +467,31 @@ const verifyCertificate = async (req, res) => {
       data: buildVerifyResponseData(certData, req),
     });
   } catch (error) {
-    logger.error("Certificate verify error:", { certId, error: error.message, stack: error.stack });
+    const errorDetails = {
+      certId,
+      message: error.message,
+      code: error.code,
+      details: error.details,
+    };
+
+    logger.error("Certificate verify error:", errorDetails);
+
+    let debugMessage = error.message;
+    if (error.code === 9 || error.message?.includes("index")) {
+      // Try to find the link in the message
+      const linkMatch = error.message?.match(/https:\/\/console\.firebase\.google\.com[^\s]*/);
+      if (linkMatch) {
+        debugMessage = `MISSING_INDEX: Please create the index here: ${linkMatch[0]}`;
+      }
+    } else if (error.code === 8 || error.message?.includes("quota")) {
+      debugMessage = "QUOTA_EXCEEDED: Your Firebase project has hit its free tier limits.";
+    }
+
     res.status(500).json({ 
       success: false, 
       message: "Internal server error",
-      debug: error.message // Temporarily expose for debugging
+      debug: debugMessage,
+      code: error.code
     });
   }
 };
