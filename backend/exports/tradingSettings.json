@@ -1,0 +1,25 @@
+[
+  {
+    "_id": "mentorProfile",
+    "name": "Harsh Rana",
+    "title": "Professional Trader & Market Analyst",
+    "bio": "With over a decade of hands-on experience in the Indian stock market, I have navigated bull runs, bear markets, and everything in between. My mission is to demystify the stock market and empower retail traders with institutional-grade knowledge.",
+    "photoUrl": "https://media.licdn.com/dms/image/v2/D4D03AQHUGltWrQ0A9w/profile-displayphoto-scale_200_200/B4DZuKICJbHQAY-/0/1767548922205?e=1776902400&v=beta&t=an835OMyvwaYTZCw2MsBzL5jrsawNKexwvS_QM-k26Q",
+    "stats": [
+      {
+        "value": "5+",
+        "label": "Years Experience"
+      },
+      {
+        "label": "Sessions Done",
+        "value": "300+"
+      },
+      {
+        "value": "Intraday",
+        "label": "Specialist"
+      }
+    ],
+    "updatedAt": "2026-04-07T15:57:45.335Z",
+    "_subCollections": {}
+  }
+]

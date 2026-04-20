@@ -135,7 +135,7 @@ const Navbar = () => {
               ) : (
                 <div className="flex items-center gap-2 lg:gap-3">
                   <Link
-                    to="/employee-login"
+                    to="/login"
                     className="px-5 py-2.5 rounded-full text-sm font-bold text-slate-800 hover:text-blue-600 hover:bg-white/80 transition-all duration-300"
                   >
                     Login
@@ -229,7 +229,7 @@ const Navbar = () => {
               ) : (
                 <>
                   <Link
-                    to="/employee-login"
+                    to="/login"
                     onClick={() => setIsOpen(false)}
                     className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-slate-600 bg-white/80 border border-white/60 shadow-sm transition-all duration-300 active:scale-95"
                   >

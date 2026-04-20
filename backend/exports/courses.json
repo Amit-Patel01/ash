@@ -1,0 +1,143 @@
+[
+  {
+    "_id": "GZC7mrumy8FTRaZK9lLv",
+    "deliveryType": "webinar",
+    "title": "How to Become Highly Paid Hacker & Make Money",
+    "category": "Other",
+    "level": "Beginner",
+    "description": "Did you know that the field of Ethical Hacking and Cybersecurity always fascinated me. A burning desire to make a career in the field grew inside me.\n \nI was passionate about it but I was having questions like, \n❗ Where to start ? \n❗ How to start ?\n❗ What to study ?\n❗ What to follow ?\n❗ Where to proceed ?\n \n\nI invite you to this FREE Workshop in which you will learn about,\n \n> Ethical Hacking, Cyber Security and Digital Forensics\n> Career as Ethical Hacker, Cyber Security Analyst\n> Converting your passion into Money Making Machine\n\n(Attending workshop till the last minute is necessary to claim the certificate)",
+    "thumbnail": "https://cdn.phototourl.com/free/2026-04-16-5030b585-931f-4548-b4f2-b669e0b177e8.png",
+    "published": true,
+    "assignedEmployeeId": "i2utS8BUMKhpJkYh6bZWJsm2RFw2",
+    "assignedEmployeeName": "Amit Patel",
+    "slug": "how-to-become-highly-paid-hacker-make-money-mo1iofvc",
+    "highlighted": false,
+    "createdAt": "2026-04-16T13:30:29.425Z",
+    "plans": [
+      {
+        "id": "free-webinar",
+        "label": "Free Webinar",
+        "duration": "1 Houre",
+        "price": 0,
+        "isFree": true,
+        "highlighted": true,
+        "features": [
+          "(Attending workshop till the last minute is necessary to claim the certificate)"
+        ],
+        "meetingLink": "",
+        "meetingStartsAt": "2026-05-06T14:31:00.000Z",
+        "meetingTimezone": "Asia/Calcutta",
+        "meetingReminderSentAt": "",
+        "meetingLiveSentAt": ""
+      }
+    ],
+    "updatedAt": "2026-04-16T13:32:07.409Z",
+    "enrolledCount": 1,
+    "_subCollections": {}
+  },
+  {
+    "_id": "lmt71XBMeZ7XTLrUwdcR",
+    "title": "Trading Mentorship / Stock Market Training",
+    "category": "Trading",
+    "level": "Advanced",
+    "description": "Learn stock market and trading from an experienced trader. Covers basics to advanced strategies including technical analysis, risk management, intraday & swing trading. Live sessions + practical guidance included.\n\nLive Sessions\nTechnical Analysis\nRisk Management",
+    "published": true,
+    "assignedEmployeeId": "GXHW2WURbIOcMtIm3Z7lsme3qqz2",
+    "assignedEmployeeName": "Harshil Rana",
+    "slug": "trading-mentorship-stock-market-training-mnovw5sb",
+    "highlighted": false,
+    "createdAt": "2026-04-07T17:19:23.788Z",
+    "materials": [
+      {
+        "title": "Welcome & Getting Started Guide",
+        "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+      }
+    ],
+    "thumbnail": "https://cdn.phototourl.com/free/2026-04-09-77af725e-0c36-466f-b3a3-7e05763ecd4d.png",
+    "meetingLink": "",
+    "plans": [
+      {
+        "id": "blueprint-of-course",
+        "duration": "NA",
+        "meetingReminderSentAt": "",
+        "label": "BluePrint Of Course",
+        "meetingStartsAt": "2026-05-15T04:30:00.000Z",
+        "meetingLiveSentAt": "",
+        "features": [
+          "Participation certificate"
+        ],
+        "price": 0,
+        "meetingLink": "https://meet.google.com/skj-hyhb-ifo",
+        "isFree": true,
+        "meetingTimezone": "Asia/Calcutta",
+        "highlighted": true
+      },
+      {
+        "price": 3599,
+        "duration": "6 month",
+        "id": "basic-market-course",
+        "features": [
+          "Beginner to advanced structured curriculum",
+          "Live trading sessions",
+          "Strategy-based learning (price action, indicators, setups)",
+          "Trade setups & case studies",
+          "Certification on completion",
+          "Regular course updates",
+          "Recorded video lectures",
+          "Interactive learning dashboard",
+          "Assignments and quizzes",
+          "1-on-1 mentorship support",
+          "Doubt-solving sessions",
+          "Community/group access",
+          "Mobile-friendly platform"
+        ],
+        "highlighted": false,
+        "isFree": false,
+        "label": "Basic  market course"
+      }
+    ],
+    "updatedAt": "2026-04-15T19:43:22.649Z",
+    "enrolledCount": 9,
+    "_subCollections": {}
+  },
+  {
+    "_id": "snWtN6bYt5KVJvZ2nP1f",
+    "title": "AI Prompt Engineering",
+    "category": "Other",
+    "level": "Advanced",
+    "description": "AI Prompt Engineering is the art of designing effective inputs that help AI systems generate precise, useful, and high-quality outputs.",
+    "thumbnail": "https://cdn.phototourl.com/free/2026-04-09-ae1448b0-49f1-4196-9d83-719a819645b3.png",
+    "published": true,
+    "assignedEmployeeId": "i2utS8BUMKhpJkYh6bZWJsm2RFw2",
+    "assignedEmployeeName": "Amit Patel",
+    "slug": "ai-prompt-engineering-mnr5jjhc",
+    "highlighted": false,
+    "enrolledCount": 0,
+    "createdAt": "2026-04-09T07:25:03.454Z",
+    "plans": [
+      {
+        "id": "advance",
+        "label": "Advance",
+        "duration": "2 Month",
+        "price": 499,
+        "isFree": false,
+        "highlighted": true,
+        "features": [
+          "Video Recorded Material",
+          "Learn anytime, anywhere with lifetime access",
+          "Offer Letter",
+          "Get a professional offer letter after enrollment",
+          "Internship Certificate",
+          "Gain real-world experience with certification",
+          "Training Certificate",
+          "Official certificate from AmitSolutionHub"
+        ],
+        "meetingLink": "",
+        "meetingStartsAt": "",
+        "meetingTimezone": ""
+      }
+    ],
+    "updatedAt": "2026-04-09T07:27:11.902Z",
+    "_subCollections": {}
+  }
+]

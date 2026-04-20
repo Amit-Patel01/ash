@@ -1,0 +1,50 @@
+[
+  {
+    "_id": "GXHW2WURbIOcMtIm3Z7lsme3qqz2",
+    "can_manage_courses": true,
+    "can_manage_mentor_profile": true,
+    "can_create_sessions": true,
+    "can_manage_pricing": true,
+    "can_edit_curriculum": true,
+    "can_manage_enrollments": true,
+    "updatedAt": "2026-04-04T09:56:24.618Z",
+    "_subCollections": {}
+  },
+  {
+    "_id": "QKYPLRkt0yXH6NJgFxi8GjTocFs2",
+    "can_manage_mentor_profile": false,
+    "can_edit_curriculum": false,
+    "can_manage_enrollments": false,
+    "can_manage_courses": false,
+    "can_manage_pricing": false,
+    "can_create_sessions": false,
+    "updatedAt": "2026-04-05T10:14:48.126Z",
+    "_subCollections": {}
+  },
+  {
+    "_id": "i2utS8BUMKhpJkYh6bZWJsm2RFw2",
+    "can_manage_pricing": true,
+    "access_enrollments": true,
+    "can_manage_mentor_profile": true,
+    "access_live_sessions": true,
+    "access_mentorship_data": true,
+    "can_manage_enrollments": true,
+    "can_edit_curriculum": true,
+    "can_create_sessions": true,
+    "can_manage_courses": true,
+    "access_payments": true,
+    "updatedAt": "2026-04-04T09:56:32.857Z",
+    "_subCollections": {}
+  },
+  {
+    "_id": "qvmCGDosG3R1jPyvSBnXf6gjASp1",
+    "can_manage_courses": false,
+    "can_create_sessions": false,
+    "can_manage_pricing": false,
+    "can_manage_mentor_profile": false,
+    "can_manage_enrollments": false,
+    "can_edit_curriculum": false,
+    "updatedAt": "2026-04-04T14:59:14.304Z",
+    "_subCollections": {}
+  }
+]
