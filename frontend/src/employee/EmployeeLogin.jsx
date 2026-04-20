@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../config/firebase'
+import { getHomePathForRole } from '../utils/roles'
 
 export default function EmployeeLogin() {
   const { login } = useAuth()
@@ -21,14 +22,7 @@ export default function EmployeeLogin() {
       const user = await login(email, password)
       const profileSnap = await getDoc(doc(db, 'users', user.uid))
       const profile = profileSnap.data()
-
-      if (profile?.role === 'admin') {
-        navigate('/admin')
-      } else if (profile?.role === 'customer') {
-        navigate('/customer')
-      } else {
-        navigate('/employee')
-      }
+      navigate(getHomePathForRole(profile?.role || user?.role), { replace: true })
     } catch (err) {
       console.error(err)
       let msg = 'Invalid email or password.'

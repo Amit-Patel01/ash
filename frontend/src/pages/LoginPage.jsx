@@ -1,11 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { doc, getDoc } from 'firebase/firestore'
-import { db } from '../config/firebase'
+import { getHomePathForRole } from '../utils/roles'
 
 export default function LoginPage() {
-  const { login, loginWithGoogle } = useAuth()
+  const {
+    login,
+    loginWithGoogle,
+    currentUser,
+    loading: authLoading,
+    authError,
+    clearAuthError,
+  } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const redirectPath = searchParams.get('redirect')
@@ -17,27 +23,32 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
 
+  useEffect(() => {
+    if (!authLoading && currentUser) {
+      navigate(redirectPath || getHomePathForRole(currentUser.role), { replace: true })
+    }
+  }, [authLoading, currentUser, navigate, redirectPath])
+
+  useEffect(() => {
+    if (!authLoading) {
+      setGoogleLoading(false)
+    }
+  }, [authLoading])
+
+  useEffect(() => {
+    if (!authError) return
+    setError(authError)
+    setGoogleLoading(false)
+    clearAuthError()
+  }, [authError, clearAuthError])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
     setLoading(true)
     try {
       const user = await login(email, password)
-      const profileSnap = await getDoc(doc(db, 'users', user.uid))
-      const profile = profileSnap.data()
-
-      if (redirectPath) {
-        navigate(redirectPath)
-        return
-      }
-      
-      if (profile?.role === 'admin') {
-        navigate('/admin')
-      } else if (profile?.role === 'customer') {
-        navigate('/customer')
-      } else {
-        navigate('/employee')
-      }
+      navigate(redirectPath || getHomePathForRole(user?.role), { replace: true })
     } catch (err) {
       console.error(err)
       let msg = 'Invalid email or password.'
@@ -62,22 +73,16 @@ export default function LoginPage() {
     setGoogleLoading(true)
     try {
       const user = await loginWithGoogle()
-      const profileSnap = await getDoc(doc(db, 'users', user.uid))
-      const profile = profileSnap.data()
-      if (redirectPath) {
-        navigate(redirectPath)
-        return
+      if (user) {
+        navigate(redirectPath || getHomePathForRole(user.role), { replace: true })
       }
-      if (profile?.role === 'admin') navigate('/admin')
-      else if (profile?.role === 'customer') navigate('/customer')
-      else navigate('/employee')
     } catch (err) {
-      if (err.code === 'auth/no-account') {
-        navigate('/join-us?reason=google-no-account')
-      } else if (err.code !== 'auth/popup-closed-by-user') {
-        setError('Google sign-in failed. Please try again.')
-        console.error(err)
+      console.error('Google sign-in error:', err)
+      let msg = err?.message || 'Google sign-in failed. Please try again.'
+      if (err.code === 'auth/user-not-found' || msg.toLowerCase().includes('no account found')) {
+        msg = 'No account found with this Google email. Please register first.'
       }
+      setError(msg)
     } finally {
       setGoogleLoading(false)
     }
@@ -196,14 +201,12 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="flex items-center gap-3 pt-2">
             <div className="flex-1 h-px bg-white/5"></div>
             <span className="text-[11px] font-bold text-slate-600 uppercase tracking-widest">or continue with</span>
             <div className="flex-1 h-px bg-white/5"></div>
           </div>
 
-          {/* Google Sign In Button */}
           <button
             type="button"
             onClick={handleGoogleSignIn}

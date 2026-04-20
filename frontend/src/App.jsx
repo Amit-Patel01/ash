@@ -9,6 +9,7 @@ import { ChatProvider } from './context/ChatContext'
 import { ThemeProvider } from './context/ThemeContext'
 import AIChatbot from './components/AIChatbot'
 import Layout from './components/Layout'
+import { getHomePathForRole, isEmployeeRole, normalizeUserRole } from './utils/roles'
 
 /**
  * Enhanced lazy loader that detects module load failures (e.g. after a new deployment)
@@ -110,8 +111,6 @@ const CourseDetailPage = lazyWithRetry(() => import('./pages/CourseDetailPage'))
 const CustomerMyCourses = lazyWithRetry(() => import('./customer/CustomerMyCourses'))
 const AboutTradingMentorship = lazyWithRetry(() => import('./pages/AboutTradingMentorship'))
 
-const employeeRoles = ['employee', 'mentor']
-
 function AppShellFallback() {
   return (
     <div
@@ -125,44 +124,40 @@ function AppShellFallback() {
   )
 }
 
-const getHomePathForRole = (role) => {
-  if (role === 'admin') return '/admin'
-  if (role === 'customer') return '/customer'
-  if (employeeRoles.includes(role)) return '/employee'
-  return '/login'
-}
-
 function ProtectedAdmin({ children }) {
   const { currentUser, loading } = useAuth()
+  const normalizedRole = normalizeUserRole(currentUser?.role)
 
   if (loading) return null
   if (!currentUser) {
     return <Navigate to="/admin-login" replace />
   }
-  if (currentUser.role !== 'admin') {
-    return <Navigate to={getHomePathForRole(currentUser.role)} replace />
+  if (normalizedRole !== 'admin') {
+    return <Navigate to={getHomePathForRole(normalizedRole)} replace />
   }
   return children
 }
 
 function ProtectedEmployee({ children }) {
   const { currentUser, loading } = useAuth()
+  const normalizedRole = normalizeUserRole(currentUser?.role)
 
   if (loading) return null
   if (!currentUser) return <Navigate to="/login" replace />
-  if (!employeeRoles.includes(currentUser.role)) {
-    return <Navigate to={getHomePathForRole(currentUser.role)} replace />
+  if (!isEmployeeRole(normalizedRole)) {
+    return <Navigate to={getHomePathForRole(normalizedRole)} replace />
   }
   return children
 }
 
 function ProtectedCustomer({ children }) {
   const { currentUser, loading } = useAuth()
+  const normalizedRole = normalizeUserRole(currentUser?.role)
 
   if (loading) return null
   if (!currentUser) return <Navigate to="/login" replace />
-  if (currentUser.role !== 'customer') {
-    return <Navigate to={getHomePathForRole(currentUser.role)} replace />
+  if (normalizedRole !== 'customer') {
+    return <Navigate to={getHomePathForRole(normalizedRole)} replace />
   }
   return children
 }

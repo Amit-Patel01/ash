@@ -18,6 +18,7 @@ import {
 } from 'firebase/firestore'
 import { auth, db, setUserOnline, setUserOffline } from '../config/firebase'
 import { api, readApiJson } from '../config/api'
+import { normalizeUserRole, isEmployeeRole } from '../utils/roles'
 
 const AuthContext = createContext(null)
 
@@ -25,6 +26,62 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null)
   const [userProfile, setUserProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [authError, setAuthError] = useState('')
+
+  const buildUserState = useCallback(async (user, isGoogleLogin = false) => {
+    const profileRef = doc(db, 'users', user.uid)
+    const profileSnap = await getDoc(profileRef)
+
+    let profileData = profileSnap.data()
+
+    if (!profileSnap.exists()) {
+      // If it's a Google login and we want to restrict to existing accounts
+      if (isGoogleLogin) {
+        await signOut(auth)
+        const err = new Error('No account found. Please register first.')
+        err.code = 'auth/user-not-found'
+        throw err
+      }
+
+      const isAdminEmail = user.email === 'amitp@solutionhub.com'
+      profileData = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || 'User',
+        role: isAdminEmail ? 'admin' : 'customer',
+        status: 'active',
+        createdAt: new Date().toISOString()
+      }
+      await setDoc(profileRef, profileData, { merge: true })
+    }
+
+    const normalizedRole = normalizeUserRole(profileData?.role || (profileData?.isMentor ? 'mentor' : 'customer'))
+
+    if (!profileData?.role) {
+      profileData = {
+        ...profileData,
+        role: normalizedRole
+      }
+      await setDoc(profileRef, { role: normalizedRole }, { merge: true })
+    }
+
+    if (profileData?.status && profileData.status !== 'active') {
+      await signOut(auth)
+      throw new Error('Your account is inactive. Please contact support.')
+    }
+
+    const userData = {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName || profileData?.displayName,
+      ...profileData,
+      role: normalizedRole
+    }
+
+    setCurrentUser(userData)
+    setUserProfile(userData)
+    return userData
+  }, [])
 
   const getAuthHeaders = useCallback(async () => {
     const token = await auth.currentUser?.getIdToken()
@@ -39,103 +96,125 @@ export function AuthProvider({ children }) {
 
   // Real-time Auth and Profile syncing
   useEffect(() => {
+    let unsubscribeAuth = null
     let unsubscribeProfile = null
+    let isMounted = true
 
-    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
-      if (unsubscribeProfile) {
-        unsubscribeProfile()
-        unsubscribeProfile = null
-      }
+    const initializeAuth = async () => {
+      setLoading(true)
+      if (!isMounted) return
 
-      if (user) {
-        // Set user online
-        setUserOnline(user.uid)
+      unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+        if (unsubscribeProfile) {
+          unsubscribeProfile()
+          unsubscribeProfile = null
+        }
 
-        // Fetch extra profile data from Firestore with a real-time listener
-        const profileRef = doc(db, 'users', user.uid)
-        
-        unsubscribeProfile = onSnapshot(profileRef, async (profileSnap) => {
-          let profileData = profileSnap.data()
+        if (user) {
+          setAuthError('')
+          // Set user online
+          setUserOnline(user.uid)
 
-          // Fallback: If no profile exists yet
-          if (!profileSnap.exists()) {
-            const isAdminEmail = user.email === 'amitp@solutionhub.com'
-            profileData = {
-              uid: user.uid,
-              email: user.email,
-              displayName: user.displayName || 'User',
-              role: isAdminEmail ? 'admin' : 'customer',
-              status: 'active',
-              createdAt: new Date().toISOString()
-            }
-            await setDoc(profileRef, profileData)
-          }
-
-          // Force logout for deactivated accounts
-          if (profileData?.status && profileData.status !== 'active') {
-            await signOut(auth)
-            setCurrentUser(null)
-            setUserProfile(null)
+          try {
+            await buildUserState(user)
+          } catch (error) {
+            console.error('Initial profile sync error:', error)
+            setAuthError(error?.message || 'Failed to load your account.')
             setLoading(false)
             return
           }
 
-          const userData = {
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName || profileData?.displayName,
-            ...profileData
-          }
+          // Fetch extra profile data from Firestore with a real-time listener
+          const profileRef = doc(db, 'users', user.uid)
 
-          setCurrentUser(userData)
-          setUserProfile(userData)
+          unsubscribeProfile = onSnapshot(profileRef, async (profileSnap) => {
+            let profileData = profileSnap.data()
+
+            // Fallback: If no profile exists yet
+            if (!profileSnap.exists()) {
+              const isAdminEmail = user.email === 'amitp@solutionhub.com'
+              profileData = {
+                uid: user.uid,
+                email: user.email,
+                displayName: user.displayName || 'User',
+                role: isAdminEmail ? 'admin' : 'customer',
+                status: 'active',
+                createdAt: new Date().toISOString()
+              }
+              await setDoc(profileRef, profileData)
+            }
+
+            // Force logout for deactivated accounts
+            if (profileData?.status && profileData.status !== 'active') {
+              await signOut(auth)
+              setCurrentUser(null)
+              setUserProfile(null)
+              setLoading(false)
+              return
+            }
+
+            const userData = {
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName || profileData?.displayName,
+              ...profileData,
+              role: normalizeUserRole(profileData?.role || (profileData?.isMentor ? 'mentor' : 'customer'))
+            }
+
+            setCurrentUser(userData)
+            setUserProfile(userData)
+            setLoading(false)
+          }, (error) => {
+            console.error("Profile sync error:", error)
+            setAuthError(error?.message || 'Failed to sync your account.')
+            setLoading(false)
+          })
+        } else {
+          setCurrentUser(null)
+          setUserProfile(null)
           setLoading(false)
-        }, (error) => {
-          console.error("Profile sync error:", error)
-          setLoading(false)
-        })
-      } else {
-        setCurrentUser(null)
-        setUserProfile(null)
+        }
+      }, (error) => {
+        console.error('Auth state error:', error)
+        setAuthError(error?.message || 'Authentication failed. Please try again.')
         setLoading(false)
-      }
-    })
+      })
+    }
+
+    initializeAuth()
 
     return () => {
+      isMounted = false
       if (unsubscribeAuth) unsubscribeAuth()
       if (unsubscribeProfile) unsubscribeProfile()
     }
-  }, [])
+  }, [buildUserState])
 
   const login = useCallback(async (email, password) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      return userCredential.user
+      return await buildUserState(userCredential.user)
     } catch (error) {
       throw error
     }
-  }, [])
+  }, [buildUserState])
 
   const loginWithGoogle = useCallback(async () => {
-    const provider = new GoogleAuthProvider()
-    provider.setCustomParameters({ prompt: 'select_account' })
-    let credential
+    setAuthError('')
     try {
-      credential = await signInWithPopup(auth, provider)
-    } catch (err) {
-      throw err
+      const provider = new GoogleAuthProvider()
+      provider.setCustomParameters({ prompt: 'select_account' })
+      const result = await signInWithPopup(auth, provider)
+      return await buildUserState(result.user, true)
+    } catch (error) {
+      console.error('Google sign-in error:', error)
+      setAuthError(error?.message || 'Google sign-in failed.')
+      throw error
     }
-    const user = credential.user
-    // Check if this Google account has an existing SolutionHub profile
-    const profileSnap = await getDoc(doc(db, 'users', user.uid))
-    if (!profileSnap.exists()) {
-      // No account found — sign them out immediately and signal the UI
-      await signOut(auth)
-      const err = new Error('NO_ACCOUNT')
-      err.code = 'auth/no-account'
-      throw err
-    }
-    return user
+  }, [buildUserState])
+
+  const clearAuthError = useCallback(() => {
+    setAuthError('')
   }, [])
 
   const signup = useCallback(async (payload) => {
@@ -304,18 +383,18 @@ export function AuthProvider({ children }) {
 
   const hasPermission = useCallback((permissionKey) => {
     if (!currentUser) return false
-    if (currentUser.role === 'admin') return true
+    if (normalizeUserRole(currentUser.role) === 'admin') return true
     return currentUser.permissions?.[permissionKey] === true
   }, [currentUser])
 
-  const isAdmin = currentUser?.role === 'admin'
-  const isEmployee = currentUser?.role === 'employee' || currentUser?.role === 'mentor'
+  const isAdmin = normalizeUserRole(currentUser?.role) === 'admin'
+  const isEmployee = isEmployeeRole(currentUser?.role)
 
   const value = {
-    currentUser, userProfile, loading,
+    currentUser, userProfile, loading, authError,
     login, loginWithGoogle, signup, logout, resetPassword, verifyResetCode, confirmReset,
     updateUserProfile, updateUserEmail, updateUserPassword, createAccountRequest, approveAccountRequest, getAllUsers,
-    hasPermission, isAdmin, isEmployee
+    hasPermission, isAdmin, isEmployee, clearAuthError
   }
 
   return (
