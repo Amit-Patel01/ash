@@ -16,6 +16,7 @@ const COURSE_BLANK = {
   description: '',
   thumbnail: '',
   enrollmentDeadline: '',
+  availableSoon: false,
 }
 const FALLBACK_CATEGORIES = [
   'Trading',
@@ -236,6 +237,7 @@ export default function EmployeeCourseManage() {
         description: courseForm.description.trim(),
         thumbnail: courseForm.thumbnail.trim(),
         enrollmentDeadline: normalizeEnrollmentDeadline(courseForm.enrollmentDeadline),
+        availableSoon: courseForm.availableSoon === true,
         assignedEmployeeId: primaryEmployeeKey,
         assignedEmployeeRef: secondaryEmployeeKey,
         assignedEmployeeName: displayName,
@@ -1014,6 +1016,20 @@ export default function EmployeeCourseManage() {
                   className="input"
                 />
                 <p className="mt-1 text-[11px] text-gray-500">Optional. This image can be used later on course cards and listing pages.</p>
+              </div>
+
+              <div className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] p-4">
+                <div>
+                  <p className="text-sm font-semibold text-white">Available Soon</p>
+                  <p className="mt-1 text-[11px] text-gray-500">Mark this as an upcoming program so admin can publish it with a public coming soon state.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCourseForm({ ...courseForm, availableSoon: !courseForm.availableSoon })}
+                  className={`relative h-6 w-11 rounded-full transition-all ${courseForm.availableSoon ? 'bg-fuchsia-500' : 'bg-gray-700'}`}
+                >
+                  <div className={`absolute top-1 h-4 w-4 rounded-full bg-white transition-all ${courseForm.availableSoon ? 'left-6' : 'left-1'}`} />
+                </button>
               </div>
 
               <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">

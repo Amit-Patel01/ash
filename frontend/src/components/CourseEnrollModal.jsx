@@ -98,6 +98,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
   const learningType = normalizeLearningType(course)
   const itemLabel = getLearningTypeLabel(course)
   const actionLabel = learningType === 'webinar' ? 'Registration' : 'Enrollment'
+  const availableSoon = course.availableSoon === true
   const enrollmentClosed = isEnrollmentClosed(course)
   const targetPlanRef = {
     planId: course.planId || course.id || '',
@@ -118,6 +119,10 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
 
   const handleEnroll = async () => {
     if (!currentUser) { navigate('/login'); return }
+    if (availableSoon) {
+      setError(`${itemLabel} will be available soon. ${actionLabel} has not opened yet.`)
+      return
+    }
     if (enrollmentClosed) {
       setError(`${actionLabel} for this program has closed.`)
       return
@@ -259,6 +264,21 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
               <button onClick={onClose} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition-all">Close</button>
               <button onClick={() => navigate('/customer/my-courses')} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all">My Courses</button>
             </div>
+          </div>
+        ) : availableSoon ? (
+          <div className="p-10 text-center">
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-fuchsia-50">
+              <svg className="h-10 w-10 text-fuchsia-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="mb-2 text-xl font-bold text-slate-900">Available Soon</h3>
+            <p className="mb-5 text-sm text-slate-500">
+              <span className="font-semibold text-slate-700">{actualCourseTitle}</span> is visible publicly, but {actionLabel.toLowerCase()} has not opened yet.
+            </p>
+            <button onClick={onClose} className="w-full py-3 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition-all">
+              Close
+            </button>
           </div>
         ) : enrollmentClosed ? (
           <div className="p-10 text-center">

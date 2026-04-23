@@ -218,18 +218,25 @@ export default function CourseDetailPage() {
     (enrollment.courseTitle && enrollment.courseTitle === course.title)
   const enrolled = currentUser ? isUserEnrolled(currentUser.uid, course.id) : false
   const enrolledCount = enrollments.filter(e => e.status === 'active' && matchesCourseEnrollment(e)).length
+  const availableSoon = course.availableSoon === true
   const enrollmentClosed = isEnrollmentClosed(course)
   const enrollmentDeadlineText = formatEnrollmentDeadline(course.enrollmentDeadline)
   const actionLabel = learningType === 'webinar' ? 'Registration' : 'Enrollment'
   const closedActionLabel = `${actionLabel} Closed`
+  const availableSoonLabel = 'Available Soon'
+  const enrollmentLocked = availableSoon && !enrolled
   const primaryCtaLabel = enrolled
     ? `Already Registered - View ${itemLabel}`
+    : enrollmentLocked
+      ? availableSoonLabel
     : course.isFree
       ? (learningType === 'webinar' ? 'Register for Free' : 'Enroll for Free')
       : (learningType === 'webinar' ? 'Register Now' : 'Enroll Now')
-  const deadlineSummary = enrollmentDeadlineText
-    ? (enrollmentClosed ? `${actionLabel} closed on ${enrollmentDeadlineText}` : `${actionLabel} closes on ${enrollmentDeadlineText}`)
-    : ''
+  const deadlineSummary = availableSoon
+    ? `${itemLabel} will be available soon.`
+    : enrollmentDeadlineText
+      ? (enrollmentClosed ? `${actionLabel} closed on ${enrollmentDeadlineText}` : `${actionLabel} closes on ${enrollmentDeadlineText}`)
+      : ''
 
   const plans = Array.isArray(course.plans) && course.plans.length > 0 ? course.plans : null
   const features = Array.isArray(course.features) ? course.features : []
@@ -340,6 +347,14 @@ export default function CourseDetailPage() {
                     <span className="text-xs font-black text-blue-600 uppercase tracking-wider">{course.badge}</span>
                   </>
                 )}
+                {availableSoon && (
+                  <>
+                    <span className="text-slate-200">·</span>
+                    <span className="rounded-full bg-fuchsia-100 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-fuchsia-700">
+                      {availableSoonLabel}
+                    </span>
+                  </>
+                )}
               </div>
 
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-5 text-slate-900">
@@ -361,7 +376,7 @@ export default function CourseDetailPage() {
                 {enrolledCount > 0 && <span>👥 {enrolledCount} Enrolled</span>}
                 {instructorName && <span>👨‍🏫 {instructorName}</span>}
                 {deadlineSummary && (
-                  <span className={`rounded-full px-3 py-1 text-xs font-bold ${enrollmentClosed ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}`}>
+                  <span className={`rounded-full px-3 py-1 text-xs font-bold ${availableSoon ? 'bg-fuchsia-100 text-fuchsia-700' : enrollmentClosed ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}`}>
                     {deadlineSummary}
                   </span>
                 )}
@@ -369,7 +384,15 @@ export default function CourseDetailPage() {
 
               {/* CTA */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                {enrollmentClosed && !enrolled ? (
+                {enrollmentLocked ? (
+                  <button
+                    type="button"
+                    disabled
+                    className="inline-flex items-center gap-2 rounded-full bg-fuchsia-100 px-8 py-4 text-lg font-bold text-fuchsia-700 shadow-sm"
+                  >
+                    {availableSoonLabel}
+                  </button>
+                ) : enrollmentClosed && !enrolled ? (
                   <button
                     type="button"
                     disabled
@@ -392,6 +415,12 @@ export default function CourseDetailPage() {
                   </a>
                 )}
               </div>
+
+              {enrollmentLocked && (
+                <div className="mx-auto mt-5 max-w-2xl rounded-3xl border border-fuchsia-200 bg-fuchsia-50 px-5 py-4 text-sm font-medium text-fuchsia-800">
+                  This program is publicly visible as an upcoming launch. Enrollment is not open yet.
+                </div>
+              )}
 
               {/* Trust badges */}
               <div className="flex flex-wrap items-center justify-center gap-6 mt-10 text-sm text-slate-500">
@@ -568,9 +597,11 @@ export default function CourseDetailPage() {
                       isFree: plan.isFree || plan.price === 0,
                     })
                     const planClosed = isPlanEnrollmentClosed(plan, course)
-                    const disablePlanAction = planClosed && !planAlreadyEnrolled
+                    const disablePlanAction = (availableSoon && !planAlreadyEnrolled) || (planClosed && !planAlreadyEnrolled)
                     const planButtonLabel = planAlreadyEnrolled
                       ? 'Registered'
+                      : availableSoon
+                        ? availableSoonLabel
                       : disablePlanAction
                         ? closedActionLabel
                         : plan.isFree || plan.price === 0
@@ -666,17 +697,17 @@ export default function CourseDetailPage() {
                     )}
                     <button
                       type="button"
-                      disabled={enrollmentClosed && !enrolled}
+                      disabled={enrollmentLocked || (enrollmentClosed && !enrolled)}
                       onClick={() => {
-                        if (enrollmentClosed && !enrolled) return
+                        if (enrollmentLocked || (enrollmentClosed && !enrolled)) return
                         setSelectedPlan(course)
                       }}
                       className={`w-full py-4 font-bold rounded-2xl transition-all shadow-lg text-lg ${
-                        enrollmentClosed && !enrolled
+                        enrollmentLocked || (enrollmentClosed && !enrolled)
                           ? 'cursor-not-allowed bg-slate-200 text-slate-500'
                           : 'bg-white text-blue-700 hover:bg-blue-50 hover:scale-105'
                       }`}>
-                      {enrolled ? 'Already Registered' : enrollmentClosed ? closedActionLabel : course.isFree || course.price === 0 ? (learningType === 'webinar' ? 'Register for Free' : 'Enroll for Free') : (learningType === 'webinar' ? 'Register Now' : 'Enroll Now')}
+                      {enrolled ? 'Already Registered' : availableSoon ? availableSoonLabel : enrollmentClosed ? closedActionLabel : course.isFree || course.price === 0 ? (learningType === 'webinar' ? 'Register for Free' : 'Enroll for Free') : (learningType === 'webinar' ? 'Register Now' : 'Enroll Now')}
                     </button>
                   </div>
                 </div>
@@ -717,7 +748,15 @@ export default function CourseDetailPage() {
               <p className="text-blue-100 text-lg max-w-xl mx-auto mb-10">
                 Join our growing community of learners and take the next step with a structured, mentor-led program.
               </p>
-              {enrollmentClosed && !enrolled ? (
+              {enrollmentLocked ? (
+                <button
+                  type="button"
+                  disabled
+                  className="inline-flex items-center gap-3 rounded-full bg-white/70 px-10 py-5 text-xl font-bold text-fuchsia-700 shadow-2xl"
+                >
+                  {availableSoonLabel}
+                </button>
+              ) : enrollmentClosed && !enrolled ? (
                 <button
                   type="button"
                   disabled

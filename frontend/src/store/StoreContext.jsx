@@ -851,6 +851,7 @@ export function StoreProvider({ children }) {
         enrollmentDeadline: normalizeEnrollmentDeadline(courseData.enrollmentDeadline),
         slug,
         published: courseData.published ?? false,
+        availableSoon: courseData.availableSoon ?? false,
         highlighted: courseData.highlighted ?? false,
         enrolledCount: 0,
         createdAt: serverTimestamp(),

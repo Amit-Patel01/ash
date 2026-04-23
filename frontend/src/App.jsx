@@ -1,4 +1,4 @@
-import { useCallback, lazy, Suspense } from 'react'
+import { useCallback, useEffect, useRef, lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -10,6 +10,29 @@ import { ThemeProvider } from './context/ThemeContext'
 import AIChatbot from './components/AIChatbot'
 import Layout from './components/Layout'
 import { getHomePathForRole, isEmployeeRole, normalizeUserRole } from './utils/roles'
+
+const MODULE_ERROR_AUTO_REFRESH_KEY = 'module-error-auto-refresh-count'
+const MAX_MODULE_ERROR_AUTO_REFRESHES = 2
+const MODULE_LOAD_ERROR_PATTERNS = [
+  'failed to fetch dynamically imported module',
+  'importing a module script failed',
+  'chunkloaderror',
+  'loading chunk',
+  'module script',
+  'dynamically imported module',
+]
+
+const getModuleErrorAutoRefreshCount = () =>
+  Number.parseInt(window.sessionStorage.getItem(MODULE_ERROR_AUTO_REFRESH_KEY) || '0', 10) || 0
+
+const resetModuleErrorAutoRefreshCount = () => {
+  window.sessionStorage.setItem(MODULE_ERROR_AUTO_REFRESH_KEY, '0')
+}
+
+const isRecoverableModuleLoadError = (error) => {
+  const message = `${error?.name || ''} ${error?.message || ''}`.toLowerCase()
+  return MODULE_LOAD_ERROR_PATTERNS.some(pattern => message.includes(pattern))
+}
 
 /**
  * Enhanced lazy loader that detects module load failures (e.g. after a new deployment)
@@ -24,6 +47,7 @@ const lazyWithRetry = (componentImport) =>
     try {
       const component = await componentImport()
       window.sessionStorage.setItem('page-has-been-force-refreshed', 'false')
+      resetModuleErrorAutoRefreshCount()
       return component
     } catch (error) {
       if (!pageHasBeenForceRefreshed) {
@@ -37,6 +61,45 @@ const lazyWithRetry = (componentImport) =>
       throw error
     }
   })
+
+function ModuleLoadErrorFallback({ error }) {
+  const hasScheduledRefresh = useRef(false)
+  const shouldAutoRefresh =
+    isRecoverableModuleLoadError(error) &&
+    getModuleErrorAutoRefreshCount() < MAX_MODULE_ERROR_AUTO_REFRESHES
+
+  useEffect(() => {
+    if (!shouldAutoRefresh || hasScheduledRefresh.current) {
+      return undefined
+    }
+
+    hasScheduledRefresh.current = true
+    window.sessionStorage.setItem(
+      MODULE_ERROR_AUTO_REFRESH_KEY,
+      String(getModuleErrorAutoRefreshCount() + 1)
+    )
+
+    const timeoutId = window.setTimeout(() => {
+      window.location.reload()
+    }, 1500)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
+  }, [shouldAutoRefresh])
+
+  return (
+    <div style={{ padding: '50px', textAlign: 'center', color: '#64748b', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      <h2 style={{ color: '#ef4444', marginBottom: 12 }}>Component Error</h2>
+      <p>
+        {shouldAutoRefresh
+          ? 'Module load issue detected. Refreshing automatically...'
+          : 'A module failed to load. Please try refreshing the page.'}
+      </p>
+      <button onClick={() => window.location.reload()} style={{ marginTop: 20, padding: '10px 20px', background: '#3b82f6', color: 'white', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>Refresh Page</button>
+    </div>
+  )
+}
 
 const Hero = lazyWithRetry(() => import('./components/Hero'))
 const About = lazyWithRetry(() => import('./pages/About'))
@@ -248,13 +311,7 @@ function AppContent() {
   }, [logout, navigate])
 
   return (
-    <ErrorBoundary fallback={
-      <div style={{ padding: '50px', textAlign: 'center', color: '#64748b', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <h2 style={{ color: '#ef4444', marginBottom: 12 }}>Component Error</h2>
-        <p>A module failed to load. Please try refreshing the page.</p>
-        <button onClick={() => window.location.reload()} style={{ marginTop: 20, padding: '10px 20px', background: '#3b82f6', color: 'white', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>Refresh Page</button>
-      </div>
-    }>
+    <ErrorBoundary FallbackComponent={ModuleLoadErrorFallback}>
       <Suspense fallback={<AppShellFallback />}>
         <Routes>
           <Route path="/" element={<Layout />}>

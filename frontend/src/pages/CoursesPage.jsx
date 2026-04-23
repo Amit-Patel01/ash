@@ -231,6 +231,7 @@ export default function CoursesPage() {
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {filtered.map((course) => {
                 const isEnrolled = currentUser ? isUserEnrolled(currentUser.uid, course.id) : false
+                const isAvailableSoon = course.availableSoon === true
                 const categoryMeta = getCategoryMeta(course.category)
                 const planPrices = Array.isArray(course.plans) ? course.plans.map((plan) => Number(plan.price) || 0) : []
                 const startingPrice = planPrices.length > 0 ? Math.min(...planPrices) : Number(course.price || 0)
@@ -280,7 +281,12 @@ export default function CoursesPage() {
                             Enrolled
                           </span>
                         )}
-                        {!isEnrolled && enrollmentClosed && (
+                        {!isEnrolled && isAvailableSoon && (
+                          <span className="rounded-full bg-fuchsia-500/90 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white">
+                            Available Soon
+                          </span>
+                        )}
+                        {!isEnrolled && !isAvailableSoon && enrollmentClosed && (
                           <span className="rounded-full bg-rose-500/90 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white">
                             {actionLabel} Closed
                           </span>
@@ -315,7 +321,11 @@ export default function CoursesPage() {
                       <div>
                         <h3 className="text-xl font-black leading-tight text-slate-900">{course.title}</h3>
                         <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">{course.description}</p>
-                        {deadlineText && (
+                        {isAvailableSoon ? (
+                          <p className="mt-3 text-xs font-semibold text-fuchsia-700">
+                            {learningTypeLabel(course)}
+                          </p>
+                        ) : deadlineText && (
                           <p className={`mt-3 text-xs font-semibold ${enrollmentClosed ? 'text-rose-600' : 'text-amber-700'}`}>
                             {enrollmentClosed ? `${actionLabel} closed on ${deadlineText}` : `${actionLabel} closes on ${deadlineText}`}
                           </p>
@@ -367,4 +377,9 @@ export default function CoursesPage() {
       </PublicPageShell>
     </>
   )
+}
+
+function learningTypeLabel(course) {
+  const itemLabel = getLearningTypeLabel(course)
+  return `${itemLabel} launching soon. Enrollment will open shortly.`
 }

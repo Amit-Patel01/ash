@@ -2114,6 +2114,8 @@ const updateOwnProfile = async (firebaseUid, updates) => {
     github: updates.github,
     linkedin: updates.linkedin,
     portfolio: updates.portfolio,
+    showOnTeam: updates.showOnTeam,
+    cvFilePath: updates.cvFilePath,
   };
 
   return updateManagedUser(firebaseUid, allowedUpdates);

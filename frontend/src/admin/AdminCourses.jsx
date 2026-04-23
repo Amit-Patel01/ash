@@ -23,6 +23,7 @@ export default function AdminCourses() {
     thumbnail: '',
     enrollmentDeadline: '',
     published: false,
+    availableSoon: false,
     assignedEmployeeId: '', assignedEmployeeName: ''
   }
   const [form, setForm] = useState(blankForm)
@@ -58,6 +59,7 @@ export default function AdminCourses() {
       thumbnail: course.thumbnail || course.image || course.imageUrl || '',
       enrollmentDeadline: normalizeEnrollmentDeadline(course.enrollmentDeadline),
       published: course.published || false,
+      availableSoon: course.availableSoon === true,
       assignedEmployeeId: course.assignedEmployeeId || '',
       assignedEmployeeName: course.assignedEmployeeName || ''
     })
@@ -86,6 +88,9 @@ export default function AdminCourses() {
         description: form.description.trim(),
         thumbnail: form.thumbnail.trim(),
         enrollmentDeadline: normalizeEnrollmentDeadline(form.enrollmentDeadline),
+        availableSoon: form.availableSoon === true,
+        assignedEmployeeId: form.assignedEmployeeId || '',
+        assignedEmployeeName: form.assignedEmployeeName || '',
       }
       if (editingCourse) {
         await updateCourse(editingCourse.id, payload)
@@ -161,7 +166,8 @@ export default function AdminCourses() {
         </svg>
         <span>
           <span className="font-bold text-blue-200">Published</span> courses appear on the public /courses page.
-          Assign an <span className="font-bold text-blue-200">Employee</span> to let them manage the course content, materials, and meeting links.
+          Use <span className="font-bold text-blue-200">Available Soon</span> when you want to announce a program publicly before enrollment opens.
+          Assign an <span className="font-bold text-blue-200">Employee</span> later to let them manage the course content, materials, and meeting links.
         </span>
       </div>
 
@@ -242,6 +248,11 @@ export default function AdminCourses() {
                 {course.badge && (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
                     {course.badge}
+                  </span>
+                )}
+                {course.availableSoon && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-fuchsia-500/10 text-fuchsia-300 border border-fuchsia-500/20">
+                    Available Soon
                   </span>
                 )}
               </div>
@@ -405,7 +416,7 @@ export default function AdminCourses() {
 
               {/* Assign Employee */}
               <div>
-                <label className="label">Assign Employee / Instructor *</label>
+                <label className="label">Assign Employee / Instructor</label>
                 <select
                   value={form.assignedEmployeeId}
                   onChange={e => handleAssignEmployee(e.target.value)}
@@ -422,19 +433,31 @@ export default function AdminCourses() {
                     )
                   })}
                 </select>
-                <p className="text-[11px] text-gray-500 mt-1">The assigned employee will manage plans, materials, and meeting links from their Employee Panel</p>
+                <p className="text-[11px] text-gray-500 mt-1">Optional. You can assign this later when the instructor is finalized.</p>
               </div>
 
-              {/* Published toggle */}
-              <div className="flex items-center justify-between p-3 bg-white/[0.02] rounded-xl border border-white/5">
-                <div>
-                  <p className="text-sm font-semibold text-white">Published</p>
-                  <p className="text-[10px] text-gray-500">Make visible to students on /courses</p>
+              {/* Visibility toggles */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-white/[0.02] rounded-xl border border-white/5">
+                  <div>
+                    <p className="text-sm font-semibold text-white">Published</p>
+                    <p className="text-[10px] text-gray-500">Make visible to students on /courses</p>
+                  </div>
+                  <button type="button" onClick={() => setForm({...form, published: !form.published})}
+                    className={`w-11 h-6 rounded-full relative transition-all ${form.published ? 'bg-blue-500' : 'bg-gray-700'}`}>
+                    <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${form.published ? 'left-6' : 'left-1'}`} />
+                  </button>
                 </div>
-                <button type="button" onClick={() => setForm({...form, published: !form.published})}
-                  className={`w-11 h-6 rounded-full relative transition-all ${form.published ? 'bg-blue-500' : 'bg-gray-700'}`}>
-                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${form.published ? 'left-6' : 'left-1'}`} />
-                </button>
+                <div className="flex items-center justify-between p-3 bg-white/[0.02] rounded-xl border border-white/5">
+                  <div>
+                    <p className="text-sm font-semibold text-white">Available Soon</p>
+                    <p className="text-[10px] text-gray-500">Show publicly as an upcoming program and pause enrollment for now</p>
+                  </div>
+                  <button type="button" onClick={() => setForm({...form, availableSoon: !form.availableSoon})}
+                    className={`w-11 h-6 rounded-full relative transition-all ${form.availableSoon ? 'bg-fuchsia-500' : 'bg-gray-700'}`}>
+                    <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${form.availableSoon ? 'left-6' : 'left-1'}`} />
+                  </button>
+                </div>
               </div>
 
               {/* Actions */}

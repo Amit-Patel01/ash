@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { auth } from '../config/firebase'
-import { api } from '../config/api'
 import {
   EmployeeBadge,
   EmployeePageHeader,
@@ -13,7 +11,7 @@ const createProfileForm = (profile) => ({
   displayName: profile?.displayName || '',
   phone: profile?.phone || '',
   department: profile?.department || '',
-  avatar: profile?.avatar || '',
+  avatar: profile?.avatar || profile?.photoURL || '',
   bio: profile?.bio || '',
   jobTitle: profile?.jobTitle || '',
   experience: profile?.experience || '',
@@ -21,18 +19,16 @@ const createProfileForm = (profile) => ({
   linkedin: profile?.linkedin || '',
   portfolio: profile?.portfolio || '',
   cvFilePath: profile?.cvFilePath || '',
+  showOnTeam: Boolean(profile?.showOnTeam),
 })
 
 export default function EmployeeProfileRefined() {
   const { currentUser, userProfile, updateUserProfile, updateUserPassword } = useAuth()
   const [profileForm, setProfileForm] = useState(() => createProfileForm(userProfile))
-  const [passwordForm, setPasswordForm] = useState({ current: '', new: '', confirm: '' })
   const [profileStatus, setProfileStatus] = useState({ type: '', message: '' })
   const [passwordStatus, setPasswordStatus] = useState({ type: '', message: '' })
-  const [cvStatus, setCvStatus] = useState({ type: '', message: '' })
   const [profileLoading, setProfileLoading] = useState(false)
   const [passwordLoading, setPasswordLoading] = useState(false)
-  const [cvLoading, setCvLoading] = useState(false)
 
   useEffect(() => {
     setProfileForm(createProfileForm(userProfile))
@@ -42,7 +38,14 @@ export default function EmployeeProfileRefined() {
   const initials = getEmployeeInitials(displayName)
   const profileLinks = [profileForm.github, profileForm.linkedin, profileForm.portfolio].filter(Boolean).length
   const userId = currentUser?.uid || userProfile?.uid || ''
-  const cvFileName = userProfile?.cvFileName || ''
+  const publicProfileId = encodeURIComponent(
+    userProfile?.uid ||
+    userProfile?.employeeId ||
+    currentUser?.uid ||
+    currentUser?.email ||
+    displayName
+  )
+  const publicProfilePath = `/team/${publicProfileId}`
 
   const profileStats = useMemo(() => ([
     { label: 'Role', value: profileForm.jobTitle || userProfile?.jobTitle || userProfile?.role || 'Employee' },
@@ -75,7 +78,6 @@ export default function EmployeeProfileRefined() {
     try {
       await updateUserPassword()
       setPasswordStatus({ type: 'success', message: 'A password reset link has been sent to your email address.' })
-      setPasswordForm({ current: '', new: '', confirm: '' })
     } catch (error) {
       setPasswordStatus({ type: 'error', message: error.message || 'Unable to send the password reset email.' })
     } finally {
@@ -170,6 +172,9 @@ export default function EmployeeProfileRefined() {
               <div className="flex flex-wrap gap-2">
                 <EmployeeBadge tone="info">Mentor Profile</EmployeeBadge>
                 <EmployeeBadge>{profileForm.experience || 'Experience pending'}</EmployeeBadge>
+                <EmployeeBadge tone={profileForm.showOnTeam ? 'success' : 'neutral'}>
+                  {profileForm.showOnTeam ? 'Visible on Team Page' : 'Hidden from Team Page'}
+                </EmployeeBadge>
               </div>
               <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
@@ -186,6 +191,22 @@ export default function EmployeeProfileRefined() {
                     These details may appear on course pages and student-facing mentor sections.
                   </div>
                 </div>
+              </div>
+              <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4">
+                <div className="pr-4">
+                  <p className="text-sm font-semibold text-white">Show On Public Team Profile</p>
+                  <p className="mt-1 text-xs leading-5 text-slate-400">
+                    Turn this on if your employee profile should appear on the public team page and team profile route.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setProfileForm(current => ({ ...current, showOnTeam: !current.showOnTeam }))}
+                  className={`relative h-6 w-11 rounded-full transition-all ${profileForm.showOnTeam ? 'bg-cyan-500' : 'bg-slate-700'}`}
+                  aria-pressed={profileForm.showOnTeam}
+                >
+                  <div className={`absolute top-1 h-4 w-4 rounded-full bg-white transition-all ${profileForm.showOnTeam ? 'left-6' : 'left-1'}`} />
+                </button>
               </div>
               <div className="mt-4">
                 <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-500">Bio</label>
@@ -258,6 +279,21 @@ export default function EmployeeProfileRefined() {
               <p className="mt-5 text-sm leading-6 text-slate-400">
                 {profileForm.bio || 'Your bio preview will appear here and helps students and administrators understand your expertise and background.'}
               </p>
+              <div className="mt-5 flex flex-wrap items-center gap-3">
+                <span className={`rounded-full px-3 py-1 text-xs font-bold ${profileForm.showOnTeam ? 'bg-emerald-400/10 text-emerald-300 border border-emerald-400/20' : 'bg-slate-400/10 text-slate-400 border border-slate-400/20'}`}>
+                  {profileForm.showOnTeam ? 'Publicly visible on team section' : 'Currently hidden from public team section'}
+                </span>
+                {profileForm.showOnTeam && (
+                  <a
+                    href={publicProfilePath}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-xs font-bold text-cyan-400 transition-colors hover:text-cyan-300"
+                  >
+                    View Public Profile
+                  </a>
+                )}
+              </div>
             </div>
           </EmployeeSurface>
 
@@ -265,6 +301,7 @@ export default function EmployeeProfileRefined() {
             <div className="space-y-4">
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
                 Instead of uploading a file, you can now provide a direct <strong>Google Drive link</strong> or any public URL to your latest resume.
+                Save the profile after editing this link so it persists across refreshes.
               </div>
               <div>
                 <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-cyan-500">Google Drive Link</label>
