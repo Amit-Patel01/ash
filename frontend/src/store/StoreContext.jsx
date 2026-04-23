@@ -28,6 +28,24 @@ const StoreContext = createContext(null)
 
 const normalizeMatchKey = (value) => String(value || '').trim().toLowerCase()
 const compactMatchKey = (value) => normalizeMatchKey(value).replace(/[^a-z0-9]/g, '')
+const normalizeCourseCategoryName = (value) => String(value || '').trim().toLowerCase()
+
+const dedupeCourseCategories = (items = []) => {
+  const sortedItems = [...items].sort((a, b) => {
+    const orderDiff = (a?.order ?? Number.MAX_SAFE_INTEGER) - (b?.order ?? Number.MAX_SAFE_INTEGER)
+    if (orderDiff !== 0) return orderDiff
+    return String(a?.id || '').localeCompare(String(b?.id || ''))
+  })
+
+  const unique = new Map()
+  for (const item of sortedItems) {
+    const key = normalizeCourseCategoryName(item?.name)
+    if (!key || unique.has(key)) continue
+    unique.set(key, item)
+  }
+
+  return [...unique.values()]
+}
 
 const getPlanIdentity = (source = {}) => {
   const normalized = [
@@ -342,7 +360,7 @@ export function StoreProvider({ children }) {
       (snapshot) => {
         const cats = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
         cats.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-        setCourseCategories(cats)
+        setCourseCategories(dedupeCourseCategories(cats))
       },
       (error) => console.error("CourseCategories snapshot error:", error)
     )
@@ -1021,6 +1039,16 @@ export function StoreProvider({ children }) {
   // --- Course Categories CRUD ---
   const addCourseCategory = async (data) => {
     try {
+      const normalizedName = normalizeCourseCategoryName(data?.name)
+      if (!normalizedName) {
+        throw new Error('Category name is required.')
+      }
+      const alreadyExists = courseCategories.some(category =>
+        normalizeCourseCategoryName(category.name) === normalizedName
+      )
+      if (alreadyExists) {
+        throw new Error('A category with this name already exists.')
+      }
       const payload = { ...data, order: courseCategories.length, createdAt: serverTimestamp() }
       const docRef = await addDoc(collection(db, 'courseCategories'), payload)
       return { id: docRef.id, ...payload }
@@ -1028,7 +1056,20 @@ export function StoreProvider({ children }) {
   }
 
   const updateCourseCategory = async (id, updates) => {
-    try { await updateDoc(doc(db, 'courseCategories', id), updates) }
+    try {
+      const normalizedName = normalizeCourseCategoryName(updates?.name)
+      if (!normalizedName) {
+        throw new Error('Category name is required.')
+      }
+      const alreadyExists = courseCategories.some(category =>
+        category.id !== id &&
+        normalizeCourseCategoryName(category.name) === normalizedName
+      )
+      if (alreadyExists) {
+        throw new Error('A category with this name already exists.')
+      }
+      await updateDoc(doc(db, 'courseCategories', id), updates)
+    }
     catch (err) { console.error('Error updating category:', err); throw err }
   }
 
@@ -1039,7 +1080,10 @@ export function StoreProvider({ children }) {
 
   // Seed default categories if none exist
   const seedCourseCategories = async () => {
-    if (courseCategories.length > 0) return
+    const existingSnapshot = await getDocs(collection(db, 'courseCategories'))
+    const existingNames = new Set(
+      existingSnapshot.docs.map(docSnap => normalizeCourseCategoryName(docSnap.data()?.name))
+    )
     const defaults = [
       { name: 'Trading',           icon: '📈', color: '#10b981', order: 0 },
       { name: 'Web Development',   icon: '💻', color: '#3b82f6', order: 1 },
@@ -1050,7 +1094,10 @@ export function StoreProvider({ children }) {
       { name: 'Other',             icon: '📚', color: '#6b7280', order: 6 },
     ]
     for (const cat of defaults) {
+      const normalizedName = normalizeCourseCategoryName(cat.name)
+      if (existingNames.has(normalizedName)) continue
       await addDoc(collection(db, 'courseCategories'), { ...cat, createdAt: serverTimestamp() })
+      existingNames.add(normalizedName)
     }
   }
   // ══════════════════════════════════════════════════════════════

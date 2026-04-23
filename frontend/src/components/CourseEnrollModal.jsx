@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import { collection, query, where, getDocs } from 'firebase/firestore'
-import { db } from '../config/firebase'
-import { api } from '../config/api'
+import { auth, db } from '../config/firebase'
+import { api, readApiJson } from '../config/api'
 import { isEnrollmentClosed } from '../utils/enrollmentDeadline'
 import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
 
@@ -86,6 +86,10 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
   const { currentUser } = useAuth()
   const navigate = useNavigate()
   const [mobile, setMobile] = useState('')
+  const [couponCode, setCouponCode] = useState('')
+  const [couponPreview, setCouponPreview] = useState(null)
+  const [couponStatus, setCouponStatus] = useState({ type: '', message: '' })
+  const [couponLoading, setCouponLoading] = useState(false)
   const [mobileError, setMobileError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -93,6 +97,8 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
 
   const actualCourseId = course.courseId || course.id
   const actualCourseTitle = course.courseTitle || course.title
+  const actualPlanId = course.planId || ''
+  const actualPlanLabel = course.planLabel || course.label || ''
   const actualPrice = Number(course.price || 0)
   const isFreeCourse = course.isFree || course.price === 0 || course.price === '0' || actualPrice === 0
   const learningType = normalizeLearningType(course)
@@ -107,14 +113,83 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
     amount: actualPrice,
     isFree: isFreeCourse,
   }
+  const appliedPricing = couponPreview?.pricing || null
+  const discountAmount = Number(appliedPricing?.discountAmount || 0)
+  const payableAmount = isFreeCourse ? 0 : Number(appliedPricing?.finalAmount ?? actualPrice)
+  const isEffectivelyFree = payableAmount === 0
+  const showCouponField = !isFreeCourse
+  const appliedCouponCode = appliedPricing?.couponCode || ''
 
   const enrolled = currentUser ? isUserEnrolled(currentUser.uid, actualCourseId, targetPlanRef) : false
+
+  const getAuthHeaders = async () => {
+    const token = await auth.currentUser?.getIdToken()
+    if (!token) {
+      throw new Error('Please sign in again to continue.')
+    }
+
+    return {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    }
+  }
 
   const validateMobile = () => {
     const c = mobile.replace(/\s/g, '')
     if (!c) { setMobileError('Mobile number is required'); return false }
     if (!/^[6-9]\d{9}$/.test(c)) { setMobileError('Enter a valid 10-digit Indian number'); return false }
     setMobileError(''); return true
+  }
+
+  const applyCoupon = async () => {
+    if (!currentUser) {
+      navigate('/login')
+      return null
+    }
+
+    const normalizedCode = couponCode.trim().toUpperCase()
+    if (!normalizedCode) {
+      setCouponPreview(null)
+      setCouponStatus({ type: 'error', message: 'Enter a coupon code first.' })
+      return null
+    }
+
+    setCouponLoading(true)
+    setCouponStatus({ type: '', message: '' })
+    try {
+      const headers = await getAuthHeaders()
+      const response = await fetch(api.couponsValidate, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          couponCode: normalizedCode,
+          courseId: actualCourseId,
+          planId: actualPlanId,
+          originalAmount: actualPrice,
+        }),
+      })
+      const data = await readApiJson(response)
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Coupon could not be applied.')
+      }
+
+      setCouponPreview({
+        coupon: data.coupon,
+        pricing: data.pricing,
+      })
+      setCouponCode(data.pricing?.couponCode || normalizedCode)
+      setCouponStatus({
+        type: 'success',
+        message: `Coupon applied. You saved ₹${Number(data.pricing?.discountAmount || 0).toLocaleString('en-IN')}.`,
+      })
+      return data
+    } catch (err) {
+      setCouponPreview(null)
+      setCouponStatus({ type: 'error', message: err.message || 'Coupon could not be applied.' })
+      return null
+    } finally {
+      setCouponLoading(false)
+    }
   }
 
   const handleEnroll = async () => {
@@ -128,9 +203,14 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
       return
     }
     if (!validateMobile()) return
+    if (couponCode.trim() && !couponPreview) {
+      setError('Apply the coupon code first before continuing.')
+      return
+    }
     setSubmitting(true)
     setError('')
     try {
+      const headers = await getAuthHeaders()
       // Firestore duplicate check
       const q = query(
         collection(db, 'enrollments'),
@@ -144,7 +224,35 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
       )
       if (alreadyEnrolled) { setSuccess(true); return }
 
-      if (isFreeCourse) {
+      if (isEffectivelyFree) {
+        if (appliedCouponCode) {
+          const verifyRes = await fetch(api.razorpayVerifyCourse, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              razorpay_order_id: `free_course_order_${Date.now()}`,
+              razorpay_payment_id: '',
+              razorpay_signature: '',
+              userId: currentUser.uid,
+              userName: currentUser.displayName || currentUser.email,
+              userEmail: currentUser.email,
+              courseId: actualCourseId,
+              planId: actualPlanId || course.id,
+              planName: actualPlanLabel || actualCourseTitle,
+              amount: payableAmount,
+              originalAmount: actualPrice,
+              discountAmount,
+              finalAmount: payableAmount,
+              couponCode: appliedCouponCode,
+              couponId: appliedPricing?.couponId || '',
+            }),
+          })
+          const verifyData = await readApiJson(verifyRes)
+          if (!verifyRes.ok || !verifyData.success) {
+            throw new Error(verifyData.message || 'Unable to confirm the coupon enrollment.')
+          }
+        }
+
         await addEnrollment({
           userId: currentUser.uid,
           userName: currentUser.displayName || currentUser.email,
@@ -153,11 +261,16 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
           courseId: actualCourseId,
           courseTitle: actualCourseTitle,
           category: course.category,
-          amount: 0,
+          amount: payableAmount,
+          originalAmount: actualPrice,
+          discountAmount,
+          finalAmount: payableAmount,
+          couponCode: appliedCouponCode,
+          couponId: appliedPricing?.couponId || '',
           instructor: course.instructor || '',
           assignedEmployeeId: course.assignedEmployeeId || '',
-          planId: course.planId || course.id || '',
-          planLabel: course.planLabel || course.label || '',
+          planId: actualPlanId || course.id || '',
+          planLabel: actualPlanLabel,
         })
         setSuccess(true)
         if (onSuccess) onSuccess()
@@ -166,13 +279,20 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
         const isLoaded = await loadRazorpayScript()
         if (!isLoaded) throw new Error("Failed to load Razorpay SDK")
 
-        const amount = actualPrice
-        const orderRes = await fetch(api.razorpayCreateOrder, {
+        const orderRes = await fetch(api.razorpayCreateCourseOrder, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount })
+          headers,
+          body: JSON.stringify({
+            courseId: actualCourseId,
+            planId: actualPlanId,
+            couponCode: appliedCouponCode,
+          })
         })
-        const { order } = await orderRes.json()
+        const orderData = await readApiJson(orderRes)
+        if (!orderRes.ok || !orderData.success) {
+          throw new Error(orderData.message || 'Could not create Razorpay order')
+        }
+        const { order, pricing } = orderData
         if (!order) throw new Error("Could not create Razorpay order")
 
         const options = {
@@ -186,20 +306,26 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
             try {
               const verifyRes = await fetch(api.razorpayVerifyCourse, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify({
                   ...response,
                   userId: currentUser.uid,
                   userName: currentUser.displayName || currentUser.email,
                   userEmail: currentUser.email,
-                  planId: course.planId || course.id,
-                  planName: course.planLabel || course.label || actualCourseTitle,
-                  amount: amount
+                  courseId: actualCourseId,
+                  planId: actualPlanId || course.id,
+                  planName: actualPlanLabel || actualCourseTitle,
+                  amount: pricing.finalAmount,
+                  originalAmount: pricing.originalAmount,
+                  discountAmount: pricing.discountAmount,
+                  finalAmount: pricing.finalAmount,
+                  couponCode: pricing.couponCode || '',
+                  couponId: pricing.couponId || '',
                 })
               })
-              const verifyData = await verifyRes.json()
+              const verifyData = await readApiJson(verifyRes)
 
-              if (verifyData.success) {
+              if (verifyRes.ok && verifyData.success) {
                 await addEnrollment({
                   userId: currentUser.uid,
                   userName: currentUser.displayName || currentUser.email,
@@ -208,17 +334,22 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
                   courseId: actualCourseId,
                   courseTitle: actualCourseTitle,
                   category: course.category,
-                  amount: amount,
+                  amount: pricing.finalAmount,
+                  originalAmount: pricing.originalAmount,
+                  discountAmount: pricing.discountAmount,
+                  finalAmount: pricing.finalAmount,
+                  couponCode: pricing.couponCode || '',
+                  couponId: pricing.couponId || '',
                   instructor: course.instructor || '',
                   assignedEmployeeId: course.assignedEmployeeId || '',
                   paymentId: response.razorpay_payment_id,
-                  planId: course.planId || course.id || '',
-                  planLabel: course.planLabel || course.label || '',
+                  planId: actualPlanId || course.id || '',
+                  planLabel: actualPlanLabel,
                 })
                 setSuccess(true)
                 if (onSuccess) onSuccess()
               } else {
-                setError("Payment verification failed. Please contact support.")
+                setError(verifyData.message || "Payment verification failed. Please contact support.")
               }
             } catch (err) {
               console.error(err)
@@ -329,9 +460,17 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
               </div>
               {/* Price */}
               <div className="mt-4 flex items-center gap-3">
-                <span className="text-3xl font-black">
-                  {isFreeCourse ? 'FREE' : `₹${actualPrice.toLocaleString('en-IN')}`}
-                </span>
+                <div>
+                  <span className="text-3xl font-black">
+                    {isEffectivelyFree ? 'FREE' : `₹${payableAmount.toLocaleString('en-IN')}`}
+                  </span>
+                  {discountAmount > 0 && (
+                    <p className="mt-1 text-xs font-semibold text-blue-100">
+                      <span className="line-through opacity-75">₹{actualPrice.toLocaleString('en-IN')}</span>
+                      <span className="ml-2">Coupon applied</span>
+                    </p>
+                  )}
+                </div>
                 <span className="text-blue-200 text-xs">{itemLabel}</span>
               </div>
             </div>
@@ -370,6 +509,75 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
                 {mobileError && <p className="mt-1 text-xs text-red-500">{mobileError}</p>}
               </div>
 
+              {showCouponField && (
+                <div className="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-slate-800">Coupon Code</p>
+                      <p className="mt-1 text-xs text-slate-500">Apply a valid coupon to reduce your checkout amount.</p>
+                    </div>
+                    {appliedCouponCode && (
+                      <span className="rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold text-emerald-700">
+                        {appliedCouponCode}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(event) => {
+                        const nextCode = event.target.value.toUpperCase()
+                        setCouponCode(nextCode)
+                        if (nextCode.trim() !== appliedCouponCode) {
+                          setCouponPreview(null)
+                          setCouponStatus({ type: '', message: '' })
+                        }
+                      }}
+                      placeholder="Enter coupon code"
+                      className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                    />
+                    <button
+                      type="button"
+                      onClick={applyCoupon}
+                      disabled={couponLoading}
+                      className="rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:opacity-50"
+                    >
+                      {couponLoading ? 'Applying...' : 'Apply'}
+                    </button>
+                  </div>
+
+                  {couponStatus.message && (
+                    <div className={`rounded-xl px-3 py-2 text-xs font-medium ${
+                      couponStatus.type === 'error'
+                        ? 'bg-red-50 text-red-600'
+                        : 'bg-emerald-50 text-emerald-700'
+                    }`}>
+                      {couponStatus.message}
+                    </div>
+                  )}
+
+                  <div className="rounded-xl border border-slate-200 bg-white p-3">
+                    <div className="flex items-center justify-between text-sm text-slate-600">
+                      <span>Original Price</span>
+                      <span className="font-semibold text-slate-900">₹{actualPrice.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div className="mt-2 flex items-center justify-between text-sm text-slate-600">
+                      <span>Discount</span>
+                      <span className={`font-semibold ${discountAmount > 0 ? 'text-emerald-600' : 'text-slate-500'}`}>
+                        -₹{discountAmount.toLocaleString('en-IN')}
+                      </span>
+                    </div>
+                    <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3 text-sm">
+                      <span className="font-semibold text-slate-700">Final Payable</span>
+                      <span className="text-lg font-black text-slate-900">
+                        {isEffectivelyFree ? 'FREE' : `₹${payableAmount.toLocaleString('en-IN')}`}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-600">{error}</div>
               )}
@@ -382,14 +590,14 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
               >
                 {submitting ? (
                   <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Processing...</>
-                ) : isFreeCourse ? (
+                ) : isEffectivelyFree ? (
                   learningType === 'webinar' ? 'Register for Free' : 'Enroll for Free'
                 ) : (
                   learningType === 'webinar' ? 'Register Now' : 'Enroll Now'
                 )}
               </button>
 
-              {!isFreeCourse && (
+              {!isEffectivelyFree && (
                 <p className="text-center text-xs text-slate-400">Secure checkout powered by Razorpay</p>
               )}
             </div>

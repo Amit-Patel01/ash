@@ -359,6 +359,7 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/users", require("./routes/users"));
 app.use("/api/certificates", require("./routes/certificates"));
 app.use("/api/razorpay", require("./routes/razorpay"));
+app.use("/api/coupons", require("./routes/coupons"));
 app.use("/api/ai", require("./routes/ai"));
 app.use("/api/notify", require("./routes/notify"));
 
