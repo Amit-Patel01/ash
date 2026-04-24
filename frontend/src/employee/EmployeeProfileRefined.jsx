@@ -27,6 +27,7 @@ export default function EmployeeProfileRefined() {
   const [profileForm, setProfileForm] = useState(() => createProfileForm(userProfile))
   const [profileStatus, setProfileStatus] = useState({ type: '', message: '' })
   const [passwordStatus, setPasswordStatus] = useState({ type: '', message: '' })
+  const [publicProfileStatus, setPublicProfileStatus] = useState({ type: '', message: '' })
   const [profileLoading, setProfileLoading] = useState(false)
   const [passwordLoading, setPasswordLoading] = useState(false)
 
@@ -46,6 +47,10 @@ export default function EmployeeProfileRefined() {
     displayName
   )
   const publicProfilePath = `/team/${publicProfileId}`
+  const publicProfileUrl =
+    typeof window !== 'undefined'
+      ? new URL(publicProfilePath, window.location.origin).toString()
+      : `https://www.amitsolutionhub.com${publicProfilePath}`
 
   const profileStats = useMemo(() => ([
     { label: 'Role', value: profileForm.jobTitle || userProfile?.jobTitle || userProfile?.role || 'Employee' },
@@ -82,6 +87,15 @@ export default function EmployeeProfileRefined() {
       setPasswordStatus({ type: 'error', message: error.message || 'Unable to send the password reset email.' })
     } finally {
       setPasswordLoading(false)
+    }
+  }
+
+  const handleCopyPublicProfileUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(publicProfileUrl)
+      setPublicProfileStatus({ type: 'success', message: 'Public profile link copied.' })
+    } catch (error) {
+      setPublicProfileStatus({ type: 'error', message: 'Unable to copy the public profile link.' })
     }
   }
 
@@ -294,6 +308,33 @@ export default function EmployeeProfileRefined() {
                   </a>
                 )}
               </div>
+              {profileForm.showOnTeam && (
+                <div className="mt-5 space-y-3 rounded-2xl border border-cyan-400/15 bg-cyan-400/[0.05] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-400">Public Profile URL</p>
+                      <p className="mt-1 text-xs text-slate-400">Ab ye link yahin ready rahega, manually bar bar type karne ki zarurat nahi.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleCopyPublicProfileUrl}
+                      className="shrink-0 rounded-xl border border-cyan-400/20 bg-cyan-400/10 px-3 py-2 text-xs font-semibold text-cyan-300 transition hover:bg-cyan-400/15"
+                    >
+                      Copy Link
+                    </button>
+                  </div>
+                  <input
+                    readOnly
+                    value={publicProfileUrl}
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200 focus:outline-none"
+                  />
+                  {publicProfileStatus.message && (
+                    <p className={`text-xs ${publicProfileStatus.type === 'success' ? 'text-emerald-300' : 'text-rose-300'}`}>
+                      {publicProfileStatus.message}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </EmployeeSurface>
 

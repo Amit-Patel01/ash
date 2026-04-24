@@ -82,6 +82,7 @@ export default function PublicPageShell({
   stats = [],
   aside,
   children,
+  compact = false,
 }) {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(186,230,253,0.55),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(224,231,255,0.7),_transparent_28%),linear-gradient(180deg,_#f8fcff_0%,_#f4f8ff_52%,_#f8fbff_100%)] text-slate-900">
@@ -90,11 +91,11 @@ export default function PublicPageShell({
       <div className="pointer-events-none absolute right-[-8%] top-16 h-80 w-80 rounded-full bg-indigo-300/35 blur-3xl" />
       <div className="pointer-events-none absolute bottom-16 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-200/30 blur-3xl" />
 
-      <PublicSection className="pt-28 sm:pt-32 lg:pt-36">
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_380px] lg:items-stretch">
-          <PublicGlassCard className="relative overflow-hidden p-7 sm:p-9">
+      <PublicSection className={compact ? 'pt-24 sm:pt-28 lg:pt-32' : 'pt-28 sm:pt-32 lg:pt-36'}>
+        <div className={compact ? 'grid gap-5 lg:grid-cols-[minmax(0,1.18fr)_330px] lg:items-stretch' : 'grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_380px] lg:items-stretch'}>
+          <PublicGlassCard className={compact ? 'relative overflow-hidden p-6 sm:p-7' : 'relative overflow-hidden p-7 sm:p-9'}>
             <div className="pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full bg-sky-300/20 blur-3xl" />
-            <div className="relative space-y-6">
+            <div className={joinClasses('relative', compact ? 'space-y-5' : 'space-y-6')}>
               {badge && (
                 <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/85 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">
                   <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_0_6px_rgba(34,197,94,0.18)]" />
@@ -102,15 +103,15 @@ export default function PublicPageShell({
                 </div>
               )}
 
-              <div className="space-y-4">
-                <h1 className="max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-[3.6rem] lg:leading-[1.04]">
+              <div className={compact ? 'space-y-3' : 'space-y-4'}>
+                <h1 className={compact ? 'max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-[3.15rem] lg:text-[3.3rem] lg:leading-[1]' : 'max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-[3.6rem] lg:leading-[1.04]'}>
                   {title}
                 </h1>
-                <p className="max-w-2xl text-sm leading-7 text-slate-600 sm:text-lg sm:leading-8">{description}</p>
+                <p className={compact ? 'max-w-2xl text-sm leading-7 text-slate-600 sm:text-base sm:leading-7' : 'max-w-2xl text-sm leading-7 text-slate-600 sm:text-lg sm:leading-8'}>{description}</p>
               </div>
 
               {actions.length > 0 && (
-                <div className="flex flex-wrap gap-3">
+                <div className={compact ? 'flex flex-wrap gap-2.5' : 'flex flex-wrap gap-3'}>
                   {actions.map((action) => (
                     <ActionButton key={`${action.label}-${action.to || action.href || 'action'}`} action={action} />
                   ))}
@@ -131,10 +132,10 @@ export default function PublicPageShell({
               )}
 
               {stats.length > 0 && (
-                <div className="grid gap-3 sm:grid-cols-3">
+                <div className={compact ? 'grid gap-2.5 sm:grid-cols-3' : 'grid gap-3 sm:grid-cols-3'}>
                   {stats.map((stat) => (
-                    <div key={stat.label} className="rounded-3xl border border-white/90 bg-white/85 px-5 py-4 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.55)]">
-                      <div className="text-2xl font-black text-slate-900">{stat.value}</div>
+                    <div key={stat.label} className={compact ? 'rounded-3xl border border-white/90 bg-white/85 px-4 py-3.5 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.55)]' : 'rounded-3xl border border-white/90 bg-white/85 px-5 py-4 shadow-[0_18px_40px_-30px_rgba(15,23,42,0.55)]'}>
+                      <div className={compact ? 'text-xl font-black text-slate-900 sm:text-2xl' : 'text-2xl font-black text-slate-900'}>{stat.value}</div>
                       <div className="mt-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{stat.label}</div>
                     </div>
                   ))}
@@ -143,13 +144,13 @@ export default function PublicPageShell({
             </div>
           </PublicGlassCard>
 
-          <PublicGlassCard className="h-full p-6 sm:p-7">
+          <PublicGlassCard className={compact ? 'h-full p-5 sm:p-6' : 'h-full p-6 sm:p-7'}>
             {aside}
           </PublicGlassCard>
         </div>
       </PublicSection>
 
-      <div className="relative z-10 pb-20 pt-10 sm:pb-24 sm:pt-14">{children}</div>
+      <div className={compact ? 'relative z-10 pb-16 pt-8 sm:pb-20 sm:pt-10' : 'relative z-10 pb-20 pt-10 sm:pb-24 sm:pt-14'}>{children}</div>
     </div>
   )
 }

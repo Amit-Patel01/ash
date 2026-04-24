@@ -43,6 +43,7 @@ export default function AdminEmployees() {
     github: '',
     linkedin: '',
     portfolio: '',
+    customImageUrl: '',
     avatarSource: 'github',
     isMentor: false,
     showOnTeam: false,
@@ -62,6 +63,18 @@ export default function AdminEmployees() {
   const [mergeBusy, setMergeBusy] = useState(false)
 
   const employees = users.filter(u => (u.role || '').toLowerCase() === 'employee')
+
+  const normalizeAvatarSource = (value) => (value === 'linkedin' ? 'custom' : (value || 'github'))
+
+  const getPreviewImage = (member) => {
+    if (!member) return ''
+    if (normalizeAvatarSource(member.avatarSource) === 'custom' && member.customImageUrl) return member.customImageUrl
+    if (member.avatar && String(member.avatar).startsWith('http')) return member.avatar
+    if (member.github) {
+      return member.github.startsWith('http') ? member.github : `https://github.com/${member.github}.png`
+    }
+    return ''
+  }
 
   const filteredDepartments = ['All', ...new Set(employees.map(e => e.department).filter(Boolean))]
 
@@ -93,6 +106,7 @@ export default function AdminEmployees() {
       github: '',
       linkedin: '',
       portfolio: '',
+      customImageUrl: '',
       avatarSource: 'github',
       isMentor: false,
       showOnTeam: false,
@@ -110,12 +124,15 @@ export default function AdminEmployees() {
     // Check if job title and department are in our lists
     const isOtherRole = employee.jobTitle && !employeeRoles.includes(employee.jobTitle)
     const isOtherDept = employee.department && !departments.includes(employee.department)
+    const legacyCustomImageUrl =
+      employee.customImageUrl ||
+      (employee.avatarSource === 'linkedin' && employee.linkedin && !employee.linkedin.includes('linkedin.com') ? employee.linkedin : '')
 
     setFormData({
       displayName: employee.displayName || '',
       email: employee.email || '',
       phone: employee.phone || '',
-      avatar: employee.avatar || '',
+      avatar: employee.avatar && String(employee.avatar).startsWith('http') ? employee.avatar : '',
       jobTitle: isOtherRole ? 'Other' : (employee.jobTitle || ''),
       department: isOtherDept ? 'Other' : (employee.department || ''),
       status: employee.status || 'active',
@@ -129,7 +146,8 @@ export default function AdminEmployees() {
       github: employee.github || '',
       linkedin: employee.linkedin || '',
       portfolio: employee.portfolio || '',
-      avatarSource: employee.avatarSource || 'github',
+      customImageUrl: legacyCustomImageUrl,
+      avatarSource: normalizeAvatarSource(employee.avatarSource),
       isMentor: employee.isMentor || false,
       bio: employee.bio || '',
       cvFilePath: employee.cvFilePath || '',
@@ -157,6 +175,8 @@ export default function AdminEmployees() {
         skills: skillsArray,
         role: 'employee',
         avatar: (formData.avatar || '').trim(),
+        customImageUrl: (formData.customImageUrl || '').trim(),
+        avatarSource: normalizeAvatarSource(formData.avatarSource),
       }
       
       // Clean up local temp fields
@@ -336,8 +356,8 @@ export default function AdminEmployees() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 flex-shrink-0 aspect-square rounded-full bg-gradient-to-br ${avatarColors[index % avatarColors.length]} flex items-center justify-center text-sm font-bold shadow-lg overflow-hidden`}>
-                        {employee.avatar && employee.avatar.startsWith('http') ? (
-                          <img src={employee.avatar} alt="" className="w-full h-full object-cover" />
+                        {getPreviewImage(employee) ? (
+                          <img src={getPreviewImage(employee)} alt="" className="w-full h-full object-cover" />
                         ) : (
                           employee.avatar || (employee.displayName ? employee.displayName.charAt(0) : '?')
                         )}
@@ -768,8 +788,8 @@ export default function AdminEmployees() {
                         <div className="relative">
                           <input
                             type="text"
-                            value={formData.linkedin}
-                            onChange={e => setFormData({ ...formData, linkedin: e.target.value })}
+                            value={formData.customImageUrl}
+                            onChange={e => setFormData({ ...formData, customImageUrl: e.target.value })}
                             placeholder="https://example.com/avatar-image.png"
                             className="w-full pl-9 pr-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50"
                           />
@@ -818,11 +838,9 @@ export default function AdminEmployees() {
                       <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center overflow-hidden border border-white/10 shadow-lg">
-                            {formData.github || formData.linkedin ? (
+                            {getPreviewImage(formData) ? (
                               <img 
-                                src={formData.avatarSource === 'github' && formData.github 
-                                  ? `https://github.com/${formData.github}.png` 
-                                  : (formData.linkedin || '')} 
+                                src={getPreviewImage(formData)}
                                 alt="P" 
                                 className="w-full h-full object-cover" 
                                 onError={(e) => { e.target.src = "https://ui-avatars.com/api/?name=" + (formData.displayName || 'User') }}
@@ -844,8 +862,8 @@ export default function AdminEmployees() {
                           </button>
                           <button 
                             type="button" 
-                            onClick={() => setFormData({ ...formData, avatarSource: 'linkedin' })} 
-                            className={`px-3 py-1.5 rounded-md text-[9px] font-bold uppercase transition-all ${formData.avatarSource === 'linkedin' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-gray-500 hover:text-gray-300'}`}
+                            onClick={() => setFormData({ ...formData, avatarSource: 'custom' })} 
+                            className={`px-3 py-1.5 rounded-md text-[9px] font-bold uppercase transition-all ${normalizeAvatarSource(formData.avatarSource) === 'custom' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'text-gray-500 hover:text-gray-300'}`}
                           >
                             Photo URL
                           </button>

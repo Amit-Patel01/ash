@@ -43,29 +43,30 @@ const getMemberKeys = (member) =>
 
 const getMemberKey = (member) => getMemberKeys(member)[0] || ''
 
-const getImageUrl = (member) => {
-  if (member.photoURL) return member.photoURL
-  if (member.avatarUrl) return member.avatarUrl
-  if (member.avatar) return member.avatar
-  if (member.avatarSource === 'custom' && member.customImageUrl) return member.customImageUrl
-  
-  let gb = member.github;
-  if (gb) {
-    if (gb.startsWith('http')) {
-      if (!gb.endsWith('.png')) {
-        gb = gb.replace(/\/$/, '');
-        return `${gb}.png`;
-      }
-      return gb;
-    } else {
-      return `https://github.com/${gb}.png`;
-    }
-  }
+const isDirectImageUrl = (value) => String(value || '').trim().startsWith('http')
 
+const getImageUrl = (member) => {
+  if (member.avatarSource === 'custom' && member.customImageUrl) return member.customImageUrl
   if (member.avatarSource === 'linkedin' && member.linkedin && !member.linkedin.includes('linkedin.com')) {
     return member.linkedin
   }
-  
+  if (isDirectImageUrl(member.photoURL)) return member.photoURL
+  if (isDirectImageUrl(member.avatarUrl)) return member.avatarUrl
+  if (isDirectImageUrl(member.avatar)) return member.avatar
+
+  let gb = member.github
+  if (gb) {
+    if (gb.startsWith('http')) {
+      if (!gb.endsWith('.png')) {
+        gb = gb.replace(/\/$/, '')
+        return `${gb}.png`
+      }
+      return gb
+    } else {
+      return `https://github.com/${gb}.png`
+    }
+  }
+
   return ''
 }
 

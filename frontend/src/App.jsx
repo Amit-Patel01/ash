@@ -311,6 +311,20 @@ function AppContent() {
     navigate('/')
   }, [logout, navigate])
 
+  useEffect(() => {
+    if (location.hash) {
+      window.requestAnimationFrame(() => {
+        const anchor = document.getElementById(location.hash.slice(1))
+        if (anchor) {
+          anchor.scrollIntoView({ block: 'start' })
+        }
+      })
+      return
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [location.pathname, location.search, location.hash])
+
   return (
     <ErrorBoundary FallbackComponent={ModuleLoadErrorFallback}>
       <Suspense fallback={<AppShellFallback />}>

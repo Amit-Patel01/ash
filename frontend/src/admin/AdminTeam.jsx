@@ -101,7 +101,6 @@ export default function AdminTeam() {
         department: finalDept,
         status: formData.status === 'Active' ? 'active' : 'inactive',
         skills: skillsArr,
-        avatar: formData.name.charAt(0).toUpperCase(),
         github: formData.github || '',
         linkedin: formData.linkedin || '',
         portfolio: formData.portfolio || '',

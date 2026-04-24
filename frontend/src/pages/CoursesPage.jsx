@@ -97,6 +97,7 @@ export default function CoursesPage() {
       </Helmet>
 
       <PublicPageShell
+        compact
         badge="Industry-Ready Learning"
         title={
           <>
