@@ -24,6 +24,56 @@ const fade = (v) => `transition-all duration-700 ${v ? 'opacity-100 translate-y-
 const LEVEL_COLORS = { Beginner: 'bg-emerald-100 text-emerald-700', Intermediate: 'bg-amber-100 text-amber-700', Advanced: 'bg-red-100 text-red-700' }
 
 const normalize = (value) => String(value || '').trim().toLowerCase()
+const INSTRUCTOR_SYSTEM_ROLES = new Set(['admin', 'employee', 'mentor', 'instructor'])
+
+const scoreInstructorMatch = (item, directCourseIdentities = [], fallbackCourseIdentities = []) => {
+  if (!item) return -1
+
+  const directItemIdentities = [item?.uid, item?.id, item?.employeeId, item?.email]
+    .filter(Boolean)
+    .map(normalize)
+  const fallbackItemIdentities = [item?.displayName, item?.name]
+    .filter(Boolean)
+    .map(normalize)
+  const normalizedRole = normalize(item?.role || item?.jobTitle)
+
+  let score = 0
+
+  if (directItemIdentities.some((identity) => directCourseIdentities.includes(identity))) score += 100
+  if (fallbackItemIdentities.some((identity) => fallbackCourseIdentities.includes(identity))) score += 25
+  if (INSTRUCTOR_SYSTEM_ROLES.has(normalizedRole)) score += 20
+  if (item?.employeeId) score += 10
+  if (item?.showOnTeam) score += 5
+
+  return score
+}
+
+const pickBestInstructorMatch = (items = [], directCourseIdentities = [], fallbackCourseIdentities = []) =>
+  items
+    .map((item, index) => ({
+      item,
+      index,
+      score: scoreInstructorMatch(item, directCourseIdentities, fallbackCourseIdentities),
+    }))
+    .filter(({ score }) => score > 0)
+    .sort((left, right) => right.score - left.score || left.index - right.index)[0]?.item || null
+
+const formatInstructorRole = (value, itemLabel) => {
+  const rawValue = String(value || '').trim()
+  if (!rawValue) return `${itemLabel} Instructor`
+
+  switch (normalize(rawValue)) {
+    case 'employee':
+    case 'mentor':
+    case 'instructor':
+    case 'customer':
+      return `${itemLabel} Instructor`
+    case 'admin':
+      return 'Lead Instructor'
+    default:
+      return rawValue
+  }
+}
 
 const getInstructorImage = (instructor) => {
   if (!instructor) return ''
@@ -81,73 +131,73 @@ const getInstructorLinks = (instructor) => {
 }
 
 const resolveInstructorProfile = (course, users = [], teamMembers = []) => {
-  const courseIdentities = [
-    course?.assignedEmployeeId,
-    course?.assignedEmployeeRef,
-    course?.assignedEmployeeName,
-    course?.instructor,
-  ]
+  const directCourseIdentities = [course?.assignedEmployeeId, course?.assignedEmployeeRef]
     .filter(Boolean)
     .map(normalize)
+  const fallbackCourseIdentities = [course?.assignedEmployeeName, course?.instructor]
+    .filter(Boolean)
+    .map(normalize)
+  const courseIdentities = [...directCourseIdentities, ...fallbackCourseIdentities]
 
   if (courseIdentities.length === 0) {
     return { instructor: null, publicProfileId: '' }
   }
 
-  const matchesCourseIdentity = (item) =>
-    [
-      item?.uid,
-      item?.id,
-      item?.employeeId,
-      item?.email,
-      item?.displayName,
-      item?.name,
-    ]
-      .filter(Boolean)
-      .map(normalize)
-      .some((identity) => courseIdentities.includes(identity))
-
-  const userMatch = users.find(matchesCourseIdentity) || null
-  const teamMatch = teamMembers.find(matchesCourseIdentity) || null
+  const userMatch = pickBestInstructorMatch(users, directCourseIdentities, fallbackCourseIdentities)
+  const teamMatch = pickBestInstructorMatch(teamMembers, directCourseIdentities, fallbackCourseIdentities)
 
   if (!userMatch && !teamMatch) {
     return { instructor: null, publicProfileId: '' }
   }
 
+  const primaryMatch = pickBestInstructorMatch(
+    [teamMatch, userMatch].filter(Boolean),
+    directCourseIdentities,
+    fallbackCourseIdentities
+  )
+  const secondaryMatch = primaryMatch === userMatch ? teamMatch : userMatch
+  const resolvedJobTitle =
+    primaryMatch?.jobTitle ||
+    secondaryMatch?.jobTitle ||
+    primaryMatch?.role ||
+    secondaryMatch?.role ||
+    ''
+
   const instructor = {
-    ...teamMatch,
-    ...userMatch,
+    ...secondaryMatch,
+    ...primaryMatch,
     displayName:
-      userMatch?.displayName ||
-      teamMatch?.displayName ||
-      teamMatch?.name ||
-      userMatch?.name ||
+      primaryMatch?.displayName ||
+      secondaryMatch?.displayName ||
+      primaryMatch?.name ||
+      secondaryMatch?.name ||
       course?.assignedEmployeeName ||
       course?.instructor ||
       'Instructor',
     name:
-      teamMatch?.name ||
-      userMatch?.name ||
-      userMatch?.displayName ||
+      primaryMatch?.name ||
+      secondaryMatch?.name ||
+      primaryMatch?.displayName ||
+      secondaryMatch?.displayName ||
       course?.assignedEmployeeName ||
       course?.instructor ||
       'Instructor',
-    email: userMatch?.email || teamMatch?.email || '',
-    employeeId: userMatch?.employeeId || teamMatch?.employeeId || '',
-    uid: userMatch?.uid || teamMatch?.uid || '',
-    department: userMatch?.department || teamMatch?.department || '',
-    jobTitle: userMatch?.jobTitle || teamMatch?.jobTitle || teamMatch?.role || userMatch?.role || '',
-    role: userMatch?.jobTitle || teamMatch?.jobTitle || teamMatch?.role || userMatch?.role || '',
-    bio: userMatch?.bio || teamMatch?.bio || '',
-    experience: userMatch?.experience || teamMatch?.experience || '',
-    github: userMatch?.github || teamMatch?.github || '',
-    linkedin: userMatch?.linkedin || teamMatch?.linkedin || '',
-    portfolio: userMatch?.portfolio || teamMatch?.portfolio || '',
-    avatar: userMatch?.avatar || teamMatch?.avatar || '',
-    photoURL: userMatch?.photoURL || teamMatch?.photoURL || '',
-    avatarUrl: userMatch?.avatarUrl || teamMatch?.avatarUrl || '',
-    avatarSource: userMatch?.avatarSource || teamMatch?.avatarSource || '',
-    customImageUrl: userMatch?.customImageUrl || teamMatch?.customImageUrl || '',
+    email: primaryMatch?.email || secondaryMatch?.email || '',
+    employeeId: primaryMatch?.employeeId || secondaryMatch?.employeeId || '',
+    uid: primaryMatch?.uid || secondaryMatch?.uid || '',
+    department: primaryMatch?.department || secondaryMatch?.department || '',
+    jobTitle: resolvedJobTitle,
+    role: resolvedJobTitle,
+    bio: primaryMatch?.bio || secondaryMatch?.bio || '',
+    experience: primaryMatch?.experience || secondaryMatch?.experience || '',
+    github: primaryMatch?.github || secondaryMatch?.github || '',
+    linkedin: primaryMatch?.linkedin || secondaryMatch?.linkedin || '',
+    portfolio: primaryMatch?.portfolio || secondaryMatch?.portfolio || '',
+    avatar: primaryMatch?.avatar || secondaryMatch?.avatar || '',
+    photoURL: primaryMatch?.photoURL || secondaryMatch?.photoURL || '',
+    avatarUrl: primaryMatch?.avatarUrl || secondaryMatch?.avatarUrl || '',
+    avatarSource: primaryMatch?.avatarSource || secondaryMatch?.avatarSource || '',
+    customImageUrl: primaryMatch?.customImageUrl || secondaryMatch?.customImageUrl || '',
   }
 
   const publicProfileId = encodeURIComponent(
@@ -210,7 +260,7 @@ export default function CourseDetailPage() {
     course.assignedEmployeeName ||
     course.instructor ||
     `${itemLabel} Instructor`
-  const instructorRole = instructor?.jobTitle || instructor?.role || `${itemLabel} Instructor`
+  const instructorRole = formatInstructorRole(instructor?.jobTitle || instructor?.role, itemLabel)
   const instructorBio = instructor?.bio || 'Expert instructor with proven industry experience.'
   const instructorExperience = instructor?.experience || '5+ Years'
   const matchesCourseEnrollment = (enrollment) =>
