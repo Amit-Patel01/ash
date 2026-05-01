@@ -10,6 +10,16 @@ export default function CustomerMyCourses() {
   const { currentUser } = useAuth()
   const navigate = useNavigate()
   const [expandedId, setExpandedId] = useState(null)
+  const progressStorageKey = `solutionhub:lms-progress:${currentUser?.uid || 'guest'}`
+  const [resourceProgress, setResourceProgress] = useState(() => {
+    if (typeof window === 'undefined') return {}
+    try {
+      const savedProgress = JSON.parse(window.localStorage.getItem(progressStorageKey) || '{}')
+      return savedProgress && typeof savedProgress === 'object' ? savedProgress : {}
+    } catch {
+      return {}
+    }
+  })
 
   const myEnrollments = currentUser ? getUserEnrollments(currentUser.uid) : []
   const myCertificates = currentUser
@@ -18,6 +28,38 @@ export default function CustomerMyCourses() {
 
   const normalize = (value) => String(value || '').trim().toLowerCase()
   const compact = (value) => normalize(value).replace(/[^a-z0-9]/g, '')
+  const buildResourceId = (...parts) => parts.map(compact).filter(Boolean).join(':')
+
+  const isResourceComplete = (resourceId) => Boolean(resourceProgress[resourceId])
+
+  const getProgressPercent = (completed, total) => (
+    total > 0 ? Math.round((completed / total) * 100) : 0
+  )
+
+  const saveResourceProgress = (nextProgress) => {
+    if (typeof window === 'undefined') return
+
+    try {
+      window.localStorage.setItem(progressStorageKey, JSON.stringify(nextProgress))
+    } catch {
+      // Progress tracking is helpful, but the portal should keep working if storage is blocked.
+    }
+  }
+
+  const toggleResourceProgress = (resourceId) => {
+    setResourceProgress((currentProgress) => {
+      const nextProgress = { ...currentProgress }
+
+      if (nextProgress[resourceId]) {
+        delete nextProgress[resourceId]
+      } else {
+        nextProgress[resourceId] = new Date().toISOString()
+      }
+
+      saveResourceProgress(nextProgress)
+      return nextProgress
+    })
+  }
 
   const formatDate = (value) => {
     if (!value) return 'Recently enrolled'
@@ -153,6 +195,138 @@ export default function CustomerMyCourses() {
     }, {})
   )
 
+  const getCourseLearningData = (group) => {
+    const course = group.course
+    const hasMaterials = Array.isArray(course.materials) && course.materials.length > 0
+    const planEntries = group.enrollments.map((enrollment) => {
+      const enrolledPlan = getEnrollmentPlan(course, enrollment)
+      const meetingLink = resolveMeetingLink(course, enrolledPlan)
+      const meetingDateTime = formatMeetingDateTime(enrolledPlan?.meetingStartsAt, enrolledPlan?.meetingTimezone)
+      const resolvedPlanLabel = enrolledPlan?.label || enrollment.planLabel || enrollment.planName || 'Standard Access'
+      const planFeatures = Array.isArray(enrolledPlan?.features)
+        ? enrolledPlan.features.filter(Boolean).slice(0, 4)
+        : []
+      const courseDocuments = getCourseDocuments(enrollment, course)
+
+      return {
+        enrollment,
+        enrolledPlan,
+        meetingLink,
+        meetingDateTime,
+        resolvedPlanLabel,
+        planFeatures,
+        courseDocuments,
+        hasMeetingLink: Boolean(meetingLink),
+        resourcesReady: [Boolean(meetingLink), hasMaterials, courseDocuments.length > 0].filter(Boolean).length,
+      }
+    })
+
+    const nextSessionEntry = planEntries.find((entry) => entry.meetingDateTime) || null
+    const allDocumentsMap = {}
+
+    planEntries.forEach((entry) => {
+      entry.courseDocuments.forEach((document) => {
+        const documentKey = document.id || document.certificate_id
+        if (!documentKey || allDocumentsMap[documentKey]) return
+        allDocumentsMap[documentKey] = {
+          ...document,
+          planLabel: entry.resolvedPlanLabel,
+        }
+      })
+    })
+
+    const allDocuments = Object.values(allDocumentsMap)
+    const primaryDocument = allDocuments[0] || null
+    const sessionResources = planEntries
+      .filter((entry) => entry.meetingDateTime || entry.hasMeetingLink)
+      .map((entry, index) => ({
+        id: buildResourceId(group.key, 'session', entry.enrollment.id || entry.resolvedPlanLabel || index),
+        type: 'Live Session',
+        title: entry.resolvedPlanLabel,
+        subtitle: entry.meetingDateTime || 'Meeting time will be shared soon',
+        url: entry.meetingLink,
+        internal: false,
+        actionLabel: entry.hasMeetingLink ? 'Join' : '',
+      }))
+    const materialResources = hasMaterials
+      ? course.materials.map((material, index) => {
+        const materialUrl = typeof material === 'string' ? material : material?.url || ''
+        const materialTitle = typeof material === 'string'
+          ? `Material ${index + 1}`
+          : material?.title || material?.name || `Material ${index + 1}`
+
+        return {
+          id: buildResourceId(group.key, 'material', material?.id || materialTitle || materialUrl || index),
+          type: 'Material',
+          title: materialTitle,
+          subtitle: materialUrl || 'Material link pending',
+          url: materialUrl,
+          internal: false,
+          actionLabel: materialUrl ? 'Open' : '',
+        }
+      })
+      : []
+    const documentResources = allDocuments.map((document, index) => ({
+      id: buildResourceId(group.key, 'document', document.id || document.certificate_id || index),
+      type: 'Document',
+      title: getCertificateDocumentLabel(document, document.templateSnapshot),
+      subtitle: document.certificate_id
+        ? `Plan: ${document.planLabel} • ID: ${document.certificate_id}`
+        : `Plan: ${document.planLabel}`,
+      url: document.certificate_id ? `/verify?id=${document.certificate_id}` : '',
+      internal: true,
+      actionLabel: document.certificate_id ? 'Verify' : '',
+    }))
+    const learningResources = [...sessionResources, ...materialResources, ...documentResources]
+    const completedResources = learningResources.filter((resource) => isResourceComplete(resource.id)).length
+    const progressPercent = getProgressPercent(completedResources, learningResources.length)
+    const nextResource = learningResources.find((resource) => !isResourceComplete(resource.id)) || null
+    const canExpand = learningResources.length > 0
+    const groupResourcesReady = [
+      planEntries.some((entry) => entry.hasMeetingLink),
+      hasMaterials,
+      allDocuments.length > 0,
+    ].filter(Boolean).length
+
+    return {
+      group,
+      course,
+      hasMaterials,
+      planEntries,
+      nextSessionEntry,
+      allDocuments,
+      primaryDocument,
+      sessionResources,
+      materialResources,
+      documentResources,
+      learningResources,
+      completedResources,
+      progressPercent,
+      nextResource,
+      canExpand,
+      groupResourcesReady,
+    }
+  }
+
+  const courseLearningGroups = myCourseGroups.map(getCourseLearningData)
+  const totalLearningResources = courseLearningGroups.reduce(
+    (total, group) => total + group.learningResources.length,
+    0
+  )
+  const completedLearningResources = courseLearningGroups.reduce(
+    (total, group) => total + group.completedResources,
+    0
+  )
+  const overallProgress = getProgressPercent(completedLearningResources, totalLearningResources)
+  const readyLiveSessions = courseLearningGroups.reduce(
+    (total, group) => total + group.sessionResources.filter((resource) => resource.url).length,
+    0
+  )
+  const issuedDocuments = courseLearningGroups.reduce(
+    (total, group) => total + group.documentResources.length,
+    0
+  )
+
   if (myEnrollments.length === 0) {
     return (
       <div className="space-y-6">
@@ -196,57 +370,55 @@ export default function CustomerMyCourses() {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+        <div className="rounded-2xl border border-emerald-500/15 bg-emerald-500/10 p-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300/80">LMS Progress</p>
+          <div className="mt-3 flex items-end justify-between gap-3">
+            <p className="text-3xl font-black text-white">{overallProgress}%</p>
+            <p className="text-xs font-semibold text-emerald-200">{completedLearningResources}/{totalLearningResources || 0} done</p>
+          </div>
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-black/30">
+            <div
+              className="h-full rounded-full bg-emerald-400 transition-all duration-500"
+              style={{ width: `${overallProgress}%` }}
+            />
+          </div>
+        </div>
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/10 p-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-sky-300/80">Learning Items</p>
+          <p className="mt-3 text-3xl font-black text-white">{totalLearningResources}</p>
+          <p className="mt-1 text-xs font-semibold text-sky-100/70">Sessions, materials, and documents</p>
+        </div>
+        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/10 p-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-blue-300/80">Live Ready</p>
+          <p className="mt-3 text-3xl font-black text-white">{readyLiveSessions}</p>
+          <p className="mt-1 text-xs font-semibold text-blue-100/70">Joinable plan sessions</p>
+        </div>
+        <div className="rounded-2xl border border-amber-500/15 bg-amber-500/10 p-4">
+          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-amber-300/80">Documents</p>
+          <p className="mt-3 text-3xl font-black text-white">{issuedDocuments}</p>
+          <p className="mt-1 text-xs font-semibold text-amber-100/70">Issued certificates and files</p>
+        </div>
+      </div>
+
       <div className="space-y-4">
-        {myCourseGroups.map(group => {
-          const course = group.course
-          const isExpanded = expandedId === group.key
-          const hasMaterials = Array.isArray(course.materials) && course.materials.length > 0
-          const planEntries = group.enrollments.map((enrollment) => {
-            const enrolledPlan = getEnrollmentPlan(course, enrollment)
-            const meetingLink = resolveMeetingLink(course, enrolledPlan)
-            const meetingDateTime = formatMeetingDateTime(enrolledPlan?.meetingStartsAt, enrolledPlan?.meetingTimezone)
-            const resolvedPlanLabel = enrolledPlan?.label || enrollment.planLabel || enrollment.planName || 'Standard Access'
-            const planFeatures = Array.isArray(enrolledPlan?.features)
-              ? enrolledPlan.features.filter(Boolean).slice(0, 4)
-              : []
-            const courseDocuments = getCourseDocuments(enrollment, course)
-
-            return {
-              enrollment,
-              enrolledPlan,
-              meetingLink,
-              meetingDateTime,
-              resolvedPlanLabel,
-              planFeatures,
-              courseDocuments,
-              hasMeetingLink: Boolean(meetingLink),
-              resourcesReady: [Boolean(meetingLink), hasMaterials, courseDocuments.length > 0].filter(Boolean).length,
-            }
-          })
-
-          const nextSessionEntry = planEntries.find((entry) => entry.meetingDateTime) || null
-          const allDocumentsMap = {}
-          planEntries.forEach((entry) => {
-            entry.courseDocuments.forEach((document) => {
-              const documentKey = document.id || document.certificate_id
-              if (!documentKey || allDocumentsMap[documentKey]) return
-              allDocumentsMap[documentKey] = {
-                ...document,
-                planLabel: entry.resolvedPlanLabel,
-              }
-            })
-          })
-          const allDocuments = Object.values(allDocumentsMap)
-          const primaryDocument = allDocuments[0] || null
-          const canExpand =
-            hasMaterials ||
-            allDocuments.length > 0 ||
-            planEntries.some((entry) => entry.meetingDateTime || entry.hasMeetingLink)
-          const groupResourcesReady = [
-            planEntries.some((entry) => entry.hasMeetingLink),
+        {courseLearningGroups.map((learningGroup) => {
+          const {
+            group,
+            course,
             hasMaterials,
-            allDocuments.length > 0,
-          ].filter(Boolean).length
+            planEntries,
+            nextSessionEntry,
+            allDocuments,
+            primaryDocument,
+            learningResources,
+            completedResources,
+            progressPercent,
+            nextResource,
+            canExpand,
+            groupResourcesReady,
+          } = learningGroup
+          const isExpanded = expandedId === group.key
 
           return (
             <div key={group.key} className="bg-gray-900/60 border border-white/5 rounded-2xl overflow-hidden hover:border-white/10 transition-all">
@@ -295,6 +467,47 @@ export default function CustomerMyCourses() {
                       <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
                         Active
                       </span>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 rounded-2xl border border-white/5 bg-white/[0.03] p-4">
+                    <div className="flex items-start justify-between gap-3 flex-wrap">
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-300/80">Learning Progress</p>
+                        <p className="mt-1 text-sm font-semibold text-white">
+                          {completedResources}/{learningResources.length} items completed
+                        </p>
+                      </div>
+                      {nextResource ? (
+                        <button
+                          type="button"
+                          onClick={() => setExpandedId(group.key)}
+                          className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-xs font-bold text-emerald-300 transition-colors hover:bg-emerald-500/20"
+                        >
+                          Continue
+                          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                          </svg>
+                        </button>
+                      ) : learningResources.length > 0 ? (
+                        <span className="inline-flex items-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-xs font-bold text-emerald-300">
+                          Completed
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-gray-400">
+                          Pending content
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-3 h-2 overflow-hidden rounded-full bg-black/30">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-sky-400 transition-all duration-500"
+                        style={{ width: `${progressPercent}%` }}
+                      />
+                    </div>
+                    <div className="mt-3 flex items-center justify-between gap-3 text-[11px] font-semibold text-gray-400">
+                      <span className="flex-shrink-0">{progressPercent}% complete</span>
+                      <span className="min-w-0 truncate text-right">{nextResource ? `Next: ${nextResource.title}` : 'All caught up'}</span>
                     </div>
                   </div>
 
@@ -422,87 +635,95 @@ export default function CustomerMyCourses() {
 
               {isExpanded && canExpand && (
                 <div className="px-5 pb-5 border-t border-white/5 pt-4">
-                  {planEntries.some((entry) => entry.meetingDateTime || entry.hasMeetingLink) && (
-                    <div className="mb-4">
-                      <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Plan Sessions</p>
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                        {planEntries
-                          .filter((entry) => entry.meetingDateTime || entry.hasMeetingLink)
-                          .map((entry) => (
-                            <div key={`${entry.enrollment.id}-session`} className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20">
-                              <div className="flex items-center justify-between gap-3 flex-wrap">
-                                <div>
-                                  <p className="text-xs font-bold text-blue-300 uppercase tracking-wider mb-1">Plan Session</p>
-                                  <p className="text-sm font-semibold text-white">{entry.resolvedPlanLabel}</p>
-                                  <p className="text-[11px] text-blue-100/80">
-                                    {entry.meetingDateTime || 'Meeting time will be shared soon'}
-                                  </p>
-                                </div>
-                                {entry.hasMeetingLink ? (
-                                  <a
-                                    href={entry.meetingLink}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="px-3 py-2 rounded-xl bg-blue-500 text-white text-xs font-bold hover:bg-blue-400 transition-colors"
-                                  >
-                                    Join Meeting
-                                  </a>
-                                ) : (
-                                  <span className="px-3 py-2 rounded-xl border border-white/10 bg-white/5 text-[11px] font-semibold text-gray-400">
-                                    Link pending
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <div>
+                      <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Learning Path</p>
+                      <p className="mt-1 text-sm font-semibold text-white">
+                        {completedResources}/{learningResources.length} completed
+                      </p>
+                    </div>
+                    <span className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-gray-300">
+                      {progressPercent}% complete
+                    </span>
+                  </div>
+
+                  <div className="mt-4 space-y-3">
+                    {learningResources.map((resource) => {
+                      const resourceComplete = isResourceComplete(resource.id)
+                      const typeClasses =
+                        resource.type === 'Live Session'
+                          ? 'bg-blue-500/10 border-blue-500/20 text-blue-300'
+                          : resource.type === 'Material'
+                            ? 'bg-purple-500/10 border-purple-500/20 text-purple-300'
+                            : 'bg-amber-500/10 border-amber-500/20 text-amber-300'
+
+                      return (
+                        <div
+                          key={resource.id}
+                          className={`flex flex-col gap-3 rounded-2xl border px-4 py-3 transition-colors sm:flex-row sm:items-center ${resourceComplete ? 'border-emerald-500/20 bg-emerald-500/10' : 'border-white/5 bg-white/[0.02]'}`}
+                        >
+                          <div className="flex min-w-0 flex-1 items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => toggleResourceProgress(resource.id)}
+                              aria-label={resourceComplete ? `Mark ${resource.title} incomplete` : `Mark ${resource.title} complete`}
+                              className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border transition-colors ${resourceComplete ? 'border-emerald-400 bg-emerald-400 text-gray-950' : 'border-white/15 bg-black/20 text-gray-500 hover:border-emerald-400 hover:text-emerald-300'}`}
+                            >
+                              {resourceComplete ? (
+                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                </svg>
+                              ) : (
+                                <span className="h-2 w-2 rounded-full bg-current" />
+                              )}
+                            </button>
+
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] ${typeClasses}`}>
+                                  {resource.type}
+                                </span>
+                                {resourceComplete && (
+                                  <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-300">
+                                    Done
                                   </span>
                                 )}
                               </div>
+                              <p className="mt-1 truncate text-sm font-semibold text-white">{resource.title}</p>
+                              <p className="mt-0.5 truncate text-[11px] text-gray-500">{resource.subtitle}</p>
                             </div>
-                          ))}
-                      </div>
-                    </div>
-                  )}
-                  {hasMaterials && (
-                    <>
-                      <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Study Materials</p>
-                      <div className="space-y-2">
-                        {course.materials.map((mat, i) => (
-                          <a key={i} href={mat.url} target="_blank" rel="noopener noreferrer"
-                            className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-white/10 transition-all group">
-                            <div className="w-8 h-8 rounded-lg bg-purple-500/15 text-purple-400 flex items-center justify-center flex-shrink-0">
-                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                              </svg>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-white group-hover:text-blue-400 transition-colors truncate">{mat.title}</p>
-                              <p className="text-[10px] text-gray-500 truncate">{mat.url}</p>
-                            </div>
-                            <svg className="w-4 h-4 text-gray-600 group-hover:text-blue-400 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                            </svg>
-                          </a>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                  {allDocuments.length > 0 && (
-                    <div className="mt-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20">
-                      <p className="text-xs font-bold text-amber-300 uppercase tracking-wider mb-2">Issued Documents</p>
-                      <div className="space-y-2">
-                        {allDocuments.map(document => (
-                          <div key={document.id} className="flex items-center justify-between gap-3 flex-wrap rounded-xl border border-amber-500/10 bg-black/10 px-3 py-3">
-                            <div>
-                              <p className="text-sm font-semibold text-white">{getCertificateDocumentLabel(document, document.templateSnapshot)}</p>
-                              <p className="text-[11px] text-amber-200/80">Plan: {document.planLabel} • ID: {document.certificate_id}</p>
-                            </div>
-                            <Link
-                              to={`/verify?id=${document.certificate_id}`}
-                              className="px-3 py-2 rounded-xl bg-amber-500 text-gray-950 text-xs font-bold hover:bg-amber-400 transition-colors"
-                            >
-                              Verify
-                            </Link>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+
+                          <div className="flex w-full flex-shrink-0 items-center gap-2 sm:w-auto">
+                            {resource.url && resource.internal ? (
+                              <Link
+                                to={resource.url}
+                                className="flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-center text-xs font-bold text-gray-200 transition-colors hover:bg-white/10 sm:flex-none"
+                              >
+                                {resource.actionLabel}
+                              </Link>
+                            ) : resource.url ? (
+                              <a
+                                href={resource.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-center text-xs font-bold text-gray-200 transition-colors hover:bg-white/10 sm:flex-none"
+                              >
+                                {resource.actionLabel}
+                              </a>
+                            ) : null}
+                            <button
+                              type="button"
+                              onClick={() => toggleResourceProgress(resource.id)}
+                              className={`flex-1 rounded-xl px-3 py-2 text-xs font-bold transition-colors sm:flex-none ${resourceComplete ? 'bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25' : 'bg-white/5 text-gray-300 hover:bg-white/10'}`}
+                            >
+                              {resourceComplete ? 'Undo' : 'Mark Done'}
+                            </button>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
               )}
             </div>
