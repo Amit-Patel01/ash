@@ -67,10 +67,13 @@ function DetailRow({ icon: Icon, label, value }) {
 
 export default function VerifyCertificateRefined() {
   const navigate = useNavigate()
-  const { certificateId: routeCertificateId = '' } = useParams()
+  const params = useParams()
+  const routeCertificateId = params.certificateId || ''
+  const splat = params['*'] || ''
+  const fullRouteId = splat ? `${routeCertificateId}/${splat}` : routeCertificateId
   const [searchParams] = useSearchParams()
   const { certificateTemplate } = useStore()
-  const linkedId = String(routeCertificateId || searchParams.get('id') || '').trim()
+  const linkedId = String(fullRouteId || searchParams.get('id') || '').trim()
   const [certId, setCertId] = useState(linkedId || '')
   const [status, setStatus] = useState('idle')
   const [certData, setCertData] = useState(null)

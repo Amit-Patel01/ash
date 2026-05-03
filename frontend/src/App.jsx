@@ -354,7 +354,7 @@ function AppContent() {
             <Route path="signup" element={<CustomerSignup />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="verify" element={<VerifyCertificate />} />
-            <Route path="verify/:certificateId" element={<VerifyCertificate />} />
+            <Route path="verify/:certificateId/*" element={<VerifyCertificate />} />
             
             {/* Legal Pages */}
             <Route path="privacy-policy" element={<PrivacyPolicy />} />

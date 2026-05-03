@@ -26,7 +26,7 @@ router.patch("/qr/:docId", verifyFirebaseToken, adminOnly, uploadCertificateAsse
 router.patch("/qr/:docId/status", verifyFirebaseToken, adminOnly, updateQrCertificateStatus);
 router.delete("/qr/:docId", verifyFirebaseToken, adminOnly, removeQrCertificate);
 
-// GET /api/certificates/verify/:certId
-router.get("/verify/:certId", verifyCertificate);
+// GET /api/certificates/verify/:certId(*)
+router.get("/verify/:certId(*)", verifyCertificate);
 
 module.exports = router;

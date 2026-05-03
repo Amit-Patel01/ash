@@ -23,7 +23,7 @@ const QR_RECORD_SOURCE = "qr";
 const QR_RECORD_ACTIVE = "active";
 const QR_RECORD_REVOKED = "revoked";
 const QR_ID_PATTERN = /^QR-[A-Z0-9]{5,32}$/;
-const PUBLIC_CERTIFICATE_ID_PATTERN = /^[A-Z0-9-_]{3,64}$/;
+const PUBLIC_CERTIFICATE_ID_PATTERN = /^[A-Z0-9-_\/]{3,64}$/i;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
 
 const normalizeCertificateId = (value) => String(value || "").trim().toUpperCase();
@@ -519,7 +519,7 @@ const createQrCertificate = async (req, res) => {
     let certificateId = updates.certificate_id;
     if (certificateId) {
       if (!isValidPublicCertificateId(certificateId)) {
-        return res.status(400).json({ success: false, message: "Invalid custom Certificate ID format. Use 3-64 alphanumeric characters." });
+        return res.status(400).json({ success: false, message: "Invalid custom Certificate ID format. Use 3-64 alphanumeric characters, dashes, or slashes." });
       }
       const existing = await findCertificateByPublicId(certificateId);
       if (existing) {
