@@ -16,6 +16,7 @@ const QR_CERTIFICATE_TYPES = {
   LOR: "Letter of Recommendation",
   LOA: "Letter of Achievement",
   Appreciation: "Appreciation Certificate",
+  "Offer Letter": "Offer Letter",
   Other: "Other Certificate",
 };
 const QR_RECORD_SOURCE = "qr";
@@ -110,7 +111,7 @@ const validateQrCertificateInput = (payload = {}, { partial = false } = {}) => {
   if (!partial || Object.prototype.hasOwnProperty.call(payload, "certificateType")) {
     const certificateType = normalizeQrCertificateType(payload.certificateType);
     if (!certificateType) {
-      errors.push("Certificate type must be LOR, LOA, Appreciation, or Other.");
+      errors.push("Certificate type must be LOR, LOA, Appreciation, Offer Letter, or Other.");
     } else {
       updates.certificateType = certificateType;
       updates.certificateTypeLabel = certificateType === "Other" && payload.customTitle 
