@@ -25,6 +25,11 @@ const CERTIFICATE_TYPES = [
     defaultText: 'This certificate is presented in appreciation of the holder for valuable contribution, sincerity, and professional attitude. The effort and commitment shown during the engagement are gratefully acknowledged by Amit Solution Hub.',
   },
   {
+    value: 'Offer Letter',
+    label: 'Offer Letter',
+    defaultText: 'We are delighted to welcome you for the internship...',
+  },
+  {
     value: 'Other',
     label: 'Other Certificate',
     defaultText: 'This certificate is proudly presented to acknowledge the holder\'s effort, performance, or participation. The organization recognizes and appreciates their valuable contribution.',
@@ -34,6 +39,7 @@ const CERTIFICATE_TYPES = [
 const getTypeMeta = (value) => CERTIFICATE_TYPES.find((type) => type.value === value) || CERTIFICATE_TYPES[0]
 
 const createInitialForm = () => ({
+  certificate_id: '',
   name: '',
   certificateType: 'LOR',
   customTitle: '',
@@ -50,6 +56,7 @@ const createInitialForm = () => ({
 })
 
 const mapCertificateToForm = (certificate = {}) => ({
+  certificate_id: certificate.certificate_id || '',
   name: certificate.name || certificate.userName || '',
   certificateType: certificate.certificateType || 'LOR',
   customTitle: certificate.certificateType === 'Other' ? (certificate.documentLabel || '') : '',
@@ -478,6 +485,18 @@ export default function AdminQrCertificates() {
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
+              <label className="block">
+                <span className="text-sm font-semibold text-slate-300">Scanner Number / Certificate ID (Optional)</span>
+                <input
+                  type="text"
+                  value={form.certificate_id}
+                  onChange={(event) => handleChange('certificate_id', event.target.value)}
+                  placeholder="Leave empty for auto-generated ID"
+                  className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={!!editingId}
+                />
+              </label>
+
               <label className="block">
                 <span className="text-sm font-semibold text-slate-300">Name</span>
                 <input

@@ -13,6 +13,7 @@ import {
   getCertificateVerifyUrl,
   normalizeCertificateAssetUrl,
 } from '../../utils/certificateHelpers'
+import OfferLetterDocument from './OfferLetterDocument'
 
 function CornerAccent({ position, accentColor, navyColor }) {
   const positions = {
@@ -134,6 +135,11 @@ function getDocumentNarrative(documentType, holderName, courseName, template, ce
 
 export default function CertificateDocument({ certificate, template, className = '' }) {
   const documentType = getCertificateDocumentType(certificate)
+  
+  if (documentType === 'offer_letter' || certificate?.certificateType === 'Offer Letter') {
+    return <OfferLetterDocument certificate={certificate} template={template} className={className} />
+  }
+
   const activeTemplate = mergeCertificateTemplate(certificate?.templateSnapshot || template, documentType)
   const accentColor = activeTemplate.accentColor || '#f59e0b'
   const navyColor = '#1e3a8a'

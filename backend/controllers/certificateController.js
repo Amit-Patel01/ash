@@ -22,7 +22,7 @@ const QR_RECORD_SOURCE = "qr";
 const QR_RECORD_ACTIVE = "active";
 const QR_RECORD_REVOKED = "revoked";
 const QR_ID_PATTERN = /^QR-[A-Z0-9]{5,32}$/;
-const PUBLIC_CERTIFICATE_ID_PATTERN = /^[A-Z0-9]{2,10}-[A-Z0-9]{4,32}$/;
+const PUBLIC_CERTIFICATE_ID_PATTERN = /^[A-Z0-9-_]{3,64}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
 
 const normalizeCertificateId = (value) => String(value || "").trim().toUpperCase();
@@ -215,6 +215,13 @@ const validateQrCertificateInput = (payload = {}, { partial = false } = {}) => {
     }
 
     updates.assignedEmployeeRef = assignedEmployeeUid || assignedEmployeeId || assignedEmployeeEmail || "";
+  }
+
+  if (Object.prototype.hasOwnProperty.call(payload, "certificate_id")) {
+    const certificate_id = String(payload.certificate_id || "").trim();
+    if (certificate_id) {
+      updates.certificate_id = normalizeCertificateId(certificate_id);
+    }
   }
 
   return { errors, updates };
@@ -508,7 +515,19 @@ const createQrCertificate = async (req, res) => {
   }
 
   try {
-    const certificateId = await generateUniqueCertificateId("QR");
+    let certificateId = updates.certificate_id;
+    if (certificateId) {
+      if (!isValidPublicCertificateId(certificateId)) {
+        return res.status(400).json({ success: false, message: "Invalid custom Certificate ID format. Use 3-64 alphanumeric characters." });
+      }
+      const existing = await findCertificateByPublicId(certificateId);
+      if (existing) {
+        return res.status(400).json({ success: false, message: "Certificate ID already exists." });
+      }
+    } else {
+      certificateId = await generateUniqueCertificateId("QR");
+    }
+
     const record = {
       ...updates,
       source: QR_RECORD_SOURCE,
@@ -566,6 +585,9 @@ const updateQrCertificate = async (req, res) => {
       updatedByUid: req.user?.uid || "",
       updatedByEmail: req.user?.email || "",
     };
+
+    // Do not allow changing certificate_id on update
+    delete dataToUpdate.certificate_id;
 
     // Handle uploaded signature image
     if (req.file) {
