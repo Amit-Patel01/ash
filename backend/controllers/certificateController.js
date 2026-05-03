@@ -446,7 +446,8 @@ const updateCertificateStatus = async (req, res) => {
  * GET /api/certificates/verify/:certId
  */
 const verifyCertificate = async (req, res) => {
-  const certId = normalizeCertificateId(req.params.certId);
+  const rawId = req.params[0] || req.params.certId;
+  const certId = normalizeCertificateId(rawId);
   
   logger.info("Certificate verification started:", { certId });
 
