@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
+import { Folder } from 'lucide-react'
 import {
   EmployeeBadge,
   EmployeeEmptyState,
@@ -110,7 +111,7 @@ export default function EmployeeProjectsRefined() {
       >
         {myProjects.length === 0 ? (
           <EmployeeEmptyState
-            icon="📁"
+            icon={<Folder className="w-12 h-12 text-slate-500" strokeWidth={1.5} />}
             title="No active project mapping yet"
             description="When an administrator assigns tasks to your name or employee ID, projects will appear here automatically."
           />

@@ -2,8 +2,12 @@ import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
-
-const normalize = (value) => String(value || '').trim().toLowerCase()
+import {
+  getEmployeeIdentitySet,
+  getEmployeeMemberData,
+  normalize,
+  taskBelongsToEmployee,
+} from './employeeUtils'
 const isDone = (status) => ['done', 'completed', 'complete', 'closed'].includes(normalize(status))
 const isProgress = (status) => ['in-progress', 'in progress', 'progress', 'working'].includes(normalize(status))
 
@@ -102,14 +106,10 @@ export default function EmployeeHomeDashboard() {
   const { currentUser, userProfile } = useAuth()
   const { tasks, projects, teamMembers, courses, enrollments } = useStore()
 
-  const memberData = useMemo(() => {
-    const currentEmail = normalize(currentUser?.email)
-    const currentEmployeeId = normalize(userProfile?.employeeId || currentUser?.employeeId)
-    return teamMembers.find(member =>
-      normalize(member.email) === currentEmail ||
-      (currentEmployeeId && normalize(member.employeeId) === currentEmployeeId)
-    )
-  }, [teamMembers, currentUser?.email, currentUser?.employeeId, userProfile?.employeeId])
+  const memberData = useMemo(
+    () => getEmployeeMemberData(teamMembers, currentUser, userProfile),
+    [teamMembers, currentUser, userProfile]
+  )
 
   const displayName = userProfile?.displayName || currentUser?.displayName || memberData?.name || 'Employee'
   const roleLabel = userProfile?.jobTitle || memberData?.role || (userProfile?.role === 'mentor' ? 'Mentor' : 'Employee')
@@ -118,18 +118,15 @@ export default function EmployeeHomeDashboard() {
   const employeeEmail = currentUser?.email || userProfile?.email || memberData?.email || ''
   const initials = displayName.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part.charAt(0).toUpperCase()).join('') || 'EM'
 
-  const identities = useMemo(() => {
-    const values = [currentUser?.uid, userProfile?.uid, employeeId, employeeEmail, displayName, memberData?.name]
-    return [...new Set(values.filter(Boolean).map(normalize))]
-  }, [currentUser?.uid, userProfile?.uid, employeeId, employeeEmail, displayName, memberData?.name])
+  const identities = useMemo(
+    () => getEmployeeIdentitySet(currentUser, userProfile, memberData),
+    [currentUser, userProfile, memberData]
+  )
 
-  const myTasks = useMemo(() => {
-    const initial = displayName.charAt(0).toLowerCase()
-    return tasks.filter(task => {
-      const assignee = normalize(task.assignee)
-      return identities.includes(assignee) || (assignee.length === 1 && assignee === initial)
-    })
-  }, [tasks, identities, displayName])
+  const myTasks = useMemo(
+    () => tasks.filter((task) => taskBelongsToEmployee(task, identities)),
+    [tasks, identities]
+  )
 
   const myProjects = useMemo(() => {
     const projectNames = [...new Set(myTasks.map(task => task.project).filter(Boolean))]

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useStore } from '../store/StoreContext'
 import { formatEnrollmentDeadline, isEnrollmentClosed, normalizeEnrollmentDeadline } from '../utils/enrollmentDeadline'
 import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
+import { CategoryIcon } from '../utils/CategoryIcon'
+import { Clock, BarChart, Users, Eye, EyeOff, Lightbulb } from 'lucide-react'
 
 export default function AdminCourses() {
   const {
@@ -193,7 +195,9 @@ export default function AdminCourses() {
       {/* Course Grid */}
       {filtered.length === 0 ? (
         <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-14 text-center">
-          <div className="text-4xl mb-3">📚</div>
+          <div className="flex justify-center mb-4 text-gray-500">
+            <CategoryIcon icon="BookOpen" className="w-12 h-12" />
+          </div>
           <p className="text-gray-400 font-medium mb-1">No courses yet</p>
           <p className="text-sm text-gray-600">Click "Add Course" to create your first course</p>
         </div>
@@ -221,7 +225,7 @@ export default function AdminCourses() {
               {getCourseThumbnail(course) ? (
                 <div className="relative w-full h-28 overflow-hidden rounded-xl mb-3 bg-gradient-to-br from-blue-900/40 to-purple-900/40">
                   <div className="absolute inset-0 flex items-center justify-center text-3xl">
-                    {courseCategories.find(c => c.name === course.category)?.icon || '📚'}
+                    <CategoryIcon icon={courseCategories.find(c => c.name === course.category)?.icon || 'BookOpen'} className="w-10 h-10 text-white/20" />
                   </div>
                   <img
                     key={getCourseThumbnail(course)}
@@ -233,7 +237,7 @@ export default function AdminCourses() {
                 </div>
               ) : (
                 <div className="w-full h-28 rounded-xl bg-gradient-to-br from-blue-900/40 to-purple-900/40 flex items-center justify-center mb-3 text-3xl">
-                  {courseCategories.find(c => c.name === course.category)?.icon || '📚'}
+                  <CategoryIcon icon={courseCategories.find(c => c.name === course.category)?.icon || 'BookOpen'} className="w-12 h-12 text-blue-300" />
                 </div>
               )}
 
@@ -268,8 +272,8 @@ export default function AdminCourses() {
               {/* Stats row */}
               <div className="flex items-center justify-between mb-3 text-xs">
                 <div className="flex items-center gap-3 text-gray-500">
-                  {course.duration && <span>⏱ {course.duration}</span>}
-                  {course.level && <span>📊 {course.level}</span>}
+                  {course.duration && <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {course.duration}</span>}
+                  {course.level && <span className="flex items-center gap-1"><BarChart className="w-3.5 h-3.5" /> {course.level}</span>}
                 </div>
                 <div className="font-bold text-blue-400">
                   {course.isFree ? <span className="text-emerald-400">FREE</span> : `₹${Number(course.price || 0).toLocaleString('en-IN')}`}
@@ -288,8 +292,8 @@ export default function AdminCourses() {
                 ) : (
                   <span className="text-gray-600 italic">No instructor assigned</span>
                 )}
-                <span className="text-gray-500">
-                  👥 {getEnrollCount(course.id)} enrolled
+                <span className="flex items-center gap-1 text-gray-500">
+                  <Users className="w-3.5 h-3.5" /> {getEnrollCount(course.id)} enrolled
                 </span>
               </div>
 
@@ -302,7 +306,7 @@ export default function AdminCourses() {
                       ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
                       : 'bg-gray-700/50 text-gray-400 hover:bg-gray-700'
                   }`}>
-                  {course.published ? '👁 Visible' : '🙈 Hidden'}
+                  {course.published ? <><Eye className="w-3.5 h-3.5" /> Visible</> : <><EyeOff className="w-3.5 h-3.5" /> Hidden</>}
                 </button>
                 <button onClick={() => openEdit(course)}
                   className="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors">
@@ -335,7 +339,7 @@ export default function AdminCourses() {
 
               {/* Info note */}
               <div className="flex items-start gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-300">
-                <span className="text-base flex-shrink-0">💡</span>
+                <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <span>Admin creates the course structure. The <strong>assigned employee</strong> will add pricing plans, study materials, meeting links &amp; features from their panel.</span>
               </div>
 
@@ -359,7 +363,7 @@ export default function AdminCourses() {
                   <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} required className="input">
                     <option value="">Select Category</option>
                     {courseCategories.length > 0
-                      ? courseCategories.map(c => <option key={c.id} value={c.name}>{c.icon} {c.name}</option>)
+                      ? courseCategories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)
                       : ['Trading','Web Development','Python','Digital Marketing','Graphic Design','Excel / Data','Other'].map(c => <option key={c} value={c}>{c}</option>)
                     }
                   </select>
@@ -400,7 +404,7 @@ export default function AdminCourses() {
                 <p className="text-[11px] text-gray-500 mt-1">Enter a direct image URL. It appears on the admin course card, the public courses page, and the student panel.</p>
                 <div className="mt-3 relative w-full h-36 overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-blue-900/30 to-purple-900/30">
                   <div className="absolute inset-0 flex items-center justify-center text-3xl text-white/70">
-                    {courseCategories.find(c => c.name === form.category)?.icon || '🖼️'}
+                    <CategoryIcon icon={courseCategories.find(c => c.name === form.category)?.icon || 'ImageIcon'} className="w-12 h-12 text-white/20" />
                   </div>
                   {form.thumbnail ? (
                     <img

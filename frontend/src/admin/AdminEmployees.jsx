@@ -87,6 +87,13 @@ export default function AdminEmployees() {
       emailStr.toLowerCase().includes(searchQuery.toLowerCase()) ||
       roleStr.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesDept && matchesSearch
+  }).sort((a, b) => {
+    const idA = a.employeeId || ''
+    const idB = b.employeeId || ''
+    if (!idA && !idB) return 0
+    if (!idA) return 1
+    if (!idB) return -1
+    return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' })
   })
 
   const openCreateModal = () => {

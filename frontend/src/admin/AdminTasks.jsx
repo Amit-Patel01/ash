@@ -1,5 +1,93 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useStore } from '../store/StoreContext'
+import { normalize } from '../employee/employeeUtils'
+
+const emptyAssignee = { assignee: '', assigneeUserId: '', assigneeEmail: '', assigneeEmployeeId: '' }
+
+function buildAssigneeRows(users, teamMembers) {
+  const rows = []
+  const seen = new Set()
+  const push = (value, label, kind) => {
+    if (!value || seen.has(value)) return
+    seen.add(value)
+    rows.push({ value, label, kind })
+  }
+
+  for (const u of (users || []).filter((x) => x.role !== 'admin')) {
+    if (u?.uid) push(`uid:${u.uid}`, u.displayName || u.email || 'User', 'user')
+  }
+  for (const m of teamMembers || []) {
+    if (m?.email) push(`email:${normalize(m.email)}`, m.name || m.email, 'member')
+    else if (m?.employeeId) push(`eid:${normalize(m.employeeId)}`, m.name || m.employeeId, 'member')
+    else if (m?.name) push(`name:${normalize(m.name)}`, m.name, 'member')
+  }
+  for (const letter of ['R', 'P', 'A', 'S', 'V', 'N']) {
+    push(`legacy:${letter.toLowerCase()}`, letter, 'legacy')
+  }
+  rows.sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }))
+  return rows
+}
+
+/** Map stored task assignee fields to canonical ids where possible (fixes legacy name-only assignees). */
+function resolveAssigneeFromTask(task, users, teamMembers) {
+  if (task.assigneeUserId) {
+    return {
+      assignee: task.assignee || '',
+      assigneeUserId: task.assigneeUserId,
+      assigneeEmail: task.assigneeEmail || '',
+      assigneeEmployeeId: task.assigneeEmployeeId || '',
+    }
+  }
+  if (task.assigneeEmail) {
+    const em = normalize(task.assigneeEmail)
+    const u = (users || []).find((x) => normalize(x.email) === em)
+    const m = (teamMembers || []).find((x) => normalize(x.email) === em)
+    return {
+      assigneeUserId: u?.uid || '',
+      assigneeEmail: task.assigneeEmail,
+      assigneeEmployeeId: task.assigneeEmployeeId || m?.employeeId || '',
+      assignee: task.assignee || m?.name || u?.displayName || '',
+    }
+  }
+  if (task.assigneeEmployeeId) {
+    const id = normalize(task.assigneeEmployeeId)
+    const m = (teamMembers || []).find((x) => normalize(x.employeeId) === id)
+    return {
+      assigneeUserId: '',
+      assigneeEmail: m?.email || task.assigneeEmail || '',
+      assigneeEmployeeId: task.assigneeEmployeeId,
+      assignee: task.assignee || m?.name || '',
+    }
+  }
+  const n = normalize(task.assignee)
+  if (!n) {
+    return { assignee: '', assigneeUserId: '', assigneeEmail: '', assigneeEmployeeId: '' }
+  }
+  const u = (users || []).find((x) => normalize(x.displayName) === n)
+  if (u?.uid) {
+    return {
+      assigneeUserId: u.uid,
+      assigneeEmail: u.email || '',
+      assigneeEmployeeId: '',
+      assignee: u.displayName || task.assignee || '',
+    }
+  }
+  const m = (teamMembers || []).find((x) => normalize(x.name) === n)
+  if (m) {
+    return {
+      assigneeUserId: '',
+      assigneeEmail: m.email || '',
+      assigneeEmployeeId: m.employeeId || '',
+      assignee: m.name || task.assignee || '',
+    }
+  }
+  return {
+    assignee: task.assignee || '',
+    assigneeUserId: '',
+    assigneeEmail: '',
+    assigneeEmployeeId: '',
+  }
+}
 
 const columns = [
   { id: 'todo', label: 'To Do', color: 'gray' },
@@ -16,8 +104,18 @@ const priorityColors = {
 
 const avatarColors = ['from-blue-500 to-cyan-500', 'from-purple-500 to-pink-500', 'from-emerald-500 to-teal-500', 'from-orange-500 to-amber-500']
 
+function getAvatarInitials(value) {
+  const raw = String(value || '').trim()
+  if (!raw) return '?'
+  if (raw.length <= 2 && !raw.includes(' ')) return raw.toUpperCase()
+  const parts = raw.split(/\s+/).filter(Boolean)
+  const initials = parts.slice(0, 2).map((p) => p.charAt(0)).join('')
+  return (initials || raw.charAt(0)).toUpperCase()
+}
+
 function TaskCard({ task, onDragStart, onDelete, onEdit }) {
   const assigneeIndex = (task.assignee || 'A').charCodeAt(0) % avatarColors.length
+  const assigneeInitials = getAvatarInitials(task.assignee)
   return (
     <div
       draggable
@@ -38,7 +136,13 @@ function TaskCard({ task, onDragStart, onDelete, onEdit }) {
       <h4 className="text-sm font-medium text-white mb-1">{task.title}</h4>
       <p className="text-xs text-gray-500 mb-3">{task.project}</p>
       <div className="flex items-center justify-between">
-        <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${avatarColors[assigneeIndex]} flex items-center justify-center text-[9px] font-bold shadow-sm`}>{task.assignee}</div>
+        <div
+          className={`w-6 h-6 rounded-full bg-gradient-to-br ${avatarColors[assigneeIndex]} flex items-center justify-center overflow-hidden text-[10px] leading-none font-bold text-white shadow-sm`}
+          title={task.assignee || 'Unassigned'}
+          aria-label={`Assignee: ${task.assignee || 'Unassigned'}`}
+        >
+          {assigneeInitials}
+        </div>
         <div className="flex items-center gap-1 text-xs text-gray-500">
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>
           {task.dueDate}
@@ -54,7 +158,82 @@ export default function AdminTasks() {
   const [projectFilter, setProjectFilter] = useState('All')
   const [showModal, setShowModal] = useState(false)
   const [editingTask, setEditingTask] = useState(null)
-  const [formData, setFormData] = useState({ title: '', project: '', assignee: 'R', priority: 'Medium', dueDate: '', status: 'todo' })
+  const [formData, setFormData] = useState({
+    title: '',
+    project: '',
+    priority: 'Medium',
+    dueDate: '',
+    status: 'todo',
+    ...emptyAssignee,
+  })
+
+  const assigneeRows = useMemo(() => buildAssigneeRows(users, teamMembers), [users, teamMembers])
+
+  const assigneeSelectValue = useMemo(() => {
+    if (formData.assigneeUserId) return `uid:${formData.assigneeUserId}`
+    if (formData.assigneeEmail) return `email:${normalize(formData.assigneeEmail)}`
+    if (formData.assigneeEmployeeId) return `eid:${normalize(formData.assigneeEmployeeId)}`
+    const a = normalize(formData.assignee)
+    if (!a) return ''
+    if (assigneeRows.some((r) => r.value === `name:${a}`)) return `name:${a}`
+    const legacy = assigneeRows.find((r) => r.kind === 'legacy' && normalize(r.label) === a)
+    if (legacy) return legacy.value
+    return ''
+  }, [formData.assigneeUserId, formData.assigneeEmail, formData.assigneeEmployeeId, formData.assignee, assigneeRows])
+
+  const applyAssigneeKey = (raw) => {
+    if (!raw) return { ...emptyAssignee }
+    if (raw.startsWith('uid:')) {
+      const uid = raw.slice(4)
+      const u = (users || []).find((x) => x.uid === uid)
+      return {
+        assigneeUserId: uid,
+        assigneeEmail: u?.email || '',
+        assigneeEmployeeId: '',
+        assignee: u?.displayName || u?.email || '',
+      }
+    }
+    if (raw.startsWith('email:')) {
+      const key = raw.slice(6)
+      const m = (teamMembers || []).find((x) => normalize(x.email) === key)
+      const u = (users || []).find((x) => normalize(x.email) === key)
+      return {
+        assigneeUserId: u?.uid || '',
+        assigneeEmail: m?.email || u?.email || '',
+        assigneeEmployeeId: '',
+        assignee: m?.name || u?.displayName || m?.email || u?.email || '',
+      }
+    }
+    if (raw.startsWith('eid:')) {
+      const key = raw.slice(4)
+      const m = (teamMembers || []).find((x) => normalize(x.employeeId) === key)
+      return {
+        assigneeUserId: '',
+        assigneeEmail: m?.email || '',
+        assigneeEmployeeId: m?.employeeId || '',
+        assignee: m?.name || m?.employeeId || '',
+      }
+    }
+    if (raw.startsWith('name:')) {
+      const row = assigneeRows.find((r) => r.value === raw)
+      return {
+        assigneeUserId: '',
+        assigneeEmail: '',
+        assigneeEmployeeId: '',
+        assignee: row?.label || '',
+      }
+    }
+    if (raw.startsWith('legacy:')) {
+      const letter = raw.slice(7).toUpperCase()
+      return {
+        assigneeUserId: '',
+        assigneeEmail: '',
+        assigneeEmployeeId: '',
+        assignee: letter,
+      }
+    }
+    return { ...emptyAssignee }
+  }
   
   // Delete Modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -79,26 +258,53 @@ export default function AdminTasks() {
 
   const openCreate = () => {
     setEditingTask(null)
-    setFormData({ title: '', project: '', assignee: 'R', priority: 'Medium', dueDate: '', status: 'todo' })
+    setFormData({
+      title: '',
+      project: '',
+      priority: 'Medium',
+      dueDate: '',
+      status: 'todo',
+      ...emptyAssignee,
+    })
     setShowModal(true)
   }
 
   const openEdit = (task) => {
     setEditingTask(task)
-    setFormData({ title: task.title, project: task.project, assignee: task.assignee, priority: task.priority, dueDate: task.dueDate, status: task.status })
+    const resolved = resolveAssigneeFromTask(task, users, teamMembers)
+    setFormData({
+      title: task.title,
+      project: task.project,
+      ...resolved,
+      priority: task.priority,
+      dueDate: task.dueDate,
+      status: task.status,
+    })
     setShowModal(true)
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const payload = {
+      title: formData.title,
+      project: formData.project,
+      assignee: formData.assignee || '',
+      assigneeUserId: formData.assigneeUserId || '',
+      assigneeEmail: formData.assigneeEmail || '',
+      assigneeEmployeeId: formData.assigneeEmployeeId || '',
+      priority: formData.priority,
+      dueDate: formData.dueDate,
+      status: formData.status,
+    }
     try {
       if (editingTask) {
-        await updateTask(editingTask.id, formData)
+        await updateTask(editingTask.id, payload)
       } else {
-        await addTask(formData)
+        await addTask(payload)
       }
       setShowModal(false)
     } catch (err) {
+      console.error('Failed to save task:', err)
       alert("Something went wrong while saving the task.")
     }
   }
@@ -115,6 +321,7 @@ export default function AdminTasks() {
       await deleteTask(taskToDelete.id)
       setShowDeleteModal(false)
     } catch (err) {
+      console.error('Failed to delete task:', err)
       alert("Failed to delete task.")
     } finally {
       setDeletingId(null)
@@ -199,11 +406,20 @@ export default function AdminTasks() {
             <tbody className="divide-y divide-white/5">
               {filteredTasks.map(task => {
                 const assigneeIndex = (task.assignee || 'A').charCodeAt(0) % avatarColors.length
+                const assigneeInitials = getAvatarInitials(task.assignee)
                 return (
                   <tr key={task.id} className="hover:bg-white/[0.02] transition-colors">
                     <td className="px-6 py-4"><p className="text-sm font-medium text-white">{task.title}</p></td>
                     <td className="px-6 py-4 text-sm text-gray-400">{task.project}</td>
-                    <td className="px-6 py-4"><div className={`w-7 h-7 rounded-full bg-gradient-to-br ${avatarColors[assigneeIndex]} flex items-center justify-center text-[10px] font-bold shadow-sm`}>{task.assignee}</div></td>
+                    <td className="px-6 py-4">
+                      <div
+                        className={`w-7 h-7 rounded-full bg-gradient-to-br ${avatarColors[assigneeIndex]} flex items-center justify-center overflow-hidden text-[11px] leading-none font-bold text-white shadow-sm`}
+                        title={task.assignee || 'Unassigned'}
+                        aria-label={`Assignee: ${task.assignee || 'Unassigned'}`}
+                      >
+                        {assigneeInitials}
+                      </div>
+                    </td>
                     <td className="px-6 py-4"><span className={`text-xs font-medium px-2 py-0.5 rounded-md border ${priorityColors[task.priority] || priorityColors.Medium}`}>{task.priority}</span></td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${task.status === 'done' ? 'bg-emerald-500/10 text-emerald-400' : task.status === 'in-progress' ? 'bg-blue-500/10 text-blue-400' : task.status === 'review' ? 'bg-amber-500/10 text-amber-400' : 'bg-gray-500/10 text-gray-400'}`}>
@@ -246,14 +462,15 @@ export default function AdminTasks() {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-400 mb-1.5">Assignee</label>
-                  <select value={formData.assignee} onChange={e => setFormData({ ...formData, assignee: e.target.value })} className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all">
+                  <select
+                    value={assigneeSelectValue}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, ...applyAssigneeKey(e.target.value) }))}
+                    className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all"
+                  >
                     <option value="" className="bg-gray-900 text-gray-500">Unassigned</option>
-                    {/* List actual employees from Store */}
-                    {[...new Set([
-                      ...(users || []).filter(u => u.role !== 'admin').map(u => u.displayName),
-                      ...(teamMembers || []).map(m => m.name),
-                      'R', 'P', 'A', 'S', 'V', 'N'
-                    ])].filter(Boolean).map(a => <option key={a} value={a} className="bg-gray-900">{a}</option>)}
+                    {assigneeRows.map((row) => (
+                      <option key={row.value} value={row.value} className="bg-gray-900">{row.label}</option>
+                    ))}
                   </select>
                 </div>
               </div>

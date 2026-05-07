@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
+import { FolderOpen } from 'lucide-react'
 import {
   EmployeeBadge,
   EmployeeEmptyState,
@@ -39,15 +40,46 @@ const priorityMeta = {
 
 export default function EmployeeTasksRefined() {
   const { currentUser, userProfile } = useAuth()
-  const { tasks, teamMembers, updateTask } = useStore()
+  const { tasks, teamMembers, updateTask, addTask } = useStore()
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('all')
   const [updatingId, setUpdatingId] = useState(null)
+
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [formData, setFormData] = useState({
+    title: '',
+    project: '',
+    priority: 'Medium',
+    dueDate: '',
+    assigneeRaw: '',
+  })
 
   const memberData = useMemo(
     () => getEmployeeMemberData(teamMembers, currentUser, userProfile),
     [teamMembers, currentUser, userProfile]
   )
+
+  const isFounder = useMemo(() => {
+    const name = normalize(userProfile?.displayName || currentUser?.displayName || memberData?.name || '')
+    const role = normalize(userProfile?.role || memberData?.role || '')
+    return name.includes('amit') || name.includes('naivedh') || role.includes('founder')
+  }, [userProfile, currentUser, memberData])
+
+  const assigneeOptions = useMemo(() => {
+    const options = []
+    teamMembers.forEach(m => {
+      if (m.name || m.employeeId) {
+        options.push({
+          label: m.name ? `${m.name} (${m.employeeId || 'No ID'})` : m.employeeId,
+          value: `eid:${m.employeeId}`,
+          name: m.name,
+          email: m.email,
+          employeeId: m.employeeId
+        })
+      }
+    })
+    return options.sort((a, b) => a.label.localeCompare(b.label))
+  }, [teamMembers])
 
   const identities = useMemo(
     () => getEmployeeIdentitySet(currentUser, userProfile, memberData),
@@ -93,6 +125,43 @@ export default function EmployeeTasksRefined() {
     }
   }
 
+  const handleCreateTask = async (e) => {
+    e.preventDefault()
+    let assigneeName = ''
+    let assigneeEmail = ''
+    let assigneeEmployeeId = ''
+    
+    if (formData.assigneeRaw) {
+      const selected = assigneeOptions.find(o => o.value === formData.assigneeRaw)
+      if (selected) {
+        assigneeName = selected.name || ''
+        assigneeEmail = selected.email || ''
+        assigneeEmployeeId = selected.employeeId || ''
+      }
+    }
+
+    const payload = {
+      title: formData.title,
+      project: formData.project,
+      assignee: assigneeName,
+      assigneeUserId: '',
+      assigneeEmail: assigneeEmail,
+      assigneeEmployeeId: assigneeEmployeeId,
+      priority: formData.priority,
+      dueDate: formData.dueDate,
+      status: 'todo',
+    }
+    
+    try {
+      await addTask(payload)
+      setShowCreateModal(false)
+      setFormData({ title: '', project: '', priority: 'Medium', dueDate: '', assigneeRaw: '' })
+    } catch (err) {
+      console.error('Failed to create task:', err)
+      alert('Failed to create task.')
+    }
+  }
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
       <EmployeePageHeader
@@ -106,7 +175,15 @@ export default function EmployeeTasksRefined() {
           { label: 'Completed', value: completedTasks },
         ]}
         actions={
-          <>
+          <div className="flex flex-wrap items-center gap-3">
+            {isFounder && (
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="rounded-2xl bg-cyan-400 px-4 py-3 text-sm font-bold text-slate-900 transition hover:bg-cyan-300 shadow-lg shadow-cyan-400/20"
+              >
+                + Assign Task
+              </button>
+            )}
             <div className="relative w-full sm:w-72">
               <input
                 type="text"
@@ -129,7 +206,7 @@ export default function EmployeeTasksRefined() {
               <option value="review" className="bg-slate-950">In Review</option>
               <option value="done" className="bg-slate-950">Completed</option>
             </select>
-          </>
+          </div>
         }
       />
 
@@ -156,7 +233,7 @@ export default function EmployeeTasksRefined() {
       >
         {myTasks.length === 0 ? (
           <EmployeeEmptyState
-            icon="🗂"
+            icon={<FolderOpen className="w-12 h-12 text-slate-500" strokeWidth={1.5} />}
             title="No tasks matched this view"
             description="Try adjusting the search or filters. If the list is still empty, ask an administrator to confirm that tasks are assigned to your employee account."
           />
@@ -188,35 +265,44 @@ export default function EmployeeTasksRefined() {
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-2 lg:max-w-[270px] lg:justify-end">
-                      <button
-                        onClick={() => handleStatusChange(task.id, 'todo')}
-                        disabled={updatingId === task.id || statusKey === 'todo'}
-                        className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        Plan
-                      </button>
-                      <button
-                        onClick={() => handleStatusChange(task.id, 'in-progress')}
-                        disabled={updatingId === task.id || statusKey === 'in-progress'}
-                        className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        Start
-                      </button>
-                      <button
-                        onClick={() => handleStatusChange(task.id, 'review')}
-                        disabled={updatingId === task.id || statusKey === 'review'}
-                        className="rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-2 text-sm font-semibold text-amber-300 transition hover:bg-amber-400/15 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        Review
-                      </button>
-                      <button
-                        onClick={() => handleStatusChange(task.id, 'done')}
-                        disabled={updatingId === task.id || statusKey === 'done'}
-                        className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-400/15 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        {updatingId === task.id ? 'Saving...' : 'Done'}
-                      </button>
+                    <div className="flex flex-wrap gap-2 lg:max-w-[300px] lg:justify-end">
+                      {statusKey === 'todo' && (
+                        <button
+                          onClick={() => handleStatusChange(task.id, 'in-progress')}
+                          disabled={updatingId === task.id}
+                          className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          Start Task
+                        </button>
+                      )}
+                      
+                      {statusKey === 'in-progress' && (
+                        <button
+                          onClick={() => handleStatusChange(task.id, 'review')}
+                          disabled={updatingId === task.id}
+                          className="flex items-center gap-1.5 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-400/15 disabled:cursor-not-allowed disabled:opacity-50 hover:shadow-lg hover:shadow-emerald-500/20"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                          {updatingId === task.id ? 'Completing...' : 'Complete Task'}
+                        </button>
+                      )}
+
+                      {statusKey === 'review' && (
+                        <span className="inline-flex items-center rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-2 text-sm font-semibold text-amber-300 cursor-default opacity-90">
+                          In Review (Pending Admin)
+                        </span>
+                      )}
+
+                      {statusKey === 'done' && (
+                        <span className="inline-flex items-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm font-semibold text-emerald-300 cursor-default opacity-90">
+                          <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                          Approved & Done
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -225,6 +311,73 @@ export default function EmployeeTasksRefined() {
           </div>
         )}
       </EmployeeSurface>
+
+      {/* Founder Assign Task Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowCreateModal(false)} />
+          <div className="relative bg-slate-900 border border-white/10 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="border-b border-white/5 px-6 py-5 flex items-center justify-between bg-white/[0.02]">
+              <h2 className="text-xl font-bold text-white">Assign New Task</h2>
+              <button onClick={() => setShowCreateModal(false)} className="p-2 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <form onSubmit={handleCreateTask} className="p-6 space-y-5">
+              <div>
+                <label className="block text-sm font-semibold text-slate-300 mb-2">Task Title *</label>
+                <input type="text" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required placeholder="Enter task title" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 transition-all" />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">Project *</label>
+                  <input type="text" value={formData.project} onChange={e => setFormData({ ...formData, project: e.target.value })} required placeholder="Project name" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 transition-all" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">Assign To *</label>
+                  <div className="relative">
+                    <select
+                      required
+                      value={formData.assigneeRaw}
+                      onChange={(e) => setFormData({ ...formData, assigneeRaw: e.target.value })}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-cyan-400/50 transition-all appearance-none"
+                    >
+                      <option value="" className="bg-slate-900 text-slate-500">Select Employee</option>
+                      {assigneeOptions.map((opt) => (
+                        <option key={opt.value} value={opt.value} className="bg-slate-900">{opt.label}</option>
+                      ))}
+                    </select>
+                    <svg className="pointer-events-none absolute right-3 top-3.5 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">Priority</label>
+                  <div className="relative">
+                    <select value={formData.priority} onChange={e => setFormData({ ...formData, priority: e.target.value })} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-cyan-400/50 transition-all appearance-none">
+                      {['Low', 'Medium', 'High'].map(p => <option key={p} value={p} className="bg-slate-900">{p}</option>)}
+                    </select>
+                    <svg className="pointer-events-none absolute right-3 top-3.5 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">Due Date</label>
+                  <input type="text" value={formData.dueDate} onChange={e => setFormData({ ...formData, dueDate: e.target.value })} placeholder="e.g. Tomorrow or Apr 15" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 transition-all" />
+                </div>
+              </div>
+              <div className="pt-4 flex gap-3">
+                <button type="submit" className="flex-1 px-4 py-3 bg-cyan-400 hover:bg-cyan-300 text-slate-900 rounded-2xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(34,211,238,0.2)]">Assign Task</button>
+                <button type="button" onClick={() => setShowCreateModal(false)} className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-sm font-semibold text-slate-300 transition-all">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

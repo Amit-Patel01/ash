@@ -6,7 +6,7 @@ import { DOCUMENT_TYPES } from '../utils/certificateTemplate'
 import { emailNotify } from '../utils/emailNotify'
 import { formatEnrollmentDeadline, isEnrollmentClosed, normalizeEnrollmentDeadline } from '../utils/enrollmentDeadline'
 import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
-
+import { BookOpen, CircleDollarSign, FileText, Video, Users, MousePointerClick, Check, X, Star, Lightbulb } from 'lucide-react'
 const DEFAULT_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata'
 const COURSE_BLANK = {
   deliveryType: 'course',
@@ -441,10 +441,10 @@ export default function EmployeeCourseManage() {
   }
 
   const TABS = [
-    { id: 'plans', label: '💰 Plans', title: 'Duration Plans & Pricing' },
-    { id: 'materials', label: '📄 Materials', title: 'Study Materials' },
-    { id: 'meeting', label: '📹 Session Link', title: 'Meeting / Session Link' },
-    { id: 'students', label: '👥 Students', title: 'Enrolled Students' },
+    { id: 'plans', label: 'Plans', title: 'Duration Plans & Pricing', icon: CircleDollarSign },
+    { id: 'materials', label: 'Materials', title: 'Study Materials', icon: FileText },
+    { id: 'meeting', label: 'Session Link', title: 'Meeting / Session Link', icon: Video },
+    { id: 'students', label: 'Students', title: 'Enrolled Students', icon: Users },
   ]
   const emptyStateTitle = canCreateCourses ? 'Create your first course' : 'No courses assigned'
   const emptyStateBody = canCreateCourses
@@ -501,8 +501,8 @@ export default function EmployeeCourseManage() {
               <button key={course.id} onClick={() => openCourse(course)}
                 className={`w-full text-left p-4 rounded-2xl border transition-all ${selectedCourse?.id === course.id ? 'border-blue-500/50 bg-blue-500/10' : 'border-white/5 bg-gray-900/50 hover:border-white/10'}`}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-900/60 to-purple-900/60 flex items-center justify-center text-lg flex-shrink-0">
-                    📚
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-900/60 to-purple-900/60 flex items-center justify-center flex-shrink-0">
+                    <BookOpen className="w-5 h-5 text-blue-300" />
                   </div>
                   <div className="min-w-0">
                     <h4 className="text-sm font-bold text-white truncate">{course.title}</h4>
@@ -527,7 +527,9 @@ export default function EmployeeCourseManage() {
         <div className="lg:col-span-3">
           {!selectedCourse ? (
             <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-14 text-center">
-              <div className="text-5xl mb-4">{visibleCourses.length === 0 ? '📚' : '👈'}</div>
+              <div className="flex justify-center mb-4 text-blue-400">
+                {visibleCourses.length === 0 ? <BookOpen className="w-12 h-12" /> : <MousePointerClick className="w-12 h-12" />}
+              </div>
               <h3 className="text-xl font-bold text-white mb-2">
                 {visibleCourses.length === 0 ? emptyStateTitle : 'Select a course to manage'}
               </h3>
@@ -575,7 +577,8 @@ export default function EmployeeCourseManage() {
               <div className="flex gap-1 bg-gray-900/50 p-1 rounded-xl border border-white/5">
                 {TABS.map(t => (
                   <button key={t.id} onClick={() => setActiveTab(t.id)}
-                    className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === t.id ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-gray-300'}`}>
+                    className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${activeTab === t.id ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-gray-300'}`}>
+                    <t.icon className="w-4 h-4" />
                     {t.label}
                   </button>
                 ))}
@@ -598,7 +601,9 @@ export default function EmployeeCourseManage() {
 
                   {!(selectedCourse.plans || []).length ? (
                     <div className="py-10 text-center">
-                      <p className="text-3xl mb-2">💰</p>
+                      <div className="flex justify-center mb-2">
+                        <CircleDollarSign className="w-10 h-10 text-gray-500" />
+                      </div>
                       <p className="text-gray-500 text-sm mb-1">No plans added yet</p>
                       <p className="text-xs text-gray-600">Add plans like Basic 1-Month, Standard 3-Months, Premium 6-Months</p>
                       <button onClick={openAddPlan} className="mt-4 px-4 py-2 bg-blue-600/20 border border-blue-500/30 text-blue-400 text-xs font-bold rounded-xl hover:bg-blue-600/30 transition-all">
@@ -610,8 +615,8 @@ export default function EmployeeCourseManage() {
                       {(selectedCourse.plans || []).map((plan, idx) => (
                         <div key={idx} className={`relative rounded-2xl border p-5 ${plan.highlighted ? 'border-blue-500/40 bg-blue-500/10' : 'border-white/5 bg-white/[0.02]'}`}>
                           {plan.highlighted && (
-                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-amber-500 text-white text-[10px] font-black rounded-full">
-                              ★ Most Popular
+                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-amber-500 text-white text-[10px] font-black rounded-full flex items-center gap-1">
+                              <Star className="w-3 h-3 fill-white text-white" /> Most Popular
                             </div>
                           )}
                           <div className="flex items-start justify-between mb-2">
@@ -630,7 +635,7 @@ export default function EmployeeCourseManage() {
                             <ul className="space-y-1 mb-3">
                               {plan.features.slice(0, 3).map((f, fi) => (
                                 <li key={fi} className="flex items-center gap-1.5 text-[11px] text-gray-400">
-                                  <span className="text-emerald-400">✓</span> {f}
+                                  <Check className="w-3 h-3 text-emerald-400 flex-shrink-0" /> {f}
                                 </li>
                               ))}
                               {plan.features.length > 3 && <li className="text-[10px] text-gray-600">+{plan.features.length - 3} more</li>}
@@ -659,7 +664,9 @@ export default function EmployeeCourseManage() {
                             <button onClick={() => movePlan(idx, -1)} disabled={idx === 0} className="p-1.5 rounded-lg bg-white/5 text-gray-500 hover:bg-white/10 disabled:opacity-30 text-xs">↑</button>
                             <button onClick={() => movePlan(idx, 1)} disabled={idx === (selectedCourse.plans || []).length - 1} className="p-1.5 rounded-lg bg-white/5 text-gray-500 hover:bg-white/10 disabled:opacity-30 text-xs">↓</button>
                             <button onClick={() => openEditPlan(plan, idx)} className="flex-1 py-1.5 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 text-xs font-bold transition-colors">Edit</button>
-                            <button onClick={() => deletePlan(idx)} className="px-2.5 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs transition-colors">✕</button>
+                            <button onClick={() => deletePlan(idx)} className="px-2.5 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs transition-colors flex items-center justify-center">
+                              <X className="w-3 h-3" />
+                            </button>
                           </div>
                         </div>
                       ))}
@@ -683,12 +690,14 @@ export default function EmployeeCourseManage() {
                     <div className="space-y-2">
                       {(selectedCourse.materials || []).map((mat, i) => (
                         <div key={i} className="flex items-center gap-3 p-3 bg-white/[0.02] rounded-xl border border-white/5">
-                          <span className="text-xl">📄</span>
+                          <FileText className="w-6 h-6 text-gray-400 flex-shrink-0" />
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-white truncate">{mat.title}</p>
                             <p className="text-[10px] text-gray-500 truncate">{mat.url}</p>
                           </div>
-                          <button onClick={() => removeMaterial(i)} className="p-1.5 text-red-400 hover:bg-red-500/15 rounded-lg transition-colors">✕</button>
+                          <button onClick={() => removeMaterial(i)} className="p-1.5 text-red-400 hover:bg-red-500/15 rounded-lg transition-colors">
+                            <X className="w-4 h-4" />
+                          </button>
                         </div>
                       ))}
                     </div>
@@ -817,7 +826,9 @@ export default function EmployeeCourseManage() {
           <div className="relative bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md shadow-2xl mb-10">
             <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
               <h2 className="text-lg font-bold text-white">{editingPlanIdx !== null ? 'Edit Plan' : 'Add Duration Plan'}</h2>
-              <button onClick={() => setShowPlanModal(false)} className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10">✕</button>
+              <button onClick={() => setShowPlanModal(false)} className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10">
+                <X className="w-4 h-4" />
+              </button>
             </div>
             <div className="p-6 space-y-4">
               {/* Label */}
@@ -927,11 +938,13 @@ export default function EmployeeCourseManage() {
                 <h2 className="text-lg font-bold text-white">Create New Course</h2>
                 <p className="mt-1 text-xs text-gray-500">This course will be assigned to your employee account automatically.</p>
               </div>
-              <button onClick={closeCreateCourse} className="rounded-lg p-1.5 text-gray-400 hover:bg-white/10 hover:text-white">✕</button>
+              <button onClick={closeCreateCourse} className="rounded-lg p-1.5 text-gray-400 hover:bg-white/10 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
             </div>
             <form onSubmit={saveCourseDraft} className="space-y-4 p-6">
               <div className="flex items-start gap-2 rounded-xl border border-amber-500/20 bg-amber-500/10 p-3 text-xs text-amber-200">
-                <span className="text-base leading-none">💡</span>
+                <Lightbulb className="w-4 h-4 text-amber-400 flex-shrink-0" />
                 <span>Start with the basic course details here. After saving, use this same page to add plans, materials, and live session links.</span>
               </div>
 

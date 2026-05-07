@@ -261,7 +261,7 @@ export default function EmployeeLayout() {
                     <span className="h-1 w-1 rounded-full bg-emerald-400/50" />
                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">SolutionHub</span>
                   </div>
-                  <h2 className="text-xl font-black text-white tracking-tight">Welcome back, {employeeName.split(' ')[0]} 👋</h2>
+                  <h2 className="text-xl font-black text-white tracking-tight">Welcome back, {employeeName.split(' ')[0]}</h2>
                 </div>
               </div>
 

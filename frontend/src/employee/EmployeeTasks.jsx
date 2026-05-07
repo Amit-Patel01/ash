@@ -14,9 +14,9 @@ const statusConfig = {
 }
 
 const priorityConfig = {
-  high:   { bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.25)',   text: '#f87171', label: 'High',   icon: '🔴' },
-  medium: { bg: 'rgba(245,158,11,0.1)',  border: 'rgba(245,158,11,0.25)', text: '#fbbf24', label: 'Medium', icon: '🟡' },
-  low:    { bg: 'rgba(59,130,246,0.1)',  border: 'rgba(59,130,246,0.25)', text: '#60a5fa', label: 'Low',    icon: '🔵' },
+  high:   { bg: 'rgba(239,68,68,0.1)',   border: 'rgba(239,68,68,0.25)',   text: '#f87171', label: 'High' },
+  medium: { bg: 'rgba(245,158,11,0.1)',  border: 'rgba(245,158,11,0.25)', text: '#fbbf24', label: 'Medium' },
+  low:    { bg: 'rgba(59,130,246,0.1)',  border: 'rgba(59,130,246,0.25)', text: '#60a5fa', label: 'Low' },
 }
 
 const getStatus = (status) => statusConfig[status] || statusConfig['todo']

@@ -20,7 +20,6 @@ const navGroups = [
     items: [
       { path: '/admin/employees', label: 'Staff Accounts', icon: 'badge', permission: 'can_manage_employees' },
       { path: '/admin/team', label: 'Team (About Page)', icon: 'group', permission: 'can_manage_employees' },
-      { path: '/admin/customers', label: 'Students', icon: 'person' },
     ]
   },
   {
@@ -147,12 +146,18 @@ const iconMap = {
   ),
   award: (
     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0V9.452c0-.612.428-1.128 1.037-1.189a9.764 9.764 0 002.508-.68 1.125 1.125 0 00.334-1.814L15.803 3.48a1.125 1.125 0 00-1.606 0l-1.588 1.588-.002.002L11 6.5l-1.588-1.588-.002-.002L7.803 3.48a1.125 1.125 0 00-1.606 0L3.59 5.769a1.125 1.125 0 00.334 1.814 9.764 9.764 0 002.508.68c.61.061 1.037.577 1.037 1.19v5.923" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 22h6a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M14 2v4a2 2 0 0 0 2 2h4" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 17a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7 16.5 8 22l-3-1-3 1 1-5.5" />
     </svg>
   ),
   coupon: (
     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6.75V6a2.25 2.25 0 00-2.25-2.25h-7.5A2.25 2.25 0 004.5 6v2.25m12 0V18A2.25 2.25 0 0114.25 20.25h-7.5A2.25 2.25 0 014.5 18V8.25m12 0h1.5A2.25 2.25 0 0120.25 10.5v3A2.25 2.25 0 0118 15.75h-1.5m-12-7.5H3A2.25 2.25 0 00.75 10.5v3A2.25 2.25 0 003 15.75h1.5m6-9v10.5m0-10.5h.008v.008H10.5V6.75zm0 3.75h.008v.008H10.5V10.5zm0 3.75h.008v.008H10.5v-.008z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 9h.01" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 15h.01" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="m9 15 6-6" />
     </svg>
   ),
   person: (

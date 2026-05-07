@@ -39,6 +39,14 @@ export const getEmployeeKeyList = (currentUser, userProfile, memberData = null) 
     memberData?.employeeId,
   ].filter(Boolean))]
 
+export const getEmployeeInitials = (name) =>
+  (name || 'Employee')
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(part => part.charAt(0).toUpperCase())
+    .join('') || 'EM'
+
 export const getEmployeeIdentitySet = (currentUser, userProfile, memberData = null) => {
   const displayName =
     userProfile?.displayName ||
@@ -64,6 +72,9 @@ export const getEmployeeIdentitySet = (currentUser, userProfile, memberData = nu
   const initial = normalize(displayName.charAt(0))
   if (initial) identities.push(initial)
 
+  const initials = normalize(getEmployeeInitials(displayName))
+  if (initials) identities.push(initials)
+
   return new Set(identities)
 }
 
@@ -73,17 +84,20 @@ export const getEmployeeDisplayName = (currentUser, userProfile, memberData = nu
   memberData?.name ||
   'Employee'
 
-export const getEmployeeInitials = (name) =>
-  (name || 'Employee')
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map(part => part.charAt(0).toUpperCase())
-    .join('') || 'EM'
-
 export const taskBelongsToEmployee = (task, identities) => {
+  if (!identities || identities.size === 0) return false
+
   const assignee = normalize(task?.assignee)
-  return Boolean(assignee) && identities.has(assignee)
+  const assigneeUserId = normalize(task?.assigneeUserId)
+  const assigneeEmail = normalize(task?.assigneeEmail)
+  const assigneeEmployeeId = normalize(task?.assigneeEmployeeId)
+
+  if (assigneeUserId && identities.has(assigneeUserId)) return true
+  if (assigneeEmail && identities.has(assigneeEmail)) return true
+  if (assigneeEmployeeId && identities.has(assigneeEmployeeId)) return true
+  if (assignee && identities.has(assignee)) return true
+
+  return false
 }
 
 export const courseBelongsToEmployee = (course, employeeKeys) =>

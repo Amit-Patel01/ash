@@ -1085,13 +1085,13 @@ export function StoreProvider({ children }) {
       existingSnapshot.docs.map(docSnap => normalizeCourseCategoryName(docSnap.data()?.name))
     )
     const defaults = [
-      { name: 'Trading',           icon: '📈', color: '#10b981', order: 0 },
-      { name: 'Web Development',   icon: '💻', color: '#3b82f6', order: 1 },
-      { name: 'Python',            icon: '🐍', color: '#f59e0b', order: 2 },
-      { name: 'Digital Marketing', icon: '📣', color: '#ec4899', order: 3 },
-      { name: 'Graphic Design',    icon: '🎨', color: '#8b5cf6', order: 4 },
-      { name: 'Excel / Data',      icon: '📊', color: '#06b6d4', order: 5 },
-      { name: 'Other',             icon: '📚', color: '#6b7280', order: 6 },
+      { name: 'Trading',           icon: 'TrendingUp', color: '#10b981', order: 0 },
+      { name: 'Web Development',   icon: 'Laptop', color: '#3b82f6', order: 1 },
+      { name: 'Python',            icon: 'Code', color: '#f59e0b', order: 2 },
+      { name: 'Digital Marketing', icon: 'Megaphone', color: '#ec4899', order: 3 },
+      { name: 'Graphic Design',    icon: 'Palette', color: '#8b5cf6', order: 4 },
+      { name: 'Excel / Data',      icon: 'BarChart', color: '#06b6d4', order: 5 },
+      { name: 'Other',             icon: 'BookOpen', color: '#6b7280', order: 6 },
     ]
     for (const cat of defaults) {
       const normalizedName = normalizeCourseCategoryName(cat.name)

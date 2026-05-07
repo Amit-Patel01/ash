@@ -801,10 +801,20 @@ const About = () => {
 
             {/* CTA */}
             <div className="abt-in d5" style={{ display:'flex',gap:12,flexWrap:'wrap',justifyContent:'center' }}>
-              <button className="abt-btn" onClick={() => document.getElementById('team-section')?.scrollIntoView({ behavior:'smooth' })}>
+              <a href="#team-section" className="abt-btn" onClick={(e) => {
+                const el = document.getElementById('team-section');
+                if (el) {
+                  e.preventDefault();
+                  try {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                  } catch (err) {
+                    el.scrollIntoView();
+                  }
+                }
+              }}>
                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 Meet the Team
-              </button>
+              </a>
               <Link to="/contact" style={{ display:'inline-flex',alignItems:'center',gap:8,padding:'13px 22px',borderRadius:999,background:'rgba(99,102,241,.07)',border:'1px solid rgba(99,102,241,.2)',color:'#6366f1',fontWeight:700,fontSize:14,textDecoration:'none',transition:'all .25s' }}
                 onMouseEnter={e=>{ e.currentTarget.style.background='rgba(99,102,241,.12)'; e.currentTarget.style.transform='translateY(-2px)' }}
                 onMouseLeave={e=>{ e.currentTarget.style.background='rgba(99,102,241,.07)'; e.currentTarget.style.transform='none' }}>

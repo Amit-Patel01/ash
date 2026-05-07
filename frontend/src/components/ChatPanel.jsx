@@ -104,11 +104,14 @@ export default function ChatPanel({ embedded = false }) {
   /* load users for new chat */
   useEffect(() => {
     if (showNewChat && getAllUsers) {
+      console.log("Loading users for new chat...")
       getAllUsers().then(users => {
+        console.log("Fetched users:", users)
         let f = users.filter(u => u.uid !== currentUser?.uid)
         if (userProfile?.role === 'customer') f = f.filter(u => u.role === 'admin' || u.role === 'employee')
+        console.log("Filtered users:", f)
         setAllUsers(f)
-      }).catch(console.error)
+      }).catch(err => console.error("Error fetching users:", err))
     }
   }, [showNewChat, getAllUsers, currentUser, userProfile])
 
@@ -226,7 +229,10 @@ export default function ChatPanel({ embedded = false }) {
             <>
               <p className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-600 px-3 py-2">People</p>
               {allUsers.filter(u => !searchQuery || u.displayName?.toLowerCase().includes(searchQuery.toLowerCase()) || u.email?.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 ? (
-                <p className="text-[12px] text-slate-600 text-center py-10">No users found</p>
+                <div className="py-10 text-center">
+                  <p className="text-[12px] text-slate-600 mb-2">No users found</p>
+                  <p className="text-[10px] text-red-400">Debug: Fetched {allUsers.length} users. Role: {userProfile?.role}</p>
+                </div>
               ) : (
                 allUsers.filter(u => !searchQuery || u.displayName?.toLowerCase().includes(searchQuery.toLowerCase()) || u.email?.toLowerCase().includes(searchQuery.toLowerCase())).map(user => (
                   <button

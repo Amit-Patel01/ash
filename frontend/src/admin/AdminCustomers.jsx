@@ -13,7 +13,6 @@ const avatarColors = [
 
 export default function AdminCustomers() {
   const { users, updateUser, deleteUser, addUser } = useStore()
-  const [searchQuery, setSearchQuery] = useState('')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [customerToDelete, setCustomerToDelete] = useState(null)
   const [isProcessing, setIsProcessing] = useState(null)
@@ -26,16 +25,15 @@ export default function AdminCustomers() {
   const [broadcastSubject, setBroadcastSubject] = useState('')
   const [broadcastMessage, setBroadcastMessage] = useState('')
   const [sendingBroadcast, setSendingBroadcast] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   // Filter for only customers
   const customers = users.filter(u => (u.role || '').toLowerCase() === 'customer')
 
-  const filteredCustomers = customers.filter(c => {
-    const name = (c.displayName || '').toLowerCase()
-    const email = (c.email || '').toLowerCase()
-    const query = searchQuery.toLowerCase()
-    return name.includes(query) || email.includes(query)
-  })
+  const filteredCustomers = customers.filter(customer =>
+    (customer.displayName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (customer.email || '').toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   const isInactive = (c) => c.status === 'inactive' || c.status === 'banned'
 
@@ -130,32 +128,31 @@ export default function AdminCustomers() {
         </div>
       </div>
 
-      {/* Stats & Search Row */}
+      {/* Stats Row */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        <div className="lg:col-span-3 flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1 group">
-            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-              <svg 
-                className="w-5 h-5 text-gray-400 group-focus-within:text-blue-400 transition-all duration-300 ease-in-out transform group-focus-within:scale-110" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor" 
-                strokeWidth={2.5}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-              </svg>
-            </div>
+        <div className="lg:col-span-3 flex flex-col sm:flex-row gap-4 w-full">
+          <div className="relative flex-1">
             <input
               type="text"
+              placeholder="Search customers by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by name or email..."
-              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.08] focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 ease-in-out"
+              className="w-full pl-4 pr-4 py-3 bg-gray-900/50 border border-white/5 rounded-2xl text-sm text-white focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all placeholder:text-gray-500 h-12 shadow-inner"
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-white transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
           <button 
             onClick={() => setShowBroadcastModal(true)}
-            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl text-xs font-black text-white shadow-xl shadow-blue-600/20 hover:shadow-blue-600/40 active:scale-95 transition-all flex items-center gap-2 uppercase tracking-widest"
+            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl text-xs font-black text-white shadow-xl shadow-blue-600/20 hover:shadow-blue-600/40 active:scale-95 transition-all flex items-center gap-2 uppercase tracking-widest h-12 flex-shrink-0"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
             Bulk Email
@@ -254,8 +251,7 @@ export default function AdminCustomers() {
                       <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-4 text-gray-600">
                         <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                       </div>
-                      <p className="text-gray-500 font-medium">No customers found matching your search.</p>
-                      <button onClick={() => setSearchQuery('')} className="mt-2 text-blue-400 text-xs font-bold hover:underline uppercase tracking-widest">Clear Search</button>
+                      <p className="text-gray-500 font-medium">No customers found.</p>
                     </div>
                   </td>
                 </tr>

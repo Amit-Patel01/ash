@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
+import { Globe, Link } from 'lucide-react'
 
 const avatarColors = ['from-blue-500 to-cyan-500', 'from-purple-500 to-pink-500', 'from-emerald-500 to-teal-500', 'from-orange-500 to-amber-500', 'from-red-500 to-rose-500', 'from-indigo-500 to-violet-500']
 
@@ -60,6 +61,13 @@ export default function AdminTeam() {
                          roleStr.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesAbout = showingFilter === 'all' || (showingFilter === 'about' && member.isMentor)
     return matchesDept && matchesSearch && matchesAbout
+  }).sort((a, b) => {
+    const idA = a.employeeId || ''
+    const idB = b.employeeId || ''
+    if (!idA && !idB) return 0
+    if (!idA) return 1
+    if (!idB) return -1
+    return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' })
   })
 
   const openEdit = (member) => {
@@ -189,7 +197,7 @@ export default function AdminTeam() {
                 : 'text-gray-400 hover:text-white hover:bg-white/5 border-transparent'
             }`}
           >
-            <span className="text-sm">🌐</span>
+            <Globe className="w-4 h-4" />
             Showing on About
             <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
               showingFilter === 'about' ? 'bg-purple-500/30 text-purple-300' : 'bg-white/10 text-gray-500'
@@ -246,7 +254,9 @@ export default function AdminTeam() {
                       <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest bg-blue-500/10 px-1.5 rounded ml-1 border border-blue-500/20">{member.employeeId}</span>
                     )}
                     {member.isMentor && (
-                      <span className="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">🌐 About</span>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">
+                        <Globe className="w-3 h-3" /> About
+                      </span>
                     )}
                   </div>
                 </div>
@@ -317,7 +327,9 @@ export default function AdminTeam() {
               {/* Social URLs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-white/5 border border-blue-500/20 rounded-xl p-3">
-                  <label className="block text-[10px] font-black text-blue-400/70 uppercase tracking-widest mb-2">🔗 LinkedIn Profile URL</label>
+                  <label className="flex items-center gap-1.5 text-[10px] font-black text-blue-400/70 uppercase tracking-widest mb-2">
+                    <Link className="w-3 h-3" /> LinkedIn Profile URL
+                  </label>
                   <input
                     type="url"
                     value={formData.linkedin}
@@ -340,7 +352,9 @@ export default function AdminTeam() {
 
               <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
                 <div className="bg-white/5 border border-purple-500/20 rounded-xl p-3">
-                  <label className="block text-[10px] font-black text-purple-400/70 uppercase tracking-widest mb-2">🌍 Portfolio URL</label>
+                  <label className="flex items-center gap-1.5 text-[10px] font-black text-purple-400/70 uppercase tracking-widest mb-2">
+                    <Globe className="w-3 h-3" /> Portfolio URL
+                  </label>
                   <input
                     type="url"
                     value={formData.portfolio}

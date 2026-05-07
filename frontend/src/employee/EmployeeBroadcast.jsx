@@ -3,6 +3,7 @@ import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import { api } from '../config/api'
 import { auth } from '../config/firebase'
+import { Megaphone } from 'lucide-react'
 
 export default function EmployeeBroadcast() {
   const { courses, enrollments } = useStore()
@@ -88,7 +89,9 @@ export default function EmployeeBroadcast() {
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-white">Broadcast Messages</h1>
         <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-14 text-center">
-          <div className="text-5xl mb-4">📢</div>
+          <div className="flex justify-center mb-4">
+            <Megaphone className="w-12 h-12 text-blue-400" />
+          </div>
           <h3 className="text-xl font-bold text-white mb-2">No courses assigned</h3>
           <p className="text-gray-400 text-sm">You need active courses with students to send targeted broadcasts.</p>
         </div>

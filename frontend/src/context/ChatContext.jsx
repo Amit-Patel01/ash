@@ -163,13 +163,13 @@ export function ChatProvider({ children }) {
       participants: [currentUser.uid, otherUserId],
       participantInfo: {
         [currentUser.uid]: {
-          name: currentUser.displayName || currentUser.email,
-          email: currentUser.email,
+          name: currentUser.displayName || currentUser.email || 'Unknown',
+          email: currentUser.email || '',
           role: currentUser.role || 'User'
         },
         [otherUserId]: {
-          name: otherUserName,
-          email: otherUserEmail,
+          name: otherUserName || 'Unknown',
+          email: otherUserEmail || '',
           role: otherUserRole || 'User'
         }
       },
@@ -178,31 +178,37 @@ export function ChatProvider({ children }) {
       createdAt: serverTimestamp(),
     }
 
-    const chatRef = await addDoc(collection(db, 'chats'), chatData)
+    try {
+      const chatRef = await addDoc(collection(db, 'chats'), chatData)
 
-    // AUTOMATIC WELCOME MESSAGE
-    // If a customer starts a chat with a staff member (admin/employee), send an automatic greeting
-    if (currentUser.role === 'customer' && (otherUserRole === 'admin' || otherUserRole === 'employee')) {
-      const welcomeText = `Hello! 👋 Thanks for reaching out. A member of our support team will be with you shortly. How can we help you today?`
-      
-      await addDoc(collection(db, 'chats', chatRef.id, 'messages'), {
-        senderId: otherUserId,
-        senderName: otherUserName,
-        text: welcomeText,
-        timestamp: serverTimestamp(),
-        status: 'sent'
-      })
+      // AUTOMATIC WELCOME MESSAGE
+      // If a customer starts a chat with a staff member (admin/employee), send an automatic greeting
+      if (currentUser.role === 'customer' && (otherUserRole === 'admin' || otherUserRole === 'employee')) {
+        const welcomeText = `Hello! 👋 Thanks for reaching out. A member of our support team will be with you shortly. How can we help you today?`
+        
+        await addDoc(collection(db, 'chats', chatRef.id, 'messages'), {
+          senderId: otherUserId,
+          senderName: otherUserName || 'Support',
+          text: welcomeText,
+          timestamp: serverTimestamp(),
+          status: 'sent'
+        })
 
-      // Update chat preview
-      await updateDoc(chatRef, {
-        lastMessage: welcomeText,
-        lastMessageAt: serverTimestamp(),
-        lastSenderId: otherUserId,
-        lastSenderName: otherUserName
-      })
+        // Update chat preview
+        await updateDoc(chatRef, {
+          lastMessage: welcomeText,
+          lastMessageAt: serverTimestamp(),
+          lastSenderId: otherUserId,
+          lastSenderName: otherUserName || 'Support'
+        })
+      }
+
+      return chatRef.id
+    } catch (err) {
+      console.error('Error creating chat:', err)
+      alert(`Failed to start chat: ${err.message}`)
+      return null
     }
-
-    return chatRef.id
   }, [currentUser, chats])
 
   const createGroupChat = useCallback(async (selectedUsers, groupName) => {
@@ -211,17 +217,17 @@ export function ChatProvider({ children }) {
     const participants = [currentUser.uid, ...selectedUsers.map(u => u.uid)]
     const participantInfo = {
       [currentUser.uid]: {
-        name: currentUser.displayName,
-        email: currentUser.email,
-        role: currentUser.role
+        name: currentUser.displayName || currentUser.email || 'Unknown',
+        email: currentUser.email || '',
+        role: currentUser.role || 'User'
       }
     }
 
     selectedUsers.forEach(u => {
       participantInfo[u.uid] = {
-        name: u.displayName || u.name,
-        email: u.email,
-        role: u.role
+        name: u.displayName || u.name || 'Unknown',
+        email: u.email || '',
+        role: u.role || 'User'
       }
     })
 
