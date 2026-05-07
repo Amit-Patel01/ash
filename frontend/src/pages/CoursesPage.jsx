@@ -17,6 +17,7 @@ const PageIcon = ({ name, size = 18, color = 'currentColor', strokeWidth = 2 }) 
     'aria-hidden': 'true',
   }
 
+
   switch (name) {
     case 'book':
       return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M5 6.5A2.5 2.5 0 0 1 7.5 4H19v14H7.5A2.5 2.5 0 0 0 5 20V6.5Z" /><path d="M9 8h6M9 11h6" /></svg>
