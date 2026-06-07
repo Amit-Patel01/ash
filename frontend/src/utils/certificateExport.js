@@ -199,19 +199,6 @@ const syncSanitizedStyles = (sourceElement, cloneElement) => {
   copyCanvasContents(sourceElement, cloneElement)
 }
 
-<<<<<<< HEAD
-const sanitizeClonedTree = (sourceRoot, clonedDocument, targetWidth, targetHeight) => {
-  // Clear any default browser margins/paddings on iframe html/body
-  if (clonedDocument.documentElement) {
-    clonedDocument.documentElement.style.setProperty('margin', '0', 'important')
-    clonedDocument.documentElement.style.setProperty('padding', '0', 'important')
-  }
-  if (clonedDocument.body) {
-    clonedDocument.body.style.setProperty('margin', '0', 'important')
-    clonedDocument.body.style.setProperty('padding', '0', 'important')
-  }
-
-=======
 const createCaptureStage = (sourceTarget, width, height) => {
   const stage = document.createElement('div')
   const targetClone = sourceTarget.cloneNode(true)
@@ -244,8 +231,16 @@ const createCaptureStage = (sourceTarget, width, height) => {
   return { stage, targetClone }
 }
 
-const sanitizeClonedTree = (sourceRoot, clonedDocument) => {
->>>>>>> 9731e34bcee12cdc11608e104adaab9a8d8ed9d6
+const sanitizeClonedTree = (sourceRoot, clonedDocument, targetWidth, targetHeight) => {
+  // Clear any default browser margins/paddings on iframe html/body
+  if (clonedDocument.documentElement) {
+    clonedDocument.documentElement.style.setProperty('margin', '0', 'important')
+    clonedDocument.documentElement.style.setProperty('padding', '0', 'important')
+  }
+  if (clonedDocument.body) {
+    clonedDocument.body.style.setProperty('margin', '0', 'important')
+    clonedDocument.body.style.setProperty('padding', '0', 'important')
+  }
   const clonedRoot = clonedDocument.querySelector(`[${EXPORT_ROOT_ATTR}="true"]`)
   if (!clonedRoot) return
 
@@ -296,26 +291,9 @@ const renderCertificateCanvas = async (element) => {
     throw new Error(`Certificate dimensions invalid (${width}\u00d7${height}). Please try again.`)
   }
 
-<<<<<<< HEAD
-  const parent = element.parentElement
-  const originalParentStyles = parent
-  	? {
-  			top: parent.style.top,
-  			left: parent.style.left,
-  			opacity: parent.style.opacity,
-  		}
-  	: null
-
-  if (parent && originalParentStyles) {
-    parent.style.top = '0px'
-    parent.style.left = '0px'
-    parent.style.opacity = '0'
-  }
-=======
   const { stage, targetClone } = createCaptureStage(captureTarget, width, height)
   await waitForImages(targetClone)
   await waitForNextPaint()
->>>>>>> 9731e34bcee12cdc11608e104adaab9a8d8ed9d6
 
   try {
     targetClone.setAttribute(EXPORT_ROOT_ATTR, 'true')
@@ -333,9 +311,6 @@ const renderCertificateCanvas = async (element) => {
       windowWidth: width,
       windowHeight: height,
       onclone: (clonedDocument) => {
-<<<<<<< HEAD
-        sanitizeClonedTree(captureTarget, clonedDocument, width, height)
-=======
         const clonedStage = clonedDocument.querySelector(`[${EXPORT_STAGE_ATTR}="true"]`)
         if (clonedStage) {
           clonedStage.style.opacity = '1'
@@ -343,8 +318,7 @@ const renderCertificateCanvas = async (element) => {
           clonedStage.style.top = '0'
           clonedStage.style.left = '0'
         }
-        sanitizeClonedTree(targetClone, clonedDocument)
->>>>>>> 9731e34bcee12cdc11608e104adaab9a8d8ed9d6
+        sanitizeClonedTree(targetClone, clonedDocument, width, height)
       },
     })
   } finally {

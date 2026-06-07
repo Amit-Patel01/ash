@@ -123,16 +123,6 @@ export default function CoursesPage() {
         />
       </Helmet>
 
-<<<<<<< HEAD
-      <div>
-        <PublicSection id="course-catalogue" className="space-y-8">
-          <PublicGlassCard className="space-y-6 p-5 sm:p-7">
-            <PublicSectionHeading
-              badge="Search and Filter"
-              title="Find the right program faster"
-              description="Use a simple search and category filter to shortlist the best course or webinar without losing context on mobile."
-            />
-=======
       <div className="min-h-screen bg-[linear-gradient(180deg,#f8fbff_0%,#eef6ff_44%,#ffffff_100%)] text-slate-950">
         <section className="mx-auto grid w-full max-w-7xl gap-6 px-4 pb-8 pt-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8 lg:pb-10 lg:pt-10">
           <div className="relative overflow-hidden rounded-[32px] border border-white/80 bg-white/[0.86] p-6 shadow-[0_26px_70px_-42px_rgba(15,23,42,0.42)] backdrop-blur-xl sm:p-8 lg:p-10">
@@ -444,11 +434,7 @@ export default function CoursesPage() {
               })}
             </div>
           )}
-<<<<<<< HEAD
-        </PublicSection>
-=======
         </section>
->>>>>>> 9731e34bcee12cdc11608e104adaab9a8d8ed9d6
       </div>
     </>
   )

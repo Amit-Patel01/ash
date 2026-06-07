@@ -355,15 +355,9 @@ const Hero = () => {
                 background:'rgba(255,255,255,.75)', backdropFilter:'blur(12px)',
                 border:'1px solid rgba(255,255,255,.9)',
                 boxShadow:'0 2px 14px rgba(29,78,216,.1)' }}>
-<<<<<<< HEAD
-                <span style={{ width:8, height:8, borderRadius:'50%', background:'#22c55e', display:'inline-block', animation:'hp-pulse 2s infinite' }}/>
-                <span style={{ fontSize:13, fontWeight:700, color:'#1d4ed8' }}>
-                  ✅ AICTE APPROVED
-=======
                 <span style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:13, fontWeight:700, color:'#1d4ed8' }}>
                   <SvgIcon name="check" size={15} color="#16a34a" strokeWidth={2.8} />
                   AICTE APPROVED
->>>>>>> 9731e34bcee12cdc11608e104adaab9a8d8ed9d6
                 </span>
               </div>
 
