@@ -3,27 +3,54 @@ import { useChat } from '../context/ChatContext'
 import { useAuth } from '../context/AuthContext'
 
 /* ─── helpers ─────────────────────────────────────────── */
+function toMessageDate(ts) {
+  if (!ts) return null
+  if (typeof ts.toDate === 'function') return ts.toDate()
+  if (typeof ts.seconds === 'number') return new Date(ts.seconds * 1000)
+
+  const date = new Date(ts)
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
 function formatTime(ts) {
-  if (!ts?.seconds) return ''
-  const d = new Date(ts.seconds * 1000), now = new Date(), diff = now - d
+  const d = toMessageDate(ts)
+  if (!d) return ''
+  const now = new Date(), diff = now - d
   if (diff < 60000) return 'Just now'
   if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`
   if (diff < 86400000) return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
-function formatMsgTime(ts) {
-  if (!ts?.seconds) return ''
-  return new Date(ts.seconds * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+function formatMsgDateTime(ts) {
+  const d = toMessageDate(ts)
+  if (!d) return ''
+  return d.toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
 }
 function getDayLabel(ts) {
-  if (!ts?.seconds) return ''
-  const d = new Date(ts.seconds * 1000), now = new Date()
+  const d = toMessageDate(ts)
+  if (!d) return ''
+  const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const yest = new Date(today); yest.setDate(yest.getDate() - 1)
   const msgDay = new Date(d.getFullYear(), d.getMonth(), d.getDate())
   if (msgDay.getTime() === today.getTime()) return 'Today'
   if (msgDay.getTime() === yest.getTime()) return 'Yesterday'
   return d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: d.getFullYear() !== now.getFullYear() ? 'numeric' : undefined })
+}
+
+function getContactName(user = {}) {
+  const name = String(user.displayName || user.name || '').trim()
+  const email = String(user.email || '').trim()
+
+  if (name && name.toLowerCase() !== 'user') return name
+  if (email) return email.split('@')[0] || email
+  return name || 'Unknown'
 }
 
 const EMOJIS = [
@@ -51,7 +78,7 @@ function Avatar({ name = '?', size = 10, online = false, gradient = 'from-emeral
 export default function ChatPanel({ embedded = false }) {
   const {
     chats, activeChatId, setActiveChatId, messages,
-    sendMessage, clearChat, deleteSpecificMessages, requestNotificationPermission,
+    sendMessage, sendAiReply, clearChat, deleteSpecificMessages, requestNotificationPermission,
     handleTyping, typingUsers, markAsRead, getChatPartner, unreadCounts,
     userStatuses, getOrCreateChat, createGroupChat, startVideoCall, currentUser
   } = useChat()
@@ -73,12 +100,16 @@ export default function ChatPanel({ embedded = false }) {
   const [selectedUsersForGroup, setSelectedUsersForGroup] = useState([])
   const [newGroupName, setNewGroupName] = useState('')
   const [showMoreMenu, setShowMoreMenu] = useState(false)
+  const [userLoadError, setUserLoadError] = useState('')
+  const [aiReplying, setAiReplying] = useState(false)
+  const [supportStaff, setSupportStaff] = useState([])
 
   const messagesEndRef = useRef(null)
   const fileInputRef = useRef(null)
   const messageInputRef = useRef(null)
   const emojiPickerRef = useRef(null)
   const moreMenuRef = useRef(null)
+  const currentRole = String(userProfile?.role || currentUser?.role || '').toLowerCase()
 
   /* outside click for emoji + more menu */
   useEffect(() => {
@@ -94,51 +125,122 @@ export default function ChatPanel({ embedded = false }) {
   useEffect(() => {
     const t = setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 80)
     return () => clearTimeout(t)
-  }, [messages, typingUsers, imagePreview])
+  }, [messages, typingUsers, imagePreview, aiReplying])
 
-  /* mark read + focus */
+  /* focus active chat */
   useEffect(() => {
-    if (activeChatId) { markAsRead(activeChatId); messageInputRef.current?.focus() }
-  }, [activeChatId, markAsRead])
+    if (activeChatId) messageInputRef.current?.focus()
+  }, [activeChatId])
+
+  /* keep active conversation read while it is open */
+  useEffect(() => {
+    if (activeChatId) markAsRead(activeChatId)
+  }, [activeChatId, messages.length, markAsRead])
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview)
+    }
+  }, [imagePreview])
 
   /* load users for new chat */
   useEffect(() => {
     if (showNewChat && getAllUsers) {
       console.log("Loading users for new chat...")
+      setUserLoadError('')
       getAllUsers().then(users => {
         console.log("Fetched users:", users)
         let f = users.filter(u => u.uid !== currentUser?.uid)
-        if (userProfile?.role === 'customer') f = f.filter(u => u.role === 'admin' || u.role === 'employee')
+        if (currentRole === 'customer') {
+          f = f.filter(u => ['admin', 'employee'].includes(String(u.role || '').toLowerCase()))
+        }
         console.log("Filtered users:", f)
         setAllUsers(f)
-      }).catch(err => console.error("Error fetching users:", err))
+      }).catch(err => {
+        console.error("Error fetching users:", err)
+        setAllUsers([])
+        setUserLoadError(err.message || 'Unable to load chat contacts.')
+      })
     }
-  }, [showNewChat, getAllUsers, currentUser, userProfile])
+  }, [showNewChat, getAllUsers, currentUser?.uid, currentRole])
+
+  /* load staff roster so customer chats can fall back to AI when no staff is online */
+  useEffect(() => {
+    let cancelled = false
+
+    if (currentRole !== 'customer' || !getAllUsers) {
+      setSupportStaff([])
+      return () => { cancelled = true }
+    }
+
+    getAllUsers()
+      .then(users => {
+        if (cancelled) return
+        setSupportStaff(users.filter(u => ['admin', 'employee'].includes(String(u.role || '').toLowerCase())))
+      })
+      .catch(err => {
+        console.warn('Unable to load support staff for AI fallback:', err)
+        if (!cancelled) setSupportStaff([])
+      })
+
+    return () => { cancelled = true }
+  }, [currentRole, getAllUsers])
 
   /* derived data */
   const activeChat = chats.find(c => c.id === activeChatId)
   const partner = activeChat ? getChatPartner(activeChat) : null
   const isPartnerTyping = partner && typingUsers[partner.uid]
   const isPartnerOnline = partner?.status === 'online'
+  const activeParticipantEntries = Object.entries(activeChat?.participantInfo || {})
+  const chatStaffParticipants = activeParticipantEntries.filter(([uid, info]) =>
+    uid !== currentUser?.uid && ['admin', 'employee'].includes(String(info?.role || '').toLowerCase())
+  )
+  const onlineSupportStaffCount = supportStaff.filter(staff => userStatuses[staff.uid]?.state === 'online').length
+  const onlineChatStaffCount = chatStaffParticipants.filter(([uid]) => userStatuses[uid]?.state === 'online').length
+  const shouldUseAiFallback =
+    currentRole === 'customer' &&
+    !activeChat?.isGroup &&
+    (
+      supportStaff.length > 0
+        ? onlineSupportStaffCount === 0
+        : chatStaffParticipants.length > 0 && onlineChatStaffCount === 0
+    )
+  const notificationPermission =
+    typeof window !== 'undefined' && 'Notification' in window
+      ? window.Notification.permission
+      : 'unsupported'
 
   const filteredChats = chats.filter(chat => {
     const p = getChatPartner(chat)
     if (!p) return false
-    if (userProfile?.role === 'customer' && p.role === 'customer') return false
+    if (currentRole === 'customer' && String(p.role || '').toLowerCase() === 'customer') return false
     if (!searchQuery) return true
     return p?.name?.toLowerCase().includes(searchQuery.toLowerCase()) || p?.email?.toLowerCase().includes(searchQuery.toLowerCase())
   })
 
   /* actions */
   const handleSend = async () => {
-    if ((!messageText.trim() && !imageFile) || sending) return
+    if (!activeChatId || (!messageText.trim() && !imageFile) || sending || aiReplying) return
+    const chatId = activeChatId
+    const textToSend = messageText.trim()
+    const shouldAskAi = shouldUseAiFallback && Boolean(textToSend)
+
     setSending(true)
     try {
-      await sendMessage(activeChatId, messageText.trim(), imageFile)
+      await sendMessage(chatId, textToSend, imageFile)
       setMessageText(''); setImageFile(null); setImagePreview(null)
       if (fileInputRef.current) fileInputRef.current.value = ''
+
+      setSending(false)
+      if (shouldAskAi) {
+        setAiReplying(true)
+        await sendAiReply(chatId, textToSend, messages)
+      }
     } catch (err) { console.error(err) }
-    finally { setSending(false) }
+    finally {
+      setSending(false)
+      setAiReplying(false)
+    }
   }
 
   const handleKeyDown = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() } }
@@ -148,7 +250,7 @@ export default function ChatPanel({ embedded = false }) {
   }
   const removeImage = () => { setImageFile(null); setImagePreview(null); if (fileInputRef.current) fileInputRef.current.value = '' }
   const startNewChat = async (user) => {
-    const id = await getOrCreateChat(user.uid, user.displayName, user.email, user.role)
+    const id = await getOrCreateChat(user.uid, getContactName(user), user.email, user.role)
     if (id) { setActiveChatId(id); setShowNewChat(false) }
   }
   const toggleMsgSel = (id) => setSelectedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
@@ -172,7 +274,6 @@ export default function ChatPanel({ embedded = false }) {
   }
 
   /* css token shortcuts */
-  const glass = { background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.07)' }
   const sidebarBg = { background: 'rgba(8,13,26,0.97)' }
   const mainBg = { background: 'rgba(10,15,30,0.95)' }
 
@@ -228,13 +329,19 @@ export default function ChatPanel({ embedded = false }) {
           {showNewChat ? (
             <>
               <p className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-600 px-3 py-2">People</p>
-              {allUsers.filter(u => !searchQuery || u.displayName?.toLowerCase().includes(searchQuery.toLowerCase()) || u.email?.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 ? (
+              {allUsers.filter(u => !searchQuery || getContactName(u).toLowerCase().includes(searchQuery.toLowerCase()) || u.email?.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 ? (
                 <div className="py-10 text-center">
-                  <p className="text-[12px] text-slate-600 mb-2">No users found</p>
-                  <p className="text-[10px] text-red-400">Debug: Fetched {allUsers.length} users. Role: {userProfile?.role}</p>
+                  <p className="text-[12px] text-slate-500 mb-2">
+                    {userLoadError ? 'Chat contacts could not be loaded' : 'No users found'}
+                  </p>
+                  {userLoadError && (
+                    <p className="mx-auto max-w-[220px] text-[10px] leading-5 text-amber-300">
+                      {userLoadError}
+                    </p>
+                  )}
                 </div>
               ) : (
-                allUsers.filter(u => !searchQuery || u.displayName?.toLowerCase().includes(searchQuery.toLowerCase()) || u.email?.toLowerCase().includes(searchQuery.toLowerCase())).map(user => (
+                allUsers.filter(u => !searchQuery || getContactName(u).toLowerCase().includes(searchQuery.toLowerCase()) || u.email?.toLowerCase().includes(searchQuery.toLowerCase())).map(user => (
                   <button
                     key={user.uid}
                     onClick={() => startNewChat(user)}
@@ -243,9 +350,9 @@ export default function ChatPanel({ embedded = false }) {
                     onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)' }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent' }}
                   >
-                    <Avatar name={user.displayName || user.email} size={9} online={userStatuses[user.uid]?.state === 'online'} gradient="from-blue-500 to-indigo-600" />
+                    <Avatar name={getContactName(user)} size={9} online={userStatuses[user.uid]?.state === 'online'} gradient="from-blue-500 to-indigo-600" />
                     <div className="min-w-0 flex-1">
-                      <p className="text-[13px] font-bold text-white truncate">{user.displayName || 'Unknown'}</p>
+                      <p className="text-[13px] font-bold text-white truncate">{getContactName(user)}</p>
                       <p className="text-[10px] font-black uppercase tracking-[0.15em] text-indigo-400">{user.role || 'User'}</p>
                     </div>
                   </button>
@@ -353,9 +460,9 @@ export default function ChatPanel({ embedded = false }) {
               <div className="hidden sm:block">
                 <HeaderBtn onClick={requestNotificationPermission} title="Notifications"
                   icon="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-                  hoverColor={Notification.permission === 'granted' ? 'rgba(16,185,129,0.2)' : 'rgba(99,102,241,0.15)'}
-                  hoverBorder={Notification.permission === 'granted' ? 'rgba(16,185,129,0.3)' : 'rgba(99,102,241,0.25)'}
-                  hoverText={Notification.permission === 'granted' ? '#34d399' : '#a5b4fc'}
+                  hoverColor={notificationPermission === 'granted' ? 'rgba(16,185,129,0.2)' : 'rgba(99,102,241,0.15)'}
+                  hoverBorder={notificationPermission === 'granted' ? 'rgba(16,185,129,0.3)' : 'rgba(99,102,241,0.25)'}
+                  hoverText={notificationPermission === 'granted' ? '#34d399' : '#a5b4fc'}
                 />
               </div>
               {/* Select toggle - desktop */}
@@ -420,6 +527,22 @@ export default function ChatPanel({ embedded = false }) {
             </div>
           </div>
 
+          {shouldUseAiFallback && (
+            <div className="px-4 sm:px-6 py-3 flex-shrink-0" style={{ background: 'rgba(8,13,26,0.82)', borderBottom: '1px solid rgba(99,102,241,0.12)' }}>
+              <div className="flex items-center gap-3 px-3 py-2.5 rounded-2xl"
+                style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.22)' }}>
+                <div className="h-8 w-8 rounded-xl flex items-center justify-center text-[10px] font-black text-white flex-shrink-0"
+                  style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', boxShadow: '0 4px 14px rgba(79,70,229,0.25)' }}>
+                  AI
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[11px] font-black uppercase tracking-[0.18em] text-indigo-200">AI support active</p>
+                  <p className="text-[11px] leading-4 text-slate-400">Team offline hai, abhi SolutionHub AI reply handle karega.</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.05) transparent' }}>
             {messages.length === 0 ? (
@@ -438,10 +561,11 @@ export default function ChatPanel({ embedded = false }) {
             ) : (
               messages.map((msg, idx) => {
                 const isMe = msg.senderId === currentUser?.uid
+                const isAiMessage = msg.generatedByAi || msg.type === 'ai-assistant'
                 const showAvatar = idx === 0 || messages[idx - 1]?.senderId !== msg.senderId
                 const curDate = getDayLabel(msg.timestamp)
                 const prevDate = idx > 0 ? getDayLabel(messages[idx - 1].timestamp) : null
-                const showDate = curDate !== prevDate
+                const showDate = Boolean(curDate) && curDate !== prevDate
                 return (
                   <div key={msg.id}>
                     {/* Date separator */}
@@ -467,8 +591,8 @@ export default function ChatPanel({ embedded = false }) {
 
                         {/* Avatar (for received messages) */}
                         {!isMe && !selectionMode && (
-                          <div className={`w-7 h-7 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-[10px] font-black text-white flex-shrink-0 ${showAvatar ? 'opacity-100' : 'opacity-0'}`}>
-                            {msg.senderName?.charAt(0)?.toUpperCase()}
+                          <div className={`w-7 h-7 rounded-xl bg-gradient-to-br ${isAiMessage ? 'from-indigo-500 to-violet-500' : 'from-emerald-500 to-cyan-500'} flex items-center justify-center text-[10px] font-black text-white flex-shrink-0 ${showAvatar ? 'opacity-100' : 'opacity-0'}`}>
+                            {isAiMessage ? 'AI' : msg.senderName?.charAt(0)?.toUpperCase()}
                           </div>
                         )}
 
@@ -480,6 +604,10 @@ export default function ChatPanel({ embedded = false }) {
                             style={isMe ? {
                               background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
                               boxShadow: '0 4px 20px rgba(79,70,229,0.3)',
+                            } : isAiMessage ? {
+                              background: 'rgba(99,102,241,0.1)',
+                              border: '1px solid rgba(99,102,241,0.22)',
+                              boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
                             } : {
                               background: 'rgba(255,255,255,0.05)',
                               border: '1px solid rgba(255,255,255,0.08)',
@@ -524,7 +652,7 @@ export default function ChatPanel({ embedded = false }) {
                           </div>
                           {/* Timestamp + read receipt */}
                           <div className={`flex items-center gap-1.5 mt-1 px-1 ${isMe ? 'flex-row-reverse' : ''}`}>
-                            <span className="text-[9px] text-slate-600">{formatMsgTime(msg.timestamp)}</span>
+                            <span className="text-[9px] text-slate-600 whitespace-nowrap">{formatMsgDateTime(msg.timestamp)}</span>
                             {isMe && (
                               <svg className={`w-3.5 h-3.5 ${msg.status === 'read' || msg.status === 'seen' ? 'text-indigo-400' : 'text-slate-600'}`} viewBox="0 0 24 24" fill="none">
                                 {msg.status === 'read' || msg.status === 'seen' ? (
@@ -556,6 +684,20 @@ export default function ChatPanel({ embedded = false }) {
                   <div className="flex items-center gap-1">
                     {[0, 120, 240].map(delay => (
                       <span key={delay} className="w-2 h-2 rounded-full" style={{ background: '#6366f1', animation: `bounce 1.2s ${delay}ms infinite` }} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+            {aiReplying && (
+              <div className="flex items-end gap-2 mt-4">
+                <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-[10px] font-black text-white">
+                  AI
+                </div>
+                <div className="px-4 py-3 rounded-2xl rounded-bl-md" style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.22)' }}>
+                  <div className="flex items-center gap-1">
+                    {[0, 120, 240].map(delay => (
+                      <span key={delay} className="w-2 h-2 rounded-full" style={{ background: '#818cf8', animation: `bounce 1.2s ${delay}ms infinite` }} />
                     ))}
                   </div>
                 </div>
@@ -653,7 +795,7 @@ export default function ChatPanel({ embedded = false }) {
                 value={messageText}
                 onChange={e => { setMessageText(e.target.value); if (activeChatId) handleTyping(activeChatId) }}
                 onKeyDown={handleKeyDown}
-                placeholder="Type a message..."
+                placeholder={shouldUseAiFallback ? 'AI support is active...' : 'Type a message...'}
                 rows={1}
                 className="flex-1 bg-transparent text-[13px] text-white placeholder-slate-700 focus:outline-none resize-none py-2"
                 style={{ maxHeight: 120 }}
@@ -662,11 +804,11 @@ export default function ChatPanel({ embedded = false }) {
               {/* Send button */}
               <button
                 onClick={handleSend}
-                disabled={sending || (!messageText.trim() && !imageFile)}
+                disabled={sending || aiReplying || (!messageText.trim() && !imageFile)}
                 className="h-9 w-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:hover:scale-100"
                 style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', boxShadow: '0 4px 14px rgba(79,70,229,0.4)' }}
               >
-                {sending ? (
+                {sending || aiReplying ? (
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                   <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -715,7 +857,7 @@ export default function ChatPanel({ embedded = false }) {
 
           <div className="flex-1 overflow-y-auto px-6 py-5">
             {/* Create group button (staff only) */}
-            {!showGroupCreate && (userProfile?.role === 'admin' || userProfile?.role === 'employee') && (
+            {!showGroupCreate && ['admin', 'employee'].includes(String(userProfile?.role || '').toLowerCase()) && (
               <button onClick={() => setShowGroupCreate(true)}
                 className="w-full flex items-center justify-center gap-2.5 p-3.5 rounded-2xl mb-5 text-[13px] font-black transition-all"
                 style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.25)', color: '#a5b4fc' }}
@@ -758,11 +900,11 @@ export default function ChatPanel({ embedded = false }) {
 
             {/* Users list */}
             <div className="space-y-1.5">
-              {allUsers.filter(u => !searchQuery || u.displayName?.toLowerCase().includes(searchQuery.toLowerCase()) || u.email?.toLowerCase().includes(searchQuery.toLowerCase())).map(u => {
+              {allUsers.filter(u => !searchQuery || getContactName(u).toLowerCase().includes(searchQuery.toLowerCase()) || u.email?.toLowerCase().includes(searchQuery.toLowerCase())).map(u => {
                 const isSel = selectedUsersForGroup.find(s => s.uid === u.uid)
                 return (
                   <button key={u.uid}
-                    onClick={() => showGroupCreate ? toggleUserSel(u) : getOrCreateChat(u.uid, u.displayName, u.email, u.role).then(id => { if (id) { setActiveChatId(id); setShowNewChat(false) } })}
+                    onClick={() => showGroupCreate ? toggleUserSel(u) : getOrCreateChat(u.uid, getContactName(u), u.email, u.role).then(id => { if (id) { setActiveChatId(id); setShowNewChat(false) } })}
                     className="w-full flex items-center gap-4 p-4 rounded-2xl transition-all text-left"
                     style={isSel ? { background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.25)' } : { background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)' }}
                     onMouseEnter={e => !isSel && (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)')}
@@ -771,7 +913,7 @@ export default function ChatPanel({ embedded = false }) {
                     <div className="relative">
                       <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-lg font-black text-white"
                         style={{ boxShadow: '0 4px 14px rgba(79,70,229,0.3)' }}>
-                        {u.displayName?.charAt(0)?.toUpperCase() || u.email?.charAt(0)?.toUpperCase()}
+                        {getContactName(u).charAt(0).toUpperCase()}
                       </div>
                       {isSel && (
                         <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center border-2"
@@ -783,7 +925,7 @@ export default function ChatPanel({ embedded = false }) {
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-[14px] font-bold text-white truncate">{u.displayName || 'Unknown User'}</p>
+                      <p className="text-[14px] font-bold text-white truncate">{getContactName(u)}</p>
                       <p className="text-[11px] text-slate-600 truncate">{u.role} · {u.email}</p>
                     </div>
                   </button>

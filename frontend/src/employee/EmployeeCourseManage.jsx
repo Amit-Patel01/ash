@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
@@ -211,11 +211,11 @@ export default function EmployeeCourseManage() {
     setEditMeet(false)
   }
 
-  const openCreateCourse = () => {
+  const openCreateCourse = useCallback(() => {
     if (!canCreateCourses) return
     setCourseForm(COURSE_BLANK)
     setShowCourseModal(true)
-  }
+  }, [canCreateCourses])
 
   const closeCreateCourse = () => {
     setShowCourseModal(false)
@@ -262,7 +262,7 @@ export default function EmployeeCourseManage() {
     const next = new URLSearchParams(searchParams)
     next.delete('create')
     setSearchParams(next, { replace: true })
-  }, [canCreateCourses, searchParams, setSearchParams])
+  }, [canCreateCourses, searchParams, setSearchParams, openCreateCourse])
 
   // ─── Plans CRUD ─────────────────────────────────────
   const openAddPlan = () => {

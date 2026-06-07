@@ -191,12 +191,8 @@ export function AuthProvider({ children }) {
   }, [buildUserState])
 
   const login = useCallback(async (email, password) => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      return await buildUserState(userCredential.user)
-    } catch (error) {
-      throw error
-    }
+    const userCredential = await signInWithEmailAndPassword(auth, email, password)
+    return await buildUserState(userCredential.user)
   }, [buildUserState])
 
   const loginWithGoogle = useCallback(async () => {
@@ -377,9 +373,21 @@ export function AuthProvider({ children }) {
   }, [getAuthHeaders])
 
   const getAllUsers = useCallback(async () => {
+    try {
+      const headers = await getAuthHeaders()
+      const response = await fetch(api.chatContacts, { headers })
+      const data = await readApiJson(response)
+
+      if (response.ok && data.success && Array.isArray(data.users)) {
+        return data.users
+      }
+    } catch (error) {
+      console.warn('Chat contacts API unavailable, falling back to Firestore users:', error)
+    }
+
     const querySnapshot = await getDocs(collection(db, 'users'))
     return querySnapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }))
-  }, [])
+  }, [getAuthHeaders])
 
   const hasPermission = useCallback((permissionKey) => {
     if (!currentUser) return false

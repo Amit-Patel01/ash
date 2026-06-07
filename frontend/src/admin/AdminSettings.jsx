@@ -29,11 +29,6 @@ export default function AdminSettings() {
     bio: currentUser?.bio || '',
   })
 
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  })
   const [passwordError, setPasswordError] = useState('')
   const [passwordSuccess, setPasswordSuccess] = useState('')
 
@@ -146,7 +141,6 @@ export default function AdminSettings() {
     try {
       await updateUserPassword()
       setPasswordSuccess('A password reset link has been sent to your email address.')
-      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
     } catch (err) {
       setPasswordError(err.message || 'Failed to send the password reset email.')
     } finally {

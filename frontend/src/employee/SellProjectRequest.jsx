@@ -13,29 +13,38 @@ export default function SellProjectRequest() {
     price: '', includeSource: false, features: '', techStack: '', demoUrl: ''
   })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    createSellRequest({
-      ...form,
-      userId: currentUser?.uid,
-      userName: userProfile?.displayName || 'Unknown',
-      userEmail: currentUser?.email || 'unknown',
-    })
-    // ✉️ Email admin + seller
-    emailNotify('sell_request_admin', {
-      sellerName: userProfile?.displayName || 'Employee',
-      sellerEmail: currentUser?.email,
-      sellerPhone: userProfile?.phone || '',
-      projectTitle: form.projectTitle,
-      projectDesc: form.description,
-      price: form.price
-    })
-    emailNotify('sell_request_user', {
-      sellerName: userProfile?.displayName || 'Employee',
-      sellerEmail: currentUser?.email,
-      projectTitle: form.projectTitle
-    })
-    setSubmitted(true)
+    if (loading) return
+    setLoading(true)
+    try {
+      await createSellRequest({
+        ...form,
+        userId: currentUser?.uid,
+        userName: userProfile?.displayName || 'Unknown',
+        userEmail: currentUser?.email || 'unknown',
+      })
+      await Promise.allSettled([
+        emailNotify('sell_request_admin', {
+          sellerName: userProfile?.displayName || 'Employee',
+          sellerEmail: currentUser?.email,
+          sellerPhone: userProfile?.phone || '',
+          projectTitle: form.projectTitle,
+          projectDesc: form.description,
+          price: form.price
+        }),
+        emailNotify('sell_request_user', {
+          sellerName: userProfile?.displayName || 'Employee',
+          sellerEmail: currentUser?.email,
+          projectTitle: form.projectTitle
+        })
+      ])
+      setSubmitted(true)
+    } catch (err) {
+      alert(err.message || 'Unable to submit your project listing request.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (submitted) {

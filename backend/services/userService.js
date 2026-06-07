@@ -556,6 +556,87 @@ const listUsersFromSql = async (filters = {}, connection = null) => {
   return rows.map((row) => mapUserRow(row));
 };
 
+const sanitizePublicTeamMember = (user) => ({
+  id: user.uid || user.firebaseUid || user.id,
+  uid: user.uid || user.firebaseUid || "",
+  employeeId: user.employeeId || "",
+  displayName: user.displayName || "Team Member",
+  name: user.displayName || "Team Member",
+  email: user.email || "",
+  department: user.department || "Core Team",
+  jobTitle: user.jobTitle || "Team Member",
+  role: user.jobTitle || "Team Member",
+  status: "active",
+  avatar: user.avatar || "",
+  photoURL: user.avatar || "",
+  customImageUrl: user.customImageUrl || "",
+  avatarSource: user.avatarSource || "",
+  github: user.github || "",
+  linkedin: user.linkedin || "",
+  portfolio: user.portfolio || "",
+  cvFilePath: user.cvFilePath || "",
+  bio: user.bio || "",
+  experience: user.experience || "",
+  skills: Array.isArray(user.skills) ? user.skills : [],
+  showOnTeam: true,
+  isMentor: Boolean(user.isMentor),
+  joinDate: user.joinDate || "",
+  updatedAt: user.updatedAt || null,
+});
+
+const sanitizeChatContact = (user) => ({
+  id: user.uid || user.firebaseUid || user.id,
+  uid: user.uid || user.firebaseUid || user.id,
+  email: user.email || "",
+  displayName: user.displayName || user.email || "User",
+  name: user.displayName || user.email || "User",
+  role: normalizeSystemRole(user.role || "customer"),
+  status: normalizeStatus(user.status || "active"),
+  department: user.department || "",
+  jobTitle: user.jobTitle || "",
+  employeeId: user.employeeId || "",
+  avatar: user.avatar || "",
+  photoURL: user.avatar || "",
+  avatarSource: user.avatarSource || "",
+  customImageUrl: user.customImageUrl || "",
+});
+
+const listChatContacts = async (requestingUser) => {
+  const requesterRole = normalizeSystemRole(requestingUser?.role || "customer");
+  const users = await listUsersFromSql({ status: "active" });
+  const requesterUid = requestingUser?.uid || "";
+
+  return users
+    .filter((user) => user.uid !== requesterUid && user.status === "active")
+    .filter((user) => {
+      const contactRole = normalizeSystemRole(user.role || "customer");
+      if (requesterRole === "customer") {
+        return contactRole === "admin" || contactRole === "employee";
+      }
+      return true;
+    })
+    .map(sanitizeChatContact)
+    .sort((left, right) => {
+      const roleRank = { admin: 0, employee: 1, customer: 2 };
+      const rankDiff = (roleRank[left.role] ?? 9) - (roleRank[right.role] ?? 9);
+      if (rankDiff !== 0) return rankDiff;
+      return left.displayName.localeCompare(right.displayName, undefined, { sensitivity: "base" });
+    });
+};
+
+const listPublicTeamMembers = async () => {
+  const users = await listUsersFromSql({ role: "employee", status: "active" });
+
+  return users
+    .filter((user) => user.showOnTeam && user.status === "active")
+    .map(sanitizePublicTeamMember)
+    .sort((left, right) => {
+      const leftId = left.employeeId || "ZZZ";
+      const rightId = right.employeeId || "ZZZ";
+      return leftId.localeCompare(rightId, undefined, { numeric: true, sensitivity: "base" });
+    });
+};
+
 const findUserByIdentifier = async (identifier, { includeSensitive = false, connection = null } = {}) => {
   if (!useMysql()) {
     const normalized = String(identifier || "").trim();
@@ -2169,6 +2250,8 @@ module.exports = {
   normalizePhone,
   validatePassword,
   listUsersFromSql,
+  listChatContacts,
+  listPublicTeamMembers,
   getManagedUser,
   createManagedUser,
   updateManagedUser,

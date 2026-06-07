@@ -23,7 +23,7 @@ export default function AdminLogin() {
     setError('')
 
     try {
-      const user = await login(email, password)
+      await login(email, password)
       // Check if user has admin role will be handled by the useEffect or the ProtectedRoute
       // But we can add a quick check here too
     } catch (err) {

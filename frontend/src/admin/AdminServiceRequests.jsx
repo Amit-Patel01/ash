@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
 
 export default function AdminServiceRequests() {
@@ -31,11 +30,6 @@ export default function AdminServiceRequests() {
       console.error(err)
       alert("Failed to delete request")
     }
-  }
-
-  const formatPrice = (price) => {
-    if (!price) return 'N/A'
-    return price
   }
 
   const formatDate = (timestamp) => {

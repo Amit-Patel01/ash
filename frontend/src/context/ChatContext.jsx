@@ -1,14 +1,78 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import {
   collection, addDoc, onSnapshot, query, orderBy, doc, setDoc,
-  updateDoc, deleteDoc, serverTimestamp, where, getDocs, getDoc, limit
+  updateDoc, deleteDoc, serverTimestamp, where, getDocs, limit
 } from 'firebase/firestore'
-import { db, auth } from '../config/firebase'
-import { onAuthStateChanged } from 'firebase/auth'
-import api from '../config/api'
+import { db } from '../config/firebase'
+import api, { readApiJson } from '../config/api'
 import { useAuth } from './AuthContext'
 
 const ChatContext = createContext(null)
+const AI_ASSISTANT_ID = 'solutionhub-ai'
+const AI_ASSISTANT_NAME = 'SolutionHub AI'
+
+const getTimestampMs = (timestamp) => {
+  if (!timestamp) return 0
+  if (typeof timestamp.toMillis === 'function') return timestamp.toMillis()
+  if (typeof timestamp.seconds === 'number') return timestamp.seconds * 1000
+
+  const parsed = new Date(timestamp).getTime()
+  return Number.isNaN(parsed) ? 0 : parsed
+}
+
+const getChatSortMs = (chat) => (
+  getTimestampMs(chat?.lastMessageAt) ||
+  getTimestampMs(chat?.updatedAt) ||
+  getTimestampMs(chat?.createdAt)
+)
+
+const getDirectPairKey = (firstUserId, secondUserId) =>
+  [firstUserId, secondUserId].filter(Boolean).sort().join('__')
+
+const getConversationKey = (chat, currentUserId) => {
+  if (!chat) return ''
+  if (chat.isGroup) return `group:${chat.id}`
+
+  const participants = Array.isArray(chat.participants) ? chat.participants : []
+  if (participants.length === 2) {
+    return `direct:${getDirectPairKey(participants[0], participants[1])}`
+  }
+
+  const partnerId = participants.find(uid => uid !== currentUserId)
+  return partnerId ? `direct:${getDirectPairKey(currentUserId, partnerId)}` : `chat:${chat.id}`
+}
+
+const dedupeChats = (chatList, currentUserId) => {
+  const seen = new Set()
+  return chatList.filter(chat => {
+    const key = getConversationKey(chat, currentUserId)
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
+
+const isDirectChatWith = (chat, currentUserId, otherUserId) => {
+  if (!chat || chat.isGroup) return false
+  const participants = Array.isArray(chat.participants) ? chat.participants : []
+  return participants.length === 2 &&
+    participants.includes(currentUserId) &&
+    participants.includes(otherUserId)
+}
+
+const getDirectChatDocId = (currentUserId, otherUserId) => {
+  const safeKey = getDirectPairKey(currentUserId, otherUserId).replace(/[^A-Za-z0-9_-]/g, '_')
+  return `direct_${safeKey}`
+}
+
+const getReadableName = (person = {}, fallback = 'Unknown') => {
+  const rawName = String(person.displayName || person.name || '').trim()
+  const rawEmail = String(person.email || '').trim()
+
+  if (rawName && rawName.toLowerCase() !== 'user') return rawName
+  if (rawEmail) return rawEmail.split('@')[0] || rawEmail
+  return rawName || fallback
+}
 
 export function ChatProvider({ children }) {
   const { userProfile } = useAuth()
@@ -41,24 +105,34 @@ export function ChatProvider({ children }) {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const chatsData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
       chatsData.sort((a, b) => {
-        const aTime = a.lastMessageAt?.seconds || 0
-        const bTime = b.lastMessageAt?.seconds || 0
-        return bTime - aTime
+        return getChatSortMs(b) - getChatSortMs(a)
       })
-      setChats(chatsData)
+      const dedupedChats = dedupeChats(chatsData, currentUser.uid)
+      setChats(dedupedChats)
+      setActiveChatId(prev => {
+        if (!prev || dedupedChats.some(chat => chat.id === prev)) return prev
+
+        const previousChat = chatsData.find(chat => chat.id === prev)
+        if (!previousChat) return prev
+
+        const replacementKey = getConversationKey(previousChat, currentUser.uid)
+        const replacementChat = dedupedChats.find(chat => getConversationKey(chat, currentUser.uid) === replacementKey)
+        return replacementChat?.id || prev
+      })
 
       // Handle notifications
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'modified') {
           const chat = change.doc.data()
           const isNewMessage = chat.lastSenderId !== currentUser.uid
-          const isNotActiveChat = change.doc.id !== activeChatId
-          const isTabHidden = document.visibilityState === 'hidden'
+          const isActiveChat = change.doc.id === activeChatId
+          const tabIsVisible = document.visibilityState === 'visible'
+          const canNotify = typeof window !== 'undefined' && 'Notification' in window
 
-          if (isNewMessage) {
-            if (Notification.permission === 'granted') {
-              new Notification(chat.lastSenderName || 'New Message', {
-                body: chat.lastMessage,
+          if (isNewMessage && (!isActiveChat || !tabIsVisible)) {
+            if (canNotify && window.Notification.permission === 'granted') {
+              new window.Notification(chat.lastSenderName || 'New Message', {
+                body: chat.lastMessage || 'New message received.',
                 icon: '/favicon.ico',
               })
             }
@@ -68,7 +142,7 @@ export function ChatProvider({ children }) {
     })
 
     return unsubscribe
-  }, [currentUser?.uid])
+  }, [activeChatId, currentUser?.uid])
 
   // Listen to messages in active chat
   useEffect(() => {
@@ -104,7 +178,10 @@ export function ChatProvider({ children }) {
 
   // Listen to typing indicators in active chat
   useEffect(() => {
-    if (!activeChatId) return
+    if (!activeChatId) {
+      setTypingUsers({})
+      return
+    }
 
     const unsubscribe = onSnapshot(
       collection(db, 'chats', activeChatId, 'typing'),
@@ -124,7 +201,19 @@ export function ChatProvider({ children }) {
 
   // Track unread messages
   useEffect(() => {
-    if (!currentUser?.uid || chats.length === 0) return
+    if (!currentUser?.uid || chats.length === 0) {
+      setUnreadCounts({})
+      return
+    }
+
+    const chatIds = new Set(chats.map(chat => chat.id))
+    setUnreadCounts(prev => {
+      const next = {}
+      Object.entries(prev).forEach(([chatId, count]) => {
+        if (chatIds.has(chatId)) next[chatId] = count
+      })
+      return next
+    })
 
     const unsubscribes = chats.map(chat => {
       const chatUnreadRef = collection(db, 'chats', chat.id, 'messages')
@@ -144,31 +233,64 @@ export function ChatProvider({ children }) {
   }, [chats, currentUser?.uid])
 
   const getOrCreateChat = useCallback(async (otherUserId, otherUserName, otherUserEmail, otherUserRole) => {
-    if (!currentUser?.uid) return null
+    if (!currentUser?.uid || !otherUserId || otherUserId === currentUser.uid) return null
 
     // SECURITY: Prevent customer-to-customer chat creation
-    if (currentUser.role === 'customer' && otherUserRole === 'customer') {
+    const currentRole = String(currentUser.role || '').toLowerCase()
+    const otherRole = String(otherUserRole || '').toLowerCase()
+    
+    console.log(`[Chat] Creating chat - currentRole: ${currentRole}, otherRole: ${otherRole}, otherUser: ${otherUserEmail}`)
+    
+    if (currentRole === 'customer' && otherRole === 'customer') {
       console.warn("Unauthorized chat: Customers cannot chat with other customers.")
       return null
     }
 
-    // Check if chat already exists
-    const existingChat = chats.find(c =>
-      c.participants.includes(otherUserId) && c.participants.length === 2
-    )
-    if (existingChat) return existingChat.id
+    // Check if chat already exists in local state first.
+    const existingChat = chats
+      .filter(c => isDirectChatWith(c, currentUser.uid, otherUserId))
+      .sort((a, b) => getChatSortMs(b) - getChatSortMs(a))[0]
+    if (existingChat) {
+      console.log(`[Chat] Found existing chat: ${existingChat.id}`)
+      return existingChat.id
+    }
+
+    let verifiedNoExistingChat = false
+
+    try {
+      // Local state can lag behind rapid clicks or auto-start effects, so verify in Firestore too.
+      const existingQuery = query(
+        collection(db, 'chats'),
+        where('participants', 'array-contains', currentUser.uid)
+      )
+      const existingSnapshot = await getDocs(existingQuery)
+      const firestoreExistingChat = existingSnapshot.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .filter(c => isDirectChatWith(c, currentUser.uid, otherUserId))
+        .sort((a, b) => getChatSortMs(b) - getChatSortMs(a))[0]
+
+      if (firestoreExistingChat) {
+        console.log(`[Chat] Found existing Firestore chat: ${firestoreExistingChat.id}`)
+        return firestoreExistingChat.id
+      }
+      verifiedNoExistingChat = true
+    } catch (err) {
+      console.warn('Could not verify existing chat before creating one:', err)
+    }
 
     // Create new chat
+    const directKey = getDirectPairKey(currentUser.uid, otherUserId)
     const chatData = {
       participants: [currentUser.uid, otherUserId],
+      directKey,
       participantInfo: {
         [currentUser.uid]: {
-          name: currentUser.displayName || currentUser.email || 'Unknown',
+          name: getReadableName(currentUser),
           email: currentUser.email || '',
           role: currentUser.role || 'User'
         },
         [otherUserId]: {
-          name: otherUserName || 'Unknown',
+          name: getReadableName({ displayName: otherUserName, email: otherUserEmail }),
           email: otherUserEmail || '',
           role: otherUserRole || 'User'
         }
@@ -179,11 +301,12 @@ export function ChatProvider({ children }) {
     }
 
     try {
-      const chatRef = await addDoc(collection(db, 'chats'), chatData)
+      const chatRef = doc(db, 'chats', getDirectChatDocId(currentUser.uid, otherUserId))
+      await setDoc(chatRef, chatData, { merge: true })
 
       // AUTOMATIC WELCOME MESSAGE
       // If a customer starts a chat with a staff member (admin/employee), send an automatic greeting
-      if (currentUser.role === 'customer' && (otherUserRole === 'admin' || otherUserRole === 'employee')) {
+      if (verifiedNoExistingChat && currentRole === 'customer' && (otherRole === 'admin' || otherRole === 'employee')) {
         const welcomeText = `Hello! 👋 Thanks for reaching out. A member of our support team will be with you shortly. How can we help you today?`
         
         await addDoc(collection(db, 'chats', chatRef.id, 'messages'), {
@@ -205,7 +328,15 @@ export function ChatProvider({ children }) {
 
       return chatRef.id
     } catch (err) {
-      console.error('Error creating chat:', err)
+      console.error('Error creating chat:', {
+        error: err,
+        message: err.message,
+        code: err.code,
+        currentRole,
+        otherRole,
+        otherUserEmail,
+        participants: [currentUser.uid, otherUserId]
+      })
       alert(`Failed to start chat: ${err.message}`)
       return null
     }
@@ -217,7 +348,7 @@ export function ChatProvider({ children }) {
     const participants = [currentUser.uid, ...selectedUsers.map(u => u.uid)]
     const participantInfo = {
       [currentUser.uid]: {
-        name: currentUser.displayName || currentUser.email || 'Unknown',
+        name: getReadableName(currentUser),
         email: currentUser.email || '',
         role: currentUser.role || 'User'
       }
@@ -225,7 +356,7 @@ export function ChatProvider({ children }) {
 
     selectedUsers.forEach(u => {
       participantInfo[u.uid] = {
-        name: u.displayName || u.name || 'Unknown',
+        name: getReadableName(u),
         email: u.email || '',
         role: u.role || 'User'
       }
@@ -295,7 +426,7 @@ export function ChatProvider({ children }) {
 
       const messageData = {
         senderId: currentUser.uid,
-        senderName: currentUser.displayName || currentUser.email,
+        senderName: getReadableName(currentUser),
         senderEmail: currentUser.email,
         text: text?.trim() || '',
         imageUrl: imageUrl || null,
@@ -313,7 +444,7 @@ export function ChatProvider({ children }) {
         lastMessage: lastMsgPreview,
         lastMessageAt: serverTimestamp(),
         lastSenderId: currentUser.uid,
-        lastSenderName: currentUser.displayName || currentUser.email,
+        lastSenderName: getReadableName(currentUser),
       }
       
       await updateDoc(doc(db, 'chats', chatId), updateData);
@@ -322,7 +453,7 @@ export function ChatProvider({ children }) {
       try {
         await setDoc(doc(db, 'chats', chatId, 'typing', currentUser.uid), {
           isTyping: false,
-          name: currentUser.displayName || currentUser.email,
+          name: getReadableName(currentUser),
           updatedAt: serverTimestamp(),
         }, { merge: true });
       } catch (typingErr) {
@@ -336,6 +467,79 @@ export function ChatProvider({ children }) {
       throw err;
     }
   }, [currentUser])
+
+  const addAssistantMessage = useCallback(async (chatId, text, status = 'sent') => {
+    if (!currentUser?.uid || !chatId || !text?.trim()) return null
+
+    const cleanText = text.trim()
+    const messageData = {
+      senderId: AI_ASSISTANT_ID,
+      senderName: AI_ASSISTANT_NAME,
+      senderEmail: 'support@amitsolutionhub.com',
+      text: cleanText,
+      imageUrl: null,
+      timestamp: serverTimestamp(),
+      status,
+      type: 'ai-assistant',
+      generatedByAi: true,
+    }
+
+    const msgRef = await addDoc(collection(db, 'chats', chatId, 'messages'), messageData)
+
+    await updateDoc(doc(db, 'chats', chatId), {
+      lastMessage: cleanText,
+      lastMessageAt: serverTimestamp(),
+      lastSenderId: AI_ASSISTANT_ID,
+      lastSenderName: AI_ASSISTANT_NAME,
+    })
+
+    return msgRef.id
+  }, [currentUser])
+
+  const sendAiReply = useCallback(async (chatId, promptText, recentMessages = []) => {
+    const cleanPrompt = promptText?.trim()
+    if (!currentUser?.uid || !chatId || !cleanPrompt) return null
+
+    const history = recentMessages
+      .slice(-8)
+      .map(msg => {
+        const content = msg.text || (msg.imageUrl ? '[Image shared]' : '')
+        if (!content?.trim()) return null
+        return {
+          role: msg.senderId === currentUser.uid ? 'user' : 'assistant',
+          content,
+        }
+      })
+      .filter(Boolean)
+
+    try {
+      const response = await fetch(api.aiChat, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [
+            ...history,
+            { role: 'user', content: cleanPrompt },
+          ],
+        }),
+      })
+      const data = await readApiJson(response)
+
+      if (!response.ok) {
+        throw new Error(data.reply || data.message || 'AI support is unavailable right now.')
+      }
+
+      const reply = data.reply || 'I could not process that right now. Please try again.'
+      return addAssistantMessage(chatId, reply)
+    } catch (err) {
+      console.error('AI reply failed:', err)
+      return addAssistantMessage(
+        chatId,
+        'AI support is unavailable right now. Our team will reply as soon as possible.',
+        'error'
+      )
+    }
+  }, [addAssistantMessage, currentUser])
 
   const clearChat = useCallback(async (chatId) => {
     if (!currentUser?.uid || !chatId) return
@@ -395,15 +599,15 @@ export function ChatProvider({ children }) {
   }, [currentUser])
 
   const requestNotificationPermission = useCallback(async () => {
-    if (!('Notification' in window)) {
+    if (typeof window === 'undefined' || !('Notification' in window)) {
       alert('This browser does not support desktop notifications.')
       return
     }
 
-    if (Notification.permission !== 'granted') {
-      const permission = await Notification.requestPermission()
+    if (window.Notification.permission !== 'granted') {
+      const permission = await window.Notification.requestPermission()
       if (permission === 'granted') {
-        new Notification('Alert Activated', {
+        new window.Notification('Alert Activated', {
           body: 'You will now receive message notifications!',
         })
       }
@@ -415,7 +619,7 @@ export function ChatProvider({ children }) {
 
     await setDoc(doc(db, 'chats', chatId, 'typing', currentUser.uid), {
       isTyping,
-      name: currentUser.displayName || currentUser.email,
+      name: getReadableName(currentUser),
       updatedAt: serverTimestamp(),
     }, { merge: true })
   }, [currentUser])
@@ -437,7 +641,7 @@ export function ChatProvider({ children }) {
 
     const q = query(
       collection(db, 'chats', chatId, 'messages'),
-      where('senderId', '!=', currentUser.uid),
+      orderBy('timestamp', 'desc'),
       limit(50)
     )
 
@@ -446,7 +650,7 @@ export function ChatProvider({ children }) {
       if (snapshot.empty) return
 
       const promises = snapshot.docs
-        .filter(d => d.data().status !== 'read')
+        .filter(d => d.data().senderId !== currentUser.uid && d.data().status !== 'read')
         .map(d => 
         updateDoc(doc(db, 'chats', chatId, 'messages', d.id), { status: 'read' })
       )
@@ -465,7 +669,7 @@ export function ChatProvider({ children }) {
     // Send a special message to the chat
     const messageData = {
       senderId: currentUser.uid,
-      senderName: currentUser.displayName || currentUser.email,
+      senderName: getReadableName(currentUser),
       text: `Starting a video call...`,
       type: 'video-call',
       callUrl,
@@ -480,7 +684,7 @@ export function ChatProvider({ children }) {
         lastMessage: '📹 Video Call Started',
         lastMessageAt: serverTimestamp(),
         lastSenderId: currentUser.uid,
-        lastSenderName: currentUser.displayName || currentUser.email
+        lastSenderName: getReadableName(currentUser)
       })
       
       // Open the call for the initiator
@@ -508,11 +712,12 @@ export function ChatProvider({ children }) {
     if (!partnerId) return null
     
     const statusData = userStatuses[partnerId]
+    const partnerInfo = chat.participantInfo?.[partnerId] || {}
     return {
       uid: partnerId,
-      name: chat.participantInfo?.[partnerId]?.name || 'Unknown',
-      email: chat.participantInfo?.[partnerId]?.email || '',
-      role: chat.participantInfo?.[partnerId]?.role || 'User',
+      name: getReadableName(partnerInfo),
+      email: partnerInfo.email || '',
+      role: partnerInfo.role || 'User',
       status: statusData?.state || 'offline',
       lastSeen: statusData?.lastSeen?.toMillis ? statusData.lastSeen.toMillis() : statusData?.lastSeen,
     }
@@ -528,7 +733,7 @@ export function ChatProvider({ children }) {
     typingUsers,
     unreadCounts,
     getOrCreateChat,
-    sendMessage, clearChat, deleteSpecificMessages, requestNotificationPermission, sendTypingIndicator, handleTyping,
+    sendMessage, sendAiReply, clearChat, deleteSpecificMessages, requestNotificationPermission, sendTypingIndicator, handleTyping,
     markAsRead, getChatPartner, createGroupChat, startVideoCall
   }
 

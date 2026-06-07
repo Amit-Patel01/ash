@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 
@@ -14,9 +13,8 @@ function StatIcon({ icon }) {
 }
 
 export default function AdminDashboard() {
-  const { projects, orders, getTotalRevenue, courses, enrollments, loading: storeLoading } = useStore()
+  const { projects, orders, getTotalRevenue, courses, loading: storeLoading } = useStore()
   const { currentUser } = useAuth()
-  const [selectedPeriod, setSelectedPeriod] = useState('week')
 
   if (storeLoading) return null
 

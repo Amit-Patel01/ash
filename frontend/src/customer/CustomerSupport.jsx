@@ -1,17 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useChat } from '../context/ChatContext'
 import { useAuth } from '../context/AuthContext'
 import ChatPanel from '../components/ChatPanel'
 
 export default function CustomerSupport() {
-  const { currentUser, userProfile, getAllUsers } = useAuth()
-  const { getOrCreateChat, setActiveChatId, chats, getChatPartner } = useChat()
-  const [initializing, setInitializing] = useState(false)
+  const { currentUser, getAllUsers } = useAuth()
+  const { getOrCreateChat, setActiveChatId, chats } = useChat()
   const [initialized, setInitialized] = useState(false)
+  const initializingRef = useRef(false)
 
   useEffect(() => {
-    if (!currentUser?.uid || initialized) return
+    if (!currentUser?.uid || initialized || initializingRef.current) return
     const initChat = async () => {
+      initializingRef.current = true
 
       // Check if there's already a chat with admin
       const existingChat = chats.find(c => {
@@ -22,27 +23,30 @@ export default function CustomerSupport() {
       if (existingChat) {
         setActiveChatId(existingChat.id)
         setInitialized(true)
+        initializingRef.current = false
         return
       }
 
       // Try to find admin user
       try {
         const users = await getAllUsers()
-        const admin = users.find(u => u.email === 'amitp@solutionhub.com' || u.role === 'admin')
+        const admin = users.find(u => u.email === 'amitp@solutionhub.com' || u.role === 'admin' || u.role === 'employee')
         if (admin) {
-          const chatId = await getOrCreateChat(admin.uid, admin.displayName || 'Support Team', admin.email)
+          const chatId = await getOrCreateChat(admin.uid, admin.displayName || admin.name || 'Support Team', admin.email, admin.role)
           if (chatId) {
             setActiveChatId(chatId)
           }
         }
       } catch (err) {
         console.error('Error initializing support chat:', err)
+      } finally {
+        initializingRef.current = false
       }
       setInitialized(true)
     }
 
     initChat()
-  }, [currentUser, chats, initialized, getOrCreateChat, setActiveChatId, getAllUsers])
+  }, [currentUser?.uid, chats, initialized, getOrCreateChat, setActiveChatId, getAllUsers])
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 h-[calc(100vh-12rem)]">

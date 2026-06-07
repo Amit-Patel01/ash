@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isParticipant(participants) {
+      return request.auth.uid in participants;
+    }
+
+    // User profiles - allow authenticated users to read all users (for chat contacts)
+    match /users/{userId} {
+      allow list: if isAuthenticated();
+      allow read: if isAuthenticated();
+      allow write: if request.auth.uid == userId;
+    }
+
+    // Status (user online/offline)
+    match /status/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if request.auth.uid == userId;
+    }
+
+    // Chats collection
+    match /chats/{chatId} {
+      // Allow read if user is a participant
+      allow read: if isAuthenticated() && isParticipant(resource.data.participants);
+      
+      // Allow create if user is a participant in the new chat
+      allow create: if isAuthenticated() && isParticipant(request.resource.data.participants);
+      
+      // Allow update if user is a participant
+      allow update: if isAuthenticated() && isParticipant(resource.data.participants);
+      
+      // Allow delete if user is a participant
+      allow delete: if isAuthenticated() && isParticipant(resource.data.participants);
+
+      // Messages subcollection
+      match /messages/{messageId} {
+        // Helper to check if user is participant in parent chat
+        function isParticipantInChat() {
+          return request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+        }
+        
+        // Allow read if user is a participant in the parent chat
+        allow read: if isAuthenticated() && isParticipantInChat();
+        
+        // Allow create if user is a participant and is the sender
+        allow create: if isAuthenticated() 
+          && isParticipantInChat()
+          && request.resource.data.senderId == request.auth.uid;
+        
+        // Allow update only if user is the sender
+        allow update: if isAuthenticated()
+          && request.resource.data.senderId == request.auth.uid;
+        
+        // Allow delete only if user is the sender
+        allow delete: if isAuthenticated()
+          && resource.data.senderId == request.auth.uid;
+      }
+
+      // Typing indicators subcollection
+      match /typing/{userId} {
+        // Helper to check if user is participant in parent chat
+        function isParticipantInChat() {
+          return request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+        }
+        
+        // Allow read if user is a participant
+        allow read: if isAuthenticated() && isParticipantInChat();
+        
+        // Allow write (create/update) only for own typing indicator
+        allow write: if isAuthenticated()
+          && userId == request.auth.uid
+          && isParticipantInChat();
+      }
+    }
+
+    // Deny all other access by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
 import { Search } from 'lucide-react'
-import { api } from '../config/api'
 
 export default function AdminProjects() {
   const { projects, addProject, updateProject, deleteProject } = useStore()
@@ -29,6 +28,7 @@ export default function AdminProjects() {
   })
 
   const openCreate = () => {
+    setEditingProject(null)
     setFormData({
       title: '', description: '', long_description: '', category_name: 'Basic', category_slug: 'basic',
       price_project_only: '', price_with_source: '', features: '', tech_stack: '', is_featured: false, status: 'active',
@@ -38,6 +38,7 @@ export default function AdminProjects() {
   }
 
   const openEdit = (project) => {
+    setEditingProject(project)
     setFormData({
       title: project.title, description: project.description, long_description: project.long_description || '',
       category_name: project.category_name, category_slug: project.category_slug,

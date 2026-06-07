@@ -23,19 +23,27 @@ const createProfileForm = (profile) => ({
 })
 
 export default function EmployeeProfileRefined() {
-  const { currentUser, userProfile, updateUserProfile, updateUserPassword } = useAuth()
+  const { currentUser, userProfile, updateUserProfile, updateUserEmail, updateUserPassword } = useAuth()
   const [profileForm, setProfileForm] = useState(() => createProfileForm(userProfile))
   const [profileStatus, setProfileStatus] = useState({ type: '', message: '' })
+  const [emailForm, setEmailForm] = useState(() => currentUser?.email || userProfile?.email || '')
+  const [emailStatus, setEmailStatus] = useState({ type: '', message: '' })
   const [passwordStatus, setPasswordStatus] = useState({ type: '', message: '' })
   const [publicProfileStatus, setPublicProfileStatus] = useState({ type: '', message: '' })
   const [profileLoading, setProfileLoading] = useState(false)
+  const [emailLoading, setEmailLoading] = useState(false)
   const [passwordLoading, setPasswordLoading] = useState(false)
 
   useEffect(() => {
     setProfileForm(createProfileForm(userProfile))
   }, [userProfile])
 
+  useEffect(() => {
+    setEmailForm(currentUser?.email || userProfile?.email || '')
+  }, [currentUser?.email, userProfile?.email])
+
   const displayName = profileForm.displayName || userProfile?.displayName || currentUser?.displayName || 'Employee'
+  const accountEmail = currentUser?.email || userProfile?.email || ''
   const initials = getEmployeeInitials(displayName)
   const profileLinks = [profileForm.github, profileForm.linkedin, profileForm.portfolio].filter(Boolean).length
   const userId = currentUser?.uid || userProfile?.uid || ''
@@ -71,6 +79,34 @@ export default function EmployeeProfileRefined() {
       setProfileStatus({ type: 'error', message: error.message || 'Failed to update profile.' })
     } finally {
       setProfileLoading(false)
+    }
+  }
+
+  const handleEmailSubmit = async (event) => {
+    event.preventDefault()
+    const nextEmail = emailForm.trim().toLowerCase()
+    const currentEmail = accountEmail.trim().toLowerCase()
+
+    setEmailStatus({ type: '', message: '' })
+
+    if (!nextEmail) {
+      setEmailStatus({ type: 'error', message: 'Please enter a valid email address.' })
+      return
+    }
+
+    if (nextEmail === currentEmail) {
+      setEmailStatus({ type: 'error', message: 'This email is already linked to your account.' })
+      return
+    }
+
+    setEmailLoading(true)
+    try {
+      await updateUserEmail(nextEmail)
+      setEmailStatus({ type: 'success', message: 'Email updated successfully. Use the new email for your next login.' })
+    } catch (error) {
+      setEmailStatus({ type: 'error', message: error.message || 'Unable to update email.' })
+    } finally {
+      setEmailLoading(false)
     }
   }
 
@@ -118,7 +154,7 @@ export default function EmployeeProfileRefined() {
             </div>
             <div>
               <p className="text-sm font-semibold text-white">{displayName}</p>
-              <p className="text-xs text-slate-400">{currentUser?.email || userProfile?.email || 'employee@solutionhub.com'}</p>
+              <p className="text-xs text-slate-400">{accountEmail || 'employee@solutionhub.com'}</p>
             </div>
           </div>
         }
@@ -338,6 +374,42 @@ export default function EmployeeProfileRefined() {
             </div>
           </EmployeeSurface>
 
+          <EmployeeSurface title="Account Email" description="Update the email address you use to sign in to your employee account.">
+            {emailStatus.message && (
+              <div className={`mb-5 rounded-2xl border px-4 py-3 text-sm ${
+                emailStatus.type === 'success'
+                  ? 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300'
+                  : 'border-rose-400/20 bg-rose-400/10 text-rose-300'
+              }`}>
+                {emailStatus.message}
+              </div>
+            )}
+
+            <form onSubmit={handleEmailSubmit} className="space-y-4">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
+                Current email: <span className="font-semibold text-white">{accountEmail || 'Not linked yet'}</span>
+              </div>
+              <div>
+                <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-500">New Email Address</label>
+                <input
+                  type="email"
+                  value={emailForm}
+                  onChange={(event) => setEmailForm(event.target.value)}
+                  placeholder="employee@amitsolutionhub.com"
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={emailLoading}
+                className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-5 py-3 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {emailLoading ? 'Updating Email...' : 'Update Email'}
+              </button>
+            </form>
+          </EmployeeSurface>
+
           <EmployeeSurface title="CV / Resume Link" description="Add your Google Drive link or external URL for your CV.">
             <div className="space-y-4">
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
@@ -391,7 +463,7 @@ export default function EmployeeProfileRefined() {
 
             <form onSubmit={handlePasswordSubmit} className="space-y-4">
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
-                We will send a secure password reset link to <span className="font-semibold text-white">{currentUser?.email || userProfile?.email || 'your account email'}</span>.
+                We will send a secure password reset link to <span className="font-semibold text-white">{accountEmail || 'your account email'}</span>.
               </div>
               <button
                 type="submit"

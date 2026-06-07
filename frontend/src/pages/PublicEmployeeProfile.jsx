@@ -1,74 +1,16 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import SEO from '../components/SEO'
 import PublicPageShell, { PublicGlassCard, PublicSection, PublicSectionHeading } from '../components/public/PublicPageShell'
 import { useStore } from '../store/StoreContext'
+import {
+  buildTeamProfiles,
+  fetchPublicTeamProfiles,
+  getTeamMemberImageUrl,
+  getTeamMemberKeys,
+} from '../utils/teamProfiles'
 
 const normalize = (value) => String(value || '').trim().toLowerCase()
-
-const normalizeTeam = (users = []) => {
-  const safeUsers = Array.isArray(users) ? users : []
-
-  return safeUsers
-    .filter((user) => user?.showOnTeam && user?.status === 'active')
-    .map((user) => ({
-      ...user,
-      id: user.uid || user.id,
-      uid: user.uid || '',
-      displayName: user.displayName || user.name || 'Team Member',
-      name: user.name || user.displayName || 'Team Member',
-      email: user.email || '',
-      department: user.department || 'Core Team',
-      jobTitle: user.jobTitle || user.role || 'Team Member',
-      bio:
-        user.bio ||
-        'Focused on practical execution, learner support, and reliable digital delivery.',
-    }))
-    .sort((left, right) => {
-      const leftId = left.employeeId || 'ZZZ'
-      const rightId = right.employeeId || 'ZZZ'
-      return leftId.localeCompare(rightId, undefined, { numeric: true, sensitivity: 'base' })
-    })
-}
-
-const getMemberKeys = (member) =>
-  [...new Set([
-    member?.uid,
-    member?.employeeId,
-    member?.id,
-    member?.email,
-    member?.displayName,
-    member?.name,
-  ].filter(Boolean))]
-
-const getMemberKey = (member) => getMemberKeys(member)[0] || ''
-
-const isDirectImageUrl = (value) => String(value || '').trim().startsWith('http')
-
-const getImageUrl = (member) => {
-  if (member.avatarSource === 'custom' && member.customImageUrl) return member.customImageUrl
-  if (member.avatarSource === 'linkedin' && member.linkedin && !member.linkedin.includes('linkedin.com')) {
-    return member.linkedin
-  }
-  if (isDirectImageUrl(member.photoURL)) return member.photoURL
-  if (isDirectImageUrl(member.avatarUrl)) return member.avatarUrl
-  if (isDirectImageUrl(member.avatar)) return member.avatar
-
-  let gb = member.github
-  if (gb) {
-    if (gb.startsWith('http')) {
-      if (!gb.endsWith('.png')) {
-        gb = gb.replace(/\/$/, '')
-        return `${gb}.png`
-      }
-      return gb
-    } else {
-      return `https://github.com/${gb}.png`
-    }
-  }
-
-  return ''
-}
 
 const socialLinks = (member) => {
   const links = []
@@ -135,16 +77,36 @@ const ProfileIcon = ({ name, size = 20, color = 'currentColor', strokeWidth = 2 
 
 const PublicEmployeeProfile = () => {
   const { profileId } = useParams()
-  const { users } = useStore()
+  const { users, teamMembers } = useStore()
+  const [publicTeam, setPublicTeam] = useState([])
 
-  const profiles = useMemo(() => normalizeTeam(users), [users])
+  useEffect(() => {
+    let isMounted = true
+
+    fetchPublicTeamProfiles()
+      .then((profiles) => {
+        if (isMounted) setPublicTeam(profiles)
+      })
+      .catch((error) => {
+        console.warn('Public team profiles could not be loaded:', error)
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  const profiles = useMemo(
+    () => buildTeamProfiles({ publicTeam, users, teamMembers }),
+    [publicTeam, users, teamMembers]
+  )
 
   const member = useMemo(() => {
     const decodedId = normalize(decodeURIComponent(profileId || ''))
 
     return (
       profiles.find((item) =>
-        getMemberKeys(item).some((key) => normalize(key) === decodedId)
+        getTeamMemberKeys(item).some((key) => normalize(key) === decodedId)
       ) || null
     )
   }, [profileId, profiles])
@@ -174,7 +136,7 @@ const PublicEmployeeProfile = () => {
     )
   }
 
-  const memberImage = getImageUrl(member)
+  const memberImage = getTeamMemberImageUrl(member)
   const profileLinks = socialLinks(member)
   const expertise = [
     member.department,

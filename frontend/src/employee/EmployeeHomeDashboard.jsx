@@ -264,7 +264,7 @@ export default function EmployeeHomeDashboard() {
 
       {/* ── Stat Cards ─────────────────────────────────────────── */}
       <section className="grid grid-cols-2 gap-4 xl:grid-cols-4">
-        {stats.map((stat, i) => {
+        {stats.map((stat) => {
           const def = statDefinitions.find(d => d.key === stat.key)
           return (
             <StatCard

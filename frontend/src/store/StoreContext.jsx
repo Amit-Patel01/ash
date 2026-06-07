@@ -589,7 +589,7 @@ export function StoreProvider({ children }) {
   const updateTradingSession = async (id, updates) => {
     try { 
       // If updating isLive to true, use our backend API to trigger notifications
-      if (updates.hasOwnProperty('isLive')) {
+      if (Object.prototype.hasOwnProperty.call(updates, 'isLive')) {
         const response = await fetch(buildApiUrl('/api/trading/toggle-live'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

@@ -4,6 +4,8 @@ const { verifyFirebaseToken } = require("../middlewares/authMiddleware");
 const { requireRole } = require("../middlewares/rbacMiddleware");
 const {
   cvUpload,
+  getChatContacts,
+  getPublicTeam,
   getMyProfile,
   changeMyEmail,
   updateMyProfile,
@@ -11,6 +13,8 @@ const {
   uploadMyCv,
 } = require("../controllers/userController");
 
+router.get("/team", getPublicTeam);
+router.get("/chat-contacts", verifyFirebaseToken, getChatContacts);
 router.get("/me", verifyFirebaseToken, getMyProfile);
 router.post("/me/email-change", verifyFirebaseToken, changeMyEmail);
 router.patch("/me", verifyFirebaseToken, updateMyProfile);

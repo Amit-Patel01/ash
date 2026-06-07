@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import api from '../config/api'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 

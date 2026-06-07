@@ -12,9 +12,14 @@ import Layout from './components/Layout'
 import { getHomePathForRole, isEmployeeRole, normalizeUserRole } from './utils/roles'
 
 const MODULE_ERROR_AUTO_REFRESH_KEY = 'module-error-auto-refresh-count'
-const MAX_MODULE_ERROR_AUTO_REFRESHES = 2
+const MODULE_ERROR_CACHE_BUST_KEY = 'module-error-cache-bust-count'
+const MAX_MODULE_ERROR_AUTO_REFRESHES = 5
+const MAX_MODULE_ERROR_CACHE_BUSTS = 1
+const MODULE_ERROR_REFRESH_DELAY_MS = 350
 const MODULE_LOAD_ERROR_PATTERNS = [
   'failed to fetch dynamically imported module',
+  'failed to load module script',
+  'error loading dynamically imported module',
   'importing a module script failed',
   'chunkloaderror',
   'loading chunk',
@@ -25,8 +30,12 @@ const MODULE_LOAD_ERROR_PATTERNS = [
 const getModuleErrorAutoRefreshCount = () =>
   Number.parseInt(window.sessionStorage.getItem(MODULE_ERROR_AUTO_REFRESH_KEY) || '0', 10) || 0
 
+const getModuleErrorCacheBustCount = () =>
+  Number.parseInt(window.sessionStorage.getItem(MODULE_ERROR_CACHE_BUST_KEY) || '0', 10) || 0
+
 const resetModuleErrorAutoRefreshCount = () => {
   window.sessionStorage.setItem(MODULE_ERROR_AUTO_REFRESH_KEY, '0')
+  window.sessionStorage.setItem(MODULE_ERROR_CACHE_BUST_KEY, '0')
 }
 
 const isRecoverableModuleLoadError = (error) => {
@@ -64,40 +73,49 @@ const lazyWithRetry = (componentImport) =>
 
 function ModuleLoadErrorFallback({ error }) {
   const hasScheduledRefresh = useRef(false)
-  const shouldAutoRefresh =
-    isRecoverableModuleLoadError(error) &&
-    getModuleErrorAutoRefreshCount() < MAX_MODULE_ERROR_AUTO_REFRESHES
 
   useEffect(() => {
-    if (!shouldAutoRefresh || hasScheduledRefresh.current) {
+    if (hasScheduledRefresh.current) {
       return undefined
     }
 
     hasScheduledRefresh.current = true
-    window.sessionStorage.setItem(
-      MODULE_ERROR_AUTO_REFRESH_KEY,
-      String(getModuleErrorAutoRefreshCount() + 1)
-    )
+    const refreshCount = getModuleErrorAutoRefreshCount()
+    const isModuleLoadIssue = isRecoverableModuleLoadError(error)
 
     const timeoutId = window.setTimeout(() => {
-      window.location.reload()
-    }, 1500)
+      if (refreshCount < MAX_MODULE_ERROR_AUTO_REFRESHES) {
+        window.sessionStorage.setItem(
+          MODULE_ERROR_AUTO_REFRESH_KEY,
+          String(refreshCount + 1)
+        )
+        window.location.reload()
+        return
+      }
+
+      const cacheBustCount = getModuleErrorCacheBustCount()
+      if (isModuleLoadIssue && cacheBustCount < MAX_MODULE_ERROR_CACHE_BUSTS) {
+        const url = new URL(window.location.href)
+        url.searchParams.set('app_reload', String(Date.now()))
+        window.sessionStorage.setItem(MODULE_ERROR_CACHE_BUST_KEY, String(cacheBustCount + 1))
+        window.location.replace(url.toString())
+      }
+    }, MODULE_ERROR_REFRESH_DELAY_MS)
 
     return () => {
       window.clearTimeout(timeoutId)
     }
-  }, [shouldAutoRefresh])
+  }, [error])
 
   return (
-    <div style={{ padding: '50px', textAlign: 'center', color: '#64748b', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <h2 style={{ color: '#ef4444', marginBottom: 12 }}>Component Error</h2>
-      <p>
-        {shouldAutoRefresh
-          ? 'Module load issue detected. Refreshing automatically...'
-          : 'A module failed to load. Please try refreshing the page.'}
-      </p>
-      <button onClick={() => window.location.reload()} style={{ marginTop: 20, padding: '10px 20px', background: '#3b82f6', color: 'white', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>Refresh Page</button>
-    </div>
+    <div
+      aria-hidden="true"
+      style={{
+        minHeight: '100vh',
+        width: '100%',
+        background: 'linear-gradient(160deg,#f0f7ff 0%,#faf8ff 50%,#eff6ff 100%)',
+      }}
+    />
   )
 }
 
@@ -235,6 +253,33 @@ function RoleRedirect() {
 
 function AppContent() {
   const UNDER_MAINTENANCE = false; // Set to true to enable maintenance mode on frontend
+  const { logout } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const allowedChatbotPaths = ['/about', '/courses', '/services', '/projects', '/contact']
+  const isHome = location.pathname === '/'
+  const isAllowedPath = allowedChatbotPaths.some(path => location.pathname.startsWith(path))
+  const isVerifyPage = location.pathname.startsWith('/verify')
+  const showChatbot = (isHome || isAllowedPath) && !isVerifyPage
+
+  const handleLogout = useCallback(async () => {
+    await logout()
+    navigate('/')
+  }, [logout, navigate])
+
+  useEffect(() => {
+    if (location.hash) {
+      window.requestAnimationFrame(() => {
+        const anchor = document.getElementById(location.hash.slice(1))
+        if (anchor) {
+          anchor.scrollIntoView({ block: 'start' })
+        }
+      })
+      return
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [location.pathname, location.search, location.hash])
 
   if (UNDER_MAINTENANCE) {
     return (
@@ -296,34 +341,6 @@ function AppContent() {
       </div>
     );
   }
-
-  const { logout } = useAuth()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const allowedChatbotPaths = ['/about', '/courses', '/services', '/projects', '/contact']
-  const isHome = location.pathname === '/'
-  const isAllowedPath = allowedChatbotPaths.some(path => location.pathname.startsWith(path))
-  const isVerifyPage = location.pathname.startsWith('/verify')
-  const showChatbot = (isHome || isAllowedPath) && !isVerifyPage
-
-  const handleLogout = useCallback(async () => {
-    await logout()
-    navigate('/')
-  }, [logout, navigate])
-
-  useEffect(() => {
-    if (location.hash) {
-      window.requestAnimationFrame(() => {
-        const anchor = document.getElementById(location.hash.slice(1))
-        if (anchor) {
-          anchor.scrollIntoView({ block: 'start' })
-        }
-      })
-      return
-    }
-
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-  }, [location.pathname, location.search, location.hash])
 
   return (
     <ErrorBoundary FallbackComponent={ModuleLoadErrorFallback}>

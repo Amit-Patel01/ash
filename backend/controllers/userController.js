@@ -6,6 +6,8 @@ const {
   changeOwnEmail,
   updateOwnProfile,
   uploadEmployeeCv,
+  listPublicTeamMembers,
+  listChatContacts,
   requestPasswordReset,
   createHttpError,
 } = require("../services/userService");
@@ -54,6 +56,24 @@ const getMyProfile = async (req, res) => {
     return res.json({ success: true, profile });
   } catch (error) {
     return handleError(res, error, "Unable to load the profile.");
+  }
+};
+
+const getPublicTeam = async (req, res) => {
+  try {
+    const team = await listPublicTeamMembers();
+    return res.json({ success: true, team });
+  } catch (error) {
+    return handleError(res, error, "Unable to load public team profiles.");
+  }
+};
+
+const getChatContacts = async (req, res) => {
+  try {
+    const users = await listChatContacts(req.user);
+    return res.json({ success: true, users });
+  } catch (error) {
+    return handleError(res, error, "Unable to load chat contacts.");
   }
 };
 
@@ -120,6 +140,8 @@ const uploadMyCv = async (req, res) => {
 
 module.exports = {
   cvUpload,
+  getPublicTeam,
+  getChatContacts,
   getMyProfile,
   changeMyEmail,
   updateMyProfile,

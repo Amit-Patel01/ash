@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useEffect, useState, useMemo } from 'react'
 import { useStore } from '../store/StoreContext'
 import SEO from './SEO'
@@ -306,7 +306,6 @@ const WHY = [
 const Hero = () => {
   const [loaded, setLoaded] = useState(false)
   const { courses, courseCategories } = useStore()
-  const navigate = useNavigate()
 
   const activeCourses = useMemo(() => {
     return courses?.filter(c => c.published !== false).slice(0, 3) || []
@@ -323,18 +322,17 @@ const Hero = () => {
       <SEO />
       <style>{CSS}</style>
 
-      {/* Fixed background */}
+      {/* Fixed background (toned gradient + subtle grid) */}
       <div style={{ position:'fixed', inset:0, zIndex:0, pointerEvents:'none',
-        background:'linear-gradient(160deg,#f0f7ff 0%,#faf8ff 50%,#eff6ff 100%)' }}>
+        background:'linear-gradient(160deg,#e6f0ff 0%, #eef2ff 45%, #f3e8ff 100%)' }}>
+        {/* subtle grid overlay */}
         <div style={{ position:'absolute', inset:0,
-          backgroundImage:'linear-gradient(rgba(29,78,216,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(29,78,216,.03) 1px,transparent 1px)',
-          backgroundSize:'56px 56px' }}/>
-        <div style={{ position:'absolute', width:480, height:480, borderRadius:'50%', top:'-10%', right:'-5%',
-          background:'radial-gradient(circle,rgba(99,102,241,.08),transparent 70%)',
-          filter:'blur(60px)', animation:'hp-float 12s ease-in-out infinite', pointerEvents:'none' }}/>
-        <div style={{ position:'absolute', width:560, height:560, borderRadius:'50%', bottom:'-8%', left:'-8%',
-          background:'radial-gradient(circle,rgba(29,78,216,.07),transparent 70%)',
-          filter:'blur(70px)', animation:'hp-float 15s ease-in-out infinite', animationDelay:'-6s', pointerEvents:'none' }}/>
+          backgroundImage:'linear-gradient(rgba(99,102,241,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.02) 1px,transparent 1px)',
+          backgroundSize:'64px 64px', opacity:0.9 }} />
+
+        {/* faint vignette / tone to add depth */}
+        <div style={{ position:'absolute', inset:0, pointerEvents:'none',
+          background:'radial-gradient(circle at 10% 15%, rgba(124,58,237,.04) 0%, transparent 25%), radial-gradient(circle at 90% 85%, rgba(29,78,216,.03) 0%, transparent 30%)' }} />
       </div>
 
       <div className="hp" style={{ position:'relative', zIndex:10 }}>
@@ -357,9 +355,15 @@ const Hero = () => {
                 background:'rgba(255,255,255,.75)', backdropFilter:'blur(12px)',
                 border:'1px solid rgba(255,255,255,.9)',
                 boxShadow:'0 2px 14px rgba(29,78,216,.1)' }}>
+<<<<<<< HEAD
                 <span style={{ width:8, height:8, borderRadius:'50%', background:'#22c55e', display:'inline-block', animation:'hp-pulse 2s infinite' }}/>
                 <span style={{ fontSize:13, fontWeight:700, color:'#1d4ed8' }}>
                   ✅ AICTE APPROVED
+=======
+                <span style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:13, fontWeight:700, color:'#1d4ed8' }}>
+                  <SvgIcon name="check" size={15} color="#16a34a" strokeWidth={2.8} />
+                  AICTE APPROVED
+>>>>>>> 9731e34bcee12cdc11608e104adaab9a8d8ed9d6
                 </span>
               </div>
 
@@ -703,11 +707,14 @@ const Hero = () => {
                       Officially Recognized &amp; Trusted
                     </span>
                     <span style={{ fontSize:11, fontWeight:700, padding:'3px 11px', borderRadius:999, background:'rgba(255,255,255,.18)', color:'white', letterSpacing:'.06em', textTransform:'uppercase' }}>MSME · Govt. of India</span>
-                    <span style={{ fontSize:11, fontWeight:700, padding:'3px 11px', borderRadius:999, background:'rgba(255,255,255,.14)', color:'rgba(255,255,255,.9)', letterSpacing:'.06em', textTransform:'uppercase' }}>AICTE (In Process)</span>
+                    <span style={{ display:'inline-flex', alignItems:'center', gap:5, fontSize:11, fontWeight:700, padding:'3px 11px', borderRadius:999, background:'rgba(34,197,94,.18)', color:'#bbf7d0', letterSpacing:'.06em', textTransform:'uppercase' }}>
+                      <SvgIcon name="check" size={12} color="#22c55e" strokeWidth={2.8} />
+                      AICTE Approved
+                    </span>
                   </div>
                   <p style={{ color:'rgba(255,255,255,.85)', fontSize:'clamp(12px,2vw,14px)', lineHeight:1.8 }}>
                     AmitSolutionHub is a <strong style={{ color:'white' }}>MSME-registered</strong> organization under the Ministry of MSME, Government of India.
-                    We are in the process of listing on the <strong style={{ color:'white' }}>AICTE National Internship Portal</strong>.
+                    We are also <strong style={{ color:'white' }}>AICTE approved</strong> for internship-focused learning and certification delivery.
                   </p>
                   <p style={{ color:'rgba(255,255,255,.85)', fontSize:13, marginTop:8, fontWeight:600 }}>
                     <span style={{ color:'#60a5fa' }}>UDYAM REGISTRATION:</span> UDYAM-GJ-17-0037282

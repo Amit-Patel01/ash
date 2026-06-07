@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
 
 export default function AdminSellRequests() {

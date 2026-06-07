@@ -50,7 +50,6 @@ function FieldLabel({ children }) {
 export default function CustomerProfile() {
   const { currentUser, userProfile, updateUserProfile, updateUserPassword } = useAuth()
   const [profileForm, setProfileForm] = useState(() => createProfileForm(userProfile, currentUser))
-  const [passwordForm, setPasswordForm] = useState({ current: '', next: '', confirm: '' })
   const [profileStatus, setProfileStatus] = useState({ type: '', message: '' })
   const [passwordStatus, setPasswordStatus] = useState({ type: '', message: '' })
   const [profileLoading, setProfileLoading] = useState(false)
@@ -143,7 +142,6 @@ export default function CustomerProfile() {
     try {
       await updateUserPassword()
       setPasswordStatus({ type: 'success', message: 'A password reset link has been sent to your email address.' })
-      setPasswordForm({ current: '', next: '', confirm: '' })
     } catch (error) {
       setPasswordStatus({ type: 'error', message: error.message || 'Unable to send the password reset email.' })
     } finally {

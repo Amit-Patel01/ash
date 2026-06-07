@@ -1,51 +1,58 @@
 import { useMemo, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import {
+  ArrowRight,
+  BadgeCheck,
+  BookOpen,
+  CalendarClock,
+  Clock3,
+  Code2,
+  GraduationCap,
+  IndianRupee,
+  MonitorPlay,
+  Search,
+  SlidersHorizontal,
+  Sparkles,
+  TrendingUp,
+  UserRound,
+  Video,
+} from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import PublicPageShell, { PublicGlassCard, PublicSection, PublicSectionHeading } from '../components/public/PublicPageShell'
 import { useStore } from '../store/StoreContext'
 import { formatEnrollmentDeadline, isEnrollmentClosed } from '../utils/enrollmentDeadline'
 import { getLearningTypeLabel } from '../utils/learningType'
 
 const PageIcon = ({ name, size = 18, color = 'currentColor', strokeWidth = 2 }) => {
-  const props = {
-    width: size,
-    height: size,
-    viewBox: '0 0 24 24',
-    fill: 'none',
-    xmlns: 'http://www.w3.org/2000/svg',
-    'aria-hidden': 'true',
+  const icons = {
+    book: BookOpen,
+    certificate: BadgeCheck,
+    clock: Clock3,
+    code: Code2,
+    currency: IndianRupee,
+    mentor: UserRound,
+    search: Search,
+    settings: SlidersHorizontal,
+    spark: Sparkles,
+    trending: TrendingUp,
+    video: Video,
   }
-
-
-  switch (name) {
-    case 'book':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M5 6.5A2.5 2.5 0 0 1 7.5 4H19v14H7.5A2.5 2.5 0 0 0 5 20V6.5Z" /><path d="M9 8h6M9 11h6" /></svg>
-    case 'chat':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M20 14a3 3 0 0 1-3 3H9l-5 4V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7Z" /></svg>
-    case 'search':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg>
-    case 'mentor':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="8" r="3" /><path d="M4.5 18a4.5 4.5 0 0 1 9 0" /><path d="M16.5 7.5h4M18.5 5.5v4" /></svg>
-    case 'clock':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8" /><path d="M12 8v4l3 2" /></svg>
-    default:
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><rect x="4.5" y="5" width="15" height="14" rx="2.2" /><path d="M8 9h8M8 12h8M8 15h5" /></svg>
-  }
+  const Icon = icons[name] || GraduationCap
+  return <Icon aria-hidden="true" size={size} color={color} strokeWidth={strokeWidth} />
 }
 
 const getCategoryIconKey = (value = '') => {
   const normalized = String(value).toLowerCase()
-  if (normalized.includes('ai')) return 'search'
-  if (normalized.includes('web') || normalized.includes('develop')) return 'book'
-  if (normalized.includes('trading') || normalized.includes('stock')) return 'search'
+  if (normalized.includes('ai') || normalized.includes('data')) return 'spark'
+  if (normalized.includes('web') || normalized.includes('develop') || normalized.includes('code')) return 'code'
+  if (normalized.includes('trading') || normalized.includes('stock') || normalized.includes('market')) return 'trending'
+  if (normalized.includes('webinar') || normalized.includes('live')) return 'video'
   return 'book'
 }
 
 export default function CoursesPage() {
-  const { courses, courseCategories, isUserEnrolled } = useStore()
+  const { courses, courseCategories, isUserEnrolled, loading } = useStore()
   const { currentUser } = useAuth()
-  const navigate = useNavigate()
   const [filterCat, setFilterCat] = useState('All')
   const [search, setSearch] = useState('')
 
@@ -57,10 +64,10 @@ export default function CoursesPage() {
       const matchCategory = filterCat === 'All' || course.category === filterCat
       const matchQuery =
         !query ||
-        course.title?.toLowerCase().includes(query) ||
-        course.description?.toLowerCase().includes(query) ||
-        course.category?.toLowerCase().includes(query) ||
-        course.instructor?.toLowerCase().includes(query)
+        String(course.title || '').toLowerCase().includes(query) ||
+        String(course.description || '').toLowerCase().includes(query) ||
+        String(course.category || '').toLowerCase().includes(query) ||
+        String(course.instructor || '').toLowerCase().includes(query)
 
       return matchCategory && matchQuery
     })
@@ -71,14 +78,33 @@ export default function CoursesPage() {
     return ['All', ...categoryNames]
   }, [published])
 
+  const categorySummaries = useMemo(() => {
+    const counts = new Map()
+    published.forEach((course) => {
+      const category = course.category || 'General'
+      counts.set(category, (counts.get(category) || 0) + 1)
+    })
+    return [...counts.entries()]
+      .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+      .slice(0, 4)
+  }, [published])
+
+  const featuredCourse = useMemo(() => (
+    published.find((course) => course.highlighted) || published[0] || null
+  ), [published])
+
   const getCategoryMeta = (name) => {
     return courseCategories.find((category) => category.name === name)
   }
 
+  const totalPlans = published.reduce((sum, course) => (
+    sum + (Array.isArray(course.plans) && course.plans.length > 0 ? course.plans.length : 1)
+  ), 0)
+
   const stats = [
-    { value: `${published.length}+`, label: 'Published Programs' },
-    { value: `${Math.max(allCategories.length - 1, 1)}`, label: 'Skill Tracks' },
-    { value: '100%', label: 'Mobile Friendly Access' },
+    { value: published.length, label: 'Programs' },
+    { value: Math.max(allCategories.length - 1, 0), label: 'Skill Tracks' },
+    { value: totalPlans, label: 'Plans' },
   ]
 
   const levelStyles = {
@@ -97,6 +123,7 @@ export default function CoursesPage() {
         />
       </Helmet>
 
+<<<<<<< HEAD
       <div>
         <PublicSection id="course-catalogue" className="space-y-8">
           <PublicGlassCard className="space-y-6 p-5 sm:p-7">
@@ -105,28 +132,97 @@ export default function CoursesPage() {
               title="Find the right program faster"
               description="Use a simple search and category filter to shortlist the best course or webinar without losing context on mobile."
             />
+=======
+      <div className="min-h-screen bg-[linear-gradient(180deg,#f8fbff_0%,#eef6ff_44%,#ffffff_100%)] text-slate-950">
+        <section className="mx-auto grid w-full max-w-7xl gap-6 px-4 pb-8 pt-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8 lg:pb-10 lg:pt-10">
+          <div className="relative overflow-hidden rounded-[32px] border border-white/80 bg-white/[0.86] p-6 shadow-[0_26px_70px_-42px_rgba(15,23,42,0.42)] backdrop-blur-xl sm:p-8 lg:p-10">
+            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-sky-500 to-violet-500" />
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-sky-700">
+                <MonitorPlay aria-hidden="true" size={15} />
+                Learning Catalogue
+              </div>
+              <h1 className="mt-5 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem] lg:leading-[1.04]">
+                Courses, webinars and career-ready skill tracks
+              </h1>
+              <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+                Browse practical programs from Amit Solution Hub with clear pricing, mentor support, deadlines, and flexible learning options.
+              </p>
+            </div>
 
-            <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              {stats.map((stat) => (
+                <div key={stat.label} className="rounded-3xl border border-slate-200/75 bg-white px-4 py-4 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.45)]">
+                  <div className="text-2xl font-black text-slate-950">{stat.value}</div>
+                  <div className="mt-1 text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+>>>>>>> 9731e34bcee12cdc11608e104adaab9a8d8ed9d6
+
+          <aside className="relative overflow-hidden rounded-[32px] border border-slate-900/10 bg-slate-950 p-6 text-white shadow-[0_28px_80px_-40px_rgba(2,6,23,0.7)]">
+            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-300 via-emerald-300 to-cyan-300" />
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-200">Featured Path</p>
+                <h2 className="mt-3 line-clamp-2 text-2xl font-black leading-tight text-white">
+                  {featuredCourse?.title || 'Start with a skill track'}
+                </h2>
+              </div>
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-cyan-200">
+                <PageIcon name={getCategoryIconKey(featuredCourse?.category)} size={24} />
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-3">
+              {categorySummaries.length > 0 ? categorySummaries.map(([category, count]) => {
+                const percent = published.length > 0 ? Math.max(18, Math.round((count / published.length) * 100)) : 0
+                return (
+                  <div key={category} className="rounded-2xl border border-white/10 bg-white/[0.05] p-3">
+                    <div className="flex items-center justify-between gap-3 text-sm">
+                      <span className="inline-flex min-w-0 items-center gap-2 font-semibold text-slate-100">
+                        <PageIcon name={getCategoryIconKey(category)} size={15} />
+                        <span className="truncate">{category}</span>
+                      </span>
+                      <span className="shrink-0 text-xs font-bold text-slate-300">{count}</span>
+                    </div>
+                    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
+                      <div className="h-full rounded-full bg-cyan-300" style={{ width: `${percent}%` }} />
+                    </div>
+                  </div>
+                )
+              }) : (
+                <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4 text-sm text-slate-300">
+                  New programs will appear here after publishing.
+                </div>
+              )}
+            </div>
+          </aside>
+        </section>
+
+        <section id="course-catalogue" className="mx-auto w-full max-w-7xl space-y-7 px-4 pb-16 sm:px-6 lg:px-8 lg:pb-20">
+          <div className="rounded-[30px] border border-white/85 bg-white/[0.92] p-4 shadow-[0_22px_60px_-42px_rgba(15,23,42,0.4)] backdrop-blur-xl sm:p-5">
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
               <label className="relative block">
                 <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                  </svg>
+                  <Search aria-hidden="true" size={20} />
                 </span>
                 <input
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Search by title, description, category, or instructor"
-                  className="w-full rounded-[24px] border border-slate-200 bg-white px-12 py-4 text-sm text-slate-700 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-sky-300 focus:ring-4 focus:ring-sky-100"
+                  placeholder="Search by course, category, or instructor"
+                  className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-12 text-sm font-semibold text-slate-700 outline-none transition-all placeholder:font-medium placeholder:text-slate-400 focus:border-sky-300 focus:ring-4 focus:ring-sky-100"
                 />
               </label>
 
-              <div className="rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-500">
+              <div className="inline-flex h-14 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-black text-slate-600">
+                <SlidersHorizontal aria-hidden="true" size={16} />
                 {filtered.length} result{filtered.length !== 1 ? 's' : ''}
               </div>
             </div>
 
-            <div className="flex gap-2 overflow-x-auto pb-1">
+            <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
               {allCategories.map((category) => {
                 const isActive = filterCat === category
                 const categoryMeta = getCategoryMeta(category)
@@ -140,9 +236,9 @@ export default function CoursesPage() {
                     key={category}
                     type="button"
                     onClick={() => setFilterCat(category)}
-                    className={`whitespace-nowrap rounded-full border px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
+                    className={`inline-flex min-h-11 shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-4 text-sm font-black transition-all duration-300 ${
                       isActive
-                        ? 'border-transparent bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-[0_16px_32px_-18px_rgba(37,99,235,0.8)]'
+                        ? 'border-slate-950 bg-slate-950 text-white shadow-[0_18px_36px_-24px_rgba(15,23,42,0.9)]'
                         : 'border-slate-200 bg-white text-slate-600 hover:border-sky-200 hover:text-sky-700'
                     }`}
                   >
@@ -150,23 +246,37 @@ export default function CoursesPage() {
                       <PageIcon name={getCategoryIconKey(categoryMeta?.name || category)} size={14} />
                       {category}
                     </span>
-                    <span className={`ml-2 rounded-full px-2 py-0.5 text-[11px] ${isActive ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                    <span className={`rounded-full px-2 py-0.5 text-[11px] ${isActive ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-500'}`}>
                       {count}
                     </span>
                   </button>
                 )
               })}
             </div>
-          </PublicGlassCard>
+          </div>
 
-          {filtered.length === 0 ? (
-            <PublicGlassCard className="py-16 text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sky-50 text-sky-600">
+          {loading && published.length === 0 ? (
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="h-[430px] animate-pulse rounded-[30px] border border-slate-200 bg-white shadow-[0_20px_58px_-42px_rgba(15,23,42,0.55)]">
+                  <div className="h-48 rounded-t-[30px] bg-slate-100" />
+                  <div className="space-y-4 p-5">
+                    <div className="h-4 w-32 rounded-full bg-slate-100" />
+                    <div className="h-7 w-4/5 rounded-full bg-slate-100" />
+                    <div className="h-16 rounded-2xl bg-slate-100" />
+                    <div className="h-12 rounded-2xl bg-slate-100" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="rounded-[30px] border border-dashed border-slate-300 bg-white/[0.82] px-5 py-16 text-center shadow-[0_20px_55px_-42px_rgba(15,23,42,0.38)]">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-50 text-sky-600">
                 <PageIcon name="search" size={28} />
               </div>
-              <h3 className="mt-5 text-2xl font-black text-slate-900">No programs matched your search</h3>
+              <h3 className="mt-5 text-2xl font-black text-slate-950">No programs matched your search</h3>
               <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600">
-                Clear the current search or choose another category to view more options.
+                Clear filters to see the complete course catalogue.
               </p>
               <button
                 type="button"
@@ -174,11 +284,11 @@ export default function CoursesPage() {
                   setSearch('')
                   setFilterCat('All')
                 }}
-                className="mt-6 inline-flex rounded-full bg-gradient-to-r from-sky-600 to-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_38px_-20px_rgba(37,99,235,0.85)]"
+                className="mt-6 inline-flex rounded-full bg-slate-950 px-5 py-3 text-sm font-black text-white shadow-[0_18px_38px_-24px_rgba(15,23,42,0.85)]"
               >
                 Clear Filters
               </button>
-            </PublicGlassCard>
+            </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {filtered.map((course) => {
@@ -187,37 +297,39 @@ export default function CoursesPage() {
                 const categoryMeta = getCategoryMeta(course.category)
                 const planPrices = Array.isArray(course.plans) ? course.plans.map((plan) => Number(plan.price) || 0) : []
                 const startingPrice = planPrices.length > 0 ? Math.min(...planPrices) : Number(course.price || 0)
+                const isFree = course.isFree || startingPrice <= 0
                 const enrollmentClosed = isEnrollmentClosed(course)
                 const deadlineText = formatEnrollmentDeadline(course.enrollmentDeadline)
+                const learningType = getLearningTypeLabel(course)
                 const actionLabel = getLearningTypeLabel(course) === 'Webinar' ? 'Registration' : 'Enrollment'
 
                 return (
-                  <button
+                  <Link
                     key={course.id}
-                    type="button"
-                    onClick={() => navigate(`/courses/${course.slug || course.id}`)}
-                    className="group overflow-hidden rounded-[30px] border border-white/90 bg-white/88 text-left shadow-[0_22px_60px_-34px_rgba(15,23,42,0.45)] transition-all duration-300 hover:-translate-y-1.5 hover:border-sky-100 hover:shadow-[0_28px_70px_-34px_rgba(37,99,235,0.32)]"
+                    to={`/courses/${course.slug || course.id}`}
+                    className="group flex h-full flex-col overflow-hidden rounded-[30px] border border-slate-200/80 bg-white text-left shadow-[0_22px_60px_-42px_rgba(15,23,42,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-sky-200 hover:shadow-[0_28px_80px_-46px_rgba(37,99,235,0.5)]"
                   >
-                    <div className="relative h-52 overflow-hidden bg-gradient-to-br from-sky-50 via-white to-indigo-50">
+                    <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+                      <div
+                        className="absolute inset-0 flex items-center justify-center"
+                        style={{ background: `linear-gradient(135deg, ${categoryMeta?.color || '#0284c7'}18, #f8fafc 48%, ${categoryMeta?.color || '#0f766e'}28)` }}
+                      >
+                        <PageIcon name={getCategoryIconKey(categoryMeta?.name || course.category)} size={44} color={categoryMeta?.color || '#0284c7'} />
+                      </div>
                       {course.thumbnail ? (
                         <img
                           src={course.thumbnail}
                           alt={course.title}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="relative z-10 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                           onError={(event) => {
-                            event.currentTarget.style.display = 'none'
+                            event.currentTarget.hidden = true
                           }}
                         />
-                      ) : (
-                        <div
-                          className="flex h-full w-full items-center justify-center text-5xl"
-                          style={{ background: `linear-gradient(135deg, ${categoryMeta?.color || '#0284c7'}20, ${categoryMeta?.color || '#6366f1'}40)` }}
-                        >
-                          <PageIcon name={getCategoryIconKey(categoryMeta?.name || course.category)} size={44} color={categoryMeta?.color || '#0284c7'} />
-                        </div>
-                      )}
+                      ) : null}
 
-                      <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+                      <div className="absolute inset-x-0 bottom-0 z-20 h-24 bg-gradient-to-t from-slate-950/60 to-transparent" />
+
+                      <div className="absolute left-4 top-4 z-30 flex flex-wrap gap-2">
                         {course.badge && (
                           <span className="rounded-full bg-slate-950/80 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white">
                             {course.badge}
@@ -246,86 +358,97 @@ export default function CoursesPage() {
                       </div>
 
                       {Array.isArray(course.plans) && course.plans.length > 0 && (
-                        <div className="absolute bottom-4 right-4 rounded-full border border-white/40 bg-slate-950/65 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white backdrop-blur">
+                        <div className="absolute bottom-4 right-4 z-30 rounded-full border border-white/40 bg-slate-950/70 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white backdrop-blur">
                           {course.plans.length} plans
                         </div>
                       )}
                     </div>
 
-                    <div className="space-y-5 p-6">
+                    <div className="flex flex-1 flex-col p-5 sm:p-6">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="inline-flex items-center rounded-full border border-rose-100 bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">
-                          {getLearningTypeLabel(course)}
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan-100 bg-cyan-50 px-3 py-1 text-xs font-bold text-cyan-700">
+                          <PageIcon name={learningType === 'Webinar' ? 'video' : 'book'} size={13} />
+                          {learningType}
                         </span>
-                        <span className="inline-flex items-center rounded-full border border-sky-100 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">
-                          <span className="inline-flex items-center gap-1.5">
-                            <PageIcon name={getCategoryIconKey(categoryMeta?.name || course.category)} size={14} />
-                            {course.category || 'General'}
-                          </span>
+                        <span className="inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-700">
+                          <PageIcon name={getCategoryIconKey(categoryMeta?.name || course.category)} size={13} />
+                          <span className="truncate">{course.category || 'General'}</span>
                         </span>
                         {course.level && (
-                          <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${levelStyles[course.level] || 'border-slate-200 bg-slate-50 text-slate-600'}`}>
+                          <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${levelStyles[course.level] || 'border-slate-200 bg-slate-50 text-slate-600'}`}>
                             {course.level}
                           </span>
                         )}
                       </div>
 
-                      <div>
-                        <h3 className="text-xl font-black leading-tight text-slate-900">{course.title}</h3>
-                        <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">{course.description}</p>
+                      <div className="mt-5">
+                        <h3 className="line-clamp-2 min-h-[3.25rem] text-xl font-black leading-tight text-slate-950">{course.title}</h3>
+                        <p className="mt-3 line-clamp-3 min-h-[4.5rem] text-sm leading-6 text-slate-600">{course.description}</p>
                         {isAvailableSoon ? (
-                          <p className="mt-3 text-xs font-semibold text-fuchsia-700">
+                          <p className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-fuchsia-700">
+                            <CalendarClock aria-hidden="true" size={14} />
                             {learningTypeLabel(course)}
                           </p>
                         ) : deadlineText && (
-                          <p className={`mt-3 text-xs font-semibold ${enrollmentClosed ? 'text-rose-600' : 'text-amber-700'}`}>
+                          <p className={`mt-3 inline-flex items-center gap-1.5 text-xs font-bold ${enrollmentClosed ? 'text-rose-600' : 'text-amber-700'}`}>
+                            <CalendarClock aria-hidden="true" size={14} />
                             {enrollmentClosed ? `${actionLabel} closed on ${deadlineText}` : `${actionLabel} closes on ${deadlineText}`}
                           </p>
                         )}
                       </div>
 
-                      <div className="grid gap-2 text-sm text-slate-500 sm:grid-cols-2">
-                        <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
-                          <span className="inline-flex items-center gap-1.5">
+                      <div className="mt-5 grid gap-2 text-sm text-slate-500 sm:grid-cols-2">
+                        <div className="min-w-0 rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2.5">
+                          <span className="inline-flex max-w-full items-center gap-1.5">
                             <PageIcon name="mentor" size={14} />
-                            {course.instructor || 'Mentor Support'}
+                            <span className="truncate">{course.instructor || 'Mentor Support'}</span>
                           </span>
                         </div>
-                        <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
-                          <span className="inline-flex items-center gap-1.5">
+                        <div className="min-w-0 rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2.5">
+                          <span className="inline-flex max-w-full items-center gap-1.5">
                             <PageIcon name="clock" size={14} />
-                            {course.duration || 'Flexible Schedule'}
+                            <span className="truncate">{course.duration || 'Flexible Schedule'}</span>
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex items-end justify-between gap-4">
+                      <div className="mt-auto flex items-end justify-between gap-4 pt-6">
                         <div>
-                          <div className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                          <div className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
                             {Array.isArray(course.plans) && course.plans.length > 0 ? 'Starting At' : 'Fee'}
                           </div>
-                          <div className="mt-1 text-2xl font-black text-slate-900">
-                            {course.isFree ? 'FREE' : `₹${startingPrice.toLocaleString('en-IN')}`}
+                          <div className="mt-1 flex items-center gap-1 text-2xl font-black text-slate-950">
+                            {isFree ? 'FREE' : (
+                              <>
+                                <IndianRupee aria-hidden="true" size={21} strokeWidth={3} />
+                                {startingPrice.toLocaleString('en-IN')}
+                              </>
+                            )}
                           </div>
                         </div>
 
-                        <div className={`inline-flex rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
+                        <div className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-black transition-all duration-300 ${
                           isEnrolled
                             ? 'border border-emerald-200 bg-emerald-50 text-emerald-700'
                             : enrollmentClosed
                               ? 'border border-rose-200 bg-rose-50 text-rose-700'
-                              : 'bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-[0_16px_32px_-18px_rgba(37,99,235,0.85)]'
+                              : 'bg-slate-950 text-white shadow-[0_16px_32px_-20px_rgba(15,23,42,0.88)]'
                         }`}>
                           {isEnrolled ? 'Continue' : enrollmentClosed ? `${actionLabel} Closed` : 'View Details'}
+                          {!enrollmentClosed && <ArrowRight aria-hidden="true" size={16} />}
                         </div>
                       </div>
                     </div>
-                  </button>
+                  </Link>
                 )
               })}
             </div>
           )}
+<<<<<<< HEAD
         </PublicSection>
+=======
+        </section>
+>>>>>>> 9731e34bcee12cdc11608e104adaab9a8d8ed9d6
       </div>
     </>
   )

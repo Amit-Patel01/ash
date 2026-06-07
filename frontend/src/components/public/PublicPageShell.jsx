@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 
 const joinClasses = (...parts) => parts.filter(Boolean).join(' ')
+const NAVBAR_SHELL_OFFSET = '-mt-20 pt-20 lg:-mt-24 lg:pt-24'
 
 function ActionButton({ action }) {
   const classes = joinClasses(
@@ -85,7 +86,12 @@ export default function PublicPageShell({
   compact = false,
 }) {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(186,230,253,0.55),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(224,231,255,0.7),_transparent_28%),linear-gradient(180deg,_#f8fcff_0%,_#f4f8ff_52%,_#f8fbff_100%)] text-slate-900">
+    <div
+      className={joinClasses(
+        'relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(186,230,253,0.55),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(224,231,255,0.7),_transparent_28%),linear-gradient(180deg,_#f8fcff_0%,_#f4f8ff_52%,_#f8fbff_100%)] text-slate-900',
+        NAVBAR_SHELL_OFFSET
+      )}
+    >
       <div className="pointer-events-none absolute inset-0 opacity-[0.35] [background-image:linear-gradient(rgba(37,99,235,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(37,99,235,0.06)_1px,transparent_1px)] [background-size:56px_56px]" />
       <div className="pointer-events-none absolute left-[-10%] top-24 h-72 w-72 rounded-full bg-sky-300/35 blur-3xl" />
       <div className="pointer-events-none absolute right-[-8%] top-16 h-80 w-80 rounded-full bg-indigo-300/35 blur-3xl" />

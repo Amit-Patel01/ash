@@ -1,7 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
-import { auth } from '../config/firebase'
-import { api } from '../config/api'
 const avatarColors = [
   'from-blue-500 to-cyan-500',
   'from-purple-500 to-pink-500',
@@ -23,9 +21,6 @@ export default function AdminEmployees() {
   
   // Tab/Section control in modal
   const [activeTab, setActiveTab] = useState('basic')
-
-  // Migration logic
-  const [isSyncing, setIsSyncing] = useState(false)
 
   const [formData, setFormData] = useState({
     displayName: '',
@@ -229,28 +224,6 @@ export default function AdminEmployees() {
     } catch (err) {
       console.error("Failed to toggle status:", err)
       alert(err.message || "Unable to update account status.")
-    }
-  }
-
-  const downloadEmployeeCv = async (employee) => {
-    const id = employee.uid || employee.id
-    try {
-      const token = await auth.currentUser?.getIdToken()
-      if (!token) throw new Error("Please sign in again to continue.")
-      const res = await fetch(api.adminEmployeeCvDownload(id), { headers: { Authorization: `Bearer ${token}` } })
-      if (!res.ok) {
-        const errBody = await res.json().catch(() => ({}))
-        throw new Error(errBody.message || "Unable to download the CV.")
-      }
-      const blob = await res.blob()
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = url
-      a.download = employee.cvFileName || "resume"
-      a.click()
-      URL.revokeObjectURL(url)
-    } catch (err) {
-      alert(err.message || "Unable to download the CV.")
     }
   }
 

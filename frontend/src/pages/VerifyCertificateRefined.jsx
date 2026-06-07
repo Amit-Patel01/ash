@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   Search,
@@ -127,7 +127,7 @@ export default function VerifyCertificateRefined() {
     { label: 'Download Formats', value: 'PNG + PDF' },
   ]
 
-  const verifyCertificate = async (incomingId = certId, options = {}) => {
+  const verifyCertificate = useCallback(async (incomingId, options = {}) => {
     const { syncUrl = true } = options
     const normalizedId = String(incomingId || '').trim().toUpperCase()
     if (!normalizedId) return
@@ -163,13 +163,13 @@ export default function VerifyCertificateRefined() {
       setError(err.message || 'An error occurred while verifying the document. Please try again.')
       setStatus('error')
     }
-  }
+  }, [linkedId, navigate])
 
   useEffect(() => {
     if (!linkedId) return
     setCertId(linkedId.toUpperCase())
     verifyCertificate(linkedId, { syncUrl: false })
-  }, [linkedId])
+  }, [linkedId, verifyCertificate])
 
   const handleCopyId = async () => {
     if (!certData?.certificate_id) return

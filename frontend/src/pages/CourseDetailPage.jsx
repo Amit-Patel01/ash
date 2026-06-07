@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { useStore } from '../store/StoreContext'
@@ -237,10 +237,7 @@ export default function CourseDetailPage() {
   const learningType = normalizeLearningType(course)
   const itemLabel = getLearningTypeLabel(course)
   const assignedEmployeeIds = [course?.assignedEmployeeId, course?.assignedEmployeeRef].filter(Boolean)
-  const { instructor, publicProfileId } = useMemo(
-    () => resolveInstructorProfile(course, users, teamMembers),
-    [course, users, teamMembers]
-  )
+  const { instructor, publicProfileId } = resolveInstructorProfile(course, users, teamMembers)
 
   if (!course) {
     return (

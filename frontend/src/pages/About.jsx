@@ -1,10 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import SEO from '../components/SEO'
 import logo from '../assets/logo.png'
 import msmeLogo from '../assets/msme.png'
 import msmeQR from '../assets/msme-qr.png'
+import {
+  buildTeamProfiles,
+  fetchPublicTeamProfiles,
+  getTeamMemberImageUrl,
+  getTeamMemberProfileId,
+} from '../utils/teamProfiles'
 
 /* ══════════════════════════════════════════════════════════
    STYLES
@@ -570,59 +576,39 @@ const AICTE_STATS = [
    COMPONENT
 ══════════════════════════════════════════════════════════ */
 const About = () => {
-  const { users } = useStore()
+  const { users, teamMembers } = useStore()
+  const [publicTeam, setPublicTeam] = useState([])
+  const [teamLoading, setTeamLoading] = useState(true)
   const [loaded, setLoaded] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
   const role = useTyping('Full-Stack Developer & Tech Entrepreneur')
 
-  /* ── Team merge (real Firebase data only) ── */
-  const finalTeam = (() => {
-    const safeUsers = Array.isArray(users) ? users : []
-    const out = safeUsers
-      .filter((user) => user?.showOnTeam && user?.status === 'active')
-      .map((user) => ({
-        ...user,
-        id: user.uid || user.id,
-        displayName: user.displayName || user.name || 'Team Member',
-        jobTitle: user.jobTitle || user.role || 'Team Member',
-      }))
+  const sortedTeam = useMemo(
+    () => buildTeamProfiles({ publicTeam, users, teamMembers }),
+    [publicTeam, users, teamMembers]
+  )
 
-    out.sort((a, b) => {
-      const idA = a.employeeId || 'ZZZ'
-      const idB = b.employeeId || 'ZZZ'
-      return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' })
-    })
+  useEffect(() => {
+    let isMounted = true
 
-    return out
-  })()
+    fetchPublicTeamProfiles()
+      .then((profiles) => {
+        if (isMounted) setPublicTeam(profiles)
+      })
+      .catch((error) => {
+        console.warn('Public team profiles could not be loaded:', error)
+      })
+      .finally(() => {
+        if (isMounted) setTeamLoading(false)
+      })
 
-  const sortedTeam = finalTeam;
-
-  const getImageUrl = m => {
-    if (!m) return null
-    if (m.avatarSource === 'custom' && m.customImageUrl) return m.customImageUrl
-    if (m.avatarSource === 'linkedin' && m.linkedin && !m.linkedin.includes('linkedin.com')) return m.linkedin
-    
-    let gb = m.github;
-    if (gb) {
-      if (gb.startsWith('http')) {
-        if (!gb.endsWith('.png')) {
-          gb = gb.replace(/\/$/, '');
-          return `${gb}.png`;
-        }
-        return gb;
-      } else {
-        return `https://github.com/${gb}.png`;
-      }
+    return () => {
+      isMounted = false
     }
-    return null
-  }
+  }, [])
 
   const nextSlide = () => setActiveIndex(i => (sortedTeam.length > 0 ? (i + 1) % sortedTeam.length : 0))
   const prevSlide = () => setActiveIndex(i => (sortedTeam.length > 0 ? (i === 0 ? sortedTeam.length - 1 : i - 1) : 0))
-
-  const nextSlideMentor = nextSlide;
-  const prevSlideMentor = prevSlide;
 
   const renderSlider = (teamArray, activeIdx, prevFn, nextFn) => (
     <div className="abt-slider-wrap">
@@ -633,8 +619,8 @@ const About = () => {
       )}
 
       {teamArray.map((m, i) => {
-        const imgUrl = getImageUrl(m)
-        const profileId = encodeURIComponent(m.uid || m.employeeId || m.id || m.email || m.displayName || 'team-member')
+        const imgUrl = getTeamMemberImageUrl(m)
+        const profileId = getTeamMemberProfileId(m)
         const total = teamArray.length;
         let diff = (i - activeIdx) % total;
         if (diff < -Math.floor(total/2)) diff += total;
@@ -877,11 +863,11 @@ const About = () => {
                   </h3>
                   <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                     <span style={{ fontSize:10, fontWeight:700, padding:'3px 12px', borderRadius:999, background:'rgba(255,255,255,.18)', color:'white', letterSpacing:'.06em', textTransform:'uppercase' }}>MSME · Govt. of India</span>
-                    <span style={{ fontSize:10, fontWeight:700, padding:'3px 12px', borderRadius:999, background:'rgba(255,255,255,.12)', color:'rgba(255,255,255,.8)', letterSpacing:'.06em', textTransform:'uppercase' }}>AICTE (In Process)</span>
+                    <span style={{ fontSize:10, fontWeight:700, padding:'3px 12px', borderRadius:999, background:'rgba(34,197,94,.18)', color:'#bbf7d0', letterSpacing:'.06em', textTransform:'uppercase' }}>AICTE Approved</span>
                   </div>
                 </div>
                 <p style={{ color:'rgba(255,255,255,.82)', fontSize:'clamp(13px,2vw,14px)', lineHeight:1.7, marginBottom:10 }}>
-                  AmitSolutionHub is a <strong style={{ color:'white' }}>MSME-registered</strong> organization under the Ministry of MSME, Government of India. 
+                  AmitSolutionHub is a <strong style={{ color:'white' }}>MSME-registered</strong> and <strong style={{ color:'white' }}>AICTE-approved</strong> organization.
                   We follow all statutory guidelines to ensure high-quality delivery and authentic certification.
                 </p>
                 <div style={{ display:'flex', alignItems:'center', gap:12, flexWrap:'wrap' }}>
@@ -989,21 +975,30 @@ const About = () => {
           </section>
 
           {/* ═══ TEAM ════════════════════════════════════════════════ */}
-          {sortedTeam.length > 0 && (
-            <>
-              <div className="abt-div"/>
-              <section id="team-section" style={{ marginBottom:'clamp(40px,6vw,60px)', scrollMarginTop:100 }}>
-                <div style={{ textAlign:'center', marginBottom:36 }}>
-                  <div className="abt-pill" style={{ marginBottom:14 }}>Guidance & Delivery</div>
-                  <h2 className="abt-stitle">Meet the <span className="abt-grad">Team</span></h2>
-                  <p style={{ color:'#64748b',fontSize:14,marginTop:10,lineHeight:1.7 }}>
-                    The talented professionals and mentors powering <strong style={{ color:'#6366f1' }}>AmitSolutionHub</strong>
-                  </p>
-                </div>
-                {renderSlider(sortedTeam, activeIndex, prevSlide, nextSlide)}
-              </section>
-            </>
-          )}
+          <div className="abt-div"/>
+          <section id="team-section" style={{ marginBottom:'clamp(40px,6vw,60px)', scrollMarginTop:100 }}>
+            <div style={{ textAlign:'center', marginBottom:36 }}>
+              <div className="abt-pill" style={{ marginBottom:14 }}>Guidance & Delivery</div>
+              <h2 className="abt-stitle">Meet the <span className="abt-grad">Team</span></h2>
+              <p style={{ color:'#64748b',fontSize:14,marginTop:10,lineHeight:1.7 }}>
+                The talented professionals and mentors powering <strong style={{ color:'#6366f1' }}>AmitSolutionHub</strong>
+              </p>
+            </div>
+            {sortedTeam.length > 0 ? (
+              renderSlider(sortedTeam, activeIndex, prevSlide, nextSlide)
+            ) : (
+              <div className="abt-glass" style={{ padding:'clamp(22px,4vw,32px)', textAlign:'center', maxWidth:560, margin:'0 auto' }}>
+                <h3 style={{ fontFamily:'Syne,sans-serif', fontWeight:800, color:'#0f172a', fontSize:'1.05rem', marginBottom:8 }}>
+                  {teamLoading ? 'Loading team profiles...' : 'Team profiles are being updated'}
+                </h3>
+                <p style={{ color:'#64748b', fontSize:14, lineHeight:1.7 }}>
+                  {teamLoading
+                    ? 'Please wait while we fetch the latest public team members.'
+                    : 'Enabled public profiles will appear here automatically.'}
+                </p>
+              </div>
+            )}
+          </section>
 
           <div className="abt-div"/>
 

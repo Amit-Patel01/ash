@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 
 export default function CustomerOverview() {
   const { currentUser, userProfile } = useAuth()
-  const { orders, projects } = useStore()
+  const { orders } = useStore()
 
   const myOrders = useMemo(() => {
     return orders.filter(o => o.customer_email === currentUser?.email || o.customer_uid === currentUser?.uid)

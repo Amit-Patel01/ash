@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { auth } from '../config/firebase'
 import { api, readApiJson } from '../config/api'
 import { useStore } from '../store/StoreContext'
@@ -55,16 +55,16 @@ export default function AdminCoupons() {
     [courses]
   )
 
-  const getAuthHeaders = async () => {
+  const getAuthHeaders = useCallback(async () => {
     const token = await auth.currentUser?.getIdToken()
     if (!token) throw new Error('Please sign in again to continue.')
     return {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     }
-  }
+  }, [])
 
-  const loadCoupons = async () => {
+  const loadCoupons = useCallback(async () => {
     setLoading(true)
     try {
       const headers = await getAuthHeaders()
@@ -77,11 +77,11 @@ export default function AdminCoupons() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [getAuthHeaders])
 
   useEffect(() => {
     loadCoupons()
-  }, [])
+  }, [loadCoupons])
 
   const resetForm = () => {
     setEditingCoupon(null)

@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import TermsAndConditions from '../components/TermsAndConditions'
 
 export default function CustomerSignup() {
   const { signup } = useAuth()
-  const navigate = useNavigate()
   const [showTerms, setShowTerms] = useState(false)
   const [agreed, setAgreed] = useState(false)
   const [submitted, setSubmitted] = useState(false)

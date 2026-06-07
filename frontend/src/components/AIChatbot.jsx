@@ -97,14 +97,6 @@ export default function AIChatbot() {
     const messageText = (text || input).trim()
     if (!messageText || loading) return
 
-    if (assistantStatus.checked && !assistantStatus.available) {
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: assistantStatus.message || 'AI assistant is unavailable right now. Please try again later.',
-      }])
-      return
-    }
-
     const userMessage = { role: 'user', content: messageText }
     const newMessages = [...messages, userMessage]
     setMessages(newMessages)
@@ -371,9 +363,9 @@ export default function AIChatbot() {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder={assistantStatus.checked && !assistantStatus.available ? 'AI assistant is offline right now' : 'Ask anything...'}
+                placeholder="Ask anything..."
                 rows={1}
-                disabled={loading || (assistantStatus.checked && !assistantStatus.available)}
+                disabled={loading}
                 style={{
                   flex: 1,
                   background: 'rgba(255,255,255,0.06)',
@@ -396,7 +388,7 @@ export default function AIChatbot() {
               <motion.button
                 id="ai-chat-send"
                 onClick={() => sendMessage()}
-                disabled={loading || !input.trim() || (assistantStatus.checked && !assistantStatus.available)}
+                disabled={loading || !input.trim()}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 style={{
