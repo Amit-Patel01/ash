@@ -362,6 +362,7 @@ app.use("/api/razorpay", require("./routes/razorpay"));
 app.use("/api/coupons", require("./routes/coupons"));
 app.use("/api/ai", require("./routes/ai"));
 app.use("/api/notify", require("./routes/notify"));
+app.use("/api/chat", require("./routes/chat"));
 
 if (fs.existsSync(frontendDistDir)) {
   app.get("*", (req, res) => {

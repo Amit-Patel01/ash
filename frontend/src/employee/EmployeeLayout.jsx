@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import NotificationBell from '../components/NotificationBell'
@@ -58,6 +58,83 @@ const iconMap = {
   ),
 }
 
+const getFilteredNavItems = (userRole) => {
+  const normalized = String(userRole || '').trim().toLowerCase()
+  if (!normalized || normalized === 'admin') return navItems
+
+  return navItems.filter((item) => {
+    // Dashboard, My Tasks, and Profile are always allowed for all roles
+    if (['/employee', '/employee/tasks', '/employee/profile'].includes(item.path)) {
+      return true
+    }
+
+    if (item.path === '/employee/projects') {
+      return [
+        'hr & recruitment executive',
+        'web development intern/executive',
+        'project coordinator',
+        'operations executive',
+        'senior developer',
+        'junior developer',
+        'project manager',
+        'frontend developer',
+        'backend developer',
+        'devops engineer',
+        'lms coordinator',
+        'placement & career support executive',
+        'employee',
+      ].includes(normalized)
+    }
+
+    if (item.path === '/employee/course-manage') {
+      return [
+        'lms coordinator',
+        'training coordinator',
+        'content writer',
+        'web development intern/executive',
+        'senior developer',
+        'junior developer',
+        'frontend developer',
+        'backend developer',
+        'developer',
+      ].includes(normalized)
+    }
+
+    if (item.path === '/employee/broadcast') {
+      return [
+        'marketing executive',
+        'hr & recruitment executive',
+        'project manager',
+        'operations executive',
+      ].includes(normalized)
+    }
+
+    if (item.path === '/employee/chat') {
+      return [
+        'student support executive',
+        'hr & recruitment executive',
+        'web development intern/executive',
+        'placement & career support executive',
+        'business development executive (bde)',
+        'marketing executive',
+        'project coordinator',
+        'operations executive',
+        'support agent',
+        'developer',
+      ].includes(normalized)
+    }
+
+    if (item.path === '/employee/sell-project') {
+      return [
+        'business development executive (bde)',
+        'sales executive',
+      ].includes(normalized)
+    }
+
+    return true
+  })
+}
+
 export default function EmployeeLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -77,13 +154,29 @@ export default function EmployeeLayout() {
   const employeeRole = userProfile?.jobTitle || userProfile?.role || 'employee'
   const employeeInitial = employeeName.charAt(0).toUpperCase()
 
+  const filteredNavItems = useMemo(() => {
+    return getFilteredNavItems(employeeRole)
+  }, [employeeRole])
+
+  // Enforce Role-Based Access Control (RBAC) path protection
+  useEffect(() => {
+    const isPathAllowed = filteredNavItems.some(item => 
+      item.path === '/employee' 
+        ? location.pathname === '/employee'
+        : location.pathname.startsWith(item.path)
+    )
+    if (!isPathAllowed && location.pathname.startsWith('/employee')) {
+      navigate('/employee', { replace: true })
+    }
+  }, [location.pathname, filteredNavItems, navigate])
+
   const currentNavItem = useMemo(() => {
-    return navItems.find(item =>
+    return filteredNavItems.find(item =>
       item.path === '/employee'
         ? location.pathname === '/employee'
         : location.pathname.startsWith(item.path)
-    ) || navItems[0]
-  }, [location.pathname])
+    ) || filteredNavItems[0] || navItems[0]
+  }, [location.pathname, filteredNavItems])
 
   return (
     <div className="relative min-h-screen overflow-hidden" style={{ background: 'linear-gradient(135deg, #020617 0%, #0a0f1e 40%, #050a18 100%)' }}>
@@ -159,7 +252,7 @@ export default function EmployeeLayout() {
 
           {/* Nav */}
           <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
-            {navItems.map((item) => {
+            {filteredNavItems.map((item) => {
               const isActive = item.path === '/employee'
                 ? location.pathname === '/employee'
                 : location.pathname.startsWith(item.path)

@@ -99,41 +99,89 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
         </div>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-3">
-        <button
-          onClick={() => setModalOpen(true)}
-          className="rounded-2xl px-6 py-3 text-sm font-bold text-slate-950 transition-colors shadow-lg shadow-amber-500/20"
-          style={{ backgroundColor: template.accentColor }}
-        >
-          View {documentMeta.shortLabel}
-        </button>
-        <Link
-          to={`/verify?id=${certificate.certificate_id}`}
-          className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/10"
-        >
-          Verify
-        </Link>
-        <button
-          onClick={() => onCopy(certificate.certificate_id)}
-          className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/10"
-        >
-          {copiedId === certificate.certificate_id ? 'Copied ID' : 'Copy ID'}
-        </button>
-        <button
-          onClick={() => handleDownload('png')}
-          disabled={downloading === 'png'}
-          className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {downloading === 'png' ? 'Generating PNG...' : 'Download PNG'}
-        </button>
-        <button
-          onClick={() => handleDownload('pdf')}
-          disabled={downloading === 'pdf'}
-          className="rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-300 transition hover:bg-amber-400/15 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {downloading === 'pdf' ? 'Generating PDF...' : 'Download PDF'}
-        </button>
-      </div>
+      {(() => {
+        const getCertDate = (c) => {
+          if (c.approval_date?.seconds) return new Date(c.approval_date.seconds * 1000);
+          if (c.approval_date) return new Date(c.approval_date);
+          if (c.createdAt?.seconds) return new Date(c.createdAt.seconds * 1000);
+          if (c.createdAt) return new Date(c.createdAt);
+          return new Date();
+        };
+        const dateObj = getCertDate(certificate);
+        const issueYear = dateObj.getFullYear();
+        const issueMonth = dateObj.getMonth() + 1;
+        const publicVerifyUrl = `${window.location.origin}/verify?id=${certificate.certificate_id}`;
+        const linkedInAddUrl = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(documentLabel)}&organizationName=${encodeURIComponent(template.organizationName || 'Amit Solution Hub')}&issueYear=${issueYear}&issueMonth=${issueMonth}&certUrl=${encodeURIComponent(publicVerifyUrl)}&certId=${encodeURIComponent(certificate.certificate_id)}`;
+        const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(publicVerifyUrl)}`;
+        const xShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`I'm excited to share that I have completed the course "${certificate.courseName}" with Amit Solution Hub! You can verify my credential here:`)}&url=${encodeURIComponent(publicVerifyUrl)}`;
+
+        return (
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => setModalOpen(true)}
+              className="rounded-2xl px-6 py-3 text-sm font-bold text-slate-950 transition-colors shadow-lg shadow-amber-500/20 animate-pulse hover:animate-none"
+              style={{ backgroundColor: template.accentColor }}
+            >
+              View {documentMeta.shortLabel}
+            </button>
+            <Link
+              to={`/verify?id=${certificate.certificate_id}`}
+              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+            >
+              Verify Link
+            </Link>
+            <button
+              onClick={() => onCopy(certificate.certificate_id)}
+              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+            >
+              {copiedId === certificate.certificate_id ? 'Copied ID' : 'Copy ID'}
+            </button>
+            <button
+              onClick={() => handleDownload('png')}
+              disabled={downloading === 'png'}
+              className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {downloading === 'png' ? 'Generating PNG...' : 'Download PNG'}
+            </button>
+            <button
+              onClick={() => handleDownload('pdf')}
+              disabled={downloading === 'pdf'}
+              className="rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-300 transition hover:bg-amber-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {downloading === 'pdf' ? 'Generating PDF...' : 'Download PDF'}
+            </button>
+            
+            {/* Social Sharing integrations */}
+            <a
+              href={linkedInAddUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-2xl border border-blue-400/20 bg-blue-400/10 px-4 py-3 text-sm font-semibold text-blue-300 transition hover:bg-blue-400/15 flex items-center gap-1.5 shadow-lg shadow-blue-500/5"
+            >
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              Add to LinkedIn
+            </a>
+            <a
+              href={linkedInShareUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-2xl border border-slate-400/20 bg-slate-400/10 px-4 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-400/15 flex items-center gap-1.5"
+            >
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              Share Feed
+            </a>
+            <a
+              href={xShareUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10 flex items-center gap-1.5"
+            >
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              Share on X
+            </a>
+          </div>
+        );
+      })()}
     </div>
   )
 }

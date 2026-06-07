@@ -1,9 +1,4 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
-import {
-  collection, addDoc, onSnapshot, query, orderBy, doc, setDoc,
-  updateDoc, deleteDoc, serverTimestamp, where, getDocs, limit
-} from 'firebase/firestore'
-import { db } from '../config/firebase'
 import api, { readApiJson } from '../config/api'
 import { useAuth } from './AuthContext'
 
@@ -13,9 +8,6 @@ const AI_ASSISTANT_NAME = 'SolutionHub AI'
 
 const getTimestampMs = (timestamp) => {
   if (!timestamp) return 0
-  if (typeof timestamp.toMillis === 'function') return timestamp.toMillis()
-  if (typeof timestamp.seconds === 'number') return timestamp.seconds * 1000
-
   const parsed = new Date(timestamp).getTime()
   return Number.isNaN(parsed) ? 0 : parsed
 }
@@ -52,19 +44,6 @@ const dedupeChats = (chatList, currentUserId) => {
   })
 }
 
-const isDirectChatWith = (chat, currentUserId, otherUserId) => {
-  if (!chat || chat.isGroup) return false
-  const participants = Array.isArray(chat.participants) ? chat.participants : []
-  return participants.length === 2 &&
-    participants.includes(currentUserId) &&
-    participants.includes(otherUserId)
-}
-
-const getDirectChatDocId = (currentUserId, otherUserId) => {
-  const safeKey = getDirectPairKey(currentUserId, otherUserId).replace(/[^A-Za-z0-9_-]/g, '_')
-  return `direct_${safeKey}`
-}
-
 const getReadableName = (person = {}, fallback = 'Unknown') => {
   const rawName = String(person.displayName || person.name || '').trim()
   const rawEmail = String(person.email || '').trim()
@@ -80,10 +59,12 @@ export function ChatProvider({ children }) {
   const [chats, setChats] = useState([])
   const [activeChatId, setActiveChatId] = useState(null)
   const [messages, setMessages] = useState([])
-  const [userStatuses, setUserStatuses] = useState({})
-  const [typingUsers, setTypingUsers] = useState({})
+  const [userStatuses] = useState({})
+  const [typingUsers] = useState({})
   const [unreadCounts, setUnreadCounts] = useState({})
-  const typingTimeoutRef = useRef(null)
+
+  const prevChatsRef = useRef([])
+  const activeChatIdRef = useRef(null)
 
   useEffect(() => {
     if (userProfile) {
@@ -93,254 +74,136 @@ export function ChatProvider({ children }) {
     }
   }, [userProfile])
 
-  // Listen to user's chats
   useEffect(() => {
-    if (!currentUser?.uid) return
+    activeChatIdRef.current = activeChatId
+  }, [activeChatId])
 
-    const q = query(
-      collection(db, 'chats'),
-      where('participants', 'array-contains', currentUser.uid)
-    )
+  // Poll chats / rooms list
+  useEffect(() => {
+    if (!currentUser?.uid) {
+      setChats([])
+      setUnreadCounts({})
+      return
+    }
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const chatsData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
-      chatsData.sort((a, b) => {
-        return getChatSortMs(b) - getChatSortMs(a)
-      })
-      const dedupedChats = dedupeChats(chatsData, currentUser.uid)
-      setChats(dedupedChats)
-      setActiveChatId(prev => {
-        if (!prev || dedupedChats.some(chat => chat.id === prev)) return prev
+    const roleParam = (currentUser?.role && ['employee', 'staff'].includes(String(currentUser.role).toLowerCase())) ? currentUser.role : null
 
-        const previousChat = chatsData.find(chat => chat.id === prev)
-        if (!previousChat) return prev
-
-        const replacementKey = getConversationKey(previousChat, currentUser.uid)
-        const replacementChat = dedupedChats.find(chat => getConversationKey(chat, currentUser.uid) === replacementKey)
-        return replacementChat?.id || prev
-      })
-
-      // Handle notifications
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === 'modified') {
-          const chat = change.doc.data()
-          const isNewMessage = chat.lastSenderId !== currentUser.uid
-          const isActiveChat = change.doc.id === activeChatId
-          const tabIsVisible = document.visibilityState === 'visible'
-          const canNotify = typeof window !== 'undefined' && 'Notification' in window
-
-          if (isNewMessage && (!isActiveChat || !tabIsVisible)) {
-            if (canNotify && window.Notification.permission === 'granted') {
-              new window.Notification(chat.lastSenderName || 'New Message', {
-                body: chat.lastMessage || 'New message received.',
-                icon: '/favicon.ico',
-              })
-            }
+    const fetchRooms = async () => {
+      try {
+        const response = await fetch(api.supportChat.rooms(roleParam, currentUser.uid))
+        if (!response.ok) return
+        const data = await readApiJson(response)
+        
+        if (data.success && Array.isArray(data.rooms)) {
+          let userChats = data.rooms
+          const currentRole = String(currentUser.role || '').toLowerCase()
+          
+          if (currentRole === 'customer') {
+            userChats = userChats.filter(r => r.participants.includes(currentUser.uid))
           }
+          
+          userChats.sort((a, b) => getChatSortMs(b) - getChatSortMs(a))
+          const dedupedChats = dedupeChats(userChats, currentUser.uid)
+          
+          // Handle web notifications for new messages in other chat rooms
+          if (prevChatsRef.current && prevChatsRef.current.length > 0) {
+            dedupedChats.forEach(chat => {
+              const prevChat = prevChatsRef.current.find(c => c.id === chat.id)
+              const hasNewMessage = !prevChat || chat.lastMessageAt !== prevChat.lastMessageAt
+              if (hasNewMessage && chat.lastSenderId !== currentUser.uid && chat.id !== activeChatIdRef.current) {
+                const canNotify = typeof window !== 'undefined' && 'Notification' in window
+                if (canNotify && window.Notification.permission === 'granted') {
+                  new window.Notification(chat.lastSenderName || 'New Message', {
+                    body: chat.lastMessage || 'New message received.',
+                    icon: '/favicon.ico',
+                  })
+                }
+              }
+            })
+          }
+          
+          prevChatsRef.current = dedupedChats
+          setChats(dedupedChats)
+
+          // Map unread counts from rooms
+          const unreads = {}
+          dedupedChats.forEach(chat => {
+            unreads[chat.id] = chat.unreadCount || 0
+          })
+          setUnreadCounts(unreads)
         }
-      })
-    })
+      } catch (err) {
+        console.warn('Error fetching rooms:', err)
+      }
+    }
 
-    return unsubscribe
-  }, [activeChatId, currentUser?.uid])
+    fetchRooms()
+    const interval = setInterval(fetchRooms, 2000)
+    return () => clearInterval(interval)
+  }, [currentUser])
 
-  // Listen to messages in active chat
+  // Poll messages for the active chat
   useEffect(() => {
     if (!activeChatId) {
       setMessages([])
       return
     }
 
-    const q = query(
-      collection(db, 'chats', activeChatId, 'messages'),
-      orderBy('timestamp', 'asc')
-    )
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const msgs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
-      setMessages(msgs)
-    })
-
-    return unsubscribe
-  }, [activeChatId])
-
-  // Listen to user statuses
-  useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'status'), (snapshot) => {
-      const statuses = {}
-      snapshot.docs.forEach(d => {
-        statuses[d.id] = d.data()
-      })
-      setUserStatuses(statuses)
-    })
-    return unsubscribe
-  }, [])
-
-  // Listen to typing indicators in active chat
-  useEffect(() => {
-    if (!activeChatId) {
-      setTypingUsers({})
-      return
-    }
-
-    const unsubscribe = onSnapshot(
-      collection(db, 'chats', activeChatId, 'typing'),
-      (snapshot) => {
-        const typing = {}
-        snapshot.docs.forEach(d => {
-          if (d.id !== currentUser?.uid && d.data().isTyping) {
-            typing[d.id] = d.data()
-          }
-        })
-        setTypingUsers(typing)
+    const fetchMessages = async () => {
+      try {
+        const response = await fetch(api.supportChat.messages(activeChatId))
+        if (!response.ok) return
+        const data = await readApiJson(response)
+        if (data.success && Array.isArray(data.messages)) {
+          setMessages(data.messages)
+        }
+      } catch (err) {
+        console.warn('Error fetching messages:', err)
       }
-    )
-
-    return unsubscribe
-  }, [activeChatId, currentUser?.uid])
-
-  // Track unread messages
-  useEffect(() => {
-    if (!currentUser?.uid || chats.length === 0) {
-      setUnreadCounts({})
-      return
     }
 
-    const chatIds = new Set(chats.map(chat => chat.id))
-    setUnreadCounts(prev => {
-      const next = {}
-      Object.entries(prev).forEach(([chatId, count]) => {
-        if (chatIds.has(chatId)) next[chatId] = count
-      })
-      return next
-    })
-
-    const unsubscribes = chats.map(chat => {
-      const chatUnreadRef = collection(db, 'chats', chat.id, 'messages')
-      return onSnapshot(chatUnreadRef, (snapshot) => {
-        let count = 0
-        snapshot.docs.forEach(d => {
-          const msg = d.data()
-          if (msg.senderId !== currentUser.uid && msg.status !== 'read') {
-            count++
-          }
-        })
-        setUnreadCounts(prev => ({ ...prev, [chat.id]: count }))
-      })
-    })
-
-    return () => unsubscribes.forEach(unsub => unsub())
-  }, [chats, currentUser?.uid])
+    fetchMessages()
+    const interval = setInterval(fetchMessages, 1200)
+    return () => clearInterval(interval)
+  }, [activeChatId])
 
   const getOrCreateChat = useCallback(async (otherUserId, otherUserName, otherUserEmail, otherUserRole) => {
     if (!currentUser?.uid || !otherUserId || otherUserId === currentUser.uid) return null
 
-    // SECURITY: Prevent customer-to-customer chat creation
     const currentRole = String(currentUser.role || '').toLowerCase()
     const otherRole = String(otherUserRole || '').toLowerCase()
-    
-    console.log(`[Chat] Creating chat - currentRole: ${currentRole}, otherRole: ${otherRole}, otherUser: ${otherUserEmail}`)
-    
+
     if (currentRole === 'customer' && otherRole === 'customer') {
       console.warn("Unauthorized chat: Customers cannot chat with other customers.")
       return null
     }
 
-    // Check if chat already exists in local state first.
-    const existingChat = chats
-      .filter(c => isDirectChatWith(c, currentUser.uid, otherUserId))
-      .sort((a, b) => getChatSortMs(b) - getChatSortMs(a))[0]
-    if (existingChat) {
-      console.log(`[Chat] Found existing chat: ${existingChat.id}`)
-      return existingChat.id
-    }
-
-    let verifiedNoExistingChat = false
-
     try {
-      // Local state can lag behind rapid clicks or auto-start effects, so verify in Firestore too.
-      const existingQuery = query(
-        collection(db, 'chats'),
-        where('participants', 'array-contains', currentUser.uid)
-      )
-      const existingSnapshot = await getDocs(existingQuery)
-      const firestoreExistingChat = existingSnapshot.docs
-        .map(d => ({ id: d.id, ...d.data() }))
-        .filter(c => isDirectChatWith(c, currentUser.uid, otherUserId))
-        .sort((a, b) => getChatSortMs(b) - getChatSortMs(a))[0]
-
-      if (firestoreExistingChat) {
-        console.log(`[Chat] Found existing Firestore chat: ${firestoreExistingChat.id}`)
-        return firestoreExistingChat.id
-      }
-      verifiedNoExistingChat = true
-    } catch (err) {
-      console.warn('Could not verify existing chat before creating one:', err)
-    }
-
-    // Create new chat
-    const directKey = getDirectPairKey(currentUser.uid, otherUserId)
-    const chatData = {
-      participants: [currentUser.uid, otherUserId],
-      directKey,
-      participantInfo: {
-        [currentUser.uid]: {
-          name: getReadableName(currentUser),
-          email: currentUser.email || '',
-          role: currentUser.role || 'User'
-        },
-        [otherUserId]: {
-          name: getReadableName({ displayName: otherUserName, email: otherUserEmail }),
-          email: otherUserEmail || '',
-          role: otherUserRole || 'User'
-        }
-      },
-      lastMessage: '',
-      lastMessageAt: serverTimestamp(),
-      createdAt: serverTimestamp(),
-    }
-
-    try {
-      const chatRef = doc(db, 'chats', getDirectChatDocId(currentUser.uid, otherUserId))
-      await setDoc(chatRef, chatData, { merge: true })
-
-      // AUTOMATIC WELCOME MESSAGE
-      // If a customer starts a chat with a staff member (admin/employee), send an automatic greeting
-      if (verifiedNoExistingChat && currentRole === 'customer' && (otherRole === 'admin' || otherRole === 'employee')) {
-        const welcomeText = `Hello! 👋 Thanks for reaching out. A member of our support team will be with you shortly. How can we help you today?`
-        
-        await addDoc(collection(db, 'chats', chatRef.id, 'messages'), {
-          senderId: otherUserId,
-          senderName: otherUserName || 'Support',
-          text: welcomeText,
-          timestamp: serverTimestamp(),
-          status: 'sent'
+      const response = await fetch(api.supportChat.create, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: currentUser.uid,
+          userName: getReadableName(currentUser),
+          userEmail: currentUser.email,
+          userRole: currentUser.role || 'Customer',
+          otherUserId,
+          otherUserName,
+          otherUserEmail,
+          otherUserRole: otherUserRole || 'User',
         })
-
-        // Update chat preview
-        await updateDoc(chatRef, {
-          lastMessage: welcomeText,
-          lastMessageAt: serverTimestamp(),
-          lastSenderId: otherUserId,
-          lastSenderName: otherUserName || 'Support'
-        })
-      }
-
-      return chatRef.id
-    } catch (err) {
-      console.error('Error creating chat:', {
-        error: err,
-        message: err.message,
-        code: err.code,
-        currentRole,
-        otherRole,
-        otherUserEmail,
-        participants: [currentUser.uid, otherUserId]
       })
+
+      const data = await readApiJson(response)
+      if (data.success && data.chatId) {
+        return data.chatId
+      }
+    } catch (err) {
+      console.error('Error starting chat:', err)
       alert(`Failed to start chat: ${err.message}`)
-      return null
     }
-  }, [currentUser, chats])
+    return null
+  }, [currentUser])
 
   const createGroupChat = useCallback(async (selectedUsers, groupName) => {
     if (!currentUser?.uid || !selectedUsers.length) return null
@@ -362,24 +225,27 @@ export function ChatProvider({ children }) {
       }
     })
 
-    const chatData = {
-      participants,
-      participantInfo,
-      groupName: groupName || 'New Team Group',
-      isGroup: true,
-      lastMessage: 'Group created',
-      lastMessageAt: serverTimestamp(),
-      createdAt: serverTimestamp(),
-      createdBy: currentUser.uid
-    }
-
     try {
-      const chatRef = await addDoc(collection(db, 'chats'), chatData)
-      return chatRef.id
+      const response = await fetch(api.supportChat.createGroup, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          participants,
+          participantInfo,
+          groupName: groupName || 'New Team Group',
+          createdBy: currentUser.uid
+        })
+      })
+
+      const data = await readApiJson(response)
+      if (data.success && data.chatId) {
+        return data.chatId
+      }
     } catch (err) {
       console.error('Error creating group chat:', err)
       throw err
     }
+    return null
   }, [currentUser])
 
   const sendMessage = useCallback(async (chatId, text, imageFile) => {
@@ -389,157 +255,70 @@ export function ChatProvider({ children }) {
       let imageUrl = null
 
       if (imageFile) {
-        console.log("Starting image upload via backend...", { name: imageFile.name, size: imageFile.size });
-        
         if (imageFile.size > 10 * 1024 * 1024) {
-          throw new Error("Image too large. Please select an image under 10MB.");
+          throw new Error("Image too large. Please select an image under 10MB.")
         }
 
         try {
-          const formData = new FormData();
-          formData.append('chat-image', imageFile);
+          const formData = new FormData()
+          formData.append('chat-image', imageFile)
           
           const response = await fetch(api.uploadChat, {
             method: 'POST',
             body: formData,
-            // Header for FormData is automatically set by fetch with boundary
-          });
+          })
 
           if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || `Upload failed with status ${response.status}`);
+            const errorData = await response.json().catch(() => ({}))
+            throw new Error(errorData.message || `Upload failed with status ${response.status}`)
           }
 
-          const data = await response.json();
-          imageUrl = data.url;
-          console.log("Backend upload successful, URL obtained:", imageUrl);
+          const data = await response.json()
+          imageUrl = data.url
         } catch (uploadErr) {
-          console.error("Backend Upload Error:", uploadErr);
-          throw new Error(`Upload Error: ${uploadErr.message}. Make sure the backend server is running.`);
+          console.error("Image Upload Error:", uploadErr)
+          throw new Error(`Upload Error: ${uploadErr.message}`)
         }
       }
 
       if (!text?.trim() && !imageUrl) {
-        console.warn("Empty message, ignoring.");
-        return;
+        return
       }
 
-      const messageData = {
+      const messagePayload = {
+        chatId,
         senderId: currentUser.uid,
         senderName: getReadableName(currentUser),
         senderEmail: currentUser.email,
         text: text?.trim() || '',
         imageUrl: imageUrl || null,
-        timestamp: serverTimestamp(),
-        status: 'sent',
       }
 
-      console.log("Adding message to Firestore...", messageData);
-      const msgRef = await addDoc(collection(db, 'chats', chatId, 'messages'), messageData);
-      console.log("Message added with ID:", msgRef.id);
+      const response = await fetch(api.supportChat.send, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(messagePayload)
+      })
 
-      // Update chat last message
-      const lastMsgPreview = text?.trim() || (imageUrl ? '📷 Image' : (messageData.type === 'video-call' ? '📹 Video Call' : ''));
-      const updateData = {
-        lastMessage: lastMsgPreview,
-        lastMessageAt: serverTimestamp(),
-        lastSenderId: currentUser.uid,
-        lastSenderName: getReadableName(currentUser),
+      const data = await readApiJson(response)
+      if (data.success && data.message) {
+        // Optimistically update messages local state
+        setMessages(prev => [...prev, data.message])
+        return data.message.id
       }
-      
-      await updateDoc(doc(db, 'chats', chatId), updateData);
-
-      // Clear typing indicator
-      try {
-        await setDoc(doc(db, 'chats', chatId, 'typing', currentUser.uid), {
-          isTyping: false,
-          name: getReadableName(currentUser),
-          updatedAt: serverTimestamp(),
-        }, { merge: true });
-      } catch (typingErr) {
-        console.warn("Failed to clear typing indicator:", typingErr.message);
-      }
-
-      return msgRef.id;
     } catch (err) {
-      console.error('Final sendMessage Error:', err);
-      alert(err.message || 'Failed to send message. Please try again.');
-      throw err;
+      console.error('sendMessage Error:', err)
+      alert(err.message || 'Failed to send message. Please try again.')
+      throw err
     }
-  }, [currentUser])
-
-  const addAssistantMessage = useCallback(async (chatId, text, status = 'sent') => {
-    if (!currentUser?.uid || !chatId || !text?.trim()) return null
-
-    const cleanText = text.trim()
-    const messageData = {
-      senderId: AI_ASSISTANT_ID,
-      senderName: AI_ASSISTANT_NAME,
-      senderEmail: 'support@amitsolutionhub.com',
-      text: cleanText,
-      imageUrl: null,
-      timestamp: serverTimestamp(),
-      status,
-      type: 'ai-assistant',
-      generatedByAi: true,
-    }
-
-    const msgRef = await addDoc(collection(db, 'chats', chatId, 'messages'), messageData)
-
-    await updateDoc(doc(db, 'chats', chatId), {
-      lastMessage: cleanText,
-      lastMessageAt: serverTimestamp(),
-      lastSenderId: AI_ASSISTANT_ID,
-      lastSenderName: AI_ASSISTANT_NAME,
-    })
-
-    return msgRef.id
   }, [currentUser])
 
   const sendAiReply = useCallback(async (chatId, promptText, recentMessages = []) => {
-    const cleanPrompt = promptText?.trim()
-    if (!currentUser?.uid || !chatId || !cleanPrompt) return null
-
-    const history = recentMessages
-      .slice(-8)
-      .map(msg => {
-        const content = msg.text || (msg.imageUrl ? '[Image shared]' : '')
-        if (!content?.trim()) return null
-        return {
-          role: msg.senderId === currentUser.uid ? 'user' : 'assistant',
-          content,
-        }
-      })
-      .filter(Boolean)
-
-    try {
-      const response = await fetch(api.aiChat, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [
-            ...history,
-            { role: 'user', content: cleanPrompt },
-          ],
-        }),
-      })
-      const data = await readApiJson(response)
-
-      if (!response.ok) {
-        throw new Error(data.reply || data.message || 'AI support is unavailable right now.')
-      }
-
-      const reply = data.reply || 'I could not process that right now. Please try again.'
-      return addAssistantMessage(chatId, reply)
-    } catch (err) {
-      console.error('AI reply failed:', err)
-      return addAssistantMessage(
-        chatId,
-        'AI support is unavailable right now. Our team will reply as soon as possible.',
-        'error'
-      )
-    }
-  }, [addAssistantMessage, currentUser])
+    // The backend automatically triggers intent classification and AI response on send message.
+    // We provide a natural delay here to keep the visual AI typing indicators flowing on screen.
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    return null
+  }, [])
 
   const clearChat = useCallback(async (chatId) => {
     if (!currentUser?.uid || !chatId) return
@@ -547,19 +326,16 @@ export function ChatProvider({ children }) {
     if (!window.confirm('Are you sure you want to clear all messages in this chat? This cannot be undone.')) return
 
     try {
-      const messagesRef = collection(db, 'chats', chatId, 'messages')
-      const snapshot = await getDocs(messagesRef)
-      
-      const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref))
-      await Promise.all(deletePromises)
-
-      // Update chat last message
-      await updateDoc(doc(db, 'chats', chatId), {
-        lastMessage: 'Chat cleared',
-        lastMessageAt: serverTimestamp(),
+      const response = await fetch(api.supportChat.clear, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chatId })
       })
 
-      console.log('Chat cleared successfully:', chatId)
+      const data = await readApiJson(response)
+      if (data.success) {
+        setMessages([])
+      }
     } catch (err) {
       console.error('Error clearing chat:', err)
       alert('Failed to clear chat. Please try again.')
@@ -572,28 +348,18 @@ export function ChatProvider({ children }) {
     if (!window.confirm(`Are you sure you want to delete ${messageIds.length} message(s)?`)) return
 
     try {
-      const deletePromises = messageIds.map(id => deleteDoc(doc(db, 'chats', chatId, 'messages', id)))
-      await Promise.all(deletePromises)
-
-      // Get latest message to update chat preview
-      const messagesRef = collection(db, 'chats', chatId, 'messages')
-      const q = query(messagesRef, orderBy('timestamp', 'desc'), limit(1))
-      const snapshot = await getDocs(q)
-      
-      let lastMsg = 'Chat cleared'
-      if (!snapshot.empty) {
-        const data = snapshot.docs[0].data()
-        lastMsg = data.text || (data.imageUrl ? '📷 Image' : 'Message deleted')
-      }
-
-      await updateDoc(doc(db, 'chats', chatId), {
-        lastMessage: lastMsg,
-        lastMessageAt: serverTimestamp(),
+      const response = await fetch(api.supportChat.deleteMessages, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chatId, messageIds })
       })
 
-      console.log(`${messageIds.length} messages deleted successfully from chat:`, chatId)
+      const data = await readApiJson(response)
+      if (data.success) {
+        setMessages(prev => prev.filter(msg => !messageIds.includes(msg.id)))
+      }
     } catch (err) {
-      console.error('Error deleting specific messages:', err)
+      console.error('Error deleting messages:', err)
       alert('Failed to delete messages. Please try again.')
     }
   }, [currentUser])
@@ -615,46 +381,22 @@ export function ChatProvider({ children }) {
   }, [])
 
   const sendTypingIndicator = useCallback(async (chatId, isTyping) => {
-    if (!currentUser?.uid || !chatId) return
-
-    await setDoc(doc(db, 'chats', chatId, 'typing', currentUser.uid), {
-      isTyping,
-      name: getReadableName(currentUser),
-      updatedAt: serverTimestamp(),
-    }, { merge: true })
-  }, [currentUser])
+    // No-op for REST backend
+  }, [])
 
   const handleTyping = useCallback((chatId) => {
-    sendTypingIndicator(chatId, true)
-
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current)
-    }
-
-    typingTimeoutRef.current = setTimeout(() => {
-      sendTypingIndicator(chatId, false)
-    }, 2000)
-  }, [sendTypingIndicator])
+    // No-op for REST backend
+  }, [])
 
   const markAsRead = useCallback(async (chatId) => {
     if (!currentUser?.uid || !chatId) return
 
-    const q = query(
-      collection(db, 'chats', chatId, 'messages'),
-      orderBy('timestamp', 'desc'),
-      limit(50)
-    )
-
     try {
-      const snapshot = await getDocs(q)
-      if (snapshot.empty) return
-
-      const promises = snapshot.docs
-        .filter(d => d.data().senderId !== currentUser.uid && d.data().status !== 'read')
-        .map(d => 
-        updateDoc(doc(db, 'chats', chatId, 'messages', d.id), { status: 'read' })
-      )
-      await Promise.all(promises)
+      await fetch(api.supportChat.read, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chatId, readerId: currentUser.uid })
+      })
     } catch (err) {
       console.error('Error marking as read:', err)
     }
@@ -666,29 +408,26 @@ export function ChatProvider({ children }) {
     const roomName = `SolutionHub-${chatId}`
     const callUrl = `https://meet.jit.si/${roomName}`
     
-    // Send a special message to the chat
-    const messageData = {
-      senderId: currentUser.uid,
-      senderName: getReadableName(currentUser),
-      text: `Starting a video call...`,
-      type: 'video-call',
-      callUrl,
-      timestamp: serverTimestamp(),
-      status: 'sent'
-    }
-
     try {
-      await addDoc(collection(db, 'chats', chatId, 'messages'), messageData)
-      // Also update the chat last message
-      await updateDoc(doc(db, 'chats', chatId), {
-        lastMessage: '📹 Video Call Started',
-        lastMessageAt: serverTimestamp(),
-        lastSenderId: currentUser.uid,
-        lastSenderName: getReadableName(currentUser)
+      const response = await fetch(api.supportChat.send, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chatId,
+          senderId: currentUser.uid,
+          senderName: getReadableName(currentUser),
+          senderEmail: currentUser.email,
+          text: `Starting a video call...`,
+          type: 'video-call',
+          callUrl,
+        })
       })
-      
-      // Open the call for the initiator
-      window.open(callUrl, '_blank')
+
+      const data = await readApiJson(response)
+      if (data.success && data.message) {
+        setMessages(prev => [...prev, data.message])
+        window.open(callUrl, '_blank')
+      }
     } catch (err) {
       console.error('Error starting video call:', err)
       alert('Failed to start video call.')
@@ -704,24 +443,27 @@ export function ChatProvider({ children }) {
         name: chat.groupName || 'Team Group',
         isGroup: true,
         participantsCount: chat.participants.length,
-        status: 'online' // Groups are always "online" for UI
+        status: 'online'
       }
     }
 
     const partnerId = chat.participants.find(p => p !== currentUser.uid)
     if (!partnerId) return null
     
-    const statusData = userStatuses[partnerId]
     const partnerInfo = chat.participantInfo?.[partnerId] || {}
+    const roleStr = String(partnerInfo.role || '').toLowerCase()
+    const isAlwaysOnline = ['admin', 'employee', 'support'].includes(roleStr) || partnerId === AI_ASSISTANT_ID
+    const hasRecentActivity = chat.lastMessageAt && (new Date() - new Date(chat.lastMessageAt)) < 300000
+
     return {
       uid: partnerId,
       name: getReadableName(partnerInfo),
       email: partnerInfo.email || '',
       role: partnerInfo.role || 'User',
-      status: statusData?.state || 'offline',
-      lastSeen: statusData?.lastSeen?.toMillis ? statusData.lastSeen.toMillis() : statusData?.lastSeen,
+      status: (isAlwaysOnline || hasRecentActivity) ? 'online' : 'offline',
+      lastSeen: chat.lastMessageAt ? new Date(chat.lastMessageAt).getTime() : null,
     }
-  }, [currentUser, userStatuses])
+  }, [currentUser])
 
   const value = {
     currentUser,
@@ -733,8 +475,17 @@ export function ChatProvider({ children }) {
     typingUsers,
     unreadCounts,
     getOrCreateChat,
-    sendMessage, sendAiReply, clearChat, deleteSpecificMessages, requestNotificationPermission, sendTypingIndicator, handleTyping,
-    markAsRead, getChatPartner, createGroupChat, startVideoCall
+    sendMessage,
+    sendAiReply,
+    clearChat,
+    deleteSpecificMessages,
+    requestNotificationPermission,
+    sendTypingIndicator,
+    handleTyping,
+    markAsRead,
+    getChatPartner,
+    createGroupChat,
+    startVideoCall
   }
 
   return (

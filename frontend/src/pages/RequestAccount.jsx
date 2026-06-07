@@ -17,8 +17,29 @@ import { useAuth } from '../context/AuthContext'
 import TermsAndConditions from '../components/TermsAndConditions'
 import brandLogo from '../assets/brand-logo.png'
 
-const departments = ['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Sales', 'Editor', 'Technician', 'Other']
-const roles = ['Developer', 'Designer', 'Project Manager', 'Marketing Executive', 'Support Agent', 'Sales Executive', 'Video Editor', 'Technician', 'Other']
+const departments = ['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Sales', 'Editor', 'Technician', 'HR', 'Operations', 'Placement', 'Other']
+const roles = [
+  'HR & Recruitment Executive',
+  'Student Support Executive',
+  'Business Development Executive (BDE)',
+  'Marketing Executive',
+  'Content Writer',
+  'LMS Coordinator',
+  'Training Coordinator',
+  'Project Coordinator',
+  'Graphic Designer',
+  'Web Development Intern/Executive',
+  'Operations Executive',
+  'Placement & Career Support Executive',
+  'Developer',
+  'Designer',
+  'Project Manager',
+  'Support Agent',
+  'Sales Executive',
+  'Video Editor',
+  'Technician',
+  'Other'
+]
 
 const initialForm = {
   name: '',

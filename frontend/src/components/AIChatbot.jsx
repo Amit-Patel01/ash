@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { api } from '../config/api'
+import { useStore } from '../store/StoreContext'
 
 const WELCOME_MESSAGE = {
   role: 'assistant',
@@ -29,7 +30,238 @@ function MarkdownText({ text }) {
   return <span dangerouslySetInnerHTML={{ __html: formatted }} />
 }
 
+function CertificateVerificationCard({ cert }) {
+  const dateStr = cert.approval_date
+    ? new Date(cert.approval_date.seconds * 1000).toLocaleDateString('en-IN', {
+        dateStyle: 'medium'
+      })
+    : new Date().toLocaleDateString('en-IN', { dateStyle: 'medium' });
+
+  return (
+    <div style={{
+      background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%)',
+      border: '1px solid rgba(16, 185, 129, 0.3)',
+      borderRadius: '16px',
+      padding: '16px',
+      marginTop: '8px',
+      boxShadow: '0 8px 32px rgba(16, 185, 129, 0.15)',
+      fontFamily: 'Inter, system-ui, sans-serif',
+      color: '#fff',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '12px',
+      width: '100%',
+      boxSizing: 'border-box'
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+        <span style={{
+          background: 'rgba(16, 185, 129, 0.2)',
+          border: '1px solid rgba(16, 185, 129, 0.4)',
+          borderRadius: '20px',
+          color: '#34d399',
+          fontSize: '10px',
+          fontWeight: 'bold',
+          padding: '3px 8px',
+          textTransform: 'uppercase',
+          letterSpacing: '1px'
+        }}>
+          ✓ Verified
+        </span>
+        <span style={{ fontSize: '11px', color: '#94a3b8', fontFamily: 'monospace' }}>
+          {cert.certificate_id}
+        </span>
+      </div>
+
+      <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '8px' }}>
+        <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 'bold', color: '#fff' }}>
+          {cert.documentLabel || 'Certificate of Completion'}
+        </h4>
+        <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#94a3b8' }}>
+          {cert.courseName}
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px' }}>
+        <div>
+          <span style={{ color: '#64748b' }}>Recipient: </span>
+          <span style={{ fontWeight: 'bold', color: '#f1f5f9' }}>{cert.userName}</span>
+        </div>
+        <div>
+          <span style={{ color: '#64748b' }}>Issued On: </span>
+          <span style={{ color: '#cbd5e1' }}>{dateStr}</span>
+        </div>
+      </div>
+
+      <a
+        href={`/verify?id=${cert.certificate_id}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: 'block',
+          width: '100%',
+          textAlign: 'center',
+          background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
+          color: '#fff',
+          textDecoration: 'none',
+          padding: '8px 12px',
+          borderRadius: '10px',
+          fontSize: '12px',
+          fontWeight: 'bold',
+          boxShadow: '0 4px 12px rgba(16, 185, 129, 0.25)',
+          transition: 'transform 0.2s',
+          cursor: 'pointer',
+          boxSizing: 'border-box'
+        }}
+      >
+        Open Verification Link
+      </a>
+    </div>
+  )
+}
+
+function RecommendationCarousel({ recommendations }) {
+  const { courses = [], projects = [] } = recommendations;
+
+  if (courses.length === 0 && projects.length === 0) return null;
+
+  return (
+    <div style={{
+      display: 'flex',
+      gap: '12px',
+      overflowX: 'auto',
+      padding: '8px 2px',
+      marginTop: '10px',
+      scrollbarWidth: 'none',
+      msOverflowStyle: 'none',
+      width: '100%',
+    }}>
+      {courses.map(course => (
+        <div key={course.id} style={{
+          flexShrink: 0,
+          width: '210px',
+          background: 'rgba(255, 255, 255, 0.05)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '12px',
+          padding: '12px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          gap: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+        }}>
+          <div>
+            <span style={{
+              background: 'rgba(124, 58, 237, 0.2)',
+              border: '1px solid rgba(124, 58, 237, 0.4)',
+              borderRadius: '20px',
+              color: '#a78bfa',
+              fontSize: '9px',
+              fontWeight: 'bold',
+              padding: '2px 6px',
+              textTransform: 'uppercase',
+              display: 'inline-block',
+              marginBottom: '6px'
+            }}>
+              Course
+            </span>
+            <h5 style={{ margin: 0, fontSize: '13px', fontWeight: 'bold', color: '#fff', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', height: '36px', lineHeight: '1.4' }}>
+              {course.title}
+            </h5>
+          </div>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 'extrabold', color: '#10b981', margin: '4px 0' }}>
+              {course.plans?.length > 0
+                ? `Starts at ₹${Math.min(...course.plans.map(p => Number(p.price) || 0))}`
+                : course.price
+                  ? `₹${course.price}`
+                  : 'Free'}
+            </div>
+            <a
+              href={`/courses/${course.slug || course.id}`}
+              style={{
+                display: 'block',
+                textAlign: 'center',
+                background: 'rgba(255, 255, 255, 0.1)',
+                color: '#fff',
+                textDecoration: 'none',
+                padding: '6px',
+                borderRadius: '8px',
+                fontSize: '11px',
+                fontWeight: 'bold',
+                marginTop: '8px',
+                border: '1px solid rgba(255, 255, 255, 0.15)'
+              }}
+            >
+              View Details
+            </a>
+          </div>
+        </div>
+      ))}
+
+      {projects.map(project => (
+        <div key={project.id} style={{
+          flexShrink: 0,
+          width: '210px',
+          background: 'rgba(255, 255, 255, 0.05)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '12px',
+          padding: '12px',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          gap: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+        }}>
+          <div>
+            <span style={{
+              background: 'rgba(37, 99, 235, 0.2)',
+              border: '1px solid rgba(37, 99, 235, 0.4)',
+              borderRadius: '20px',
+              color: '#60a5fa',
+              fontSize: '9px',
+              fontWeight: 'bold',
+              padding: '2px 6px',
+              textTransform: 'uppercase',
+              display: 'inline-block',
+              marginBottom: '6px'
+            }}>
+              Source Code
+            </span>
+            <h5 style={{ margin: 0, fontSize: '13px', fontWeight: 'bold', color: '#fff', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', height: '36px', lineHeight: '1.4' }}>
+              {project.title}
+            </h5>
+          </div>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 'extrabold', color: '#10b981', margin: '4px 0' }}>
+              ₹{Number(project.price_project_only || 0).toLocaleString('en-IN')}
+            </div>
+            <a
+              href={`/projects/${project.slug}`}
+              style={{
+                display: 'block',
+                textAlign: 'center',
+                background: 'rgba(255, 255, 255, 0.1)',
+                color: '#fff',
+                textDecoration: 'none',
+                padding: '6px',
+                borderRadius: '8px',
+                fontSize: '11px',
+                fontWeight: 'bold',
+                marginTop: '8px',
+                border: '1px solid rgba(255, 255, 255, 0.15)'
+              }}
+            >
+              View Details
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default function AIChatbot() {
+  const { certificates, courses, projects } = useStore()
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState([WELCOME_MESSAGE])
   const [input, setInput] = useState('')
@@ -101,6 +333,46 @@ export default function AIChatbot() {
     const newMessages = [...messages, userMessage]
     setMessages(newMessages)
     setInput('')
+
+    // 1. Intercept Certificate Verification ID
+    const certPattern = /\b([a-zA-Z0-9]{2,8})-([a-zA-Z0-9]{8})\b/i;
+    const match = messageText.match(certPattern);
+    if (match) {
+      setLoading(true);
+      setTimeout(() => {
+        const certId = match[0].toUpperCase();
+        const foundCert = certificates.find(
+          c => c.certificate_id?.toUpperCase() === certId && c.status === 'approved'
+        );
+
+        if (foundCert) {
+          setMessages(prev => [
+            ...prev,
+            {
+              role: 'assistant',
+              content: `Verifying Certificate ID **${certId}**...`,
+              customType: 'certificate',
+              customData: foundCert
+            }
+          ]);
+        } else {
+          setMessages(prev => [
+            ...prev,
+            {
+              role: 'assistant',
+              content: `❌ **Verification Failed**: Certificate ID **${certId}** was not found, is inactive, or has been revoked. Please check the ID and try again.`
+            }
+          ]);
+        }
+        setLoading(false);
+      }, 850);
+      return;
+    }
+
+    // Heuristics for course/project recommendations
+    const hasCourseKeyword = /\b(course|courses|learn|study|mentorship|class|classes|webinar|syllabus|trading)\b/i.test(messageText);
+    const hasProjectKeyword = /\b(project|projects|code|source code|marketplace|script|app|clone|website|ecommerce)\b/i.test(messageText);
+
     setLoading(true)
 
     try {
@@ -116,9 +388,20 @@ export default function AIChatbot() {
         throw new Error(data.reply || data.message || 'Sorry, I could not process that. Please try again.')
       }
 
+      // Check if we should append recommendations
+      let recommendations = null;
+      if (hasCourseKeyword || hasProjectKeyword) {
+        recommendations = {
+          courses: hasCourseKeyword ? courses.slice(0, 3) : [],
+          projects: hasProjectKeyword ? projects.slice(0, 3) : []
+        };
+      }
+
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: data.reply || 'Sorry, I could not process that. Please try again.'
+        content: data.reply || 'Sorry, I could not process that. Please try again.',
+        customType: recommendations && (recommendations.courses.length > 0 || recommendations.projects.length > 0) ? 'recommendations' : null,
+        customData: recommendations
       }])
     } catch (err) {
       setMessages(prev => [...prev, {
@@ -292,10 +575,20 @@ export default function AIChatbot() {
                     fontFamily: 'Inter, system-ui, sans-serif',
                     boxShadow: msg.role === 'user' ? '0 4px 12px rgba(37,99,235,0.3)' : 'none',
                   }}>
-                    <MarkdownText text={msg.content} />
+                    {msg.customType === 'certificate' ? (
+                      <CertificateVerificationCard cert={msg.customData} />
+                    ) : (
+                      <>
+                        <MarkdownText text={msg.content} />
+                        {msg.customType === 'recommendations' && (
+                          <RecommendationCarousel recommendations={msg.customData} />
+                        )}
+                      </>
+                    )}
                   </div>
                 </motion.div>
               ))}
+
 
               {loading && (
                 <motion.div

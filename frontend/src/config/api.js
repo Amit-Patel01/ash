@@ -91,6 +91,23 @@ export const api = {
   aiChat: buildApiUrl('/api/ai/chat'),
   aiRecommend: buildApiUrl('/api/ai/recommend'),
   aiStatus: buildApiUrl('/api/ai/status'),
+  supportChat: {
+    create: buildApiUrl('/api/chat/create'),
+    send: buildApiUrl('/api/chat/send'),
+    messages: (chatId) => buildApiUrl(`/api/chat/messages?chatId=${encodeURIComponent(chatId)}`),
+    rooms: (role, userId) => {
+      const params = new URLSearchParams()
+      if (role) params.append('role', role)
+      if (userId) params.append('userId', userId)
+      const qs = params.toString()
+      return buildApiUrl(`/api/chat/rooms${qs ? `?${qs}` : ''}`)
+    },
+    takeover: buildApiUrl('/api/chat/takeover'),
+    clear: buildApiUrl('/api/chat/clear'),
+    read: buildApiUrl('/api/chat/read'),
+    deleteMessages: buildApiUrl('/api/chat/delete-messages'),
+    createGroup: buildApiUrl('/api/chat/create-group'),
+  }
 }
 
 export default api

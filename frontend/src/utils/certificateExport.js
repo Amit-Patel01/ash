@@ -28,6 +28,25 @@ const EXPORT_STYLE_PROPS = [
   'stroke',
   '-webkit-text-fill-color',
   '-webkit-text-stroke-color',
+  'font-size',
+  'line-height',
+  'letter-spacing',
+  'word-spacing',
+  'padding-top',
+  'padding-right',
+  'padding-bottom',
+  'padding-left',
+  'margin-top',
+  'margin-right',
+  'margin-bottom',
+  'margin-left',
+  'width',
+  'height',
+  'gap',
+  'border-top-left-radius',
+  'border-top-right-radius',
+  'border-bottom-left-radius',
+  'border-bottom-right-radius',
 ]
 
 let html2canvasPromise
@@ -78,37 +97,79 @@ const normalizeColorFunction = (value) => {
   }
 }
 
-const sanitizeCssValue = (value) => {
-  const stringValue = String(value || '').trim()
-  if (!stringValue || !/(oklch|oklab)\(/i.test(stringValue)) {
-    return stringValue
+const sanitizeCssValue = (value, width = 1400, height = 990) => {
+  let stringValue = String(value || '').trim()
+  if (!stringValue) return stringValue
+
+  if (/(oklch|oklab)\(/i.test(stringValue)) {
+    let result = ''
+    let i = 0
+    while (i < stringValue.length) {
+      const match = stringValue.substring(i).match(/^(oklch|oklab)\(/i)
+      if (match) {
+        const start = i
+        let depth = 0
+        let j = i + match[0].length - 1
+        for (; j < stringValue.length; j++) {
+          if (stringValue[j] === '(') depth++
+          if (stringValue[j] === ')') {
+            depth--
+            if (depth === 0) break
+          }
+        }
+        
+        const fullColorFn = stringValue.substring(start, j + 1)
+        result += normalizeColorFunction(fullColorFn)
+        i = j + 1
+      } else {
+        result += stringValue[i]
+        i++
+      }
+    }
+    stringValue = result
   }
 
-  let result = ''
-  let i = 0
-  while (i < stringValue.length) {
-    const match = stringValue.substring(i).match(/^(oklch|oklab)\(/i)
-    if (match) {
-      const start = i
-      let depth = 0
-      let j = i + match[0].length - 1
-      for (; j < stringValue.length; j++) {
-        if (stringValue[j] === '(') depth++
-        if (stringValue[j] === ')') {
-          depth--
-          if (depth === 0) break
-        }
-      }
-      
-      const fullColorFn = stringValue.substring(start, j + 1)
-      result += normalizeColorFunction(fullColorFn)
-      i = j + 1
+  // Resolve container queries (cqw, cqh)
+  stringValue = stringValue.replace(/([\d.]+)(cqw|cqh)/g, (match, numStr, unit) => {
+    const num = parseFloat(numStr)
+    if (unit === 'cqw') {
+      return `${(num * width) / 100}px`
     } else {
-      result += stringValue[i]
-      i++
+      return `${(num * height) / 100}px`
     }
+  })
+
+  // Resolve clamp(min, val, max)
+  const clampRegex = /clamp\(([^,]+),([^,]+),([^)]+)\)/
+  while (stringValue.includes('clamp(')) {
+    const match = stringValue.match(clampRegex)
+    if (!match) break
+    const [fullMatch, minStr, valStr, maxStr] = match
+
+    const toPx = (str) => {
+      str = str.trim()
+      if (str.endsWith('px')) return parseFloat(str)
+      if (str.endsWith('rem')) return parseFloat(str) * 16
+      if (str.endsWith('em')) return parseFloat(str) * 16
+      return parseFloat(str) || 0
+    }
+
+    const min = toPx(minStr)
+    const val = toPx(valStr)
+    const max = toPx(maxStr)
+
+    const result = Math.max(min, Math.min(val, max))
+    stringValue = stringValue.replace(fullMatch, `${result}px`)
   }
-  return result
+
+  // Resolve simple calc(mult * px) math
+  stringValue = stringValue.replace(/calc\(([\d.]+)\s*\*\s*([\d.]+)px\)/g, (match, multStr, pxStr) => {
+    const mult = parseFloat(multStr)
+    const px = parseFloat(pxStr)
+    return `${mult * px}px`
+  })
+
+  return stringValue
 }
 
 const waitForNextPaint = async () => {
@@ -179,7 +240,7 @@ const copyCanvasTree = (sourceRoot, cloneRoot) => {
   }
 }
 
-const syncSanitizedStyles = (sourceElement, cloneElement) => {
+const syncSanitizedStyles = (sourceElement, cloneElement, width = 1400, height = 990) => {
   if (!(sourceElement instanceof Element) || !(cloneElement instanceof Element)) return
 
   const computedStyle = window.getComputedStyle(sourceElement)
@@ -187,7 +248,7 @@ const syncSanitizedStyles = (sourceElement, cloneElement) => {
     const propertyValue = computedStyle.getPropertyValue(property)
     if (!propertyValue) return
     
-    const sanitizedValue = sanitizeCssValue(propertyValue)
+    const sanitizedValue = sanitizeCssValue(propertyValue, width, height)
     if (sanitizedValue) {
       cloneElement.style.setProperty(property, sanitizedValue)
     }
@@ -263,14 +324,14 @@ const sanitizeClonedTree = (sourceRoot, clonedDocument, targetWidth, targetHeigh
   const total = Math.min(sourceNodes.length, cloneNodes.length)
 
   for (let index = 0; index < total; index += 1) {
-    syncSanitizedStyles(sourceNodes[index], cloneNodes[index])
+    syncSanitizedStyles(sourceNodes[index], cloneNodes[index], targetWidth, targetHeight)
   }
 
   const styleTags = clonedDocument.querySelectorAll('style')
   for (let i = 0; i < styleTags.length; i++) {
     const styleTag = styleTags[i]
-    if (styleTag.textContent && /(oklch|oklab)\(/i.test(styleTag.textContent)) {
-      styleTag.textContent = sanitizeCssValue(styleTag.textContent)
+    if (styleTag.textContent && /(oklch|oklab|cqw|cqh|clamp)\(/i.test(styleTag.textContent)) {
+      styleTag.textContent = sanitizeCssValue(styleTag.textContent, targetWidth, targetHeight)
     }
   }
 }
