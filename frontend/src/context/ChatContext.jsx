@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import api, { readApiJson } from '../config/api'
 import { useAuth } from './AuthContext'
+import { db } from '../config/firebase'
+import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore'
 
 const ChatContext = createContext(null)
 const AI_ASSISTANT_ID = 'solutionhub-ai'
@@ -78,7 +80,7 @@ export function ChatProvider({ children }) {
     activeChatIdRef.current = activeChatId
   }, [activeChatId])
 
-  // Poll chats / rooms list
+  // Real-time rooms sync using onSnapshot
   useEffect(() => {
     if (!currentUser?.uid) {
       setChats([])
@@ -86,85 +88,88 @@ export function ChatProvider({ children }) {
       return
     }
 
-    const roleParam = (currentUser?.role && ['employee', 'staff'].includes(String(currentUser.role).toLowerCase())) ? currentUser.role : null
+    const isEmployeeOrAdmin = ['admin', 'employee', 'mentor', 'team member', 'staff', 'developer'].includes(String(currentUser.role || '').toLowerCase())
 
-    const fetchRooms = async () => {
-      try {
-        const response = await fetch(api.supportChat.rooms(roleParam, currentUser.uid))
-        if (!response.ok) return
-        const data = await readApiJson(response)
-        
-        if (data.success && Array.isArray(data.rooms)) {
-          let userChats = data.rooms
-          const currentRole = String(currentUser.role || '').toLowerCase()
-          
-          if (currentRole === 'customer') {
-            userChats = userChats.filter(r => r.participants.includes(currentUser.uid))
-          }
-          
-          userChats.sort((a, b) => getChatSortMs(b) - getChatSortMs(a))
-          const dedupedChats = dedupeChats(userChats, currentUser.uid)
-          
-          // Handle web notifications for new messages in other chat rooms
-          if (prevChatsRef.current && prevChatsRef.current.length > 0) {
-            dedupedChats.forEach(chat => {
-              const prevChat = prevChatsRef.current.find(c => c.id === chat.id)
-              const hasNewMessage = !prevChat || chat.lastMessageAt !== prevChat.lastMessageAt
-              if (hasNewMessage && chat.lastSenderId !== currentUser.uid && chat.id !== activeChatIdRef.current) {
-                const canNotify = typeof window !== 'undefined' && 'Notification' in window
-                if (canNotify && window.Notification.permission === 'granted') {
-                  new window.Notification(chat.lastSenderName || 'New Message', {
-                    body: chat.lastMessage || 'New message received.',
-                    icon: '/favicon.ico',
-                  })
-                }
-              }
-            })
-          }
-          
-          prevChatsRef.current = dedupedChats
-          setChats(dedupedChats)
-
-          // Map unread counts from rooms
-          const unreads = {}
-          dedupedChats.forEach(chat => {
-            unreads[chat.id] = chat.unreadCount || 0
-          })
-          setUnreadCounts(unreads)
-        }
-      } catch (err) {
-        console.warn('Error fetching rooms:', err)
-      }
+    let q;
+    if (isEmployeeOrAdmin) {
+      // Employees/Admin can see all chats to coordinate/takeover
+      q = query(collection(db, 'chats'))
+    } else {
+      // Customers can only see chats where they are a participant
+      q = query(
+        collection(db, 'chats'),
+        where('participants', 'array-contains', currentUser.uid)
+      )
     }
 
-    fetchRooms()
-    const interval = setInterval(fetchRooms, 2000)
-    return () => clearInterval(interval)
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const rooms = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      let userChats = rooms
+      const currentRole = String(currentUser.role || '').toLowerCase()
+      
+      // Let's filter userChats for employee if they have a specific role assigned
+      if (currentRole !== 'admin' && isEmployeeOrAdmin) {
+        userChats = rooms.filter(r => r.assignedRole === currentUser.role || r.assignedTo === currentUser.displayName)
+      } else if (currentRole === 'customer') {
+        userChats = rooms.filter(r => r.participants.includes(currentUser.uid))
+      }
+
+      userChats.sort((a, b) => getChatSortMs(b) - getChatSortMs(a))
+      const dedupedChats = dedupeChats(userChats, currentUser.uid)
+
+      // Handle web notifications for new messages in other chat rooms
+      if (prevChatsRef.current && prevChatsRef.current.length > 0) {
+        dedupedChats.forEach(chat => {
+          const prevChat = prevChatsRef.current.find(c => c.id === chat.id)
+          const hasNewMessage = !prevChat || chat.lastMessageAt !== prevChat.lastMessageAt
+          if (hasNewMessage && chat.lastSenderId !== currentUser.uid && chat.id !== activeChatIdRef.current) {
+            const canNotify = typeof window !== 'undefined' && 'Notification' in window
+            if (canNotify && window.Notification.permission === 'granted') {
+              new window.Notification(chat.lastSenderName || 'New Message', {
+                body: chat.lastMessage || 'New message received.',
+                icon: '/favicon.ico',
+              })
+            }
+          }
+        })
+      }
+
+      prevChatsRef.current = dedupedChats
+      setChats(dedupedChats)
+
+      // Map unread counts from rooms
+      const unreads = {}
+      dedupedChats.forEach(chat => {
+        unreads[chat.id] = chat.unreadCount || 0
+      })
+      setUnreadCounts(unreads)
+    }, (error) => {
+      console.error("Error in real-time rooms listener:", error)
+    })
+
+    return () => unsubscribe()
   }, [currentUser])
 
-  // Poll messages for the active chat
+  // Real-time messages sync using onSnapshot
   useEffect(() => {
     if (!activeChatId) {
       setMessages([])
       return
     }
 
-    const fetchMessages = async () => {
-      try {
-        const response = await fetch(api.supportChat.messages(activeChatId))
-        if (!response.ok) return
-        const data = await readApiJson(response)
-        if (data.success && Array.isArray(data.messages)) {
-          setMessages(data.messages)
-        }
-      } catch (err) {
-        console.warn('Error fetching messages:', err)
-      }
-    }
+    const q = query(
+      collection(db, 'chats', activeChatId, 'messages'),
+      orderBy('timestamp', 'asc')
+    )
 
-    fetchMessages()
-    const interval = setInterval(fetchMessages, 1200)
-    return () => clearInterval(interval)
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const msgs = snapshot.docs.map(doc => doc.data())
+      setMessages(msgs)
+    }, (error) => {
+      console.error("Error in real-time messages listener:", error)
+    })
+
+    return () => unsubscribe()
   }, [activeChatId])
 
   const getOrCreateChat = useCallback(async (otherUserId, otherUserName, otherUserEmail, otherUserRole) => {
@@ -465,6 +470,40 @@ export function ChatProvider({ children }) {
     }
   }, [currentUser])
 
+  const takeoverChat = useCallback(async (chatId) => {
+    if (!currentUser?.uid || !chatId) return
+
+    try {
+      const response = await fetch(api.supportChat.takeover, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chatId,
+          employeeId: currentUser.uid,
+          employeeName: getReadableName(currentUser),
+        })
+      })
+
+      const data = await readApiJson(response)
+      if (data.success) {
+        setChats(prev => prev.map(chat => {
+          if (chat.id === chatId) {
+            return {
+              ...chat,
+              isTakenOver: true,
+              assignedTo: getReadableName(currentUser)
+            }
+          }
+          return chat
+        }))
+        console.log(`[MemoryChat] Successfully took over chat ${chatId}`)
+      }
+    } catch (err) {
+      console.error('Error taking over chat:', err)
+      alert('Failed to take over chat. Please try again.')
+    }
+  }, [currentUser])
+
   const value = {
     currentUser,
     chats,
@@ -485,7 +524,8 @@ export function ChatProvider({ children }) {
     markAsRead,
     getChatPartner,
     createGroupChat,
-    startVideoCall
+    startVideoCall,
+    takeoverChat
   }
 
   return (

@@ -149,7 +149,6 @@ export default function CoursesPage() {
               ))}
             </div>
           </div>
->>>>>>> 9731e34bcee12cdc11608e104adaab9a8d8ed9d6
 
           <aside className="relative overflow-hidden rounded-[32px] border border-slate-900/10 bg-slate-950 p-6 text-white shadow-[0_28px_80px_-40px_rgba(2,6,23,0.7)]">
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-300 via-emerald-300 to-cyan-300" />

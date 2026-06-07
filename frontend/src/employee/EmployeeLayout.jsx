@@ -121,6 +121,7 @@ const getFilteredNavItems = (userRole) => {
         'operations executive',
         'support agent',
         'developer',
+        'employee',
       ].includes(normalized)
     }
 

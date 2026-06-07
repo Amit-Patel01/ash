@@ -373,21 +373,30 @@ export function AuthProvider({ children }) {
   }, [getAuthHeaders])
 
   const getAllUsers = useCallback(async () => {
+    const isRequesterCustomer = normalizeUserRole(userProfile?.role || currentUser?.role) === 'customer'
     try {
       const headers = await getAuthHeaders()
       const response = await fetch(api.chatContacts, { headers })
       const data = await readApiJson(response)
 
       if (response.ok && data.success && Array.isArray(data.users)) {
-        return data.users
+        let list = data.users
+        if (isRequesterCustomer) {
+          list = list.filter(u => normalizeUserRole(u.role) === 'admin' || isEmployeeRole(u.role))
+        }
+        return list
       }
     } catch (error) {
       console.warn('Chat contacts API unavailable, falling back to Firestore users:', error)
     }
 
     const querySnapshot = await getDocs(collection(db, 'users'))
-    return querySnapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }))
-  }, [getAuthHeaders])
+    const allList = querySnapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }))
+    if (isRequesterCustomer) {
+      return allList.filter(u => normalizeUserRole(u.role) === 'admin' || isEmployeeRole(u.role))
+    }
+    return allList
+  }, [getAuthHeaders, userProfile?.role, currentUser?.role])
 
   const hasPermission = useCallback((permissionKey) => {
     if (!currentUser) return false

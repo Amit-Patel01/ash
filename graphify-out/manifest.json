@@ -1560,8 +1560,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/ChatPanel.jsx": {
-    "mtime": 1780817326.8031492,
-    "ast_hash": "f702e8e110c5c39bc7b0bf523f031c52",
+    "mtime": 1780853823.7564096,
+    "ast_hash": "8558744da454ce28157b5911989f4447",
     "semantic_hash": ""
   },
   "frontend/src/components/CourseEnrollModal.jsx": {
@@ -1660,13 +1660,13 @@
     "semantic_hash": ""
   },
   "frontend/src/context/AuthContext.jsx": {
-    "mtime": 1780817326.8078523,
-    "ast_hash": "0ce5dd81ccc0266b7c3f55ed9efc038b",
+    "mtime": 1780853811.5878632,
+    "ast_hash": "adac58b2179b88aae98a3ef4b5dc60d4",
     "semantic_hash": ""
   },
   "frontend/src/context/ChatContext.jsx": {
-    "mtime": 1780852063.586354,
-    "ast_hash": "14daa53ff823c7c6bb4dfb51cbacce8d",
+    "mtime": 1780854561.6253977,
+    "ast_hash": "0638e0178caf5f3fbda4083f2d4714bc",
     "semantic_hash": ""
   },
   "frontend/src/context/ThemeContext.jsx": {
@@ -1745,13 +1745,13 @@
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeHomeDashboard.jsx": {
-    "mtime": 1780850530.938428,
-    "ast_hash": "effdc83e7ca36f286017e973d9824924",
+    "mtime": 1780854353.8424773,
+    "ast_hash": "6a8bb9d48e9284bccfd181a007034b9f",
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeLayout.jsx": {
-    "mtime": 1780850459.509381,
-    "ast_hash": "8c845750a6267ca557df64b15e34068c",
+    "mtime": 1780853803.2413445,
+    "ast_hash": "25cf5d2169a6b6ad95c1bc3c93821176",
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeLogin.jsx": {
@@ -1835,8 +1835,8 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/ChatPage.jsx": {
-    "mtime": 1780817326.8190396,
-    "ast_hash": "e74a0f907c0771449d039e16d972c92f",
+    "mtime": 1780853831.112844,
+    "ast_hash": "b1382023bb3146eb12bf3edb21fff688",
     "semantic_hash": ""
   },
   "frontend/src/pages/Checkout.jsx": {
@@ -1860,8 +1860,8 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/CoursesPage.jsx": {
-    "mtime": 1780849563.1356635,
-    "ast_hash": "75a77b1cd43ecfd453d3968fc41e7774",
+    "mtime": 1780853790.4096344,
+    "ast_hash": "dc79f6595318a27dc8cb7026d25c91a7",
     "semantic_hash": ""
   },
   "frontend/src/pages/CustomProject.jsx": {
@@ -2000,8 +2000,8 @@
     "semantic_hash": ""
   },
   "frontend/src/utils/roles.js": {
-    "mtime": 1778905311.9152436,
-    "ast_hash": "3c81c4f72fb1f37e06ac048a75369117",
+    "mtime": 1780853796.4919345,
+    "ast_hash": "9bdc6457c709601aa6875b5e3962ae77",
     "semantic_hash": ""
   },
   "frontend/src/utils/teamProfiles.js": {
@@ -3180,8 +3180,8 @@
     "semantic_hash": ""
   },
   "backend/routes/chat.js": {
-    "mtime": 1780852048.5962346,
-    "ast_hash": "85021c504d6c66d12ebd2073caea8ca0",
+    "mtime": 1780854545.7030518,
+    "ast_hash": "959eec3658786608982a6953548f4ab0",
     "semantic_hash": ""
   }
 }

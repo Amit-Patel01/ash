@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useChat } from '../context/ChatContext'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
+import { normalizeUserRole, isEmployeeRole } from '../utils/roles'
 
 /* ─── helpers ─────────────────────────────────────────── */
 function toMessageDate(ts) {
@@ -80,9 +82,10 @@ export default function ChatPanel({ embedded = false }) {
     chats, activeChatId, setActiveChatId, messages,
     sendMessage, sendAiReply, clearChat, deleteSpecificMessages, requestNotificationPermission,
     handleTyping, typingUsers, markAsRead, getChatPartner, unreadCounts,
-    userStatuses, getOrCreateChat, createGroupChat, startVideoCall, currentUser
+    userStatuses, getOrCreateChat, createGroupChat, startVideoCall, currentUser, takeoverChat
   } = useChat()
   const { getAllUsers, userProfile } = useAuth()
+  const { theme } = useTheme()
 
   const [messageText, setMessageText] = useState('')
   const [imageFile, setImageFile] = useState(null)
@@ -109,7 +112,7 @@ export default function ChatPanel({ embedded = false }) {
   const messageInputRef = useRef(null)
   const emojiPickerRef = useRef(null)
   const moreMenuRef = useRef(null)
-  const currentRole = String(userProfile?.role || currentUser?.role || '').toLowerCase()
+  const currentRole = normalizeUserRole(userProfile?.role || currentUser?.role)
 
   /* outside click for emoji + more menu */
   useEffect(() => {
@@ -152,7 +155,7 @@ export default function ChatPanel({ embedded = false }) {
         console.log("Fetched users:", users)
         let f = users.filter(u => u.uid !== currentUser?.uid)
         if (currentRole === 'customer') {
-          f = f.filter(u => ['admin', 'employee'].includes(String(u.role || '').toLowerCase()))
+          f = f.filter(u => normalizeUserRole(u.role) === 'admin' || isEmployeeRole(u.role))
         }
         console.log("Filtered users:", f)
         setAllUsers(f)
@@ -176,7 +179,7 @@ export default function ChatPanel({ embedded = false }) {
     getAllUsers()
       .then(users => {
         if (cancelled) return
-        setSupportStaff(users.filter(u => ['admin', 'employee'].includes(String(u.role || '').toLowerCase())))
+        setSupportStaff(users.filter(u => normalizeUserRole(u.role) === 'admin' || isEmployeeRole(u.role)))
       })
       .catch(err => {
         console.warn('Unable to load support staff for AI fallback:', err)
@@ -195,16 +198,32 @@ export default function ChatPanel({ embedded = false }) {
   const chatStaffParticipants = activeParticipantEntries.filter(([uid, info]) =>
     uid !== currentUser?.uid && ['admin', 'employee'].includes(String(info?.role || '').toLowerCase())
   )
-  const onlineSupportStaffCount = supportStaff.filter(staff => userStatuses[staff.uid]?.state === 'online').length
-  const onlineChatStaffCount = chatStaffParticipants.filter(([uid]) => userStatuses[uid]?.state === 'online').length
-  const shouldUseAiFallback =
-    currentRole === 'customer' &&
-    !activeChat?.isGroup &&
-    (
-      supportStaff.length > 0
-        ? onlineSupportStaffCount === 0
-        : chatStaffParticipants.length > 0 && onlineChatStaffCount === 0
-    )
+  const isDark = theme !== 'light'
+  const isTakenOver = activeChat?.isTakenOver
+  const shouldUseAiFallback = currentRole === 'customer' && !activeChat?.isGroup && !isTakenOver
+
+  /* Dynamic Styles for Theme switching */
+  const containerStyle = {
+    background: isDark ? 'rgba(6,9,20,0.98)' : '#ffffff',
+    border: embedded ? 'none' : (isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)'),
+    color: isDark ? '#ffffff' : '#0f172a'
+  }
+  const sidebarStyle = {
+    background: isDark ? 'rgba(8,13,26,0.97)' : '#f8fafc',
+    borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)'
+  }
+  const mainStyle = {
+    background: isDark ? 'rgba(10,15,30,0.95)' : '#f1f5f9'
+  }
+  const headerStyle = {
+    background: isDark ? 'rgba(8,13,26,0.9)' : '#ffffff',
+    borderBottom: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)'
+  }
+  const inputContainerStyle = {
+    background: isDark ? 'rgba(255,255,255,0.04)' : '#f8fafc',
+    border: isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(0,0,0,0.08)'
+  }
+
   const notificationPermission =
     typeof window !== 'undefined' && 'Notification' in window
       ? window.Notification.permission
@@ -213,7 +232,7 @@ export default function ChatPanel({ embedded = false }) {
   const filteredChats = chats.filter(chat => {
     const p = getChatPartner(chat)
     if (!p) return false
-    if (currentRole === 'customer' && String(p.role || '').toLowerCase() === 'customer') return false
+    if (currentRole === 'customer' && normalizeUserRole(p.role) === 'customer') return false
     if (!searchQuery) return true
     return p?.name?.toLowerCase().includes(searchQuery.toLowerCase()) || p?.email?.toLowerCase().includes(searchQuery.toLowerCase())
   })
@@ -274,25 +293,24 @@ export default function ChatPanel({ embedded = false }) {
   }
 
   /* css token shortcuts */
-  const sidebarBg = { background: 'rgba(8,13,26,0.97)' }
-  const mainBg = { background: 'rgba(10,15,30,0.95)' }
+  const mainBg = { background: isDark ? 'rgba(10,15,30,0.95)' : '#f1f5f9' }
 
   return (
     <div
       className={`flex h-full w-full relative overflow-hidden ${!embedded ? 'rounded-3xl shadow-2xl' : ''}`}
-      style={{ background: 'rgba(6,9,20,0.98)', border: embedded ? 'none' : '1px solid rgba(255,255,255,0.06)' }}
+      style={containerStyle}
     >
       {/* ─── SIDEBAR ────────────────────────────────── */}
       <div
         className={`flex flex-col border-r w-full md:w-80 lg:w-[310px] flex-shrink-0 transition-all duration-300 ${activeChatId ? 'hidden md:flex' : 'flex'}`}
-        style={{ ...sidebarBg, borderColor: 'rgba(255,255,255,0.06)' }}
+        style={sidebarStyle}
       >
         {/* Sidebar Header */}
-        <div className="px-5 pt-5 pb-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+        <div className="px-5 pt-5 pb-4" style={{ borderBottom: isDark ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.08)' }}>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-[17px] font-black text-white tracking-tight">Messages</h2>
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mt-0.5">
+              <h2 className="text-[17px] font-black text-slate-800 dark:text-white tracking-tight">Messages</h2>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-600 mt-0.5">
                 {filteredChats.length} conversation{filteredChats.length !== 1 ? 's' : ''}
               </p>
             </div>
@@ -308,7 +326,7 @@ export default function ChatPanel({ embedded = false }) {
           </div>
           {/* Search */}
           <div className="relative">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
             </svg>
             <input
@@ -316,10 +334,10 @@ export default function ChatPanel({ embedded = false }) {
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search conversations..."
-              className="w-full pl-9 pr-3 py-2.5 text-[12px] text-white placeholder-slate-700 rounded-2xl focus:outline-none transition-all"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+              className="w-full pl-9 pr-3 py-2.5 text-[12px] text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-700 rounded-2xl focus:outline-none transition-all"
+              style={inputContainerStyle}
               onFocus={e => e.target.style.borderColor = 'rgba(99,102,241,0.4)'}
-              onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.07)'}
+              onBlur={e => e.target.style.borderColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.08)'}
             />
           </div>
         </div>
@@ -347,13 +365,13 @@ export default function ChatPanel({ embedded = false }) {
                     onClick={() => startNewChat(user)}
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl mb-0.5 transition-all text-left group"
                     style={{ border: '1px solid transparent' }}
-                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.02)'; e.currentTarget.style.borderColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)' }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent' }}
                   >
                     <Avatar name={getContactName(user)} size={9} online={userStatuses[user.uid]?.state === 'online'} gradient="from-blue-500 to-indigo-600" />
                     <div className="min-w-0 flex-1">
-                      <p className="text-[13px] font-bold text-white truncate">{getContactName(user)}</p>
-                      <p className="text-[10px] font-black uppercase tracking-[0.15em] text-indigo-400">{user.role || 'User'}</p>
+                      <p className="text-[13px] font-bold text-slate-800 dark:text-white truncate">{getContactName(user)}</p>
+                      <p className="text-[10px] font-black uppercase tracking-[0.15em] text-indigo-500 dark:text-indigo-400">{user.role || 'User'}</p>
                     </div>
                   </button>
                 ))
@@ -390,17 +408,17 @@ export default function ChatPanel({ embedded = false }) {
                     border: '1px solid transparent',
                     background: 'transparent',
                   }}
-                  onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)' } }}
+                  onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.02)'; e.currentTarget.style.borderColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)' } }}
                   onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent' } }}
                 >
                   <Avatar name={p.name} size={10} online={p.status === 'online'} gradient="from-emerald-500 to-cyan-500" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between">
-                      <p className={`text-[13px] font-bold truncate ${unread > 0 ? 'text-white' : 'text-slate-300'}`}>{p.name}</p>
-                      <span className="text-[9px] text-slate-600 flex-shrink-0 ml-2 mt-0.5">{formatTime(chat.lastMessageAt)}</span>
+                      <p className={`text-[13px] font-bold truncate ${unread > 0 ? 'text-slate-900 dark:text-white font-black' : 'text-slate-700 dark:text-slate-300'}`}>{p.name}</p>
+                      <span className="text-[9px] text-slate-500 dark:text-slate-600 flex-shrink-0 ml-2 mt-0.5">{formatTime(chat.lastMessageAt)}</span>
                     </div>
                     <div className="flex items-center justify-between mt-0.5">
-                      <p className={`text-[11px] truncate ${unread > 0 ? 'text-slate-300 font-semibold' : 'text-slate-600'}`}>
+                      <p className={`text-[11px] truncate ${unread > 0 ? 'text-slate-900 dark:text-slate-100 font-semibold' : 'text-slate-500 dark:text-slate-400'}`}>
                         {chat.lastMessage || 'No messages yet'}
                       </p>
                       {unread > 0 && (
@@ -422,12 +440,12 @@ export default function ChatPanel({ embedded = false }) {
       {activeChatId && partner ? (
         <div className="flex-1 flex flex-col min-w-0" style={mainBg}>
           {/* Chat Header */}
-          <div className="h-16 flex items-center px-4 gap-3 flex-shrink-0" style={{ background: 'rgba(8,13,26,0.9)', borderBottom: '1px solid rgba(255,255,255,0.06)', backdropFilter: 'blur(20px)' }}>
+          <div className="h-16 flex items-center px-4 gap-3 flex-shrink-0" style={headerStyle}>
             {/* Back on mobile */}
             <button
               onClick={() => setActiveChatId(null)}
-              className="md:hidden h-8 w-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition-colors flex-shrink-0"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)' }}
+              className="md:hidden h-8 w-8 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors flex-shrink-0"
+              style={{ background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)', border: isDark ? '1px solid rgba(255,255,255,0.09)' : '1px solid rgba(0,0,0,0.06)' }}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
@@ -437,11 +455,11 @@ export default function ChatPanel({ embedded = false }) {
             <Avatar name={partner.name} size={9} online={isPartnerOnline} gradient="from-emerald-500 to-cyan-500" />
 
             <div className="flex-1 min-w-0">
-              <p className="text-[14px] font-black text-white truncate leading-tight">{partner.name}</p>
+              <p className="text-[14px] font-black text-slate-800 dark:text-white truncate leading-tight">{partner.name}</p>
               <div className="flex items-center gap-1.5">
-                <span className={`w-1.5 h-1.5 rounded-full ${isPartnerOnline ? 'bg-emerald-500' : 'bg-slate-600'}`}
+                <span className={`w-1.5 h-1.5 rounded-full ${isPartnerOnline ? 'bg-emerald-500' : 'bg-slate-400'}`}
                   style={isPartnerOnline ? { boxShadow: '0 0 6px #10b981' } : {}} />
-                <p className={`text-[10px] font-black uppercase tracking-[0.15em] ${isPartnerOnline ? 'text-emerald-400' : 'text-slate-600'}`}>
+                <p className={`text-[10px] font-black uppercase tracking-[0.15em] ${isPartnerOnline ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-600'}`}>
                   {isPartnerTyping ? 'Typing...' : isPartnerOnline ? 'Online' : partner.lastSeen ? `Last seen ${formatTime({ seconds: new Date(partner.lastSeen).getTime() / 1000 })}` : 'Offline'}
                 </p>
               </div>
@@ -734,7 +752,7 @@ export default function ChatPanel({ embedded = false }) {
 
           {/* Image preview strip */}
           {imagePreview && (
-            <div className="px-4 py-2 flex-shrink-0" style={{ borderTop: '1px solid rgba(255,255,255,0.06)', background: 'rgba(8,13,26,0.9)' }}>
+            <div className="px-4 py-2 flex-shrink-0" style={{ borderTop: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)', background: isDark ? 'rgba(8,13,26,0.9)' : '#f8fafc' }}>
               <div className="relative inline-block">
                 <img src={imagePreview} alt="Preview" className="h-16 rounded-xl" />
                 <button onClick={removeImage}
@@ -748,76 +766,107 @@ export default function ChatPanel({ embedded = false }) {
             </div>
           )}
 
-          {/* Input Area */}
-          <div className="flex-shrink-0 px-3 sm:px-4 py-3" style={{ borderTop: '1px solid rgba(255,255,255,0.06)', background: 'rgba(8,13,26,0.95)', backdropFilter: 'blur(20px)' }}>
-            <div className="flex items-center gap-2 p-1.5 rounded-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              {/* File input */}
-              <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
-              <button onClick={() => fileInputRef.current?.click()}
-                className="h-9 w-9 rounded-xl flex items-center justify-center text-slate-600 hover:text-slate-300 transition-all flex-shrink-0 hover:bg-white/5">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+          {currentRole !== 'customer' && !activeChat?.isGroup && !isTakenOver ? (
+            /* Employee Takeover Banner */
+            <div className="flex-shrink-0 px-4 py-8 border-t flex flex-col items-center justify-center gap-3 text-center"
+              style={{
+                borderTop: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)',
+                background: isDark ? 'rgba(8,13,26,0.95)' : '#ffffff'
+              }}>
+              <div className="h-10 w-10 rounded-full flex items-center justify-center"
+                style={{
+                  background: isDark ? 'rgba(99,102,241,0.1)' : '#e0e7ff',
+                  border: isDark ? '1px solid rgba(99,102,241,0.3)' : '1px solid rgba(99,102,241,0.2)',
+                  color: '#6366f1'
+                }}>
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 21L14.907 18M18 12h.008v.008H18V12zm-6 0h.008v.008H12V12zm-6 0h.008v.008H6V12z" />
                 </svg>
-              </button>
-
-              {/* Emoji */}
-              <div className="relative flex-shrink-0">
-                <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                  className={`h-9 w-9 rounded-xl flex items-center justify-center transition-all ${showEmojiPicker ? 'text-indigo-400 bg-indigo-500/15' : 'text-slate-600 hover:text-slate-300 hover:bg-white/5'}`}>
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
-                  </svg>
-                </button>
-                {showEmojiPicker && (
-                  <div ref={emojiPickerRef}
-                    className="absolute bottom-full left-0 mb-3 w-72 max-h-64 overflow-y-auto rounded-2xl p-3 z-60"
-                    style={{ background: '#0d1120', border: '1px solid rgba(255,255,255,0.09)', boxShadow: '0 20px 60px rgba(0,0,0,0.7)', scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.05) transparent', animation: 'fadeInUp 0.2s ease' }}>
-                    {EMOJIS.map((group, gi) => (
-                      <div key={gi} className="mb-3 last:mb-0">
-                        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-600 mb-1.5 px-1">{group.cat}</p>
-                        <div className="grid grid-cols-8 gap-0.5">
-                          {group.icons.map((em, ei) => (
-                            <button key={ei} onClick={() => setMessageText(p => p + em)}
-                              className="text-lg p-1 rounded-lg hover:bg-white/5 transition-all hover:scale-125 active:scale-95">
-                              {em}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
-
-              {/* Text input */}
-              <textarea
-                ref={messageInputRef}
-                value={messageText}
-                onChange={e => { setMessageText(e.target.value); if (activeChatId) handleTyping(activeChatId) }}
-                onKeyDown={handleKeyDown}
-                placeholder={shouldUseAiFallback ? 'AI support is active...' : 'Type a message...'}
-                rows={1}
-                className="flex-1 bg-transparent text-[13px] text-white placeholder-slate-700 focus:outline-none resize-none py-2"
-                style={{ maxHeight: 120 }}
-              />
-
-              {/* Send button */}
+              <div className="max-w-md">
+                <p className="text-[13px] font-bold text-slate-800 dark:text-slate-200">AI Support Active</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">SolutionHub AI is answering this customer's inquiries. Take over this chat to type a response directly.</p>
+              </div>
               <button
-                onClick={handleSend}
-                disabled={sending || aiReplying || (!messageText.trim() && !imageFile)}
-                className="h-9 w-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:hover:scale-100"
-                style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', boxShadow: '0 4px 14px rgba(79,70,229,0.4)' }}
+                onClick={() => takeoverChat(activeChatId)}
+                className="px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider text-white transition-all hover:scale-[1.02] shadow-lg shadow-indigo-500/20 cursor-pointer"
+                style={{ background: 'linear-gradient(135deg, #4f46e5, #7c3aed)' }}
               >
-                {sending || aiReplying ? (
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ) : (
-                  <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-                  </svg>
-                )}
+                Take Over Chat
               </button>
             </div>
-          </div>
+          ) : (
+            /* Input Area */
+            <div className="flex-shrink-0 px-3 sm:px-4 py-3" style={{ borderTop: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)', background: isDark ? 'rgba(8,13,26,0.95)' : '#ffffff' }}>
+              <div className="flex items-center gap-2 p-1.5 rounded-2xl" style={{ background: isDark ? 'rgba(255,255,255,0.04)' : '#f1f5f9', border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.1)' }}>
+                {/* File input */}
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
+                <button onClick={() => fileInputRef.current?.click()}
+                  className="h-9 w-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 transition-all flex-shrink-0 hover:bg-white/5">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                  </svg>
+                </button>
+
+                {/* Emoji */}
+                <div className="relative flex-shrink-0">
+                  <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    className={`h-9 w-9 rounded-xl flex items-center justify-center transition-all ${showEmojiPicker ? 'text-indigo-400 bg-indigo-500/15' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 hover:bg-white/5'}`}>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
+                    </svg>
+                  </button>
+                  {showEmojiPicker && (
+                    <div ref={emojiPickerRef}
+                      className="absolute bottom-full left-0 mb-3 w-72 max-h-64 overflow-y-auto rounded-2xl p-3 z-60"
+                      style={{ background: isDark ? '#0d1120' : '#ffffff', border: isDark ? '1px solid rgba(255,255,255,0.09)' : '1px solid rgba(0,0,0,0.1)', boxShadow: '0 20px 60px rgba(0,0,0,0.7)', scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.05) transparent', animation: 'fadeInUp 0.2s ease' }}>
+                      {EMOJIS.map((group, gi) => (
+                        <div key={gi} className="mb-3 last:mb-0">
+                          <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-600 mb-1.5 px-1">{group.cat}</p>
+                          <div className="grid grid-cols-8 gap-0.5">
+                            {group.icons.map((em, ei) => (
+                              <button key={ei} onClick={() => setMessageText(p => p + em)}
+                                className="text-lg p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all hover:scale-125 active:scale-95">
+                                {em}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Text input */}
+                <textarea
+                  ref={messageInputRef}
+                  value={messageText}
+                  onChange={e => { setMessageText(e.target.value); if (activeChatId) handleTyping(activeChatId) }}
+                  onKeyDown={handleKeyDown}
+                  placeholder={shouldUseAiFallback ? 'AI support is active...' : 'Type a message...'}
+                  rows={1}
+                  className="flex-1 bg-transparent text-[13px] text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none resize-none py-2"
+                  style={{ maxHeight: 120 }}
+                />
+
+                {/* Send button */}
+                <button
+                  onClick={handleSend}
+                  disabled={sending || aiReplying || (!messageText.trim() && !imageFile)}
+                  className="h-9 w-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:hover:scale-100"
+                  style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', boxShadow: '0 4px 14px rgba(79,70,229,0.4)' }}
+                >
+                  {sending || aiReplying ? (
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
       ) : (
@@ -843,12 +892,12 @@ export default function ChatPanel({ embedded = false }) {
 
       {/* ─── NEW CHAT / GROUP OVERLAY ───────────────── */}
       {showNewChat && (
-        <div className="absolute inset-0 z-50 flex flex-col" style={{ background: 'rgba(8,13,26,0.98)', animation: 'fadeInUp 0.25s ease' }}>
-          <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-            <h2 className="text-[17px] font-black text-white">{showGroupCreate ? 'Create Team Group' : 'New Conversation'}</h2>
+        <div className="absolute inset-0 z-50 flex flex-col" style={{ background: isDark ? 'rgba(8,13,26,0.98)' : '#ffffff', color: isDark ? '#ffffff' : '#0f172a', animation: 'fadeInUp 0.25s ease' }}>
+          <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)' }}>
+            <h2 className="text-[17px] font-black text-slate-800 dark:text-white">{showGroupCreate ? 'Create Team Group' : 'New Conversation'}</h2>
             <button onClick={() => { setShowNewChat(false); setShowGroupCreate(false); setSelectedUsersForGroup([]) }}
-              className="h-8 w-8 rounded-xl flex items-center justify-center text-slate-500 hover:text-white transition-all hover:bg-white/5"
-              style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+              className="h-8 w-8 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all hover:bg-white/5"
+              style={{ border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.1)' }}>
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -859,7 +908,7 @@ export default function ChatPanel({ embedded = false }) {
             {/* Create group button (staff only) */}
             {!showGroupCreate && ['admin', 'employee'].includes(String(userProfile?.role || '').toLowerCase()) && (
               <button onClick={() => setShowGroupCreate(true)}
-                className="w-full flex items-center justify-center gap-2.5 p-3.5 rounded-2xl mb-5 text-[13px] font-black transition-all"
+                className="w-full flex items-center justify-center gap-2.5 p-3.5 rounded-2xl mb-5 text-[13px] font-black transition-all cursor-pointer"
                 style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.25)', color: '#a5b4fc' }}
                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(99,102,241,0.2)'}
                 onMouseLeave={e => e.currentTarget.style.background = 'rgba(99,102,241,0.1)'}>
@@ -874,12 +923,12 @@ export default function ChatPanel({ embedded = false }) {
             {showGroupCreate && (
               <div className="mb-4">
                 <input type="text" value={newGroupName} onChange={e => setNewGroupName(e.target.value)} placeholder="Group name (e.g. Marketing Team)"
-                  className="w-full px-4 py-3 text-[13px] text-white placeholder-slate-700 rounded-2xl focus:outline-none transition-all"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}
+                  className="w-full px-4 py-3 text-[13px] text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-700 rounded-2xl focus:outline-none transition-all"
+                  style={inputContainerStyle}
                   onFocus={e => e.target.style.borderColor = 'rgba(99,102,241,0.4)'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.09)'}
+                  onBlur={e => e.target.style.borderColor = isDark ? 'rgba(255,255,255,0.09)' : 'rgba(0,0,0,0.08)'}
                 />
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mt-2 px-1">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-slate-600 mt-2 px-1">
                   {selectedUsersForGroup.length} member{selectedUsersForGroup.length !== 1 ? 's' : ''} selected
                 </p>
               </div>

@@ -4,6 +4,7 @@ import { useChat } from '../context/ChatContext'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import ChatPanel from '../components/ChatPanel'
+import { normalizeUserRole, isEmployeeRole } from '../utils/roles'
 
 export default function ChatPage() {
   const { currentUser, userProfile, getAllUsers } = useAuth()
@@ -14,7 +15,8 @@ export default function ChatPage() {
   const initializingRef = useRef(false)
 
   useEffect(() => {
-    if (!currentUser?.uid || initialized || initializingRef.current || userProfile?.role === 'admin' || userProfile?.role === 'employee') return
+    const role = normalizeUserRole(userProfile?.role || currentUser?.role)
+    if (!currentUser?.uid || initialized || initializingRef.current || role === 'admin' || isEmployeeRole(role)) return
 
     const initChat = async () => {
       initializingRef.current = true
