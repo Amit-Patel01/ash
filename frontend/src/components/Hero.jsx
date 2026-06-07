@@ -359,7 +359,7 @@ const Hero = () => {
                 boxShadow:'0 2px 14px rgba(29,78,216,.1)' }}>
                 <span style={{ width:8, height:8, borderRadius:'50%', background:'#22c55e', display:'inline-block', animation:'hp-pulse 2s infinite' }}/>
                 <span style={{ fontSize:13, fontWeight:700, color:'#1d4ed8' }}>
-                  Applied for AICTE Internship Portal
+                  ✅ AICTE APPROVED
                 </span>
               </div>
 

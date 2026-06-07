@@ -13,6 +13,7 @@ const { logger } = require("../logger");
 const admin = require("firebase-admin");
 
 const QR_CERTIFICATE_TYPES = {
+  "AICTE Internship Completion": "Completion Certificate",
   LOR: "Letter of Recommendation",
   LOA: "Letter of Achievement",
   Appreciation: "Appreciation Certificate",
@@ -111,13 +112,14 @@ const validateQrCertificateInput = (payload = {}, { partial = false } = {}) => {
   if (!partial || Object.prototype.hasOwnProperty.call(payload, "certificateType")) {
     const certificateType = normalizeQrCertificateType(payload.certificateType);
     if (!certificateType) {
-      errors.push("Certificate type must be LOR, LOA, Appreciation, Offer Letter, or Other.");
+      errors.push("Certificate type must be AICTE Internship Completion, LOR, LOA, Appreciation, Offer Letter, or Other.");
     } else {
       updates.certificateType = certificateType;
       updates.certificateTypeLabel = certificateType === "Other" && payload.customTitle 
         ? String(payload.customTitle).trim()
         : QR_CERTIFICATE_TYPES[certificateType];
       updates.documentLabel = updates.certificateTypeLabel;
+      updates.documentType = certificateType === "AICTE Internship Completion" ? "internship_certificate" : "qr_certificate";
     }
   }
 

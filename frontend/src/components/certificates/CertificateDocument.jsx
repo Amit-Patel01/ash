@@ -15,6 +15,101 @@ import {
 } from '../../utils/certificateHelpers'
 import OfferLetterDocument from './OfferLetterDocument'
 
+const AICTE_LOGO_SRC = '/AICTE%20Logo%20Vector.svg%20.png'
+const AICTE_PREVIEW_CERTIFICATE_ID = 'ASH-AICTE-2026-001'
+const AICTE_CERTIFICATE_PARAGRAPH = 'This is to certify that the above-named candidate has successfully completed the AICTE-approved internship program conducted by Amit Solution Hub. The internship included guided learning, assigned project work, practical training, and performance evaluation with verified participation.'
+
+const isAicteInternshipCertificate = (certificate = {}) => {
+  const haystack = [
+    certificate?.certificateType,
+    certificate?.certificateTypeLabel,
+    certificate?.documentLabel,
+    certificate?.course,
+    certificate?.courseName,
+  ].filter(Boolean).join(' ').toLowerCase()
+
+  return haystack.includes('aicte') && haystack.includes('internship') && haystack.includes('completion')
+}
+
+const formatAicteCertificateDate = (value) => {
+  const parsed = value?.toDate?.() || new Date(value || '2026-05-10T00:00:00')
+  const date = Number.isNaN(parsed.getTime()) ? new Date('2026-05-10T00:00:00') : parsed
+
+  return date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+const normalizeAicteParagraph = (value) => {
+  const text = String(value || AICTE_CERTIFICATE_PARAGRAPH).trim()
+
+  return text
+    .replace(/\bThisis\b/g, 'This is')
+    .replace(/\bcertifythat\b/g, 'certify that')
+    .replace(/\bAICTEapproved\b/g, 'AICTE approved')
+    .replace(/\bAICTEApproved\b/g, 'AICTE Approved')
+    .replace(/\bcandidatehas\b/g, 'candidate has')
+    .replace(/\bsuccessfullycompletedthe\b/g, 'successfully completed the')
+    .replace(/\bsuccessfullycompleted\b/g, 'successfully completed')
+    .replace(/\bcompletedthe\b/g, 'completed the')
+    .replace(/\binternshipprogram\b/g, 'internship program')
+    .replace(/\bconductedby\b/g, 'conducted by')
+    .replace(/\binternshipincludedguidedlearning\b/g, 'internship included guided learning')
+    .replace(/\bincludedguidedlearning\b/g, 'included guided learning')
+    .replace(/\bguidedlearning\b/g, 'guided learning')
+    .replace(/\bassignedprojectwork\b/g, 'assigned project work')
+    .replace(/\bpracticaltraining\b/g, 'practical training')
+    .replace(/\bperformanceevaluationwith\b/g, 'performance evaluation with')
+    .replace(/\bverifiedparticipation\b/g, 'verified participation')
+    .replace('AICTE approved internship program', 'AICTE-approved internship program')
+    .replace(/\s+/g, ' ')
+}
+
+const resolveAicteCertificateId = (value) => {
+  const certificateId = String(value || '').trim()
+  return !certificateId || certificateId === 'QR-PREVIEW' ? AICTE_PREVIEW_CERTIFICATE_ID : certificateId
+}
+
+const resolveAicteStatus = (certificate = {}) => {
+  if (certificate?.isValid === false || String(certificate?.status || '').toLowerCase() === 'revoked') return 'Revoked'
+  return 'Verified'
+}
+
+const renderSpacedWords = (text) => {
+  const words = String(text || '').trim().split(/\s+/).filter(Boolean)
+  return words.map((word, index) => (
+    <span
+      key={`${word}-${index}`}
+      style={{
+        display: 'inline-block',
+        paddingRight: index === words.length - 1 ? 0 : '0.24em',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {word}
+    </span>
+  ))
+}
+
+const normalizeDisplayText = (value) =>
+  String(value || '')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/\bAICTEApproved\b/g, 'AICTE Approved')
+    .replace(/\bAICTEapproved\b/g, 'AICTE approved')
+    .replace(/\bInternshipCompletion\b/g, 'Internship Completion')
+    .replace(/\bQRVerified\b/g, 'QR Verified')
+    .replace(/\bMSMERegistered\b/g, 'MSME Registered')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+const textSafeStyle = {
+  letterSpacing: 0,
+  wordSpacing: '0.08em',
+  whiteSpace: 'normal',
+}
+
 function CornerAccent({ position, accentColor, navyColor }) {
   const positions = {
     'top-left': { top: 'clamp(14px, 2cqw, 24px)', left: 'clamp(14px, 2cqw, 24px)' },
@@ -61,13 +156,13 @@ function DetailChip({ label, value, accentColor }) {
         className="font-black uppercase tracking-[0.22em] text-slate-400"
         style={{ fontSize: 'clamp(7px, 0.75cqw, 10px)' }}
       >
-        {label}
+        {renderSpacedWords(normalizeDisplayText(label))}
       </p>
       <p
         className="mt-0.5 font-semibold leading-tight text-slate-700"
-        style={{ fontSize: 'clamp(9px, 0.9cqw, 13px)' }}
+        style={{ fontSize: 'clamp(9px, 0.9cqw, 13px)', overflowWrap: 'anywhere' }}
       >
-        {value}
+        {renderSpacedWords(normalizeDisplayText(value))}
       </p>
     </div>
   )
@@ -133,11 +228,341 @@ function getDocumentNarrative(documentType, holderName, courseName, template, ce
   }
 }
 
+function AicteInternshipCertificateDocument({ certificate, template, className = '' }) {
+  const activeTemplate = mergeCertificateTemplate(certificate?.templateSnapshot || template, 'internship_certificate')
+  const accentColor = activeTemplate.accentColor || '#c3912f'
+  const navyColor = '#102f64'
+  const greenColor = '#167044'
+  const creamColor = '#fff7e8'
+  const holderName = getCertificateHolderName(certificate)
+  const certificateId = resolveAicteCertificateId(certificate?.certificate_id)
+  const verifyUrl = getCertificateVerifyUrl(certificateId)
+  const issueDate = formatAicteCertificateDate(certificate?.approval_date || certificate?.createdAt || certificate?.rawDate || certificate?.date)
+  const programLabel = 'Completion Certificate'
+  const signatureName = certificate?.signatoryName || activeTemplate.signatureName || 'Amit Patel'
+  const signatureRole = certificate?.signatoryRole || activeTemplate.signatureRole || 'Authorized Signatory'
+  const signatureImage = normalizeCertificateAssetUrl(certificate?.signatureImageUrl) || founderSign
+  const stampImage = normalizeCertificateAssetUrl(certificate?.stampImageUrl) || stempImage
+  const statusLabel = resolveAicteStatus(certificate)
+  const narrative = normalizeAicteParagraph(certificate?.certificateText || AICTE_CERTIFICATE_PARAGRAPH)
+
+  const holderFontSize =
+    holderName.length > 28
+      ? 'clamp(30px, 3.9cqw, 48px)'
+      : holderName.length > 18
+        ? 'clamp(36px, 4.6cqw, 58px)'
+        : 'clamp(42px, 5.6cqw, 74px)'
+
+  return (
+    <div
+      className={`relative isolate aspect-[1.414/1] w-full overflow-hidden bg-white text-slate-700 shadow-[0_18px_42px_rgba(15,23,42,0.12)] ${className}`}
+      style={{ containerType: 'inline-size', borderRadius: 'clamp(12px, 1.6cqw, 20px)' }}
+    >
+      <div
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, ${creamColor}, rgba(255,255,255,0.98) 47%, ${hexToRgba(accentColor, 0.08)})`,
+        }}
+      />
+      <div className="absolute inset-[0.9cqw] border-[0.24cqw]" style={{ borderColor: hexToRgba(accentColor, 0.36) }} />
+      <div
+        className="absolute inset-[1.8cqw] border"
+        style={{ borderColor: hexToRgba(navyColor, 0.18), boxShadow: `inset 0 0 0 0.25cqw ${hexToRgba(accentColor, 0.1)}` }}
+      />
+      <div
+        className="pointer-events-none absolute left-0 top-0 h-full w-[1.1cqw]"
+        style={{ background: `linear-gradient(180deg, ${accentColor}, ${greenColor})` }}
+      />
+      <div
+        className="pointer-events-none absolute right-0 top-0 h-full w-[1.1cqw]"
+        style={{ background: `linear-gradient(180deg, ${greenColor}, ${accentColor})` }}
+      />
+
+      <img
+        src={AICTE_LOGO_SRC}
+        alt="AICTE watermark"
+        crossOrigin="anonymous"
+        className="pointer-events-none absolute left-1/2 top-1/2 w-[36%] -translate-x-1/2 -translate-y-1/2 opacity-[0.045]"
+      />
+
+      <div className="relative flex h-full flex-col p-[3.8cqw]">
+        <header className="grid shrink-0 grid-cols-3 items-center gap-[2.1cqw]">
+          <div
+            className="flex h-[clamp(58px,6.8cqw,88px)] items-center gap-[1cqw] border bg-white/[0.88] shadow-[0_8px_20px_rgba(15,23,42,0.06)]"
+            style={{
+              borderColor: hexToRgba(navyColor, 0.16),
+              borderRadius: 'clamp(8px, 1cqw, 14px)',
+              padding: 'clamp(7px, 0.85cqw, 12px) clamp(9px, 1.1cqw, 16px)',
+            }}
+          >
+            <img
+              src={AICTE_LOGO_SRC}
+              alt="AICTE logo"
+              crossOrigin="anonymous"
+              className="h-[clamp(40px,5.1cqw,68px)] shrink-0 object-contain"
+            />
+            <div className="min-w-0">
+              <p
+                className="font-black uppercase leading-tight"
+                style={{ color: navyColor, fontSize: 'clamp(8px, 1cqw, 13px)' }}
+              >
+                {renderSpacedWords('AICTE Approved')}
+              </p>
+              <p
+                className="mt-0.5 font-bold uppercase text-slate-500"
+                style={{ fontSize: 'clamp(6.5px, 0.72cqw, 10px)', letterSpacing: 0 }}
+              >
+                Internship Program
+              </p>
+            </div>
+          </div>
+
+          <div className="flex h-[clamp(58px,6.8cqw,88px)] flex-col items-center justify-center text-center">
+            <img
+              src={brandLogo}
+              alt="Amit Solution Hub"
+              crossOrigin="anonymous"
+              className="h-[clamp(38px,4.9cqw,68px)] w-auto object-contain"
+            />
+            <p
+              className="mt-[0.4cqw] font-black uppercase"
+              style={{ color: navyColor, fontSize: 'clamp(10px, 1.25cqw, 17px)', letterSpacing: 0 }}
+            >
+              {renderSpacedWords('Amit Solution Hub')}
+            </p>
+          </div>
+
+          <div
+            className="flex h-[clamp(58px,6.8cqw,88px)] items-center justify-end gap-[1cqw] border bg-white/[0.88] text-right shadow-[0_8px_20px_rgba(15,23,42,0.06)]"
+            style={{
+              borderColor: hexToRgba(greenColor, 0.18),
+              borderRadius: 'clamp(8px, 1cqw, 14px)',
+              padding: 'clamp(7px, 0.85cqw, 12px) clamp(9px, 1.1cqw, 16px)',
+            }}
+          >
+            <div>
+              <p
+                className="font-black uppercase leading-tight"
+                style={{ color: greenColor, fontSize: 'clamp(8px, 1cqw, 13px)' }}
+              >
+                MSME
+              </p>
+              <p
+                className="mt-0.5 font-bold uppercase text-slate-500"
+                style={{ fontSize: 'clamp(6.5px, 0.72cqw, 10px)', letterSpacing: 0 }}
+              >
+                Registered
+              </p>
+            </div>
+            <img
+              src={msmeBadge}
+              alt="MSME logo"
+              crossOrigin="anonymous"
+              className="h-[clamp(40px,5.1cqw,68px)] shrink-0 object-contain"
+            />
+          </div>
+        </header>
+
+        <section className="mt-[1.7cqw] shrink-0 text-center">
+          <p
+            className="font-black uppercase"
+            style={{ color: accentColor, fontSize: 'clamp(8px, 1cqw, 13px)', letterSpacing: 0 }}
+          >
+            {renderSpacedWords('Official Training Credential')}
+          </p>
+          <h1
+            className="mx-auto mt-[0.65cqw] max-w-[86%] font-bold uppercase leading-tight"
+            style={{ color: navyColor, fontFamily: 'Georgia, "Times New Roman", serif', fontSize: 'clamp(34px, 5.3cqw, 72px)', letterSpacing: 0 }}
+          >
+            Internship Completion Certificate
+          </h1>
+        
+        </section>
+
+        <main className="mt-[1.55cqw] grid min-h-0 flex-1 grid-cols-[minmax(0,0.68fr)_minmax(0,0.32fr)] items-stretch gap-[2cqw]">
+          <section
+            className="flex min-h-0 flex-col border bg-white/[0.94] shadow-[0_12px_28px_rgba(15,23,42,0.07)]"
+            style={{
+              borderColor: hexToRgba(navyColor, 0.14),
+              borderRadius: 'clamp(10px, 1.4cqw, 18px)',
+              padding: 'clamp(15px, 1.9cqw, 28px)',
+            }}
+          >
+            <p
+              className="text-center italic text-slate-500"
+              style={{ fontSize: 'clamp(12px, 1.35cqw, 18px)', ...textSafeStyle }}
+            >
+              {renderSpacedWords('This certificate is proudly awarded to')}
+            </p>
+            <p
+              className="mx-auto mt-[0.75cqw] max-w-[92%] text-center font-bold leading-none"
+              style={{
+                color: navyColor,
+                fontFamily: 'Georgia, "Times New Roman", serif',
+                fontSize: holderFontSize,
+                ...textSafeStyle,
+                textTransform: 'capitalize',
+                textShadow: `0 1px 0 ${hexToRgba(accentColor, 0.12)}`,
+              }}
+            >
+              {renderSpacedWords(normalizeDisplayText(holderName))}
+            </p>
+            <p
+              className="mt-[1.25cqw] flex-1 leading-[1.68] text-slate-600"
+              style={{
+                fontSize: 'clamp(11px, 1.34cqw, 18px)',
+                textAlign: 'center',
+                ...textSafeStyle,
+                overflowWrap: 'break-word',
+              }}
+            >
+              {renderSpacedWords(normalizeDisplayText(narrative))}
+            </p>
+
+            <div className="mt-[1.35cqw] grid grid-cols-3 items-stretch gap-[1cqw]">
+              <DetailChip label="Program" value={programLabel} accentColor={accentColor} />
+              <DetailChip label="Issued By" value={activeTemplate.organizationName} accentColor={accentColor} />
+              <DetailChip label="Issue Date" value={issueDate} accentColor={accentColor} />
+            </div>
+          </section>
+
+          <aside
+            className="flex min-h-0 flex-col border bg-white/[0.92] shadow-[0_10px_24px_rgba(15,23,42,0.06)]"
+            style={{
+              borderColor: hexToRgba(greenColor, 0.14),
+              borderRadius: 'clamp(10px, 1.4cqw, 18px)',
+              padding: 'clamp(14px, 1.7cqw, 24px)',
+            }}
+          >
+            <div className="text-center">
+              <p
+                className="font-black uppercase text-slate-400"
+                style={{ fontSize: 'clamp(8px, 0.9cqw, 12px)', letterSpacing: 0 }}
+              >
+                QR Verified
+              </p>
+              <div
+                className="mx-auto mt-[1.05cqw] flex w-fit justify-center border bg-white p-[0.85cqw] shadow-[0_8px_18px_rgba(15,23,42,0.08)]"
+                style={{ borderColor: hexToRgba(navyColor, 0.16), borderRadius: 'clamp(8px, 1cqw, 14px)' }}
+              >
+                <div style={{ width: 'clamp(70px, 9.2cqw, 122px)' }}>
+                  <QRCodeCanvas
+                    value={verifyUrl || certificateId}
+                    size={256}
+                    style={{ width: '100%', height: 'auto' }}
+                    level="M"
+                    includeMargin={false}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-[1.4cqw] space-y-[0.8cqw]">
+              <DetailChip label="Certificate ID" value={certificateId} accentColor={accentColor} />
+              <DetailChip label="Status" value={statusLabel} accentColor={accentColor} />
+            </div>
+
+            <p
+              className="mt-auto text-center text-slate-500"
+              style={{ fontSize: 'clamp(7px, 0.78cqw, 10px)', lineHeight: 1.35 }}
+            >
+              {renderSpacedWords('Scan to validate online')}
+            </p>
+          </aside>
+        </main>
+
+        <footer className="mt-[2cqw] grid shrink-0 grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] items-start gap-[2.2cqw]">
+          <div className="flex flex-col text-left">
+            <div className="flex h-[5.8cqw] items-end">
+              <p
+                className="font-bold text-slate-800"
+                style={{ fontSize: 'clamp(12px, 1.5cqw, 20px)', ...textSafeStyle }}
+              >
+                {issueDate}
+              </p>
+            </div>
+            <div className="mt-[0.55cqw] h-px w-full" style={{ backgroundColor: hexToRgba(navyColor, 0.18) }} />
+            <p
+              className="mt-[0.65cqw] font-black uppercase text-slate-400"
+              style={{ fontSize: 'clamp(7px, 0.75cqw, 10px)', ...textSafeStyle }}
+            >
+              {renderSpacedWords('Date of Issue')}
+            </p>
+          </div>
+
+          <div className="flex flex-col text-center">
+            <div className="flex h-[5.8cqw] flex-col items-center justify-end">
+              <p
+                className="font-semibold"
+                style={{ color: navyColor, fontSize: 'clamp(10px, 1.2cqw, 16px)', ...textSafeStyle }}
+              >
+                {renderSpacedWords(activeTemplate.organizationName)}
+              </p>
+              <p
+                className="mt-[0.35cqw] font-bold uppercase text-slate-400"
+                style={{ fontSize: 'clamp(7px, 0.7cqw, 10px)', ...textSafeStyle }}
+              >
+                {renderSpacedWords('Authorized Training Partner')}
+              </p>
+            </div>
+            <div className="mt-[0.55cqw] h-px w-full" style={{ backgroundColor: hexToRgba(navyColor, 0.12) }} />
+            <div className="mt-[0.65cqw] space-y-[0.2cqw] text-slate-500">
+              <p className="font-semibold" style={{ fontSize: 'clamp(7.5px, 0.82cqw, 11px)', letterSpacing: 0, overflowWrap: 'anywhere' }}>
+                www.amitsolutionhub.com
+              </p>
+              <p className="font-semibold" style={{ fontSize: 'clamp(7.5px, 0.82cqw, 11px)', letterSpacing: 0, overflowWrap: 'anywhere' }}>
+                {activeTemplate.supportEmail || 'support@amitsolutionhub.com'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-end text-right">
+            <div className="relative flex h-[5.8cqw] w-full items-end justify-end overflow-visible">
+              <img
+                src={stampImage}
+                alt="Official stamp"
+                crossOrigin="anonymous"
+                className="absolute bottom-[-0.1cqw] right-[43%] h-[clamp(46px,5.8cqw,82px)] w-auto object-contain opacity-85 mix-blend-multiply"
+                style={{ transform: 'rotate(-12deg)', transformOrigin: 'center' }}
+              />
+              {signatureImage ? (
+                <img
+                  src={signatureImage}
+                  alt={signatureName}
+                  crossOrigin="anonymous"
+                  className="relative z-10 max-h-[66%] w-auto object-contain mix-blend-multiply drop-shadow-[0_4px_8px_rgba(15,23,42,0.08)]"
+                />
+              ) : null}
+            </div>
+            <div className="mt-[0.55cqw] h-px w-full" style={{ backgroundColor: hexToRgba(navyColor, 0.18) }} />
+            <p
+              className="mt-[0.65cqw] font-semibold text-slate-800"
+              style={{ fontSize: 'clamp(10px, 1cqw, 14px)', ...textSafeStyle }}
+            >
+              {renderSpacedWords(signatureName)}
+            </p>
+            <p
+              className="mt-0.5 font-bold uppercase text-slate-400"
+              style={{ fontSize: 'clamp(7px, 0.65cqw, 9px)', ...textSafeStyle }}
+            >
+              {renderSpacedWords(signatureRole)}
+            </p>
+          </div>
+        </footer>
+      </div>
+    </div>
+  )
+}
+
 export default function CertificateDocument({ certificate, template, className = '' }) {
   const documentType = getCertificateDocumentType(certificate)
   
   if (documentType === 'offer_letter' || certificate?.certificateType === 'Offer Letter') {
     return <OfferLetterDocument certificate={certificate} template={template} className={className} />
+  }
+
+  if (isAicteInternshipCertificate(certificate)) {
+    return <AicteInternshipCertificateDocument certificate={certificate} template={template} className={className} />
   }
 
   const activeTemplate = mergeCertificateTemplate(certificate?.templateSnapshot || template, documentType)

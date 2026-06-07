@@ -97,57 +97,7 @@ export default function CoursesPage() {
         />
       </Helmet>
 
-      <PublicPageShell
-        compact
-        badge="Industry-Ready Learning"
-        title={
-          <>
-            Choose a learning path that builds
-            <span className="bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent"> real skills </span>
-            for real careers
-          </>
-        }
-        description="Browse structured courses and webinars with mentor support, clear outcomes, and a polished mobile-friendly experience from discovery to enrollment."
-        actions={[
-          { label: 'Browse Programs', to: '/courses#course-catalogue', icon: <PageIcon name="book" size={16} /> },
-          { label: 'Contact for Guidance', to: '/contact', variant: 'secondary', icon: <PageIcon name="chat" size={16} /> },
-        ]}
-        pills={[
-          'Mentor-guided roadmap',
-          'Verifiable certificate flow',
-          'Meeting link and material support',
-          'Structured outcomes for internships',
-        ]}
-        stats={stats}
-        aside={
-          <div className="space-y-5">
-            <div>
-              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">Why this helps</div>
-              <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-900">Course details that feel clearer and more trustworthy</h3>
-            </div>
-
-            <div className="grid gap-3">
-              {[
-                { title: 'Transparent Structure', desc: 'Category, mentor, duration, pricing, and enrollment status remain easy to scan on every screen size.' },
-                { title: 'Credible Presentation', desc: 'Clean cards, focused copy, and consistent spacing give the catalogue a more professional feel.' },
-                { title: 'Student Clarity', desc: 'Learners can quickly understand what is included before they commit to a program.' },
-              ].map((item) => (
-                <div key={item.title} className="rounded-3xl border border-slate-200/80 bg-white/90 p-4 shadow-[0_18px_38px_-30px_rgba(15,23,42,0.55)]">
-                  <div className="text-sm font-bold text-slate-900">{item.title}</div>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="rounded-[26px] border border-sky-100 bg-gradient-to-br from-sky-50 to-indigo-50 p-5">
-              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">Presentation Note</div>
-              <p className="mt-3 text-sm leading-6 text-slate-600">
-                We do not guarantee AICTE approval status; this layout is designed to present training details clearly, credibly, and in a way that is easier to verify.
-              </p>
-            </div>
-          </div>
-        }
-      >
+      <div>
         <PublicSection id="course-catalogue" className="space-y-8">
           <PublicGlassCard className="space-y-6 p-5 sm:p-7">
             <PublicSectionHeading
@@ -376,7 +326,7 @@ export default function CoursesPage() {
             </div>
           )}
         </PublicSection>
-      </PublicPageShell>
+      </div>
     </>
   )
 }

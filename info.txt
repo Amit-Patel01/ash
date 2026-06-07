@@ -1,6 +1,9 @@
 SOLUTIONHUB PROJECT STRUCTURE
 =============================
 
+PROJECT STATUS: AICTE APPROVED ✅✅✅
+This project has been APPROVED by AICTE (All India Council for Technical Education) for internship program!
+
 This document gives a clear English overview of the current project structure, with a focus on the frontend and backend parts of the repository.
 
 

@@ -140,8 +140,13 @@ const waitForImages = async (element) => {
 const getExportDimensions = (element) => {
   const rect = element.getBoundingClientRect()
   const width = Math.ceil(rect.width || element.offsetWidth || CERTIFICATE_EXPORT_WIDTH)
+  
+  // Check if it is portrait (such as Offer Letter)
+  const isPortrait = element.classList.contains('aspect-[1/1.414]')
+  const aspect = isPortrait ? (1 / 1.414) : 1.414
+  
   const height = Math.ceil(
-    rect.height || element.offsetHeight || Math.round(width / CERTIFICATE_ASPECT)
+    rect.height || element.offsetHeight || Math.round(width / aspect)
   )
   return { width, height }
 }
@@ -177,9 +182,33 @@ const syncSanitizedStyles = (sourceElement, cloneElement) => {
   copyCanvasContents(sourceElement, cloneElement)
 }
 
-const sanitizeClonedTree = (sourceRoot, clonedDocument) => {
+const sanitizeClonedTree = (sourceRoot, clonedDocument, targetWidth, targetHeight) => {
+  // Clear any default browser margins/paddings on iframe html/body
+  if (clonedDocument.documentElement) {
+    clonedDocument.documentElement.style.setProperty('margin', '0', 'important')
+    clonedDocument.documentElement.style.setProperty('padding', '0', 'important')
+  }
+  if (clonedDocument.body) {
+    clonedDocument.body.style.setProperty('margin', '0', 'important')
+    clonedDocument.body.style.setProperty('padding', '0', 'important')
+  }
+
   const clonedRoot = clonedDocument.querySelector(`[${EXPORT_ROOT_ATTR}="true"]`)
   if (!clonedRoot) return
+
+  // Remove shadows and outer margins/paddings that add extra export space
+  clonedRoot.style.setProperty('box-shadow', 'none', 'important')
+  clonedRoot.style.setProperty('margin', '0', 'important')
+  clonedRoot.style.setProperty('padding', '0', 'important')
+  
+  // Set explicit dimensions to prevent aspect-ratio collapsing in html2canvas
+  clonedRoot.style.setProperty('width', `${targetWidth}px`, 'important')
+  clonedRoot.style.setProperty('height', `${targetHeight}px`, 'important')
+  
+  // Position absolutely at 0,0
+  clonedRoot.style.setProperty('position', 'absolute', 'important')
+  clonedRoot.style.setProperty('top', '0', 'important')
+  clonedRoot.style.setProperty('left', '0', 'important')
 
   const sourceNodes = [sourceRoot, ...sourceRoot.querySelectorAll('*')]
   const cloneNodes = [clonedRoot, ...clonedRoot.querySelectorAll('*')]
@@ -216,12 +245,12 @@ const renderCertificateCanvas = async (element) => {
 
   const parent = element.parentElement
   const originalParentStyles = parent
-    ? {
-        top: parent.style.top,
-        left: parent.style.left,
-        opacity: parent.style.opacity,
-      }
-    : null
+  	? {
+  			top: parent.style.top,
+  			left: parent.style.left,
+  			opacity: parent.style.opacity,
+  		}
+  	: null
 
   if (parent && originalParentStyles) {
     parent.style.top = '0px'
@@ -242,10 +271,10 @@ const renderCertificateCanvas = async (element) => {
       logging: false,
       scrollX: 0,
       scrollY: 0,
-      windowWidth: Math.max(document.documentElement.clientWidth, width),
-      windowHeight: Math.max(document.documentElement.clientHeight, height),
+      windowWidth: width,
+      windowHeight: height,
       onclone: (clonedDocument) => {
-        sanitizeClonedTree(captureTarget, clonedDocument)
+        sanitizeClonedTree(captureTarget, clonedDocument, width, height)
       },
     })
   } finally {

@@ -78,17 +78,27 @@ export default function OfferLetterDocument({ certificate, template, className =
 
         {/* Body Text */}
         <div className="mt-[4cqw] space-y-[2.5cqw] text-justify leading-relaxed shrink-0 flex-1" style={{ fontSize: 'clamp(11px, 1.8cqw, 16px)' }}>
-          <p>
-            We are delighted to welcome you for the internship in <span className="font-bold">{domain}</span> at our organization. This internship is observed by <span className="font-bold">Amit Solution Hub</span> as being a learning opportunity for you, spanning a duration of <span className="font-bold">{duration}</span>.
-          </p>
+          {certificate?.certificateText ? (
+            certificate.certificateText.split('\n').map((para, index) => {
+              const trimmed = para.trim();
+              if (!trimmed) return null;
+              return <p key={index}>{trimmed}</p>;
+            })
+          ) : (
+            <>
+              <p>
+                We are delighted to welcome you for the internship in <span className="font-bold">{domain}</span> at our organization. This internship is observed by <span className="font-bold">Amit Solution Hub</span> as being a learning opportunity for you, spanning a duration of <span className="font-bold">{duration}</span>.
+              </p>
 
-          <p>
-            In essence, your internship will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application of the knowledge you gain as an intern. Our team is confident that you will acknowledge your obligation to perform all work allocated to you to the best of your ability within lawful and reasonable direction given to you.
-          </p>
+              <p>
+                In essence, your internship will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application of the knowledge you gain as an intern. Our team is confident that you will acknowledge your obligation to perform all work allocated to you to the best of your ability within lawful and reasonable direction given to you.
+              </p>
 
-          <p>
-            We look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful internship program experience.
-          </p>
+              <p>
+                We look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful internship program experience.
+              </p>
+            </>
+          )}
         </div>
 
         {/* Signatures & Stamp Section */}

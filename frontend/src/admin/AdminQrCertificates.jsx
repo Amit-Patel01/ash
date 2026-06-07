@@ -8,7 +8,14 @@ import CertificateDocument from '../components/certificates/CertificateDocument'
 import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
 import { normalizeCertificateAssetUrl } from '../utils/certificateHelpers'
 
+const AICTE_INTERNSHIP_CERTIFICATE_TYPE = 'AICTE Internship Completion'
+
 const CERTIFICATE_TYPES = [
+  {
+    value: AICTE_INTERNSHIP_CERTIFICATE_TYPE,
+    label: 'Completion Certificate',
+    defaultText: 'This is to certify that the above-named candidate has successfully completed the AICTE-approved internship program conducted by Amit Solution Hub. The internship included guided learning, assigned project work, practical training, and performance evaluation with verified participation.',
+  },
   {
     value: 'LOR',
     label: 'Letter of Recommendation',
@@ -27,7 +34,7 @@ const CERTIFICATE_TYPES = [
   {
     value: 'Offer Letter',
     label: 'Offer Letter',
-    defaultText: 'We are delighted to welcome you for the internship...',
+    defaultText: 'We are delighted to welcome you for the internship in Web Development at our organization. This internship is observed by Amit Solution Hub as being a learning opportunity for you, spanning a duration of 1 month.\n\nIn essence, your internship will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application of the knowledge you gain as an intern. Our team is confident that you will acknowledge your obligation to perform all work allocated to you to the best of your ability within lawful and reasonable direction given to you.\n\nWe look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful internship program experience.',
   },
   {
     value: 'Other',
@@ -41,10 +48,10 @@ const getTypeMeta = (value) => CERTIFICATE_TYPES.find((type) => type.value === v
 const createInitialForm = () => ({
   certificate_id: '',
   name: '',
-  certificateType: 'LOR',
+  certificateType: AICTE_INTERNSHIP_CERTIFICATE_TYPE,
   customTitle: '',
   date: new Date().toISOString().slice(0, 10),
-  certificateText: getTypeMeta('LOR').defaultText,
+  certificateText: getTypeMeta(AICTE_INTERNSHIP_CERTIFICATE_TYPE).defaultText,
   assignedEmployeeUid: '',
   assignedEmployeeId: '',
   assignedEmployeeName: '',
@@ -182,13 +189,16 @@ export default function AdminQrCertificates() {
     return match ? (match.uid || match.id || match.employeeId || match.email || '') : ''
   }, [employeeOptions, form.assignedEmployeeEmail, form.assignedEmployeeId, form.assignedEmployeeUid])
   const previewType = getTypeMeta(form.certificateType)
+  const isAictePreview = form.certificateType === AICTE_INTERNSHIP_CERTIFICATE_TYPE
+  const previewDisplayId = previewCertificateId || editingCertificate?.certificate_id || (isAictePreview ? 'ASH-AICTE-2026-001' : 'QR-PREVIEW')
   const previewCertificate = useMemo(() => ({
     id: editingCertificate?.id || '',
     source: 'qr',
+    documentType: isAictePreview ? 'internship_certificate' : 'qr_certificate',
     status: editingCertificate?.status || 'active',
-    statusDisplay: editingCertificate?.status === 'revoked' ? 'Revoked' : 'Active',
+    statusDisplay: editingCertificate?.status === 'revoked' ? 'Revoked' : (isAictePreview ? 'Verified' : 'Active'),
     isValid: editingCertificate?.status !== 'revoked',
-    certificate_id: previewCertificateId || editingCertificate?.certificate_id || 'QR-PREVIEW',
+    certificate_id: previewDisplayId,
     name: form.name || 'Certificate Holder',
     userName: form.name || 'Certificate Holder',
     certificateType: form.certificateType,
@@ -207,8 +217,8 @@ export default function AdminQrCertificates() {
     signatoryName: form.signatoryName || '',
     signatoryRole: form.signatoryRole || '',
     stampImageUrl: form.stampImageUrl || '',
-    verifyUrl: buildVerifyUrl(previewCertificateId || editingCertificate?.certificate_id || 'QR-PREVIEW'),
-  }), [editingCertificate, form, previewCertificateId, previewType])
+    verifyUrl: buildVerifyUrl(previewDisplayId),
+  }), [editingCertificate, form, isAictePreview, previewDisplayId, previewType])
   const canDownloadPreview = Boolean(form.name.trim() && form.certificateText.trim())
 
   const [exportTarget, setExportTarget] = useState(null)
@@ -240,6 +250,7 @@ export default function AdminQrCertificates() {
     setExportTarget({
       ...certificate,
       source: 'qr',
+      documentType: certificate.documentType || (certificate.certificateType === AICTE_INTERNSHIP_CERTIFICATE_TYPE ? 'internship_certificate' : 'qr_certificate'),
       statusDisplay: certificate.status === 'revoked' ? 'Revoked' : 'Active',
       isValid: certificate.status !== 'revoked',
       certificateTypeLabel: certificate.certificateType === 'Other' && certificate.documentLabel ? certificate.documentLabel : typeMeta.label,
