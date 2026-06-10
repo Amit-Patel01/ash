@@ -3,10 +3,22 @@ import { QRCodeCanvas } from 'qrcode.react'
 import { ChevronDown, Download, FileImage, FileText, Link2, Mail, PencilLine, Plus, QrCode, RefreshCcw, ShieldCheck, ShieldOff, Trash2, Upload, UserRound } from 'lucide-react'
 import { useStore } from '../store/StoreContext'
 import { auth } from '../config/firebase'
-import { api, readApiJson } from '../config/api'
+import { api, readApiJson, API_BASE } from '../config/api'
 import CertificateDocument from '../components/certificates/CertificateDocument'
 import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
 import { normalizeCertificateAssetUrl } from '../utils/certificateHelpers'
+
+// Convert a stored asset URL (may be relative like /uploads/...) to a full URL for <img src>
+const resolveAssetSrc = (value) => {
+  const raw = String(value || '').trim()
+  if (!raw) return ''
+  if (raw.startsWith('http://') || raw.startsWith('https://')) return raw
+  if (raw.startsWith('/')) {
+    const base = API_BASE || (typeof window !== 'undefined' ? window.location.origin : '')
+    return `${base}${raw}`
+  }
+  return raw
+}
 
 const AICTE_INTERNSHIP_CERTIFICATE_TYPE = 'AICTE Internship Completion'
 
@@ -343,7 +355,10 @@ export default function AdminQrCertificates() {
         throw new Error(data.message || 'Failed to upload image.')
       }
 
-      setForm((current) => ({ ...current, [field]: normalizeCertificateAssetUrl(data.url) }))
+      // Store the full URL in form state so <img src> previews work.
+      // The backend API (createQrCertificate / updateQrCertificate) receives the raw URL
+      // and handles normalization server-side before persisting to Firestore.
+      setForm((current) => ({ ...current, [field]: data.url }))
       setMessage(`${field === 'signatureImageUrl' ? 'Signature' : 'Stamp'} uploaded.`)
     } catch (uploadError) {
       setError(uploadError.message || 'Unable to upload image.')
@@ -358,9 +373,19 @@ export default function AdminQrCertificates() {
     setMessage('')
     setError('')
 
+    // Normalize image URLs to relative /uploads/... paths before sending to backend.
+    // The backend validator requires relative paths; the form stores full URLs for preview.
+    const normalizedForm = {
+      ...form,
+      signatureImageUrl: normalizeCertificateAssetUrl(form.signatureImageUrl),
+      stampImageUrl: normalizeCertificateAssetUrl(form.stampImageUrl),
+    }
+
     try {
       if (editingId) {
-        const savedCertificate = await updateQrCertificate(editingId, form)
+        const savedCertificate = await updateQrCertificate(editingId, normalizedForm)
+        // After save, map the returned record back to form state.
+        // The record will have /uploads/... URLs; resolveAssetSrc() handles rendering them.
         setForm(mapCertificateToForm(savedCertificate))
         setPreviewCertificateId(savedCertificate.certificate_id || '')
         setMessage(
@@ -369,7 +394,7 @@ export default function AdminQrCertificates() {
             : 'QR certificate updated.'
         )
       } else {
-        const savedCertificate = await createQrCertificate(form)
+        const savedCertificate = await createQrCertificate(normalizedForm)
         setEditingId(savedCertificate.id || '')
         setForm(mapCertificateToForm(savedCertificate))
         setPreviewCertificateId(savedCertificate.certificate_id || '')
@@ -692,7 +717,7 @@ export default function AdminQrCertificates() {
                 {form.signatureImageUrl ? (
                   <div className="mt-4 space-y-3">
                     <img
-                      src={form.signatureImageUrl}
+                      src={resolveAssetSrc(form.signatureImageUrl)}
                       alt="Signature preview"
                       className="h-28 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
                     />
@@ -731,7 +756,7 @@ export default function AdminQrCertificates() {
                 {form.stampImageUrl ? (
                   <div className="mt-4 space-y-3">
                     <img
-                      src={form.stampImageUrl}
+                      src={resolveAssetSrc(form.stampImageUrl)}
                       alt="Stamp preview"
                       className="h-28 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
                     />
@@ -908,13 +933,18 @@ export default function AdminQrCertificates() {
                       <h3 className="mt-4 text-2xl font-black text-white">{certificate.name || certificate.userName}</h3>
                       <p className="mt-2 text-sm text-slate-300">{certificate.certificateTypeLabel || getTypeMeta(certificate.certificateType).label}</p>
                       <p className="mt-4 break-all font-mono text-sm font-bold text-cyan-200">{certificate.certificate_id}</p>
-                      {certificate.assignedEmployeeName ? (
+                      {(certificate.assignedEmployeeName || certificate.assignedEmployeeEmail) ? (
                         <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-slate-300">
                           <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-slate-300">
-                            Assigned Employee
+                            Assigned To
                           </span>
-                          <span>{certificate.assignedEmployeeName}</span>
+                          {certificate.assignedEmployeeName ? <span>{certificate.assignedEmployeeName}</span> : null}
                           {certificate.assignedEmployeeId ? <span className="font-mono text-xs text-slate-500">{certificate.assignedEmployeeId}</span> : null}
+                          {certificate.assignedEmployeeEmail ? (
+                            <span className="inline-flex items-center gap-1 text-xs text-cyan-300">
+                              <Mail size={12} />{certificate.assignedEmployeeEmail}
+                            </span>
+                          ) : null}
                         </div>
                       ) : null}
                       {certificate.certificateText ? (
@@ -944,14 +974,14 @@ export default function AdminQrCertificates() {
                         <div className="mt-4 flex flex-wrap gap-3">
                           {certificate.signatureImageUrl ? (
                             <img
-                              src={certificate.signatureImageUrl}
+                              src={resolveAssetSrc(certificate.signatureImageUrl)}
                               alt="Signature"
                               className="h-20 rounded-2xl border border-white/10 bg-white p-2 object-contain"
                             />
                           ) : null}
                           {certificate.stampImageUrl ? (
                             <img
-                              src={certificate.stampImageUrl}
+                              src={resolveAssetSrc(certificate.stampImageUrl)}
                               alt="Stamp"
                               className="h-20 rounded-2xl border border-white/10 bg-white p-2 object-contain"
                             />

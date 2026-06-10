@@ -4,6 +4,7 @@ import { formatEnrollmentDeadline, isEnrollmentClosed, normalizeEnrollmentDeadli
 import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
 import { CategoryIcon } from '../utils/CategoryIcon'
 import { Clock, BarChart, Users, Eye, EyeOff, Lightbulb } from 'lucide-react'
+import { isEmployeeRole } from '../utils/roles'
 
 export default function AdminCourses() {
   const {
@@ -38,7 +39,7 @@ export default function AdminCourses() {
   }, [courseCategories, seeded, seedCourseCategories])
 
   // Employees list for assignment
-  const employees = users.filter(u => u.role === 'employee' || u.role === 'mentor')
+  const employees = users.filter(u => isEmployeeRole(u.role))
 
   const filtered = filterCategory === 'All'
     ? courses

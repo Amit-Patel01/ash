@@ -7,6 +7,8 @@ import {
   getEmployeeMemberData,
   normalize,
   taskBelongsToEmployee,
+  getEmployeeKeyList,
+  courseBelongsToEmployee,
 } from './employeeUtils'
 
 const isDone = (status) => ['done', 'completed', 'complete', 'closed'].includes(normalize(status))
@@ -73,13 +75,12 @@ export default function TeamMemberDashboard() {
   }, [myTasks, projects])
 
   const employeeKeys = useMemo(
-    () => [...new Set([currentUser?.uid, userProfile?.uid, employeeId].filter(Boolean))],
-    [currentUser?.uid, userProfile?.uid, employeeId]
+    () => getEmployeeKeyList(currentUser, userProfile, memberData),
+    [currentUser, userProfile, memberData]
   )
 
   const myCourses = useMemo(() => courses.filter(course =>
-    employeeKeys.includes(course.assignedEmployeeId) ||
-    employeeKeys.includes(course.assignedEmployeeRef)
+    courseBelongsToEmployee(course, employeeKeys)
   ), [courses, employeeKeys])
 
   const courseCards = useMemo(() => myCourses.map(course => {

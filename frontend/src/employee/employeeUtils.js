@@ -30,14 +30,25 @@ export const getEmployeeMemberData = (teamMembers = [], currentUser, userProfile
   ) || null
 }
 
-export const getEmployeeKeyList = (currentUser, userProfile, memberData = null) =>
-  [...new Set([
+export const getEmployeeKeyList = (currentUser, userProfile, memberData = null) => {
+  const list = [
     currentUser?.uid,
     userProfile?.uid,
     currentUser?.employeeId,
     userProfile?.employeeId,
     memberData?.employeeId,
-  ].filter(Boolean))]
+    currentUser?.email,
+    userProfile?.email,
+    memberData?.email,
+    currentUser?.displayName,
+    userProfile?.displayName,
+    memberData?.name,
+  ]
+    .filter(Boolean)
+    .map(val => String(val).trim().toLowerCase())
+
+  return [...new Set(list)]
+}
 
 export const getEmployeeInitials = (name) =>
   (name || 'Employee')
@@ -100,9 +111,19 @@ export const taskBelongsToEmployee = (task, identities) => {
   return false
 }
 
-export const courseBelongsToEmployee = (course, employeeKeys) =>
-  employeeKeys.includes(course?.assignedEmployeeId) ||
-  employeeKeys.includes(course?.assignedEmployeeRef)
+export const courseBelongsToEmployee = (course, employeeKeys) => {
+  if (!course || !employeeKeys || employeeKeys.length === 0) return false
+
+  const courseKeys = [
+    course.assignedEmployeeId,
+    course.assignedEmployeeRef,
+    course.assignedEmployeeName,
+  ]
+    .filter(Boolean)
+    .map(val => String(val).trim().toLowerCase())
+
+  return courseKeys.some(key => employeeKeys.includes(key))
+}
 
 export const enrollmentMatchesCourse = (enrollment, course) =>
   enrollment?.courseId === course?.id ||

@@ -7,6 +7,8 @@ import {
   getEmployeeMemberData,
   normalize,
   taskBelongsToEmployee,
+  getEmployeeKeyList,
+  courseBelongsToEmployee,
 } from './employeeUtils'
 const isDone = (status) => ['done', 'completed', 'complete', 'closed'].includes(normalize(status))
 const isProgress = (status) => ['in-progress', 'in progress', 'progress', 'working'].includes(normalize(status))
@@ -145,12 +147,12 @@ export default function EmployeeHomeDashboard() {
   }, [myTasks, projects])
 
   const employeeKeys = useMemo(
-    () => [...new Set([currentUser?.uid, userProfile?.uid, employeeId].filter(Boolean))],
-    [currentUser?.uid, userProfile?.uid, employeeId]
+    () => getEmployeeKeyList(currentUser, userProfile, memberData),
+    [currentUser, userProfile, memberData]
   )
 
   const courseCards = useMemo(() => courses
-    .filter(course => employeeKeys.includes(course.assignedEmployeeId) || employeeKeys.includes(course.assignedEmployeeRef))
+    .filter(course => courseBelongsToEmployee(course, employeeKeys))
     .map(course => {
       const students = enrollments.filter(enrollment =>
         enrollment.status === 'active' &&

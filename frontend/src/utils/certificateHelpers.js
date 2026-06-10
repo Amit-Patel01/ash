@@ -57,6 +57,29 @@ export const normalizeCertificateAssetUrl = (value) => {
   return rawValue
 }
 
+/**
+ * Resolve a stored certificate asset URL (which may be a relative path like /uploads/...) to
+ * a full URL suitable for use as an <img src>. In production the path is served by the backend;
+ * on localhost it is proxied via Vite, so we prepend the API_BASE only when it is set.
+ */
+export const resolveCertificateAssetSrc = (value) => {
+  const raw = String(value || '').trim()
+  if (!raw) return ''
+  if (raw.startsWith('http://') || raw.startsWith('https://')) return raw
+  if (raw.startsWith('/')) {
+    // Avoid circular import: derive the API base directly from env vars rather than importing api.js.
+    const envBase = (
+      (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) ||
+      (typeof import.meta !== 'undefined' && import.meta.env?.VITE_BACKEND_URL) ||
+      ''
+    ).trim().replace(/\/+$/, '')
+    if (envBase) return `${envBase}${raw}`
+    // In dev mode on localhost the Vite proxy handles /uploads/* → backend, so a relative path works.
+    return raw
+  }
+  return raw
+}
+
 export const getCertificateFilename = (certificate, extension) => {
   const certId = certificate?.certificate_id || 'document'
   const documentType = getCertificateDocumentType(certificate)

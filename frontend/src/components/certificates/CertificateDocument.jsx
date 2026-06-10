@@ -12,6 +12,7 @@ import {
   getCertificateHolderName,
   getCertificateVerifyUrl,
   normalizeCertificateAssetUrl,
+  resolveCertificateAssetSrc,
 } from '../../utils/certificateHelpers'
 import OfferLetterDocument from './OfferLetterDocument'
 
@@ -241,8 +242,8 @@ function AicteInternshipCertificateDocument({ certificate, template, className =
   const programLabel = 'Completion Certificate'
   const signatureName = certificate?.signatoryName || activeTemplate.signatureName || 'Amit Patel'
   const signatureRole = certificate?.signatoryRole || activeTemplate.signatureRole || 'Authorized Signatory'
-  const signatureImage = normalizeCertificateAssetUrl(certificate?.signatureImageUrl) || founderSign
-  const stampImage = normalizeCertificateAssetUrl(certificate?.stampImageUrl) || stempImage
+  const signatureImage = resolveCertificateAssetSrc(normalizeCertificateAssetUrl(certificate?.signatureImageUrl)) || founderSign
+  const stampImage = resolveCertificateAssetSrc(normalizeCertificateAssetUrl(certificate?.stampImageUrl)) || stempImage
   const statusLabel = resolveAicteStatus(certificate)
   const narrative = normalizeAicteParagraph(certificate?.certificateText || AICTE_CERTIFICATE_PARAGRAPH)
 
@@ -576,8 +577,8 @@ export default function CertificateDocument({ certificate, template, className =
   const issueDate = formatCertificateDate(certificate?.approval_date || certificate?.createdAt || certificate?.date)
   const signatureName = certificate?.signatoryName || activeTemplate.signatureName || certificate?.issuedByName || 'Amit Patel'
   const signatureRole = certificate?.signatoryRole || activeTemplate.signatureRole || certificate?.issuedByRole || 'Authorized Signatory'
-  const signatureImage = normalizeCertificateAssetUrl(certificate?.signatureImageUrl) || founderSign
-  const stampImage = normalizeCertificateAssetUrl(certificate?.stampImageUrl) || stempImage
+  const signatureImage = resolveCertificateAssetSrc(normalizeCertificateAssetUrl(certificate?.signatureImageUrl)) || founderSign
+  const stampImage = resolveCertificateAssetSrc(normalizeCertificateAssetUrl(certificate?.stampImageUrl)) || stempImage
   const narrative = getDocumentNarrative(documentType, holderName, courseName, activeTemplate, certificate)
 
   const holderFontSize =

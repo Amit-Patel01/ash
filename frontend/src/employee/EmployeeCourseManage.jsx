@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
+import { getEmployeeKeyList, getEmployeeMemberData, courseBelongsToEmployee } from './employeeUtils'
 import { DOCUMENT_TYPES } from '../utils/certificateTemplate'
 import { emailNotify } from '../utils/emailNotify'
 import { formatEnrollmentDeadline, isEnrollmentClosed, normalizeEnrollmentDeadline } from '../utils/enrollmentDeadline'
@@ -138,20 +139,25 @@ export default function EmployeeCourseManage() {
     issueCertificate,
     revokeCertificate,
     courseCategories,
+    teamMembers,
   } = useStore()
   const { currentUser, userProfile } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const displayName = userProfile?.displayName || currentUser?.displayName || 'Employee'
-  const employeeId = userProfile?.employeeId || currentUser?.employeeId || ''
-  const employeeKeys = useMemo(
-    () => [...new Set([currentUser?.uid, userProfile?.uid, employeeId].filter(Boolean))],
-    [currentUser?.uid, userProfile?.uid, employeeId]
+  const memberData = useMemo(
+    () => getEmployeeMemberData(teamMembers, currentUser, userProfile),
+    [teamMembers, currentUser, userProfile]
   )
-  const myCourses = useMemo(() => courses.filter(course =>
-    employeeKeys.includes(course.assignedEmployeeId) ||
-    employeeKeys.includes(course.assignedEmployeeRef)
-  ), [courses, employeeKeys])
+  const displayName = userProfile?.displayName || currentUser?.displayName || memberData?.name || 'Employee'
+  const employeeId = userProfile?.employeeId || currentUser?.employeeId || memberData?.employeeId || ''
+  const employeeKeys = useMemo(
+    () => getEmployeeKeyList(currentUser, userProfile, memberData),
+    [currentUser, userProfile, memberData]
+  )
+  const myCourses = useMemo(
+    () => courses.filter(course => courseBelongsToEmployee(course, employeeKeys)),
+    [courses, employeeKeys]
+  )
   const [selectedCourse, setSelectedCourse] = useState(null)
   const [saving, setSaving] = useState(false)
   const [activeTab, setActiveTab] = useState('plans') // plans | materials | meeting | students

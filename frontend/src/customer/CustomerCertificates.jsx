@@ -192,7 +192,18 @@ export default function CustomerCertificates() {
   const [copiedId, setCopiedId] = useState('')
 
   const myCertificates = useMemo(
-    () => certificates.filter(cert => cert.userId === currentUser?.uid && cert.status === 'approved'),
+    () => certificates.filter(cert => {
+      if (cert.status !== 'approved' && cert.status !== 'active') return false
+      const uid = currentUser?.uid
+      const email = currentUser?.email
+      // Standard course certificates use userId
+      if (uid && cert.userId === uid) return true
+      // QR certificates assigned to this employee/student
+      if (uid && cert.assignedEmployeeUid === uid) return true
+      // Email-based assignment (for external users or unlinked accounts)
+      if (email && cert.assignedEmployeeEmail === email) return true
+      return false
+    }),
     [certificates, currentUser]
   )
 

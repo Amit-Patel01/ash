@@ -23,7 +23,15 @@ export default function CustomerMyCourses() {
 
   const myEnrollments = currentUser ? getUserEnrollments(currentUser.uid) : []
   const myCertificates = currentUser
-    ? certificates.filter(cert => cert.userId === currentUser.uid && cert.status === 'approved')
+    ? certificates.filter(cert => {
+        if (cert.status !== 'approved' && cert.status !== 'active') return false
+        const uid = currentUser.uid
+        const email = currentUser.email
+        if (uid && cert.userId === uid) return true
+        if (uid && cert.assignedEmployeeUid === uid) return true
+        if (email && cert.assignedEmployeeEmail === email) return true
+        return false
+      })
     : []
 
   const normalize = (value) => String(value || '').trim().toLowerCase()
