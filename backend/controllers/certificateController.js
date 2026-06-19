@@ -192,27 +192,27 @@ const validateQrCertificateInput = (payload = {}, { partial = false } = {}) => {
     const assignedEmployeeEmail = normalizeOptionalText(payload.assignedEmployeeEmail).toLowerCase();
 
     if (assignedEmployeeUid.length > 160) {
-      errors.push("Assigned employee UID is too long.");
+      errors.push("Assigned user UID is too long.");
     } else {
       updates.assignedEmployeeUid = assignedEmployeeUid;
     }
 
     if (assignedEmployeeId.length > 160) {
-      errors.push("Assigned employee ID is too long.");
+      errors.push("Assigned user ID is too long.");
     } else {
       updates.assignedEmployeeId = assignedEmployeeId;
     }
 
     if (assignedEmployeeName.length > 160) {
-      errors.push("Assigned employee name is too long.");
+      errors.push("Assigned user name is too long.");
     } else {
       updates.assignedEmployeeName = assignedEmployeeName;
     }
 
     if (assignedEmployeeEmail.length > 320) {
-      errors.push("Assigned employee email is too long.");
+      errors.push("Assigned user email is too long.");
     } else if (assignedEmployeeEmail && !EMAIL_PATTERN.test(assignedEmployeeEmail)) {
-      errors.push("Assigned employee email must be valid.");
+      errors.push("Assigned user email must be valid.");
     } else {
       updates.assignedEmployeeEmail = assignedEmployeeEmail;
     }
@@ -314,15 +314,15 @@ const sendAssignedCertificateEmail = async (certificate, req, { updated = false 
   }
 
   const certificateView = buildVerifyResponseData(certificate, req);
-  const employeeName =
+  const assigneeName =
     certificate?.assignedEmployeeName ||
     certificateView.name ||
-    "Team Member";
+    "User";
   const subject = updated
-    ? `Certificate updated for ${employeeName}`
-    : `New certificate assigned to ${employeeName}`;
+    ? `Certificate updated for ${assigneeName}`
+    : `New certificate assigned to ${assigneeName}`;
   const content = `
-    <p>Hello ${employeeName},</p>
+    <p>Hello ${assigneeName},</p>
     <p>${updated ? "Your QR certificate has been updated." : "A new QR certificate has been assigned to you."}</p>
     <div style="margin: 24px 0; padding: 20px; border: 1px solid #e2e8f0; border-radius: 14px; background: #f8fafc;">
       <p style="margin: 0 0 10px;"><strong>Certificate ID:</strong> ${certificateView.certificate_id}</p>
@@ -330,7 +330,7 @@ const sendAssignedCertificateEmail = async (certificate, req, { updated = false 
       <p style="margin: 0 0 10px;"><strong>Date:</strong> ${certificateView.date}</p>
       <p style="margin: 0;"><strong>Status:</strong> ${certificateView.statusDisplay}</p>
     </div>
-    <p>You can open the certificate preview, verify it online, and download it from your employee dashboard or the verification page.</p>
+    <p>You can open the certificate preview, verify it online, and download it from your dashboard or the verification page.</p>
   `;
 
   try {

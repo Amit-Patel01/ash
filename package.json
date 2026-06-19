@@ -1,4 +1,7 @@
 {
+  "name": "solutionhub",
+  "private": true,
+  "license": "UNLICENSED",
   "dependencies": {
     "tesseract.js": "^7.0.0"
   }

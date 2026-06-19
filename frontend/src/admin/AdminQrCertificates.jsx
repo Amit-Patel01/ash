@@ -146,9 +146,10 @@ export default function AdminQrCertificates() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const downloadRef = useRef(null)
-  const employeeOptions = useMemo(() => {
-    const prioritized = users.filter((user) => ['employee', 'mentor'].includes(String(user.role || '').trim().toLowerCase()))
-    const fallback = users.filter((user) => !['admin', 'customer'].includes(String(user.role || '').trim().toLowerCase()))
+  const assigneeOptions = useMemo(() => {
+    const selectableRoles = new Set(['employee', 'mentor', 'student', 'customer', 'client', 'user'])
+    const prioritized = users.filter((user) => selectableRoles.has(String(user.role || '').trim().toLowerCase()))
+    const fallback = users.filter((user) => String(user.role || '').trim().toLowerCase() !== 'admin')
     const pool = prioritized.length > 0 ? prioritized : fallback
 
     return [...pool].sort((left, right) => {
@@ -191,7 +192,7 @@ export default function AdminQrCertificates() {
       .map((value) => String(value))
     if (currentKeys.length === 0) return ''
 
-    const match = employeeOptions.find((employee) =>
+    const match = assigneeOptions.find((employee) =>
       [employee.uid, employee.id, employee.employeeId, employee.email]
         .filter(Boolean)
         .map((value) => String(value))
@@ -199,7 +200,7 @@ export default function AdminQrCertificates() {
     )
 
     return match ? (match.uid || match.id || match.employeeId || match.email || '') : ''
-  }, [employeeOptions, form.assignedEmployeeEmail, form.assignedEmployeeId, form.assignedEmployeeUid])
+  }, [assigneeOptions, form.assignedEmployeeEmail, form.assignedEmployeeId, form.assignedEmployeeUid])
   const previewType = getTypeMeta(form.certificateType)
   const isAictePreview = form.certificateType === AICTE_INTERNSHIP_CERTIFICATE_TYPE
   const previewDisplayId = previewCertificateId || editingCertificate?.certificate_id || (isAictePreview ? 'ASH-AICTE-2026-001' : 'QR-PREVIEW')
@@ -285,7 +286,7 @@ export default function AdminQrCertificates() {
   }
 
   const handleAssignedEmployeeChange = (selectedValue) => {
-    const selectedEmployee = employeeOptions.find((employee) =>
+    const selectedEmployee = assigneeOptions.find((employee) =>
       [employee.uid, employee.id, employee.employeeId, employee.email]
         .filter(Boolean)
         .map((value) => String(value))
@@ -390,7 +391,7 @@ export default function AdminQrCertificates() {
         setPreviewCertificateId(savedCertificate.certificate_id || '')
         setMessage(
           savedCertificate.assignmentEmailSent
-            ? 'QR certificate updated and employee notified by email.'
+            ? 'QR certificate updated and assignee notified by email.'
             : 'QR certificate updated.'
         )
       } else {
@@ -400,7 +401,7 @@ export default function AdminQrCertificates() {
         setPreviewCertificateId(savedCertificate.certificate_id || '')
         setMessage(
           savedCertificate.assignmentEmailSent
-            ? 'QR certificate created and employee notified by email.'
+            ? 'QR certificate created and assignee notified by email.'
             : 'QR certificate created.'
         )
       }
@@ -587,9 +588,9 @@ export default function AdminQrCertificates() {
             <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-sm font-semibold text-white">Assign Employee</p>
+                  <p className="text-sm font-semibold text-white">Assign Employee / Student</p>
                   <p className="mt-1 text-xs leading-5 text-slate-400">
-                    Assigned QR certificates appear on that employee&apos;s dashboard, and an email goes out automatically after save.
+                    Assigned QR certificates appear on that user&apos;s dashboard, and an email goes out automatically after save.
                   </p>
                 </div>
                 <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-3 py-2 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-200">
@@ -600,16 +601,16 @@ export default function AdminQrCertificates() {
               <div className="mt-4 grid gap-4 md:grid-cols-[minmax(0,1fr)_260px]">
                 <div className="block">
                   <label className="block">
-                    <span className="text-sm font-semibold text-slate-300">Employee / Team Member</span>
+                    <span className="text-sm font-semibold text-slate-300">Employee / Student</span>
                     <select
                       value={selectedEmployeeValue}
                       onChange={(event) => handleAssignedEmployeeChange(event.target.value)}
                       className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white focus:border-cyan-400/30 focus:outline-none"
                     >
-                      <option value="">No employee assigned (External User)</option>
-                      {employeeOptions.map((employee) => {
+                      <option value="">No user assigned (External User)</option>
+                      {assigneeOptions.map((employee) => {
                         const optionValue = employee.uid || employee.id || employee.employeeId || employee.email || ''
-                        const optionLabel = employee.displayName || employee.name || employee.email || employee.employeeId || 'Employee'
+                        const optionLabel = employee.displayName || employee.name || employee.email || employee.employeeId || 'User'
                         return (
                           <option key={optionValue} value={optionValue}>
                             {optionLabel}{employee.employeeId ? ` (${employee.employeeId})` : ''}{employee.role ? ` - ${employee.role}` : ''}
@@ -654,7 +655,7 @@ export default function AdminQrCertificates() {
                       ) : null}
                     </div>
                   ) : (
-                    <p className="mt-3 text-sm text-slate-500">Certificate will stay unassigned until you select an employee.</p>
+                    <p className="mt-3 text-sm text-slate-500">Certificate will stay unassigned until you select an employee or student.</p>
                   )}
                 </div>
               </div>
@@ -862,8 +863,8 @@ export default function AdminQrCertificates() {
               <p className="mt-1 text-slate-400">Each QR points to `/verify/{'{certificate_id}'}` and reuses the shared verifier.</p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-              <p className="font-semibold text-white">Employee delivery</p>
-              <p className="mt-1 text-slate-400">When assigned, the certificate appears on the employee dashboard and the employee receives an email on save.</p>
+              <p className="font-semibold text-white">Assigned delivery</p>
+              <p className="mt-1 text-slate-400">When assigned, the certificate appears on the user dashboard and the assignee receives an email on save.</p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
               <p className="font-semibold text-white">Revocation support</p>

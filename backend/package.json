@@ -14,7 +14,8 @@
     "logs:error": "pm2 logs solutionhub-backend --err"
   },
   "author": "Amit Patel",
-  "license": "ISC",
+  "private": true,
+  "license": "UNLICENSED",
   "type": "commonjs",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

@@ -25,8 +25,8 @@
     "semantic_hash": ""
   },
   "backend/controllers/certificateController.js": {
-    "mtime": 1778905309.8115153,
-    "ast_hash": "093e4f40527c9bc5e7049bb0a456973f",
+    "mtime": 1781858178.8318756,
+    "ast_hash": "aa3890f02b46854b3cfb5a3dc18883cb",
     "semantic_hash": ""
   },
   "backend/controllers/couponController.js": {
@@ -200,8 +200,8 @@
     "semantic_hash": ""
   },
   "backend/package.json": {
-    "mtime": 1778905309.7760298,
-    "ast_hash": "0c587787669eee49d634f78a25fbc0a4",
+    "mtime": 1781858375.19267,
+    "ast_hash": "7f0a1f8c7966ac701ff7454e939426bf",
     "semantic_hash": ""
   },
   "backend/routes/admin.js": {
@@ -1435,8 +1435,8 @@
     "semantic_hash": ""
   },
   "frontend/package.json": {
-    "mtime": 1778905310.3837967,
-    "ast_hash": "8c5c0dbe3e85f4883a65018556557e4c",
+    "mtime": 1781858375.0825467,
+    "ast_hash": "8db5bbf5269d57d68429346b348ce8f4",
     "semantic_hash": ""
   },
   "frontend/postcss.config.js": {
@@ -1510,8 +1510,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminQrCertificates.jsx": {
-    "mtime": 1781102380.3059576,
-    "ast_hash": "ec37302aa8449dc56123219f0dab039e",
+    "mtime": 1781858161.8899057,
+    "ast_hash": "48aca44a2eb715435aeaf850760f9d3f",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminSales.jsx": {
@@ -2325,8 +2325,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1778905309.6086519,
-    "ast_hash": "219077f346fc5a9f6419d854c58d2331",
+    "mtime": 1781858374.9599123,
+    "ast_hash": "9577b6ce152d2ff0927cca558dd50511",
     "semantic_hash": ""
   },
   "response.json": {
