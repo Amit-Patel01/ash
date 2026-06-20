@@ -1052,7 +1052,7 @@ const sendResetEmail = async (user, { purpose = "reset_password", from = "", req
       </p>
     `;
 
-  await sendEmail({
+  const emailResult = await sendEmail({
     to: user.email,
     subject: title,
     html: buildResetEmailMarkup({
@@ -1064,6 +1064,11 @@ const sendResetEmail = async (user, { purpose = "reset_password", from = "", req
       supportMessage: "If you need help, please reply to this message and our team will assist you.",
     }),
   });
+
+  if (!emailResult.success) {
+    console.error("Failed to send reset email:", emailResult.error);
+    throw createHttpError(500, "Unable to send the password reset email. Please try again later or contact support.");
+  }
 
   return {
     resetLink,

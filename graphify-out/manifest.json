@@ -54,91 +54,6 @@
     "ast_hash": "2da187c60526320dab24bbab55d893e7",
     "semantic_hash": ""
   },
-  "backend/exports/accountRequests.json": {
-    "mtime": 1781949677.7779913,
-    "ast_hash": "90998e0655a50141022749a8eb9cd270",
-    "semantic_hash": ""
-  },
-  "backend/exports/categories.json": {
-    "mtime": 1781949688.3978863,
-    "ast_hash": "f0bb280a97b70645457df7dfff254f85",
-    "semantic_hash": ""
-  },
-  "backend/exports/certificates.json": {
-    "mtime": 1781949722.326163,
-    "ast_hash": "b3294db8b985c75c2ea6fcc1d0df7b63",
-    "semantic_hash": ""
-  },
-  "backend/exports/chats.json": {
-    "mtime": 1781949817.2169971,
-    "ast_hash": "470c5dfba7d244b49a1594891902a0e1",
-    "semantic_hash": ""
-  },
-  "backend/exports/courses.json": {
-    "mtime": 1781949836.0855584,
-    "ast_hash": "929c1482558b3f18ac6d440678eeeda2",
-    "semantic_hash": ""
-  },
-  "backend/exports/enrollments.json": {
-    "mtime": 1781949841.9249969,
-    "ast_hash": "e33c49b2066697a676cf4bf82825d47d",
-    "semantic_hash": ""
-  },
-  "backend/exports/notifications.json": {
-    "mtime": 1781949848.9676375,
-    "ast_hash": "9977e985f9fd3c091f4fb5097f3bd8eb",
-    "semantic_hash": ""
-  },
-  "backend/exports/passwordResetTokens.json": {
-    "mtime": 1781949866.0130818,
-    "ast_hash": "69e029de7f008b706d85f1d216952120",
-    "semantic_hash": ""
-  },
-  "backend/exports/services.json": {
-    "mtime": 1781949868.9736412,
-    "ast_hash": "26aac65fc154b155d5fd53a1ea7e27b0",
-    "semantic_hash": ""
-  },
-  "backend/exports/settings.json": {
-    "mtime": 1781949870.0278387,
-    "ast_hash": "19d4bdaf9a4dbc5f9c7a1af3c424fdb8",
-    "semantic_hash": ""
-  },
-  "backend/exports/status.json": {
-    "mtime": 1781949885.8151503,
-    "ast_hash": "d1231f9701bfb5832e90d404e0370dfc",
-    "semantic_hash": ""
-  },
-  "backend/exports/tasks.json": {
-    "mtime": 1781949888.6511943,
-    "ast_hash": "a9ad649b3fc16520b243891971bda320",
-    "semantic_hash": ""
-  },
-  "backend/exports/team.json": {
-    "mtime": 1781949892.593335,
-    "ast_hash": "6df2b46d822fbd8dd05aa17b67af73a7",
-    "semantic_hash": ""
-  },
-  "backend/exports/tradingEnrollments.json": {
-    "mtime": 1781949904.622074,
-    "ast_hash": "8d715652248032be823b5068f1cae201",
-    "semantic_hash": ""
-  },
-  "backend/exports/tradingPayments.json": {
-    "mtime": 1781949921.8026264,
-    "ast_hash": "dcfd55a0db2b0b2dab2ede43b8e03840",
-    "semantic_hash": ""
-  },
-  "backend/exports/tradingSessions.json": {
-    "mtime": 1781949922.535787,
-    "ast_hash": "f3fd3e939dd4d6e04f2980bb2cdd8e59",
-    "semantic_hash": ""
-  },
-  "backend/exports/users.json": {
-    "mtime": 1781949938.365116,
-    "ast_hash": "cc44896051902e453a07d518fb4700f0",
-    "semantic_hash": ""
-  },
   "backend/logger.js": {
     "mtime": 1778905309.7552514,
     "ast_hash": "1ebd03f2e3d0e2e38ca0a70d5f2fae68",
@@ -265,8 +180,8 @@
     "semantic_hash": ""
   },
   "backend/services/userService.js": {
-    "mtime": 1781953267.3714943,
-    "ast_hash": "f7a773f2dce3bd7ee43b1a20e813d516",
+    "mtime": 1781964924.2219772,
+    "ast_hash": "356b8b0c6173b40fcc14dd01c011a22d",
     "semantic_hash": ""
   },
   "backend/utils/driveService.js": {
@@ -1765,8 +1680,8 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/About.jsx": {
-    "mtime": 1781963916.0473702,
-    "ast_hash": "59d76b7687ebd1d35f26c17da7e8162f",
+    "mtime": 1781964436.4438336,
+    "ast_hash": "2b712b69fb8bce9f3f8499f8df37db2e",
     "semantic_hash": ""
   },
   "frontend/src/pages/AboutTradingMentorship.jsx": {
@@ -3122,11 +3037,6 @@
   "backend/routes/chat.js": {
     "mtime": 1780854545.7030518,
     "ast_hash": "959eec3658786608982a6953548f4ab0",
-    "semantic_hash": ""
-  },
-  "backend/exports/coupons.json": {
-    "mtime": 1781949817.9380672,
-    "ast_hash": "a298e529b8e3044adf838335afdd5855",
     "semantic_hash": ""
   },
   "backend/routes/db.js": {
