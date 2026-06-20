@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { doc, getDoc } from 'firebase/firestore'
-import { db } from '../config/firebase'
 import { getHomePathForRole } from '../utils/roles'
 
 export default function EmployeeLogin() {
@@ -20,9 +18,7 @@ export default function EmployeeLogin() {
     setLoading(true)
     try {
       const user = await login(email, password)
-      const profileSnap = await getDoc(doc(db, 'users', user.uid))
-      const profile = profileSnap.data()
-      navigate(getHomePathForRole(profile?.role || user?.role), { replace: true })
+      navigate(getHomePathForRole(user?.role), { replace: true })
     } catch (err) {
       console.error(err)
       let msg = 'Invalid email or password.'

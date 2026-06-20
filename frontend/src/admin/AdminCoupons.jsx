@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { auth } from '../config/firebase'
 import { api, readApiJson } from '../config/api'
 import { useStore } from '../store/StoreContext'
 
@@ -56,7 +55,7 @@ export default function AdminCoupons() {
   )
 
   const getAuthHeaders = useCallback(async () => {
-    const token = await auth.currentUser?.getIdToken()
+    const token = localStorage.getItem('token')
     if (!token) throw new Error('Please sign in again to continue.')
     return {
       'Content-Type': 'application/json',

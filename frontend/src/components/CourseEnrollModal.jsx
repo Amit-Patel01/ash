@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
-import { collection, query, where, getDocs } from 'firebase/firestore'
-import { auth, db } from '../config/firebase'
 import { api, readApiJson } from '../config/api'
 import { isEnrollmentClosed } from '../utils/enrollmentDeadline'
 import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
@@ -123,7 +121,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
   const enrolled = currentUser ? isUserEnrolled(currentUser.uid, actualCourseId, targetPlanRef) : false
 
   const getAuthHeaders = async () => {
-    const token = await auth.currentUser?.getIdToken()
+    const token = localStorage.getItem('token')
     if (!token) {
       throw new Error('Please sign in again to continue.')
     }
@@ -211,17 +209,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
     setError('')
     try {
       const headers = await getAuthHeaders()
-      // Firestore duplicate check
-      const q = query(
-        collection(db, 'enrollments'),
-        where('userId', '==', currentUser.uid),
-        where('courseId', '==', actualCourseId),
-        where('status', '==', 'active')
-      )
-      const snap = await getDocs(q)
-      const alreadyEnrolled = snap.docs.some(docSnap =>
-        matchesPlanEnrollment(docSnap.data(), targetPlanRef)
-      )
+      const alreadyEnrolled = isUserEnrolled(currentUser.uid, actualCourseId, targetPlanRef)
       if (alreadyEnrolled) { setSuccess(true); return }
 
       if (isEffectivelyFree) {

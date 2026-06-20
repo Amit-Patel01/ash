@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 import CourseEnrollModal from '../components/CourseEnrollModal'
 import { formatEnrollmentDeadline, isEnrollmentClosed, isPlanEnrollmentClosed } from '../utils/enrollmentDeadline'
 import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
@@ -217,6 +218,8 @@ export default function CourseDetailPage() {
   const navigate = useNavigate()
   const { courses, courseCategories, users, teamMembers, isUserEnrolled, enrollments } = useStore()
   const { currentUser, isAdmin, isEmployee } = useAuth()
+  const { theme } = useTheme()
+  const isDark = theme === 'dark'
 
   const [selectedPlan, setSelectedPlan] = useState(null)
   const [openFaq, setOpenFaq] = useState(null)
@@ -299,7 +302,7 @@ export default function CourseDetailPage() {
   const canManage = isAdmin || (isEmployee && assignedEmployeeIds.some(id => currentEmployeeIds.includes(id)))
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-white text-slate-900'}`}>
       <Helmet>
         <title>{course.title} — Amit Solution Hub</title>
         <meta name="description" content={course.description} />
@@ -307,16 +310,16 @@ export default function CourseDetailPage() {
 
       {/* Admin/Employee tabs */}
       {canManage && (
-        <div className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 pt-20">
+        <div className={`sticky top-0 z-40 backdrop-blur-md border-b pt-20 ${isDark ? 'bg-slate-950/90 border-slate-900' : 'bg-white/90 border-slate-100'}`}>
           <div className="max-w-6xl mx-auto px-4 flex justify-center pb-3">
-            <div className="inline-flex items-center gap-1 bg-slate-100/50 p-1.5 rounded-2xl border border-slate-100">
+            <div className={`inline-flex items-center gap-1 p-1.5 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100/50 border-slate-100'}`}>
               {[
                 { id: 'overview', label: '📖 Overview' },
                 { id: 'enrollments', label: '👥 Enrollments' },
                 ...(isAdmin ? [{ id: 'settings', label: '⚙️ Settings' }] : []),
               ].map(tab => (
                 <button key={tab.id} onClick={() => setActiveSection(tab.id)}
-                  className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${activeSection === tab.id ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-500 hover:text-blue-600'}`}>
+                  className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${activeSection === tab.id ? 'bg-blue-600 text-white shadow-lg' : isDark ? 'text-slate-400 hover:text-blue-400' : 'text-slate-500 hover:text-blue-600'}`}>
                   {tab.label}
                 </button>
               ))}
@@ -372,48 +375,48 @@ export default function CourseDetailPage() {
       {activeSection === 'overview' && (
         <>
           {/* HERO */}
-          <section ref={heroRef} className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-white via-slate-50 to-blue-50/30 pt-24 pb-16 px-4">
+          <section ref={heroRef} className={`relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-24 pb-16 px-4 ${isDark ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-white via-slate-50 to-blue-50/30'}`}>
             {/* BG blobs */}
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-100/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-3xl pointer-events-none" style={{ background: catMeta?.color ? catMeta.color + '15' : '#3b82f615' }} />
+            <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none ${isDark ? 'bg-blue-900/10' : 'bg-blue-100/30'}`} />
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-3xl pointer-events-none" style={{ background: catMeta?.color ? catMeta.color + (isDark ? '08' : '15') : (isDark ? '#3b82f608' : '#3b82f615') }} />
 
             <div className={`relative z-10 max-w-5xl mx-auto text-center ${fade(heroVisible)}`}>
               {/* Category badge */}
-              <div className="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full border bg-white shadow-sm"
+              <div className={`inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full border shadow-sm ${isDark ? 'bg-slate-900 border-white/5 shadow-slate-950/20' : 'bg-white border-slate-100'}`}
                 style={{ borderColor: catMeta?.color ? catMeta.color + '40' : '#3b82f640' }}>
                 <span className="text-lg">{catMeta?.icon || '📚'}</span>
                 <span className="text-sm font-bold" style={{ color: catMeta?.color || '#3b82f6' }}>
                   {course.category}
                 </span>
-                <span className="rounded-full bg-slate-950/5 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-slate-600">
+                <span className={`rounded-full px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.18em] ${isDark ? 'bg-white/5 text-slate-400' : 'bg-slate-950/5 text-slate-600'}`}>
                   {itemLabel}
                 </span>
                 {course.badge && (
                   <>
-                    <span className="text-slate-200">·</span>
-                    <span className="text-xs font-black text-blue-600 uppercase tracking-wider">{course.badge}</span>
+                    <span className="text-slate-200 dark:text-slate-700">·</span>
+                    <span className="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">{course.badge}</span>
                   </>
                 )}
                 {availableSoon && (
                   <>
-                    <span className="text-slate-200">·</span>
-                    <span className="rounded-full bg-fuchsia-100 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-fuchsia-700">
+                    <span className="text-slate-200 dark:text-slate-700">·</span>
+                    <span className="rounded-full bg-fuchsia-100 dark:bg-fuchsia-500/10 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-fuchsia-700 dark:text-fuchsia-400">
                       {availableSoonLabel}
                     </span>
                   </>
                 )}
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-5 text-slate-900">
+              <h1 className={`text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {course.title.split(' ').map((word, i, arr) =>
                   i >= Math.floor(arr.length * 0.6)
-                    ? <span key={i} className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600"> {word}</span>
+                    ? <span key={i} className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-indigo-400 dark:to-blue-400"> {word}</span>
                     : <span key={i}> {word}</span>
                 )}
               </h1>
 
               {course.description && (
-                <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-8 leading-relaxed">{course.description}</p>
+                <p className={`text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{course.description}</p>
               )}
 
               {/* Meta badges */}
@@ -490,21 +493,21 @@ export default function CourseDetailPage() {
 
           {/* FEATURES */}
           {features.length > 0 && (
-            <section id="features" ref={featRef} className="py-20 px-4 bg-slate-50/50">
+            <section id="features" ref={featRef} className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-900/30' : 'bg-slate-50/50'}`}>
               <div className={`max-w-6xl mx-auto ${fade(featVisible)}`}>
                 <div className="text-center mb-14">
-                  <h2 className="text-3xl md:text-5xl font-extrabold mb-4">What You'll <span className="text-blue-600">Get</span></h2>
+                  <h2 className={`text-3xl md:text-5xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-slate-905'}`}>What You'll <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-indigo-400 dark:to-blue-400">Get</span></h2>
                   <p className="text-slate-500 max-w-xl mx-auto">Everything included in this {learningType}</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {features.map((feat, i) => (
-                    <div key={i} className="flex items-start gap-4 p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-blue-100 transition-all group">
-                      <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-100 transition-colors">
-                        <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <div key={i} className={`flex items-start gap-4 p-5 rounded-2xl border shadow-sm hover:shadow-md transition-all group ${isDark ? 'bg-slate-900/50 border-slate-800 hover:border-indigo-500/20' : 'bg-white border-slate-100 hover:border-blue-100'}`}>
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${isDark ? 'bg-indigo-950/40 group-hover:bg-indigo-900/40' : 'bg-blue-50 group-hover:bg-blue-100'}`}>
+                        <svg className="w-5 h-5 text-blue-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
-                      <p className="text-slate-800 font-medium leading-snug pt-1">{feat}</p>
+                      <p className={`font-medium leading-snug pt-1 ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>{feat}</p>
                     </div>
                   ))}
                 </div>
@@ -514,20 +517,20 @@ export default function CourseDetailPage() {
 
           {/* CURRICULUM */}
           {curriculum.length > 0 && (
-            <section id="curriculum" className="py-20 px-4 bg-white">
+            <section id="curriculum" className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-14">
-                  <h2 className="text-3xl md:text-5xl font-extrabold mb-4">{itemLabel} <span className="text-blue-600">Curriculum</span></h2>
+                  <h2 className={`text-3xl md:text-5xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-slate-905'}`}>{itemLabel} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-indigo-400 dark:to-blue-400">Curriculum</span></h2>
                   <p className="text-slate-500 max-w-xl mx-auto">A comprehensive, structured learning path</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {curriculum.map((mod, i) => (
-                    <div key={i} className="relative p-6 rounded-3xl border border-slate-100 bg-white shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 group overflow-hidden">
-                      <div className="absolute top-0 right-0 px-3 py-1 bg-blue-50 text-[10px] font-black text-blue-600 rounded-bl-xl">MODULE {i + 1}</div>
-                      <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center mb-3 group-hover:bg-blue-50 transition-colors">
-                        <span className="text-blue-600 font-black text-sm">#{(i + 1).toString().padStart(2, '0')}</span>
+                    <div key={i} className={`relative p-6 rounded-3xl border shadow-sm hover:shadow-xl transition-all duration-300 group overflow-hidden ${isDark ? 'border-slate-800/80 bg-slate-900/40 hover:border-indigo-500/30' : 'border-slate-100 bg-white hover:border-blue-200'}`}>
+                      <div className={`absolute top-0 right-0 px-3 py-1 text-[10px] font-black rounded-bl-xl ${isDark ? 'bg-slate-800 text-indigo-300' : 'bg-blue-50 text-blue-600'}`}>MODULE {i + 1}</div>
+                      <div className={`w-10 h-10 rounded-2xl flex items-center justify-center mb-3 transition-colors ${isDark ? 'bg-slate-800/60 group-hover:bg-indigo-950/60' : 'bg-slate-50 group-hover:bg-blue-50'}`}>
+                        <span className="text-blue-600 dark:text-indigo-400 font-black text-sm">#{(i + 1).toString().padStart(2, '0')}</span>
                       </div>
-                      <h4 className="font-bold text-slate-900 text-lg mb-1 group-hover:text-blue-600 transition-colors">{mod.title || mod}</h4>
+                      <h4 className={`font-bold text-lg mb-1 group-hover:text-blue-600 dark:group-hover:text-indigo-400 transition-colors ${isDark ? 'text-white' : 'text-slate-900'}`}>{mod.title || mod}</h4>
                       {mod.description && <p className="text-sm text-slate-400">{mod.description}</p>}
                     </div>
                   ))}
@@ -538,13 +541,13 @@ export default function CourseDetailPage() {
 
           {/* INSTRUCTOR */}
           {(instructor || course.instructor || course.assignedEmployeeName) && (
-            <section className="py-20 px-4 bg-slate-50">
+            <section className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-900/30' : 'bg-slate-50'}`}>
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-14">
-                  <h2 className="text-3xl md:text-5xl font-extrabold mb-4">Meet Your <span className="text-blue-600">Instructor</span></h2>
+                  <h2 className={`text-3xl md:text-5xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-slate-905'}`}>Meet Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-indigo-400 dark:to-blue-400">Instructor</span></h2>
                 </div>
                 <div className="flex flex-col lg:flex-row items-center gap-12 max-w-4xl mx-auto">
-                  <div className="w-48 h-48 rounded-3xl border-4 border-blue-100 overflow-hidden shadow-lg bg-slate-200 flex-shrink-0 flex items-center justify-center">
+                  <div className={`w-48 h-48 rounded-3xl border-4 overflow-hidden shadow-lg flex-shrink-0 flex items-center justify-center ${isDark ? 'border-slate-800 bg-slate-950' : 'border-blue-100 bg-slate-200'}`}>
                     {instructorImage ? (
                       <img src={instructorImage} alt={instructorName} className="w-full h-full object-cover" />
                     ) : (
@@ -554,26 +557,26 @@ export default function CourseDetailPage() {
                     )}
                   </div>
                   <div className="flex-1 text-center lg:text-left">
-                    <h3 className="text-2xl font-bold text-slate-900 mb-1">
+                    <h3 className={`text-2xl font-bold mb-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                       {instructorName}
                     </h3>
-                    <p className="text-blue-600 font-semibold mb-3">
+                    <p className="text-blue-600 dark:text-indigo-400 font-semibold mb-3">
                       {instructorRole}
                     </p>
-                    <p className={`${instructor?.bio ? 'text-slate-500' : 'text-slate-400 italic'} leading-relaxed mb-4`}>
+                    <p className={`${instructor?.bio ? (isDark ? 'text-slate-350' : 'text-slate-500') : 'text-slate-400 italic'} leading-relaxed mb-4`}>
                       {instructorBio}
                     </p>
                     {(instructor?.department || instructorLinks.length > 0 || publicProfileId) && (
                       <div className="flex flex-wrap items-center justify-center gap-3 lg:justify-start mb-5">
                         {instructor?.department ? (
-                          <span className="inline-flex items-center rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
+                          <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] ${isDark ? 'border-indigo-500/20 bg-indigo-500/10 text-indigo-400' : 'border-blue-100 bg-blue-50 text-blue-600'}`}>
                             {instructor.department}
                           </span>
                         ) : null}
                         {publicProfileId ? (
                           <Link
                             to={`/team/${publicProfileId}`}
-                            className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-700 transition hover:border-blue-200 hover:text-blue-600"
+                            className={`inline-flex items-center rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] transition ${isDark ? 'border-slate-800 bg-slate-900 text-slate-300 hover:border-indigo-500/40 hover:text-indigo-400' : 'border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:text-blue-600'}`}
                           >
                             View Profile
                           </Link>
@@ -584,7 +587,7 @@ export default function CourseDetailPage() {
                             href={link.href}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-700 transition hover:border-blue-200 hover:text-blue-600"
+                            className={`inline-flex items-center rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] transition ${isDark ? 'border-slate-800 bg-slate-900 text-slate-300 hover:border-indigo-500/40 hover:text-indigo-400' : 'border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:text-blue-600'}`}
                           >
                             {link.label}
                           </a>
@@ -597,8 +600,8 @@ export default function CourseDetailPage() {
                         { label: 'Students', value: enrolledCount > 0 ? `${enrolledCount}+` : 'Growing' },
                         { label: 'Rating', value: '4.9/5' }
                       ].map((stat, i) => (
-                        <div key={i} className="text-center p-4 rounded-2xl bg-white border border-slate-100 shadow-sm">
-                          <p className="text-2xl font-black text-blue-600">{stat.value}</p>
+                        <div key={i} className={`text-center p-4 rounded-2xl border shadow-sm ${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-100'}`}>
+                          <p className="text-2xl font-black text-blue-600 dark:text-indigo-400">{stat.value}</p>
                           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{stat.label}</p>
                         </div>
                       ))}
@@ -610,11 +613,11 @@ export default function CourseDetailPage() {
           )}
 
           {/* PRICING / PLANS */}
-          <section id="pricing" ref={planRef} className="py-20 px-4 bg-white">
+          <section id="pricing" ref={planRef} className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
             <div className={`max-w-6xl mx-auto ${fade(planVisible)}`}>
               <div className="text-center mb-14">
-                <h2 className="text-3xl md:text-5xl font-extrabold mb-4">
-                  Choose Your <span className="text-blue-600">Plan</span>
+                <h2 className={`text-3xl md:text-5xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-slate-905'}`}>
+                  Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-indigo-400 dark:to-blue-400">Plan</span>
                 </h2>
                 <p className="text-slate-500 max-w-xl mx-auto">
                   {enrollmentClosed && !enrolled
@@ -660,14 +663,16 @@ export default function CourseDetailPage() {
                       className={`relative rounded-3xl border-2 p-7 transition-all duration-300 hover:-translate-y-1 ${
                         plan.highlighted
                           ? 'border-blue-500 bg-gradient-to-b from-blue-600 to-indigo-700 text-white shadow-2xl shadow-blue-500/30 scale-105'
-                          : 'border-slate-200 bg-white hover:border-blue-200 hover:shadow-xl'
+                          : isDark
+                            ? 'border-slate-800 bg-slate-900/60 hover:border-indigo-500/30 hover:shadow-xl'
+                            : 'border-slate-200 bg-white hover:border-blue-200 hover:shadow-xl'
                       }`}>
                       {plan.highlighted && (
                         <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 bg-gradient-to-r from-amber-400 to-orange-400 text-white text-xs font-black rounded-full shadow-lg uppercase tracking-wider">
                           ★ Most Popular
                         </div>
                       )}
-                      <h3 className={`text-xl font-black mb-1 ${plan.highlighted ? 'text-white' : 'text-slate-900'}`}>{plan.label}</h3>
+                      <h3 className={`text-xl font-black mb-1 ${plan.highlighted ? 'text-white' : isDark ? 'text-white' : 'text-slate-900'}`}>{plan.label}</h3>
                       <p className={`text-sm mb-2 ${plan.highlighted ? 'text-blue-200' : 'text-slate-400'}`}>{plan.duration}</p>
                       {plan.enrollmentDeadline && (
                         <p className={`text-xs mb-3 ${plan.highlighted ? 'text-blue-100' : 'text-slate-500'}`}>
@@ -679,7 +684,7 @@ export default function CourseDetailPage() {
                           <span className={`text-4xl font-black ${plan.highlighted ? 'text-white' : 'text-emerald-600'}`}>FREE</span>
                         ) : (
                           <>
-                            <span className={`text-4xl font-black ${plan.highlighted ? 'text-white' : 'text-slate-900'}`}>
+                            <span className={`text-4xl font-black ${plan.highlighted ? 'text-white' : isDark ? 'text-white' : 'text-slate-900'}`}>
                               ₹{Number(plan.price).toLocaleString('en-IN')}
                             </span>
                             <span className={`text-sm ml-1 ${plan.highlighted ? 'text-blue-200' : 'text-slate-400'}`}>/{plan.duration}</span>
@@ -693,7 +698,7 @@ export default function CourseDetailPage() {
                               <svg className={`w-4 h-4 flex-shrink-0 mt-0.5 ${plan.highlighted ? 'text-blue-300' : 'text-blue-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
-                              <span className={plan.highlighted ? 'text-blue-100' : 'text-slate-600'}>{f}</span>
+                              <span className={plan.highlighted ? 'text-blue-100' : isDark ? 'text-slate-300' : 'text-slate-600'}>{f}</span>
                             </li>
                           ))}
                         </ul>
@@ -710,7 +715,9 @@ export default function CourseDetailPage() {
                             ? 'cursor-not-allowed bg-slate-200 text-slate-500'
                             : plan.highlighted
                               ? 'bg-white text-blue-700 hover:bg-blue-50 hover:scale-105 shadow-lg'
-                              : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 shadow-md shadow-blue-500/20'
+                              : isDark
+                                ? 'bg-indigo-650 hover:bg-indigo-600 text-white hover:scale-105 shadow-md shadow-indigo-500/10'
+                                : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 shadow-md shadow-blue-500/20'
                         }`}>
                         {planButtonLabel}
                       </button>
@@ -763,22 +770,22 @@ export default function CourseDetailPage() {
           </section>
 
           {/* FAQ */}
-          <section className="py-20 px-4 bg-slate-50">
+          <section className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-900/30' : 'bg-slate-50'}`}>
             <div className="max-w-3xl mx-auto">
               <div className="text-center mb-14">
-                <h2 className="text-3xl md:text-5xl font-extrabold mb-4">Frequently Asked <span className="text-blue-600">Questions</span></h2>
+                <h2 className={`text-3xl md:text-5xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-slate-905'}`}>Frequently Asked <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-indigo-400 dark:to-blue-400">Questions</span></h2>
               </div>
               <div className="space-y-3">
                 {faq.map((item, i) => (
-                  <div key={i} className="rounded-2xl border border-slate-200 bg-white overflow-hidden transition-all">
+                  <div key={i} className={`rounded-2xl border overflow-hidden transition-all ${isDark ? 'border-slate-805 bg-slate-900/50' : 'border-slate-200 bg-white'}`}>
                     <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                      className="w-full flex items-center justify-between p-5 text-left">
-                      <span className="font-semibold text-slate-900 pr-4">{item.q}</span>
-                      <svg className={`w-5 h-5 flex-shrink-0 transition-transform duration-300 text-blue-600 ${openFaq === i ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      className="w-full flex items-center justify-between p-5 text-left outline-none">
+                      <span className={`font-semibold pr-4 ${isDark ? 'text-slate-200' : 'text-slate-900'}`}>{item.q}</span>
+                      <svg className={`w-5 h-5 flex-shrink-0 transition-transform duration-300 text-blue-600 dark:text-indigo-400 ${openFaq === i ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                       </svg>
                     </button>
-                    {openFaq === i && <div className="px-5 pb-5 text-slate-500 text-sm leading-relaxed">{item.a}</div>}
+                    {openFaq === i && <div className={`px-5 pb-5 text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{item.a}</div>}
                   </div>
                 ))}
               </div>

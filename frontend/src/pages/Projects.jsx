@@ -5,144 +5,167 @@ import SEO from '../components/SEO'
 import PublicPageShell, { PublicGlassCard, PublicSection, PublicSectionHeading } from '../components/public/PublicPageShell'
 import { useStore } from '../store/StoreContext'
 
-const TabIcon = ({ name, size = 18, color = 'currentColor', strokeWidth = 2 }) => {
-  const props = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', xmlns: 'http://www.w3.org/2000/svg', 'aria-hidden': 'true' }
-  if (name === 'custom') return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="m12 3 2.4 4.8L20 10l-4 4 1 6-5-2.7L7 20l1-6-4-4 5.6-2.2L12 3Z" /></svg>
-  if (name === 'phone') return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a15 15 0 0 0 5.5 5.5l1.5-2 4 1.5v3A2 2 0 0 1 18 20C10.8 20 5 14.2 5 7a2 2 0 0 1 1.5-3Z" /></svg>
-  if (name === 'box') return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M3.5 7.5 12 3l8.5 4.5V17L12 21l-8.5-4V7.5Z" /><path d="M12 21V11.5M3.5 7.5 12 12l8.5-4.5" /></svg>
-  return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg>
+const categoryColors = {
+  basic:    { active: 'from-emerald-500 to-green-600 shadow-[0_12px_28px_-10px_rgba(22,163,74,0.5)]',    inactive: 'border-emerald-200/80  text-emerald-700  hover:bg-emerald-50  dark:border-emerald-500/20 dark:text-emerald-400  dark:hover:bg-emerald-500/10' },
+  medium:   { active: 'from-amber-500 to-orange-500 shadow-[0_12px_28px_-10px_rgba(245,158,11,0.5)]',     inactive: 'border-amber-200/80   text-amber-700    hover:bg-amber-50    dark:border-amber-500/20  dark:text-amber-400    dark:hover:bg-amber-500/10'  },
+  advanced: { active: 'from-violet-600 to-fuchsia-600 shadow-[0_12px_28px_-10px_rgba(139,92,246,0.5)]',   inactive: 'border-violet-200/80  text-violet-700   hover:bg-violet-50   dark:border-violet-500/20 dark:text-violet-400   dark:hover:bg-violet-500/10' },
+  default:  { active: 'from-blue-600 to-indigo-600 shadow-[0_12px_28px_-10px_rgba(99,102,241,0.5)]',      inactive: 'border-slate-200/80   text-slate-600    hover:bg-slate-50    dark:border-white/10      dark:text-slate-400    dark:hover:bg-white/5'        },
 }
 
 const Projects = () => {
   const { projects: storeProjects, categories: storeCategories } = useStore()
   const [activeCategory, setActiveCategory] = useState('all')
 
-  const activeProjects = useMemo(() => {
-    return storeProjects.filter((project) => project.status === 'active')
-  }, [storeProjects])
+  const activeProjects = useMemo(() =>
+    storeProjects.filter((p) => p.status === 'active'),
+    [storeProjects]
+  )
 
-  const uniqueCategories = useMemo(() => {
-    return storeCategories.reduce((accumulator, current) => {
-      if (accumulator.find((category) => category.slug === current.slug)) {
-        return accumulator
-      }
+  const uniqueCategories = useMemo(() =>
+    storeCategories.reduce((acc, cur) =>
+      acc.find((c) => c.slug === cur.slug) ? acc : [...acc, cur],
+      []
+    ),
+    [storeCategories]
+  )
 
-      return [...accumulator, current]
-    }, [])
-  }, [storeCategories])
-
-  const filteredProjects =
-    activeCategory === 'all'
-      ? activeProjects
-      : activeProjects.filter((project) => project.category_slug === activeCategory)
+  const filteredProjects = activeCategory === 'all'
+    ? activeProjects
+    : activeProjects.filter((p) => p.category_slug === activeCategory)
 
   const stats = [
     { value: `${activeProjects.length}+`, label: 'Ready Projects' },
-    { value: `${Math.max(uniqueCategories.length, 1)}`, label: 'Project Bands' },
-    { value: 'Fast', label: 'Prebuilt Delivery' },
+    { value: `${Math.max(uniqueCategories.length, 1)}`, label: 'Categories' },
+    { value: 'Fast', label: 'Delivery' },
   ]
 
-  const buttonClasses = (slug) => {
-    if (activeCategory === slug) {
-      if (slug === 'basic') return 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-[0_18px_38px_-20px_rgba(22,163,74,0.65)]'
-      if (slug === 'medium') return 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-[0_18px_38px_-20px_rgba(245,158,11,0.7)]'
-      if (slug === 'advanced') return 'bg-gradient-to-r from-fuchsia-500 to-violet-600 text-white shadow-[0_18px_38px_-20px_rgba(147,51,234,0.7)]'
-      return 'bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-[0_18px_38px_-20px_rgba(37,99,235,0.8)]'
+  const getButtonClasses = (slug) => {
+    const isActive = activeCategory === slug
+    const colors = categoryColors[slug] || categoryColors.default
+    if (isActive) {
+      return `bg-gradient-to-r ${colors.active} text-white font-bold px-5 py-2.5 rounded-full text-sm transition-all duration-300 hover:-translate-y-0.5`
     }
-
-    return 'border border-slate-200 bg-white text-slate-600 hover:border-sky-200 hover:text-sky-700'
+    return `border bg-white/80 dark:bg-white/4 font-semibold px-5 py-2.5 rounded-full text-sm transition-all duration-300 hover:-translate-y-0.5 ${colors.inactive}`
   }
 
   return (
     <>
       <SEO
         title="Our Projects | AmitSolutionHub"
-        description="Browse ready-to-deploy professional projects in a cleaner, mobile-friendly showcase."
+        description="Browse ready-to-deploy professional projects — web apps, dashboards, and custom systems across all complexity levels."
       />
 
       <PublicPageShell
         badge="Ready-to-Deploy Projects"
         title={
           <>
-            Showcase source code projects in a
-            <span className="bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent"> cleaner, more premium </span>
-            catalogue
+            A premium showcase of{' '}
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
+              professional projects
+            </span>
           </>
         }
-        description="The projects listing now feels lighter, more professional, and easier to browse on mobile so buyers can quickly compare categories and move to the right detail page."
+        description="Browse our prebuilt project catalogue across multiple complexity levels. Pick your match or request a custom build."
         actions={[
-          { label: 'Explore Custom Build', to: '/custom-project', icon: <TabIcon name="custom" size={16} /> },
-          { label: 'Talk to Us', to: '/contact', variant: 'secondary', icon: <TabIcon name="phone" size={16} /> },
+          { label: 'Custom Build', to: '/custom-project' },
+          { label: 'Talk to Us', to: '/contact', variant: 'secondary' },
         ]}
-        pills={['White-glow catalogue', 'Faster category scanning', 'Prebuilt and custom options', 'Mobile-ready buyer flow']}
+        pills={['Prebuilt Projects', 'Source Code Available', 'Custom Builds', 'All Complexity Levels']}
         stats={stats}
         aside={
           <div className="space-y-5">
             <div>
-              <div className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">Why it matters</div>
-              <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-900">A project showcase should feel organized before it feels technical</h3>
+              <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-indigo-600 dark:text-indigo-400">Our Catalogue</div>
+              <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-900 dark:text-slate-100 leading-snug">
+                Projects organized for quick decisions
+              </h3>
             </div>
-            <div className="grid gap-3">
+            <div className="space-y-3">
               {[
-                { title: 'Better filtering', text: 'Visitors can focus on budget level or complexity without getting lost.' },
-                { title: 'Professional presentation', text: 'The catalogue feels aligned with a modern service and internship brand.' },
-                { title: 'Cleaner handoff', text: 'Project cards lead naturally into details or custom requirement conversations.' },
+                { emoji: '🟢', level: 'Basic', desc: 'Simple web apps for beginners and small businesses.' },
+                { emoji: '🟡', level: 'Medium', desc: 'Full-featured apps with dashboards and integrations.' },
+                { emoji: '🟣', level: 'Advanced', desc: 'Complex systems with AI, real-time, and enterprise features.' },
               ].map((item) => (
-                <div key={item.title} className="rounded-3xl border border-slate-200/80 bg-white/90 p-4">
-                  <div className="text-sm font-bold text-slate-900">{item.title}</div>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">{item.text}</p>
+                <div key={item.level} className="flex items-start gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-4 dark:border-white/8 dark:bg-white/4">
+                  <span className="text-xl leading-none mt-0.5">{item.emoji}</span>
+                  <div>
+                    <div className="text-sm font-bold text-slate-900 dark:text-slate-100">{item.level}</div>
+                    <p className="text-xs leading-5 text-slate-600 dark:text-slate-400 mt-0.5">{item.desc}</p>
+                  </div>
                 </div>
               ))}
+            </div>
+            <div className="rounded-2xl border border-indigo-200/70 bg-gradient-to-br from-indigo-50 to-blue-50/50 p-5 dark:border-indigo-500/15 dark:from-indigo-500/8 dark:to-blue-500/5">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="text-sm font-bold text-slate-900 dark:text-slate-100">Need something unique?</div>
+              </div>
+              <p className="text-sm leading-6 text-slate-600 dark:text-slate-400">
+                We build fully custom projects tailored to your requirements and timeline.
+              </p>
             </div>
           </div>
         }
       >
         <PublicSection className="space-y-8">
-          <PublicGlassCard className="space-y-6">
+          {/* Filter Section */}
+          <PublicGlassCard className="p-7 space-y-5">
             <PublicSectionHeading
               badge="Project Catalogue"
-              title="Filter by project band"
-              description="Pick a category to narrow the catalogue while keeping the same clean visual structure on every screen size."
+              title="Filter by complexity level"
+              description="Pick a category to focus on projects that match your budget and requirements."
             />
-
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2.5">
               <button
                 type="button"
                 onClick={() => setActiveCategory('all')}
-                className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300 ${buttonClasses('all')}`}
+                className={getButtonClasses('all')}
               >
                 All Projects
               </button>
-              {uniqueCategories.map((category) => (
+              {uniqueCategories.map((cat) => (
                 <button
-                  key={category.slug}
+                  key={cat.slug}
                   type="button"
-                  onClick={() => setActiveCategory(category.slug)}
-                  className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-300 ${buttonClasses(category.slug)}`}
+                  onClick={() => setActiveCategory(cat.slug)}
+                  className={getButtonClasses(cat.slug)}
                 >
-                  {category.name}
+                  {cat.name}
                 </button>
               ))}
             </div>
           </PublicGlassCard>
 
+          {/* Project Grid */}
           {activeProjects.length === 0 ? (
-            <PublicGlassCard className="py-16 text-center">
-              <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-sky-50 text-sky-600">
-                <TabIcon name="box" size={30} />
+            <PublicGlassCard className="py-20 text-center">
+              <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-500/10 dark:to-blue-500/10 mb-5">
+                <svg className="h-10 w-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.5 7.5 12 3l8.5 4.5V17L12 21l-8.5-4V7.5ZM12 21V11.5M3.5 7.5 12 12l8.5-4.5" />
+                </svg>
               </div>
-              <h3 className="mt-4 text-2xl font-black text-slate-900">No active projects yet</h3>
-              <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600">
-                Once projects are added from admin, they will appear here in the refined public catalogue.
+              <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">No projects yet</h3>
+              <p className="mx-auto max-w-md text-sm leading-6 text-slate-500 dark:text-slate-400">
+                Projects will appear here once added. Check back soon or request a custom build.
               </p>
             </PublicGlassCard>
           ) : filteredProjects.length === 0 ? (
-            <PublicGlassCard className="py-16 text-center">
-              <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-sky-50 text-sky-600">
-                <TabIcon name="search" size={30} />
+            <PublicGlassCard className="py-20 text-center">
+              <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-500/10 dark:to-orange-500/10 mb-5">
+                <svg className="h-10 w-10 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 0z" />
+                </svg>
               </div>
-              <h3 className="mt-4 text-2xl font-black text-slate-900">No projects in this category</h3>
-              <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600">Try a different filter or browse all projects.</p>
+              <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">No projects in this category</h3>
+              <p className="mx-auto max-w-md text-sm leading-6 text-slate-500 dark:text-slate-400">
+                Try a different filter or browse all projects.
+              </p>
+              <button
+                onClick={() => setActiveCategory('all')}
+                className="mt-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_-6px_rgba(99,102,241,0.5)] hover:-translate-y-0.5 transition-all"
+              >
+                View All Projects
+              </button>
             </PublicGlassCard>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -152,41 +175,50 @@ const Projects = () => {
             </div>
           )}
 
-          <PublicGlassCard className="overflow-hidden p-0">
-            <div className="grid lg:grid-cols-[1fr_0.92fr]">
-              <div className="space-y-4 p-7 sm:p-9">
-                <div className="inline-flex rounded-full border border-sky-200 bg-sky-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-sky-700">
-                  Need Something Unique?
+          {/* Custom Build CTA */}
+          <PublicGlassCard className="relative overflow-hidden p-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-indigo-600 to-blue-600 opacity-[0.06] dark:opacity-[0.12]" />
+            <div className="relative grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
+              <div className="space-y-5 p-8 sm:p-10">
+                <div className="inline-flex items-center gap-2 rounded-full border border-violet-200/80 bg-violet-50/90 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-violet-700 dark:border-violet-500/20 dark:bg-violet-500/10 dark:text-violet-300">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Custom Build
                 </div>
-                <h3 className="text-3xl font-black tracking-tight text-slate-900">Custom build request with the same premium presentation</h3>
-                <p className="text-sm leading-7 text-slate-600">
-                  If the prebuilt catalogue does not match your use case, we can prepare a custom project workflow and requirement discussion.
+                <h3 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+                  Don't see what you need? We'll build it for you.
+                </h3>
+                <p className="text-sm leading-7 text-slate-600 dark:text-slate-400">
+                  Share your requirements and we'll create a custom project with the same professional quality and fast delivery.
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <Link to="/custom-project" className="inline-flex items-center rounded-full bg-gradient-to-r from-sky-600 to-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_38px_-20px_rgba(37,99,235,0.85)]">
-                    Start Custom Project
+                  <Link
+                    to="/custom-project"
+                    className="relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-3 text-sm font-bold text-white shadow-[0_16px_40px_-12px_rgba(139,92,246,0.5)] hover:-translate-y-0.5 transition-all duration-300"
+                  >
+                    Start Custom Project →
                   </Link>
-                  <Link to="/contact" className="inline-flex items-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700">
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/90 px-6 py-3 text-sm font-bold text-slate-700 hover:-translate-y-0.5 hover:border-indigo-200 transition-all dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
+                  >
                     Contact Team
                   </Link>
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-sky-50 via-white to-indigo-50 p-7 sm:p-9">
-                <div className="rounded-[28px] border border-white/90 bg-white/85 p-6 shadow-[0_20px_45px_-30px_rgba(15,23,42,0.45)]">
-                  <div className="text-sm font-bold text-slate-900">What buyers look for first</div>
-                  <div className="mt-4 space-y-3">
-                    {[
-                      'Clear category and pricing structure',
-                      'Professional screenshots and concise descriptions',
-                      'A fast route to details, support, or customization',
-                    ].map((point) => (
-                      <div key={point} className="flex items-start gap-3 text-sm leading-6 text-slate-600">
-                        <span className="mt-1.5 h-2.5 w-2.5 rounded-full bg-sky-500" />
-                        <span>{point}</span>
-                      </div>
-                    ))}
-                  </div>
+              <div className="bg-gradient-to-br from-slate-50 via-violet-50/30 to-white p-8 sm:p-10 dark:from-slate-900/50 dark:via-violet-900/10 dark:to-slate-900/50">
+                <div className="rounded-2xl border border-white/90 bg-white/85 p-6 shadow-[0_16px_40px_-16px_rgba(15,23,42,0.3)] dark:border-white/8 dark:bg-white/4 dark:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.5)]">
+                  <div className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-4">What buyers look for</div>
+                  {[
+                    'Clear category and pricing structure',
+                    'Professional presentation and screenshots',
+                    'Fast route to details or customization',
+                  ].map((point) => (
+                    <div key={point} className="flex items-start gap-3 text-sm leading-6 text-slate-600 dark:text-slate-300 mb-2.5 last:mb-0">
+                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-500" />
+                      <span>{point}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

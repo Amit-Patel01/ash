@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { api } from '../config/api'
-import { auth } from '../config/firebase'
 import { useStore } from '../store/StoreContext'
 import {
   EmployeeBadge,
@@ -167,7 +166,7 @@ export default function EmployeeBroadcastRefined() {
     setResult(null)
 
     try {
-      const token = await auth.currentUser?.getIdToken()
+      const token = localStorage.getItem('token')
       if (!token) throw new Error('Please log in again to continue.')
 
       const response = await fetch(api.adminBroadcastEmail, {

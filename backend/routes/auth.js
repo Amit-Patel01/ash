@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
+  login,
   registerCustomer,
   submitAccountRequest,
   forgotPassword,
@@ -8,6 +9,7 @@ const {
   resetPassword,
 } = require("../controllers/authController");
 
+router.post("/login", login);
 router.post("/register-customer", registerCustomer);
 router.post("/account-requests", submitAccountRequest);
 router.post("/forgot-password", forgotPassword);

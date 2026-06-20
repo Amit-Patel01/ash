@@ -1,4 +1,5 @@
-const admin = require("firebase-admin");
+const jwt = require("jsonwebtoken");
+const { getDb } = require("../utils/mongo");
 const { logger } = require("../logger");
 
 const enrichDecodedUser = async (decoded) => {
@@ -6,10 +7,13 @@ const enrichDecodedUser = async (decoded) => {
 
   if (decoded?.uid) {
     try {
-      const profileSnap = await admin.firestore().collection("users").doc(decoded.uid).get();
-      if (profileSnap.exists) {
-        profileData = profileSnap.data();
-      }
+      const db = getDb();
+      profileData = await db.collection("users").findOne({
+        $or: [
+          { uid: decoded.uid },
+          { email: decoded.email }
+        ]
+      });
     } catch (error) {
       logger.warn(`[Auth] Failed to load profile for ${decoded.uid}: ${error.message}`);
     }
@@ -20,14 +24,14 @@ const enrichDecodedUser = async (decoded) => {
     ...profileData,
     uid: decoded?.uid,
     email: decoded?.email || profileData?.email,
-    role: decoded?.role || profileData?.role || decoded?.customClaims?.role || null,
+    role: profileData?.role || decoded?.role || null,
     employeeId: profileData?.employeeId || decoded?.employeeId || null,
     permissions: profileData?.permissions || decoded?.permissions || {},
   };
 };
 
 /**
- * Verify Firebase ID Token from Authorization header
+ * Verify JWT Token from Authorization header (named verifyFirebaseToken for compatibility)
  * Attaches decoded token to req.user
  */
 const verifyFirebaseToken = async (req, res, next) => {
@@ -43,7 +47,7 @@ const verifyFirebaseToken = async (req, res, next) => {
   const token = authHeader.split("Bearer ")[1];
 
   try {
-    const decoded = await admin.auth().verifyIdToken(token);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret_here");
     req.user = await enrichDecodedUser(decoded);
     next();
   } catch (err) {
@@ -67,7 +71,7 @@ const optionalAuth = async (req, res, next) => {
 
   const token = authHeader.split("Bearer ")[1];
   try {
-    const decoded = await admin.auth().verifyIdToken(token);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret_here");
     req.user = await enrichDecodedUser(decoded);
   } catch {
     req.user = null;

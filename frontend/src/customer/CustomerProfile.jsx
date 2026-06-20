@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
-import { storage } from '../config/firebase'
 import { useAuth } from '../context/AuthContext'
+import { api } from '../config/api'
 
 const createProfileForm = (profile, currentUser) => ({
   displayName: profile?.displayName || currentUser?.displayName || '',
@@ -114,16 +113,22 @@ export default function CustomerProfile() {
     setProfileStatus({ type: '', message: '' })
 
     try {
-      const storageRef = ref(
-        storage,
-        `profile-images/customers/${userId}/${Date.now()}-${sanitizeFileName(file.name)}`
-      )
-      const snapshot = await uploadBytes(storageRef, file)
-      const downloadURL = await getDownloadURL(snapshot.ref)
+      const formData = new FormData()
+      formData.append('photo', file)
+
+      const response = await fetch(api.uploadTeam, {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await response.json()
+      if (!response.ok || !data.success || !data.url) {
+        throw new Error(data.message || 'Image upload failed.')
+      }
 
       setProfileForm(current => ({
         ...current,
-        avatar: downloadURL,
+        avatar: data.url,
       }))
       setProfileStatus({ type: 'success', message: 'Profile image uploaded. Save profile to apply it everywhere.' })
     } catch (error) {

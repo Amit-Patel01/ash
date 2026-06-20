@@ -1,22 +1,4 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import {
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut,
-  onAuthStateChanged,
-  reload,
-  updateProfile,
-} from 'firebase/auth'
-import {
-  collection,
-  getDocs,
-  doc,
-  getDoc,
-  setDoc,
-  onSnapshot
-} from 'firebase/firestore'
-import { auth, db, setUserOnline, setUserOffline } from '../config/firebase'
 import { api, readApiJson } from '../config/api'
 import { normalizeUserRole, isEmployeeRole } from '../utils/roles'
 
@@ -28,63 +10,8 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
   const [authError, setAuthError] = useState('')
 
-  const buildUserState = useCallback(async (user, isGoogleLogin = false) => {
-    const profileRef = doc(db, 'users', user.uid)
-    const profileSnap = await getDoc(profileRef)
-
-    let profileData = profileSnap.data()
-
-    if (!profileSnap.exists()) {
-      // If it's a Google login and we want to restrict to existing accounts
-      if (isGoogleLogin) {
-        await signOut(auth)
-        const err = new Error('No account found. Please register first.')
-        err.code = 'auth/user-not-found'
-        throw err
-      }
-
-      const isAdminEmail = user.email === 'amitp@solutionhub.com'
-      profileData = {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName || 'User',
-        role: isAdminEmail ? 'admin' : 'customer',
-        status: 'active',
-        createdAt: new Date().toISOString()
-      }
-      await setDoc(profileRef, profileData, { merge: true })
-    }
-
-    const normalizedRole = normalizeUserRole(profileData?.role || (profileData?.isMentor ? 'mentor' : 'customer'))
-
-    if (!profileData?.role) {
-      profileData = {
-        ...profileData,
-        role: normalizedRole
-      }
-      await setDoc(profileRef, { role: normalizedRole }, { merge: true })
-    }
-
-    if (profileData?.status && profileData.status !== 'active') {
-      await signOut(auth)
-      throw new Error('Your account is inactive. Please contact support.')
-    }
-
-    const userData = {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName || profileData?.displayName,
-      ...profileData,
-      role: normalizedRole
-    }
-
-    setCurrentUser(userData)
-    setUserProfile(userData)
-    return userData
-  }, [])
-
   const getAuthHeaders = useCallback(async () => {
-    const token = await auth.currentUser?.getIdToken()
+    const token = localStorage.getItem('token')
     if (!token) {
       throw new Error('Please sign in again to continue.')
     }
@@ -94,120 +21,105 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
-  // Real-time Auth and Profile syncing
+  // Initialize auth state from local storage token
   useEffect(() => {
-    let unsubscribeAuth = null
-    let unsubscribeProfile = null
     let isMounted = true
 
     const initializeAuth = async () => {
-      setLoading(true)
-      if (!isMounted) return
-
-      unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
-        if (unsubscribeProfile) {
-          unsubscribeProfile()
-          unsubscribeProfile = null
-        }
-
-        if (user) {
-          setAuthError('')
-          // Set user online
-          setUserOnline(user.uid)
-
-          try {
-            await buildUserState(user)
-          } catch (error) {
-            console.error('Initial profile sync error:', error)
-            setAuthError(error?.message || 'Failed to load your account.')
-            setLoading(false)
-            return
-          }
-
-          // Fetch extra profile data from Firestore with a real-time listener
-          const profileRef = doc(db, 'users', user.uid)
-
-          unsubscribeProfile = onSnapshot(profileRef, async (profileSnap) => {
-            let profileData = profileSnap.data()
-
-            // Fallback: If no profile exists yet
-            if (!profileSnap.exists()) {
-              const isAdminEmail = user.email === 'amitp@solutionhub.com'
-              profileData = {
-                uid: user.uid,
-                email: user.email,
-                displayName: user.displayName || 'User',
-                role: isAdminEmail ? 'admin' : 'customer',
-                status: 'active',
-                createdAt: new Date().toISOString()
-              }
-              await setDoc(profileRef, profileData)
-            }
-
-            // Force logout for deactivated accounts
-            if (profileData?.status && profileData.status !== 'active') {
-              await signOut(auth)
-              setCurrentUser(null)
-              setUserProfile(null)
-              setLoading(false)
-              return
-            }
-
-            const userData = {
-              uid: user.uid,
-              email: user.email,
-              displayName: user.displayName || profileData?.displayName,
-              ...profileData,
-              role: normalizeUserRole(profileData?.role || (profileData?.isMentor ? 'mentor' : 'customer'))
-            }
-
-            setCurrentUser(userData)
-            setUserProfile(userData)
-            setLoading(false)
-          }, (error) => {
-            console.error("Profile sync error:", error)
-            setAuthError(error?.message || 'Failed to sync your account.')
-            setLoading(false)
-          })
-        } else {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        if (isMounted) {
           setCurrentUser(null)
           setUserProfile(null)
           setLoading(false)
         }
-      }, (error) => {
-        console.error('Auth state error:', error)
-        setAuthError(error?.message || 'Authentication failed. Please try again.')
-        setLoading(false)
-      })
+        return
+      }
+
+      try {
+        const response = await fetch(api.userProfile, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
+        const data = await response.json()
+
+        if (isMounted) {
+          if (response.ok && data.success && data.profile) {
+            const profileData = data.profile
+            const normalizedRole = normalizeUserRole(profileData?.role || 'customer')
+            
+            const userData = {
+              uid: profileData.uid || profileData.id,
+              ...profileData,
+              role: normalizedRole
+            }
+            
+            setCurrentUser(userData)
+            setUserProfile(userData)
+          } else {
+            // Token expired or invalid
+            localStorage.removeItem('token')
+            setCurrentUser(null)
+            setUserProfile(null)
+          }
+        }
+      } catch (error) {
+        console.error('Failed to initialize auth from token:', error)
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
     }
 
     initializeAuth()
 
     return () => {
       isMounted = false
-      if (unsubscribeAuth) unsubscribeAuth()
-      if (unsubscribeProfile) unsubscribeProfile()
     }
-  }, [buildUserState])
+  }, [])
 
   const login = useCallback(async (email, password) => {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password)
-    return await buildUserState(userCredential.user)
-  }, [buildUserState])
+    setAuthError('')
+    try {
+      const response = await fetch(api.base + '/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+
+      const data = await response.json()
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Login failed')
+      }
+
+      localStorage.setItem('token', data.token)
+      
+      const profileData = data.user
+      const normalizedRole = normalizeUserRole(profileData?.role || 'customer')
+      const userData = {
+        uid: profileData.uid || profileData.id,
+        ...profileData,
+        role: normalizedRole
+      }
+
+      setCurrentUser(userData)
+      setUserProfile(userData)
+      return userData
+    } catch (error) {
+      setAuthError(error.message)
+      throw error
+    }
+  }, [])
 
   const loginWithGoogle = useCallback(async () => {
     setAuthError('')
-    try {
-      const provider = new GoogleAuthProvider()
-      provider.setCustomParameters({ prompt: 'select_account' })
-      const result = await signInWithPopup(auth, provider)
-      return await buildUserState(result.user, true)
-    } catch (error) {
-      console.error('Google sign-in error:', error)
-      setAuthError(error?.message || 'Google sign-in failed.')
-      throw error
-    }
-  }, [buildUserState])
+    const err = new Error('Google Sign-in is disabled in local authentication mode. Please use email & password.')
+    setAuthError(err.message)
+    throw err
+  }, [])
 
   const clearAuthError = useCallback(() => {
     setAuthError('')
@@ -229,10 +141,9 @@ export function AuthProvider({ children }) {
   }, [])
 
   const logout = useCallback(async () => {
-    if (auth.currentUser) {
-      await setUserOffline(auth.currentUser.uid)
-    }
-    await signOut(auth)
+    localStorage.removeItem('token')
+    setCurrentUser(null)
+    setUserProfile(null)
   }, [])
 
   const resetPassword = useCallback(async (email, from) => {
@@ -287,25 +198,13 @@ export function AuthProvider({ children }) {
       throw new Error(payload.message || 'Failed to update profile.')
     }
 
-    if (auth.currentUser?.uid === uid) {
-      const nextDisplayName = data.displayName ?? auth.currentUser.displayName ?? ''
-      const nextPhotoURL =
-        data.photoURL !== undefined
-          ? (data.photoURL || null)
-          : data.avatar !== undefined
-            ? (data.avatar || null)
-            : (auth.currentUser.photoURL || null)
-
-      if (data.displayName !== undefined || data.photoURL !== undefined || data.avatar !== undefined) {
-        await updateProfile(auth.currentUser, {
-          displayName: nextDisplayName,
-          photoURL: nextPhotoURL
-        })
-      }
+    if (currentUser?.uid === uid) {
+      setCurrentUser(prev => ({ ...(prev || {}), ...payload.profile }))
+      setUserProfile(prev => ({ ...(prev || {}), ...payload.profile }))
     }
 
     return payload.profile
-  }, [getAuthHeaders])
+  }, [currentUser?.uid, getAuthHeaders])
 
   const updateUserEmail = useCallback(async (email) => {
     const headers = await getAuthHeaders()
@@ -317,11 +216,6 @@ export function AuthProvider({ children }) {
     const payload = await response.json()
     if (!response.ok || !payload.success) {
       throw new Error(payload.message || 'Failed to update email.')
-    }
-
-    if (auth.currentUser) {
-      await reload(auth.currentUser)
-      await auth.currentUser.getIdToken(true)
     }
 
     if (payload.profile) {
@@ -387,15 +281,11 @@ export function AuthProvider({ children }) {
         return list
       }
     } catch (error) {
-      console.warn('Chat contacts API unavailable, falling back to Firestore users:', error)
+      console.warn('Failed to load chat contacts API:', error)
     }
 
-    const querySnapshot = await getDocs(collection(db, 'users'))
-    const allList = querySnapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }))
-    if (isRequesterCustomer) {
-      return allList.filter(u => normalizeUserRole(u.role) === 'admin' || isEmployeeRole(u.role))
-    }
-    return allList
+    // Fallback: If API fails, return empty list
+    return []
   }, [getAuthHeaders, userProfile?.role, currentUser?.role])
 
   const hasPermission = useCallback((permissionKey) => {

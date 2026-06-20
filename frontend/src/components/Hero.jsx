@@ -209,6 +209,90 @@ const CSS = `
     .hp-trust { flex-direction:column; }
     .hp-glass { border-radius:16px; }
   }
+
+  /* ── FAQ styling ── */
+  .hp-faq-item {
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.96);
+    box-shadow: 0 4px 16px rgba(29, 78, 216, 0.05);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .hp-faq-item:hover {
+    border-color: rgba(99, 102, 241, 0.22);
+    box-shadow: 0 8px 24px rgba(29, 78, 216, 0.08);
+  }
+  .hp-faq-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: none;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: left;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  .hp-faq-trigger:hover {
+    color: #1d4ed8;
+  }
+  .hp-faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
+    padding: 0 24px;
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.65;
+  }
+  .hp-faq-item.active .hp-faq-answer {
+    max-height: 200px;
+    padding-bottom: 20px;
+  }
+  .hp-faq-arrow {
+    transition: transform 0.3s ease;
+    color: #64748b;
+  }
+  .hp-faq-item.active .hp-faq-arrow {
+    transform: rotate(180deg);
+    color: #1d4ed8;
+  }
+
+  /* ── Dark Mode Overrides ── */
+  .dark .hp-why-item {
+    background: rgba(10, 18, 40, 0.82) !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  }
+  .dark .hp-tcard {
+    background: rgba(10, 18, 40, 0.82) !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  }
+  .dark .hp-cert {
+    background: linear-gradient(135deg, #0a1228, #0e1630) !important;
+    border-color: rgba(99, 102, 241, 0.35) !important;
+  }
+  .dark .hp-faq-item {
+    background: rgba(10, 18, 40, 0.82) !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  }
+  .dark .hp-faq-trigger {
+    color: #f1f5f9 !important;
+  }
+  .dark .hp-faq-trigger:hover {
+    color: #818cf8 !important;
+  }
+  .dark .hp-faq-answer {
+    color: #94a3b8 !important;
+  }
 `
 
 const SvgIcon = ({ name, size = 20, color = 'currentColor', strokeWidth = 1.9, style = {} }) => {
@@ -300,16 +384,62 @@ const WHY = [
 ]
 
 
+
+
+/* ── FAQs ── */
+const FAQS = [
+  {
+    q: 'Is the internship certification valid and recognized?',
+    a: 'Yes, AmitSolutionHub is an MSME-registered and AICTE-approved organization. All our certificates are valid, verifiable on our portal, and widely accepted by companies.'
+  },
+  {
+    q: 'Are the internship programs online or offline?',
+    a: 'All our internship programs are 100% online. You get access to recorded sessions, code repositories, and online mentorship sessions, allowing you to study at your own pace.'
+  },
+  {
+    q: 'Do you offer placement assistance after completion?',
+    a: 'Yes! We provide portfolio guidance, resume reviews, LinkedIn profile optimization, and share job openings with our alumni network.'
+  },
+  {
+    q: 'What are the prerequisites to enroll in the programs?',
+    a: 'Most of our programs start from the absolute basics, so there are no strict prerequisites. A basic understanding of computers and programming logic is helpful.'
+  },
+  {
+    q: 'How long does each internship program last?',
+    a: 'Our standard programs last for 4 to 8 weeks, depending on the track and pace of your project work.'
+  },
+  {
+    q: 'Can I work on live projects during the internship?',
+    a: 'Yes, working on real-world projects and client case studies is a core part of our curriculum to build your portfolio.'
+  },
+  {
+    q: 'Is there any support available if I get stuck?',
+    a: 'Absolutely. We have a dedicated support channel where you can connect with mentors and peers to resolve queries.'
+  },
+  {
+    q: 'How can I verify my certificate?',
+    a: 'You can verify your certificate instantly by entering your unique Certificate ID on our /verify page.'
+  }
+]
+
+
 /* ══════════════════════════════════════════════════════════════
    COMPONENT
 ══════════════════════════════════════════════════════════════ */
 const Hero = () => {
   const [loaded, setLoaded] = useState(false)
-  const { courses, courseCategories } = useStore()
+  const { courses, courseCategories, testimonials } = useStore()
+  const [showAllReviews, setShowAllReviews] = useState(false)
+  const [showAllFaqs, setShowAllFaqs] = useState(false)
+  const [activeFaq, setActiveFaq] = useState(null)
 
   const activeCourses = useMemo(() => {
     return courses?.filter(c => c.published !== false).slice(0, 3) || []
   }, [courses])
+
+  const displayedTestimonials = useMemo(() => {
+    return testimonials || []
+  }, [testimonials])
 
   const getCatMeta = (catId) => {
     return courseCategories?.find(c => c.id === catId) || null
@@ -737,7 +867,135 @@ const Hero = () => {
             </div>
           </section>
 
+          {displayedTestimonials.length > 0 && (
+            <>
+              {/* ════════════════════════════════════════════
+                  MINI TESTIMONIALS PREVIEW
+              ════════════════════════════════════════════ */}
+              <section id="testimonials-preview" style={{ padding:'0 clamp(16px,5vw,28px) clamp(60px,8vw,80px)' }}>
+                <div style={{ maxWidth:1040, margin:'0 auto' }}>
+                  <div style={{ textAlign:'center', marginBottom:40 }}>
+                    <div className="hp-pill"><SvgIcon name="mentor" size={14} color="currentColor" /> Testimonials</div>
+                    <h2 className="hp-stitle">What Our <span className="hp-grad">Students Say</span></h2>
+                    <p style={{ color:'#64748b', fontSize:14, marginTop:10, lineHeight:1.8 }}>
+                      Real feedback from students and interns who kickstarted their tech careers with us.
+                    </p>
+                  </div>
 
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,290px),1fr))', gap:24 }}>
+                    {displayedTestimonials.slice(0, showAllReviews ? 6 : 3).map((item, idx) => (
+                      <div key={item.id || idx} className="hp-tcard" style={{ display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:200 }}>
+                        {/* Stars */}
+                        <div style={{ display:'flex', gap:3, color:'#fbbf24', marginBottom:14, fontSize:14 }}>
+                          {[...Array(Number(item.rating || 5))].map((_, i) => (
+                            <span key={i}>★</span>
+                          ))}
+                        </div>
+                        {/* Review text */}
+                        <p style={{ color:'#475569', fontSize:14, lineHeight:1.65, flexGrow:1, fontStyle:'italic', marginBottom:18 }}>
+                          "{item.text}"
+                        </p>
+                        {/* User profile */}
+                        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                          <div style={{ width:40, height:40, borderRadius:'50%', background:'linear-gradient(135deg, #e0e7ff, #c7d2fe)', display:'flex', alignItems:'center', justifyCenter:'center', fontSize:20 }}>
+                            {item.avatar || '👨‍🎓'}
+                          </div>
+                          <div>
+                            <div style={{ fontWeight:700, fontSize:13, color:'#0f172a' }}>{item.name}</div>
+                            <div style={{ fontSize:11, color:'#64748b', fontWeight:500 }}>{item.role}</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* View All Reviews Button */}
+                  {displayedTestimonials.length > 3 && (
+                    <div style={{ textAlign:'center', marginTop:32 }}>
+                      <button
+                        onClick={() => setShowAllReviews(!showAllReviews)}
+                        className="hp-cta-secondary"
+                        style={{ fontSize:14, padding:'11px 24px' }}
+                      >
+                        {showAllReviews ? 'Show Less' : 'View All Reviews'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              <div className="hp-div" style={{ padding:'0 clamp(16px,5vw,28px)' }}/>
+            </>
+          )}
+
+          {/* ════════════════════════════════════════════
+              FAQ PREVIEW SECTION
+          ════════════════════════════════════════════ */}
+          <section id="faq-preview" style={{ padding:'0 clamp(16px,5vw,28px) clamp(60px,8vw,80px)' }}>
+            <div style={{ maxWidth:800, margin:'0 auto' }}>
+              <div style={{ textAlign:'center', marginBottom:40 }}>
+                <div className="hp-pill"><SvgIcon name="clock" size={14} color="currentColor" /> FAQ</div>
+                <h2 className="hp-stitle">Frequently Asked <span className="hp-grad">Questions</span></h2>
+                <p style={{ color:'#64748b', fontSize:14, marginTop:10, lineHeight:1.8 }}>
+                  Find answers to common questions about our internship programs and services.
+                </p>
+              </div>
+
+              <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+                {FAQS.slice(0, showAllFaqs ? 8 : 4).map((faq, idx) => {
+                  const isOpen = activeFaq === idx
+                  return (
+                    <div 
+                      key={idx} 
+                      className={`hp-faq-item ${isOpen ? 'active' : ''}`}
+                    >
+                      <button 
+                        className="hp-faq-trigger"
+                        onClick={() => setActiveFaq(isOpen ? null : idx)}
+                        aria-expanded={isOpen}
+                      >
+                        <span>{faq.q}</span>
+                        <svg 
+                          className="hp-faq-arrow" 
+                          width="18" 
+                          height="18" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          stroke="currentColor" 
+                          strokeWidth="2.5"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        </svg>
+                      </button>
+                      <div className="hp-faq-answer">
+                        <div style={{ paddingTop: 0, paddingBottom: 20 }}>
+                          {faq.a}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* View All FAQs Button */}
+              <div style={{ textAlign:'center', marginTop:32 }}>
+                <button
+                  onClick={() => {
+                    setShowAllFaqs(!showAllFaqs)
+                    if (showAllFaqs) {
+                      setActiveFaq(null)
+                    }
+                  }}
+                  className="hp-cta-secondary"
+                  style={{ fontSize:14, padding:'11px 24px' }}
+                >
+                  {showAllFaqs ? 'Show Less' : 'View All FAQs'}
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <div className="hp-div" style={{ padding:'0 clamp(16px,5vw,28px)' }}/>
 
           {/* ════════════════════════════════════════════
               CONTACT CTA

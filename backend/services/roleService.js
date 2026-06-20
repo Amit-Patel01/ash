@@ -1,24 +1,31 @@
-const admin = require("firebase-admin");
+const { getDb } = require("../utils/mongo");
 const { logger } = require("../logger");
 
 /**
- * Set a custom role claim on a Firebase user
- * @param {string} uid - Firebase user UID
- * @param {string} role - 'admin' | 'instructor' | 'employee' | 'customer'
+ * Set user role in MongoDB users collection
+ * @param {string} uid - User ID
+ * @param {string} role - 'admin' | 'employee' | 'customer'
  */
 const setUserRole = async (uid, role) => {
-  await admin.auth().setCustomUserClaims(uid, { role });
+  const db = getDb();
+  await db.collection("users").updateOne(
+    { $or: [{ _id: uid }, { uid: uid }] },
+    { $set: { role } }
+  );
   logger.info(`[RBAC] Role '${role}' set for user ${uid}`);
 };
 
 /**
- * Get the role of a Firebase user from custom claims
- * @param {string} uid - Firebase user UID
+ * Get user role from MongoDB users collection
+ * @param {string} uid - User ID
  * @returns {string|null} Role string or null
  */
 const getUserRole = async (uid) => {
-  const user = await admin.auth().getUser(uid);
-  return user.customClaims?.role || null;
+  const db = getDb();
+  const user = await db.collection("users").findOne({
+    $or: [{ _id: uid }, { uid: uid }]
+  });
+  return user?.role || null;
 };
 
 /**

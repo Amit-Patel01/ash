@@ -1,19 +1,4 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { 
-  collection, 
-  addDoc, 
-  onSnapshot, 
-  query, 
-  orderBy, 
-  doc, 
-  getDoc,
-  updateDoc, 
-  deleteDoc, 
-  getDocs,
-  setDoc,
-  serverTimestamp 
-} from 'firebase/firestore'
-import { auth, db } from '../config/firebase'
 import { api, buildApiUrl, readApiJson } from '../config/api'
 import { emailNotify } from '../utils/emailNotify'
 import { isEnrollmentClosed, normalizeEnrollmentDeadline } from '../utils/enrollmentDeadline'
@@ -184,7 +169,7 @@ export function StoreProvider({ children }) {
   const [orders, setOrders] = useState([])
   const [tasks, setTasks] = useState([])
   const [manualEmployees, setManualEmployees] = useState([])
-  const [users, setUsers] = useState([]) // Unified Users state
+  const [users, setUsers] = useState([]) 
   const [services, setServices] = useState([])
   const [accountRequests, setAccountRequests] = useState([])
   const [sellRequests, setSellRequests] = useState([])
@@ -201,16 +186,25 @@ export function StoreProvider({ children }) {
   const [certificateTemplate, setCertificateTemplate] = useState(DEFAULT_CERTIFICATE_TEMPLATE)
   const [announcement, setAnnouncement] = useState(null)
   const [maintenance, setMaintenance] = useState(null)
-  // ── Generic Course System (Phase 1) ──────────────────────────
   const [courses, setCourses] = useState([])
   const [enrollments, setEnrollments] = useState([])
   const [courseCategories, setCourseCategories] = useState([])
-  // ─────────────────────────────────────────────────────────────
+  const [testimonials, setTestimonials] = useState([])
   const [loading, setLoading] = useState(true)
+
   const qrCertificates = certificates.filter(certificate => certificate.source === 'qr')
 
-  const getAuthorizedHeaders = async () => {
-    const token = await auth.currentUser?.getIdToken()
+  const getRequestHeaders = () => {
+    const token = localStorage.getItem('token')
+    const headers = { 'Content-Type': 'application/json' }
+    if (token) {
+      headers.Authorization = `Bearer ${token}`
+    }
+    return headers
+  }
+
+  const getAuthorizedHeaders = () => {
+    const token = localStorage.getItem('token')
     if (!token) {
       throw new Error('Please sign in again to continue.')
     }
@@ -220,209 +214,303 @@ export function StoreProvider({ children }) {
     }
   }
 
-  // Real-time Listeners
+  const fetchCollection = async (collectionName, params = {}) => {
+    try {
+      const queryParams = new URLSearchParams(params).toString();
+      const url = `${api.base}/api/db/${collectionName}${queryParams ? '?' + queryParams : ''}`;
+      const headers = getRequestHeaders();
+      const res = await fetch(url, { headers });
+      if (!res.ok) {
+        if (res.status === 401 && !localStorage.getItem('token')) {
+          return [];
+        }
+        throw new Error(`Failed to fetch ${collectionName}`);
+      }
+      const data = await res.json();
+      return data.documents || [];
+    } catch (err) {
+      console.error(`Error fetching collection ${collectionName}:`, err);
+      return [];
+    }
+  };
+
+  const fetchDocument = async (collectionName, docId) => {
+    try {
+      const url = `${api.base}/api/db/${collectionName}/${docId}`;
+      const headers = getRequestHeaders();
+      const res = await fetch(url, { headers });
+      if (!res.ok) {
+        if (res.status === 401 && !localStorage.getItem('token')) {
+          return null;
+        }
+        throw new Error(`Failed to fetch document ${docId} from ${collectionName}`);
+      }
+      const data = await res.json();
+      return data.document || null;
+    } catch (err) {
+      console.error(`Error fetching document ${docId} from ${collectionName}:`, err);
+      return null;
+    }
+  };
+
+  const loadProjects = async () => {
+    const data = await fetchCollection('projects');
+    setProjects(data);
+  };
+  const loadCategories = async () => {
+    const data = await fetchCollection('categories');
+    setCategories(data);
+  };
+  const loadOrders = async () => {
+    const data = await fetchCollection('orders');
+    setOrders(data);
+  };
+  const loadTasks = async () => {
+    const data = await fetchCollection('tasks');
+    setTasks(data);
+  };
+  const loadManualEmployees = async () => {
+    const data = await fetchCollection('employees');
+    setManualEmployees(data);
+  };
+  const loadUsers = async () => {
+    const data = await fetchCollection('users');
+    setUsers(data);
+  };
+  const loadServices = async () => {
+    const data = await fetchCollection('services');
+    setServices(data);
+  };
+  const loadAccountRequests = async () => {
+    const data = await fetchCollection('accountRequests');
+    setAccountRequests(data);
+  };
+  const loadSellRequests = async () => {
+    const data = await fetchCollection('sellRequests');
+    setSellRequests(data);
+  };
+  const loadServiceRequests = async () => {
+    const data = await fetchCollection('custom_requests');
+    setServiceRequests(data);
+  };
+  const loadMessages = async () => {
+    const data = await fetchCollection('messages');
+    setMessages(data);
+  };
+  const loadTradingCourses = async () => {
+    const data = await fetchCollection('tradingCourses');
+    setTradingCourses(data);
+  };
+  const loadTradingSessions = async () => {
+    const data = await fetchCollection('tradingSessions');
+    setTradingSessions(data);
+  };
+  const loadTradingEnrollments = async () => {
+    const data = await fetchCollection('tradingEnrollments');
+    setTradingEnrollments(data);
+  };
+  const loadTradingPayments = async () => {
+    const data = await fetchCollection('tradingPayments');
+    setTradingPayments(data);
+  };
+  const loadMentorProfile = async () => {
+    const doc = await fetchDocument('tradingSettings', 'mentorProfile');
+    if (doc) setMentorProfile(doc);
+  };
+  const loadEmployeePermissions = async () => {
+    const data = await fetchCollection('employeePermissions');
+    const perms = {};
+    data.forEach(d => {
+      perms[d.id] = d;
+    });
+    setEmployeePermissions(perms);
+  };
+  const loadTradingCurriculum = async () => {
+    const data = await fetchCollection('tradingCurriculum');
+    data.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    setTradingCurriculum(data);
+  };
+  const loadCertificates = async () => {
+    const data = await fetchCollection('certificates');
+    setCertificates(data);
+  };
+  const loadCertificateTemplate = async () => {
+    const doc = await fetchDocument('settings', 'certificateTemplate');
+    if (doc) {
+      setCertificateTemplate(normalizeCertificateTemplate(doc));
+    } else {
+      setCertificateTemplate(DEFAULT_CERTIFICATE_TEMPLATE);
+    }
+  };
+  const loadAnnouncement = async () => {
+    const doc = await fetchDocument('settings', 'announcement');
+    if (doc) setAnnouncement(doc);
+  };
+  const loadMaintenance = async () => {
+    const doc = await fetchDocument('settings', 'maintenance');
+    if (doc) {
+      const isDev = import.meta.env.DEV;
+      setMaintenance({
+        id: doc.id,
+        isActive: isDev ? !!doc.isActiveDev : !!doc.isActive,
+        message: doc.message || '',
+        ...doc
+      });
+    }
+  };
+  const loadGenericCourses = async () => {
+    const data = await fetchCollection('courses');
+    setCourses(data.map(d => ({
+      ...d,
+      enrollmentDeadline: normalizeEnrollmentDeadline(d.enrollmentDeadline),
+    })));
+  };
+  const loadGenericEnrollments = async () => {
+    const data = await fetchCollection('enrollments');
+    setEnrollments(data);
+  };
+  const loadCourseCategories = async () => {
+    const data = await fetchCollection('courseCategories');
+    data.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    setCourseCategories(dedupeCourseCategories(data));
+  };
+  const loadTestimonials = async () => {
+    const data = await fetchCollection('testimonials');
+    setTestimonials(data);
+  };
+
   useEffect(() => {
-    const qProjects = query(collection(db, 'projects'), orderBy('createdAt', 'desc'))
-    const unsubscribeProjects = onSnapshot(qProjects, (snapshot) => {
-      const projectsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-      setProjects(projectsData)
-      setLoading(false)
-    }, (error) => {
-      console.error("Projects snapshot error:", error)
-      setLoading(false)
-    })
+    let isMounted = true;
 
-    const unsubscribeOrders = onSnapshot(collection(db, 'orders'), (snapshot) => {
-      setOrders(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }, (error) => console.error("Orders snapshot error:", error))
-
-    const unsubscribeCategories = onSnapshot(query(collection(db, 'categories')), (snapshot) => {
-      setCategories(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }, (error) => console.error("Categories snapshot error:", error))
-
-    const unsubscribeTasks = onSnapshot(collection(db, 'tasks'), (snapshot) => {
-      setTasks(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }, (error) => console.error("Tasks snapshot error:", error))
-
-    const unsubscribeTeam = onSnapshot(collection(db, 'employees'), (snapshot) => {
-      setManualEmployees(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }, (error) => console.error("Team snapshot error:", error))
-
-    // Unified Users Listener - Removed orderBy to ensure all users are fetched even if createdAt is missing
-    const unsubscribeUsers = onSnapshot(collection(db, 'users'), (snapshot) => {
-      const usersData = snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() }))
-      setUsers(usersData)
-    }, (error) => console.error("Users snapshot error:", error))
-
-    const unsubscribeServices = onSnapshot(collection(db, 'services'), (snapshot) => {
-      const servicesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-      setServices(servicesData)
-    }, (error) => console.error("Services snapshot error:", error))
-
-    // Real-time listeners for Requests & Messages
-    const unsubscribeAccountRequests = onSnapshot(query(collection(db, 'accountRequests'), orderBy('createdAt', 'desc')), (snapshot) => {
-      setAccountRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }, (error) => console.error("Account Requests snapshot error:", error))
-
-    const unsubscribeSellRequests = onSnapshot(query(collection(db, 'sellRequests'), orderBy('createdAt', 'desc')), (snapshot) => {
-      setSellRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }, (error) => console.error("Sell Requests snapshot error:", error))
-
-    const unsubscribeServiceRequests = onSnapshot(query(collection(db, 'custom_requests'), orderBy('createdAt', 'desc')), (snapshot) => {
-      setServiceRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }, (error) => console.error("Service Requests snapshot error:", error))
-
-    const unsubscribeMessages = onSnapshot(query(collection(db, 'messages'), orderBy('createdAt', 'desc')), (snapshot) => {
-      setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }, (error) => console.error("Messages snapshot error:", error))
-
-    // Trading Courses Listener
-    const unsubscribeCourses = onSnapshot(collection(db, 'tradingCourses'), (snapshot) => {
-      const coursesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-      setTradingCourses(coursesData)
-    }, (error) => console.error("Trading Courses snapshot error:", error))
-
-    // Trading Sessions Listener
-    const unsubscribeSessions = onSnapshot(collection(db, 'tradingSessions'), (snapshot) => {
-      const sessionsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-      setTradingSessions(sessionsData)
-    }, (error) => console.error("Trading Sessions snapshot error:", error))
-
-    // Trading Enrollments Listener (removed orderBy to avoid index requirement)
-    const unsubscribeEnrollments = onSnapshot(collection(db, 'tradingEnrollments'), (snapshot) => {
-      setTradingEnrollments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }, (error) => console.error("Trading Enrollments snapshot error:", error))
-
-    // Trading Payments Listener (removed orderBy to avoid index requirement)
-    const unsubscribePayments = onSnapshot(collection(db, 'tradingPayments'), (snapshot) => {
-      setTradingPayments(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }, (error) => console.error("Trading Payments snapshot error:", error))
-
-    // Mentor Profile Listener
-    const unsubscribeMentorProfile = onSnapshot(doc(db, 'tradingSettings', 'mentorProfile'), (snapshot) => {
-      if (snapshot.exists()) {
-        setMentorProfile({ id: snapshot.id, ...snapshot.data() })
+    const loadAllData = async () => {
+      await Promise.all([
+        loadProjects(),
+        loadCategories(),
+        loadOrders(),
+        loadTasks(),
+        loadManualEmployees(),
+        loadUsers(),
+        loadServices(),
+        loadAccountRequests(),
+        loadSellRequests(),
+        loadServiceRequests(),
+        loadMessages(),
+        loadTradingCourses(),
+        loadTradingSessions(),
+        loadTradingEnrollments(),
+        loadTradingPayments(),
+        loadMentorProfile(),
+        loadEmployeePermissions(),
+        loadTradingCurriculum(),
+        loadCertificates(),
+        loadCertificateTemplate(),
+        loadAnnouncement(),
+        loadMaintenance(),
+        loadGenericCourses(),
+        loadGenericEnrollments(),
+        loadCourseCategories(),
+        loadTestimonials()
+      ]);
+      if (isMounted) {
+        setLoading(false);
       }
-    }, (error) => console.error("Mentor Profile snapshot error:", error))
+    };
 
-    // Employee Permissions Listener
-    const unsubscribePermissions = onSnapshot(collection(db, 'employeePermissions'), (snapshot) => {
-      const perms = {}
-      snapshot.docs.forEach(doc => {
-        perms[doc.id] = doc.data()
-      })
-      setEmployeePermissions(perms)
-    }, (error) => console.error("Permissions snapshot error:", error))
+    loadAllData();
 
-    // Trading Curriculum Listener
-    const unsubscribeCurriculum = onSnapshot(collection(db, 'tradingCurriculum'), (snapshot) => {
-      const curriculumData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-      curriculumData.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-      setTradingCurriculum(curriculumData)
-    }, (error) => console.error("Curriculum snapshot error:", error))
+    const fastPoll = setInterval(() => {
+      loadOrders();
+      loadTasks();
+      loadAccountRequests();
+      loadSellRequests();
+      loadServiceRequests();
+      loadMaintenance();
+    }, 15000);
 
-    const unsubscribeCertificates = onSnapshot(query(collection(db, 'certificates'), orderBy('createdAt', 'desc')), (snapshot) => {
-      setCertificates(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-    }, (error) => console.error("Certificates snapshot error:", error))
-
-    const unsubscribeCertificateTemplate = onSnapshot(doc(db, 'settings', 'certificateTemplate'), (snapshot) => {
-      if (snapshot.exists()) {
-        setCertificateTemplate(normalizeCertificateTemplate(snapshot.data()))
-      } else {
-        setCertificateTemplate(DEFAULT_CERTIFICATE_TEMPLATE)
-      }
-    }, (error) => console.error("CertificateTemplate snapshot error:", error))
-
-    const unsubscribeAnnouncement = onSnapshot(doc(db, 'settings', 'announcement'), (snapshot) => {
-      if (snapshot.exists()) {
-        setAnnouncement({ id: snapshot.id, ...snapshot.data() })
-      }
-    }, (error) => console.error("Announcement snapshot error:", error))
-
-    const unsubscribeMaintenance = onSnapshot(doc(db, 'settings', 'maintenance'), (snapshot) => {
-      if (snapshot.exists()) {
-        setMaintenance({ id: snapshot.id, ...snapshot.data() })
-      }
-    }, (error) => console.error("Maintenance snapshot error:", error))
-
-    // ── Generic Course System Listeners ──────────────────────────
-    const unsubscribeGenericCourses = onSnapshot(
-      query(collection(db, 'courses'), orderBy('createdAt', 'desc')),
-      (snapshot) => setCourses(snapshot.docs.map(d => ({
-        id: d.id,
-        ...d.data(),
-        enrollmentDeadline: normalizeEnrollmentDeadline(d.data()?.enrollmentDeadline),
-      }))),
-      (error) => console.error("Courses snapshot error:", error)
-    )
-
-    const unsubscribeGenericEnrollments = onSnapshot(
-      query(collection(db, 'enrollments'), orderBy('enrolledAt', 'desc')),
-      (snapshot) => setEnrollments(snapshot.docs.map(d => ({ id: d.id, ...d.data() }))),
-      (error) => console.error("Enrollments snapshot error:", error)
-    )
-
-    const unsubscribeCourseCategories = onSnapshot(
-      collection(db, 'courseCategories'),
-      (snapshot) => {
-        const cats = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
-        cats.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-        setCourseCategories(dedupeCourseCategories(cats))
-      },
-      (error) => console.error("CourseCategories snapshot error:", error)
-    )
-    // ─────────────────────────────────────────────────────────────
+    const slowPoll = setInterval(() => {
+      loadProjects();
+      loadCategories();
+      loadManualEmployees();
+      loadUsers();
+      loadServices();
+      loadMessages();
+      loadTradingCourses();
+      loadTradingSessions();
+      loadTradingEnrollments();
+      loadTradingPayments();
+      loadMentorProfile();
+      loadEmployeePermissions();
+      loadTradingCurriculum();
+      loadCertificates();
+      loadCertificateTemplate();
+      loadAnnouncement();
+      loadGenericCourses();
+      loadGenericEnrollments();
+      loadCourseCategories();
+      loadTestimonials();
+    }, 60000);
 
     return () => {
-      unsubscribeProjects()
-      unsubscribeOrders()
-      unsubscribeCategories()
-      unsubscribeTasks()
-      unsubscribeTeam()
-      unsubscribeUsers()
-      unsubscribeServices()
-      unsubscribeAccountRequests()
-      unsubscribeSellRequests()
-      unsubscribeServiceRequests()
-      unsubscribeMessages()
-      unsubscribeCourses()
-      unsubscribeSessions()
-      unsubscribeEnrollments()
-      unsubscribePayments()
-      unsubscribeMentorProfile()
-      unsubscribePermissions()
-      unsubscribeCurriculum()
-      unsubscribeCertificates()
-      unsubscribeCertificateTemplate()
-      unsubscribeAnnouncement()
-      unsubscribeMaintenance()
-      unsubscribeGenericCourses()
-      unsubscribeGenericEnrollments()
-      unsubscribeCourseCategories()
-    }
-  }, [])
-
+      isMounted = false;
+      clearInterval(fastPoll);
+      clearInterval(slowPoll);
+    };
+  }, []);
 
   const addProject = async (project) => {
     try {
+      const slug = project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
       const newProject = {
         ...project,
-        slug: project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+        slug,
         sales: 0,
         status: 'active',
-        createdAt: serverTimestamp()
       }
-      const docRef = await addDoc(collection(db, 'projects'), newProject)
-      return { id: docRef.id, ...newProject }
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/projects`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(newProject)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to add project');
+      }
+      const added = data.document;
+      setProjects(prev => [added, ...prev]);
+      return added;
     } catch (err) { console.error("Error adding project:", err); throw err }
   }
 
   const updateProject = async (id, updates) => {
-    try { await updateDoc(doc(db, 'projects', id), updates) } catch (err) { console.error("Error updating project:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/projects/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update project');
+      }
+      setProjects(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
+    } catch (err) { console.error("Error updating project:", err); throw err }
   }
 
   const deleteProject = async (id) => {
-    try { await deleteDoc(doc(db, 'projects', id)) } catch (err) { console.error('Error deleting project:', err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/projects/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete project');
+      }
+      setProjects(prev => prev.filter(p => p.id !== id));
+    } catch (err) { console.error('Error deleting project:', err); throw err }
   }
 
   const addOrder = async (order) => {
@@ -430,61 +518,163 @@ export function StoreProvider({ children }) {
       const newOrder = {
         ...order,
         status: 'pending',
-        createdAt: serverTimestamp(),
         date: new Date().toISOString().split('T')[0],
       }
-      const docRef = await addDoc(collection(db, 'orders'), newOrder)
+      const headers = getRequestHeaders();
+      const response = await fetch(`${api.base}/api/db/orders`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(newOrder)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to add order');
+      }
+      const added = data.document;
+      setOrders(prev => [added, ...prev]);
+
       if (order.project_id) {
-        const projectRef = doc(db, 'projects', order.project_id)
-        const projectSnap = await getDoc(projectRef)
-        if (projectSnap.exists()) {
-          await updateDoc(projectRef, { sales: (projectSnap.data().sales || 0) + 1 })
+        const project = projects.find(p => p.id === order.project_id);
+        if (project) {
+          await updateProject(order.project_id, { sales: (project.sales || 0) + 1 });
         }
       }
-      return { id: docRef.id, ...newOrder }
+      return added;
     } catch (err) { console.error("Error adding order:", err); throw err }
   }
 
   const updateOrderStatus = async (id, status) => {
-    try { await updateDoc(doc(db, 'orders', id), { status }) } catch (err) { console.error("Error updating order status:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/orders/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify({ status })
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update order status');
+      }
+      setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
+    } catch (err) { console.error("Error updating order status:", err); throw err }
   }
 
   const deleteOrder = async (id) => {
-    try { await deleteDoc(doc(db, 'orders', id)) } catch (err) { console.error("Error deleting order:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/orders/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete order');
+      }
+      setOrders(prev => prev.filter(o => o.id !== id));
+    } catch (err) { console.error("Error deleting order:", err); throw err }
   }
 
-  // --- Tasks ---
   const addTask = async (task) => {
     try {
-      const docRef = await addDoc(collection(db, 'tasks'), { ...task, createdAt: serverTimestamp() })
-      return { id: docRef.id, ...task }
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tasks`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(task)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to add task');
+      }
+      const added = data.document;
+      setTasks(prev => [added, ...prev]);
+      return added;
     } catch (err) { console.error("Error adding task:", err); throw err }
   }
+
   const updateTask = async (id, updates) => {
-    try { await updateDoc(doc(db, 'tasks', id), updates) } catch (err) { console.error("Error updating task:", err); throw err }
-  }
-  const deleteTask = async (id) => {
-    try { await deleteDoc(doc(db, 'tasks', id)) } catch (err) { console.error("Error deleting task:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tasks/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update task');
+      }
+      setTasks(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
+    } catch (err) { console.error("Error updating task:", err); throw err }
   }
 
-  // --- Manual Employee Profiles (Team Cards) ---
+  const deleteTask = async (id) => {
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tasks/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete task');
+      }
+      setTasks(prev => prev.filter(t => t.id !== id));
+    } catch (err) { console.error("Error deleting task:", err); throw err }
+  }
+
   const addManualEmployee = async (member) => {
     try {
-      const docRef = await addDoc(collection(db, 'employees'), { ...member, createdAt: serverTimestamp() })
-      return { id: docRef.id, ...member }
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/employees`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(member)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to add employee record');
+      }
+      const added = data.document;
+      setManualEmployees(prev => [added, ...prev]);
+      return added;
     } catch (err) { console.error("Error adding employee record:", err); throw err }
   }
+
   const updateManualEmployee = async (id, updates) => {
-    try { await updateDoc(doc(db, 'employees', id), updates) } catch (err) { console.error("Error updating employee record:", err); throw err }
-  }
-  const deleteManualEmployee = async (id) => {
-    try { await deleteDoc(doc(db, 'employees', id)) } catch (err) { console.error("Error deleting employee record:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/employees/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update employee record');
+      }
+      setManualEmployees(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
+    } catch (err) { console.error("Error updating employee record:", err); throw err }
   }
 
-  // --- Unified Users (Employees) Management ---
+  const deleteManualEmployee = async (id) => {
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/employees/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete employee record');
+      }
+      setManualEmployees(prev => prev.filter(e => e.id !== id));
+    } catch (err) { console.error("Error deleting employee record:", err); throw err }
+  }
+
   const addUser = async (userData) => {
     try {
-      const headers = await getAuthorizedHeaders()
+      const headers = getAuthorizedHeaders()
       const response = await fetch(api.adminUsers, {
         method: 'POST',
         headers,
@@ -494,12 +684,14 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to create the user.')
       }
+      setUsers(prev => [data.user, ...prev]);
       return data.user
     } catch (err) { console.error("Error adding user:", err); throw err }
   }
+
   const updateUser = async (id, updates) => {
     try { 
-      const headers = await getAuthorizedHeaders()
+      const headers = getAuthorizedHeaders()
       const response = await fetch(`${api.adminUsers}/${id}`, {
         method: 'PATCH',
         headers,
@@ -509,12 +701,14 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to update the user.')
       }
+      setUsers(prev => prev.map(u => u.uid === id || u.id === id ? data.user : u));
       return data.user
     } catch (err) { console.error("Error updating user:", err); throw err }
   }
+
   const deleteUser = async (id) => {
     try { 
-      const headers = await getAuthorizedHeaders()
+      const headers = getAuthorizedHeaders()
       const response = await fetch(`${api.adminUsers}/${id}`, {
         method: 'DELETE',
         headers
@@ -523,13 +717,14 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete the user.')
       }
+      setUsers(prev => prev.filter(u => u.uid !== id && u.id !== id));
       return data.user
     } catch (err) { console.error("Error deleting user:", err); throw err }
   }
 
   const mergeUsers = async (primaryUserId, duplicateUserId, reason = '') => {
     try {
-      const headers = await getAuthorizedHeaders()
+      const headers = getAuthorizedHeaders()
       const response = await fetch(api.adminMergeUsers, {
         method: 'POST',
         headers,
@@ -539,6 +734,7 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to merge the accounts.')
       }
+      await loadUsers();
       return data
     } catch (err) {
       console.error('Error merging users:', err)
@@ -546,57 +742,128 @@ export function StoreProvider({ children }) {
     }
   }
 
-  // --- Services ---
   const addService = async (service) => {
     try {
-      const docRef = await addDoc(collection(db, 'services'), { 
-        ...service, 
-        createdAt: serverTimestamp() 
-      })
-      return { id: docRef.id, ...service }
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/services`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(service)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to add service');
+      }
+      const added = data.document;
+      setServices(prev => [added, ...prev]);
+      return added;
     } catch (err) { console.error("Error adding service:", err); throw err }
   }
+
   const updateService = async (id, updates) => {
-    try { await updateDoc(doc(db, 'services', id), updates) } catch (err) { console.error("Error updating service:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/services/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update service');
+      }
+      setServices(prev => prev.map(s => s.id === id ? { ...s, ...updates } : s));
+    } catch (err) { console.error("Error updating service:", err); throw err }
   }
+
   const deleteService = async (id) => {
-    try { await deleteDoc(doc(db, 'services', id)) } catch (err) { console.error("Error deleting service:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/services/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete service');
+      }
+      setServices(prev => prev.filter(s => s.id !== id));
+    } catch (err) { console.error("Error deleting service:", err); throw err }
   }
 
   const getActiveProjects = () => projects.filter(p => p.status === 'active')
   const getTotalRevenue = () => orders.filter(o => o.status === 'completed').reduce((sum, o) => sum + Number(o.amount || 0), 0)
   const getPendingOrders = () => orders.filter(o => o.status === 'pending')
 
-  // --- Trading Courses ---
   const addTradingCourse = async (course) => {
     try {
-      const docRef = await addDoc(collection(db, 'tradingCourses'), {
-        ...course,
-        createdAt: serverTimestamp()
-      })
-      return { id: docRef.id, ...course }
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingCourses`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(course)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to add trading course');
+      }
+      const added = data.document;
+      setTradingCourses(prev => [added, ...prev]);
+      return added;
     } catch (err) { console.error("Error adding trading course:", err); throw err }
   }
+
   const updateTradingCourse = async (id, updates) => {
-    try { await updateDoc(doc(db, 'tradingCourses', id), updates) } catch (err) { console.error("Error updating trading course:", err); throw err }
-  }
-  const deleteTradingCourse = async (id) => {
-    try { await deleteDoc(doc(db, 'tradingCourses', id)) } catch (err) { console.error("Error deleting trading course:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingCourses/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update trading course');
+      }
+      setTradingCourses(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
+    } catch (err) { console.error("Error updating trading course:", err); throw err }
   }
 
-  // --- Trading Sessions ---
+  const deleteTradingCourse = async (id) => {
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingCourses/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete trading course');
+      }
+      setTradingCourses(prev => prev.filter(c => c.id !== id));
+    } catch (err) { console.error("Error deleting trading course:", err); throw err }
+  }
+
   const addTradingSession = async (session) => {
     try {
-      const docRef = await addDoc(collection(db, 'tradingSessions'), {
-        ...session,
-        createdAt: serverTimestamp()
-      })
-      return { id: docRef.id, ...session }
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingSessions`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(session)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to add trading session');
+      }
+      const added = data.document;
+      setTradingSessions(prev => [added, ...prev]);
+      return added;
     } catch (err) { console.error("Error adding trading session:", err); throw err }
   }
+
   const updateTradingSession = async (id, updates) => {
-    try { 
-      // If updating isLive to true, use our backend API to trigger notifications
+    try {
       if (Object.prototype.hasOwnProperty.call(updates, 'isLive')) {
         const response = await fetch(buildApiUrl('/api/trading/toggle-live'), {
           method: 'POST',
@@ -605,90 +872,245 @@ export function StoreProvider({ children }) {
         });
         if (!response.ok) throw new Error("Failed to update status through API");
       } else {
-        await updateDoc(doc(db, 'tradingSessions', id), updates);
+        const headers = getAuthorizedHeaders();
+        const response = await fetch(`${api.base}/api/db/tradingSessions/${id}`, {
+          method: 'PATCH',
+          headers,
+          body: JSON.stringify(updates)
+        });
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Failed to update trading session');
+        }
       }
+      setTradingSessions(prev => prev.map(s => s.id === id ? { ...s, ...updates } : s));
     } catch (err) { console.error("Error updating trading session:", err); throw err }
   }
+
   const deleteTradingSession = async (id) => {
-    try { await deleteDoc(doc(db, 'tradingSessions', id)) } catch (err) { console.error("Error deleting trading session:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingSessions/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete trading session');
+      }
+      setTradingSessions(prev => prev.filter(s => s.id !== id));
+    } catch (err) { console.error("Error deleting trading session:", err); throw err }
   }
 
-  // --- Trading Enrollments ---
   const addTradingEnrollment = async (enrollment) => {
     try {
       const newEnrollment = {
         ...enrollment,
         status: enrollment.status || 'pending',
-        createdAt: serverTimestamp()
       }
-      const docRef = await addDoc(collection(db, 'tradingEnrollments'), newEnrollment)
-      return { id: docRef.id, ...newEnrollment }
+      const headers = getRequestHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingEnrollments`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(newEnrollment)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to add trading enrollment');
+      }
+      const added = data.document;
+      setTradingEnrollments(prev => [added, ...prev]);
+      return added;
     } catch (err) { console.error("Error adding enrollment:", err); throw err }
   }
+
   const updateTradingEnrollment = async (id, updates) => {
-    try { await updateDoc(doc(db, 'tradingEnrollments', id), updates) } catch (err) { console.error("Error updating enrollment:", err); throw err }
-  }
-  const deleteTradingEnrollment = async (id) => {
-    try { await deleteDoc(doc(db, 'tradingEnrollments', id)) } catch (err) { console.error("Error deleting enrollment:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingEnrollments/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update enrollment');
+      }
+      setTradingEnrollments(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
+    } catch (err) { console.error("Error updating enrollment:", err); throw err }
   }
 
-  // --- Trading Payments ---
+  const deleteTradingEnrollment = async (id) => {
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingEnrollments/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete enrollment');
+      }
+      setTradingEnrollments(prev => prev.filter(e => e.id !== id));
+    } catch (err) { console.error("Error deleting enrollment:", err); throw err }
+  }
+
   const addTradingPayment = async (payment) => {
     try {
-      const docRef = await addDoc(collection(db, 'tradingPayments'), {
-        ...payment,
-        createdAt: serverTimestamp()
-      })
-      return { id: docRef.id, ...payment }
+      const headers = getRequestHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingPayments`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payment)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to add trading payment');
+      }
+      const added = data.document;
+      setTradingPayments(prev => [added, ...prev]);
+      return added;
     } catch (err) { console.error("Error adding payment:", err); throw err }
   }
+
   const updateTradingPayment = async (id, updates) => {
-    try { await updateDoc(doc(db, 'tradingPayments', id), updates) } catch (err) { console.error("Error updating payment:", err); throw err }
-  }
-  const deleteTradingPayment = async (id) => {
-    try { await deleteDoc(doc(db, 'tradingPayments', id)) } catch (err) { console.error("Error deleting payment:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingPayments/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update payment');
+      }
+      setTradingPayments(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
+    } catch (err) { console.error("Error updating payment:", err); throw err }
   }
 
-  // --- Employee Permissions ---
+  const deleteTradingPayment = async (id) => {
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingPayments/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete payment');
+      }
+      setTradingPayments(prev => prev.filter(p => p.id !== id));
+    } catch (err) { console.error("Error deleting payment:", err); throw err }
+  }
+
   const updateEmployeePermissions = async (employeeId, permissions) => {
     try {
-      await setDoc(doc(db, 'employeePermissions', employeeId), {
-        ...permissions,
-        updatedAt: serverTimestamp()
-      })
+      const headers = getAuthorizedHeaders();
+      let response = await fetch(`${api.base}/api/db/employeePermissions/${employeeId}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(permissions)
+      });
+      if (response.status === 404) {
+        response = await fetch(`${api.base}/api/db/employeePermissions`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ id: employeeId, ...permissions })
+        });
+      }
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update employee permissions');
+      }
+      setEmployeePermissions(prev => ({ ...prev, [employeeId]: permissions }));
     } catch (err) { console.error("Error updating permissions:", err); throw err }
   }
+
   const getEmployeePermissions = (employeeId) => {
     return employeePermissions[employeeId] || {}
   }
 
-  // --- Mentor Profile ---
   const updateMentorProfile = async (profileData) => {
     try {
-      await setDoc(doc(db, 'tradingSettings', 'mentorProfile'), {
-        ...profileData,
-        updatedAt: serverTimestamp()
-      })
+      const headers = getAuthorizedHeaders();
+      let response = await fetch(`${api.base}/api/db/tradingSettings/mentorProfile`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(profileData)
+      });
+      if (response.status === 404) {
+        response = await fetch(`${api.base}/api/db/tradingSettings`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ id: 'mentorProfile', ...profileData })
+        });
+      }
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update mentor profile');
+      }
+      setMentorProfile({ id: 'mentorProfile', ...profileData });
     } catch (err) { console.error("Error updating mentor profile:", err); throw err }
   }
 
-  // --- Trading Curriculum ---
   const addCurriculumModule = async (module) => {
     try {
-      const docRef = await addDoc(collection(db, 'tradingCurriculum'), {
+      const payload = {
         ...module,
         order: tradingCurriculum.length,
-        createdAt: serverTimestamp()
-      })
-      return { id: docRef.id, ...module }
+      }
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingCurriculum`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to add curriculum module');
+      }
+      const added = data.document;
+      setTradingCurriculum(prev => [...prev, added]);
+      return added;
     } catch (err) { console.error("Error adding curriculum module:", err); throw err }
   }
+
   const updateCurriculumModule = async (id, updates) => {
-    try { await updateDoc(doc(db, 'tradingCurriculum', id), updates) } catch (err) { console.error("Error updating curriculum module:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingCurriculum/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update curriculum module');
+      }
+      setTradingCurriculum(prev => {
+        const updated = prev.map(m => m.id === id ? { ...m, ...updates } : m);
+        updated.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+        return updated;
+      });
+    } catch (err) { console.error("Error updating curriculum module:", err); throw err }
   }
+
   const deleteCurriculumModule = async (id) => {
-    try { await deleteDoc(doc(db, 'tradingCurriculum', id)) } catch (err) { console.error('Error deleting curriculum module:', err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/tradingCurriculum/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete curriculum module');
+      }
+      setTradingCurriculum(prev => prev.filter(m => m.id !== id));
+    } catch (err) { console.error('Error deleting curriculum module:', err); throw err }
   }
+
   const seedDefaultCurriculum = async () => {
     if (tradingCurriculum.length > 0) return
     const defaults = [
@@ -700,11 +1122,10 @@ export function StoreProvider({ children }) {
       { label: 'Trading Psychology', iconName: 'sparkle', topics: ['Emotional Discipline', 'FOMO & Greed Management', 'Developing a Trading Plan', 'Journaling & Review', 'Patience & Consistency', 'Building Winning Habits'] },
     ]
     for (let i = 0; i < defaults.length; i++) {
-      await addDoc(collection(db, 'tradingCurriculum'), { ...defaults[i], order: i, createdAt: serverTimestamp() })
+      await addCurriculumModule({ ...defaults[i], order: i });
     }
   }
 
-  // --- Certificates ---
   const issueCertificate = async (enrollment, meta = {}) => {
     try {
       const documentType = meta.documentType || 'certificate'
@@ -754,11 +1175,23 @@ export function StoreProvider({ children }) {
         issuedByName: meta.issuedByName || '',
         issuedByRole: meta.issuedByRole || '',
         templateSnapshot,
-        approval_date: serverTimestamp(),
-        createdAt: serverTimestamp()
+        approval_date: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       }
-      const docRef = await addDoc(collection(db, 'certificates'), newCert)
-      // ✉️ Email issued document to student
+
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/certificates`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(newCert)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to issue certificate');
+      }
+      const added = data.document;
+      setCertificates(prev => [added, ...prev]);
+
       emailNotify('certificate_issued', {
         studentName: enrollment.userName,
         studentEmail: enrollment.userEmail,
@@ -767,19 +1200,28 @@ export function StoreProvider({ children }) {
         documentType,
         documentLabel: activeTemplate.documentLabel,
       })
-      return { id: docRef.id, ...newCert }
+      return added;
     } catch (err) { console.error("Error issuing certificate:", err); throw err }
   }
 
   const revokeCertificate = async (certId) => {
     try {
-      await deleteDoc(doc(db, 'certificates', certId))
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/certificates/${certId}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to revoke certificate');
+      }
+      setCertificates(prev => prev.filter(cert => cert.id !== certId));
     } catch (err) { console.error("Error revoking certificate:", err); throw err }
   }
 
   const createQrCertificate = async (payload) => {
     try {
-      const headers = await getAuthorizedHeaders()
+      const headers = getAuthorizedHeaders()
       const response = await fetch(api.adminQrCertificates, {
         method: 'POST',
         headers,
@@ -789,13 +1231,14 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to create QR certificate.')
       }
+      setCertificates(prev => [data.certificate, ...prev]);
       return data.certificate
     } catch (err) { console.error("Error creating QR certificate:", err); throw err }
   }
 
   const updateQrCertificate = async (id, payload) => {
     try {
-      const headers = await getAuthorizedHeaders()
+      const headers = getAuthorizedHeaders()
       const response = await fetch(api.adminQrCertificate(id), {
         method: 'PATCH',
         headers,
@@ -805,13 +1248,14 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to update QR certificate.')
       }
+      setCertificates(prev => prev.map(cert => cert.id === id ? data.certificate : cert));
       return data.certificate
     } catch (err) { console.error("Error updating QR certificate:", err); throw err }
   }
 
   const toggleQrCertificateStatus = async (id, status) => {
     try {
-      const headers = await getAuthorizedHeaders()
+      const headers = getAuthorizedHeaders()
       const response = await fetch(api.adminQrCertificateStatus(id), {
         method: 'PATCH',
         headers,
@@ -821,13 +1265,14 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to update QR certificate status.')
       }
+      setCertificates(prev => prev.map(cert => cert.id === id ? data.certificate : cert));
       return data.certificate
     } catch (err) { console.error("Error toggling QR certificate status:", err); throw err }
   }
 
   const deleteQrCertificate = async (id) => {
     try {
-      const headers = await getAuthorizedHeaders()
+      const headers = getAuthorizedHeaders()
       const response = await fetch(api.adminQrCertificate(id), {
         method: 'DELETE',
         headers
@@ -836,48 +1281,95 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete QR certificate.')
       }
+      setCertificates(prev => prev.filter(cert => cert.id !== id));
       return data.certificate
     } catch (err) { console.error("Error deleting QR certificate:", err); throw err }
   }
 
   const updateCertificateTemplate = async (data) => {
     try {
-      await setDoc(doc(db, 'settings', 'certificateTemplate'), {
-        ...normalizeCertificateTemplate(data),
-        updatedAt: serverTimestamp()
-      })
+      const headers = getAuthorizedHeaders();
+      const normalized = normalizeCertificateTemplate(data);
+      let response = await fetch(`${api.base}/api/db/settings/certificateTemplate`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(normalized)
+      });
+      if (response.status === 404) {
+        response = await fetch(`${api.base}/api/db/settings`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ id: 'certificateTemplate', ...normalized })
+        });
+      }
+      const resData = await response.json();
+      if (!response.ok || !resData.success) {
+        throw new Error(resData.message || 'Failed to update certificate template');
+      }
+      setCertificateTemplate(normalized);
     } catch (err) { console.error("Error updating certificate template:", err); throw err }
   }
 
-  // --- Announcement ---
   const updateAnnouncement = async (data) => {
     try {
-      await setDoc(doc(db, 'settings', 'announcement'), {
-        ...data,
-        updatedAt: serverTimestamp()
-      })
+      const headers = getAuthorizedHeaders();
+      let response = await fetch(`${api.base}/api/db/settings/announcement`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(data)
+      });
+      if (response.status === 404) {
+        response = await fetch(`${api.base}/api/db/settings`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ id: 'announcement', ...data })
+        });
+      }
+      const resData = await response.json();
+      if (!response.ok || !resData.success) {
+        throw new Error(resData.message || 'Failed to update announcement');
+      }
+      setAnnouncement({ id: 'announcement', ...data });
     } catch (err) { console.error("Error updating announcement:", err); throw err }
   }
 
-  // --- Maintenance ---
   const updateMaintenance = async (data) => {
     try {
-      await setDoc(doc(db, 'settings', 'maintenance'), {
+      const headers = getAuthorizedHeaders();
+      const isDev = import.meta.env.DEV;
+      const fieldToUpdate = isDev ? 'isActiveDev' : 'isActive';
+      const updates = {
         ...data,
-        updatedAt: serverTimestamp()
-      })
+        [fieldToUpdate]: data.isActive
+      };
+      let response = await fetch(`${api.base}/api/db/settings/maintenance`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      if (response.status === 404) {
+        response = await fetch(`${api.base}/api/db/settings`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ id: 'maintenance', ...updates })
+        });
+      }
+      const resData = await response.json();
+      if (!response.ok || !resData.success) {
+        throw new Error(resData.message || 'Failed to update maintenance settings');
+      }
+      setMaintenance({
+        id: 'maintenance',
+        isActive: data.isActive,
+        message: data.message || '',
+        ...updates
+      });
     } catch (err) { console.error("Error updating maintenance:", err); throw err }
   }
 
-  // ══════════════════════════════════════════════════════════════
-  // GENERIC COURSE SYSTEM — Phase 1
-  // ══════════════════════════════════════════════════════════════
-
-  // Slug generator
   const generateSlug = (title) =>
     title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Date.now().toString(36)
 
-  // --- Courses CRUD ---
   const addCourse = async (courseData) => {
     try {
       const slug = courseData.slug || generateSlug(courseData.title)
@@ -890,30 +1382,58 @@ export function StoreProvider({ children }) {
         availableSoon: courseData.availableSoon ?? false,
         highlighted: courseData.highlighted ?? false,
         enrolledCount: 0,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
       }
-      const docRef = await addDoc(collection(db, 'courses'), payload)
-      return { id: docRef.id, ...payload }
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/courses`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to add course');
+      }
+      const added = data.document;
+      setCourses(prev => [added, ...prev]);
+      return added;
     } catch (err) { console.error('Error adding course:', err); throw err }
   }
 
   const updateCourse = async (id, updates) => {
     try {
-      await updateDoc(doc(db, 'courses', id), {
+      const headers = getAuthorizedHeaders();
+      const payload = {
         ...updates,
         enrollmentDeadline: normalizeEnrollmentDeadline(updates.enrollmentDeadline),
-        updatedAt: serverTimestamp()
-      })
+      };
+      const response = await fetch(`${api.base}/api/db/courses/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update course');
+      }
+      setCourses(prev => prev.map(c => c.id === id ? { ...c, ...payload } : c));
     } catch (err) { console.error('Error updating course:', err); throw err }
   }
 
   const deleteCourse = async (id) => {
-    try { await deleteDoc(doc(db, 'courses', id)) }
-    catch (err) { console.error('Error deleting course:', err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/courses/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete course');
+      }
+      setCourses(prev => prev.filter(c => c.id !== id));
+    } catch (err) { console.error('Error deleting course:', err); throw err }
   }
 
-  // --- Enrollments CRUD ---
   const addEnrollment = async (enrollmentData) => {
     try {
       const assignedEmployee = users.find(u =>
@@ -937,36 +1457,44 @@ export function StoreProvider({ children }) {
         : ''
       const scheduledJoinUrl = resolveCoursePlanMeetingLink(enrolledCourse, enrolledPlan)
 
-      // ✅ Duplicate guard at Firestore level
       const existing = enrollments.find(
         e => e.userId === enrollmentData.userId &&
              e.courseId === enrollmentData.courseId &&
              e.status === 'active' &&
              matchesEnrollmentPlan(e, enrollmentData)
       )
-      if (existing) return existing // Already enrolled — return silently
+      if (existing) return existing
 
       const payload = {
         ...enrollmentData,
         assignedEmployeeId: recipientId,
         assignedEmployeeRef: enrollmentData.assignedEmployeeId || recipientId,
         status: 'active',
-        enrolledAt: serverTimestamp()
       }
-      const docRef = await addDoc(collection(db, 'enrollments'), payload)
+      const headers = getRequestHeaders();
+      const response = await fetch(`${api.base}/api/db/enrollments`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to add enrollment');
+      }
+      const added = data.document;
+      setEnrollments(prev => [added, ...prev]);
 
-      // Increment enrolledCount on the course
-      const courseRef = doc(db, 'courses', enrollmentData.courseId)
-      const courseSnap = await getDoc(courseRef)
-      if (courseSnap.exists()) {
-        await updateDoc(courseRef, { enrolledCount: (courseSnap.data().enrolledCount || 0) + 1 })
+      if (enrollmentData.courseId) {
+        const course = courses.find(c => c.id === enrollmentData.courseId);
+        if (course) {
+          await updateCourse(enrollmentData.courseId, { enrolledCount: (course.enrolledCount || 0) + 1 });
+        }
       }
 
-      // ── Notify assigned employee ────────────────────────────────
       if (recipientId) {
-        await addDoc(collection(db, 'notifications'), {
-          enrollmentId: docRef.id,
-          notificationKey: `enrollment:${docRef.id}`,
+        const notification = {
+          enrollmentId: added.id,
+          notificationKey: `enrollment:${added.id}`,
           recipientId,
           recipientEmployeeId: assignedEmployee?.employeeId || '',
           assignedEmployeeRef: enrollmentData.assignedEmployeeId || recipientId,
@@ -981,10 +1509,13 @@ export function StoreProvider({ children }) {
           planLabel: enrollmentData.planLabel || '',
           amount: enrollmentData.amount || 0,
           read: false,
-          createdAt: serverTimestamp()
-        })
+        };
+        await fetch(`${api.base}/api/db/notifications`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(notification)
+        });
 
-        // ✉️ Email to employee
         if (assignedEmployee?.email) {
           emailNotify('enrollment_employee', {
             employeeEmail: assignedEmployee.email,
@@ -999,7 +1530,6 @@ export function StoreProvider({ children }) {
         }
       }
 
-      // ✉️ Email to student
       emailNotify('enrollment_student', {
         studentName: enrollmentData.userName || enrollmentData.userEmail,
         studentEmail: enrollmentData.userEmail,
@@ -1024,28 +1554,45 @@ export function StoreProvider({ children }) {
           reason: 'new_enrollment',
         })
       }
-      // ────────────────────────────────────────────────────────────
 
-      return { id: docRef.id, ...payload }
+      return added;
     } catch (err) { console.error('Error adding enrollment:', err); throw err }
   }
 
-
   const updateEnrollment = async (id, updates) => {
-    try { await updateDoc(doc(db, 'enrollments', id), updates) }
-    catch (err) { console.error('Error updating enrollment:', err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/enrollments/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update enrollment');
+      }
+      setEnrollments(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
+    } catch (err) { console.error('Error updating enrollment:', err); throw err }
   }
 
   const deleteEnrollment = async (id) => {
-    try { await deleteDoc(doc(db, 'enrollments', id)) }
-    catch (err) { console.error('Error deleting enrollment:', err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/enrollments/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete enrollment');
+      }
+      setEnrollments(prev => prev.filter(e => e.id !== id));
+    } catch (err) { console.error('Error deleting enrollment:', err); throw err }
   }
 
-  // Get all enrollments for a specific user
   const getUserEnrollments = (uid) =>
     enrollments.filter(e => e.userId === uid && e.status === 'active')
 
-  // Check if a user is enrolled in a specific course
   const isUserEnrolled = (uid, courseId, planRef = null) =>
     enrollments.some(e =>
       e.userId === uid &&
@@ -1054,7 +1601,6 @@ export function StoreProvider({ children }) {
       matchesEnrollmentPlan(e, planRef)
     )
 
-  // --- Course Categories CRUD ---
   const addCourseCategory = async (data) => {
     try {
       const normalizedName = normalizeCourseCategoryName(data?.name)
@@ -1067,9 +1613,20 @@ export function StoreProvider({ children }) {
       if (alreadyExists) {
         throw new Error('A category with this name already exists.')
       }
-      const payload = { ...data, order: courseCategories.length, createdAt: serverTimestamp() }
-      const docRef = await addDoc(collection(db, 'courseCategories'), payload)
-      return { id: docRef.id, ...payload }
+      const payload = { ...data, order: courseCategories.length }
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/courseCategories`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload)
+      });
+      const resData = await response.json();
+      if (!response.ok || !resData.success) {
+        throw new Error(resData.message || 'Failed to add course category');
+      }
+      const added = resData.document;
+      setCourseCategories(prev => dedupeCourseCategories([...prev, added]));
+      return added;
     } catch (err) { console.error('Error adding category:', err); throw err }
   }
 
@@ -1086,22 +1643,40 @@ export function StoreProvider({ children }) {
       if (alreadyExists) {
         throw new Error('A category with this name already exists.')
       }
-      await updateDoc(doc(db, 'courseCategories', id), updates)
-    }
-    catch (err) { console.error('Error updating category:', err); throw err }
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/courseCategories/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update course category');
+      }
+      setCourseCategories(prev => {
+        const updated = prev.map(c => c.id === id ? { ...c, ...updates } : c);
+        return dedupeCourseCategories(updated);
+      });
+    } catch (err) { console.error('Error updating category:', err); throw err }
   }
 
   const deleteCourseCategory = async (id) => {
-    try { await deleteDoc(doc(db, 'courseCategories', id)) }
-    catch (err) { console.error('Error deleting category:', err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/courseCategories/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete course category');
+      }
+      setCourseCategories(prev => prev.filter(c => c.id !== id));
+    } catch (err) { console.error('Error deleting category:', err); throw err }
   }
 
-  // Seed default categories if none exist
   const seedCourseCategories = async () => {
-    const existingSnapshot = await getDocs(collection(db, 'courseCategories'))
-    const existingNames = new Set(
-      existingSnapshot.docs.map(docSnap => normalizeCourseCategoryName(docSnap.data()?.name))
-    )
+    if (courseCategories.length > 0) return
     const defaults = [
       { name: 'Trading',           icon: 'TrendingUp', color: '#10b981', order: 0 },
       { name: 'Web Development',   icon: 'Laptop', color: '#3b82f6', order: 1 },
@@ -1112,60 +1687,198 @@ export function StoreProvider({ children }) {
       { name: 'Other',             icon: 'BookOpen', color: '#6b7280', order: 6 },
     ]
     for (const cat of defaults) {
-      const normalizedName = normalizeCourseCategoryName(cat.name)
-      if (existingNames.has(normalizedName)) continue
-      await addDoc(collection(db, 'courseCategories'), { ...cat, createdAt: serverTimestamp() })
-      existingNames.add(normalizedName)
+      await addCourseCategory(cat);
     }
   }
-  // ══════════════════════════════════════════════════════════════
 
-  // --- Administrative Collections CRUD ---
   const deleteAdminMessage = async (id) => {
-    try { await deleteDoc(doc(db, 'messages', id)) } catch (err) { console.error("Error deleting message:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/messages/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete message');
+      }
+      setMessages(prev => prev.filter(m => m.id !== id));
+    } catch (err) { console.error("Error deleting message:", err); throw err }
   }
+
   const updateMessageStatus = async (id, updates) => {
-    try { await updateDoc(doc(db, 'messages', id), updates) } catch (err) { console.error("Error updating message:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/messages/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update message status');
+      }
+      setMessages(prev => prev.map(m => m.id === id ? { ...m, ...updates } : m));
+    } catch (err) { console.error("Error updating message:", err); throw err }
   }
+
   const deleteServiceRequest = async (id) => {
-    try { await deleteDoc(doc(db, 'custom_requests', id)) } catch (err) { console.error("Error deleting service request:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/custom_requests/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete service request');
+      }
+      setServiceRequests(prev => prev.filter(r => r.id !== id));
+    } catch (err) { console.error("Error deleting service request:", err); throw err }
   }
+
   const updateServiceRequestStatus = async (id, status) => {
-    try { await updateDoc(doc(db, 'custom_requests', id), { status, processedAt: serverTimestamp() }) } catch (err) { console.error("Error updating service request status:", err); throw err }
+    try {
+      const updates = { status, processedAt: new Date().toISOString() };
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/custom_requests/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update service request status');
+      }
+      setServiceRequests(prev => prev.map(r => r.id === id ? { ...r, ...updates } : r));
+    } catch (err) { console.error("Error updating service request status:", err); throw err }
   }
+
   const deleteAccountRequest = async (id) => {
     try {
-      const headers = await getAuthorizedHeaders()
+      const headers = getAuthorizedHeaders()
       const response = await fetch(api.adminDeleteAccountRequest(id), {
         method: 'DELETE',
         headers
       })
       const data = await readApiJson(response)
       if (!response.ok || !data.success) throw new Error(data.message || 'Failed to delete account request.')
+      setAccountRequests(prev => prev.filter(r => r.id !== id));
       return data.request
     } catch (err) { console.error("Error deleting account request:", err); throw err }
   }
+
   const rejectAccountRequest = async (id) => {
     try {
-      const headers = await getAuthorizedHeaders()
+      const headers = getAuthorizedHeaders()
       const response = await fetch(api.adminRejectAccountRequest(id), {
         method: 'POST',
         headers
       })
       const data = await readApiJson(response)
       if (!response.ok || !data.success) throw new Error(data.message || 'Failed to reject account request.')
+      setAccountRequests(prev => prev.map(r => r.id === id ? { ...r, status: 'rejected' } : r));
       return data.request
     } catch (err) { console.error("Error rejecting account request:", err); throw err }
   }
+
   const deleteSellRequest = async (id) => {
-    try { await deleteDoc(doc(db, 'sellRequests', id)) } catch (err) { console.error("Error deleting sell request:", err); throw err }
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/sellRequests/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete sell request');
+      }
+      setSellRequests(prev => prev.filter(r => r.id !== id));
+    } catch (err) { console.error("Error deleting sell request:", err); throw err }
   }
+
   const approveSellRequest = async (id) => {
-    try { await updateDoc(doc(db, 'sellRequests', id), { status: 'approved', approvedAt: serverTimestamp() }) } catch (err) { console.error("Error approving sell request:", err); throw err }
+    try {
+      const updates = { status: 'approved', approvedAt: new Date().toISOString() };
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/sellRequests/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to approve sell request');
+      }
+      setSellRequests(prev => prev.map(r => r.id === id ? { ...r, ...updates } : r));
+    } catch (err) { console.error("Error approving sell request:", err); throw err }
   }
+
   const rejectSellRequest = async (id) => {
-    try { await updateDoc(doc(db, 'sellRequests', id), { status: 'rejected', rejectedAt: serverTimestamp() }) } catch (err) { console.error("Error rejecting sell request:", err); throw err }
+    try {
+      const updates = { status: 'rejected', rejectedAt: new Date().toISOString() };
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/sellRequests/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to reject sell request');
+      }
+      setSellRequests(prev => prev.map(r => r.id === id ? { ...r, ...updates } : r));
+    } catch (err) { console.error("Error rejecting sell request:", err); throw err }
   }
+
+  const addTestimonial = async (testimonial) => {
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/testimonials`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(testimonial)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to add testimonial');
+      }
+      const added = data.document;
+      setTestimonials(prev => [added, ...prev]);
+      return added;
+    } catch (err) { console.error("Error adding testimonial:", err); throw err }
+  };
+
+  const updateTestimonial = async (id, updates) => {
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/testimonials/${id}`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(updates)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to update testimonial');
+      }
+      setTestimonials(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
+    } catch (err) { console.error("Error updating testimonial:", err); throw err }
+  };
+
+  const deleteTestimonial = async (id) => {
+    try {
+      const headers = getAuthorizedHeaders();
+      const response = await fetch(`${api.base}/api/db/testimonials/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to delete testimonial');
+      }
+      setTestimonials(prev => prev.filter(t => t.id !== id));
+    } catch (err) { console.error("Error deleting testimonial:", err); throw err }
+  };
 
   const value = {
     projects, categories, orders, tasks, manualEmployees, teamMembers: manualEmployees, users,
@@ -1194,13 +1907,12 @@ export function StoreProvider({ children }) {
     getActiveProjects, getTotalRevenue, getPendingOrders,
     announcement, updateAnnouncement,
     maintenance, updateMaintenance,
-    // ── Generic Course System ──
     courses, addCourse, updateCourse, deleteCourse,
     enrollments, addEnrollment, updateEnrollment, deleteEnrollment,
     getUserEnrollments, isUserEnrolled,
     courseCategories, addCourseCategory, updateCourseCategory, deleteCourseCategory,
     seedCourseCategories,
-    // ──────────────────────────
+    testimonials, addTestimonial, updateTestimonial, deleteTestimonial,
     loading
   }
 

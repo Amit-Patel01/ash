@@ -67,7 +67,15 @@ export const resolveCertificateAssetSrc = (value) => {
   if (!raw) return ''
   if (raw.startsWith('http://') || raw.startsWith('https://')) return raw
   if (raw.startsWith('/')) {
-    // Avoid circular import: derive the API base directly from env vars rather than importing api.js.
+    const isBrowser = typeof window !== 'undefined'
+    const hostname = isBrowser ? window.location.hostname : ''
+    const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
+    const isDev = typeof import.meta !== 'undefined' && import.meta.env?.DEV
+
+    if (isDev || isLocalhost) {
+      return `http://localhost:5000${raw}`
+    }
+
     const envBase = (
       (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) ||
       (typeof import.meta !== 'undefined' && import.meta.env?.VITE_BACKEND_URL) ||

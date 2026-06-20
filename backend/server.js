@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
-const admin = require("firebase-admin");
+const { connectDB } = require("./utils/mongo");
 const cron = require("node-cron");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
@@ -30,81 +30,9 @@ if (!geminiEnvKey) {
   logger.warn("Gemini API key not set; AI chatbot features are disabled.");
 }
 
-// ─── Firebase Admin ──────────────────────────────────────────────────────────
-const normalizeServiceAccount = (serviceAccount) => {
-  if (!serviceAccount || typeof serviceAccount !== "object") {
-    return serviceAccount;
-  }
-
-  const normalized = { ...serviceAccount };
-
-  if (typeof normalized.private_key === "string") {
-    normalized.private_key = normalized.private_key
-      .trim()
-      .replace(/^"(.*)"$/, "$1")
-      .replace(/\r/g, "")
-      .replace(/\\n/g, "\n");
-  }
-
-  return normalized;
-};
-
-const loadServiceAccount = () => {
-  if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
-    try {
-      return normalizeServiceAccount(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON));
-    } catch (error) {
-      logger.error("Invalid FIREBASE_SERVICE_ACCOUNT_JSON value. Expected valid JSON.");
-      throw error;
-    }
-  }
-
-  const credentialsPath = path.join(__dirname, "credentials.json");
-  if (fs.existsSync(credentialsPath)) {
-    return normalizeServiceAccount(require("./credentials.json"));
-  }
-
-  throw new Error(
-    "Firebase credentials missing. Set FIREBASE_SERVICE_ACCOUNT_JSON or provide backend/credentials.json."
-  );
-};
-
-const serviceAccount = loadServiceAccount();
-if (!admin.apps.length) {
-  admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
-  logger.info(`Firebase Admin initialized (project: ${serviceAccount.project_id})`);
-  if (serviceAccount.project_id !== "solutionhub-81976") {
-    logger.warn(`Project ID mismatch: credentials are for ${serviceAccount.project_id}.`);
-  }
-}
-
-// ─── Maintenance Mode State & Firestore Listener ────────────────────────────
+// ─── Maintenance Mode State ──────────────────────────────────────────────────
 let isMaintenanceModeEnabled = false;
 let maintenanceMessage = "";
-
-const setupMaintenanceListener = () => {
-  try {
-    const db = admin.firestore();
-    db.collection("settings").doc("maintenance").onSnapshot((docSnap) => {
-      if (docSnap && docSnap.exists) {
-        const data = docSnap.data();
-        isMaintenanceModeEnabled = !!data.isActive;
-        maintenanceMessage = data.message || "";
-        logger.info(`[Maintenance] Real-time update: enabled = ${isMaintenanceModeEnabled}, message = "${maintenanceMessage}"`);
-      } else {
-        isMaintenanceModeEnabled = false;
-        maintenanceMessage = "";
-        logger.info(`[Maintenance] Settings document not found. Disabled by default.`);
-      }
-    }, (error) => {
-      logger.error(`[Maintenance] Firestore listener error: ${error.message}`);
-    });
-  } catch (error) {
-    logger.error(`[Maintenance] Failed to initialize listener: ${error.message}`);
-  }
-};
-
-setupMaintenanceListener();
 
 // ─── Express App ─────────────────────────────────────────────────────────────
 const app = express();
@@ -117,7 +45,23 @@ app.set('trust proxy', 1);
 app.use("/api/webhook", require("./routes/webhook"));
 
 // ─── Dynamic Maintenance Middleware ──────────────────────────────────────────
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
+  try {
+    const db = require("./utils/mongo").getDb();
+    const data = await db.collection("settings").findOne({ _id: "maintenance" });
+    if (data) {
+      const isDev = process.env.NODE_ENV !== "production";
+      isMaintenanceModeEnabled = isDev ? !!data.isActiveDev : !!data.isActive;
+      maintenanceMessage = data.message || "";
+    } else {
+      isMaintenanceModeEnabled = false;
+      maintenanceMessage = "";
+    }
+  } catch (err) {
+    isMaintenanceModeEnabled = false;
+    maintenanceMessage = "";
+  }
+
   if (!isMaintenanceModeEnabled) {
     return next();
   }
@@ -308,7 +252,7 @@ const apiLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: "Too many requests. Please try again later." },
-  skip: (req) => req.path === "/" || req.path.startsWith("/uploads"),
+  skip: (req) => process.env.NODE_ENV !== "production" || req.path === "/" || req.path.startsWith("/uploads"),
 });
 app.use("/api/", apiLimiter);
 
@@ -436,9 +380,10 @@ app.use("/api/coupons", require("./routes/coupons"));
 app.use("/api/ai", require("./routes/ai"));
 app.use("/api/notify", require("./routes/notify"));
 app.use("/api/chat", require("./routes/chat"));
+app.use("/api/db", require("./routes/db"));
 
 if (fs.existsSync(frontendDistDir)) {
-  app.get("*", (req, res) => {
+  app.get("*all", (req, res) => {
     // Exclude /api routes just in case, though they are defined above
     if (req.path.startsWith("/api")) {
       return res.status(404).json({ success: false, message: "API endpoint not found" });
@@ -611,7 +556,11 @@ app.use((err, req, res, next) => {
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  logger.info(`SolutionHub backend v2.0 listening on port ${PORT}`);
-  logger.info("Modules: trading | admin | auth | users | certificates | razorpay | ai | webhook");
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    logger.info(`SolutionHub backend v2.0 listening on port ${PORT}`);
+    logger.info("Modules: trading | admin | auth | users | certificates | razorpay | ai | webhook");
+  });
+}).catch(err => {
+  logger.error("Failed to connect to database, server not started:", err);
 });

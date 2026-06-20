@@ -162,6 +162,7 @@ const AdminServiceRequests = lazyWithRetry(() => import('./admin/AdminServiceReq
 const AdminSettings = lazyWithRetry(() => import('./admin/AdminSettings'))
 const AdminCustomers = lazyWithRetry(() => import('./admin/AdminCustomers'))
 const AdminQrCertificates = lazyWithRetry(() => import('./admin/AdminQrCertificates'))
+const AdminTestimonials = lazyWithRetry(() => import('./admin/AdminTestimonials'))
 
 const EmployeeLogin = lazyWithRetry(() => import('./employee/EmployeeLogin'))
 const RequestAccount = lazyWithRetry(() => import('./pages/RequestAccount'))
@@ -416,6 +417,7 @@ function AppContent() {
             <Route path="coupons" element={<AdminCoupons />} />
             <Route path="course-categories" element={<AdminCourseCategories />} />
             <Route path="course-enrollments" element={<AdminCourseEnrollments />} />
+            <Route path="testimonials" element={<AdminTestimonials />} />
             <Route path="messages" element={<AdminMessages />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>

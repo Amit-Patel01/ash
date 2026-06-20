@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import { api } from '../config/api'
-import { auth } from '../config/firebase'
 import { Megaphone } from 'lucide-react'
 
 export default function EmployeeBroadcast() {
@@ -54,7 +53,7 @@ export default function EmployeeBroadcast() {
     setResult(null)
     
     try {
-      const token = await auth.currentUser?.getIdToken()
+      const token = localStorage.getItem('token')
       if (!token) throw new Error('Please log in again to continue.')
 
       const res = await fetch(api.adminBroadcastEmail, {

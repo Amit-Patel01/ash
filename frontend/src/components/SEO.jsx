@@ -6,8 +6,38 @@ export default function SEO({
   keywords = 'Tech Agency, Web Development, Software Services, Mentorship, Repair, India, MSME, SolutionHub',
   name = 'AmitSolutionHub',
   type = 'website',
-  url = 'https://amitsolutionhub.com' // Adjust to real domain later
+  url = 'https://amitsolutionhub.com', // Adjust to real domain later
+  schema = null
 }) {
+  const defaultSchema = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "AmitSolutionHub",
+    "url": url,
+    "logo": `${url}/src/assets/brand-logo.png`,
+    "description": description,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Godhra",
+      "addressRegion": "Gujarat",
+      "addressCountry": "IN"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+91-7874248481",
+      "contactType": "customer service",
+      "email": "support@amitsolutionhub.com"
+    },
+    "sameAs": [
+      "https://x.com/AmitSolutionHub",
+      "https://www.instagram.com/amitsolutionhub",
+      "https://www.linkedin.com/company/amit-solution-hub",
+      "https://github.com/Amit-Patel01"
+    ]
+  }
+
+  const activeSchema = schema || defaultSchema
+
   return (
     <Helmet>
       {/* Standard metadata tags */}
@@ -27,6 +57,11 @@ export default function SEO({
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
+
+      {/* JSON-LD Structured Data Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify(activeSchema)}
+      </script>
     </Helmet>
   )
 }

@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "announcement",
+    "message": "Due to a temporary issue, emails sent to support@amitsolutionhub.com may not be delivered at the moment.\n\nIf you have any problems or need assistance, please use the Contact Page on our website and submit your query there.\n\nWe apologize for the inconvenience and appreciate your understanding.",
+    "isActive": false,
+    "type": "warning",
+    "updatedAt": "2026-04-16T15:42:30.153Z",
+    "_subCollections": {}
+  },
+  {
+    "_id": "maintenance",
+    "isActive": true,
+    "message": " Website Under Maintenance\n\nWe are currently performing scheduled maintenance and improvements to enhance your experience.\n\nThe website will be available again shortly.\n\nThank you for your patience and understanding.\n\n— Team Amit Solution Hub\n",
+    "updatedAt": "2026-06-20T10:04:28.515Z",
+    "_subCollections": {}
+  }
+]

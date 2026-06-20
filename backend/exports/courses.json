@@ -1,0 +1,190 @@
+[
+  {
+    "_id": "Ml6cwNXvWARdhdQDOdtE",
+    "deliveryType": "course",
+    "title": "Programming Courses",
+    "category": "Web Development",
+    "level": "Beginner",
+    "description": "Python Programming\nJava Development\nC / C++ Basics\nJavaScript Mastery",
+    "thumbnail": "https://cdn.phototourl.com/free/2026-04-23-730c4f83-fe00-40c0-9383-0a4c74120acb.png",
+    "enrollmentDeadline": "",
+    "availableSoon": true,
+    "assignedEmployeeId": "",
+    "assignedEmployeeName": "",
+    "slug": "programming-courses-mobp36eo",
+    "highlighted": false,
+    "enrolledCount": 0,
+    "createdAt": "2026-04-23T16:27:33.472Z",
+    "published": false,
+    "updatedAt": "2026-06-02T11:00:33.525Z",
+    "_subCollections": {}
+  },
+  {
+    "_id": "dexfMwQYgUHWdxF9v0t2",
+    "deliveryType": "course",
+    "title": "FULL STACK DEVELOPMENT",
+    "category": "Web Development",
+    "level": "Intermediate",
+    "thumbnail": "https://cdn.phototourl.com/free/2026-04-23-12fbe64b-e80b-4190-bed5-8a854a9560ab.png",
+    "enrollmentDeadline": "",
+    "slug": "full-stack-development-mobosshu",
+    "highlighted": false,
+    "enrolledCount": 0,
+    "createdAt": "2026-04-23T16:19:29.210Z",
+    "description": "Frontend Development (HTML, CSS, JS)\nBackend Development (Node.js / PHP)\nMERN Stack (MongoDB, Express, React, Node)",
+    "availableSoon": false,
+    "assignedEmployeeId": "i2utS8BUMKhpJkYh6bZWJsm2RFw2",
+    "assignedEmployeeName": "Amit Patel",
+    "plans": [
+      {
+        "highlighted": false,
+        "meetingTimezone": "",
+        "price": 998,
+        "id": "standerd",
+        "meetingStartsAt": "",
+        "meetingLink": "",
+        "isFree": false,
+        "features": [
+          "LOR",
+          "LOA",
+          "INTERNSHIP COMPLETION CERTIFICATE",
+          "Placement Offer According Your Project and Skil"
+        ],
+        "duration": "1 Month",
+        "enrollmentDeadline": "",
+        "label": "Standerd"
+      }
+    ],
+    "published": true,
+    "updatedAt": "2026-06-10T15:42:57.679Z",
+    "_subCollections": {}
+  },
+  {
+    "_id": "lmt71XBMeZ7XTLrUwdcR",
+    "title": "Trading Mentorship / Stock Market Training",
+    "category": "Trading",
+    "level": "Advanced",
+    "description": "Learn stock market and trading from an experienced trader. Covers basics to advanced strategies including technical analysis, risk management, intraday & swing trading. Live sessions + practical guidance included.\n\nLive Sessions\nTechnical Analysis\nRisk Management",
+    "assignedEmployeeId": "GXHW2WURbIOcMtIm3Z7lsme3qqz2",
+    "assignedEmployeeName": "Harshil Rana",
+    "slug": "trading-mentorship-stock-market-training-mnovw5sb",
+    "highlighted": false,
+    "createdAt": "2026-04-07T17:19:23.788Z",
+    "materials": [
+      {
+        "title": "Welcome & Getting Started Guide",
+        "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+      }
+    ],
+    "thumbnail": "https://cdn.phototourl.com/free/2026-04-09-77af725e-0c36-466f-b3a3-7e05763ecd4d.png",
+    "meetingLink": "",
+    "enrolledCount": 9,
+    "enrollmentDeadline": "",
+    "plans": [
+      {
+        "highlighted": true,
+        "features": [
+          "Participation certificate"
+        ],
+        "price": 0,
+        "meetingTimezone": "Asia/Calcutta",
+        "meetingStartsAt": "2026-05-15T07:00:00.000Z",
+        "meetingLiveSentAt": "2026-05-15T06:55:00.717Z",
+        "id": "blueprint-of-course",
+        "duration": "NA",
+        "label": "BluePrint Of Course",
+        "isFree": true,
+        "meetingReminderSentAt": "",
+        "enrollmentDeadline": "2026-05-15",
+        "meetingLink": "https://meet.google.com/xyn-twai-rvc"
+      },
+      {
+        "highlighted": false,
+        "isFree": false,
+        "label": "Basic  market course",
+        "price": 3599,
+        "duration": "6 month",
+        "id": "basic-market-course",
+        "features": [
+          "Beginner to advanced structured curriculum",
+          "Live trading sessions",
+          "Strategy-based learning (price action, indicators, setups)",
+          "Trade setups & case studies",
+          "Certification on completion",
+          "Regular course updates",
+          "Recorded video lectures",
+          "Interactive learning dashboard",
+          "Assignments and quizzes",
+          "1-on-1 mentorship support",
+          "Doubt-solving sessions",
+          "Community/group access",
+          "Mobile-friendly platform"
+        ]
+      }
+    ],
+    "published": false,
+    "updatedAt": "2026-06-02T11:00:37.639Z",
+    "_subCollections": {}
+  },
+  {
+    "_id": "rB386WQuq1IE2ozGvZvr",
+    "deliveryType": "course",
+    "title": "DevOps",
+    "category": "Web Development",
+    "level": "Advanced",
+    "description": "",
+    "thumbnail": "https://cdn.phototourl.com/free/2026-04-23-6342550e-029d-4544-9812-3edb20f6a26e.png",
+    "enrollmentDeadline": "",
+    "availableSoon": true,
+    "assignedEmployeeId": "",
+    "assignedEmployeeName": "",
+    "slug": "devops-mobookbj",
+    "highlighted": false,
+    "enrolledCount": 0,
+    "createdAt": "2026-04-23T16:16:11.648Z",
+    "published": false,
+    "updatedAt": "2026-06-02T11:00:29.914Z",
+    "_subCollections": {}
+  },
+  {
+    "_id": "snWtN6bYt5KVJvZ2nP1f",
+    "title": "AI Prompt Engineering",
+    "category": "Other",
+    "level": "Advanced",
+    "description": "AI Prompt Engineering is the art of designing effective inputs that help AI systems generate precise, useful, and high-quality outputs.",
+    "thumbnail": "https://cdn.phototourl.com/free/2026-04-09-ae1448b0-49f1-4196-9d83-719a819645b3.png",
+    "assignedEmployeeId": "i2utS8BUMKhpJkYh6bZWJsm2RFw2",
+    "assignedEmployeeName": "Amit Patel",
+    "slug": "ai-prompt-engineering-mnr5jjhc",
+    "highlighted": false,
+    "enrolledCount": 0,
+    "createdAt": "2026-04-09T07:25:03.454Z",
+    "plans": [
+      {
+        "id": "advance",
+        "label": "Advance",
+        "duration": "2 Month",
+        "price": 499,
+        "isFree": false,
+        "highlighted": true,
+        "features": [
+          "Video Recorded Material",
+          "Learn anytime, anywhere with lifetime access",
+          "Offer Letter",
+          "Get a professional offer letter after enrollment",
+          "Internship Certificate",
+          "Gain real-world experience with certification",
+          "Training Certificate",
+          "Official certificate from AmitSolutionHub"
+        ],
+        "meetingLink": "",
+        "meetingStartsAt": "",
+        "meetingTimezone": ""
+      }
+    ],
+    "enrollmentDeadline": "",
+    "published": false,
+    "updatedAt": "2026-06-02T11:00:35.943Z",
+    "_subCollections": {}
+  }
+]

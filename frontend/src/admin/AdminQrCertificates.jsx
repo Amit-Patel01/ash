@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
 import { ChevronDown, Download, FileImage, FileText, Link2, Mail, PencilLine, Plus, QrCode, RefreshCcw, ShieldCheck, ShieldOff, Trash2, Upload, UserRound } from 'lucide-react'
 import { useStore } from '../store/StoreContext'
-import { auth } from '../config/firebase'
 import { api, readApiJson, API_BASE } from '../config/api'
 import CertificateDocument from '../components/certificates/CertificateDocument'
 import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
@@ -337,7 +336,7 @@ export default function AdminQrCertificates() {
     setError('')
 
     try {
-      const token = await auth.currentUser?.getIdToken()
+      const token = localStorage.getItem('token')
       if (!token) throw new Error('Please sign in again to upload assets.')
 
       const formData = new FormData()

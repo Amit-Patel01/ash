@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { db } from "../config/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { emailNotify } from "../utils/emailNotify";
+import { api } from "../config/api";
 
 const CustomProject = () => {
   const [formData, setFormData] = useState({
@@ -36,11 +35,19 @@ const CustomProject = () => {
     setStatus("");
 
     try {
-      await addDoc(collection(db, "custom_requests"), {
-        ...formData,
-        status: "pending",
-        createdAt: serverTimestamp(),
+      const response = await fetch(`${api.base}/api/db/custom_requests`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          status: "pending",
+        }),
       });
+      if (!response.ok) {
+        throw new Error("Failed to submit custom project request");
+      }
 
       setStatus("success");
       // ✉️ Email admin + user

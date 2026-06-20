@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
-import { collection, query, where, onSnapshot, updateDoc, doc, writeBatch } from 'firebase/firestore'
-import { db } from '../config/firebase'
+import api from '../config/api'
 import {
   courseBelongsToEmployee,
   enrollmentMatchesCourse,
@@ -106,58 +105,41 @@ export default function NotificationBell() {
     })
   }, [storageKey])
 
-  useEffect(() => {
-    const recipientIds = [...new Set([currentUser?.uid, userProfile?.uid].filter(Boolean))]
-    const employeeId = userProfile?.employeeId || currentUser?.employeeId || ''
+  const fetchLiveNotifications = useCallback(async () => {
+    if (!currentUser?.uid) return
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) return
+      const response = await fetch(`${api.base}/api/db/notifications?orderBy=createdAt&order=desc`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      const data = await response.json()
+      if (response.ok && data.success && Array.isArray(data.documents)) {
+        setLiveNotifications(data.documents.map(d => ({ id: d.id, ...d, isDerived: false })))
+        setFeedError(false)
+      } else {
+        setFeedError(true)
+      }
+    } catch (err) {
+      console.error("Failed to fetch notifications:", err)
+      setFeedError(true)
+    }
+  }, [currentUser])
 
-    if (recipientIds.length === 0 && !employeeId) {
+  useEffect(() => {
+    if (!currentUser?.uid) {
       setLiveNotifications([])
       setFeedError(false)
-      return undefined
+      return
     }
 
-    const snapshotGroups = new Map()
-    const unsubscribers = []
-
-    const syncNotifications = () => {
-      setLiveNotifications(mergeNotificationGroups([...snapshotGroups.values()]))
-    }
-
-    const attachListener = (field, value) => {
-      const key = `${field}:${value}`
-      const q = query(collection(db, 'notifications'), where(field, '==', value))
-
-      return onSnapshot(
-        q,
-        (snapshot) => {
-          snapshotGroups.set(
-            key,
-            snapshot.docs.map(entry => ({ id: entry.id, ...entry.data(), isDerived: false }))
-          )
-          setFeedError(false)
-          syncNotifications()
-        },
-        (error) => {
-          console.error(`Notifications snapshot error for ${key}:`, error)
-          snapshotGroups.set(key, [])
-          setFeedError(true)
-          syncNotifications()
-        }
-      )
-    }
-
-    recipientIds.forEach(id => {
-      unsubscribers.push(attachListener('recipientId', id))
-    })
-
-    if (employeeId) {
-      unsubscribers.push(attachListener('recipientEmployeeId', employeeId))
-    }
-
-    return () => {
-      unsubscribers.forEach(unsubscribe => unsubscribe())
-    }
-  }, [currentUser?.uid, currentUser?.employeeId, userProfile?.uid, userProfile?.employeeId])
+    fetchLiveNotifications()
+    const interval = setInterval(fetchLiveNotifications, 10000)
+    return () => clearInterval(interval)
+  }, [currentUser, fetchLiveNotifications])
 
   useEffect(() => {
     const handler = (event) => {
@@ -241,11 +223,23 @@ export default function NotificationBell() {
     const liveUnread = unreadNotifications.filter(notification => !notification.isDerived)
     if (!liveUnread.length) return
 
-    const batch = writeBatch(db)
-    liveUnread.forEach(notification => {
-      batch.update(doc(db, 'notifications', notification.id), { read: true })
-    })
-    await batch.commit()
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) return
+      await Promise.all(liveUnread.map(notification =>
+        fetch(`${api.base}/api/db/notifications/${notification.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ read: true })
+        })
+      ))
+      setLiveNotifications(prev => prev.map(n => ({ ...n, read: true })))
+    } catch (err) {
+      console.error("Failed to mark notifications read:", err)
+    }
   }, [notifications, persistFallbackReads])
 
   const markOneRead = useCallback(async (notification) => {
@@ -256,7 +250,21 @@ export default function NotificationBell() {
       return
     }
 
-    await updateDoc(doc(db, 'notifications', notification.id), { read: true })
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) return
+      await fetch(`${api.base}/api/db/notifications/${notification.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ read: true })
+      })
+      setLiveNotifications(prev => prev.map(n => n.id === notification.id ? { ...n, read: true } : n))
+    } catch (err) {
+      console.error("Failed to mark notification read:", err)
+    }
   }, [persistFallbackReads])
 
   return (

@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
+import { useTheme } from '../context/ThemeContext'
 import { formatEnrollmentDeadline, isEnrollmentClosed } from '../utils/enrollmentDeadline'
 import { getLearningTypeLabel } from '../utils/learningType'
 
@@ -53,6 +54,8 @@ const getCategoryIconKey = (value = '') => {
 export default function CoursesPage() {
   const { courses, courseCategories, isUserEnrolled, loading } = useStore()
   const { currentUser } = useAuth()
+  const { theme } = useTheme()
+  const isDark = theme === 'dark'
   const [filterCat, setFilterCat] = useState('All')
   const [search, setSearch] = useState('')
 
@@ -123,28 +126,28 @@ export default function CoursesPage() {
         />
       </Helmet>
 
-      <div className="min-h-screen bg-[linear-gradient(180deg,#f8fbff_0%,#eef6ff_44%,#ffffff_100%)] text-slate-950">
+      <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-gradient-to-b from-[#030712] via-[#080d24] to-[#030712] text-slate-100' : 'bg-[linear-gradient(180deg,#f8fbff_0%,#eef6ff_44%,#ffffff_100%)] text-slate-950'}`}>
         <section className="mx-auto grid w-full max-w-7xl gap-6 px-4 pb-8 pt-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8 lg:pb-10 lg:pt-10">
-          <div className="relative overflow-hidden rounded-[32px] border border-white/80 bg-white/[0.86] p-6 shadow-[0_26px_70px_-42px_rgba(15,23,42,0.42)] backdrop-blur-xl sm:p-8 lg:p-10">
+          <div className={`relative overflow-hidden rounded-[32px] border p-6 shadow-[0_26px_70px_-42px_rgba(15,23,42,0.42)] backdrop-blur-xl sm:p-8 lg:p-10 ${isDark ? 'border-white/5 bg-slate-900/60 shadow-slate-950/50' : 'border-white/80 bg-white/[0.86]'}`}>
             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-sky-500 to-violet-500" />
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-sky-700">
+              <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-black uppercase tracking-[0.2em] ${isDark ? 'border-sky-500/30 bg-sky-500/10 text-sky-300' : 'border-sky-200 bg-sky-50 text-sky-700'}`}>
                 <MonitorPlay aria-hidden="true" size={15} />
                 Learning Catalogue
               </div>
-              <h1 className="mt-5 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-[3.45rem] lg:leading-[1.04]">
+              <h1 className={`mt-5 text-4xl font-black tracking-tight sm:text-5xl lg:text-[3.45rem] lg:leading-[1.04] ${isDark ? 'text-white' : 'text-slate-955'}`}>
                 Courses, webinars and career-ready skill tracks
               </h1>
-              <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+              <p className={`mt-5 max-w-2xl text-sm leading-7 sm:text-base ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                 Browse practical programs from Amit Solution Hub with clear pricing, mentor support, deadlines, and flexible learning options.
               </p>
             </div>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
               {stats.map((stat) => (
-                <div key={stat.label} className="rounded-3xl border border-slate-200/75 bg-white px-4 py-4 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.45)]">
-                  <div className="text-2xl font-black text-slate-950">{stat.value}</div>
-                  <div className="mt-1 text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">{stat.label}</div>
+                <div key={stat.label} className={`rounded-3xl border px-4 py-4 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.45)] ${isDark ? 'border-slate-800 bg-slate-950' : 'border-slate-200/75 bg-white'}`}>
+                  <div className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-955'}`}>{stat.value}</div>
+                  <div className={`mt-1 text-[11px] font-black uppercase tracking-[0.18em] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -191,7 +194,7 @@ export default function CoursesPage() {
         </section>
 
         <section id="course-catalogue" className="mx-auto w-full max-w-7xl space-y-7 px-4 pb-16 sm:px-6 lg:px-8 lg:pb-20">
-          <div className="rounded-[30px] border border-white/85 bg-white/[0.92] p-4 shadow-[0_22px_60px_-42px_rgba(15,23,42,0.4)] backdrop-blur-xl sm:p-5">
+          <div className={`rounded-[30px] border p-4 shadow-[0_22px_60px_-42px_rgba(15,23,42,0.4)] backdrop-blur-xl sm:p-5 ${isDark ? 'border-white/5 bg-slate-900/60 shadow-slate-950/40' : 'border-white/85 bg-white/[0.92]'}`}>
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
               <label className="relative block">
                 <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -201,11 +204,11 @@ export default function CoursesPage() {
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                   placeholder="Search by course, category, or instructor"
-                  className="h-14 w-full rounded-2xl border border-slate-200 bg-white px-12 text-sm font-semibold text-slate-700 outline-none transition-all placeholder:font-medium placeholder:text-slate-400 focus:border-sky-300 focus:ring-4 focus:ring-sky-100"
+                  className={`h-14 w-full rounded-2xl border px-12 text-sm font-semibold outline-none transition-all placeholder:font-medium ${isDark ? 'border-slate-800 bg-slate-950 text-slate-100 placeholder:text-slate-500 focus:border-sky-500/50 focus:ring-sky-950/50' : 'border-slate-200 bg-white text-slate-700 placeholder:text-slate-400 focus:border-sky-300 focus:ring-sky-100'}`}
                 />
               </label>
 
-              <div className="inline-flex h-14 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm font-black text-slate-600">
+              <div className={`inline-flex h-14 items-center justify-center gap-2 rounded-2xl border px-4 text-sm font-black ${isDark ? 'border-slate-800 bg-slate-900 text-slate-400' : 'border-slate-200 bg-slate-50 text-slate-600'}`}>
                 <SlidersHorizontal aria-hidden="true" size={16} />
                 {filtered.length} result{filtered.length !== 1 ? 's' : ''}
               </div>
@@ -227,15 +230,19 @@ export default function CoursesPage() {
                     onClick={() => setFilterCat(category)}
                     className={`inline-flex min-h-11 shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-4 text-sm font-black transition-all duration-300 ${
                       isActive
-                        ? 'border-slate-950 bg-slate-950 text-white shadow-[0_18px_36px_-24px_rgba(15,23,42,0.9)]'
-                        : 'border-slate-200 bg-white text-slate-600 hover:border-sky-200 hover:text-sky-700'
+                        ? isDark
+                          ? 'border-indigo-500 bg-indigo-600 text-white shadow-[0_12px_24px_rgba(99,102,241,0.3)]'
+                          : 'border-slate-955 bg-slate-950 text-white shadow-[0_18px_36px_-24px_rgba(15,23,42,0.9)]'
+                        : isDark
+                          ? 'border-slate-800 bg-slate-900 text-slate-400 hover:border-slate-700 hover:text-white'
+                          : 'border-slate-200 bg-white text-slate-600 hover:border-sky-200 hover:text-sky-700'
                     }`}
                   >
                     <span className="inline-flex items-center gap-1.5">
                       <PageIcon name={getCategoryIconKey(categoryMeta?.name || category)} size={14} />
                       {category}
                     </span>
-                    <span className={`rounded-full px-2 py-0.5 text-[11px] ${isActive ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                    <span className={`rounded-full px-2 py-0.5 text-[11px] ${isActive ? 'bg-white/15 text-white' : isDark ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-500'}`}>
                       {count}
                     </span>
                   </button>
@@ -296,12 +303,12 @@ export default function CoursesPage() {
                   <Link
                     key={course.id}
                     to={`/courses/${course.slug || course.id}`}
-                    className="group flex h-full flex-col overflow-hidden rounded-[30px] border border-slate-200/80 bg-white text-left shadow-[0_22px_60px_-42px_rgba(15,23,42,0.5)] transition-all duration-300 hover:-translate-y-1 hover:border-sky-200 hover:shadow-[0_28px_80px_-46px_rgba(37,99,235,0.5)]"
+                    className={`group flex h-full flex-col overflow-hidden rounded-[30px] border text-left shadow-[0_22px_60px_-42px_rgba(15,23,42,0.5)] transition-all duration-300 hover:-translate-y-1 ${isDark ? 'border-slate-800 bg-slate-900/60 shadow-slate-950/50 hover:border-indigo-500/40 hover:shadow-[0_28px_80px_-46px_rgba(99,102,241,0.25)]' : 'border-slate-200/80 bg-white hover:border-sky-200 hover:shadow-[0_28px_80px_-46px_rgba(37,99,235,0.5)]'}`}
                   >
-                    <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+                    <div className={`relative aspect-[16/10] overflow-hidden ${isDark ? 'bg-slate-950' : 'bg-slate-100'}`}>
                       <div
                         className="absolute inset-0 flex items-center justify-center"
-                        style={{ background: `linear-gradient(135deg, ${categoryMeta?.color || '#0284c7'}18, #f8fafc 48%, ${categoryMeta?.color || '#0f766e'}28)` }}
+                        style={{ background: isDark ? `linear-gradient(135deg, ${categoryMeta?.color || '#0284c7'}22, #0f172a 48%, ${categoryMeta?.color || '#0f766e'}32)` : `linear-gradient(135deg, ${categoryMeta?.color || '#0284c7'}18, #f8fafc 48%, ${categoryMeta?.color || '#0f766e'}28)` }}
                       >
                         <PageIcon name={getCategoryIconKey(categoryMeta?.name || course.category)} size={44} color={categoryMeta?.color || '#0284c7'} />
                       </div>
@@ -355,31 +362,31 @@ export default function CoursesPage() {
 
                     <div className="flex flex-1 flex-col p-5 sm:p-6">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan-100 bg-cyan-50 px-3 py-1 text-xs font-bold text-cyan-700">
+                        <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold ${isDark ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-400' : 'border-cyan-100 bg-cyan-50 text-cyan-700'}`}>
                           <PageIcon name={learningType === 'Webinar' ? 'video' : 'book'} size={13} />
                           {learningType}
                         </span>
-                        <span className="inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-700">
+                        <span className={`inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold ${isDark ? 'border-slate-800 bg-slate-950 text-slate-400' : 'border-slate-200 bg-slate-50 text-slate-700'}`}>
                           <PageIcon name={getCategoryIconKey(categoryMeta?.name || course.category)} size={13} />
                           <span className="truncate">{course.category || 'General'}</span>
                         </span>
                         {course.level && (
-                          <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${levelStyles[course.level] || 'border-slate-200 bg-slate-50 text-slate-600'}`}>
+                          <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${isDark ? 'border-slate-800 bg-slate-950 text-slate-400' : levelStyles[course.level] || 'border-slate-200 bg-slate-50 text-slate-600'}`}>
                             {course.level}
                           </span>
                         )}
                       </div>
 
                       <div className="mt-5">
-                        <h3 className="line-clamp-2 min-h-[3.25rem] text-xl font-black leading-tight text-slate-950">{course.title}</h3>
-                        <p className="mt-3 line-clamp-3 min-h-[4.5rem] text-sm leading-6 text-slate-600">{course.description}</p>
+                        <h3 className={`line-clamp-2 min-h-[3.25rem] text-xl font-black leading-tight ${isDark ? 'text-white' : 'text-slate-955'}`}>{course.title}</h3>
+                        <p className={`mt-3 line-clamp-3 min-h-[4.5rem] text-sm leading-6 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{course.description}</p>
                         {isAvailableSoon ? (
-                          <p className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-fuchsia-700">
+                          <p className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-fuchsia-700 dark:text-fuchsia-400">
                             <CalendarClock aria-hidden="true" size={14} />
                             {learningTypeLabel(course)}
                           </p>
                         ) : deadlineText && (
-                          <p className={`mt-3 inline-flex items-center gap-1.5 text-xs font-bold ${enrollmentClosed ? 'text-rose-600' : 'text-amber-700'}`}>
+                          <p className={`mt-3 inline-flex items-center gap-1.5 text-xs font-bold ${enrollmentClosed ? 'text-rose-600 dark:text-rose-400' : 'text-amber-700 dark:text-amber-400'}`}>
                             <CalendarClock aria-hidden="true" size={14} />
                             {enrollmentClosed ? `${actionLabel} closed on ${deadlineText}` : `${actionLabel} closes on ${deadlineText}`}
                           </p>
@@ -387,13 +394,13 @@ export default function CoursesPage() {
                       </div>
 
                       <div className="mt-5 grid gap-2 text-sm text-slate-500 sm:grid-cols-2">
-                        <div className="min-w-0 rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2.5">
+                        <div className={`min-w-0 rounded-2xl border px-3 py-2.5 ${isDark ? 'border-slate-800 bg-slate-950' : 'border-slate-100 bg-slate-50'}`}>
                           <span className="inline-flex max-w-full items-center gap-1.5">
                             <PageIcon name="mentor" size={14} />
                             <span className="truncate">{course.instructor || 'Mentor Support'}</span>
                           </span>
                         </div>
-                        <div className="min-w-0 rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2.5">
+                        <div className={`min-w-0 rounded-2xl border px-3 py-2.5 ${isDark ? 'border-slate-800 bg-slate-950' : 'border-slate-100 bg-slate-50'}`}>
                           <span className="inline-flex max-w-full items-center gap-1.5">
                             <PageIcon name="clock" size={14} />
                             <span className="truncate">{course.duration || 'Flexible Schedule'}</span>
@@ -406,7 +413,7 @@ export default function CoursesPage() {
                           <div className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
                             {Array.isArray(course.plans) && course.plans.length > 0 ? 'Starting At' : 'Fee'}
                           </div>
-                          <div className="mt-1 flex items-center gap-1 text-2xl font-black text-slate-950">
+                          <div className={`mt-1 flex items-center gap-1 text-2xl font-black ${isDark ? 'text-white' : 'text-slate-955'}`}>
                             {isFree ? 'FREE' : (
                               <>
                                 <IndianRupee aria-hidden="true" size={21} strokeWidth={3} />
@@ -418,10 +425,12 @@ export default function CoursesPage() {
 
                         <div className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-black transition-all duration-300 ${
                           isEnrolled
-                            ? 'border border-emerald-200 bg-emerald-50 text-emerald-700'
+                            ? 'border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400'
                             : enrollmentClosed
-                              ? 'border border-rose-200 bg-rose-50 text-rose-700'
-                              : 'bg-slate-950 text-white shadow-[0_16px_32px_-20px_rgba(15,23,42,0.88)]'
+                              ? 'border border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-400'
+                              : isDark
+                                ? 'bg-indigo-600 text-white shadow-[0_12px_24px_rgba(99,102,241,0.25)] hover:bg-indigo-500'
+                                : 'bg-slate-950 text-white shadow-[0_16px_32px_-20px_rgba(15,23,42,0.88)]'
                         }`}>
                           {isEnrolled ? 'Continue' : enrollmentClosed ? `${actionLabel} Closed` : 'View Details'}
                           {!enrollmentClosed && <ArrowRight aria-hidden="true" size={16} />}
@@ -432,6 +441,7 @@ export default function CoursesPage() {
                 )
               })}
             </div>
+
           )}
         </section>
       </div>

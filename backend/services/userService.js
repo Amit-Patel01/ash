@@ -2,7 +2,7 @@ const crypto = require("crypto");
 const path = require("path");
 const fs = require("fs");
 const bcrypt = require("bcryptjs");
-const admin = require("firebase-admin");
+const { admin, db } = require("./firebaseService");
 const { logger } = require("../logger");
 const { sendEmail, emailTemplate } = require("./emailService");
 
@@ -416,7 +416,7 @@ const buildResetUrl = (token, from = "") => {
   return url.toString();
 };
 
-const getFirestore = () => admin.firestore();
+const getFirestore = () => db();
 
 const syncUserToFirebase = async (user) => {
   if (!user?.firebaseUid) {
@@ -1035,6 +1035,11 @@ const buildResetEmailMarkup = ({ title, greetingName, bodyHtml, ctaLabel, resetL
 const sendResetEmail = async (user, { purpose = "reset_password", from = "", requestIp = "", intro = null } = {}) => {
   const tokenRecord = await createResetTokenRecord(user, purpose, requestIp);
   const resetLink = buildResetUrl(tokenRecord.token, from);
+  
+  console.log("\n------------------------------------------------------------");
+  console.log(`[DEVELOPMENT] PASSWORD RESET LINK for ${user.email}:`);
+  console.log(resetLink);
+  console.log("------------------------------------------------------------\n");
 
   const title =
     purpose === "activate_account" ? "Complete Your SolutionHub Account Setup" : "Reset Your SolutionHub Password";

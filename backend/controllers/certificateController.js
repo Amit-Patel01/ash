@@ -10,7 +10,7 @@ const {
 } = require("../services/firebaseService");
 const { sendEmail, emailTemplate } = require("../services/emailService");
 const { logger } = require("../logger");
-const admin = require("firebase-admin");
+const { admin } = require("../services/firebaseService");
 
 const QR_CERTIFICATE_TYPES = {
   "AICTE Internship Completion": "Completion Certificate",

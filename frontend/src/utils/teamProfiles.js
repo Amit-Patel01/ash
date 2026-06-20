@@ -1,6 +1,4 @@
-import { collection, getDocs } from 'firebase/firestore'
 import { api, readApiJson } from '../config/api'
-import { db } from '../config/firebase'
 
 const normalizeText = (value) => String(value || '').trim()
 const normalizeKey = (value) => normalizeText(value).toLowerCase()
@@ -141,14 +139,21 @@ const fetchApiTeamProfiles = async () => {
 }
 
 const fetchFirestoreTeamProfiles = async (collectionName) => {
-  const snapshot = await getDocs(collection(db, collectionName))
-  const members = snapshot.docs.map((docSnap) => ({
-    id: docSnap.id,
-    uid: docSnap.id,
-    ...docSnap.data(),
-  }))
+  try {
+    const response = await fetch(`${api.base}/api/db/${collectionName}`)
+    if (!response.ok) return []
+    const data = await response.json()
+    const members = (data.documents || []).map((docSnap) => ({
+      id: docSnap.id,
+      uid: docSnap.id,
+      ...docSnap,
+    }))
 
-  return normalizeTeamProfiles(members, { trustedTeamCollection: true })
+    return normalizeTeamProfiles(members, { trustedTeamCollection: true })
+  } catch (err) {
+    console.warn(`[teamProfiles] Failed to fetch ${collectionName}:`, err.message)
+    return []
+  }
 }
 
 export const fetchPublicTeamProfiles = async () => {

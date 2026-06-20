@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
-import { auth } from '../config/firebase'
 import { api } from '../config/api'
 
 const avatarColors = [
@@ -435,7 +434,7 @@ export default function AdminCustomers() {
                    
                     setSendingBroadcast(true);
                     try {
-                      const token = await auth.currentUser?.getIdToken();
+                      const token = localStorage.getItem('token');
                       if (!token) throw new Error("Please log in again to continue");
 
                       const response = await fetch(api.adminBroadcastEmail, {

@@ -9,9 +9,9 @@ const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
  * For production (non-localhost), set VITE_API_URL at build time to your API origin.
  */
 export const API_BASE = (() => {
-  if (envApiBase) return envApiBase.replace(/\/+$/, '')
-  if (isLocalhost && import.meta.env.DEV) return ''
+  if (import.meta.env.DEV) return 'http://localhost:5000'
   if (isLocalhost) return 'http://localhost:5000'
+  if (envApiBase) return envApiBase.replace(/\/+$/, '')
   return ''
 })()
 

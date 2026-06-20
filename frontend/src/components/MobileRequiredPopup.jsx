@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { doc, updateDoc } from 'firebase/firestore'
-import { db } from '../config/firebase'
 
 export default function MobileRequiredPopup() {
-  const { currentUser, userProfile } = useAuth()
+  const { currentUser, userProfile, updateUserProfile } = useAuth()
   const [mobile, setMobile] = useState('')
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
@@ -26,7 +24,7 @@ export default function MobileRequiredPopup() {
     
     setSaving(true)
     try {
-      await updateDoc(doc(db, 'users', currentUser.uid), { phone: c })
+      await updateUserProfile(currentUser.uid, { phone: c })
       setDismissed(true)
     } catch (err) {
       setError('Failed to save. Please try again.')

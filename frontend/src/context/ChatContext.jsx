@@ -1,8 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import api, { readApiJson } from '../config/api'
 import { useAuth } from './AuthContext'
-import { db } from '../config/firebase'
-import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore'
 
 const ChatContext = createContext(null)
 const AI_ASSISTANT_ID = 'solutionhub-ai'
@@ -80,7 +78,77 @@ export function ChatProvider({ children }) {
     activeChatIdRef.current = activeChatId
   }, [activeChatId])
 
-  // Real-time rooms sync using onSnapshot
+  const syncRooms = useCallback(async () => {
+    if (!currentUser?.uid) return
+
+    const isEmployeeOrAdmin = ['admin', 'employee', 'mentor', 'team member', 'staff', 'developer'].includes(String(currentUser.role || '').toLowerCase())
+    const currentRole = String(currentUser.role || '').toLowerCase()
+
+    try {
+      const url = isEmployeeOrAdmin && currentRole !== 'admin'
+        ? api.supportChat.rooms(currentUser.role, currentUser.uid)
+        : api.supportChat.rooms(null, currentUser.uid)
+
+      const response = await fetch(url)
+      const data = await readApiJson(response)
+
+      if (response.ok && data.success && Array.isArray(data.rooms)) {
+        let userChats = data.rooms
+
+        if (currentRole !== 'admin' && isEmployeeOrAdmin) {
+          userChats = userChats.filter(r => r.assignedRole === currentUser.role || r.assignedTo === currentUser.displayName)
+        } else if (currentRole === 'customer') {
+          userChats = userChats.filter(r => r.participants.includes(currentUser.uid))
+        }
+
+        userChats.sort((a, b) => getChatSortMs(b) - getChatSortMs(a))
+        const dedupedChats = dedupeChats(userChats, currentUser.uid)
+
+        if (prevChatsRef.current && prevChatsRef.current.length > 0) {
+          dedupedChats.forEach(chat => {
+            const prevChat = prevChatsRef.current.find(c => c.id === chat.id)
+            const hasNewMessage = !prevChat || chat.lastMessageAt !== prevChat.lastMessageAt
+            if (hasNewMessage && chat.lastSenderId !== currentUser.uid && chat.id !== activeChatIdRef.current) {
+              const canNotify = typeof window !== 'undefined' && 'Notification' in window
+              if (canNotify && window.Notification.permission === 'granted') {
+                new window.Notification(chat.lastSenderName || 'New Message', {
+                  body: chat.lastMessage || 'New message received.',
+                  icon: '/favicon.ico',
+                })
+              }
+            }
+          })
+        }
+
+        prevChatsRef.current = dedupedChats
+        setChats(dedupedChats)
+
+        const unreads = {}
+        dedupedChats.forEach(chat => {
+          unreads[chat.id] = chat.unreadCount || 0
+        })
+        setUnreadCounts(unreads)
+      }
+    } catch (err) {
+      console.warn("Failed to sync chat rooms:", err)
+    }
+  }, [currentUser])
+
+  const syncMessages = useCallback(async () => {
+    if (!activeChatId) return
+
+    try {
+      const response = await fetch(api.supportChat.messages(activeChatId))
+      const data = await readApiJson(response)
+      if (response.ok && data.success && Array.isArray(data.messages)) {
+        setMessages(data.messages)
+      }
+    } catch (err) {
+      console.warn("Failed to sync messages:", err)
+    }
+  }, [activeChatId])
+
+  // Sync rooms on interval
   useEffect(() => {
     if (!currentUser?.uid) {
       setChats([])
@@ -88,89 +156,22 @@ export function ChatProvider({ children }) {
       return
     }
 
-    const isEmployeeOrAdmin = ['admin', 'employee', 'mentor', 'team member', 'staff', 'developer'].includes(String(currentUser.role || '').toLowerCase())
+    syncRooms()
+    const interval = setInterval(syncRooms, 5000)
+    return () => clearInterval(interval)
+  }, [currentUser, syncRooms])
 
-    let q;
-    if (isEmployeeOrAdmin) {
-      // Employees/Admin can see all chats to coordinate/takeover
-      q = query(collection(db, 'chats'))
-    } else {
-      // Customers can only see chats where they are a participant
-      q = query(
-        collection(db, 'chats'),
-        where('participants', 'array-contains', currentUser.uid)
-      )
-    }
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const rooms = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-      let userChats = rooms
-      const currentRole = String(currentUser.role || '').toLowerCase()
-      
-      // Let's filter userChats for employee if they have a specific role assigned
-      if (currentRole !== 'admin' && isEmployeeOrAdmin) {
-        userChats = rooms.filter(r => r.assignedRole === currentUser.role || r.assignedTo === currentUser.displayName)
-      } else if (currentRole === 'customer') {
-        userChats = rooms.filter(r => r.participants.includes(currentUser.uid))
-      }
-
-      userChats.sort((a, b) => getChatSortMs(b) - getChatSortMs(a))
-      const dedupedChats = dedupeChats(userChats, currentUser.uid)
-
-      // Handle web notifications for new messages in other chat rooms
-      if (prevChatsRef.current && prevChatsRef.current.length > 0) {
-        dedupedChats.forEach(chat => {
-          const prevChat = prevChatsRef.current.find(c => c.id === chat.id)
-          const hasNewMessage = !prevChat || chat.lastMessageAt !== prevChat.lastMessageAt
-          if (hasNewMessage && chat.lastSenderId !== currentUser.uid && chat.id !== activeChatIdRef.current) {
-            const canNotify = typeof window !== 'undefined' && 'Notification' in window
-            if (canNotify && window.Notification.permission === 'granted') {
-              new window.Notification(chat.lastSenderName || 'New Message', {
-                body: chat.lastMessage || 'New message received.',
-                icon: '/favicon.ico',
-              })
-            }
-          }
-        })
-      }
-
-      prevChatsRef.current = dedupedChats
-      setChats(dedupedChats)
-
-      // Map unread counts from rooms
-      const unreads = {}
-      dedupedChats.forEach(chat => {
-        unreads[chat.id] = chat.unreadCount || 0
-      })
-      setUnreadCounts(unreads)
-    }, (error) => {
-      console.error("Error in real-time rooms listener:", error)
-    })
-
-    return () => unsubscribe()
-  }, [currentUser])
-
-  // Real-time messages sync using onSnapshot
+  // Sync messages on interval
   useEffect(() => {
     if (!activeChatId) {
       setMessages([])
       return
     }
 
-    const q = query(
-      collection(db, 'chats', activeChatId, 'messages'),
-      orderBy('timestamp', 'asc')
-    )
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const msgs = snapshot.docs.map(doc => doc.data())
-      setMessages(msgs)
-    }, (error) => {
-      console.error("Error in real-time messages listener:", error)
-    })
-
-    return () => unsubscribe()
-  }, [activeChatId])
+    syncMessages()
+    const interval = setInterval(syncMessages, 3000)
+    return () => clearInterval(interval)
+  }, [activeChatId, syncMessages])
 
   const getOrCreateChat = useCallback(async (otherUserId, otherUserName, otherUserEmail, otherUserRole) => {
     if (!currentUser?.uid || !otherUserId || otherUserId === currentUser.uid) return null
@@ -201,6 +202,7 @@ export function ChatProvider({ children }) {
 
       const data = await readApiJson(response)
       if (data.success && data.chatId) {
+        syncRooms()
         return data.chatId
       }
     } catch (err) {
@@ -208,7 +210,7 @@ export function ChatProvider({ children }) {
       alert(`Failed to start chat: ${err.message}`)
     }
     return null
-  }, [currentUser])
+  }, [currentUser, syncRooms])
 
   const createGroupChat = useCallback(async (selectedUsers, groupName) => {
     if (!currentUser?.uid || !selectedUsers.length) return null
@@ -244,6 +246,7 @@ export function ChatProvider({ children }) {
 
       const data = await readApiJson(response)
       if (data.success && data.chatId) {
+        syncRooms()
         return data.chatId
       }
     } catch (err) {
@@ -251,7 +254,7 @@ export function ChatProvider({ children }) {
       throw err
     }
     return null
-  }, [currentUser])
+  }, [currentUser, syncRooms])
 
   const sendMessage = useCallback(async (chatId, text, imageFile) => {
     if (!currentUser?.uid || !chatId) return
@@ -267,7 +270,7 @@ export function ChatProvider({ children }) {
         try {
           const formData = new FormData()
           formData.append('chat-image', imageFile)
-          
+
           const response = await fetch(api.uploadChat, {
             method: 'POST',
             body: formData,
@@ -307,8 +310,8 @@ export function ChatProvider({ children }) {
 
       const data = await readApiJson(response)
       if (data.success && data.message) {
-        // Optimistically update messages local state
         setMessages(prev => [...prev, data.message])
+        syncRooms()
         return data.message.id
       }
     } catch (err) {
@@ -316,11 +319,9 @@ export function ChatProvider({ children }) {
       alert(err.message || 'Failed to send message. Please try again.')
       throw err
     }
-  }, [currentUser])
+  }, [currentUser, syncRooms])
 
   const sendAiReply = useCallback(async (chatId, promptText, recentMessages = []) => {
-    // The backend automatically triggers intent classification and AI response on send message.
-    // We provide a natural delay here to keep the visual AI typing indicators flowing on screen.
     await new Promise(resolve => setTimeout(resolve, 1500))
     return null
   }, [])
@@ -340,12 +341,13 @@ export function ChatProvider({ children }) {
       const data = await readApiJson(response)
       if (data.success) {
         setMessages([])
+        syncRooms()
       }
     } catch (err) {
       console.error('Error clearing chat:', err)
       alert('Failed to clear chat. Please try again.')
     }
-  }, [currentUser])
+  }, [currentUser, syncRooms])
 
   const deleteSpecificMessages = useCallback(async (chatId, messageIds) => {
     if (!currentUser?.uid || !chatId || !messageIds?.length) return
@@ -362,12 +364,13 @@ export function ChatProvider({ children }) {
       const data = await readApiJson(response)
       if (data.success) {
         setMessages(prev => prev.filter(msg => !messageIds.includes(msg.id)))
+        syncRooms()
       }
     } catch (err) {
       console.error('Error deleting messages:', err)
       alert('Failed to delete messages. Please try again.')
     }
-  }, [currentUser])
+  }, [currentUser, syncRooms])
 
   const requestNotificationPermission = useCallback(async () => {
     if (typeof window === 'undefined' || !('Notification' in window)) {
@@ -385,13 +388,8 @@ export function ChatProvider({ children }) {
     }
   }, [])
 
-  const sendTypingIndicator = useCallback(async (chatId, isTyping) => {
-    // No-op for REST backend
-  }, [])
-
-  const handleTyping = useCallback((chatId) => {
-    // No-op for REST backend
-  }, [])
+  const sendTypingIndicator = useCallback(async (chatId, isTyping) => {}, [])
+  const handleTyping = useCallback((chatId) => {}, [])
 
   const markAsRead = useCallback(async (chatId) => {
     if (!currentUser?.uid || !chatId) return
@@ -402,17 +400,18 @@ export function ChatProvider({ children }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chatId, readerId: currentUser.uid })
       })
+      syncRooms()
     } catch (err) {
       console.error('Error marking as read:', err)
     }
-  }, [currentUser])
+  }, [currentUser, syncRooms])
 
   const startVideoCall = useCallback(async (chatId) => {
     if (!currentUser?.uid || !chatId) return
 
     const roomName = `SolutionHub-${chatId}`
     const callUrl = `https://meet.jit.si/${roomName}`
-    
+
     try {
       const response = await fetch(api.supportChat.send, {
         method: 'POST',
@@ -432,16 +431,17 @@ export function ChatProvider({ children }) {
       if (data.success && data.message) {
         setMessages(prev => [...prev, data.message])
         window.open(callUrl, '_blank')
+        syncRooms()
       }
     } catch (err) {
       console.error('Error starting video call:', err)
       alert('Failed to start video call.')
     }
-  }, [currentUser])
+  }, [currentUser, syncRooms])
 
   const getChatPartner = useCallback((chat) => {
     if (!chat || !currentUser?.uid) return null
-    
+
     if (chat.isGroup) {
       return {
         uid: chat.id,
@@ -454,7 +454,7 @@ export function ChatProvider({ children }) {
 
     const partnerId = chat.participants.find(p => p !== currentUser.uid)
     if (!partnerId) return null
-    
+
     const partnerInfo = chat.participantInfo?.[partnerId] || {}
     const roleStr = String(partnerInfo.role || '').toLowerCase()
     const isAlwaysOnline = ['admin', 'employee', 'support'].includes(roleStr) || partnerId === AI_ASSISTANT_ID
@@ -497,12 +497,13 @@ export function ChatProvider({ children }) {
           return chat
         }))
         console.log(`[MemoryChat] Successfully took over chat ${chatId}`)
+        syncRooms()
       }
     } catch (err) {
       console.error('Error taking over chat:', err)
       alert('Failed to take over chat. Please try again.')
     }
-  }, [currentUser])
+  }, [currentUser, syncRooms])
 
   const value = {
     currentUser,

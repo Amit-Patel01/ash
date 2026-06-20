@@ -1,5 +1,5 @@
-const admin = require("firebase-admin");
-const { db } = require("./firebaseService");
+const { getDb } = require("../utils/mongo");
+const { ObjectId } = require("mongodb");
 
 const COUPON_COLLECTION = "coupons";
 
@@ -106,41 +106,42 @@ const sanitizeCouponPayload = (input = {}, existing = {}) => {
   };
 };
 
-const mapCouponDoc = (docSnap) => ({ id: docSnap.id, ...docSnap.data() });
+const mapCouponDoc = (doc) => {
+  if (!doc) return null;
+  return {
+    id: doc._id.toString(),
+    ...doc,
+    _id: doc._id.toString()
+  };
+};
 
-const listCoupons = async () => {
+const getQueryId = (id) => {
   try {
-    const snap = await db().collection(COUPON_COLLECTION).orderBy("createdAt", "desc").get();
-    return snap.docs.map(mapCouponDoc);
-  } catch {
-    const snap = await db().collection(COUPON_COLLECTION).get();
-    return snap.docs
-      .map(mapCouponDoc)
-      .sort((left, right) => {
-        const leftValue = left.createdAt?.toMillis?.() || 0;
-        const rightValue = right.createdAt?.toMillis?.() || 0;
-        return rightValue - leftValue;
-      });
+    return new ObjectId(id);
+  } catch (e) {
+    return id;
   }
 };
 
+const listCoupons = async () => {
+  const db = getDb();
+  const docs = await db.collection(COUPON_COLLECTION).find().sort({ createdAt: -1 }).toArray();
+  return docs.map(mapCouponDoc);
+};
+
 const getCouponById = async (couponId) => {
-  const docSnap = await db().collection(COUPON_COLLECTION).doc(String(couponId)).get();
-  return docSnap.exists ? mapCouponDoc(docSnap) : null;
+  const db = getDb();
+  const doc = await db.collection(COUPON_COLLECTION).findOne({ _id: getQueryId(couponId) });
+  return mapCouponDoc(doc);
 };
 
 const findCouponByCode = async (couponCode) => {
   const normalizedCode = normalizeCouponCode(couponCode);
   if (!normalizedCode) return null;
 
-  const snap = await db()
-    .collection(COUPON_COLLECTION)
-    .where("code", "==", normalizedCode)
-    .limit(1)
-    .get();
-
-  if (snap.empty) return null;
-  return mapCouponDoc(snap.docs[0]);
+  const db = getDb();
+  const doc = await db.collection(COUPON_COLLECTION).findOne({ code: normalizedCode });
+  return mapCouponDoc(doc);
 };
 
 const assertUniqueCouponCode = async (code, ignoreCouponId = "") => {
@@ -159,16 +160,17 @@ const createCoupon = async (payload, actor = {}) => {
 
   await assertUniqueCouponCode(sanitized.code);
 
-  const docRef = await db().collection(COUPON_COLLECTION).add({
+  const db = getDb();
+  const result = await db.collection(COUPON_COLLECTION).insertOne({
     ...sanitized,
     createdByUid: normalizeString(actor?.uid),
     createdByEmail: normalizeString(actor?.email),
     usedCount: 0,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
 
-  const created = await docRef.get();
+  const created = await db.collection(COUPON_COLLECTION).findOne({ _id: result.insertedId });
   return mapCouponDoc(created);
 };
 
@@ -189,32 +191,32 @@ const updateCoupon = async (couponId, payload, actor = {}) => {
 
   await assertUniqueCouponCode(sanitized.code, couponId);
 
-  await db()
-    .collection(COUPON_COLLECTION)
-    .doc(String(couponId))
-    .update({
-      ...sanitized,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
+  const db = getDb();
+  await db.collection(COUPON_COLLECTION).updateOne(
+    { _id: getQueryId(couponId) },
+    {
+      $set: {
+        ...sanitized,
+        updatedAt: new Date(),
+      }
+    }
+  );
 
   const updated = await getCouponById(couponId);
   return updated;
 };
 
 const deleteCoupon = async (couponId) => {
-  await db().collection(COUPON_COLLECTION).doc(String(couponId)).delete();
+  const db = getDb();
+  await db.collection(COUPON_COLLECTION).deleteOne({ _id: getQueryId(couponId) });
 };
 
 const getCouponUsageByUser = async (userId, couponCode) => {
   if (!normalizeString(userId) || !normalizeCouponCode(couponCode)) return false;
 
-  const snap = await db()
-    .collection("enrollments")
-    .where("userId", "==", String(userId))
-    .limit(100)
-    .get();
-
-  return snap.docs.some((docSnap) => normalizeCouponCode(docSnap.data()?.couponCode) === normalizeCouponCode(couponCode));
+  const db = getDb();
+  const docs = await db.collection("enrollments").find({ userId: String(userId) }).limit(100).toArray();
+  return docs.some((d) => normalizeCouponCode(d.couponCode) === normalizeCouponCode(couponCode));
 };
 
 const validateCouponForPurchase = async ({
@@ -313,16 +315,14 @@ const validateCouponForPurchase = async ({
 const incrementCouponUsage = async (couponId) => {
   if (!normalizeString(couponId)) return;
 
-  await db()
-    .collection(COUPON_COLLECTION)
-    .doc(String(couponId))
-    .set(
-      {
-        usedCount: admin.firestore.FieldValue.increment(1),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      },
-      { merge: true }
-    );
+  const db = getDb();
+  await db.collection(COUPON_COLLECTION).updateOne(
+    { _id: getQueryId(couponId) },
+    {
+      $inc: { usedCount: 1 },
+      $set: { updatedAt: new Date() }
+    }
+  );
 };
 
 module.exports = {

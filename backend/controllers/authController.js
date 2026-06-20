@@ -1,3 +1,6 @@
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const { getDb } = require("../utils/mongo");
 const { logger } = require("../logger");
 const {
   createManagedUser,
@@ -113,7 +116,60 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Email and password are required." });
+    }
+
+    const db = getDb();
+    const user = await db.collection("users").findOne({ email: email.trim().toLowerCase() });
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Invalid email or password." });
+    }
+
+    if (user.status !== "active") {
+      return res.status(403).json({ success: false, message: "Your account is inactive. Please contact support." });
+    }
+
+    if (!user.passwordHash) {
+      return res.status(401).json({ success: false, message: "Please reset your password to establish a local login." });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: "Invalid email or password." });
+    }
+
+    const token = jwt.sign(
+      {
+        uid: user.uid || user._id.toString(),
+        email: user.email,
+        role: user.role || "customer",
+        employeeId: user.employeeId || null,
+        permissions: user.permissions || {}
+      },
+      process.env.JWT_SECRET || "your_jwt_secret_here",
+      { expiresIn: "7d" }
+    );
+
+    const { passwordHash, ...userResponse } = user;
+    userResponse.uid = user.uid || user._id.toString();
+
+    return res.json({
+      success: true,
+      token,
+      user: userResponse
+    });
+  } catch (error) {
+    logger.error("Login error:", error);
+    return res.status(500).json({ success: false, message: "An error occurred during login." });
+  }
+};
+
 module.exports = {
+  login,
   registerCustomer,
   submitAccountRequest,
   forgotPassword,
