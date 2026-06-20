@@ -3,6 +3,8 @@ const path = require("path");
 const fs = require("fs");
 const bcrypt = require("bcryptjs");
 const { admin, db } = require("./firebaseService");
+const { getDb } = require("../utils/mongo");
+const { ObjectId } = require("mongodb");
 const { logger } = require("../logger");
 const { sendEmail, emailTemplate } = require("./emailService");
 
@@ -637,8 +639,72 @@ const listPublicTeamMembers = async () => {
     });
 };
 
+const findUserInMongo = async (identifier, { includeSensitive = false } = {}) => {
+  const mongo = getDb();
+  const users = mongo.collection("users");
+  const normalized = String(identifier || "").trim();
+  if (!normalized) return null;
+
+  let doc = null;
+  if (normalized.includes("@")) {
+    doc = await users.findOne({ email: normalizeEmail(normalized) });
+  } else {
+    const phone = normalizePhone(normalized);
+    if (phone) {
+      doc = await users.findOne({ phone });
+    }
+    if (!doc) {
+      doc = await users.findOne({ $or: [{ uid: normalized }, { firebaseUid: normalized }] });
+    }
+    if (!doc) {
+      const { ObjectId } = require("mongodb");
+      try { doc = await users.findOne({ _id: new ObjectId(normalized) }); } catch {}
+    }
+  }
+  if (!doc) return null;
+
+  const user = {
+    id: doc._id.toString(),
+    uid: doc.uid || doc.firebaseUid || doc._id.toString(),
+    firebaseUid: doc.firebaseUid || doc.uid || null,
+    email: normalizeEmail(doc.email || ""),
+    phone: normalizePhone(doc.phone || ""),
+    displayName: doc.displayName || doc.name || "",
+    role: normalizeSystemRole(doc.role || "customer"),
+    status: normalizeStatus(doc.status || "active"),
+    department: doc.department || "",
+    jobTitle: doc.jobTitle || "",
+    employeeId: doc.employeeId || "",
+    joinDate: doc.joinDate || "",
+    avatar: doc.avatar || doc.photoURL || "",
+    customImageUrl: doc.customImageUrl || "",
+    avatarSource: doc.avatarSource || "",
+    github: doc.github || "",
+    linkedin: doc.linkedin || "",
+    portfolio: doc.portfolio || "",
+    bio: doc.bio || "",
+    experience: doc.experience || "",
+    skills: Array.isArray(doc.skills) ? doc.skills : parseSkills(doc.skills),
+    showOnTeam: normalizeBoolean(doc.showOnTeam),
+    isMentor: normalizeBoolean(doc.isMentor),
+    location: doc.location || "",
+    cvFileName: doc.cvFileName || "",
+    cvFilePath: doc.cvFilePath || "",
+    cvUploadedAt: doc.cvUploadedAt || null,
+    createdAt: toIsoString(doc.createdAt),
+    updatedAt: toIsoString(doc.updatedAt),
+  };
+  if (includeSensitive) user.passwordHash = doc.passwordHash || null;
+  return user;
+};
+
 const findUserByIdentifier = async (identifier, { includeSensitive = false, connection = null } = {}) => {
   if (!useMysql()) {
+    // Try MongoDB first
+    const mongoUser = await findUserInMongo(identifier, { includeSensitive });
+    if (mongoUser) return mongoUser;
+
+    // Fallback to Firestore for legacy users
     const normalized = String(identifier || "").trim();
     if (!normalized) return null;
 
@@ -984,20 +1050,22 @@ const createResetTokenRecord = async (user, purpose, requestIp = "", connection 
   const expiresAt = new Date(Date.now() + PASSWORD_RESET_TTL_MS);
 
   if (!useMysql()) {
-    const firestore = getFirestore();
-    const ref = firestore.collection(FIRESTORE_PASSWORD_RESET_COLLECTION).doc();
-    await ref.set({
-      userUid: user.firebaseUid || user.uid,
+    // Use MongoDB for token storage (migrated from Firestore)
+    const mongo = getDb();
+    const collection = mongo.collection(FIRESTORE_PASSWORD_RESET_COLLECTION);
+    const doc = {
+      userId: user.uid || user._id || user.id || null,
+      userUid: user.firebaseUid || user.uid || null,
       email: normalizeEmail(user.email),
       purpose,
       tokenHash,
-      expiresAt: admin.firestore.Timestamp.fromDate(expiresAt),
+      expiresAt,
       usedAt: null,
       requestIp: requestIp || null,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
-
-    return { token: `${ref.id}.${secret}`, expiresAt: expiresAt.toISOString() };
+      createdAt: new Date(),
+    };
+    const result = await collection.insertOne(doc);
+    return { token: `${result.insertedId.toString()}.${secret}`, expiresAt: expiresAt.toISOString() };
   }
 
   await query(
@@ -2010,19 +2078,25 @@ const requestPasswordReset = async ({ email, from = "", requestIp = "" } = {}) =
     user = await materializeLegacyUser(normalizedEmail);
   }
 
-  // Fallback: Direct database search in MySQL for edge cases (case sensitivity, normalization issues)
-  if (!user && useMysql()) {
-    assertMySqlReady();
+  // Direct MongoDB fallback (case-insensitive)
+  if (!user) {
     try {
-      const rows = await query(
-        `SELECT ${USER_COLUMN_SQL} FROM users u WHERE LOWER(u.email) = LOWER(?) LIMIT 1`,
-        [normalizedEmail]
-      );
-      if (rows.length > 0) {
-        user = mapUserRow(rows[0], { includeSensitive: true });
+      const mongo = getDb();
+      const doc = await mongo.collection("users").findOne({ email: { $regex: new RegExp(`^${normalizedEmail}$`, "i") } });
+      if (doc) {
+        user = {
+          id: doc._id.toString(),
+          uid: doc.uid || doc.firebaseUid || doc._id.toString(),
+          firebaseUid: doc.firebaseUid || doc.uid || null,
+          email: normalizeEmail(doc.email || ""),
+          displayName: doc.displayName || doc.name || "",
+          role: normalizeSystemRole(doc.role || "customer"),
+          status: normalizeStatus(doc.status || "active"),
+          passwordHash: doc.passwordHash || null,
+        };
       }
     } catch (err) {
-      logger.warn("Direct email lookup failed in password reset:", err.message);
+      logger.warn("Direct MongoDB email lookup failed in password reset:", err.message);
     }
   }
 
@@ -2049,22 +2123,29 @@ const verifyResetToken = async (token) => {
     const [tokenId, secret] = normalizedToken.split(".");
     if (!tokenId || !secret) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
 
-    const firestore = getFirestore();
-    const snap = await firestore.collection(FIRESTORE_PASSWORD_RESET_COLLECTION).doc(tokenId).get();
-    if (!snap.exists) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
-    const data = snap.data() || {};
-    const expiresAt = data.expiresAt?.toDate?.() ? data.expiresAt.toDate() : new Date(data.expiresAt);
-    if (data.usedAt || !expiresAt || expiresAt.getTime() < Date.now()) {
+    const mongo = getDb();
+    let doc = null;
+    try {
+      const _id = new ObjectId(tokenId);
+      doc = await mongo.collection(FIRESTORE_PASSWORD_RESET_COLLECTION).findOne({ _id });
+    } catch (err) {
+      // invalid id or not found
+      throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
+    }
+
+    if (!doc) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
+    const expiresAt = doc.expiresAt instanceof Date ? doc.expiresAt : new Date(doc.expiresAt);
+    if (doc.usedAt || !expiresAt || expiresAt.getTime() < Date.now()) {
       throw createHttpError(400, "This password reset link is invalid or has expired.", "expired_reset_token");
     }
-    const ok = await bcrypt.compare(secret, data.tokenHash || "");
+    const ok = await bcrypt.compare(secret, doc.tokenHash || "");
     if (!ok) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
 
     return {
       success: true,
-      email: normalizeEmail(data.email || ""),
-      displayName: data.displayName || "",
-      role: data.role || "customer",
+      email: normalizeEmail(doc.email || ""),
+      displayName: doc.displayName || "",
+      role: doc.role || "customer",
       expiresAt: toIsoString(expiresAt),
     };
   }
@@ -2110,35 +2191,60 @@ const completePasswordReset = async ({ token, newPassword } = {}) => {
     const [tokenId, secret] = normalizedToken.split(".");
     if (!tokenId || !secret) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
 
-    const firestore = getFirestore();
-    const tokenRef = firestore.collection(FIRESTORE_PASSWORD_RESET_COLLECTION).doc(tokenId);
-    const snap = await tokenRef.get();
-    if (!snap.exists) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
-    const data = snap.data() || {};
-    const expiresAt = data.expiresAt?.toDate?.() ? data.expiresAt.toDate() : new Date(data.expiresAt);
-    if (data.usedAt || !expiresAt || expiresAt.getTime() < Date.now()) {
+    const mongo = getDb();
+    let doc = null;
+    try {
+      const _id = new ObjectId(tokenId);
+      doc = await mongo.collection(FIRESTORE_PASSWORD_RESET_COLLECTION).findOne({ _id });
+    } catch (err) {
+      throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
+    }
+    if (!doc) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
+    const expiresAt = doc.expiresAt instanceof Date ? doc.expiresAt : new Date(doc.expiresAt);
+    if (doc.usedAt || !expiresAt || expiresAt.getTime() < Date.now()) {
       throw createHttpError(400, "This password reset link is invalid or has expired.", "expired_reset_token");
     }
-    const ok = await bcrypt.compare(secret, data.tokenHash || "");
+    const ok = await bcrypt.compare(secret, doc.tokenHash || "");
     if (!ok) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
 
-    const uid = String(data.userUid || "");
-    if (!uid) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
+    // Update user's passwordHash in MongoDB users collection
+    const userId = doc.userId || doc.userUid || null;
+    if (!userId) throw createHttpError(400, "This password reset link is invalid or has expired.", "invalid_reset_token");
 
-    await admin.auth().updateUser(uid, { password: newPassword, disabled: false });
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    const usersCollection = mongo.collection("users");
+    const normalizedDocEmail = normalizeEmail(doc.email || "");
 
-    await tokenRef.set(
-      { usedAt: admin.firestore.FieldValue.serverTimestamp(), updatedAt: admin.firestore.FieldValue.serverTimestamp() },
-      { merge: true }
-    );
+    // Try all possible identifiers in order
+    let matched = 0;
+    // 1. by _id (ObjectId)
+    try {
+      const upd = await usersCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { passwordHash, status: "active", updatedAt: new Date() } });
+      matched = upd.matchedCount;
+    } catch {}
+    // 2. by uid / firebaseUid
+    if (!matched) {
+      const upd = await usersCollection.updateOne({ $or: [{ uid: userId }, { firebaseUid: userId }] }, { $set: { passwordHash, status: "active", updatedAt: new Date() } });
+      matched = upd.matchedCount;
+    }
+    // 3. by email (most reliable fallback)
+    if (!matched && normalizedDocEmail) {
+      await usersCollection.updateOne({ email: normalizedDocEmail }, { $set: { passwordHash, status: "active", updatedAt: new Date() } });
+    }
 
-    // ensure user is active in firestore
-    await firestore.collection(FIRESTORE_USER_COLLECTION).doc(uid).set(
-      { status: "active", updatedAt: admin.firestore.FieldValue.serverTimestamp() },
-      { merge: true }
-    );
+    // mark token used
+    await mongo.collection(FIRESTORE_PASSWORD_RESET_COLLECTION).updateOne({ _id: new ObjectId(tokenId) }, { $set: { usedAt: new Date(), updatedAt: new Date() } });
 
-    return { success: true, email: normalizeEmail(data.email || "") };
+    // If Firebase user still exists, attempt to sync password there too (best-effort)
+    if (admin && doc.userUid) {
+      try {
+        await admin.auth().updateUser(String(doc.userUid), { password: newPassword, disabled: false });
+      } catch (e) {
+        // ignore errors here
+      }
+    }
+
+    return { success: true, email: normalizeEmail(doc.email || "") };
   }
 
   assertMySqlReady();

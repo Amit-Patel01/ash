@@ -466,6 +466,22 @@ const CSS = `
     background: linear-gradient(90deg,transparent,rgba(99,102,241,0.12),transparent);
   }
 
+  /* ══ GRADIENT TEXT ══ */
+  .abt-grad {
+    background: var(--grad-primary);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+
+  /* ══ EXPERTISE SECTION ══ */
+  .abt-exp-section {
+    padding: clamp(60px, 8vw, 90px) 0;
+    background: rgba(var(--bg-subtle), 0.5);
+    position: relative;
+  }
+  .dark .abt-exp-section {
+    background: rgba(8, 14, 36, 0.4);
+  }
+
   /* ══ LEADERSHIP CARDS ══ */
   .abt-lead-grid {
     display: grid;
@@ -546,11 +562,24 @@ const CSS = `
     transform: scale(1.2) translate(10px, 10px);
   }
 
+  /* ══ PROCESS STEP CONNECTOR ══ */
+  @media (min-width: 640px) {
+    .abt-process-grid { position: relative; }
+    .abt-process-grid::before {
+      content: ''; position: absolute; top: 24px; left: 10%; right: 10%;
+      height: 1px; background: linear-gradient(90deg, transparent, rgba(99,102,241,0.2), transparent);
+      z-index: 0; pointer-events: none;
+    }
+    .abt-process-item { z-index: 1; }
+  }
+
   @media (max-width: 768px) {
     .abt-slider-wrap { height: 440px; }
     .slider-btn.prev { left: 2px; }
     .slider-btn.next { right: 2px; }
     .abt-hero-stats { gap: 12px; }
+    .abt-lead-grid { grid-template-columns: 1fr; }
+    .abt-mv-grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 480px) {
     .abt-tcard-new { width: 250px; height: 420px; }
@@ -559,6 +588,8 @@ const CSS = `
     .abt-hero { padding-top: 120px; }
     .abt-hero-stat { padding: 10px 16px; min-width: 90px; }
     .abt-msme-inner { justify-content: center; text-align: center; }
+    .abt-trust-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .abt-exp-grid { grid-template-columns: 1fr; }
   }
 `
 
@@ -801,6 +832,30 @@ const About = () => {
                   </div>
                   <div className="abt-trust-card-title">{title}</div>
                   <div className="abt-trust-card-desc">{desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <div className="abt-div" />
+
+        {/* ════════════════════════════════════
+            EXPERTISE GRID
+        ════════════════════════════════════ */}
+        <section className="abt-exp-section">
+          <div className="abt-section">
+            <div style={{ textAlign:'center' }}>
+              <div className="abt-sec-pill">🛠 What We Do</div>
+              <h2 className="abt-sec-title">Our <span className="abt-grad">Areas of Expertise</span></h2>
+              <p className="abt-sec-sub" style={{ maxWidth:480, margin:'8px auto 0' }}>From custom builds to mentorship, here is what we consistently deliver with quality.</p>
+            </div>
+            <div className="abt-exp-grid">
+              {EXPERTISE.map(({ icon, title, desc }) => (
+                <div key={title} className="abt-exp-card">
+                  <div className="abt-exp-icon"><SvgIcon name={icon} size={22} color="#6366f1" /></div>
+                  <h3 className="abt-exp-title">{title}</h3>
+                  <p className="abt-exp-desc">{desc}</p>
                 </div>
               ))}
             </div>
