@@ -153,6 +153,7 @@ const AdminProjects = lazyWithRetry(() => import('./admin/AdminProjects'))
 const AdminTasks = lazyWithRetry(() => import('./admin/AdminTasks'))
 const AdminTeam = lazyWithRetry(() => import('./admin/AdminTeam'))
 const AdminEmployees = lazyWithRetry(() => import('./admin/AdminEmployees'))
+const AdminPermissions = lazyWithRetry(() => import('./admin/AdminPermissions'))
 const AdminServices = lazyWithRetry(() => import('./admin/AdminServices'))
 const AdminMessages = lazyWithRetry(() => import('./admin/AdminMessages'))
 const AdminSales = lazyWithRetry(() => import('./admin/AdminSales'))
@@ -406,6 +407,7 @@ function AppContent() {
             <Route path="tasks" element={<AdminTasks />} />
             <Route path="team" element={<AdminTeam />} />
             <Route path="employees" element={<AdminEmployees />} />
+            <Route path="permissions" element={<AdminPermissions />} />
             <Route path="customers" element={<AdminCustomers />} />
             <Route path="qr-certificates" element={<AdminQrCertificates />} />
             <Route path="sales" element={<AdminSales />} />

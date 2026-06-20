@@ -83,7 +83,7 @@ const Footer = () => {
                     className={`w-10 h-10 rounded-2xl flex items-center justify-center hover:scale-115 transition-all duration-300 shadow-lg border ${isDark ? 'bg-white/5 border-white/10 hover:bg-indigo-500/10 hover:border-indigo-500/30' : 'bg-white border-slate-200 hover:bg-blue-50 hover:border-blue-500/30'}`}
                     aria-label={social.name}
                   >
-                    <svg className="w-4.5 h-4.5 text-gray-400 hover:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-[18px] h-[18px] text-gray-400 hover:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
                       <path d={social.icon} />
                     </svg>
                   </a>

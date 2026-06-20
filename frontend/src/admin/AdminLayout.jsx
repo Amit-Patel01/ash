@@ -20,6 +20,7 @@ const navGroups = [
     items: [
       { path: '/admin/employees', label: 'Staff Accounts', icon: 'badge', permission: 'can_manage_employees' },
       { path: '/admin/team', label: 'Team (About Page)', icon: 'group', permission: 'can_manage_employees' },
+      { path: '/admin/permissions', label: 'Permissions', icon: 'shield', permission: 'can_manage_employees' },
     ]
   },
   {

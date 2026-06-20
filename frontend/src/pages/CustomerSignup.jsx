@@ -53,7 +53,7 @@ export default function CustomerSignup() {
 
   if (submitted) {
     return (
-      <section className="relative w-full min-h-screen pt-24 md:pt-32 pb-20 px-4 bg-[#0B1120] overflow-hidden">
+      <section className="relative w-full min-h-screen pt-24 md:pt-32 pb-20 px-4 overflow-hidden" style={{ background: 'rgb(var(--bg))' }}>
         {/* Background Blobs */}
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] animate-blob" />
         <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] animate-blob delay-75" />
@@ -91,7 +91,7 @@ export default function CustomerSignup() {
   }
 
   return (
-    <section className="relative w-full min-h-screen pt-24 md:pt-32 pb-20 px-4 bg-[#0B1120] overflow-hidden flex flex-col items-center">
+    <section className="relative w-full min-h-screen pt-24 md:pt-32 pb-20 px-4 overflow-hidden flex flex-col items-center" style={{ background: 'rgb(var(--bg))' }}>
       {/* Immersive Background Elements */}
       <div className={`transition-all duration-[2000ms] ease-out ${mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
         <div className="absolute top-[10%] -left-[10%] w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[120px] animate-blob" />
@@ -185,11 +185,11 @@ export default function CustomerSignup() {
           <div className="mt-8 text-center">
             <div className="relative mb-6">
               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/5"></div></div>
-              <div className="relative flex justify-center text-[10px] uppercase font-black tracking-widest text-slate-600 bg-[#0B1120] transition-colors"><span className="px-3">Social Auth (Coming Soon)</span></div>
+              <div className="relative flex justify-center text-[10px] uppercase font-black tracking-widest text-slate-600 dark:text-slate-700" style={{ background: 'rgb(var(--bg))' }}><span className="px-3">Social Auth (Coming Soon)</span></div>
             </div>
 
             <p className="text-sm text-slate-500 font-medium">Already part of our community?</p>
-            <Link to="/employee-login" className="inline-block mt-2 text-emerald-400 font-black tracking-tighter hover:text-emerald-300 transition-colors border-b-2 border-emerald-500/20 hover:border-emerald-400">
+            <Link to="/login" className="inline-block mt-2 text-emerald-400 font-black tracking-tighter hover:text-emerald-300 transition-colors border-b-2 border-emerald-500/20 hover:border-emerald-400">
               SIGN IN
             </Link>
 

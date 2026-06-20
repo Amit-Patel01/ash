@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState, useMemo } from 'react'
 import { useStore } from '../store/StoreContext'
+import { useTheme } from '../context/ThemeContext'
 import SEO from './SEO'
 import msmeQR from '../assets/msme-qr.png'
 import msmeLogo from '../assets/msme.png'
@@ -9,9 +10,7 @@ import msmeLogo from '../assets/msme.png'
    INLINE STYLES — No external CSS dependencies
 ══════════════════════════════════════════════════════════════ */
 const CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
-  .hp { font-family:'Inter',sans-serif; color:#0f172a; }
+  .hp { font-family:inherit; color:#0f172a; }
   .hp * { box-sizing:border-box; margin:0; padding:0; }
 
   /* ── Animations ── */
@@ -21,6 +20,13 @@ const CSS = `
   @keyframes hp-shine{ 0%{transform:translateX(-100%) skewX(-18deg)} 100%{transform:translateX(260%) skewX(-18deg)} }
   @keyframes hp-spin  { to{transform:rotate(360deg)} }
   @keyframes hp-bounce{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  @keyframes hp-glow{ 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:0.8;transform:scale(1.05)} }
+  @keyframes hp-slideIn{ from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes hp-scaleIn{ from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+  @keyframes hp-rotate{ from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  @keyframes hp-wiggle{ 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-3deg)} 75%{transform:rotate(3deg)} }
+  @keyframes hp-heartbeat{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  @keyframes hp-wave{ 0%{transform:translateY(0)} 50%{transform:translateY(-8px)} 100%{transform:translateY(0)} }
 
   .hp-in  { animation:hp-up .65s cubic-bezier(.22,1,.36,1) both; }
   .d1{animation-delay:.06s} .d2{animation-delay:.14s} .d3{animation-delay:.24s}
@@ -40,6 +46,7 @@ const CSS = `
     background:rgba(99,102,241,.08); border:1px solid rgba(99,102,241,.18);
     font-size:11px; font-weight:700; letter-spacing:.07em;
     text-transform:uppercase; color:#6366f1; margin-bottom:12px;
+    animation: hp-bounce 2s ease-in-out infinite;
   }
 
   /* ── CTA Primary ── */
@@ -51,13 +58,18 @@ const CSS = `
     text-decoration:none; border:none; cursor:pointer;
     box-shadow:0 6px 24px rgba(29,78,216,.36),inset 0 1px 0 rgba(255,255,255,.18);
     transition:transform .28s,box-shadow .28s; position:relative; overflow:hidden;
+    animation: hp-heartbeat 2s ease-in-out infinite;
   }
   .hp-cta-primary::after {
     content:''; position:absolute; top:0; left:0; width:38%; height:100%;
     background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
     animation:hp-shine 2.8s infinite;
   }
-  .hp-cta-primary:hover { transform:translateY(-3px); box-shadow:0 14px 38px rgba(29,78,216,.46); }
+  .hp-cta-primary:hover { 
+    transform:translateY(-3px) scale(1.05); 
+    box-shadow:0 14px 38px rgba(29,78,216,.46); 
+    animation: none;
+  }
 
   /* ── CTA Secondary ── */
   .hp-cta-secondary {
@@ -80,21 +92,23 @@ const CSS = `
     box-shadow:0 4px 24px rgba(29,78,216,.07);
     transition:transform .32s,box-shadow .32s,border-color .32s;
     position:relative; overflow:hidden;
+    animation: hp-scaleIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .hp-glass::before {
     content:''; position:absolute; inset:0;
     background:linear-gradient(135deg,rgba(29,78,216,.022) 0%,transparent 55%);
     pointer-events:none;
+    animation: hp-glow 3s ease-in-out infinite;
   }
   .hp-glass:hover {
-    transform:translateY(-6px);
+    transform:translateY(-6px) scale(1.02);
     border-color:rgba(99,102,241,.22);
     box-shadow:0 16px 48px rgba(29,78,216,.12);
   }
 
   /* ── Section title ── */
   .hp-stitle {
-    font-family:'Inter',sans-serif; font-weight:800;
+    font-weight:800;
     font-size:clamp(1.5rem,3.6vw,2.2rem);
     color:#0f172a; letter-spacing:-.02em; line-height:1.18;
   }
@@ -128,11 +142,16 @@ const CSS = `
     border:1px solid rgba(255,255,255,.96);
     box-shadow:0 2px 14px rgba(29,78,216,.06);
     transition:transform .28s,box-shadow .28s;
+    animation: hp-slideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
-  .hp-why-item:hover { transform:translateY(-4px); box-shadow:0 10px 32px rgba(29,78,216,.1); }
+  .hp-why-item:hover { 
+    transform:translateY(-4px) scale(1.02); 
+    box-shadow:0 10px 32px rgba(29,78,216,.1); 
+  }
   .hp-why-icon {
     width:48px; height:48px; border-radius:14px; flex-shrink:0;
     display:flex; align-items:center; justify-content:center; font-size:22px;
+    animation: hp-float 3s ease-in-out infinite;
   }
 
   /* ── Testimonial card ── */
@@ -141,15 +160,21 @@ const CSS = `
     background:rgba(255,255,255,.85);
     border:1px solid rgba(255,255,255,.96);
     box-shadow:0 4px 20px rgba(29,78,216,.07);
-    transition:transform .3s,box-shadow .3s;
+    transition:transform .3s,box-shadow .3s,border-color .3s;
     position:relative;
+    animation: hp-scaleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .hp-tcard::before {
     content:'"'; position:absolute; top:14px; left:20px;
     font-size:4rem; color:rgba(99,102,241,.15); line-height:1;
     font-family:'Inter',sans-serif; font-weight:800;
+    animation: hp-wiggle 4s ease-in-out infinite;
   }
-  .hp-tcard:hover { transform:translateY(-5px); box-shadow:0 14px 40px rgba(29,78,216,.11); }
+  .hp-tcard:hover { 
+    transform:translateY(-5px) rotate(-1deg); 
+    box-shadow:0 14px 40px rgba(29,78,216,.11); 
+    border-color:rgba(99,102,241,.2);
+  }
 
   /* ── Trust / MSME bar ── */
   .hp-trust {
@@ -194,7 +219,7 @@ const CSS = `
     width:1px; background:rgba(29,78,216,.1);
   }
   .hp-stat-num {
-    font-family:'Inter',sans-serif; font-weight:800;
+    font-weight:800;
     font-size:clamp(1.5rem,4vw,2.2rem); color:#1d4ed8; line-height:1;
   }
   .hp-stat-label { font-size:11px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:.05em; margin-top:5px; }
@@ -219,10 +244,12 @@ const CSS = `
     margin-bottom: 12px;
     overflow: hidden;
     transition: all 0.3s ease;
+    animation: hp-slideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   .hp-faq-item:hover {
     border-color: rgba(99, 102, 241, 0.22);
     box-shadow: 0 8px 24px rgba(29, 78, 216, 0.08);
+    transform: translateX(4px);
   }
   .hp-faq-trigger {
     width: 100%;
@@ -265,16 +292,44 @@ const CSS = `
   }
 
   /* ── Dark Mode Overrides ── */
+  .dark .hp { color: #f1f5f9; }
+  .dark .hp-stitle { color: #f1f5f9; }
+  .dark h1, .dark h2, .dark h3 { color: #f1f5f9 !important; }
+  .dark p { color: #cbd5e1 !important; }
+  .dark .hp-hero-sub { color: #94a3b8 !important; }
+  .dark .hp-glass {
+    background: rgba(10, 18, 40, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5) !important;
+  }
+  .dark .hp-glass::before {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, transparent 55%);
+  }
+  .dark .hp-icard {
+    background: rgba(10, 18, 40, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 0 4px 22px rgba(0, 0, 0, 0.5) !important;
+  }
+  .dark .hp-icard div { color: #f1f5f9 !important; }
+  .dark .hp-icard p { color: #94a3b8 !important; }
+  .dark .hp-stat-item { color: #f1f5f9; background: rgba(15, 23, 42, 0.6); }
+  .dark .hp-stat-num { color: #818cf8; }
+  .dark .hp-stat-label { color: #94a3b8; }
   .dark .hp-why-item {
     background: rgba(10, 18, 40, 0.82) !important;
     border-color: rgba(255, 255, 255, 0.05) !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
   }
+  .dark .hp-why-item > div > div:first-child { color: #f1f5f9 !important; }
+  .dark .hp-why-item > div > div:last-child { color: #94a3b8 !important; }
   .dark .hp-tcard {
     background: rgba(10, 18, 40, 0.82) !important;
     border-color: rgba(255, 255, 255, 0.05) !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
   }
+  .dark .hp-tcard p { color: #cbd5e1 !important; }
+  .dark .hp-tcard > div:last-child > div:first-child { color: #f1f5f9 !important; }
+  .dark .hp-tcard > div:last-child > div:last-child { color: #94a3b8 !important; }
   .dark .hp-cert {
     background: linear-gradient(135deg, #0a1228, #0e1630) !important;
     border-color: rgba(99, 102, 241, 0.35) !important;
@@ -292,6 +347,11 @@ const CSS = `
   }
   .dark .hp-faq-answer {
     color: #94a3b8 !important;
+  }
+  .dark .hp-stats {
+    background: rgba(10, 18, 40, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5) !important;
   }
 `
 
@@ -429,9 +489,11 @@ const FAQS = [
 const Hero = () => {
   const [loaded, setLoaded] = useState(false)
   const { courses, courseCategories, testimonials } = useStore()
+  const { theme } = useTheme()
   const [showAllReviews, setShowAllReviews] = useState(false)
   const [showAllFaqs, setShowAllFaqs] = useState(false)
   const [activeFaq, setActiveFaq] = useState(null)
+  const isDark = theme === 'dark'
 
   const activeCourses = useMemo(() => {
     return courses?.filter(c => c.published !== false).slice(0, 3) || []
@@ -452,17 +514,19 @@ const Hero = () => {
       <SEO />
       <style>{CSS}</style>
 
-      {/* Fixed background (toned gradient + subtle grid) */}
+      {/* Fixed background — respects dark/light mode via CSS variable */}
       <div style={{ position:'fixed', inset:0, zIndex:0, pointerEvents:'none',
-        background:'linear-gradient(160deg,#e6f0ff 0%, #eef2ff 45%, #f3e8ff 100%)' }}>
-        {/* subtle grid overlay */}
+        background: isDark 
+          ? 'linear-gradient(160deg, #0a1120 0%, #0f1629 45%, #1a1432 100%)'
+          : 'linear-gradient(160deg,#e6f0ff 0%, #eef2ff 45%, #f3e8ff 100%)' }}
+        className="hp-fixed-bg">
         <div style={{ position:'absolute', inset:0,
           backgroundImage:'linear-gradient(rgba(99,102,241,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.02) 1px,transparent 1px)',
-          backgroundSize:'64px 64px', opacity:0.9 }} />
-
-        {/* faint vignette / tone to add depth */}
+          backgroundSize:'64px 64px', opacity: isDark ? 0.3 : 0.9 }} />
         <div style={{ position:'absolute', inset:0, pointerEvents:'none',
-          background:'radial-gradient(circle at 10% 15%, rgba(124,58,237,.04) 0%, transparent 25%), radial-gradient(circle at 90% 85%, rgba(29,78,216,.03) 0%, transparent 30%)' }} />
+          background: isDark
+            ? 'radial-gradient(circle at 10% 15%, rgba(124,58,237,.08) 0%, transparent 25%), radial-gradient(circle at 90% 85%, rgba(29,78,216,.06) 0%, transparent 30%)'
+            : 'radial-gradient(circle at 10% 15%, rgba(124,58,237,.04) 0%, transparent 25%), radial-gradient(circle at 90% 85%, rgba(29,78,216,.03) 0%, transparent 30%)' }} />
       </div>
 
       <div className="hp" style={{ position:'relative', zIndex:10 }}>
@@ -484,9 +548,10 @@ const Hero = () => {
                 padding:'7px 18px', borderRadius:999, marginBottom:28,
                 background:'rgba(255,255,255,.75)', backdropFilter:'blur(12px)',
                 border:'1px solid rgba(255,255,255,.9)',
-                boxShadow:'0 2px 14px rgba(29,78,216,.1)' }}>
+                boxShadow:'0 2px 14px rgba(29,78,216,.1)',
+                animation: 'hp-wiggle 3s ease-in-out infinite' }}>
                 <span style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:13, fontWeight:700, color:'#1d4ed8' }}>
-                  <SvgIcon name="check" size={15} color="#16a34a" strokeWidth={2.8} />
+                  <SvgIcon name="check" size={15} color="#16a34a" strokeWidth={2.8} style={{ animation: 'hp-spin 4s linear infinite' }} />
                   AICTE APPROVED
                 </span>
               </div>
@@ -498,8 +563,9 @@ const Hero = () => {
 
               {/* Main headline */}
               <h1 className="hp-in d2" style={{
-                fontFamily:'Inter,sans-serif', fontWeight:900,
-                fontSize:'clamp(2rem,6vw,3.8rem)', color:'#0f172a',
+                fontWeight:900,
+                fontSize:'clamp(2rem,6vw,3.8rem)', 
+                color: isDark ? '#f1f5f9' : '#0f172a',
                 letterSpacing:'-.045em', lineHeight:1.10, marginBottom:20,
               }}>
                 Industry-Oriented{' '}
@@ -509,14 +575,15 @@ const Hero = () => {
 
               {/* Subheading */}
               <p className="hp-in d3" style={{
-                fontSize:'clamp(.95rem,2.2vw,1.15rem)', color:'#475569',
+                fontSize:'clamp(.95rem,2.2vw,1.15rem)', 
+                color: isDark ? '#cbd5e1' : '#475569',
                 maxWidth:620, margin:'0 auto 36px', lineHeight:1.85,
               }}>
                 Providing practical training in{' '}
-                <strong style={{ color:'#1d4ed8' }}>Web Development</strong>,{' '}
-                <strong style={{ color:'#7c3aed' }}>AI</strong>,{' '}
-                <strong style={{ color:'#059669' }}>Stock Market</strong>, and{' '}
-                <strong style={{ color:'#0891b2' }}>Emerging Technologies</strong>
+                <strong style={{ color: isDark ? '#818cf8' : '#1d4ed8' }}>Web Development</strong>,{' '}
+                <strong style={{ color: isDark ? '#c084fc' : '#7c3aed' }}>AI</strong>,{' '}
+                <strong style={{ color: isDark ? '#34d399' : '#059669' }}>Stock Market</strong>, and{' '}
+                <strong style={{ color: isDark ? '#22d3ee' : '#0891b2' }}>Emerging Technologies</strong>
               </p>
 
               {/* CTA Buttons */}
@@ -534,12 +601,22 @@ const Hero = () => {
               {/* Trust pills row */}
               <div className="hp-in d5" style={{ display:'flex', gap:10, flexWrap:'wrap', justifyContent:'center', maxWidth:720, margin:'0 auto' }}>
                 {[
-                  { icon:'status', text:'100% Online', bg:'rgba(5,150,105,.07)', color:'#059669', border:'rgba(5,150,105,.18)' },
-                  { icon:'office', text:'MSME Govt. Certified', bg:'rgba(124,58,237,.07)', color:'#7c3aed', border:'rgba(124,58,237,.18)' },
-                  { icon:'certificate', text:'Verified Certificate', bg:'rgba(29,78,216,.07)', color:'#1d4ed8', border:'rgba(29,78,216,.18)' },
-                  { icon:'👨\u200d🏫', text:'Expert Mentorship',  bg:'rgba(217,119,6,.07)',  color:'#b45309', border:'rgba(217,119,6,.18)' },
-                ].map(({ icon, text, bg, color, border }) => (
-                  <div key={text} style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'9px 18px', borderRadius:999, background:bg, border:`1px solid ${border}`, color, fontWeight:700, fontSize:13 }}>
+                  { icon:'status', text:'100% Online', bg:'rgba(5,150,105,.07)', color:'#059669', border:'rgba(5,150,105,.18)', delay: '0s' },
+                  { icon:'office', text:'MSME Govt. Certified', bg:'rgba(124,58,237,.07)', color:'#7c3aed', border:'rgba(124,58,237,.18)', delay: '0.2s' },
+                  { icon:'certificate', text:'Verified Certificate', bg:'rgba(29,78,216,.07)', color:'#1d4ed8', border:'rgba(29,78,216,.18)', delay: '0.4s' },
+                  { icon:'👨\u200d🏫', text:'Expert Mentorship',  bg:'rgba(217,119,6,.07)',  color:'#b45309', border:'rgba(217,119,6,.18)', delay: '0.6s' },
+                ].map(({ icon, text, bg, color, border, delay }) => (
+                  <div key={text} style={{ 
+                    display:'inline-flex', alignItems:'center', gap:7, padding:'9px 18px', 
+                    borderRadius:999, background:bg, border:`1px solid ${border}`, 
+                    color, fontWeight:700, fontSize:13,
+                    animation: `hp-wave 2s ease-in-out infinite`,
+                    animationDelay: delay,
+                    transition: 'transform 0.3s ease'
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1) rotate(-2deg)'}
+                  onMouseLeave={e => e.currentTarget.style.transform = 'scale(1) rotate(0deg)'}
+                  >
                     <SvgIcon name={text === 'Expert Mentorship' ? 'mentor' : icon} size={16} color={color} /> {text}
                   </div>
                 ))}
@@ -583,8 +660,8 @@ const Hero = () => {
                         e.currentTarget.style.borderColor = 'rgba(255,255,255,.96)'
                       }}
                     >
-                      <div style={{ fontSize:15, fontWeight:800, color:'#0f172a', marginBottom:5 }}>{item.label}</div>
-                      <div style={{ fontSize:12, lineHeight:1.6, color:'#64748b' }}>{item.sub}</div>
+                      <div style={{ fontSize:15, fontWeight:800, color: isDark ? '#f1f5f9' : '#0f172a', marginBottom:5 }}>{item.label}</div>
+                      <div style={{ fontSize:12, lineHeight:1.6, color: isDark ? '#94a3b8' : '#64748b' }}>{item.sub}</div>
                     </Link>
                   ))}
                 </div>
@@ -607,7 +684,7 @@ const Hero = () => {
               {/* Programs Cards Container */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24, alignItems: 'stretch' }}>
                 
-                {activeCourses.map(course => {
+                {activeCourses.map((course, idx) => {
                   const catMeta = getCatMeta(course.category)
                   
                   // Use a default color based on category if available
@@ -625,9 +702,10 @@ const Hero = () => {
                       boxShadow:'0 10px 30px -10px rgba(0,0,0,0.06)',
                       position: 'relative',
                       overflow: 'hidden',
-                      transition: 'transform 0.3s, box-shadow 0.3s'
+                      transition: 'transform 0.3s, box-shadow 0.3s',
+                      animation: `hp-scaleIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s both`
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 15px 35px -10px rgba(0,0,0,0.1)'; }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; e.currentTarget.style.boxShadow = '0 20px 40px -10px rgba(0,0,0,0.12)'; }}
                     onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 10px 30px -10px rgba(0,0,0,0.06)'; }}
                     >
                       {/* Badge */}
@@ -655,10 +733,10 @@ const Hero = () => {
                       </div>
                       
                       <div>
-                        <div style={{ fontFamily:'Inter,sans-serif', fontWeight:800, fontSize:'clamp(1.2rem,2.5vw,1.55rem)', color:'#0f172a', marginBottom:8, letterSpacing:'-0.02em', lineHeight:1.2 }}>
+                        <div style={{ fontWeight:800, fontSize:'clamp(1.2rem,2.5vw,1.55rem)', color: isDark ? '#f1f5f9' : '#0f172a', marginBottom:8, letterSpacing:'-0.02em', lineHeight:1.2 }}>
                           {course.title}
                         </div>
-                        <p style={{ fontSize:13, color:'#64748b', lineHeight:1.6, maxWidth:300, margin:'0 auto' }}>
+                        <p style={{ fontSize:13, color: isDark ? '#94a3b8' : '#64748b', lineHeight:1.6, maxWidth:300, margin:'0 auto' }}>
                           {course.description?.substring(0, 80) || 'Master practical skills with our premium program.'}...
                         </p>
                       </div>
@@ -690,10 +768,10 @@ const Hero = () => {
                     <SvgIcon name="comingSoon" size={40} color="#8b5cf6" strokeWidth={1.7} />
                   </div>
                   <div>
-                    <div style={{ fontFamily:'Inter,sans-serif', fontWeight:800, fontSize:'clamp(1.1rem,2vw,1.35rem)', color:'#334155', marginBottom:6, letterSpacing:'-0.015em', lineHeight:1.25 }}>
+                    <div style={{ fontWeight:800, fontSize:'clamp(1.1rem,2vw,1.35rem)', color: isDark ? '#f1f5f9' : '#334155', marginBottom:6, letterSpacing:'-0.015em', lineHeight:1.25 }}>
                       More Programs <span style={{ color:'#8b5cf6' }}>Live</span>
                     </div>
-                    <p style={{ fontSize:12, color:'#64748b', lineHeight:1.6, maxWidth:320, margin:'0 auto 16px' }}>
+                    <p style={{ fontSize:12, color: isDark ? '#94a3b8' : '#64748b', lineHeight:1.6, maxWidth:320, margin:'0 auto 16px' }}>
                       Web Development, AI, Data Science, UI/UX, and Cyber Security internships are now open for enrollment.
                     </p>
                   </div>
@@ -728,20 +806,22 @@ const Hero = () => {
               <div style={{ textAlign:'center', marginBottom:40 }}>
                 <div className="hp-pill"><SvgIcon name="check" size={14} color="currentColor" /> Why Choose Us</div>
                 <h2 className="hp-stitle">Why <span className="hp-grad">AmitSolutionHub?</span></h2>
-                <p style={{ color:'#64748b', fontSize:14, marginTop:10, lineHeight:1.8 }}>
+                <p style={{ color: isDark ? '#94a3b8' : '#64748b', fontSize:14, marginTop:10, lineHeight:1.8 }}>
                   We are committed to quality education, real skill-building, and professional growth
                 </p>
               </div>
 
               <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(min(100%,290px),1fr))', gap:14 }}>
-                {WHY.map(({ icon, bg, title, desc, color }) => (
-                  <div key={title} className="hp-why-item">
+                {WHY.map(({ icon, bg, title, desc, color }, idx) => (
+                  <div key={title} className="hp-why-item" style={{
+                    animationDelay: `${idx * 0.1}s`
+                  }}>
                     <div className="hp-why-icon" style={{ background:`linear-gradient(145deg, ${bg}, rgba(255,255,255,.7))`, color, border:`1px solid ${color}18`, boxShadow:`inset 0 1px 0 rgba(255,255,255,.7), 0 10px 22px ${color}12` }}>
                       <SvgIcon name={icon} size={22} color={color} strokeWidth={2} />
                     </div>
                     <div>
-                      <div style={{ fontWeight:700, fontSize:14, color:'#0f172a', marginBottom:4 }}>{title}</div>
-                      <div style={{ fontSize:12, color:'#64748b', lineHeight:1.7 }}>{desc}</div>
+                      <div style={{ fontWeight:700, fontSize:14, color: isDark ? '#f1f5f9' : '#0f172a', marginBottom:4 }}>{title}</div>
+                      <div style={{ fontSize:12, color: isDark ? '#94a3b8' : '#64748b', lineHeight:1.7 }}>{desc}</div>
                     </div>
                   </div>
                 ))}
@@ -792,7 +872,7 @@ const Hero = () => {
                   <div style={{ color:'#1d4ed8', marginBottom:12 }}>
                     <SvgIcon name="trophy" size={36} color="#1d4ed8" strokeWidth={1.7} />
                   </div>
-                  <div style={{ fontFamily:'Inter,sans-serif', fontWeight:800, fontSize:'clamp(1rem,2.5vw,1.25rem)', color:'#1d4ed8', marginBottom:4, letterSpacing:'-0.015em' }}>
+                  <div style={{ fontWeight:800, fontSize:'clamp(1rem,2.5vw,1.25rem)', color:'#1d4ed8', marginBottom:4, letterSpacing:'-0.015em' }}>
                     Certificate of Completion
                   </div>
                   <div style={{ fontSize:12, color:'#94a3b8', fontWeight:600, letterSpacing:'.06em', textTransform:'uppercase', marginBottom:16 }}>
@@ -821,13 +901,15 @@ const Hero = () => {
           ════════════════════════════════════════════ */}
           <section style={{ padding:'0 clamp(16px,5vw,28px) clamp(60px,8vw,80px)' }}>
             <div style={{ maxWidth:1040, margin:'0 auto' }}>
-              <div className="hp-trust">
-                <div style={{ background:'rgba(255,255,255,.12)', borderRadius:16, padding:'18px 22px', display:'flex', alignItems:'center', justifyCenter:'center', flexShrink:0, color:'white' }}>
+              <div className="hp-trust" style={{
+                animation: 'hp-scaleIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both'
+              }}>
+                <div style={{ background:'rgba(255,255,255,.12)', borderRadius:16, padding:'18px 22px', display:'flex', alignItems:'center', justifyCenter:'center', flexShrink:0, color:'white', animation: 'hp-float 4s ease-in-out infinite' }}>
                   <SvgIcon name="office" size={46} color="white" strokeWidth={1.6} />
                 </div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', marginBottom:8 }}>
-                    <span style={{ fontFamily:'Inter,sans-serif', fontWeight:800, color:'white', fontSize:'clamp(1rem,2.5vw,1.25rem)', letterSpacing:'-0.01em' }}>
+                    <span style={{ fontWeight:800, color:'white', fontSize:'clamp(1rem,2.5vw,1.25rem)', letterSpacing:'-0.01em' }}>
                       Officially Recognized &amp; Trusted
                     </span>
                     <span style={{ fontSize:11, fontWeight:700, padding:'3px 11px', borderRadius:999, background:'rgba(255,255,255,.18)', color:'white', letterSpacing:'.06em', textTransform:'uppercase' }}>MSME · Govt. of India</span>
@@ -882,9 +964,12 @@ const Hero = () => {
                     </p>
                   </div>
 
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,290px),1fr))', gap:24 }}>
+                  <div style={{ display:'grid', gap:12 }}>
                     {displayedTestimonials.slice(0, showAllReviews ? 6 : 3).map((item, idx) => (
-                      <div key={item.id || idx} className="hp-tcard" style={{ display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:200 }}>
+                      <div key={item.id || idx} className="hp-tcard" style={{ 
+                        display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:200,
+                        animationDelay: `${idx * 0.15}s`
+                      }}>
                         {/* Stars */}
                         <div style={{ display:'flex', gap:3, color:'#fbbf24', marginBottom:14, fontSize:14 }}>
                           {[...Array(Number(item.rating || 5))].map((_, i) => (
@@ -948,6 +1033,7 @@ const Hero = () => {
                     <div 
                       key={idx} 
                       className={`hp-faq-item ${isOpen ? 'active' : ''}`}
+                      style={{ animationDelay: `${idx * 0.08}s` }}
                     >
                       <button 
                         className="hp-faq-trigger"
@@ -1009,10 +1095,11 @@ const Hero = () => {
                 borderRadius:'clamp(20px,4vw,28px)',
                 padding:'clamp(40px,7vw,64px) clamp(24px,6vw,50px)',
                 position:'relative', overflow:'hidden',
+                animation: 'hp-scaleIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both'
               }}>
-                <div style={{ position:'absolute', top:-60, right:-60, width:200, height:200, borderRadius:'50%', background:'rgba(99,102,241,.06)', pointerEvents:'none' }}/>
-                <div className="hp-pill" style={{ marginBottom:16 }}><SvgIcon name="rocket" size={14} color="currentColor" /> Join Us Today</div>
-                <h2 style={{ fontFamily:'Inter,sans-serif', fontWeight:800, fontSize:'clamp(1.5rem,3.8vw,2.3rem)', color:'#0f172a', marginBottom:12, letterSpacing:'-.02em', lineHeight:1.18 }}>
+                <div style={{ position:'absolute', top:-60, right:-60, width:200, height:200, borderRadius:'50%', background:'rgba(99,102,241,.06)', pointerEvents:'none', animation: 'hp-glow 3s ease-in-out infinite' }}/>
+                <div className="hp-pill" style={{ marginBottom:16, animation: 'hp-bounce 2s ease-in-out infinite' }}><SvgIcon name="rocket" size={14} color="currentColor" style={{ animation: 'hp-wiggle 2s ease-in-out infinite' }} /> Join Us Today</div>
+                <h2 style={{ fontWeight:800, fontSize:'clamp(1.5rem,3.8vw,2.3rem)', color:'#0f172a', marginBottom:12, letterSpacing:'-.02em', lineHeight:1.18 }}>
                   Start Your <span className="hp-grad">Career Journey</span> Today
                 </h2>
                 <p style={{ color:'#64748b', fontSize:'clamp(.9rem,2vw,1rem)', lineHeight:1.85, maxWidth:520, margin:'0 auto 32px' }}>

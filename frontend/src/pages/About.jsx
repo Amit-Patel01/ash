@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useTheme } from '../context/ThemeContext'
@@ -18,10 +18,8 @@ import {
    Dynamic theme adjustments using CSS variables
 ══════════════════════════════════════════════════════════ */
 const CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
   .abt {
-    font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-family:inherit;
     color:rgb(var(--fg));
     background:rgb(var(--bg));
     transition: background-color 0.35s ease, color 0.35s ease;
@@ -252,7 +250,23 @@ const CSS = `
   }
   .abt-story-fact-icon {
     width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px 18px; background: rgba(var(--card), 0.8);
+    border: 1px solid rgba(var(--border), 0.8); border-radius: 16px;
+    transition: transform .25s, border-color .25s;
+  }
+  .abt-story-fact:hover {
+    transform: translateX(4px); border-color: rgba(99,102,241,0.2);
+  }
+  .abt-story-fact-icon {
+    width: 36px; height: 36px; border-radius: 10px;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .abt-story-fact-text {
+    flex: 1; font-size: 13px; color: rgb(var(--fg-muted)); line-height: 1.65;
+  }
+  .abt-story-fact-title {
+    font-size: 13.5px; font-weight: 800; color: rgb(var(--fg)); margin-bottom: 3px;
   }
 
   /* ══ MISSION/VISION/VALUES ══ */
@@ -654,17 +668,36 @@ const About = () => {
   const [loaded, setLoaded] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
 
-  const sortedTeam = useMemo(
-    () => buildTeamProfiles({ publicTeam, users, teamMembers }),
-    [publicTeam, users, teamMembers]
-  )
+  const sortedTeam = useMemo(() => {
+    // Always show public team profiles, regardless of auth status
+    if (publicTeam.length > 0) {
+      const result = buildTeamProfiles({ publicTeam, users, teamMembers })
+      console.log('[About] Sorted team built:', result?.length || 0, result)
+      return result
+    }
+    // Fallback to building from authenticated data only if logged in
+    if (users || teamMembers) {
+      const result = buildTeamProfiles({ publicTeam: [], users, teamMembers })
+      console.log('[About] Sorted team from auth:', result?.length || 0)
+      return result
+    }
+    console.log('[About] No team data available')
+    return []
+  }, [publicTeam, users, teamMembers])
 
   useEffect(() => {
     let isMounted = true
     fetchPublicTeamProfiles()
-      .then((profiles) => { if (isMounted) setPublicTeam(profiles) })
-      .catch((err) => console.warn('Public team profiles could not be loaded:', err))
-      .finally(() => { if (isMounted) setTeamLoading(false) })
+      .then((profiles) => { 
+        console.log('[About] Public team profiles fetched:', profiles?.length || 0, profiles)
+        if (isMounted) setPublicTeam(profiles) 
+      })
+      .catch((err) => {
+        console.warn('Public team profiles could not be loaded:', err)
+      })
+      .finally(() => { 
+        if (isMounted) setTeamLoading(false) 
+      })
     return () => { isMounted = false }
   }, [])
 
@@ -730,6 +763,24 @@ const About = () => {
         <button className="slider-btn next" onClick={nextFn} aria-label="Next">
           <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
         </button>
+      )}
+      {teamArray.length > 1 && (
+        <div style={{ position:'absolute', bottom:-32, left:'50%', transform:'translateX(-50%)', display:'flex', gap:6, zIndex:20 }}>
+          {teamArray.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveIndex(i)}
+              aria-label={`Go to member ${i + 1}`}
+              style={{
+                width: i === activeIdx ? 20 : 8,
+                height: 8, borderRadius: 999,
+                background: i === activeIdx ? '#6366f1' : 'rgba(99,102,241,0.25)',
+                border: 'none', cursor: 'pointer',
+                transition: 'all 0.3s ease', padding: 0
+              }}
+            />
+          ))}
+        </div>
       )}
     </div>
   )
@@ -1105,19 +1156,19 @@ const About = () => {
               <h2 className="abt-sec-title">Our Mentors & <span className="abt-grad">Software Team</span></h2>
               <p className="abt-sec-sub" style={{ maxWidth: 460, margin:'8px auto 0' }}>The industry mentors and builders behind AmitSolutionHub's codebases.</p>
             </div>
-            {sortedTeam.length > 0 ? (
+            {teamLoading ? (
+              <div style={{ padding:'32px 24px', textAlign:'center', maxWidth:460, margin:'36px auto 0', background:'rgba(var(--card), 0.8)', border:'1px solid rgba(var(--border), 0.8)', borderRadius:20, boxShadow:'var(--card-shadow)' }}>
+                <div style={{ fontSize:32, marginBottom:10 }}>⏳</div>
+                <h3 style={{ fontWeight:800, color:'rgb(var(--fg))', fontSize:'14px', marginBottom:6 }}>Loading Profile Data...</h3>
+                <p style={{ color:'rgb(var(--fg-muted))', fontSize:12.5, lineHeight:1.6 }}>Fetching registered public developer and mentor profiles.</p>
+              </div>
+            ) : sortedTeam.length > 0 ? (
               renderSlider(sortedTeam, activeIndex, prevSlide, nextSlide)
             ) : (
-              <div style={{ padding:'32px 24px', textAlign:'center', maxWidth:460, margin:'36px auto 0', background:'rgb(var(--card))', border:'1px solid rgb(var(--border))', borderRadius:20, boxShadow:'var(--card-shadow)' }}>
-                <div style={{ fontSize:32, marginBottom:10 }}>{teamLoading ? '⏳' : '👷'}</div>
-                <h3 style={{ fontWeight:800, color:'rgb(var(--fg))', fontSize:'14px', marginBottom:6 }}>
-                  {teamLoading ? 'Loading Profile Data...' : 'Profiles Updating'}
-                </h3>
-                <p style={{ color:'rgb(var(--fg-muted))', fontSize:12.5, lineHeight:1.6 }}>
-                  {teamLoading
-                    ? 'Fetching registered public developer and mentor profiles.'
-                    : 'Developer profile lists are currently being refreshed by the admin.'}
-                </p>
+              <div style={{ padding:'32px 24px', textAlign:'center', maxWidth:460, margin:'36px auto 0', background:'rgba(var(--card), 0.8)', border:'1px solid rgba(var(--border), 0.8)', borderRadius:20, boxShadow:'var(--card-shadow)' }}>
+                <div style={{ fontSize:32, marginBottom:10 }}>👷</div>
+                <h3 style={{ fontWeight:800, color:'rgb(var(--fg))', fontSize:'14px', marginBottom:6 }}>Profiles Updating</h3>
+                <p style={{ color:'rgb(var(--fg-muted))', fontSize:12.5, lineHeight:1.6 }}>Developer profile lists are currently being refreshed by the admin.</p>
               </div>
             )}
           </div>
