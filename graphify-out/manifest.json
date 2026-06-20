@@ -200,8 +200,8 @@
     "semantic_hash": ""
   },
   "backend/package.json": {
-    "mtime": 1781858375.19267,
-    "ast_hash": "7f0a1f8c7966ac701ff7454e939426bf",
+    "mtime": 1781948129.6639793,
+    "ast_hash": "b86a2eb43ebde1d4f6278d586acab6de",
     "semantic_hash": ""
   },
   "backend/routes/admin.js": {
@@ -265,8 +265,8 @@
     "semantic_hash": ""
   },
   "backend/server.js": {
-    "mtime": 1781103051.3067124,
-    "ast_hash": "aaa26a2d8437a65bd41b7cd76e2c6443",
+    "mtime": 1781948960.9922652,
+    "ast_hash": "4928418b7099bc248228a320bfb5b668",
     "semantic_hash": ""
   },
   "backend/services/aiService.js": {
@@ -1535,8 +1535,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminSettings.jsx": {
-    "mtime": 1780817326.801576,
-    "ast_hash": "a92866276e8da5c705dd2274a8b19755",
+    "mtime": 1781948935.4721093,
+    "ast_hash": "6add8bc05363523817f0b53785891b6b",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminTasks.jsx": {
@@ -1580,8 +1580,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/Hero.jsx": {
-    "mtime": 1780849555.827942,
-    "ast_hash": "818b956ef85d875a5e2e754792fbe11f",
+    "mtime": 1781948556.0072627,
+    "ast_hash": "f3c7f92c865d756370a4a6cd62d2134d",
     "semantic_hash": ""
   },
   "frontend/src/components/Layout.jsx": {
@@ -1825,8 +1825,8 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/About.jsx": {
-    "mtime": 1780817326.8174427,
-    "ast_hash": "d8c3f4389c8dec62907c4eace64bc61f",
+    "mtime": 1781948579.914181,
+    "ast_hash": "81cb586e2b23d11be7094278ac2c1aa1",
     "semantic_hash": ""
   },
   "frontend/src/pages/AboutTradingMentorship.jsx": {
@@ -1950,8 +1950,8 @@
     "semantic_hash": ""
   },
   "frontend/src/store/StoreContext.jsx": {
-    "mtime": 1780817326.8253543,
-    "ast_hash": "7b84d853c274b3861007f45b7da0dcc9",
+    "mtime": 1781948923.7478063,
+    "ast_hash": "c43599e2b1757e58af2800ab8b4ddc79",
     "semantic_hash": ""
   },
   "frontend/src/technicalsupport/RepairService.jsx": {
@@ -2015,8 +2015,8 @@
     "semantic_hash": ""
   },
   "frontend/tailwind.config.js": {
-    "mtime": 1778905310.3992631,
-    "ast_hash": "5c64a18510e5ee932b17c2129e6386cd",
+    "mtime": 1781948578.6426945,
+    "ast_hash": "f503f7dbf1ae225ab642dc761fdfec50",
     "semantic_hash": ""
   },
   "frontend/vercel.json": {
@@ -3182,6 +3182,16 @@
   "backend/routes/chat.js": {
     "mtime": 1780854545.7030518,
     "ast_hash": "959eec3658786608982a6953548f4ab0",
+    "semantic_hash": ""
+  },
+  "backend/scripts/exportFirebase.js": {
+    "mtime": 1781948238.7102234,
+    "ast_hash": "4e1a9dce43932cace0aa83ac24faf659",
+    "semantic_hash": ""
+  },
+  "backend/scripts/migrateToMongo.js": {
+    "mtime": 1781948259.4057777,
+    "ast_hash": "e00abce50b2c6ef171e62d8efd50a5c8",
     "semantic_hash": ""
   }
 }

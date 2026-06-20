@@ -7,7 +7,7 @@ import msmeLogo from '../assets/msme.png'
 import msmeQR from '../assets/msme-qr.png'
 import {
   buildTeamProfiles,
-  fetchPublicTeamProfiles,
+  fetchPublicTeamProfiles,  
   getTeamMemberImageUrl,
   getTeamMemberProfileId,
 } from '../utils/teamProfiles'
@@ -16,10 +16,18 @@ import {
    STYLES
 ══════════════════════════════════════════════════════════ */
 const CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-  .abt { font-family:'Inter',sans-serif; }
+  .abt {
+    font-family:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    color:#0f172a;
+    text-rendering:optimizeLegibility;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    font-feature-settings:'cv02','cv03','cv04';
+  }
   .abt * { box-sizing:border-box; margin:0; padding:0; }
+  .abt p { letter-spacing:0; }
 
   /* ── Background ── */
   .abt-bg {
@@ -44,10 +52,8 @@ const CSS = `
 
   /* ── Keyframes ── */
   @keyframes abt-up    { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
-  @keyframes abt-spin  { to{transform:translate(-50%,-50%) rotate(360deg)} }
-  @keyframes abt-spinr { to{transform:translate(-50%,-50%) rotate(-360deg)} }
-  @keyframes abt-pulse { 0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.2)} 50%{box-shadow:0 0 0 7px rgba(34,197,94,.07)} }
   @keyframes abt-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+  @keyframes abt-pulse { 0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.2)} 50%{box-shadow:0 0 0 7px rgba(34,197,94,.07)} }
   @keyframes abt-shine {
     0%   { transform:translateX(-100%) skewX(-20deg); }
     100% { transform:translateX(250%)  skewX(-20deg); }
@@ -81,12 +87,13 @@ const CSS = `
   /* ── Brand pill ── */
   .abt-pill {
     display:inline-flex; align-items:center; gap:7px;
-    padding:5px 16px; border-radius:999px;
+    padding:6px 17px; border-radius:999px;
     background:rgba(99,102,241,.08); border:1px solid rgba(99,102,241,.18);
-    font-size:11px; font-weight:700; letter-spacing:.07em;
+    font-family:'Inter',sans-serif;
+    font-size:11px; font-weight:700; letter-spacing:.08em;
     text-transform:uppercase; color:#6366f1;
+    line-height:1.2;
   }
-  .abt-pill-dot { width:6px;height:6px;border-radius:50%;background:#22c55e;animation:abt-pulse 2s infinite; }
 
   /* ── Gradient text ── */
   .abt-grad {
@@ -94,35 +101,14 @@ const CSS = `
     -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
   }
 
-  /* ── Avatar frame ── */
-  .abt-av-frame {
-    background:linear-gradient(135deg,#6366f1,#3b82f6,#8b5cf6);
-    padding:3px; border-radius:50%;
-    box-shadow:0 0 0 9px rgba(99,102,241,.08),0 20px 64px rgba(99,102,241,.24);
-    transition:transform .4s,box-shadow .4s;
-  }
-  .abt-av-frame:hover {
-    transform:scale(1.06);
-    box-shadow:0 0 0 14px rgba(99,102,241,.1),0 28px 80px rgba(99,102,241,.32);
-  }
-  .abt-av-frame img { border-radius:50%; display:block; background:#e0e7ff; }
-
-  /* ── Social btn ── */
-  .abt-soc {
-    display:inline-flex; align-items:center; gap:7px;
-    padding:9px 16px; border-radius:12px;
-    font-size:13px; font-weight:600;
-    text-decoration:none; border:1px solid; cursor:pointer;
-    transition:transform .22s ease,box-shadow .22s ease,background .22s ease;
-  }
-  .abt-soc:hover { transform:translateY(-2px); }
-
   /* ── CTA button ── */
   .abt-btn {
     display:inline-flex; align-items:center; gap:9px;
     padding:13px 28px; border-radius:999px;
     background:linear-gradient(135deg,#6366f1,#3b82f6);
     color:white; font-weight:700; font-size:14px;
+    font-family:'Inter',sans-serif;
+    letter-spacing:0;
     text-decoration:none; border:none; cursor:pointer;
     box-shadow:0 4px 20px rgba(99,102,241,.35),inset 0 1px 0 rgba(255,255,255,.15);
     transition:transform .25s,box-shadow .25s; position:relative; overflow:hidden;
@@ -142,9 +128,11 @@ const CSS = `
 
   /* ── Section title ── */
   .abt-stitle {
-    font-family:'Syne',sans-serif; font-weight:800;
-    font-size:clamp(1.45rem,3.5vw,2.1rem);
-    color:#0f172a; letter-spacing:-.02em;
+    font-family:'Inter',sans-serif; font-weight:800;
+    font-size:clamp(1.55rem,3.6vw,2.25rem);
+    line-height:1.16;
+    color:#0f172a; letter-spacing:-.025em;
+    text-wrap:balance;
   }
 
   /* ── Trust card ── */
@@ -242,7 +230,7 @@ const CSS = `
   .abt-tc-photo-wrap .abt-tc-init {
     display:flex; align-items:center; justify-content:center;
     font-size:2rem; font-weight:900; color:white;
-    font-family:'Syne',sans-serif;
+    font-family:'Inter',sans-serif;
     background:linear-gradient(135deg,#6366f1,#3b82f6);
   }
 
@@ -265,7 +253,7 @@ const CSS = `
 
   /* name */
   .abt-tc-name {
-    font-family:'Syne',sans-serif; font-weight:800;
+    font-family:'Inter',sans-serif; font-weight:800;
     font-size:clamp(1rem,2vw,1.1rem); color:#0f172a;
     text-align:center; padding:0 20px; line-height:1.25;
   }
@@ -359,12 +347,50 @@ const CSS = `
   }
   .abt-aicte-item:hover { background:rgba(99,102,241,.03); }
   .abt-aicte-num {
-    font-family:'Syne',sans-serif; font-weight:800;
-    font-size:clamp(1.4rem,4vw,2rem); color:#6366f1; line-height:1;
+    font-family:'Inter',sans-serif; font-weight:800;
+    font-size:clamp(1.45rem,3.6vw,2.05rem); color:#6366f1; line-height:1;
+    letter-spacing:-.025em;
   }
   .abt-aicte-label {
-    font-size:11px; font-weight:600; color:#64748b;
-    text-transform:uppercase; letter-spacing:.05em; margin-top:4px;
+    font-family:'Inter',sans-serif;
+    font-size:11px; font-weight:700; color:#64748b;
+    text-transform:uppercase; letter-spacing:.06em; margin-top:6px;
+  }
+
+  /* ── Company story sections ── */
+  .abt-info-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));
+    gap:16px;
+  }
+  .abt-info-card {
+    padding:24px; border-radius:20px;
+    background:rgba(255,255,255,.8);
+    border:1px solid rgba(255,255,255,.95);
+    box-shadow:0 4px 22px rgba(99,102,241,.07);
+    transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease;
+  }
+  .abt-info-card:hover {
+    transform:translateY(-4px);
+    border-color:rgba(99,102,241,.2);
+    box-shadow:0 12px 34px rgba(99,102,241,.12);
+  }
+  .abt-step-num {
+    width:38px; height:38px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:16px; color:white; font-weight:800; font-size:13px;
+    background:linear-gradient(135deg,#6366f1,#3b82f6);
+    box-shadow:0 6px 18px rgba(99,102,241,.24);
+  }
+  .abt-info-title {
+    font-family:'Inter',sans-serif; font-size:1rem;
+    line-height:1.3;
+    font-weight:800; color:#0f172a; margin-bottom:10px;
+    letter-spacing:-.015em;
+  }
+  .abt-info-copy {
+    color:#64748b; font-size:13px; line-height:1.75;
+    font-weight:400;
   }
 
   /* scrollbar hide */
@@ -405,6 +431,7 @@ const CSS = `
   .abt-tcard-role {
     position:absolute; bottom:12px; left:12px;
     background:#dc2626; color:white;
+    font-family:'Inter',sans-serif;
     font-size:10px; font-weight:800;
     padding:5px 12px; border-radius:8px;
     box-shadow:0 4px 12px rgba(220,38,38,0.25);
@@ -417,13 +444,14 @@ const CSS = `
     background:white;
   }
   .abt-tcard-name {
-    color:#be123c; font-family:'Plus Jakarta Sans',sans-serif;
-    font-size:22px; font-weight:800; margin-bottom:8px;
-    letter-spacing: -0.02em; text-transform: capitalize;
+    color:#0f172a; font-family:'Inter',sans-serif;
+    font-size:21px; font-weight:800; margin-bottom:8px;
+    line-height:1.2;
+    letter-spacing:-.02em; text-transform: capitalize;
   }
   .abt-tcard-bio {
-    font-size:13px; color:#64748b; line-height:1.6;
-    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:13px; color:#64748b; line-height:1.65;
+    font-family:'Inter',sans-serif;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
     margin-bottom:18px; font-weight: 500;
   }
@@ -438,7 +466,7 @@ const CSS = `
     font-size: 13px;
     border-radius: 99px;
     text-decoration: none;
-    font-family:'Plus Jakarta Sans',sans-serif;
+    font-family:'Inter',sans-serif;
     transition: all 0.2s ease;
     border: 1px solid rgba(59,130,246,0.15);
     width: 100%;
@@ -460,7 +488,7 @@ const CSS = `
     font-size: 13px;
     border-radius: 99px;
     text-decoration: none;
-    font-family:'Plus Jakarta Sans',sans-serif;
+    font-family:'Inter',sans-serif;
     transition: all 0.2s ease;
     width: 100%;
     margin-top: 10px;
@@ -497,7 +525,6 @@ const CSS = `
     .abt-aicte-item:not(:last-child)::after { display:none; }
   }
   @media (max-width:480px) {
-    .abt-soc  { padding:8px 11px; font-size:12px; }
     .abt-btn  { padding:12px 20px; font-size:13px; }
     .abt-trust { flex-direction:column; text-align:center; padding:18px 14px; }
     .abt-msme { flex-direction:column; }
@@ -543,19 +570,6 @@ const SvgIcon = ({ name, size = 20, color = 'currentColor', strokeWidth = 2 }) =
       return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /></svg>
   }
 }
-/* ══ Typing hook ══ */
-function useTyping(text, speed = 52, delay = 800) {
-  const [n, setN] = useState(0)
-  useEffect(() => {
-    const t = setTimeout(() => {
-      const id = setInterval(() => setN(c => { if (c >= text.length) { clearInterval(id); return c } return c + 1 }), speed)
-      return () => clearInterval(id)
-    }, delay)
-    return () => clearTimeout(t)
-  }, []) // eslint-disable-line
-  return text.slice(0, n)
-}
-
 /* ══ Trust Badge Data ══ */
 const TRUST_BADGES = [
   { icon: 'building', bg: 'linear-gradient(135deg,#7c3aed,#6d28d9)', title: 'MSME Certified', desc: 'Officially registered under Ministry of MSME, Govt. of India' },
@@ -572,6 +586,20 @@ const AICTE_STATS = [
   { num: 'MSME', label: 'Govt. Certified' },
 ]
 
+const OPERATING_STEPS = [
+  { num: '01', title: 'Understand', desc: 'We begin with your goals, users, budget, and the real problem the product needs to solve.' },
+  { num: '02', title: 'Plan', desc: 'We define the scope, technology, milestones, and responsibilities before development starts.' },
+  { num: '03', title: 'Build', desc: 'Our team designs, develops, tests, and shares progress through clear project checkpoints.' },
+  { num: '04', title: 'Deliver & Support', desc: 'We launch carefully, hand over the essentials, and stay available for improvements and support.' },
+]
+
+const EXPERTISE = [
+  { icon: 'bolt', title: 'Custom Projects', desc: 'Purpose-built digital products for businesses, students, and individuals with specific requirements.' },
+  { icon: 'building', title: 'Web & Software Development', desc: 'Responsive websites, dashboards, portals, and practical software designed for reliable day-to-day use.' },
+  { icon: 'idea', title: 'Internships & Mentorship', desc: 'Structured, project-based learning with practical guidance, accountability, and authentic certification.' },
+  { icon: 'shield', title: 'Technical Support', desc: 'Maintenance, troubleshooting, security-minded improvements, and dependable assistance after delivery.' },
+]
+
 /* ══════════════════════════════════════════════════════════
    COMPONENT
 ══════════════════════════════════════════════════════════ */
@@ -581,8 +609,6 @@ const About = () => {
   const [teamLoading, setTeamLoading] = useState(true)
   const [loaded, setLoaded] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
-  const role = useTyping('Full-Stack Developer & Tech Entrepreneur')
-
   const sortedTeam = useMemo(
     () => buildTeamProfiles({ publicTeam, users, teamMembers }),
     [publicTeam, users, teamMembers]
@@ -723,93 +749,6 @@ const About = () => {
           transition:'opacity .7s ease,transform .7s ease',
         }}>
 
-          {/* ═══ HERO ════════════════════════════════════════════════ */}
-          <section style={{ display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center', marginBottom:'clamp(48px,8vw,80px)' }}>
-
-            <div className="abt-pill abt-in d1" style={{ marginBottom:26 }}>
-              <span className="abt-pill-dot"/>
-              AmitSolutionHub · MSME Registered 
-            </div>
-
-            {/* Avatar with rings */}
-            <div className="abt-in d1" style={{ position:'relative', marginBottom:28 }}>
-              <svg width="196" height="196" viewBox="0 0 196 196" style={{ position:'absolute',top:'50%',left:'50%',animation:'abt-spin 14s linear infinite',pointerEvents:'none' }}>
-                <circle cx="98" cy="98" r="93" fill="none" stroke="url(#rg1)" strokeWidth="1.5" strokeDasharray="7 11"/>
-                <defs><linearGradient id="rg1" x1="0" y1="0" x2="196" y2="196" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#6366f1" stopOpacity=".7"/><stop offset="60%" stopColor="#3b82f6" stopOpacity=".25"/><stop offset="100%" stopColor="#8b5cf6" stopOpacity="0"/></linearGradient></defs>
-              </svg>
-              <svg width="158" height="158" viewBox="0 0 158 158" style={{ position:'absolute',top:'50%',left:'50%',animation:'abt-spinr 9s linear infinite',pointerEvents:'none' }}>
-                <circle cx="79" cy="79" r="75" fill="none" stroke="url(#rg2)" strokeWidth="1" strokeDasharray="4 14"/>
-                <defs><linearGradient id="rg2" x1="0" y1="0" x2="158" y2="158" gradientUnits="userSpaceOnUse"><stop offset="0%" stopColor="#8b5cf6" stopOpacity=".55"/><stop offset="100%" stopColor="#6366f1" stopOpacity="0"/></linearGradient></defs>
-              </svg>
-              <div className="abt-av-frame" style={{ width:'clamp(108px,17vw,136px)', height:'clamp(108px,17vw,136px)', position:'relative', zIndex:1 }}>
-                <img src="https://github.com/Amit-Patel01.png" alt="Amit Patel" style={{ width:'100%', height:'100%' }}/>
-              </div>
-              <div style={{ position:'absolute',bottom:2,right:-4,zIndex:10,background:'white',borderRadius:999,padding:'4px 9px 4px 7px',border:'1px solid rgba(34,197,94,.3)',display:'flex',alignItems:'center',gap:5,fontSize:11,fontWeight:700,color:'#16a34a',boxShadow:'0 2px 10px rgba(34,197,94,.14)' }}>
-                <span style={{ width:6,height:6,borderRadius:'50%',background:'#22c55e',display:'inline-block' }}/>Active
-              </div>
-            </div>
-
-            <h1 className="abt-in d2" style={{ fontFamily:'Syne,sans-serif',fontWeight:800,fontSize:'clamp(2rem,5.5vw,3.6rem)',color:'#0f172a',letterSpacing:'-.03em',lineHeight:1.1,marginBottom:10 }}>
-              Hi, I'm <span className="abt-grad">Amit Patel</span>
-            </h1>
-            <p className="abt-in d2" style={{ fontSize:'clamp(.9rem,2vw,1rem)',fontWeight:600,color:'#6366f1',marginBottom:8 }}>
-              Founder & CEO — AmitSolutionHub
-            </p>
-            <p className="abt-in d3" style={{ fontSize:'clamp(.88rem,2vw,.98rem)',fontWeight:500,color:'#475569',minHeight:'1.5em',marginBottom:16 }}>
-              {role}<span style={{ color:'#6366f1',opacity:.7 }}>|</span>
-            </p>
-            <p className="abt-in d3" style={{ color:'#64748b',fontSize:'clamp(.88rem,2vw,1rem)',maxWidth:540,lineHeight:1.88,marginBottom:32 }}>
-              I specialize in crafting <strong style={{ color:'#334155',fontWeight:700 }}>premium digital products</strong> and expert technology solutions.
-              AmitSolutionHub is a <strong style={{ color:'#334155',fontWeight:700 }}>MSME-certified</strong>, trusted tech company serving businesses and individuals across India.
-            </p>
-
-            {/* Social links */}
-            <div className="abt-in d4" style={{ display:'flex',gap:10,flexWrap:'wrap',justifyContent:'center',marginBottom:28 }}>
-              <a href="https://portfolio.amitsolutionhub.com/" target="_blank" rel="noreferrer" className="abt-soc" style={{ background:'#f0f0ff',borderColor:'rgba(99,102,241,.22)',color:'#6366f1' }}
-                onMouseEnter={e=>{ e.currentTarget.style.background='#e0e7ff'; e.currentTarget.style.boxShadow='0 4px 16px rgba(99,102,241,.18)' }}
-                onMouseLeave={e=>{ e.currentTarget.style.background='#f0f0ff'; e.currentTarget.style.boxShadow='none' }}>
-                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                Portfolio
-              </a>
-              <a href="https://github.com/Amit-Patel01" target="_blank" rel="noreferrer" className="abt-soc" style={{ background:'#0f172a',borderColor:'transparent',color:'white' }}
-                onMouseEnter={e=>e.currentTarget.style.boxShadow='0 4px 16px rgba(15,23,42,.28)'}
-                onMouseLeave={e=>e.currentTarget.style.boxShadow='none'}>
-                <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-                GitHub
-              </a>
-              <a href="https://www.linkedin.com/in/amit-patel01/" target="_blank" rel="noreferrer" className="abt-soc" style={{ background:'#eff6ff',borderColor:'rgba(59,130,246,.22)',color:'#2563eb' }}
-                onMouseEnter={e=>{ e.currentTarget.style.background='#dbeafe'; e.currentTarget.style.boxShadow='0 4px 16px rgba(59,130,246,.18)' }}
-                onMouseLeave={e=>{ e.currentTarget.style.background='#eff6ff'; e.currentTarget.style.boxShadow='none' }}>
-                <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                LinkedIn
-              </a>
-            </div>
-
-            {/* CTA */}
-            <div className="abt-in d5" style={{ display:'flex',gap:12,flexWrap:'wrap',justifyContent:'center' }}>
-              <a href="#team-section" className="abt-btn" onClick={(e) => {
-                const el = document.getElementById('team-section');
-                if (el) {
-                  e.preventDefault();
-                  try {
-                    el.scrollIntoView({ behavior: 'smooth' });
-                  } catch (err) {
-                    el.scrollIntoView();
-                  }
-                }
-              }}>
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                Meet the Team
-              </a>
-              <Link to="/contact" style={{ display:'inline-flex',alignItems:'center',gap:8,padding:'13px 22px',borderRadius:999,background:'rgba(99,102,241,.07)',border:'1px solid rgba(99,102,241,.2)',color:'#6366f1',fontWeight:700,fontSize:14,textDecoration:'none',transition:'all .25s' }}
-                onMouseEnter={e=>{ e.currentTarget.style.background='rgba(99,102,241,.12)'; e.currentTarget.style.transform='translateY(-2px)' }}
-                onMouseLeave={e=>{ e.currentTarget.style.background='rgba(99,102,241,.07)'; e.currentTarget.style.transform='none' }}>
-                Let's Work Together
-                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-              </Link>
-            </div>
-          </section>
-
           {/* ═══ AICTE CREDIBILITY BAR ═══════════════════════════════ */}
           <section className="abt-in d6" style={{ marginBottom:'clamp(36px,5vw,52px)' }}>
             <div className="abt-aicte-bar">
@@ -858,7 +797,7 @@ const About = () => {
 
               <div style={{ flex:1, minWidth:0, position:'relative', zIndex:1 }}>
                 <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', marginBottom:8 }}>
-                  <h3 style={{ fontFamily:'Syne,sans-serif', fontWeight:800, color:'white', fontSize:'clamp(1.15rem,2.8vw,1.4rem)', letterSpacing:'-0.01em' }}>
+                  <h3 style={{ fontFamily:'Inter,sans-serif', fontWeight:800, color:'white', fontSize:'clamp(1.15rem,2.8vw,1.4rem)', letterSpacing:'-0.015em' }}>
                     Officially Recognized & Trusted
                   </h3>
                   <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
@@ -921,7 +860,7 @@ const About = () => {
           {/* ═══ TRUST & CERTIFIED ════════════════════════════════════ */}
           <section className="abt-in d6" style={{ marginBottom:'clamp(40px,6vw,60px)' }}>
             <div style={{ textAlign:'center', marginBottom:28 }}>
-              <div className="abt-pill" style={{ marginBottom:12 }}>Why Choose Us</div>
+              <div className="abt-pill" style={{ marginBottom:12 }}>MSME &amp; Trust Section</div>
               <h2 className="abt-stitle">Trusted &amp; <span className="abt-grad">Certified</span></h2>
               <p style={{ color:'#64748b',fontSize:14,marginTop:8 }}>We are a verified, government-recognized tech company</p>
             </div>
@@ -942,29 +881,111 @@ const About = () => {
 
           <div className="abt-div"/>
 
+          {/* ═══ HOW WE OPERATE ══════════════════════════════════════ */}
+          <section className="abt-in d6" style={{ marginBottom:'clamp(40px,6vw,60px)' }}>
+            <div style={{ textAlign:'center', marginBottom:28 }}>
+              <div className="abt-pill" style={{ marginBottom:12 }}>How We Operate</div>
+              <h2 className="abt-stitle">A Clear Process From <span className="abt-grad">Idea to Launch</span></h2>
+              <p style={{ color:'#64748b',fontSize:14,marginTop:8,lineHeight:1.7 }}>
+                Every project moves through simple checkpoints so expectations, timelines, and delivery stay clear.
+              </p>
+            </div>
+            <div className="abt-info-grid">
+              {OPERATING_STEPS.map(({ num, title, desc }) => (
+                <div key={title} className="abt-info-card">
+                  <div className="abt-step-num">{num}</div>
+                  <h3 className="abt-info-title">{title}</h3>
+                  <p className="abt-info-copy">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <div className="abt-div"/>
+
+          {/* ═══ EXPERTISE ═══════════════════════════════════════════ */}
+          <section className="abt-in d6" style={{ marginBottom:'clamp(40px,6vw,60px)' }}>
+            <div style={{ textAlign:'center', marginBottom:28 }}>
+              <div className="abt-pill" style={{ marginBottom:12 }}>What We&apos;re Actually Good At</div>
+              <h2 className="abt-stitle">Practical Tech Work That <span className="abt-grad">Ships</span></h2>
+              <p style={{ color:'#64748b',fontSize:14,marginTop:8,lineHeight:1.7 }}>
+                We focus on dependable, useful solutions instead of flashy features that do not serve the product.
+              </p>
+            </div>
+            <div className="abt-info-grid">
+              {EXPERTISE.map(({ icon, title, desc }) => (
+                <div key={title} className="abt-info-card">
+                  <div className="abt-trust-icon" style={{ background:'linear-gradient(135deg,#6366f1,#3b82f6)', marginBottom:16 }}>
+                    <SvgIcon name={icon} size={22} color="white" />
+                  </div>
+                  <h3 className="abt-info-title">{title}</h3>
+                  <p className="abt-info-copy">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <div className="abt-div"/>
+
+          {/* ═══ COMPANY STORY ═══════════════════════════════════════ */}
+          <section className="abt-in d6" style={{ marginBottom:'clamp(40px,6vw,60px)' }}>
+            <div className="abt-glass" style={{ padding:'clamp(26px,5vw,42px)' }}>
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,260px),1fr))', gap:24, alignItems:'center' }}>
+                <div>
+                  <div className="abt-pill" style={{ marginBottom:14 }}>The Company Behind the Product You&apos;re About to Build</div>
+                  <h2 className="abt-stitle" style={{ marginBottom:14 }}>
+                    Built for People Who Need <span className="abt-grad">Real Outcomes</span>
+                  </h2>
+                  <p style={{ color:'#64748b',fontSize:14,lineHeight:1.85,marginBottom:14 }}>
+                    AmitSolutionHub is a technology services company that helps clients turn requirements into working digital products, from websites and dashboards to custom software and guided technical learning.
+                  </p>
+                  <p style={{ color:'#64748b',fontSize:14,lineHeight:1.85 }}>
+                    Our approach is straightforward: understand the problem, build with care, communicate clearly, and support the product after launch so it keeps improving.
+                  </p>
+                </div>
+                <div style={{ display:'grid', gap:12 }}>
+                  {[
+                    { label:'Registered', value:'MSME-recognized business' },
+                    { label:'Focus', value:'Web, software, support, and mentorship' },
+                    { label:'Promise', value:'Clean delivery with practical communication' },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="abt-trust">
+                      <div className="abt-trust-icon" style={{ background:'linear-gradient(135deg,#10b981,#059669)' }}>
+                        <SvgIcon name="check" size={20} color="white" />
+                      </div>
+                      <div>
+                        <div style={{ fontWeight:800,fontSize:12,color:'#6366f1',letterSpacing:'.06em',textTransform:'uppercase',marginBottom:3 }}>{label}</div>
+                        <div style={{ fontSize:13,color:'#0f172a',lineHeight:1.55,fontWeight:700 }}>{value}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
 
           <div className="abt-div"/>
 
           {/* ═══ MISSION / VISION / VALUES ══════════════════════════ */}
           <section style={{ marginBottom:'clamp(40px,6vw,60px)' }}>
             <div style={{ textAlign:'center', marginBottom:28 }}>
-              <div className="abt-pill" style={{ marginBottom:12 }}>Our Foundation</div>
+              <div className="abt-pill" style={{ marginBottom:12 }}>Mission / Vision</div>
               <h2 className="abt-stitle">What <span className="abt-grad">Drives</span> Us</h2>
             </div>
             <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,230px),1fr))',gap:18 }}>
               <div className="abt-mv" style={{ background:'linear-gradient(135deg,#6366f1,#4f46e5)',boxShadow:'0 8px 32px rgba(99,102,241,.28)' }}>
                 <div style={{ color:'white', marginBottom:14 }}><SvgIcon name="target" size={30} color="white" /></div>
-                <h3 style={{ fontFamily:'Syne,sans-serif',fontSize:'1rem',fontWeight:800,marginBottom:10 }}>Mission</h3>
+                <h3 style={{ fontFamily:'Inter,sans-serif',fontSize:'1rem',fontWeight:800,marginBottom:10,letterSpacing:'-0.01em' }}>Mission</h3>
                 <p style={{ fontSize:13,lineHeight:1.85,opacity:.9 }}>To build reliable, practical digital solutions that solve real-world problems efficiently and at scale.</p>
               </div>
               <div className="abt-mv" style={{ background:'linear-gradient(135deg,#3b82f6,#1d4ed8)',boxShadow:'0 8px 32px rgba(59,130,246,.28)' }}>
                 <div style={{ color:'white', marginBottom:14 }}><SvgIcon name="vision" size={30} color="white" /></div>
-                <h3 style={{ fontFamily:'Syne,sans-serif',fontSize:'1rem',fontWeight:800,marginBottom:10 }}>Vision</h3>
+                <h3 style={{ fontFamily:'Inter,sans-serif',fontSize:'1rem',fontWeight:800,marginBottom:10,letterSpacing:'-0.01em' }}>Vision</h3>
                 <p style={{ fontSize:13,lineHeight:1.85,opacity:.9 }}>To grow AmitSolutionHub into a trusted, full-spectrum tech platform combining development, hardware, and mentorship.</p>
               </div>
               <div className="abt-glass" style={{ padding:'clamp(22px,4vw,32px)' }}>
                 <div style={{ color:'#6366f1', marginBottom:14 }}><SvgIcon name="idea" size={30} color="#6366f1" /></div>
-                <h3 style={{ fontFamily:'Syne,sans-serif',fontSize:'1rem',fontWeight:800,color:'#0f172a',marginBottom:14 }}>Core Values</h3>
+                <h3 style={{ fontFamily:'Inter,sans-serif',fontSize:'1rem',fontWeight:800,color:'#0f172a',marginBottom:14,letterSpacing:'-0.01em' }}>Core Values</h3>
                 <div style={{ display:'flex',flexWrap:'wrap',gap:8 }}>
                   {['Security First','Creativity','Growth','Learning','Performance'].map(v => (
                     <span key={v} style={{ fontSize:11,fontWeight:700,padding:'5px 12px',borderRadius:999,background:'#f0f0ff',color:'#6366f1',border:'1px solid rgba(99,102,241,.18)' }}>{v}</span>
@@ -988,7 +1009,7 @@ const About = () => {
               renderSlider(sortedTeam, activeIndex, prevSlide, nextSlide)
             ) : (
               <div className="abt-glass" style={{ padding:'clamp(22px,4vw,32px)', textAlign:'center', maxWidth:560, margin:'0 auto' }}>
-                <h3 style={{ fontFamily:'Syne,sans-serif', fontWeight:800, color:'#0f172a', fontSize:'1.05rem', marginBottom:8 }}>
+                <h3 style={{ fontFamily:'Inter,sans-serif', fontWeight:800, color:'#0f172a', fontSize:'1.05rem', marginBottom:8, letterSpacing:'-0.01em' }}>
                   {teamLoading ? 'Loading team profiles...' : 'Team profiles are being updated'}
                 </h3>
                 <p style={{ color:'#64748b', fontSize:14, lineHeight:1.7 }}>
@@ -1015,7 +1036,7 @@ const About = () => {
                 <SvgIcon name="star" size={14} color="#f59e0b" />
                 "Building Solutions. Solving Problems. Creating Impact."
               </p>
-              <h2 style={{ fontFamily:'Syne,sans-serif',fontWeight:800,fontSize:'clamp(1.3rem,3.5vw,1.9rem)',color:'#0f172a',marginBottom:10,letterSpacing:'-.02em' }}>
+              <h2 style={{ fontFamily:'Inter,sans-serif',fontWeight:800,fontSize:'clamp(1.3rem,3.5vw,1.9rem)',color:'#0f172a',marginBottom:10,letterSpacing:'-.02em',lineHeight:1.15 }}>
                 Let's Build Something <span className="abt-grad">Amazing</span>
               </h2>
               <p style={{ color:'#64748b',fontSize:14,lineHeight:1.8,marginBottom:28 }}>

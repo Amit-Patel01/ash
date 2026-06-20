@@ -9,7 +9,7 @@ import msmeLogo from '../assets/msme.png'
    INLINE STYLES — No external CSS dependencies
 ══════════════════════════════════════════════════════════════ */
 const CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
   .hp { font-family:'Inter',sans-serif; color:#0f172a; }
   .hp * { box-sizing:border-box; margin:0; padding:0; }
@@ -94,9 +94,9 @@ const CSS = `
 
   /* ── Section title ── */
   .hp-stitle {
-    font-family:'Syne',sans-serif; font-weight:800;
-    font-size:clamp(1.5rem,3.8vw,2.3rem);
-    color:#0f172a; letter-spacing:-.025em; line-height:1.18;
+    font-family:'Inter',sans-serif; font-weight:800;
+    font-size:clamp(1.5rem,3.6vw,2.2rem);
+    color:#0f172a; letter-spacing:-.02em; line-height:1.18;
   }
 
   /* ── Divider ── */
@@ -147,7 +147,7 @@ const CSS = `
   .hp-tcard::before {
     content:'"'; position:absolute; top:14px; left:20px;
     font-size:4rem; color:rgba(99,102,241,.15); line-height:1;
-    font-family:'Syne',sans-serif; font-weight:800;
+    font-family:'Inter',sans-serif; font-weight:800;
   }
   .hp-tcard:hover { transform:translateY(-5px); box-shadow:0 14px 40px rgba(29,78,216,.11); }
 
@@ -194,7 +194,7 @@ const CSS = `
     width:1px; background:rgba(29,78,216,.1);
   }
   .hp-stat-num {
-    font-family:'Syne',sans-serif; font-weight:800;
+    font-family:'Inter',sans-serif; font-weight:800;
     font-size:clamp(1.5rem,4vw,2.2rem); color:#1d4ed8; line-height:1;
   }
   .hp-stat-label { font-size:11px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:.05em; margin-top:5px; }
@@ -368,7 +368,7 @@ const Hero = () => {
 
               {/* Main headline */}
               <h1 className="hp-in d2" style={{
-                fontFamily:'Syne,sans-serif', fontWeight:900,
+                fontFamily:'Inter,sans-serif', fontWeight:900,
                 fontSize:'clamp(2rem,6vw,3.8rem)', color:'#0f172a',
                 letterSpacing:'-.045em', lineHeight:1.10, marginBottom:20,
               }}>
@@ -525,7 +525,7 @@ const Hero = () => {
                       </div>
                       
                       <div>
-                        <div style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'clamp(1.2rem,2.5vw,1.6rem)', color:'#0f172a', marginBottom:8 }}>
+                        <div style={{ fontFamily:'Inter,sans-serif', fontWeight:800, fontSize:'clamp(1.2rem,2.5vw,1.55rem)', color:'#0f172a', marginBottom:8, letterSpacing:'-0.02em', lineHeight:1.2 }}>
                           {course.title}
                         </div>
                         <p style={{ fontSize:13, color:'#64748b', lineHeight:1.6, maxWidth:300, margin:'0 auto' }}>
@@ -560,7 +560,7 @@ const Hero = () => {
                     <SvgIcon name="comingSoon" size={40} color="#8b5cf6" strokeWidth={1.7} />
                   </div>
                   <div>
-                    <div style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'clamp(1.1rem,2vw,1.4rem)', color:'#334155', marginBottom:6 }}>
+                    <div style={{ fontFamily:'Inter,sans-serif', fontWeight:800, fontSize:'clamp(1.1rem,2vw,1.35rem)', color:'#334155', marginBottom:6, letterSpacing:'-0.015em', lineHeight:1.25 }}>
                       More Programs <span style={{ color:'#8b5cf6' }}>Live</span>
                     </div>
                     <p style={{ fontSize:12, color:'#64748b', lineHeight:1.6, maxWidth:320, margin:'0 auto 16px' }}>
@@ -662,7 +662,7 @@ const Hero = () => {
                   <div style={{ color:'#1d4ed8', marginBottom:12 }}>
                     <SvgIcon name="trophy" size={36} color="#1d4ed8" strokeWidth={1.7} />
                   </div>
-                  <div style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'clamp(1rem,2.5vw,1.3rem)', color:'#1d4ed8', marginBottom:4 }}>
+                  <div style={{ fontFamily:'Inter,sans-serif', fontWeight:800, fontSize:'clamp(1rem,2.5vw,1.25rem)', color:'#1d4ed8', marginBottom:4, letterSpacing:'-0.015em' }}>
                     Certificate of Completion
                   </div>
                   <div style={{ fontSize:12, color:'#94a3b8', fontWeight:600, letterSpacing:'.06em', textTransform:'uppercase', marginBottom:16 }}>
@@ -697,7 +697,7 @@ const Hero = () => {
                 </div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', marginBottom:8 }}>
-                    <span style={{ fontFamily:'Syne,sans-serif', fontWeight:800, color:'white', fontSize:'clamp(1rem,2.5vw,1.25rem)' }}>
+                    <span style={{ fontFamily:'Inter,sans-serif', fontWeight:800, color:'white', fontSize:'clamp(1rem,2.5vw,1.25rem)', letterSpacing:'-0.01em' }}>
                       Officially Recognized &amp; Trusted
                     </span>
                     <span style={{ fontSize:11, fontWeight:700, padding:'3px 11px', borderRadius:999, background:'rgba(255,255,255,.18)', color:'white', letterSpacing:'.06em', textTransform:'uppercase' }}>MSME · Govt. of India</span>
@@ -754,7 +754,7 @@ const Hero = () => {
               }}>
                 <div style={{ position:'absolute', top:-60, right:-60, width:200, height:200, borderRadius:'50%', background:'rgba(99,102,241,.06)', pointerEvents:'none' }}/>
                 <div className="hp-pill" style={{ marginBottom:16 }}><SvgIcon name="rocket" size={14} color="currentColor" /> Join Us Today</div>
-                <h2 style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'clamp(1.5rem,4vw,2.4rem)', color:'#0f172a', marginBottom:12, letterSpacing:'-.025em', lineHeight:1.18 }}>
+                <h2 style={{ fontFamily:'Inter,sans-serif', fontWeight:800, fontSize:'clamp(1.5rem,3.8vw,2.3rem)', color:'#0f172a', marginBottom:12, letterSpacing:'-.02em', lineHeight:1.18 }}>
                   Start Your <span className="hp-grad">Career Journey</span> Today
                 </h2>
                 <p style={{ color:'#64748b', fontSize:'clamp(.9rem,2vw,1rem)', lineHeight:1.85, maxWidth:520, margin:'0 auto 32px' }}>

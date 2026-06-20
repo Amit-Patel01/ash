@@ -13,7 +13,7 @@ import CertificateDocument from '../components/certificates/CertificateDocument'
 
 export default function AdminSettings() {
   const { currentUser, updateUserProfile, updateUserEmail, updateUserPassword } = useAuth()
-  const { announcement, updateAnnouncement, certificateTemplate, updateCertificateTemplate } = useStore()
+  const { announcement, updateAnnouncement, maintenance, updateMaintenance, certificateTemplate, updateCertificateTemplate } = useStore()
   const [activeTab, setActiveTab] = useState('profile')
   const [saving, setSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState('')
@@ -36,6 +36,11 @@ export default function AdminSettings() {
     message: announcement?.message || '',
     isActive: announcement?.isActive || false,
     type: announcement?.type || 'info', // info, warning, success
+  })
+
+  const [maintenanceForm, setMaintenanceForm] = useState({
+    isActive: maintenance?.isActive || false,
+    message: maintenance?.message || '',
   })
 
   const [selectedDocumentType, setSelectedDocumentType] = useState('certificate')
@@ -68,6 +73,16 @@ export default function AdminSettings() {
     }
   }, [announcement])
 
+  // Sync maintenance form when global state loads
+  useEffect(() => {
+    if (maintenance) {
+      setMaintenanceForm({
+        isActive: maintenance.isActive || false,
+        message: maintenance.message || '',
+      })
+    }
+  }, [maintenance])
+
   useEffect(() => {
     setCertificateForm(normalizeCertificateTemplate(certificateTemplate))
   }, [certificateTemplate])
@@ -93,6 +108,7 @@ export default function AdminSettings() {
   const tabs = [
     { id: 'profile', label: 'Profile' },
     { id: 'announcement', label: 'Announcement' },
+    { id: 'maintenance', label: 'Maintenance' },
     { id: 'certificate', label: 'Documents' },
     { id: 'notifications', label: 'Notifications' },
     { id: 'security', label: 'Security' },
@@ -158,6 +174,21 @@ export default function AdminSettings() {
     } catch (err) {
       console.error('Failed to save announcement:', err)
       alert('Failed: ' + (err.message || 'Error updating announcement'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleSaveMaintenance = async () => {
+    setSaving(true)
+    setSaveSuccess('')
+    try {
+      await updateMaintenance(maintenanceForm)
+      setSaveSuccess('Maintenance settings updated successfully!')
+      setTimeout(() => setSaveSuccess(''), 3000)
+    } catch (err) {
+      console.error('Failed to save maintenance settings:', err)
+      alert('Failed: ' + (err.message || 'Error updating maintenance settings'))
     } finally {
       setSaving(false)
     }
@@ -349,6 +380,63 @@ export default function AdminSettings() {
               <div className="flex justify-end pt-4">
                 <button 
                   onClick={handleSaveAnnouncement} 
+                  disabled={saving} 
+                  className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50"
+                >
+                  {saving ? 'Saving...' : 'Save Settings'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'maintenance' && (
+        <div className="space-y-6">
+          <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-6">
+            <h2 className="text-lg font-semibold text-white mb-6">Portal Maintenance Mode</h2>
+            
+            {saveSuccess && (
+              <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                <p className="text-sm text-emerald-400">{saveSuccess}</p>
+              </div>
+            )}
+
+            <div className="space-y-6">
+              <div className="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-xl">
+                <div>
+                  <p className="text-sm font-medium text-white">Enable Maintenance Mode</p>
+                  <p className="text-xs text-gray-500">Show maintenance page to all visitors (except admin at /admin)</p>
+                </div>
+                <label className="relative inline-flex cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={maintenanceForm.isActive} 
+                    onChange={() => setMaintenanceForm({ ...maintenanceForm, isActive: !maintenanceForm.isActive })} 
+                    className="sr-only peer" 
+                  />
+                  <div className="w-11 h-6 bg-white/10 rounded-full peer peer-checked:bg-red-500 after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" />
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-400 mb-1.5">Custom Maintenance Message (Optional)</label>
+                <textarea
+                  rows={4}
+                  value={maintenanceForm.message}
+                  onChange={e => setMaintenanceForm({ ...maintenanceForm, message: e.target.value })}
+                  placeholder="We are currently upgrading our systems with exciting new features to bring you a better experience. We'll be back online shortly. Thank you for your patience! (Default message will be used if left blank)"
+                  className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all resize-none"
+                />
+              </div>
+
+              <div className="rounded-xl border border-red-500/10 bg-red-500/[0.02] px-4 py-4 text-sm leading-6 text-slate-300">
+                ⚠️ <strong className="text-white">Warning:</strong> When active, this blocks all users from accessing any public routes (home page, services, contact, etc.) and shows them a maintenance page with the support email <strong className="text-white">support@amitsolutionhub.com</strong>. The admin portal (<code className="text-red-400">/admin</code>) and login page will remain fully accessible to you.
+              </div>
+
+              <div className="flex justify-end pt-4">
+                <button 
+                  onClick={handleSaveMaintenance} 
                   disabled={saving} 
                   className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50"
                 >

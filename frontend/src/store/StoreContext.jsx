@@ -200,6 +200,7 @@ export function StoreProvider({ children }) {
   const [certificates, setCertificates] = useState([])
   const [certificateTemplate, setCertificateTemplate] = useState(DEFAULT_CERTIFICATE_TEMPLATE)
   const [announcement, setAnnouncement] = useState(null)
+  const [maintenance, setMaintenance] = useState(null)
   // ── Generic Course System (Phase 1) ──────────────────────────
   const [courses, setCourses] = useState([])
   const [enrollments, setEnrollments] = useState([])
@@ -338,6 +339,12 @@ export function StoreProvider({ children }) {
       }
     }, (error) => console.error("Announcement snapshot error:", error))
 
+    const unsubscribeMaintenance = onSnapshot(doc(db, 'settings', 'maintenance'), (snapshot) => {
+      if (snapshot.exists()) {
+        setMaintenance({ id: snapshot.id, ...snapshot.data() })
+      }
+    }, (error) => console.error("Maintenance snapshot error:", error))
+
     // ── Generic Course System Listeners ──────────────────────────
     const unsubscribeGenericCourses = onSnapshot(
       query(collection(db, 'courses'), orderBy('createdAt', 'desc')),
@@ -388,6 +395,7 @@ export function StoreProvider({ children }) {
       unsubscribeCertificates()
       unsubscribeCertificateTemplate()
       unsubscribeAnnouncement()
+      unsubscribeMaintenance()
       unsubscribeGenericCourses()
       unsubscribeGenericEnrollments()
       unsubscribeCourseCategories()
@@ -851,6 +859,16 @@ export function StoreProvider({ children }) {
     } catch (err) { console.error("Error updating announcement:", err); throw err }
   }
 
+  // --- Maintenance ---
+  const updateMaintenance = async (data) => {
+    try {
+      await setDoc(doc(db, 'settings', 'maintenance'), {
+        ...data,
+        updatedAt: serverTimestamp()
+      })
+    } catch (err) { console.error("Error updating maintenance:", err); throw err }
+  }
+
   // ══════════════════════════════════════════════════════════════
   // GENERIC COURSE SYSTEM — Phase 1
   // ══════════════════════════════════════════════════════════════
@@ -1175,6 +1193,7 @@ export function StoreProvider({ children }) {
     createQrCertificate, updateQrCertificate, toggleQrCertificateStatus, deleteQrCertificate, updateCertificateTemplate,
     getActiveProjects, getTotalRevenue, getPendingOrders,
     announcement, updateAnnouncement,
+    maintenance, updateMaintenance,
     // ── Generic Course System ──
     courses, addCourse, updateCourse, deleteCourse,
     enrollments, addEnrollment, updateEnrollment, deleteEnrollment,

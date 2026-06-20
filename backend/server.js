@@ -78,116 +78,189 @@ if (!admin.apps.length) {
   }
 }
 
+// ─── Maintenance Mode State & Firestore Listener ────────────────────────────
+let isMaintenanceModeEnabled = false;
+let maintenanceMessage = "";
+
+const setupMaintenanceListener = () => {
+  try {
+    const db = admin.firestore();
+    db.collection("settings").doc("maintenance").onSnapshot((docSnap) => {
+      if (docSnap && docSnap.exists) {
+        const data = docSnap.data();
+        isMaintenanceModeEnabled = !!data.isActive;
+        maintenanceMessage = data.message || "";
+        logger.info(`[Maintenance] Real-time update: enabled = ${isMaintenanceModeEnabled}, message = "${maintenanceMessage}"`);
+      } else {
+        isMaintenanceModeEnabled = false;
+        maintenanceMessage = "";
+        logger.info(`[Maintenance] Settings document not found. Disabled by default.`);
+      }
+    }, (error) => {
+      logger.error(`[Maintenance] Firestore listener error: ${error.message}`);
+    });
+  } catch (error) {
+    logger.error(`[Maintenance] Failed to initialize listener: ${error.message}`);
+  }
+};
+
+setupMaintenanceListener();
+
 // ─── Express App ─────────────────────────────────────────────────────────────
 const app = express();
 app.disable("x-powered-by");
 app.set('trust proxy', 1);
 
-const UNDER_MAINTENANCE = false; // Set to true to enable
-
-if (UNDER_MAINTENANCE) {
-  app.use((req, res, next) => {
-    // Optional: Allow webhook or specific APIs to bypass
-    // if (req.path.startsWith('/api/webhook')) return next();
-    
-    if (req.path.startsWith('/api')) {
-      return res.status(503).json({
-        success: false,
-        message: "We are currently under maintenance. Please check back soon!"
-      });
-    }
-
-    res.status(503).send(`
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Under Maintenance | Amit Solution Hub</title>
-        <style>
-          body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            color: #ffffff;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            overflow: hidden;
-          }
-          .container {
-            max-width: 600px;
-            padding: 50px 30px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            animation: float 6s ease-in-out infinite;
-          }
-          @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-          }
-          h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-          }
-          p {
-            font-size: 1.1rem;
-            color: #94a3b8;
-            line-height: 1.8;
-            margin-bottom: 2.5rem;
-          }
-          .loader {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 1rem;
-          }
-          .dot {
-            width: 14px;
-            height: 14px;
-            background: #818cf8;
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out both;
-            box-shadow: 0 0 10px rgba(129, 140, 248, 0.5);
-          }
-          .dot:nth-child(1) { animation-delay: -0.32s; }
-          .dot:nth-child(2) { animation-delay: -0.16s; }
-          @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-          }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <h1>Under Maintenance</h1>
-          <p>We are currently upgrading our systems with exciting new features to bring you a better experience. We'll be back online shortly. Thank you for your patience!</p>
-          <div class="loader">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-          </div>
-        </div>
-      </body>
-      </html>
-    `);
-  });
-}
+// Maintenance middleware moved below webhooks to allow webhooks to bypass automatically
 
 // ─── Webhook route FIRST (needs raw body before express.json) ────────────────
 app.use("/api/webhook", require("./routes/webhook"));
+
+// ─── Dynamic Maintenance Middleware ──────────────────────────────────────────
+app.use((req, res, next) => {
+  if (!isMaintenanceModeEnabled) {
+    return next();
+  }
+
+  const path = req.path;
+
+  // Bypass rules:
+  // 1. Allow Static Assets & Uploads
+  const isStaticAsset = 
+    path.startsWith("/uploads") || 
+    path.startsWith("/assets") ||
+    path.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|json|txt|pdf)$/i);
+    
+  if (isStaticAsset) {
+    return next();
+  }
+
+  // 2. Allow Admin/Login UI pages
+  if (path.startsWith("/admin") || path.startsWith("/login")) {
+    return next();
+  }
+
+  // 3. Allow Admin and Auth APIs
+  if (path.startsWith("/api/auth") || path.startsWith("/api/admin")) {
+    return next();
+  }
+
+  // If it's any other API request during maintenance, return 503
+  if (path.startsWith("/api")) {
+    return res.status(503).json({
+      success: false,
+      message: "We are currently under maintenance. Please check back soon!"
+    });
+  }
+
+  // Otherwise, render the Maintenance HTML page
+  const displayMessage = maintenanceMessage || "We are currently upgrading our systems with exciting new features to bring you a better experience. We'll be back online shortly. Thank you for your patience!";
+
+  res.status(503).send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Under Maintenance | Amit Solution Hub</title>
+      <style>
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+          background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+          color: #ffffff;
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          overflow: hidden;
+        }
+        .container {
+          max-width: 600px;
+          padding: 50px 30px;
+          background: rgba(255, 255, 255, 0.03);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: 24px;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+          animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+          100% { transform: translateY(0px); }
+        }
+        h1 {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+          background: linear-gradient(to right, #38bdf8, #818cf8);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          font-weight: 800;
+        }
+        p {
+          font-size: 1.1rem;
+          color: #94a3b8;
+          line-height: 1.8;
+          margin-bottom: 2rem;
+        }
+        .contact {
+          font-size: 1rem;
+          color: #38bdf8;
+          text-decoration: none;
+          font-weight: 600;
+          border: 1px solid rgba(56, 189, 248, 0.2);
+          padding: 10px 20px;
+          border-radius: 50px;
+          background: rgba(56, 189, 248, 0.05);
+          transition: all 0.3s ease;
+        }
+        .contact:hover {
+          background: rgba(56, 189, 248, 0.15);
+          border-color: rgba(56, 189, 248, 0.4);
+          box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+        }
+        .loader {
+          display: flex;
+          justify-content: center;
+          gap: 12px;
+          margin-top: 2.5rem;
+        }
+        .dot {
+          width: 14px;
+          height: 14px;
+          background: #818cf8;
+          border-radius: 50%;
+          animation: bounce 1.4s infinite ease-in-out both;
+          box-shadow: 0 0 10px rgba(129, 140, 248, 0.5);
+        }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+          0%, 80%, 100% { transform: scale(0); }
+          40% { transform: scale(1); }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>Under Maintenance</h1>
+        <p>\${displayMessage.replace(/\\n/g, "<br>")}</p>
+        <p style="margin-bottom: 2.5rem;">For any urgent issues, please contact us at:</p>
+        <a href="mailto:support@amitsolutionhub.com" class="contact">support@amitsolutionhub.com</a>
+        <div class="loader">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
+});
 
 // ─── Security Middleware ─────────────────────────────────────────────────────
 app.use(

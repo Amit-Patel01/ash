@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavig
 import { HelmetProvider } from 'react-helmet-async'
 import { ErrorBoundary } from 'react-error-boundary'
 
-import { StoreProvider } from './store/StoreContext'
+import { StoreProvider, useStore } from './store/StoreContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { ChatProvider } from './context/ChatContext'
 import { ThemeProvider } from './context/ThemeContext'
@@ -251,11 +251,82 @@ function RoleRedirect() {
   return <Navigate to={getHomePathForRole(currentUser.role)} replace />
 }
 
+function MaintenancePage({ message }) {
+  return (
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+      color: '#ffffff',
+      fontFamily: "'Inter', sans-serif",
+      padding: '24px',
+      textAlign: 'center'
+    }}>
+      <div style={{
+        maxWidth: '600px',
+        padding: '50px 30px',
+        background: 'rgba(255,255,255,0.03)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255,255,255,0.05)',
+        borderRadius: '24px',
+        boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
+        animation: 'float 6s ease-in-out infinite'
+      }}>
+        <h1 style={{
+          fontSize: 'clamp(2.2rem, 8vw, 3rem)',
+          background: 'linear-gradient(to right, #38bdf8, #818cf8)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          fontWeight: 800,
+          margin: '0 0 16px 0'
+        }}>Under Maintenance</h1>
+        <p style={{
+          fontSize: '1.1rem',
+          color: '#94a3b8',
+          lineHeight: 1.8,
+          margin: '0 0 32px 0'
+        }}>
+          {message || "We are currently upgrading our systems with exciting new features to bring you a better experience. We'll be back online shortly. Thank you for your patience!"}
+        </p>
+        <p style={{
+          fontSize: '0.9rem',
+          color: '#cbd5e1',
+          lineHeight: 1.7,
+          margin: '0 0 28px 0'
+        }}>
+          For urgent help, contact <strong style={{ color: '#ffffff' }}>support@amitsolutionhub.com</strong>
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
+          <div style={{ width: '14px', height: '14px', background: '#818cf8', borderRadius: '50%', animation: 'bounce 1.4s infinite ease-in-out both', animationDelay: '-0.32s' }} />
+          <div style={{ width: '14px', height: '14px', background: '#818cf8', borderRadius: '50%', animation: 'bounce 1.4s infinite ease-in-out both', animationDelay: '-0.16s' }} />
+          <div style={{ width: '14px', height: '14px', background: '#818cf8', borderRadius: '50%', animation: 'bounce 1.4s infinite ease-in-out both' }} />
+        </div>
+      </div>
+      <style>{`
+        @keyframes float {
+          0% { transform: translateY(0px) }
+          50% { transform: translateY(-15px) }
+          100% { transform: translateY(0px) }
+        }
+        @keyframes bounce {
+          0%, 80%, 100% { transform: scale(0) }
+          40% { transform: scale(1) }
+        }
+      `}</style>
+    </div>
+  )
+}
+
 function AppContent() {
-  const UNDER_MAINTENANCE = false; // Set to true to enable maintenance mode on frontend
+  const { maintenance } = useStore()
   const { logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const isAdminRoute = location.pathname === '/admin-login' || location.pathname.startsWith('/admin')
+  const isMaintenanceActive = maintenance?.isActive === true
   const allowedChatbotPaths = ['/about', '/courses', '/services', '/projects', '/contact']
   const isHome = location.pathname === '/'
   const isAllowedPath = allowedChatbotPaths.some(path => location.pathname.startsWith(path))
@@ -281,65 +352,8 @@ function AppContent() {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   }, [location.pathname, location.search, location.hash])
 
-  if (UNDER_MAINTENANCE) {
-    return (
-      <div style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
-        color: '#ffffff',
-        fontFamily: "'Inter', sans-serif",
-        padding: '24px',
-        textAlign: 'center'
-      }}>
-        <div style={{
-          maxWidth: '600px',
-          padding: '50px 30px',
-          background: 'rgba(255,255,255,0.03)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255,255,255,0.05)',
-          borderRadius: '24px',
-          boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
-          animation: 'float 6s ease-in-out infinite'
-        }}>
-          <h1 style={{
-            fontSize: '3rem',
-            background: 'linear-gradient(to right, #38bdf8, #818cf8)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            fontWeight: 800,
-            margin: '0 0 16px 0'
-          }}>Under Maintenance</h1>
-          <p style={{
-            fontSize: '1.1rem',
-            color: '#94a3b8',
-            lineHeight: 1.8,
-            margin: '0 0 32px 0'
-          }}>
-            We are currently upgrading our systems with exciting new features to bring you a better experience. We'll be back online shortly. Thank you for your patience!
-          </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
-            <div style={{ width: '14px', height: '14px', background: '#818cf8', borderRadius: '50%', animation: 'bounce 1.4s infinite ease-in-out both', animationDelay: '-0.32s' }} />
-            <div style={{ width: '14px', height: '14px', background: '#818cf8', borderRadius: '50%', animation: 'bounce 1.4s infinite ease-in-out both', animationDelay: '-0.16s' }} />
-            <div style={{ width: '14px', height: '14px', background: '#818cf8', borderRadius: '50%', animation: 'bounce 1.4s infinite ease-in-out both' }} />
-          </div>
-        </div>
-        <style>{`
-          @keyframes float {
-            0% { transform: translateY(0px) }
-            50% { transform: translateY(-15px) }
-            100% { transform: translateY(0px) }
-          }
-          @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0) }
-            40% { transform: scale(1) }
-          }
-        `}</style>
-      </div>
-    );
+  if (isMaintenanceActive && !isAdminRoute) {
+    return <MaintenancePage message={maintenance?.message} />
   }
 
   return (
