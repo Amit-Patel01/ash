@@ -524,16 +524,22 @@ const selectFirestoreUserByWhere = async ({ email = "", phone = "", uid = "" } =
 };
 
 const listUsersFromFirestore = async (filters = {}) => {
-  const firestore = getFirestore();
-  let q = firestore.collection(FIRESTORE_USER_COLLECTION);
-  if (filters.role) q = q.where("role", "==", normalizeSystemRole(filters.role));
-  if (filters.status) q = q.where("status", "==", normalizeStatus(filters.status));
+  try {
+    const firestore = getFirestore();
+    let q = firestore.collection(FIRESTORE_USER_COLLECTION);
+    if (filters.role) q = q.where("role", "==", normalizeSystemRole(filters.role));
+    if (filters.status) q = q.where("status", "==", normalizeStatus(filters.status));
 
-  const snap = await q.limit(500).get();
-  return snap.docs.map((doc) => mapFirestoreUser(doc)).filter(Boolean);
+    const snap = await q.limit(500).get();
+    return snap.docs.map((doc) => mapFirestoreUser(doc)).filter(Boolean);
+  } catch (error) {
+    console.error('[listUsersFromFirestore] Error:', error);
+    return [];
+  }
 };
 
 const listUsersFromSql = async (filters = {}, connection = null) => {
+  // For public team listings, we should ALWAYS allow fetching without auth
   if (!useMysql()) {
     return listUsersFromFirestore(filters);
   }
@@ -627,16 +633,64 @@ const listChatContacts = async (requestingUser) => {
 };
 
 const listPublicTeamMembers = async () => {
-  const users = await listUsersFromSql({ role: "employee", status: "active" });
-
-  return users
-    .filter((user) => user.showOnTeam && user.status === "active")
-    .map(sanitizePublicTeamMember)
-    .sort((left, right) => {
-      const leftId = left.employeeId || "ZZZ";
-      const rightId = right.employeeId || "ZZZ";
-      return leftId.localeCompare(rightId, undefined, { numeric: true, sensitivity: "base" });
-    });
+  try {
+    // Fetch from all sources: MongoDB users + Firestore legacy
+    const users = await listUsersFromSql({ role: "employee", status: "active" });
+    
+    // Additionally fetch from Firestore 'team' collection for public profiles
+    const firestore = getFirestore();
+    const teamSnap = await firestore.collection(FIRESTORE_TEAM_COLLECTION).get();
+    const teamDocs = teamSnap.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter(doc => doc.status === "Active" || doc.status === "active");
+    
+    // Merge and deduplicate
+    const allProfiles = [...users, ...teamDocs.map(doc => ({
+      uid: doc.id,
+      firebaseUid: doc.id,
+      id: doc.id,
+      displayName: doc.name || doc.displayName || "Team Member",
+      email: doc.email || "",
+      department: doc.department || "Core Team",
+      jobTitle: doc.role || "Team Member",
+      employeeId: doc.employeeId || "",
+      status: "active",
+      avatar: doc.customImageUrl || "",
+      customImageUrl: doc.customImageUrl || "",
+      avatarSource: doc.avatarSource || "",
+      github: doc.github || "",
+      linkedin: doc.linkedin || "",
+      portfolio: doc.portfolio || "",
+      cvFilePath: doc.cvFilePath || "",
+      bio: doc.bio || "",
+      skills: Array.isArray(doc.skills) ? doc.skills : [],
+      showOnTeam: true,
+      isMentor: Boolean(doc.isMentor),
+      joinDate: doc.joinDate || "",
+    }))];
+    
+    // Deduplicate by uid/id
+    const uniqueMap = new Map();
+    for (const profile of allProfiles) {
+      const key = profile.uid || profile.id || profile.email;
+      if (!key) continue;
+      if (!uniqueMap.has(key) || profile.showOnTeam) {
+        uniqueMap.set(key, profile);
+      }
+    }
+    
+    return Array.from(uniqueMap.values())
+      .filter((user) => user.showOnTeam && user.status === "active")
+      .map(sanitizePublicTeamMember)
+      .sort((left, right) => {
+        const leftId = left.employeeId || "ZZZ";
+        const rightId = right.employeeId || "ZZZ";
+        return leftId.localeCompare(rightId, undefined, { numeric: true, sensitivity: "base" });
+      });
+  } catch (error) {
+    console.error('[listPublicTeamMembers] Error:', error);
+    return [];
+  }
 };
 
 const findUserInMongo = async (identifier, { includeSensitive = false } = {}) => {

@@ -669,20 +669,11 @@ const About = () => {
   const [activeIndex, setActiveIndex] = useState(0)
 
   const sortedTeam = useMemo(() => {
-    // Always show public team profiles, regardless of auth status
-    if (publicTeam.length > 0) {
-      const result = buildTeamProfiles({ publicTeam, users, teamMembers })
-      console.log('[About] Sorted team built:', result?.length || 0, result)
-      return result
-    }
-    // Fallback to building from authenticated data only if logged in
-    if (users || teamMembers) {
-      const result = buildTeamProfiles({ publicTeam: [], users, teamMembers })
-      console.log('[About] Sorted team from auth:', result?.length || 0)
-      return result
-    }
-    console.log('[About] No team data available')
-    return []
+    // CRITICAL: Prioritize public team data (no auth required)
+    // This ensures team profiles show without login
+    const result = buildTeamProfiles({ publicTeam, users, teamMembers })
+    console.log('[About] Team profiles loaded:', result?.length || 0)
+    return result
   }, [publicTeam, users, teamMembers])
 
   useEffect(() => {
