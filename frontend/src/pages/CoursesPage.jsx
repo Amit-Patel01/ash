@@ -125,73 +125,11 @@ export default function CoursesPage() {
           content="Browse Amit Solution Hub courses and webinars with industry-focused learning paths, mentor support, and verifiable outcomes."
         />
       </Helmet>
-
-      <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-gradient-to-b from-[#030712] via-[#080d24] to-[#030712] text-slate-100' : 'bg-[linear-gradient(180deg,#f8fbff_0%,#eef6ff_44%,#ffffff_100%)] text-slate-950'}`}>
-        <section className="mx-auto grid w-full max-w-7xl gap-6 px-4 pb-8 pt-8 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8 lg:pb-10 lg:pt-10">
-          <div className={`relative overflow-hidden rounded-[32px] border p-6 shadow-[0_26px_70px_-42px_rgba(15,23,42,0.42)] backdrop-blur-xl sm:p-8 lg:p-10 ${isDark ? 'border-white/5 bg-slate-900/60 shadow-slate-950/50' : 'border-white/80 bg-white/[0.86]'}`}>
-            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-sky-500 to-violet-500" />
-            <div className="max-w-3xl">
-              <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-black uppercase tracking-[0.2em] ${isDark ? 'border-sky-500/30 bg-sky-500/10 text-sky-300' : 'border-sky-200 bg-sky-50 text-sky-700'}`}>
-                <MonitorPlay aria-hidden="true" size={15} />
-                Learning Catalogue
-              </div>
-              <h1 className={`mt-5 text-4xl font-black tracking-tight sm:text-5xl lg:text-[3.45rem] lg:leading-[1.04] ${isDark ? 'text-white' : 'text-slate-955'}`}>
-                Courses, webinars and career-ready skill tracks
-              </h1>
-              <p className={`mt-5 max-w-2xl text-sm leading-7 sm:text-base ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Browse practical programs from Amit Solution Hub with clear pricing, mentor support, deadlines, and flexible learning options.
-              </p>
-            </div>
-
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              {stats.map((stat) => (
-                <div key={stat.label} className={`rounded-3xl border px-4 py-4 shadow-[0_18px_42px_-34px_rgba(15,23,42,0.45)] ${isDark ? 'border-slate-800 bg-slate-950' : 'border-slate-200/75 bg-white'}`}>
-                  <div className={`text-2xl font-black ${isDark ? 'text-white' : 'text-slate-955'}`}>{stat.value}</div>
-                  <div className={`mt-1 text-[11px] font-black uppercase tracking-[0.18em] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <aside className="relative overflow-hidden rounded-[32px] border border-slate-900/10 bg-slate-950 p-6 text-white shadow-[0_28px_80px_-40px_rgba(2,6,23,0.7)]">
-            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-300 via-emerald-300 to-cyan-300" />
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-200">Featured Path</p>
-                <h2 className="mt-3 line-clamp-2 text-2xl font-black leading-tight text-white">
-                  {featuredCourse?.title || 'Start with a skill track'}
-                </h2>
-              </div>
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-cyan-200">
-                <PageIcon name={getCategoryIconKey(featuredCourse?.category)} size={24} />
-              </div>
-            </div>
-
-            <div className="mt-6 space-y-3">
-              {categorySummaries.length > 0 ? categorySummaries.map(([category, count]) => {
-                const percent = published.length > 0 ? Math.max(18, Math.round((count / published.length) * 100)) : 0
-                return (
-                  <div key={category} className="rounded-2xl border border-white/10 bg-white/[0.05] p-3">
-                    <div className="flex items-center justify-between gap-3 text-sm">
-                      <span className="inline-flex min-w-0 items-center gap-2 font-semibold text-slate-100">
-                        <PageIcon name={getCategoryIconKey(category)} size={15} />
-                        <span className="truncate">{category}</span>
-                      </span>
-                      <span className="shrink-0 text-xs font-bold text-slate-300">{count}</span>
-                    </div>
-                    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
-                      <div className="h-full rounded-full bg-cyan-300" style={{ width: `${percent}%` }} />
-                    </div>
-                  </div>
-                )
-              }) : (
-                <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4 text-sm text-slate-300">
-                  New programs will appear here after publishing.
-                </div>
-              )}
-            </div>
-          </aside>
-        </section>
+<br />
+<br />
+<br />
+<br />
+    <div>
 
         <section id="course-catalogue" className="mx-auto w-full max-w-7xl space-y-7 px-4 pb-16 sm:px-6 lg:px-8 lg:pb-20">
           <div className={`rounded-[30px] border p-4 shadow-[0_22px_60px_-42px_rgba(15,23,42,0.4)] backdrop-blur-xl sm:p-5 ${isDark ? 'border-white/5 bg-slate-900/60 shadow-slate-950/40' : 'border-white/85 bg-white/[0.92]'}`}>

@@ -821,9 +821,7 @@ const About = () => {
               {/* Right Column: Floating High-Tech MSME Shield */}
               <div className="abt-in d3" style={{ display:'flex', justifyContent:'center' }}>
                 <div style={{ background:'rgba(var(--card), 0.8)', border:'1px solid rgba(var(--border), 0.95)', borderRadius:28, padding:'32px 28px', width:'100%', maxWidth:380, boxShadow:'var(--card-shadow)', backdropFilter:'blur(20px)', position:'relative', animation:'abt-float 6s ease-in-out infinite' }}>
-                  <div style={{ position:'absolute', top:-10, right:-10, width:40, height:40, borderRadius:'50%', background:'linear-gradient(135deg, #10b981, #059669)', display:'flex', alignItems:'center', justifyCenter:'center', border:'3px solid rgb(var(--bg))', boxShadow:'0 4px 10px rgba(16,185,129,0.3)', color:'white', fontSize:14, fontWeight:900 }}>
-                    ✓
-                  </div>
+               
                   <div style={{ display:'flex', gap:14, alignItems:'center', marginBottom:20 }}>
                     <div style={{ width:48, height:48, borderRadius:12, background:'rgba(99,102,241,0.1)', border:'1px solid rgba(99,102,241,0.2)', display:'flex', alignItems:'center', justifyContent:'center', color:'#6366f1' }}>
                       <SvgIcon name="building" size={24} />
