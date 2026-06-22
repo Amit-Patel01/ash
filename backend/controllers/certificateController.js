@@ -10,7 +10,7 @@ const {
 } = require("../services/firebaseService");
 const { sendEmail, emailTemplate } = require("../services/emailService");
 const { logger } = require("../logger");
-const { admin } = require("../services/firebaseService");
+
 
 const QR_CERTIFICATE_TYPES = {
   "AICTE Internship Completion": "Completion Certificate",
@@ -129,7 +129,7 @@ const validateQrCertificateInput = (payload = {}, { partial = false } = {}) => {
       errors.push("Date must be a valid certificate date.");
     } else {
       updates.date = date;
-      updates.approval_date = admin.firestore.Timestamp.fromDate(new Date(`${date}T00:00:00.000Z`));
+      updates.approval_date = new Date(`${date}T00:00:00.000Z`);
     }
   }
 
@@ -433,7 +433,7 @@ const updateCertificateStatus = async (req, res) => {
       }
 
       updates.certificate_id = newId;
-      updates.approval_date = admin.firestore.FieldValue.serverTimestamp();
+      updates.approval_date = new Date();
     }
 
     await updateCertificate(certId, updates);

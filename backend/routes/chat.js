@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { chatWithAI } = require("../services/aiService");
 const { logger } = require("../logger");
-const { db } = require("../services/firebaseService");
+const { getDb } = require("../utils/mongo");
 
 // Helper to generate a random chat ID
 const generateChatId = () => {
@@ -24,13 +24,12 @@ router.post("/create", async (req, res) => {
     }
 
     // Check if a direct chat between these two already exists
-    const chatSnap = await db().collection("chats")
-      .where("isGroup", "==", false)
-      .where("participants", "array-contains", userId)
-      .get();
+    const chatDocs = await getDb().collection("chats")
+      .find({ isGroup: false, participants: userId })
+      .toArray();
 
-    let existingChat = chatSnap.docs
-      .map(d => ({ id: d.id, ...d.data() }))
+    let existingChat = chatDocs
+      .map(d => ({ id: d._id.toString(), ...d }))
       .find(c => c.participants.includes(otherUserId));
 
     if (existingChat) {
@@ -57,7 +56,7 @@ router.post("/create", async (req, res) => {
       createdAt: new Date().toISOString(),
     };
 
-    await db().collection("chats").doc(chatId).set(chat);
+    await getDb().collection("chats").insertOne({ _id: chatId, ...chat });
 
     // AUTOMATIC WELCOME MESSAGE
     if (currentRole === "customer" && (otherRole === "admin" || otherRole === "employee" || otherRole === "support")) {
@@ -73,12 +72,12 @@ router.post("/create", async (req, res) => {
         status: "sent",
       };
       
-      await db().collection("chats").doc(chatId).collection("messages").doc(welcomeMessageId).set(welcomeMessage);
+      await getDb().collection("messages").insertOne({ _id: welcomeMessageId, chatId, ...welcomeMessage });
       
-      await db().collection("chats").doc(chatId).update({
-        lastMessage: welcomeText,
-        lastMessageAt: welcomeMessage.timestamp,
-      });
+      await getDb().collection("chats").updateOne(
+        { _id: chatId },
+        { $set: { lastMessage: welcomeText, lastMessageAt: welcomeMessage.timestamp } }
+      );
 
       chat.lastMessage = welcomeText;
       chat.lastMessageAt = welcomeMessage.timestamp;
@@ -117,7 +116,7 @@ router.post("/create-group", async (req, res) => {
       createdAt: new Date().toISOString(),
     };
 
-    await db().collection("chats").doc(chatId).set(chat);
+    await getDb().collection("chats").insertOne({ _id: chatId, ...chat });
     logger.info(`[MemoryChat] Created group chat ${chatId} with ${participants.length} participants`);
 
     res.json({ success: true, chatId, chat });
@@ -136,11 +135,10 @@ router.post("/send", async (req, res) => {
       return res.status(400).json({ success: false, message: "chatId and senderId are required" });
     }
 
-    const chatSnap = await db().collection("chats").doc(chatId).get();
-    if (!chatSnap.exists) {
+    const chat = await getDb().collection("chats").findOne({ _id: chatId });
+    if (!chat) {
       return res.status(404).json({ success: false, message: "Chat not found" });
     }
-    const chat = chatSnap.data();
 
     const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
     const message = {
@@ -152,18 +150,16 @@ router.post("/send", async (req, res) => {
       imageUrl: imageUrl || null,
       timestamp: new Date().toISOString(),
       status: "sent",
-      ...req.body, // Include custom fields like type and callUrl
+      ...req.body,
     };
 
-    await db().collection("chats").doc(chatId).collection("messages").doc(messageId).set(message);
+    await getDb().collection("messages").insertOne({ _id: messageId, chatId, ...message });
 
     const lastMsgText = text || (imageUrl ? "📷 Image" : "");
-    await db().collection("chats").doc(chatId).update({
-      lastMessage: lastMsgText,
-      lastMessageAt: message.timestamp,
-      lastSenderId: senderId,
-      lastSenderName: senderName || "User",
-    });
+    await getDb().collection("chats").updateOne(
+      { _id: chatId },
+      { $set: { lastMessage: lastMsgText, lastMessageAt: message.timestamp, lastSenderId: senderId, lastSenderName: senderName || "User" } }
+    );
 
     res.json({ success: true, message });
 
@@ -174,8 +170,7 @@ router.post("/send", async (req, res) => {
     if (isCustomer && !chat.isTakenOver) {
       try {
         // Fetch all messages to count user messages
-        const msgsSnap = await db().collection("chats").doc(chatId).collection("messages").orderBy("timestamp", "asc").get();
-        const allMessages = msgsSnap.docs.map(d => d.data());
+        const allMessages = await getDb().collection("messages").find({ chatId }).sort({ timestamp: 1 }).toArray();
         const userMsgs = allMessages.filter(m => m.senderId === senderId);
 
         if (userMsgs.length === 1) {
@@ -201,7 +196,10 @@ Respond with ONLY the selected role name string in quotation marks. Do not write
           
           const matched = validRoles.find(r => r.toLowerCase() === cleanRole.toLowerCase()) || validRoles.find(r => cleanRole.toLowerCase().includes(r.toLowerCase()));
           if (matched) {
-            await db().collection("chats").doc(chatId).update({ assignedRole: matched });
+            await getDb().collection("chats").updateOne(
+              { _id: chatId },
+              { $set: { assignedRole: matched } }
+            );
             logger.info(`[MemoryChat] Classifying chat ${chatId} intent. Assigned department: ${matched}`);
           }
         }
@@ -228,14 +226,12 @@ Respond with ONLY the selected role name string in quotation marks. Do not write
           generatedByAi: true,
         };
 
-        await db().collection("chats").doc(chatId).collection("messages").doc(aiMessageId).set(aiMessage);
+        await getDb().collection("messages").insertOne({ _id: aiMessageId, chatId, ...aiMessage });
         
-        await db().collection("chats").doc(chatId).update({
-          lastMessage: aiReplyText,
-          lastMessageAt: aiMessage.timestamp,
-          lastSenderId: "solutionhub-ai",
-          lastSenderName: "SolutionHub AI",
-        });
+        await getDb().collection("chats").updateOne(
+          { _id: chatId },
+          { $set: { lastMessage: aiReplyText, lastMessageAt: aiMessage.timestamp, lastSenderId: "solutionhub-ai", lastSenderName: "SolutionHub AI" } }
+        );
         logger.info(`[MemoryChat] AI auto-replied in chat ${chatId}`);
       } catch (err) {
         logger.error("[MemoryChat] AI Routing/Response error:", err);
@@ -256,8 +252,7 @@ router.get("/messages", async (req, res) => {
       return res.status(400).json({ success: false, message: "chatId is required" });
     }
 
-    const msgsSnap = await db().collection("chats").doc(chatId).collection("messages").orderBy("timestamp", "asc").get();
-    const messages = msgsSnap.docs.map(doc => doc.data());
+    const messages = await getDb().collection("messages").find({ chatId }).sort({ timestamp: 1 }).toArray();
 
     res.json({ success: true, messages });
   } catch (error) {
@@ -270,16 +265,10 @@ router.get("/messages", async (req, res) => {
 router.post("/read", async (req, res) => {
   try {
     const { chatId, readerId } = req.body;
-    const msgsSnap = await db().collection("chats").doc(chatId).collection("messages").get();
-    
-    const batch = db().batch();
-    msgsSnap.docs.forEach((doc) => {
-      const msg = doc.data();
-      if (msg.senderId !== readerId && msg.status !== "read") {
-        batch.update(doc.ref, { status: "read" });
-      }
-    });
-    await batch.commit();
+    await getDb().collection("messages").updateMany(
+      { chatId, senderId: { $ne: readerId }, status: { $ne: "read" } },
+      { $set: { status: "read" } }
+    );
 
     res.json({ success: true });
   } catch (error) {
@@ -292,8 +281,8 @@ router.post("/read", async (req, res) => {
 router.get("/rooms", async (req, res) => {
   try {
     const { role, userId } = req.query;
-    let roomsSnap = await db().collection("chats").get();
-    let rooms = roomsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    let rooms = await getDb().collection("chats").find({}).toArray();
+    rooms = rooms.map(d => ({ id: d._id.toString(), ...d }));
 
     // Employees can filter by their assigned role
     if (role) {
@@ -305,14 +294,10 @@ router.get("/rooms", async (req, res) => {
     for (const r of rooms) {
       let unreadCount = 0;
       if (userId) {
-        const msgSnap = await db()
-          .collection("chats")
-          .doc(r.id)
-          .collection("messages")
-          .where("senderId", "!=", userId)
-          .where("status", "==", "sent")
-          .get();
-        unreadCount = msgSnap.size;
+        const unreadMessages = await getDb().collection("messages")
+          .find({ chatId: r.id, senderId: { $ne: userId }, status: "sent" })
+          .toArray();
+        unreadCount = unreadMessages.length;
       }
       roomSummaries.push({
         id: r.id,
@@ -339,15 +324,15 @@ router.post("/takeover", async (req, res) => {
   try {
     const { chatId, employeeId, employeeName } = req.body;
 
-    const chatSnap = await db().collection("chats").doc(chatId).get();
-    if (!chatSnap.exists) {
+    const chat = await getDb().collection("chats").findOne({ _id: chatId });
+    if (!chat) {
       return res.status(404).json({ success: false, message: "Chat not found" });
     }
 
-    await db().collection("chats").doc(chatId).update({
-      isTakenOver: true,
-      assignedTo: employeeName,
-    });
+    await getDb().collection("chats").updateOne(
+      { _id: chatId },
+      { $set: { isTakenOver: true, assignedTo: employeeName } }
+    );
 
     logger.info(`[MemoryChat] Employee ${employeeName} took over chat ${chatId}`);
 
@@ -362,18 +347,12 @@ router.post("/takeover", async (req, res) => {
 router.post("/clear", async (req, res) => {
   try {
     const { chatId } = req.body;
-    const msgsSnap = await db().collection("chats").doc(chatId).collection("messages").get();
-    
-    const batch = db().batch();
-    msgsSnap.docs.forEach((doc) => {
-      batch.delete(doc.ref);
-    });
-    await batch.commit();
+    await getDb().collection("messages").deleteMany({ chatId });
 
-    await db().collection("chats").doc(chatId).update({
-      lastMessage: "Chat cleared",
-      lastMessageAt: new Date().toISOString(),
-    });
+    await getDb().collection("chats").updateOne(
+      { _id: chatId },
+      { $set: { lastMessage: "Chat cleared", lastMessageAt: new Date().toISOString() } }
+    );
 
     res.json({ success: true });
   } catch (error) {
@@ -387,15 +366,10 @@ router.post("/delete-messages", async (req, res) => {
   try {
     const { chatId, messageIds } = req.body;
     if (Array.isArray(messageIds)) {
-      const batch = db().batch();
-      messageIds.forEach((msgId) => {
-        batch.delete(db().collection("chats").doc(chatId).collection("messages").doc(msgId));
-      });
-      await batch.commit();
+      await getDb().collection("messages").deleteMany({ _id: { $in: messageIds }, chatId });
 
       // Update last message preview
-      const msgsSnap = await db().collection("chats").doc(chatId).collection("messages").orderBy("timestamp", "asc").get();
-      const allMessages = msgsSnap.docs.map(d => d.data());
+      const allMessages = await getDb().collection("messages").find({ chatId }).sort({ timestamp: 1 }).toArray();
       
       let lastMsg = "Chat cleared";
       if (allMessages.length > 0) {
@@ -403,10 +377,10 @@ router.post("/delete-messages", async (req, res) => {
         lastMsg = last.text || (last.imageUrl ? "📷 Image" : "Message deleted");
       }
 
-      await db().collection("chats").doc(chatId).update({
-        lastMessage: lastMsg,
-        lastMessageAt: new Date().toISOString(),
-      });
+      await getDb().collection("chats").updateOne(
+        { _id: chatId },
+        { $set: { lastMessage: lastMsg, lastMessageAt: new Date().toISOString() } }
+      );
     }
     res.json({ success: true });
   } catch (error) {

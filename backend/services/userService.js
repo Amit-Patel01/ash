@@ -2,7 +2,7 @@ const crypto = require("crypto");
 const path = require("path");
 const fs = require("fs");
 const bcrypt = require("bcryptjs");
-const { admin, db } = require("./firebaseService");
+const { admin } = require("./firebaseService");
 const { getDb } = require("../utils/mongo");
 const { ObjectId } = require("mongodb");
 const { logger } = require("../logger");
@@ -109,45 +109,44 @@ const assertMySqlReady = () => {
   // MySQL is intentionally disabled.
 };
 
-const mapFirestoreUser = (docSnap, { includeSensitive = false } = {}) => {
-  if (!docSnap?.exists) return null;
-  const data = docSnap.data() || {};
+const mapFirestoreUser = (doc, { includeSensitive = false } = {}) => {
+  if (!doc) return null;
 
   const user = {
-    id: docSnap.id,
+    id: doc._id ? doc._id.toString() : doc.id || "",
     numericId: null,
-    uid: docSnap.id,
-    firebaseUid: docSnap.id,
-    email: normalizeEmail(data.email || ""),
-    phone: normalizePhone(data.phone || ""),
-    displayName: data.displayName || data.name || "",
-    role: normalizeSystemRole(data.role || "customer"),
-    status: normalizeStatus(data.status || "active"),
-    department: data.department || "",
-    jobTitle: data.jobTitle || "",
-    employeeId: data.employeeId || "",
-    joinDate: data.joinDate || "",
-    avatar: data.avatar || data.photoURL || "",
-    customImageUrl: data.customImageUrl || "",
-    avatarSource: data.avatarSource || "",
-    github: data.github || "",
-    linkedin: data.linkedin || "",
-    portfolio: data.portfolio || "",
-    bio: data.bio || "",
-    experience: data.experience || "",
-    skills: Array.isArray(data.skills) ? data.skills : parseSkills(data.skills),
-    showOnTeam: normalizeBoolean(data.showOnTeam),
-    isMentor: normalizeBoolean(data.isMentor),
-    location: data.location || "",
-    cvFileName: data.cvFileName || "",
-    cvFilePath: data.cvFilePath || "",
-    cvUploadedAt: data.cvUploadedAt || null,
-    createdAt: data.createdAt ? toIsoString(data.createdAt.toDate?.() || data.createdAt) : null,
-    updatedAt: data.updatedAt ? toIsoString(data.updatedAt.toDate?.() || data.updatedAt) : null,
+    uid: doc.uid || doc.firebaseUid || (doc._id ? doc._id.toString() : doc.id || ""),
+    firebaseUid: doc.firebaseUid || doc.uid || (doc._id ? doc._id.toString() : doc.id || ""),
+    email: normalizeEmail(doc.email || ""),
+    phone: normalizePhone(doc.phone || ""),
+    displayName: doc.displayName || doc.name || "",
+    role: normalizeSystemRole(doc.role || "customer"),
+    status: normalizeStatus(doc.status || "active"),
+    department: doc.department || "",
+    jobTitle: doc.jobTitle || "",
+    employeeId: doc.employeeId || "",
+    joinDate: doc.joinDate || "",
+    avatar: doc.avatar || doc.photoURL || "",
+    customImageUrl: doc.customImageUrl || "",
+    avatarSource: doc.avatarSource || "",
+    github: doc.github || "",
+    linkedin: doc.linkedin || "",
+    portfolio: doc.portfolio || "",
+    bio: doc.bio || "",
+    experience: doc.experience || "",
+    skills: Array.isArray(doc.skills) ? doc.skills : parseSkills(doc.skills),
+    showOnTeam: normalizeBoolean(doc.showOnTeam),
+    isMentor: normalizeBoolean(doc.isMentor),
+    location: doc.location || "",
+    cvFileName: doc.cvFileName || "",
+    cvFilePath: doc.cvFilePath || "",
+    cvUploadedAt: doc.cvUploadedAt || null,
+    createdAt: doc.createdAt ? toIsoString(doc.createdAt) : null,
+    updatedAt: doc.updatedAt ? toIsoString(doc.updatedAt) : null,
   };
 
   if (includeSensitive) {
-    user.passwordHash = data.passwordHash || null;
+    user.passwordHash = doc.passwordHash || null;
   }
 
   return user;
@@ -338,6 +337,7 @@ const sanitizeManagedUserInput = (input = {}, { requirePhone = false, roleFallba
     showOnTeam: normalizeBoolean(input.showOnTeam),
     isMentor: normalizeBoolean(input.isMentor),
     location: String(input.location || "").trim(),
+    permissions: input.permissions || {},
   };
 };
 
@@ -365,6 +365,7 @@ const buildFirestoreUserPayload = (user) => ({
   showOnTeam: Boolean(user.showOnTeam),
   isMentor: Boolean(user.isMentor),
   location: user.location || "",
+  permissions: user.permissions || {},
   cvFileName: user.cvFileName || "",
   cvFilePath: user.cvFilePath || "",
   cvUploadedAt: user.cvUploadedAt || null,
@@ -418,27 +419,22 @@ const buildResetUrl = (token, from = "") => {
   return url.toString();
 };
 
-const getFirestore = () => db();
-
 const syncUserToFirebase = async (user) => {
   if (!user?.firebaseUid) {
     return;
   }
 
-  const firestore = getFirestore();
   const userPayload = buildFirestoreUserPayload(user);
+  const userFilter = { _id: ObjectId.isValid(user.firebaseUid) ? new ObjectId(user.firebaseUid) : user.firebaseUid };
 
-  await firestore.collection(FIRESTORE_USER_COLLECTION).doc(user.firebaseUid).set(userPayload, { merge: true });
+  await getDb().collection(FIRESTORE_USER_COLLECTION).updateOne(userFilter, { $set: userPayload }, { upsert: true });
 
   if (user.role === "employee" && user.showOnTeam) {
-    await firestore.collection(FIRESTORE_TEAM_COLLECTION).doc(user.firebaseUid).set(buildTeamPayload(user), {
-      merge: true,
-    });
+    await getDb().collection(FIRESTORE_TEAM_COLLECTION).updateOne(userFilter, { $set: buildTeamPayload(user) }, { upsert: true });
   } else {
-    const teamDoc = firestore.collection(FIRESTORE_TEAM_COLLECTION).doc(user.firebaseUid);
-    const teamSnap = await teamDoc.get();
-    if (teamSnap.exists) {
-      await teamDoc.delete();
+    const teamDoc = await getDb().collection(FIRESTORE_TEAM_COLLECTION).findOne(userFilter);
+    if (teamDoc) {
+      await getDb().collection(FIRESTORE_TEAM_COLLECTION).deleteOne({ _id: teamDoc._id });
     }
   }
 
@@ -451,14 +447,15 @@ const syncUserToFirebase = async (user) => {
 };
 
 const removeUserFromFirebase = async (user) => {
-  const firestore = getFirestore();
-
   if (user?.firebaseUid) {
-    const batch = firestore.batch();
-    batch.delete(firestore.collection(FIRESTORE_USER_COLLECTION).doc(user.firebaseUid));
-    batch.delete(firestore.collection("status").doc(user.firebaseUid));
-    batch.delete(firestore.collection(FIRESTORE_TEAM_COLLECTION).doc(user.firebaseUid));
-    await batch.commit();
+    const uid = user.firebaseUid;
+    const filter = { _id: ObjectId.isValid(uid) ? new ObjectId(uid) : uid };
+    const mongo = getDb();
+    await Promise.all([
+      mongo.collection(FIRESTORE_USER_COLLECTION).deleteOne(filter).catch(() => {}),
+      mongo.collection("status").deleteOne(filter).catch(() => {}),
+      mongo.collection(FIRESTORE_TEAM_COLLECTION).deleteOne(filter).catch(() => {}),
+    ]);
 
     try {
       await admin.auth().deleteUser(user.firebaseUid);
@@ -471,15 +468,14 @@ const removeUserFromFirebase = async (user) => {
 };
 
 const syncAccountRequestToFirebase = async (request) => {
-  await getFirestore()
-    .collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION)
-    .doc(request.requestUid)
-    .set(buildFirestoreAccountRequestPayload(request), { merge: true });
+  const filter = { _id: ObjectId.isValid(request.requestUid) ? new ObjectId(request.requestUid) : request.requestUid };
+  await getDb().collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).updateOne(filter, { $set: buildFirestoreAccountRequestPayload(request) }, { upsert: true });
 };
 
 const deleteAccountRequestFromFirebase = async (requestUid) => {
   if (!requestUid) return;
-  await getFirestore().collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).doc(requestUid).delete().catch(() => {});
+  const filter = { _id: ObjectId.isValid(requestUid) ? new ObjectId(requestUid) : requestUid };
+  await getDb().collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).deleteOne(filter).catch(() => {});
 };
 
 const selectUserByWhere = async (whereSql, params = [], connection = null, { includeSensitive = false } = {}) => {
@@ -492,32 +488,25 @@ const selectUserByWhere = async (whereSql, params = [], connection = null, { inc
 };
 
 const selectFirestoreUserByWhere = async ({ email = "", phone = "", uid = "" } = {}, { includeSensitive = false } = {}) => {
-  const firestore = getFirestore();
+  const users = getDb().collection(FIRESTORE_USER_COLLECTION);
 
   if (uid) {
-    const snap = await firestore.collection(FIRESTORE_USER_COLLECTION).doc(String(uid)).get();
-    return mapFirestoreUser(snap, { includeSensitive });
+    const filter = ObjectId.isValid(uid) ? { _id: new ObjectId(uid) } : { $or: [{ uid }, { firebaseUid: uid }] };
+    const doc = await users.findOne(filter);
+    return mapFirestoreUser(doc, { includeSensitive });
   }
 
   const normalizedEmail = email ? normalizeEmail(email) : "";
   const normalizedPhone = phone ? normalizePhone(phone) : "";
 
   if (normalizedEmail) {
-    const snap = await firestore
-      .collection(FIRESTORE_USER_COLLECTION)
-      .where("email", "==", normalizedEmail)
-      .limit(1)
-      .get();
-    if (!snap.empty) return mapFirestoreUser(snap.docs[0], { includeSensitive });
+    const doc = await users.findOne({ email: normalizedEmail });
+    if (doc) return mapFirestoreUser(doc, { includeSensitive });
   }
 
   if (normalizedPhone) {
-    const snap = await firestore
-      .collection(FIRESTORE_USER_COLLECTION)
-      .where("phone", "==", normalizedPhone)
-      .limit(1)
-      .get();
-    if (!snap.empty) return mapFirestoreUser(snap.docs[0], { includeSensitive });
+    const doc = await users.findOne({ phone: normalizedPhone });
+    if (doc) return mapFirestoreUser(doc, { includeSensitive });
   }
 
   return null;
@@ -525,13 +514,12 @@ const selectFirestoreUserByWhere = async ({ email = "", phone = "", uid = "" } =
 
 const listUsersFromFirestore = async (filters = {}) => {
   try {
-    const firestore = getFirestore();
-    let q = firestore.collection(FIRESTORE_USER_COLLECTION);
-    if (filters.role) q = q.where("role", "==", normalizeSystemRole(filters.role));
-    if (filters.status) q = q.where("status", "==", normalizeStatus(filters.status));
+    const filter = {};
+    if (filters.role) filter.role = normalizeSystemRole(filters.role);
+    if (filters.status) filter.status = normalizeStatus(filters.status);
 
-    const snap = await q.limit(500).get();
-    return snap.docs.map((doc) => mapFirestoreUser(doc)).filter(Boolean);
+    const docs = await getDb().collection(FIRESTORE_USER_COLLECTION).find(filter).limit(500).toArray();
+    return docs.map((doc) => mapFirestoreUser(doc)).filter(Boolean);
   } catch (error) {
     console.error('[listUsersFromFirestore] Error:', error);
     return [];
@@ -637,15 +625,14 @@ const listPublicTeamMembers = async () => {
     // Fetch from all sources: MongoDB users + Firestore legacy
     const users = await listUsersFromSql({ role: "employee", status: "active" });
     
-    // Additionally fetch from Firestore 'team' collection for public profiles
-    const firestore = getFirestore();
-    const teamSnap = await firestore.collection(FIRESTORE_TEAM_COLLECTION).get();
-    const teamDocs = teamSnap.docs
-      .map(doc => ({ id: doc.id, ...doc.data() }))
+    // Additionally fetch from MongoDB 'team' collection for public profiles
+    const teamDocs = await getDb().collection(FIRESTORE_TEAM_COLLECTION).find({}).toArray();
+    const mappedTeamDocs = teamDocs
+      .map(doc => ({ id: doc._id.toString(), ...doc }))
       .filter(doc => doc.status === "Active" || doc.status === "active");
     
     // Merge and deduplicate
-    const allProfiles = [...users, ...teamDocs.map(doc => ({
+    const allProfiles = [...users, ...mappedTeamDocs.map(doc => ({
       uid: doc.id,
       firebaseUid: doc.id,
       id: doc.id,
@@ -742,6 +729,7 @@ const findUserInMongo = async (identifier, { includeSensitive = false } = {}) =>
     showOnTeam: normalizeBoolean(doc.showOnTeam),
     isMentor: normalizeBoolean(doc.isMentor),
     location: doc.location || "",
+    permissions: doc.permissions || {},
     cvFileName: doc.cvFileName || "",
     cvFilePath: doc.cvFilePath || "",
     cvUploadedAt: doc.cvUploadedAt || null,
@@ -806,27 +794,19 @@ const findUserConflict = async ({ email, phone, excludeUserId = null, excludeFir
     const normalizedEmail = email ? normalizeEmail(email) : "";
     const normalizedPhone = phone ? normalizePhone(phone) : "";
 
-    const firestore = getFirestore();
+    const users = getDb().collection(FIRESTORE_USER_COLLECTION);
     const legacyDocs = [];
 
     if (normalizedEmail) {
-      const snap = await firestore
-        .collection(FIRESTORE_USER_COLLECTION)
-        .where("email", "==", normalizedEmail)
-        .limit(2)
-        .get();
-      legacyDocs.push(...snap.docs);
+      const docs = await users.find({ email: normalizedEmail }).limit(2).toArray();
+      legacyDocs.push(...docs);
     }
     if (normalizedPhone) {
-      const snap = await firestore
-        .collection(FIRESTORE_USER_COLLECTION)
-        .where("phone", "==", normalizedPhone)
-        .limit(2)
-        .get();
-      legacyDocs.push(...snap.docs);
+      const docs = await users.find({ phone: normalizedPhone }).limit(2).toArray();
+      legacyDocs.push(...docs);
     }
 
-    const legacyConflict = legacyDocs.find((docSnap) => docSnap.id !== excludeFirebaseUid);
+    const legacyConflict = legacyDocs.find((d) => (d.firebaseUid || d.uid || d._id.toString()) !== excludeFirebaseUid);
     return legacyConflict ? mapFirestoreUser(legacyConflict) : null;
   }
 
@@ -859,60 +839,52 @@ const findUserConflict = async ({ email, phone, excludeUserId = null, excludeFir
     }
   }
 
-  const firestore = getFirestore();
+  const usersCollection = getDb().collection(FIRESTORE_USER_COLLECTION);
   const legacyDocs = [];
 
   if (normalizedEmail) {
-    const snap = await firestore
-      .collection(FIRESTORE_USER_COLLECTION)
-      .where("email", "==", normalizedEmail)
-      .limit(2)
-      .get();
-    legacyDocs.push(...snap.docs);
+    const docs = await usersCollection.find({ email: normalizedEmail }).limit(2).toArray();
+    legacyDocs.push(...docs);
   }
   if (normalizedPhone) {
-    const snap = await firestore
-      .collection(FIRESTORE_USER_COLLECTION)
-      .where("phone", "==", normalizedPhone)
-      .limit(2)
-      .get();
-    legacyDocs.push(...snap.docs);
+    const docs = await usersCollection.find({ phone: normalizedPhone }).limit(2).toArray();
+    legacyDocs.push(...docs);
   }
 
-  const legacyConflict = legacyDocs.find((docSnap) => docSnap.id !== excludeFirebaseUid);
+  const legacyConflict = legacyDocs.find((d) => (d.firebaseUid || d.uid || d._id.toString()) !== excludeFirebaseUid);
   if (legacyConflict) {
-    const data = legacyConflict.data() || {};
     return {
       id: null,
       numericId: null,
-      uid: legacyConflict.id,
-      firebaseUid: legacyConflict.id,
-      email: normalizeEmail(data.email || normalizedEmail),
-      phone: normalizePhone(data.phone || normalizedPhone),
-      displayName: data.displayName || data.name || "Member",
-      role: normalizeSystemRole(data.role || "customer"),
-      status: normalizeStatus(data.status || "active"),
-      department: data.department || "",
-      jobTitle: data.jobTitle || data.roleLabel || "",
-      employeeId: data.employeeId || "",
-      joinDate: data.joinDate || "",
-      avatar: data.avatar || data.photoURL || "",
-      customImageUrl: data.customImageUrl || "",
-      avatarSource: data.avatarSource || "",
-      github: data.github || "",
-      linkedin: data.linkedin || "",
-      portfolio: data.portfolio || "",
-      bio: data.bio || "",
-      experience: data.experience || "",
-      skills: parseSkills(data.skills),
-      showOnTeam: normalizeBoolean(data.showOnTeam),
-      isMentor: normalizeBoolean(data.isMentor),
-      location: data.location || "",
-      cvFileName: data.cvFileName || "",
-      cvFilePath: data.cvFilePath || "",
-      cvUploadedAt: data.cvUploadedAt || null,
-      createdAt: data.createdAt || new Date().toISOString(),
-      updatedAt: data.updatedAt || new Date().toISOString(),
+      uid: legacyConflict.firebaseUid || legacyConflict.uid || legacyConflict._id.toString(),
+      firebaseUid: legacyConflict.firebaseUid || legacyConflict.uid || legacyConflict._id.toString(),
+      email: normalizeEmail(legacyConflict.email || normalizedEmail),
+      phone: normalizePhone(legacyConflict.phone || normalizedPhone),
+      displayName: legacyConflict.displayName || legacyConflict.name || "Member",
+      role: normalizeSystemRole(legacyConflict.role || "customer"),
+      status: normalizeStatus(legacyConflict.status || "active"),
+      department: legacyConflict.department || "",
+      jobTitle: legacyConflict.jobTitle || legacyConflict.roleLabel || "",
+      employeeId: legacyConflict.employeeId || "",
+      joinDate: legacyConflict.joinDate || "",
+      avatar: legacyConflict.avatar || legacyConflict.photoURL || "",
+      customImageUrl: legacyConflict.customImageUrl || "",
+      avatarSource: legacyConflict.avatarSource || "",
+      github: legacyConflict.github || "",
+      linkedin: legacyConflict.linkedin || "",
+      portfolio: legacyConflict.portfolio || "",
+      bio: legacyConflict.bio || "",
+      experience: legacyConflict.experience || "",
+      skills: parseSkills(legacyConflict.skills),
+      showOnTeam: normalizeBoolean(legacyConflict.showOnTeam),
+      isMentor: normalizeBoolean(legacyConflict.isMentor),
+      location: legacyConflict.location || "",
+      permissions: legacyConflict.permissions || {},
+      cvFileName: legacyConflict.cvFileName || "",
+      cvFilePath: legacyConflict.cvFilePath || "",
+      cvUploadedAt: legacyConflict.cvUploadedAt || null,
+      createdAt: legacyConflict.createdAt || new Date().toISOString(),
+      updatedAt: legacyConflict.updatedAt || new Date().toISOString(),
       legacyOnly: true,
     };
   }
@@ -1032,49 +1004,45 @@ const materializeLegacyUser = async (identifier) => {
   const normalized = String(identifier || "").trim();
   if (!normalized) return null;
 
-  const firestore = getFirestore();
-  let docSnap = await firestore.collection(FIRESTORE_USER_COLLECTION).doc(normalized).get();
+  const users = getDb().collection(FIRESTORE_USER_COLLECTION);
+  let doc = await users.findOne(
+    ObjectId.isValid(normalized) ? { _id: new ObjectId(normalized) } : { $or: [{ uid: normalized }, { firebaseUid: normalized }] }
+  );
 
-  if (!docSnap.exists && normalized.includes("@")) {
-    const byEmail = await firestore
-      .collection(FIRESTORE_USER_COLLECTION)
-      .where("email", "==", normalizeEmail(normalized))
-      .limit(1)
-      .get();
-    docSnap = byEmail.docs[0] || docSnap;
+  if (!doc && normalized.includes("@")) {
+    doc = await users.findOne({ email: normalizeEmail(normalized) });
   }
 
-  if (!docSnap.exists) {
+  if (!doc) {
     return null;
   }
 
-  const data = docSnap.data() || {};
   const payload = {
-    firebaseUid: docSnap.id,
-    displayName: data.displayName || data.name || "Member",
-    email: normalizeEmail(data.email),
-    phone: normalizePhone(data.phone),
-    role: normalizeSystemRole(data.role || "customer"),
-    status: normalizeStatus(data.status || "active"),
-    department: data.department || "",
-    jobTitle: data.jobTitle || "",
-    employeeId: data.employeeId || "",
-    joinDate: toDateString(data.joinDate || data.createdAt),
-    avatar: data.avatar || data.photoURL || "",
-    customImageUrl: data.customImageUrl || "",
-    avatarSource: data.avatarSource || "",
-    github: data.github || "",
-    linkedin: data.linkedin || "",
-    portfolio: data.portfolio || "",
-    bio: data.bio || "",
-    experience: data.experience || "",
-    skills: parseSkills(data.skills),
-    showOnTeam: normalizeBoolean(data.showOnTeam),
-    isMentor: normalizeBoolean(data.isMentor),
-    location: data.location || "",
-    cvFileName: data.cvFileName || "",
-    cvFilePath: data.cvFilePath || "",
-    cvUploadedAt: data.cvUploadedAt || null,
+    firebaseUid: doc.firebaseUid || doc.uid || doc._id.toString(),
+    displayName: doc.displayName || doc.name || "Member",
+    email: normalizeEmail(doc.email),
+    phone: normalizePhone(doc.phone),
+    role: normalizeSystemRole(doc.role || "customer"),
+    status: normalizeStatus(doc.status || "active"),
+    department: doc.department || "",
+    jobTitle: doc.jobTitle || "",
+    employeeId: doc.employeeId || "",
+    joinDate: toDateString(doc.joinDate || doc.createdAt),
+    avatar: doc.avatar || doc.photoURL || "",
+    customImageUrl: doc.customImageUrl || "",
+    avatarSource: doc.avatarSource || "",
+    github: doc.github || "",
+    linkedin: doc.linkedin || "",
+    portfolio: doc.portfolio || "",
+    bio: doc.bio || "",
+    experience: doc.experience || "",
+    skills: parseSkills(doc.skills),
+    showOnTeam: normalizeBoolean(doc.showOnTeam),
+    isMentor: normalizeBoolean(doc.isMentor),
+    location: doc.location || "",
+    cvFileName: doc.cvFileName || "",
+    cvFilePath: doc.cvFilePath || "",
+    cvUploadedAt: doc.cvUploadedAt || null,
   };
 
   const existingConflict = await findUserConflict({
@@ -1248,44 +1216,43 @@ const createManagedUser = async (input, { sendActivationEmail = true, activation
         })
       );
     } else {
-      const firestore = getFirestore();
-      const ref = firestore.collection(FIRESTORE_USER_COLLECTION).doc(authProvision.firebaseUid);
-      await ref.set(
-        {
-          uid: authProvision.firebaseUid,
-          email: payload.email,
-          phone: payload.phone || "",
-          displayName: payload.displayName,
-          role: payload.role,
-          status: payload.status,
-          department: payload.department || "",
-          jobTitle: payload.jobTitle || "",
-          employeeId: payload.employeeId || "",
-          joinDate: payload.joinDate || "",
-          avatar: payload.avatar || "",
-          customImageUrl: payload.customImageUrl || "",
-          photoURL: payload.avatar || "",
-          avatarSource: payload.avatarSource || "",
-          github: payload.github || "",
-          linkedin: payload.linkedin || "",
-          portfolio: payload.portfolio || "",
-          bio: payload.bio || "",
-          experience: payload.experience || "",
-          skills: payload.skills || [],
-          showOnTeam: Boolean(payload.showOnTeam),
-          isMentor: Boolean(payload.isMentor),
-          location: payload.location || "",
-          cvFileName: payload.cvFileName || "",
-          cvFilePath: payload.cvFilePath || "",
-          cvUploadedAt: payload.cvUploadedAt || null,
-          passwordHash: authProvision.passwordHash,
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-        },
-        { merge: true }
-      );
-      const snap = await ref.get();
-      createdUser = mapFirestoreUser(snap, { includeSensitive: true });
+      const uid = authProvision.firebaseUid;
+      const filter = { _id: ObjectId.isValid(uid) ? new ObjectId(uid) : uid };
+      const userDoc = {
+        uid,
+        email: payload.email,
+        phone: payload.phone || "",
+        displayName: payload.displayName,
+        role: payload.role,
+        status: payload.status,
+        department: payload.department || "",
+        jobTitle: payload.jobTitle || "",
+        employeeId: payload.employeeId || "",
+        joinDate: payload.joinDate || "",
+        avatar: payload.avatar || "",
+        customImageUrl: payload.customImageUrl || "",
+        photoURL: payload.avatar || "",
+        avatarSource: payload.avatarSource || "",
+        github: payload.github || "",
+        linkedin: payload.linkedin || "",
+        portfolio: payload.portfolio || "",
+        bio: payload.bio || "",
+        experience: payload.experience || "",
+        skills: payload.skills || [],
+        showOnTeam: Boolean(payload.showOnTeam),
+        isMentor: Boolean(payload.isMentor),
+        location: payload.location || "",
+        cvFileName: payload.cvFileName || "",
+        cvFilePath: payload.cvFilePath || "",
+        cvUploadedAt: payload.cvUploadedAt || null,
+        passwordHash: authProvision.passwordHash,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      const mongo = getDb();
+      await mongo.collection(FIRESTORE_USER_COLLECTION).updateOne(filter, { $set: userDoc }, { upsert: true });
+      const saved = await mongo.collection(FIRESTORE_USER_COLLECTION).findOne(filter);
+      createdUser = mapFirestoreUser(saved, { includeSensitive: true });
     }
 
     await syncUserToFirebase(createdUser);
@@ -1378,10 +1345,10 @@ const updateManagedUser = async (identifier, updates, { updatedBy = null } = {})
     );
   } else {
     const uid = existingUser.firebaseUid || existingUser.uid || identifier;
-    const firestore = getFirestore();
-    const ref = firestore.collection(FIRESTORE_USER_COLLECTION).doc(String(uid));
-    await ref.set(
-      {
+    // Update MongoDB (primary DB)
+    try {
+      const mongo = getDb();
+      const mongoUpdate = {
         email: merged.email,
         phone: merged.phone || "",
         displayName: merged.displayName,
@@ -1393,7 +1360,6 @@ const updateManagedUser = async (identifier, updates, { updatedBy = null } = {})
         joinDate: merged.joinDate || "",
         avatar: merged.avatar || "",
         customImageUrl: merged.customImageUrl || "",
-        photoURL: merged.avatar || "",
         avatarSource: merged.avatarSource || "",
         github: merged.github || "",
         linkedin: merged.linkedin || "",
@@ -1404,18 +1370,94 @@ const updateManagedUser = async (identifier, updates, { updatedBy = null } = {})
         showOnTeam: Boolean(merged.showOnTeam),
         isMentor: Boolean(merged.isMentor),
         location: merged.location || "",
-        cvFileName: updates.cvFileName ?? existingUser.cvFileName,
-        cvFilePath: updates.cvFilePath ?? existingUser.cvFilePath,
-        cvUploadedAt: updates.cvUploadedAt ?? existingUser.cvUploadedAt,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      },
-      { merge: true }
-    );
-    const snap = await ref.get();
-    updatedUser = mapFirestoreUser(snap, { includeSensitive: true });
+        permissions: merged.permissions || {},
+        updatedAt: new Date().toISOString(),
+      };
+      if (existingUser.firebaseUid) mongoUpdate.firebaseUid = existingUser.firebaseUid;
+      const filter = uid ? { $or: [{ uid }, { email: merged.email }] } : { email: merged.email };
+      await mongo.collection("users").updateOne(filter, { $set: mongoUpdate }, { upsert: true });
+      const mongoUser = await mongo.collection("users").findOne(filter);
+      if (mongoUser) {
+        updatedUser = {
+          id: mongoUser._id.toString(),
+          uid: mongoUser.uid || mongoUser.firebaseUid || mongoUser._id.toString(),
+          firebaseUid: mongoUser.firebaseUid || null,
+          ...mongoUpdate,
+        };
+      }
+    } catch (mongoErr) {
+      logger.warn(`[updateManagedUser] MongoDB update failed, trying alternative query: ${mongoErr.message}`);
+      // Fallback: try direct _id or uid lookup
+      const filter2 = ObjectId.isValid(uid) ? { _id: new ObjectId(uid) } : { $or: [{ uid }, { firebaseUid: uid }, { email: merged.email }] };
+      await getDb().collection(FIRESTORE_USER_COLLECTION).updateOne(filter2,
+        { $set: {
+            email: merged.email,
+            phone: merged.phone || "",
+            displayName: merged.displayName,
+            role: merged.role,
+            status: merged.status,
+            department: merged.department || "",
+            jobTitle: merged.jobTitle || "",
+            employeeId: merged.employeeId || "",
+            joinDate: merged.joinDate || "",
+            avatar: merged.avatar || "",
+            customImageUrl: merged.customImageUrl || "",
+            photoURL: merged.avatar || "",
+            avatarSource: merged.avatarSource || "",
+            github: merged.github || "",
+            linkedin: merged.linkedin || "",
+            portfolio: merged.portfolio || "",
+            bio: merged.bio || "",
+            experience: merged.experience || "",
+            skills: merged.skills || [],
+            showOnTeam: Boolean(merged.showOnTeam),
+            isMentor: Boolean(merged.isMentor),
+            location: merged.location || "",
+            permissions: merged.permissions || {},
+            cvFileName: updates.cvFileName ?? existingUser.cvFileName,
+            cvFilePath: updates.cvFilePath ?? existingUser.cvFilePath,
+            cvUploadedAt: updates.cvUploadedAt ?? existingUser.cvUploadedAt,
+            updatedAt: new Date(),
+          }
+        },
+        { upsert: true }
+      );
+      const saved = await getDb().collection(FIRESTORE_USER_COLLECTION).findOne(filter2);
+      updatedUser = mapFirestoreUser(saved, { includeSensitive: true });
+    }
   }
 
-  await syncUserToFirebase(updatedUser);
+  try {
+    await syncUserToFirebase(updatedUser);
+  } catch (syncErr) {
+    logger.warn(`[updateManagedUser] Firebase sync skipped: ${syncErr.message}`);
+  }
+
+  if (existingUser.role !== 'admin' && merged.role === 'admin' && updatedUser.email) {
+    try {
+      const subject = 'Admin Access Granted';
+      const html = `
+        <div style="font-family: Arial, sans-serif; color: #1f2937;">
+          <p>Hi ${updatedUser.displayName || updatedUser.email},</p>
+          <p>Your account has been upgraded with <strong>admin access</strong> at Amit Solution Hub.</p>
+          <p>You can now sign in to the admin dashboard using your existing email credentials.</p>
+          <p>If you need help signing in, please reply to this message or contact support.</p>
+          <p style="margin-top: 24px;">Best regards,<br/>Amit Solution Hub Team</p>
+        </div>
+      `;
+      const result = await sendEmail({
+        to: updatedUser.email,
+        subject,
+        html,
+      });
+      if (!result.success) {
+        logger.warn(`[UserManagement] Admin promotion email failed for ${updatedUser.email}: ${result.error}`);
+      }
+    } catch (emailError) {
+      logger.warn(`[UserManagement] Failed to send admin promotion email to ${updatedUser.email}: ${emailError?.message || emailError}`);
+    }
+  }
+
   logger.info(`[UserManagement] Updated ${updatedUser.email}${updatedBy?.email ? ` by ${updatedBy.email}` : ""}`);
   return updatedUser;
 };
@@ -1433,25 +1475,14 @@ const deleteManagedUser = async (identifier, { deletedBy = null } = {}) => {
       await query("DELETE FROM users WHERE id = ?", [user.numericId], connection);
     });
   } else {
-    const firestore = getFirestore();
     const uid = user.firebaseUid || user.uid;
     if (uid) {
+      const mongo = getDb();
       // best-effort cleanup
-      const tokensSnap = await firestore
-        .collection(FIRESTORE_PASSWORD_RESET_COLLECTION)
-        .where("userUid", "==", uid)
-        .limit(200)
-        .get();
-      await Promise.all(tokensSnap.docs.map((doc) => doc.ref.delete().catch(() => {})));
-
-      const reqSnap = await firestore
-        .collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION)
-        .where("linkedUserId", "==", uid)
-        .limit(200)
-        .get();
-      await Promise.all(reqSnap.docs.map((doc) => doc.ref.set({ linkedUserId: "" }, { merge: true }).catch(() => {})));
-
-      await firestore.collection(FIRESTORE_USER_COLLECTION).doc(uid).delete().catch(() => {});
+      await mongo.collection(FIRESTORE_PASSWORD_RESET_COLLECTION).deleteMany({ userUid: uid }).catch(() => {});
+      await mongo.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).updateMany({ linkedUserId: uid }, { $set: { linkedUserId: "" } }).catch(() => {});
+      const filter = ObjectId.isValid(uid) ? { _id: new ObjectId(uid) } : { $or: [{ uid }, { firebaseUid: uid }] };
+      await mongo.collection(FIRESTORE_USER_COLLECTION).deleteOne(filter).catch(() => {});
     }
   }
 
@@ -1473,9 +1504,10 @@ const mergeManagedUsers = async ({ primaryIdentifier, duplicateIdentifier, merge
   }
 
   if (!useMysql()) {
-    const firestore = getFirestore();
     const primaryUid = primaryUser.firebaseUid || primaryUser.uid;
     const duplicateUid = duplicateUser.firebaseUid || duplicateUser.uid;
+    const mongo = getDb();
+    const usersCol = mongo.collection(FIRESTORE_USER_COLLECTION);
 
     const mergedPayload = {
       ...primaryUser,
@@ -1501,42 +1533,44 @@ const mergeManagedUsers = async ({ primaryIdentifier, duplicateIdentifier, merge
       cvUploadedAt: primaryUser.cvUploadedAt || duplicateUser.cvUploadedAt,
     };
 
-    await firestore.collection(FIRESTORE_USER_COLLECTION).doc(primaryUid).set(
+    const primaryFilter = ObjectId.isValid(primaryUid) ? { _id: new ObjectId(primaryUid) } : { $or: [{ uid: primaryUid }, { firebaseUid: primaryUid }] };
+    await usersCol.updateOne(primaryFilter,
       {
-        ...buildFirestoreUserPayload(mergedPayload),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        $set: {
+          ...buildFirestoreUserPayload(mergedPayload),
+          updatedAt: new Date(),
+        }
       },
-      { merge: true }
+      { upsert: true }
     );
 
-    const reqSnap = await firestore
-      .collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION)
-      .where("linkedUserId", "==", duplicateUid)
-      .limit(200)
-      .get();
-    await Promise.all(reqSnap.docs.map((doc) => doc.ref.set({ linkedUserId: primaryUid }, { merge: true }).catch(() => {})));
+    await mongo.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).updateMany(
+      { linkedUserId: duplicateUid },
+      { $set: { linkedUserId: primaryUid } }
+    ).catch(() => {});
 
-    await firestore.collection(FIRESTORE_USER_MERGE_AUDIT_COLLECTION).add({
+    await mongo.collection(FIRESTORE_USER_MERGE_AUDIT_COLLECTION).insertOne({
       survivingUserId: primaryUid,
       mergedUserId: duplicateUid,
       mergedByUid: mergedBy?.uid || null,
       mergedByEmail: mergedBy?.email || null,
       mergeReason: mergeReason || null,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      createdAt: new Date(),
     });
 
-    await firestore.collection(FIRESTORE_USER_COLLECTION).doc(duplicateUid).delete().catch(() => {});
+    const duplicateFilter = ObjectId.isValid(duplicateUid) ? { _id: new ObjectId(duplicateUid) } : { $or: [{ uid: duplicateUid }, { firebaseUid: duplicateUid }] };
+    await usersCol.deleteOne(duplicateFilter).catch(() => {});
     await removeUserFromFirebase(duplicateUser);
 
-    const refreshedSnap = await firestore.collection(FIRESTORE_USER_COLLECTION).doc(primaryUid).get();
-    const refreshed = mapFirestoreUser(refreshedSnap);
-    await syncUserToFirebase(refreshed);
+    const refreshed = await usersCol.findOne(primaryFilter);
+    const refreshedUser = mapFirestoreUser(refreshed);
+    await syncUserToFirebase(refreshedUser);
 
     logger.info(
-      `[UserManagement] Merged ${duplicateUser.email} into ${refreshed.email}${mergedBy?.email ? ` by ${mergedBy.email}` : ""}`
+      `[UserManagement] Merged ${duplicateUser.email} into ${refreshedUser.email}${mergedBy?.email ? ` by ${mergedBy.email}` : ""}`
     );
 
-    return { primaryUser: refreshed, mergedUser: duplicateUser };
+    return { primaryUser: refreshedUser, mergedUser: duplicateUser };
   }
 
   assertMySqlReady();
@@ -1622,7 +1656,7 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
     if (!phone || !validatePhone(phone)) throw createHttpError(400, "A valid phone number is required.", "invalid_phone");
     if (!department) throw createHttpError(400, "Department is required.", "department_required");
 
-    const firestore = getFirestore();
+    const reqCol = getDb().collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION);
 
     const existingAccount = await findUserConflict({ email, phone });
     if (existingAccount) {
@@ -1644,7 +1678,8 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      await firestore.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).doc(requestUid).set(payload, { merge: true });
+      const filter = { _id: ObjectId.isValid(requestUid) ? new ObjectId(requestUid) : requestUid };
+      await reqCol.updateOne(filter, { $set: payload }, { upsert: true });
 
       await sendResetEmail(existingAccount, {
         purpose: "reset_password",
@@ -1668,33 +1703,22 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
     }
 
     // Merge into existing pending request (by email OR phone)
-    const pendingByEmail = await firestore
-      .collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION)
-      .where("email", "==", email)
-      .where("status", "==", "pending")
-      .limit(1)
-      .get();
-    const pendingByPhone = await firestore
-      .collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION)
-      .where("phone", "==", phone)
-      .where("status", "==", "pending")
-      .limit(1)
-      .get();
+    const pendingByEmail = await reqCol.find({ email, status: "pending" }).limit(1).toArray();
+    const pendingByPhone = await reqCol.find({ phone, status: "pending" }).limit(1).toArray();
 
-    const existingPending = (!pendingByEmail.empty && pendingByEmail.docs[0]) || (!pendingByPhone.empty && pendingByPhone.docs[0]) || null;
+    const existingPending = pendingByEmail[0] || pendingByPhone[0] || null;
     if (existingPending) {
-      const doc = existingPending;
-      const data = doc.data() || {};
       const next = {
-        ...data,
+        ...existingPending,
         name,
         department,
-        role: requestedRole || data.role || "Employee",
-        reason: reason || data.reason || "",
-        mergeCount: Number(data.mergeCount || 0) + 1,
+        role: requestedRole || existingPending.role || "Employee",
+        reason: reason || existingPending.reason || "",
+        mergeCount: Number(existingPending.mergeCount || 0) + 1,
         updatedAt: new Date().toISOString(),
       };
-      await doc.ref.set(next, { merge: true });
+      delete next._id;
+      await reqCol.updateOne({ _id: existingPending._id }, { $set: next });
       return {
         request: next,
         merged: true,
@@ -1720,7 +1744,8 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    await firestore.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).doc(requestUid).set(payload, { merge: true });
+    const filter2 = { _id: ObjectId.isValid(requestUid) ? new ObjectId(requestUid) : requestUid };
+    await reqCol.updateOne(filter2, { $set: payload }, { upsert: true });
 
     return { request: payload, merged: false, message: "Your request has been submitted successfully." };
   }
@@ -1897,12 +1922,13 @@ const getAccountRequest = async (identifier) => {
 
 const approveAccountRequest = async (identifier, actor = null) => {
   if (!useMysql()) {
-    const firestore = getFirestore();
     const requestId = String(identifier || "").trim();
-    const docSnap = await firestore.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).doc(requestId).get();
-    if (!docSnap.exists) throw createHttpError(404, "Account request not found.", "request_not_found");
+    const reqCol = getDb().collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION);
+    const filter = ObjectId.isValid(requestId) ? { _id: new ObjectId(requestId) } : { requestUid: requestId };
+    const doc = await reqCol.findOne(filter);
+    if (!doc) throw createHttpError(404, "Account request not found.", "request_not_found");
 
-    const request = { id: docSnap.id, ...(docSnap.data() || {}) };
+    const request = { id: doc._id.toString(), ...doc };
     if (request.status === "approved" && request.linkedUserId) {
       return { success: true, alreadyExists: true, request };
     }
@@ -1918,7 +1944,9 @@ const approveAccountRequest = async (identifier, actor = null) => {
         approvedByEmail: actor?.email || "",
         updatedAt: new Date().toISOString(),
       };
-      await docSnap.ref.set(updated, { merge: true });
+      delete updated._id;
+      delete updated.id;
+      await reqCol.updateOne({ _id: doc._id }, { $set: updated });
       await sendResetEmail(existingAccount, { purpose: "reset_password", from: "employee" }).catch(() => {});
       return { success: true, alreadyExists: true, request: updated, user: existingAccount };
     }
@@ -1950,7 +1978,9 @@ const approveAccountRequest = async (identifier, actor = null) => {
       approvedByEmail: actor?.email || "",
       updatedAt: new Date().toISOString(),
     };
-    await docSnap.ref.set(updated, { merge: true });
+    delete updated._id;
+    delete updated.id;
+    await reqCol.updateOne({ _id: doc._id }, { $set: updated });
 
     return { success: true, alreadyExists: false, request: updated, user: createdUser };
   }
@@ -2056,11 +2086,12 @@ const approveAccountRequest = async (identifier, actor = null) => {
 
 const rejectAccountRequest = async (identifier, actor = null) => {
   if (!useMysql()) {
-    const firestore = getFirestore();
     const requestId = String(identifier || "").trim();
-    const docSnap = await firestore.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).doc(requestId).get();
-    if (!docSnap.exists) throw createHttpError(404, "Account request not found.", "request_not_found");
-    const request = { id: docSnap.id, ...(docSnap.data() || {}) };
+    const reqCol = getDb().collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION);
+    const filter = ObjectId.isValid(requestId) ? { _id: new ObjectId(requestId) } : { requestUid: requestId };
+    const doc = await reqCol.findOne(filter);
+    if (!doc) throw createHttpError(404, "Account request not found.", "request_not_found");
+    const request = { id: doc._id.toString(), ...doc };
 
     const updated = {
       ...request,
@@ -2070,7 +2101,9 @@ const rejectAccountRequest = async (identifier, actor = null) => {
       rejectedByEmail: actor?.email || "",
       updatedAt: new Date().toISOString(),
     };
-    await docSnap.ref.set(updated, { merge: true });
+    delete updated._id;
+    delete updated.id;
+    await reqCol.updateOne({ _id: doc._id }, { $set: updated });
     return updated;
   }
 
@@ -2101,12 +2134,13 @@ const rejectAccountRequest = async (identifier, actor = null) => {
 
 const deleteAccountRequest = async (identifier) => {
   if (!useMysql()) {
-    const firestore = getFirestore();
     const requestId = String(identifier || "").trim();
-    const docSnap = await firestore.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).doc(requestId).get();
-    if (!docSnap.exists) throw createHttpError(404, "Account request not found.", "request_not_found");
-    const request = { id: docSnap.id, ...(docSnap.data() || {}) };
-    await docSnap.ref.delete();
+    const reqCol = getDb().collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION);
+    const filter = ObjectId.isValid(requestId) ? { _id: new ObjectId(requestId) } : { requestUid: requestId };
+    const doc = await reqCol.findOne(filter);
+    if (!doc) throw createHttpError(404, "Account request not found.", "request_not_found");
+    const request = { id: doc._id.toString(), ...doc };
+    await reqCol.deleteOne({ _id: doc._id });
     return request;
   }
 

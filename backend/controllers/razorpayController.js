@@ -1,8 +1,9 @@
+const { ObjectId } = require("mongodb");
 const crypto = require("crypto");
 const Razorpay = require("razorpay");
 const { sendEmail, emailTemplate } = require("../services/emailService");
 const { addPaymentJob } = require("../services/queueService");
-const { db } = require("../services/firebaseService");
+const { getDb } = require("../utils/mongo");
 const {
   incrementCouponUsage,
   validateCouponForPurchase,
@@ -27,12 +28,12 @@ const resolveStoredCoursePricing = async ({ courseId, planId }) => {
     throw new Error("Course id is required.");
   }
 
-  const courseSnap = await db().collection("courses").doc(normalizedCourseId).get();
-  if (!courseSnap.exists) {
+  const courseDoc = await getDb().collection("courses").findOne({ _id: ObjectId.isValid(normalizedCourseId) ? new ObjectId(normalizedCourseId) : normalizedCourseId });
+  if (!courseDoc) {
     throw new Error("Selected course was not found.");
   }
 
-  const course = { id: courseSnap.id, ...courseSnap.data() };
+  const course = { id: courseDoc._id.toString(), ...courseDoc };
   const plans = Array.isArray(course.plans) ? course.plans : [];
 
   if (plans.length === 0) {

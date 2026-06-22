@@ -21,6 +21,37 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
+  const refreshCurrentUser = useCallback(async () => {
+    const token = localStorage.getItem('token')
+    if (!token) return null
+
+    const response = await fetch(api.userProfile, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    })
+    const data = await response.json()
+
+    if (response.ok && data.success && data.profile) {
+      const profileData = data.profile
+      const normalizedRole = normalizeUserRole(profileData?.role || 'customer')
+      const userData = {
+        uid: profileData.uid || profileData.id,
+        ...profileData,
+        role: normalizedRole
+      }
+      setCurrentUser(userData)
+      setUserProfile(userData)
+      return userData
+    }
+
+    localStorage.removeItem('token')
+    setCurrentUser(null)
+    setUserProfile(null)
+    return null
+  }, [])
+
   // Initialize auth state from local storage token
   useEffect(() => {
     let isMounted = true
@@ -37,33 +68,8 @@ export function AuthProvider({ children }) {
       }
 
       try {
-        const response = await fetch(api.userProfile, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          }
-        })
-        const data = await response.json()
-
         if (isMounted) {
-          if (response.ok && data.success && data.profile) {
-            const profileData = data.profile
-            const normalizedRole = normalizeUserRole(profileData?.role || 'customer')
-            
-            const userData = {
-              uid: profileData.uid || profileData.id,
-              ...profileData,
-              role: normalizedRole
-            }
-            
-            setCurrentUser(userData)
-            setUserProfile(userData)
-          } else {
-            // Token expired or invalid
-            localStorage.removeItem('token')
-            setCurrentUser(null)
-            setUserProfile(null)
-          }
+          await refreshCurrentUser()
         }
       } catch (error) {
         console.error('Failed to initialize auth from token:', error)
@@ -79,7 +85,26 @@ export function AuthProvider({ children }) {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [refreshCurrentUser])
+
+  useEffect(() => {
+    const handleCurrentUserUpdate = async (event) => {
+      const updatedUser = event?.detail
+      if (!updatedUser?.uid || !currentUser?.uid) return
+      if (updatedUser.uid !== currentUser.uid) return
+
+      try {
+        await refreshCurrentUser()
+      } catch (error) {
+        console.warn('Failed to refresh current user after profile update:', error)
+      }
+    }
+
+    window.addEventListener('solutionhub:user-updated', handleCurrentUserUpdate)
+    return () => {
+      window.removeEventListener('solutionhub:user-updated', handleCurrentUserUpdate)
+    }
+  }, [currentUser?.uid, refreshCurrentUser])
 
   const login = useCallback(async (email, password) => {
     setAuthError('')
@@ -301,6 +326,7 @@ export function AuthProvider({ children }) {
     currentUser, userProfile, loading, authError,
     login, loginWithGoogle, signup, logout, resetPassword, verifyResetCode, confirmReset,
     updateUserProfile, updateUserEmail, updateUserPassword, createAccountRequest, approveAccountRequest, getAllUsers,
+    refreshCurrentUser,
     hasPermission, isAdmin, isEmployee, clearAuthError
   }
 

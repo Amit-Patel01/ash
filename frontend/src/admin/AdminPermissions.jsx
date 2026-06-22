@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
+import { useAuth } from '../context/AuthContext'
+import { emailNotify } from '../utils/emailNotify'
 
 const ADMIN_PERMISSIONS = [
   { id: 'view_dashboard', name: 'View Dashboard', category: 'Dashboard', description: 'Access to admin dashboard overview' },
@@ -105,8 +107,16 @@ const ROLE_PRESETS = {
   },
 }
 
+const getPermissionsArray = (user) => {
+  if (user.permissions && typeof user.permissions === 'object' && !Array.isArray(user.permissions)) {
+    return ADMIN_PERMISSIONS.filter(p => user.permissions[p.id]).map(p => p.id)
+  }
+  return user.adminPermissions || []
+}
+
 export default function AdminPermissions() {
   const { users, updateUser } = useStore()
+  const { currentUser } = useAuth()
   const [selectedEmployee, setSelectedEmployee] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [saving, setSaving] = useState(false)
@@ -124,7 +134,7 @@ export default function AdminPermissions() {
   const handlePermissionToggle = (permissionId) => {
     if (!selectedEmployee) return
     
-    const currentPermissions = selectedEmployee.adminPermissions || []
+    const currentPermissions = selectedEmployee.adminPermissions
     const hasPermission = currentPermissions.includes(permissionId)
     
     const updatedPermissions = hasPermission
@@ -142,9 +152,20 @@ export default function AdminPermissions() {
     
     setSaving(true)
     try {
+      const permArray = selectedEmployee.adminPermissions || []
+      const permObject = {}
+      ADMIN_PERMISSIONS.forEach(p => { permObject[p.id] = permArray.includes(p.id) })
+
       await updateUser(selectedEmployee.uid || selectedEmployee.id, {
-        adminPermissions: selectedEmployee.adminPermissions || []
+        permissions: permObject
       })
+
+      emailNotify('permissions_updated', {
+        employeeName: selectedEmployee.displayName,
+        employeeEmail: selectedEmployee.email,
+        updatedByName: currentUser?.displayName || 'Admin'
+      })
+
       alert('✅ Permissions updated successfully!')
       setSelectedEmployee(null)
     } catch (err) {
@@ -204,13 +225,13 @@ export default function AdminPermissions() {
 
             <div className="max-h-[600px] overflow-y-auto">
               {filteredEmployees.map(emp => {
-                const permCount = (emp.adminPermissions || []).length
+                const permCount = getPermissionsArray(emp).length
                 const isSelected = selectedEmployee?.id === emp.id || selectedEmployee?.uid === emp.uid
                 
                 return (
                   <button
                     key={emp.uid || emp.id}
-                    onClick={() => setSelectedEmployee(emp)}
+                    onClick={() => setSelectedEmployee({ ...emp, adminPermissions: getPermissionsArray(emp) })}
                     className={`w-full p-4 border-b border-white/5 text-left transition-colors ${
                       isSelected
                         ? 'bg-blue-500/10 border-l-4 border-l-blue-500'
@@ -280,7 +301,7 @@ export default function AdminPermissions() {
                     </h4>
                     <div className="space-y-2">
                       {permissions.map(perm => {
-                        const hasPermission = (selectedEmployee.adminPermissions || []).includes(perm.id)
+                        const hasPermission = selectedEmployee.adminPermissions.includes(perm.id)
                         return (
                           <div
                             key={perm.id}
@@ -322,29 +343,51 @@ export default function AdminPermissions() {
               </div>
 
               <div className="p-6 border-t border-white/5 bg-gray-900/80">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-gray-400">
-                    <span className="font-semibold text-white">
-                      {(selectedEmployee.adminPermissions || []).length}
-                    </span>{' '}
-                    of {ADMIN_PERMISSIONS.length} permissions granted
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-gray-400">
+                      <span className="font-semibold text-white">
+                        {selectedEmployee.adminPermissions.length}
+                      </span>{' '}
+                      of {ADMIN_PERMISSIONS.length} permissions granted
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <button
+                          onClick={() => setShowPresets(!showPresets)}
+                          className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-medium text-gray-400 hover:bg-white/10 transition-colors"
+                        >
+                          Role Preset
+                        </button>
+                        {showPresets && (
+                          <div className="absolute bottom-full mb-2 right-0 w-56 bg-gray-800 border border-white/10 rounded-xl shadow-xl overflow-hidden z-50">
+                            {Object.entries(ROLE_PRESETS).map(([key, preset]) => (
+                              <button
+                                key={key}
+                                onClick={() => applyRolePreset(key)}
+                                className="w-full p-3 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
+                              >
+                                <p className="text-sm font-semibold text-white">{preset.name}</p>
+                                <p className="text-xs text-gray-400">{preset.description}</p>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => setSelectedEmployee(null)}
+                        className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-medium text-gray-400 hover:bg-white/10 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleSavePermissions}
+                        disabled={saving}
+                        className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-sm font-bold text-white hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-50 transition-all"
+                      >
+                        {saving ? 'Saving...' : 'Save Permissions'}
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => setSelectedEmployee(null)}
-                      className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-medium text-gray-400 hover:bg-white/10 transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleSavePermissions}
-                      disabled={saving}
-                      className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-sm font-bold text-white hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-50 transition-all"
-                    >
-                      {saving ? 'Saving...' : 'Save Permissions'}
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
           ) : (

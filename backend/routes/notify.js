@@ -245,6 +245,24 @@ const templates = {
     `, 'View My Tasks', `${SITE_URL}/employee/tasks`)
   }),
 
+  // 14. Permissions Updated — Employee
+  permissions_updated: ({ employeeName, employeeEmail, updatedByName, rolePreset }) => ({
+    to: employeeEmail,
+    subject: '🔑 Your Permissions Have Been Updated',
+    html: emailTemplate('Permissions Updated', `
+      <p>Hello <strong>${employeeName}</strong>,</p>
+      <p>Your admin permissions have been updated by <strong>${updatedByName || 'Admin'}</strong>.</p>
+      <div style="margin:24px 0;padding:20px;background:#f0f9ff;border-radius:12px;border-left:4px solid #3b82f6;">
+        <p style="margin:0;font-size:14px;color:#1e40af;">
+          ${rolePreset ? `<strong>Role: ${rolePreset}</strong><br>` : ''}
+          <strong>✅ Permissions Updated Successfully</strong>
+        </p>
+        <p style="margin:8px 0 0;font-size:13px;color:#1e40af;">Please log in to your dashboard to see your updated access.</p>
+      </div>
+      <p>If you have any questions about your new permissions, please contact the admin.</p>
+    `, 'Go to Dashboard', `${SITE_URL}/employee`)
+  }),
+
   // 13. Trading Enrollment — Student
   trading_enrollment_student: ({ studentName, studentEmail, courseName, sessionDate, amount }) => ({
     to: studentEmail,

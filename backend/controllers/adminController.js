@@ -1,7 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 const { sendEmail, emailTemplate } = require("../services/emailService");
-const { getActiveEnrolledEmails, db } = require("../services/firebaseService");
+const { getActiveEnrolledEmails } = require("../services/firebaseService");
+const { getDb } = require("../utils/mongo");
+const { ObjectId } = require("mongodb");
 const { logger } = require("../logger");
 const {
   listUsersFromSql,
@@ -80,42 +82,38 @@ const buildBroadcastContent = ({ message, imageUrl, imageLabel }) => {
 };
 
 const getActiveGenericEnrolledEmails = async () => {
-  const snap = await db()
+  const docs = await getDb()
     .collection("enrollments")
-    .where("status", "==", "active")
-    .get();
+    .find({ status: "active" })
+    .toArray();
 
-  return dedupeEmails(snap.docs.map((doc) => doc.data().userEmail));
+  return dedupeEmails(docs.map((d) => d.userEmail));
 };
 
 const getGenericCourseEnrollments = async (courseId, courseTitle) => {
-  const enrollmentsByIdSnap = await db()
+  const enrollments = await getDb()
     .collection("enrollments")
-    .where("courseId", "==", courseId)
-    .where("status", "==", "active")
-    .get();
-
-  const enrollments = enrollmentsByIdSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    .find({ courseId, status: "active" })
+    .toArray();
 
   if (!courseTitle) {
     return enrollments;
   }
 
-  const legacyTitleSnap = await db()
+  const legacyEnrollments = await getDb()
     .collection("enrollments")
-    .where("courseTitle", "==", courseTitle)
-    .where("status", "==", "active")
-    .get();
+    .find({ courseTitle, status: "active" })
+    .toArray();
 
-  const legacyEnrollments = legacyTitleSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-
-  return [...new Map([...enrollments, ...legacyEnrollments].map((enrollment) => [enrollment.id, enrollment])).values()];
+  return [...new Map([...enrollments, ...legacyEnrollments].map((enrollment) => [enrollment._id, enrollment])).values()];
 };
 
 const getAuthorizedCourse = async (requestUser, courseId) => {
-  const courseSnap = await db().collection("courses").doc(courseId).get();
+  const course = await getDb().collection("courses").findOne({
+    _id: ObjectId.isValid(courseId) ? new ObjectId(courseId) : courseId,
+  });
 
-  if (!courseSnap.exists) {
+  if (!course) {
     return {
       error: {
         status: 404,
@@ -124,7 +122,7 @@ const getAuthorizedCourse = async (requestUser, courseId) => {
     };
   }
 
-  const course = { id: courseSnap.id, ...courseSnap.data() };
+  course.id = course._id;
 
   if (requestUser?.role === "admin") {
     return { course };

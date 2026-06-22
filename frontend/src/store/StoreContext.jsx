@@ -690,7 +690,7 @@ export function StoreProvider({ children }) {
   }
 
   const updateUser = async (id, updates) => {
-    try { 
+    try {
       const headers = getAuthorizedHeaders()
       const response = await fetch(`${api.adminUsers}/${id}`, {
         method: 'PATCH',
@@ -701,9 +701,12 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to update the user.')
       }
-      setUsers(prev => prev.map(u => u.uid === id || u.id === id ? data.user : u));
+      setUsers(prev => prev.map(u => u.uid === id || u.id === id ? data.user : u))
+      if (typeof window !== 'undefined' && data.user?.uid) {
+        window.dispatchEvent(new CustomEvent('solutionhub:user-updated', { detail: data.user }))
+      }
       return data.user
-    } catch (err) { console.error("Error updating user:", err); throw err }
+    } catch (err) { console.error('Error updating user:', err); throw err }
   }
 
   const deleteUser = async (id) => {

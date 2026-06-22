@@ -199,7 +199,7 @@ export default function AdminEmployees() {
         jobTitle: finalJobTitle,
         department: finalDepartment,
         skills: skillsArray,
-        role: 'employee',
+        role: editingEmployee ? (editingEmployee.role || 'employee') : 'employee',
         avatar: (formData.avatar || '').trim(),
         customImageUrl: (formData.customImageUrl || '').trim(),
         avatarSource: normalizeAvatarSource(formData.avatarSource),
@@ -248,6 +248,20 @@ export default function AdminEmployees() {
     } catch (err) {
       console.error("Failed to toggle status:", err)
       alert(err.message || "Unable to update account status.")
+    }
+  }
+
+  const promoteToAdmin = async (employee) => {
+    const id = employee.uid || employee.id
+    if (!window.confirm(`Promote ${employee.displayName || employee.email} to admin access?`)) {
+      return
+    }
+    try {
+      await updateUser(id, { role: 'admin' })
+      alert(`${employee.displayName || employee.email} has been granted admin access.`)
+    } catch (err) {
+      console.error("Failed to promote employee:", err)
+      alert(err.message || "Unable to promote the employee to admin.")
     }
   }
 
@@ -429,6 +443,15 @@ export default function AdminEmployees() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-1">
+                      <button
+                        onClick={() => promoteToAdmin(employee)}
+                        className="p-2 rounded-lg text-gray-400 hover:text-amber-300 hover:bg-amber-500/10 transition-colors"
+                        title="Promote to Admin"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                      </button>
                       <button
                         onClick={() => openEditModal(employee)}
                         className="p-2 rounded-lg text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 transition-colors"
