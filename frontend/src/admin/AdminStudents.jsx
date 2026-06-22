@@ -95,25 +95,6 @@ export default function AdminStudents() {
       setAddSubmitting(false)
     }
   }
-    setAddSubmitting(true)
-    try {
-      await addUser({
-        displayName: addForm.displayName.trim(),
-        email: addForm.email.trim(),
-        phone: phoneDigits,
-        role: 'student',
-        status: 'active',
-        location: (addForm.location || '').trim(),
-      })
-      setShowAddModal(false)
-      setAddForm({ displayName: '', email: '', phone: '', location: '' })
-      alert('Student account created. A password setup email has been sent to the registered address.')
-    } catch (err) {
-      alert(err.message || 'Unable to create the student account.')
-    } finally {
-      setAddSubmitting(false)
-    }
-  }
 
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
