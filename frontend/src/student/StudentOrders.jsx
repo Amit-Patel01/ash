@@ -32,7 +32,7 @@ const formatDate = (ts) => {
   return dateObj.toLocaleDateString('en-IN', { dateStyle: 'medium' });
 }
 
-export default function CustomerOrders() {
+export default function StudentOrders() {
   const { currentUser } = useAuth()
   const { orders, serviceRequests } = useStore()
   const [activeTab, setActiveTab] = useState('orders')

@@ -5,7 +5,7 @@ const normalizeKey = (value) => normalizeText(value).toLowerCase()
 
 const hiddenBooleanValues = new Set(['0', 'false', 'no', 'off'])
 const inactiveStatuses = new Set(['inactive', 'disabled', 'blocked', 'deleted'])
-const genericRoles = new Set(['employee', 'customer', 'admin', 'team'])
+const genericRoles = new Set(['employee', 'student', 'admin', 'team'])
 
 const isTruthyFlag = (value) => {
   if (typeof value === 'boolean') return value

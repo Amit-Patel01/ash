@@ -26,7 +26,7 @@ const navGroups = [
   {
     label: 'Students',
     items: [
-      { path: '/admin/customers', label: 'All Students', icon: 'group' },
+      { path: '/admin/students', label: 'All Students', icon: 'group' },
       { path: '/admin/course-enrollments', label: 'Enrollments', icon: 'book' },
       { path: '/admin/qr-certificates', label: 'QR Certificates', icon: 'award' },
       { path: '/admin/account-requests', label: 'Account Requests', icon: 'userPlus', permission: 'can_approve_accounts' },
@@ -175,7 +175,7 @@ const iconMap = {
 }
 
 export default function AdminLayout({ onLogout }) {
-  const { currentUser, hasPermission } = useAuth()
+  const { currentUser, hasPermission, userProfile } = useAuth()
   const { accountRequests, sellRequests, serviceRequests, messages } = useStore()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -183,6 +183,22 @@ export default function AdminLayout({ onLogout }) {
   const [searchQuery, setSearchQuery] = useState('')
   const location = useLocation()
   const navigate = useNavigate()
+
+  const avatarUrl = userProfile?.avatar || userProfile?.photoURL || currentUser?.photoURL || currentUser?.avatar || ''
+
+  const handleWheel = (e) => {
+    const target = e.target
+    const scrollable = target.closest('[style*="overflow"]') || target.closest('.overflow-x-auto') || target.closest('.overflow-y-auto')
+    if (scrollable) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollable
+      const atTop = scrollTop === 0
+      const atBottom = scrollTop + clientHeight >= scrollHeight - 1
+      if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+  }
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -204,7 +220,7 @@ export default function AdminLayout({ onLogout }) {
   const avatar = displayName.charAt(0).toUpperCase()
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex">
+    <div className="h-screen bg-gray-950 text-white flex overflow-hidden dark">
       {/* Mobile overlay */}
       {mobileMenuOpen && (
         <div
@@ -314,8 +330,12 @@ export default function AdminLayout({ onLogout }) {
         {/* User Profile */}
         <div className="p-4 border-t border-white/5">
           <div className={`flex items-center gap-3 ${!sidebarOpen ? 'justify-center' : ''}`}>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center flex-shrink-0 text-sm font-bold">
-              {avatar}
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center flex-shrink-0 text-sm font-bold overflow-hidden border border-white/10">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
+              ) : (
+                avatar
+              )}
             </div>
             {sidebarOpen && (
               <div className="flex-1 min-w-0">
@@ -489,7 +509,7 @@ export default function AdminLayout({ onLogout }) {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-4 lg:p-6 overflow-y-auto">
+        <main className="flex-1 p-4 lg:p-6 overflow-y-auto overscroll-contain" onWheel={handleWheel}>
           <Outlet />
         </main>
       </div>

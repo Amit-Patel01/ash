@@ -26,7 +26,7 @@ const PrivacyPolicy = () => {
               <ul className="list-disc pl-5 mt-3 space-y-2">
                 <li>To provide, operate, and maintain our educational programs and mentorship sessions.</li>
                 <li>To issue certificates and map internship credits as per AICTE and university guidelines.</li>
-                <li>To communicate with you regarding updates, meetings (for trading mentorships), and customer support.</li>
+                <li>To communicate with you regarding updates, meetings (for trading mentorships), and student support.</li>
                 <li>To process payments securely for premium programs.</li>
               </ul>
             </section>

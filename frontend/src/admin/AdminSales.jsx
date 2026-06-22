@@ -107,7 +107,7 @@ export default function AdminSales() {
             <thead>
               <tr className="border-b border-white/5">
                 <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Order</th>
-                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Customer</th>
+                <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Student</th>
                 <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Project</th>
                 <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Type</th>
                 <th className="text-left px-6 py-4 text-xs font-medium text-gray-400 uppercase tracking-wider">Amount</th>

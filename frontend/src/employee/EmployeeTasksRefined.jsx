@@ -265,44 +265,53 @@ export default function EmployeeTasksRefined() {
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-2 lg:max-w-[300px] lg:justify-end">
-                      {statusKey === 'todo' && (
+                    <div className="flex flex-wrap gap-2 lg:justify-end items-center">
+                      <div className="flex items-center gap-1 bg-white/5 border border-white/10 p-1 rounded-xl">
+                        <button
+                          onClick={() => handleStatusChange(task.id, 'todo')}
+                          disabled={updatingId === task.id}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                            statusKey === 'todo'
+                              ? 'bg-gray-500/20 text-gray-300 border border-gray-500/30'
+                              : 'text-gray-500 hover:text-gray-300 border border-transparent hover:bg-white/5'
+                          }`}
+                        >
+                          To Do
+                        </button>
                         <button
                           onClick={() => handleStatusChange(task.id, 'in-progress')}
                           disabled={updatingId === task.id}
-                          className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                            statusKey === 'in-progress'
+                              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+                              : 'text-gray-500 hover:text-cyan-400 border border-transparent hover:bg-white/5'
+                          }`}
                         >
-                          Start Task
+                          In Progress
                         </button>
-                      )}
-                      
-                      {statusKey === 'in-progress' && (
                         <button
                           onClick={() => handleStatusChange(task.id, 'review')}
                           disabled={updatingId === task.id}
-                          className="flex items-center gap-1.5 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm font-semibold text-emerald-300 transition hover:bg-emerald-400/15 disabled:cursor-not-allowed disabled:opacity-50 hover:shadow-lg hover:shadow-emerald-500/20"
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                            statusKey === 'review'
+                              ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                              : 'text-gray-500 hover:text-amber-400 border border-transparent hover:bg-white/5'
+                          }`}
                         >
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                          {updatingId === task.id ? 'Completing...' : 'Complete Task'}
+                          Review
                         </button>
-                      )}
-
-                      {statusKey === 'review' && (
-                        <span className="inline-flex items-center rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-2 text-sm font-semibold text-amber-300 cursor-default opacity-90">
-                          In Review (Pending Admin)
-                        </span>
-                      )}
-
-                      {statusKey === 'done' && (
-                        <span className="inline-flex items-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm font-semibold text-emerald-300 cursor-default opacity-90">
-                          <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                          Approved & Done
-                        </span>
-                      )}
+                        <button
+                          onClick={() => handleStatusChange(task.id, 'done')}
+                          disabled={updatingId === task.id}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                            statusKey === 'done'
+                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                              : 'text-gray-500 hover:text-emerald-400 border border-transparent hover:bg-white/5'
+                          }`}
+                        >
+                          Done
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

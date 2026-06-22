@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
+import { api } from '../config/api'
 import {
   DOCUMENT_TYPES,
   getDocumentTypeMeta,
@@ -27,7 +28,10 @@ export default function AdminSettings() {
     email: currentUser?.email || '',
     phone: currentUser?.phone || '',
     bio: currentUser?.bio || '',
+    avatar: currentUser?.avatar || currentUser?.photoURL || '',
   })
+
+  const [imageLoading, setImageLoading] = useState(false)
 
   const [passwordError, setPasswordError] = useState('')
   const [passwordSuccess, setPasswordSuccess] = useState('')
@@ -93,6 +97,7 @@ export default function AdminSettings() {
       email: currentUser?.email || '',
       phone: currentUser?.phone || '',
       bio: currentUser?.bio || '',
+      avatar: currentUser?.avatar || currentUser?.photoURL || '',
     })
   }, [currentUser])
 
@@ -114,6 +119,50 @@ export default function AdminSettings() {
     { id: 'security', label: 'Security' },
   ]
 
+  const handleImageUpload = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      setProfileError('Please choose a valid image file.')
+      return
+    }
+    if (file.size > 4 * 1024 * 1024) {
+      setProfileError('Image size should be under 4MB.')
+      return
+    }
+
+    setImageLoading(true)
+    setProfileError('')
+    setSaveSuccess('')
+
+    try {
+      const formData = new FormData()
+      formData.append('photo', file)
+
+      const response = await fetch(api.uploadTeam, {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await response.json()
+      if (!response.ok || !data.success || !data.url) {
+        throw new Error(data.message || 'Image upload failed.')
+      }
+
+      setProfileForm(current => ({
+        ...current,
+        avatar: data.url,
+      }))
+      setSaveSuccess('Profile image uploaded! Click "Save Changes" to save.')
+    } catch (error) {
+      setProfileError(error.message || 'Unable to upload image.')
+    } finally {
+      setImageLoading(false)
+    }
+  }
+
   const handleSaveProfile = async () => {
     setSaving(true)
     setSaveSuccess('')
@@ -122,7 +171,9 @@ export default function AdminSettings() {
       await updateUserProfile(currentUser.uid, {
         displayName: profileForm.displayName,
         phone: profileForm.phone,
-        bio: profileForm.bio
+        bio: profileForm.bio,
+        avatar: profileForm.avatar,
+        photoURL: profileForm.avatar,
       })
       setSaveSuccess('Profile updated successfully!')
       setTimeout(() => setSaveSuccess(''), 3000)
@@ -246,12 +297,26 @@ export default function AdminSettings() {
           <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-6">
             <h2 className="text-lg font-semibold text-white mb-6">Profile Information</h2>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-6">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-2xl font-bold shadow-lg">
-                {(currentUser?.displayName || currentUser?.email || 'A').charAt(0).toUpperCase()}
+              <div className="relative group">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-2xl font-bold shadow-lg overflow-hidden border border-white/10">
+                  {profileForm.avatar ? (
+                    <img src={profileForm.avatar} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    (currentUser?.displayName || currentUser?.email || 'A').charAt(0).toUpperCase()
+                  )}
+                </div>
+                <label className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                  <span className="text-[10px] text-white font-bold uppercase tracking-wider">Change</span>
+                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" disabled={imageLoading} />
+                </label>
               </div>
               <div>
-                <p className="text-sm text-white font-medium">{currentUser?.displayName || 'Admin'}</p>
+                <div className="flex items-center gap-3">
+                  <p className="text-sm text-white font-medium">{currentUser?.displayName || 'Admin'}</p>
+                  {imageLoading && <span className="text-[10px] text-blue-400 animate-pulse font-medium">Uploading image...</span>}
+                </div>
                 <p className="text-xs text-gray-500 mt-0.5">{currentUser?.email}</p>
+                <p className="text-[10px] text-gray-400 mt-2">Click image to upload new profile photo (max 4MB)</p>
               </div>
             </div>
 
@@ -507,7 +572,7 @@ export default function AdminSettings() {
                       placeholder="AP"
                       className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
                     />
-                    <p className="mt-1.5 text-[11px] text-gray-500">This code base is used across the admin panel, employee issuance actions, customer downloads, and the public verification link.</p>
+                    <p className="mt-1.5 text-[11px] text-gray-500">This code base is used across the admin panel, employee issuance actions, student downloads, and the public verification link.</p>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-gray-400 mb-1.5">Seal Label</label>
@@ -699,7 +764,7 @@ export default function AdminSettings() {
                     </div>
                   </div>
                   <p className="text-sm text-gray-300 mt-4 leading-relaxed">
-                    The selected {selectedDocumentMeta.shortLabel.toLowerCase()} design is used on employee issuance controls, the customer documents area, and the verification page. The prefix and code base stay in sync with this preview.
+                    The selected {selectedDocumentMeta.shortLabel.toLowerCase()} design is used on employee issuance controls, the student documents area, and the verification page. The prefix and code base stay in sync with this preview.
                   </p>
                 </div>
 

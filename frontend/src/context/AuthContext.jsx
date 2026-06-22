@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
 
     if (response.ok && data.success && data.profile) {
       const profileData = data.profile
-      const normalizedRole = normalizeUserRole(profileData?.role || 'customer')
+      const normalizedRole = normalizeUserRole(profileData?.role || 'student')
       const userData = {
         uid: profileData.uid || profileData.id,
         ...profileData,
@@ -123,7 +123,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem('token', data.token)
       
       const profileData = data.user
-      const normalizedRole = normalizeUserRole(profileData?.role || 'customer')
+      const normalizedRole = normalizeUserRole(profileData?.role || 'student')
       const userData = {
         uid: profileData.uid || profileData.id,
         ...profileData,
@@ -256,7 +256,7 @@ export function AuthProvider({ children }) {
     const response = await fetch(api.userPasswordReset, {
       method: 'POST',
       headers,
-      body: JSON.stringify({ from: currentUser?.role || 'customer' })
+      body: JSON.stringify({ from: currentUser?.role || 'student' })
     })
     const data = await response.json()
     if (!response.ok || !data.success) {
@@ -292,7 +292,7 @@ export function AuthProvider({ children }) {
   }, [getAuthHeaders])
 
   const getAllUsers = useCallback(async () => {
-    const isRequesterCustomer = normalizeUserRole(userProfile?.role || currentUser?.role) === 'customer'
+    const isRequesterCustomer = normalizeUserRole(userProfile?.role || currentUser?.role) === 'student'
     try {
       const headers = await getAuthHeaders()
       const response = await fetch(api.chatContacts, { headers })

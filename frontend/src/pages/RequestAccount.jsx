@@ -12,6 +12,7 @@ import {
   Phone,
   ShieldCheck,
   UserRound,
+  Link2,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import TermsAndConditions from '../components/TermsAndConditions'
@@ -50,6 +51,7 @@ const initialForm = {
   role: '',
   customRole: '',
   reason: '',
+  cvFilePath: '',
 }
 
 const fieldClass =
@@ -88,7 +90,7 @@ export default function RequestAccount() {
       return
     }
 
-    if (!form.name.trim() || !form.email.trim() || !form.phone.trim() || !finalDepartment || !finalRole) {
+    if (!form.name.trim() || !form.email.trim() || !form.phone.trim() || !finalDepartment || !finalRole || !form.cvFilePath.trim()) {
       setError('Please complete all required fields.')
       return
     }
@@ -110,6 +112,7 @@ export default function RequestAccount() {
         phone: cleanPhone,
         department: finalDepartment,
         role: finalRole,
+        cvFilePath: form.cvFilePath.trim(),
         reason: form.reason.trim(),
       })
       setSubmittedMessage(result.message || 'Your request has been submitted successfully.')
@@ -342,6 +345,21 @@ export default function RequestAccount() {
                         </div>
                       )}
                     </div>
+
+                    <label>
+                      <span className={labelClass}>Google Drive Resume Link *</span>
+                      <div className="relative">
+                        <Link2 className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                        <input
+                          type="url"
+                          value={form.cvFilePath}
+                          onChange={e => updateField('cvFilePath', e.target.value)}
+                          required
+                          placeholder="https://drive.google.com/file/d/..."
+                          className={`${fieldClass} pl-11`}
+                        />
+                      </div>
+                    </label>
 
                     <label>
                       <span className={labelClass}>Why do you want to join?</span>

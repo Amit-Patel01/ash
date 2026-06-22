@@ -113,7 +113,7 @@ function getAvatarInitials(value) {
   return (initials || raw.charAt(0)).toUpperCase()
 }
 
-function TaskCard({ task, onDragStart, onDelete, onEdit }) {
+function TaskCard({ task, onDragStart, onDelete, onEdit, onStatusChange }) {
   const assigneeIndex = (task.assignee || 'A').charCodeAt(0) % avatarColors.length
   const assigneeInitials = getAvatarInitials(task.assignee)
   return (
@@ -147,6 +147,64 @@ function TaskCard({ task, onDragStart, onDelete, onEdit }) {
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>
           {task.dueDate}
         </div>
+      </div>
+      
+      {/* Quick status change dots */}
+      <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={(e) => { e.stopPropagation(); onStatusChange(task.id, 'todo'); }}
+            title="Set status to To Do"
+            className={`w-4.5 h-4.5 rounded-full transition-all border flex items-center justify-center ${
+              task.status === 'todo'
+                ? 'bg-gray-500/20 border-gray-400'
+                : 'bg-transparent border-gray-700 hover:border-gray-500'
+            }`}
+          >
+            {task.status === 'todo' && <div className="w-1.5 h-1.5 rounded-full bg-gray-400" />}
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onStatusChange(task.id, 'in-progress'); }}
+            title="Set status to In Progress"
+            className={`w-4.5 h-4.5 rounded-full transition-all border flex items-center justify-center ${
+              task.status === 'in-progress'
+                ? 'bg-blue-450/20 border-blue-400'
+                : 'bg-transparent border-blue-700 hover:border-blue-500'
+            }`}
+          >
+            {task.status === 'in-progress' && <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />}
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onStatusChange(task.id, 'review'); }}
+            title="Set status to In Review"
+            className={`w-4.5 h-4.5 rounded-full transition-all border flex items-center justify-center ${
+              task.status === 'review'
+                ? 'bg-amber-450/20 border-amber-400'
+                : 'bg-transparent border-amber-700 hover:border-amber-500'
+            }`}
+          >
+            {task.status === 'review' && <div className="w-1.5 h-1.5 rounded-full bg-amber-400" />}
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); onStatusChange(task.id, 'done'); }}
+            title="Set status to Done"
+            className={`w-4.5 h-4.5 rounded-full transition-all border flex items-center justify-center ${
+              task.status === 'done'
+                ? 'bg-emerald-450/20 border-emerald-400'
+                : 'bg-transparent border-emerald-700 hover:border-emerald-500'
+            }`}
+          >
+            {task.status === 'done' && <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />}
+          </button>
+        </div>
+        <span className={`text-[10px] font-bold ${
+          task.status === 'done' ? 'text-emerald-400' :
+          task.status === 'in-progress' ? 'text-blue-400' :
+          task.status === 'review' ? 'text-amber-400' :
+          'text-gray-405'
+        }`}>
+          {task.status === 'done' ? 'Done' : task.status === 'in-progress' ? 'In Progress' : task.status === 'review' ? 'In Review' : 'To Do'}
+        </span>
       </div>
     </div>
   )
@@ -250,6 +308,13 @@ export default function AdminTasks() {
     const taskId = e.dataTransfer.getData('taskId'); 
     try {
       await updateTask(taskId, { status: columnId })
+    } catch (err) {
+      console.error("Failed to update task status:", err)
+    }
+  }
+  const handleStatusChange = async (taskId, newStatus) => {
+    try {
+      await updateTask(taskId, { status: newStatus })
     } catch (err) {
       console.error("Failed to update task status:", err)
     }
@@ -383,7 +448,16 @@ export default function AdminTasks() {
                   </div>
                 </div>
                 <div className="space-y-3 min-h-[200px]">
-                  {columnTasks.map(task => (<TaskCard key={task.id} task={task} onDragStart={handleDragStart} onDelete={handleDeleteClick} onEdit={openEdit} />))}
+                  {columnTasks.map(task => (
+                    <TaskCard 
+                      key={task.id} 
+                      task={task} 
+                      onDragStart={handleDragStart} 
+                      onDelete={handleDeleteClick} 
+                      onEdit={openEdit} 
+                      onStatusChange={handleStatusChange}
+                    />
+                  ))}
                 </div>
               </div>
             )
@@ -422,9 +496,48 @@ export default function AdminTasks() {
                     </td>
                     <td className="px-6 py-4"><span className={`text-xs font-medium px-2 py-0.5 rounded-md border ${priorityColors[task.priority] || priorityColors.Medium}`}>{task.priority}</span></td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${task.status === 'done' ? 'bg-emerald-500/10 text-emerald-400' : task.status === 'in-progress' ? 'bg-blue-500/10 text-blue-400' : task.status === 'review' ? 'bg-amber-500/10 text-amber-400' : 'bg-gray-500/10 text-gray-400'}`}>
-                        {task.status === 'done' ? 'Done' : task.status === 'in-progress' ? 'In Progress' : task.status === 'review' ? 'In Review' : 'To Do'}
-                      </span>
+                      <div className="flex items-center gap-1 bg-white/5 border border-white/10 p-0.5 rounded-xl w-fit">
+                        <button
+                          onClick={() => handleStatusChange(task.id, 'todo')}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                            task.status === 'todo'
+                              ? 'bg-gray-500/20 text-gray-300'
+                              : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'
+                          }`}
+                        >
+                          To Do
+                        </button>
+                        <button
+                          onClick={() => handleStatusChange(task.id, 'in-progress')}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                            task.status === 'in-progress'
+                              ? 'bg-blue-500/20 text-blue-400'
+                              : 'text-gray-500 hover:text-blue-400 hover:bg-white/5'
+                          }`}
+                        >
+                          In Progress
+                        </button>
+                        <button
+                          onClick={() => handleStatusChange(task.id, 'review')}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                            task.status === 'review'
+                              ? 'bg-amber-500/20 text-amber-400'
+                              : 'text-gray-500 hover:text-amber-400 hover:bg-white/5'
+                          }`}
+                        >
+                          Review
+                        </button>
+                        <button
+                          onClick={() => handleStatusChange(task.id, 'done')}
+                          className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                            task.status === 'done'
+                              ? 'bg-emerald-500/20 text-emerald-400'
+                              : 'text-gray-500 hover:text-emerald-400 hover:bg-white/5'
+                          }`}
+                        >
+                          Done
+                        </button>
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-400">{task.dueDate}</td>
                     <td className="px-6 py-4">

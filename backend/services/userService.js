@@ -67,6 +67,7 @@ const ACCOUNT_REQUEST_COLUMN_SQL = `
   ar.rejected_by_uid,
   ar.rejected_by_email,
   ar.rejected_at,
+  ar.cv_file_path,
   ar.created_at,
   ar.updated_at
 `;
@@ -289,6 +290,7 @@ const mapAccountRequestRow = (row) => ({
   rejectedByUid: row.rejected_by_uid || "",
   rejectedByEmail: row.rejected_by_email || "",
   rejectedAt: toIsoString(row.rejected_at),
+  cvFilePath: row.cv_file_path || "",
   createdAt: toIsoString(row.created_at),
   updatedAt: toIsoString(row.updated_at),
   alreadyExists: row.status === "approved" && Boolean(row.linked_user_id),
@@ -1651,11 +1653,13 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
     const department = String(input.department || "").trim();
     const requestedRole = String(input.role || input.requestedRole || "Employee").trim();
     const reason = String(input.reason || "").trim();
+    const cvFilePath = String(input.cvFilePath || "").trim();
 
     if (!name) throw createHttpError(400, "Full name is required.", "display_name_required");
     if (!email || !validateEmail(email)) throw createHttpError(400, "A valid email address is required.", "invalid_email");
     if (!phone || !validatePhone(phone)) throw createHttpError(400, "A valid phone number is required.", "invalid_phone");
     if (!department) throw createHttpError(400, "Department is required.", "department_required");
+    if (!cvFilePath) throw createHttpError(400, "Google Drive Resume link is required.", "cv_required");
 
     const reqCol = getDb().collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION);
 
@@ -1670,6 +1674,7 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
         department,
         role: requestedRole || "Employee",
         reason: reason || "",
+        cvFilePath,
         status: "approved",
         mergeCount: 1,
         linkedUserId: existingAccount.uid,
@@ -1715,6 +1720,7 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
         department,
         role: requestedRole || existingPending.role || "Employee",
         reason: reason || existingPending.reason || "",
+        cvFilePath: cvFilePath || existingPending.cvFilePath || "",
         mergeCount: Number(existingPending.mergeCount || 0) + 1,
         updatedAt: new Date().toISOString(),
       };
@@ -1736,6 +1742,7 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
       department,
       role: requestedRole || "Employee",
       reason: reason || "",
+      cvFilePath,
       status: "pending",
       mergeCount: 0,
       linkedUserId: "",
@@ -1759,6 +1766,7 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
   const department = String(input.department || "").trim();
   const requestedRole = String(input.role || input.requestedRole || "Employee").trim();
   const reason = String(input.reason || "").trim();
+  const cvFilePath = String(input.cvFilePath || "").trim();
 
   if (!name) {
     throw createHttpError(400, "Full name is required.", "display_name_required");
@@ -1771,6 +1779,9 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
   }
   if (!department) {
     throw createHttpError(400, "Department is required.", "department_required");
+  }
+  if (!cvFilePath) {
+    throw createHttpError(400, "Google Drive Resume link is required.", "cv_required");
   }
 
   const conflict = await findUserConflict({ email, phone });
@@ -1791,6 +1802,7 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
               department = ?,
               requested_role = ?,
               reason = ?,
+              cv_file_path = ?,
               status = 'approved',
               linked_user_id = ?,
               merge_count = merge_count + 1,
@@ -1798,7 +1810,7 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
               updated_at = NOW()
             WHERE id = ?
           `,
-          [name, department, requestedRole, reason || null, conflict.id ? Number(conflict.id) : null, existingRows[0].id],
+          [name, department, requestedRole, reason || null, cvFilePath, conflict.id ? Number(conflict.id) : null, existingRows[0].id],
           connection
         );
         const updatedRows = await query(
@@ -1814,11 +1826,11 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
         `
           INSERT INTO account_requests (
             request_uid, name, email, phone, department, requested_role, system_role, reason,
-            status, linked_user_id, merge_count, approved_at
+            cv_file_path, status, linked_user_id, merge_count, approved_at
           )
-          VALUES (?, ?, ?, ?, ?, ?, 'employee', ?, 'approved', ?, 1, NOW())
+          VALUES (?, ?, ?, ?, ?, ?, 'employee', ?, ?, 'approved', ?, 1, NOW())
         `,
-        [requestUid, name, email, phone, department, requestedRole, reason || null, conflict.id ? Number(conflict.id) : null],
+        [requestUid, name, email, phone, department, requestedRole, reason || null, cvFilePath, conflict.id ? Number(conflict.id) : null],
         connection
       );
       const rows = await query(
@@ -1866,11 +1878,12 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
           department = ?,
           requested_role = ?,
           reason = ?,
+          cv_file_path = ?,
           merge_count = merge_count + 1,
           updated_at = NOW()
         WHERE id = ?
       `,
-      [name, department, requestedRole, reason || null, pendingRows[0].id]
+      [name, department, requestedRole, reason || null, cvFilePath, pendingRows[0].id]
     );
     const mergedRows = await query(
       `SELECT ${ACCOUNT_REQUEST_COLUMN_SQL} FROM account_requests ar WHERE ar.id = ? LIMIT 1`,
@@ -1889,11 +1902,11 @@ const createAccountRequest = async (input, { requestIp = "" } = {}) => {
   const inserted = await query(
     `
       INSERT INTO account_requests (
-        request_uid, name, email, phone, department, requested_role, system_role, reason, status
+        request_uid, name, email, phone, department, requested_role, system_role, reason, cv_file_path, status
       )
-      VALUES (?, ?, ?, ?, ?, ?, 'employee', ?, 'pending')
+      VALUES (?, ?, ?, ?, ?, ?, 'employee', ?, ?, 'pending')
     `,
-    [requestUid, name, email, phone, department, requestedRole, reason || null]
+    [requestUid, name, email, phone, department, requestedRole, reason || null, cvFilePath]
   );
   const rows = await query(
     `SELECT ${ACCOUNT_REQUEST_COLUMN_SQL} FROM account_requests ar WHERE ar.id = ? LIMIT 1`,
@@ -1962,6 +1975,7 @@ const approveAccountRequest = async (identifier, actor = null) => {
         role: "employee",
         status: "active",
         showOnTeam: false,
+        cvFilePath: request.cvFilePath || "",
       },
       {
         sendActivationEmail: true,
@@ -2051,6 +2065,7 @@ const approveAccountRequest = async (identifier, actor = null) => {
       role: "employee",
       status: "active",
       showOnTeam: false,
+      cvFilePath: request.cvFilePath || "",
     },
     {
       sendActivationEmail: true,

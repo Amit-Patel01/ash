@@ -97,7 +97,7 @@ export function ChatProvider({ children }) {
 
         if (currentRole !== 'admin' && isEmployeeOrAdmin) {
           userChats = userChats.filter(r => r.assignedRole === currentUser.role || r.assignedTo === currentUser.displayName)
-        } else if (currentRole === 'customer') {
+        } else if (currentRole === 'student') {
           userChats = userChats.filter(r => r.participants.includes(currentUser.uid))
         }
 
@@ -179,8 +179,8 @@ export function ChatProvider({ children }) {
     const currentRole = String(currentUser.role || '').toLowerCase()
     const otherRole = String(otherUserRole || '').toLowerCase()
 
-    if (currentRole === 'customer' && otherRole === 'customer') {
-      console.warn("Unauthorized chat: Customers cannot chat with other customers.")
+    if (currentRole === 'student' && otherRole === 'student') {
+      console.warn("Unauthorized chat: Customers cannot chat with other students.")
       return null
     }
 
@@ -192,7 +192,7 @@ export function ChatProvider({ children }) {
           userId: currentUser.uid,
           userName: getReadableName(currentUser),
           userEmail: currentUser.email,
-          userRole: currentUser.role || 'Customer',
+          userRole: currentUser.role || 'Student',
           otherUserId,
           otherUserName,
           otherUserEmail,

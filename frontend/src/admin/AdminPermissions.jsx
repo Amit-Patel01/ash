@@ -17,14 +17,14 @@ const ADMIN_PERMISSIONS = [
   { id: 'view_payroll', name: 'View Payroll', category: 'HR', description: 'View salary information' },
   { id: 'manage_recruitment', name: 'Manage Recruitment', category: 'HR', description: 'Handle job postings and candidates' },
   { id: 'manage_account_requests', name: 'Manage Account Requests', category: 'HR', description: 'Approve employee account requests' },
-  { id: 'manage_customers', name: 'Manage Customers', category: 'Customers', description: 'Customer account management' },
-  { id: 'view_customers', name: 'View Customers', category: 'Customers', description: 'View customer list only' },
+  { id: 'manage_customers', name: 'Manage Students', category: 'Students', description: 'Student account management' },
+  { id: 'view_customers', name: 'View Students', category: 'Students', description: 'View student list only' },
   { id: 'manage_services', name: 'Manage Services', category: 'Services', description: 'Service requests management' },
   { id: 'manage_courses', name: 'Manage Courses', category: 'Courses', description: 'Course creation and editing' },
   { id: 'manage_enrollments', name: 'Manage Enrollments', category: 'Courses', description: 'Student enrollment management' },
   { id: 'manage_coupons', name: 'Manage Coupons', category: 'Sales', description: 'Create and manage discount coupons' },
   { id: 'view_sales', name: 'View Sales', category: 'Sales', description: 'View sales reports' },
-  { id: 'manage_messages', name: 'Manage Messages', category: 'Communication', description: 'Handle customer messages' },
+  { id: 'manage_messages', name: 'Manage Messages', category: 'Communication', description: 'Handle student messages' },
   { id: 'send_broadcasts', name: 'Send Broadcasts', category: 'Communication', description: 'Send bulk emails/notifications' },
   { id: 'manage_testimonials', name: 'Manage Testimonials', category: 'Content', description: 'Add/edit testimonials' },
   { id: 'manage_certificates', name: 'Manage Certificates', category: 'Certificates', description: 'Certificate generation' },
@@ -68,7 +68,7 @@ const ROLE_PRESETS = {
   },
   sales: {
     name: 'Sales Executive',
-    description: 'Sales and customer management',
+    description: 'Sales and student management',
     permissions: [
       'view_dashboard',
       'manage_customers',
@@ -82,7 +82,7 @@ const ROLE_PRESETS = {
   },
   support: {
     name: 'Support Executive',
-    description: 'Customer support and assistance',
+    description: 'Student support and assistance',
     permissions: [
       'view_dashboard',
       'view_customers',

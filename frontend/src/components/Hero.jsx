@@ -223,6 +223,10 @@ const CSS = `
     font-size:clamp(1.5rem,4vw,2.2rem); color:#1d4ed8; line-height:1;
   }
   .hp-stat-label { font-size:11px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:.05em; margin-top:5px; }
+  .hp-stat-icon { font-size: 28px; margin-bottom: 8px; }
+  .hp-counter { animation: hp-pulse 2s ease-in-out infinite; }
+  .dark .hp-counter { color: #818cf8; }
+
 
   /* ══ MOBILE ══ */
   @media (max-width:768px) {
@@ -312,9 +316,6 @@ const CSS = `
   }
   .dark .hp-icard div { color: #f1f5f9 !important; }
   .dark .hp-icard p { color: #94a3b8 !important; }
-  .dark .hp-stat-item { color: #f1f5f9; background: rgba(15, 23, 42, 0.6); }
-  .dark .hp-stat-num { color: #818cf8; }
-  .dark .hp-stat-label { color: #94a3b8; }
   .dark .hp-why-item {
     background: rgba(10, 18, 40, 0.82) !important;
     border-color: rgba(255, 255, 255, 0.05) !important;
@@ -433,14 +434,14 @@ const getCourseIconName = (course, catMeta) => {
 }
 
 
-/* ── Why Choose Us ── */
+/* ── Why Choose Us (Services Focused) ── */
 const WHY = [
-  { icon: 'academy', bg: 'rgba(29,78,216,.08)', title: 'Industry-Based Learning', desc: 'Curriculum aligned with current industry demands and real company workflows.', color: '#1d4ed8' },
-  { icon: 'projects', bg: 'rgba(124,58,237,.08)', title: 'Real-World Projects', desc: 'Work on live projects that build your portfolio and sharpen your skills.', color: '#7c3aed' },
-  { icon: 'certificate', bg: 'rgba(5,150,105,.08)', title: 'Verified Certification', desc: 'Receive a valid, verifiable certificate recognized by organizations nationwide.', color: '#059669' },
-  { icon: 'mentor', bg: 'rgba(217,119,6,.08)', title: 'Expert Mentorship', desc: 'Learn directly from experienced professionals with industry backgrounds.', color: '#d97706' },
-  { icon: 'clock', bg: 'rgba(220,38,38,.08)', title: 'Flexible Online Schedule', desc: 'Study at your own pace with recorded sessions available 24/7 anytime.', color: '#dc2626' },
-  { icon: 'device', bg: 'rgba(8,145,178,.08)', title: 'Dedicated Support', desc: 'Get personalized support from mentors and our responsive team throughout.', color: '#0891b2' },
+  { icon: 'design', bg: 'rgba(236,72,153,.08)', title: '360° Design Solutions', desc: 'Layout, graphics design, logo & branding, product design, prototyping, and video production — all under one roof.', color: '#ec4899' },
+  { icon: 'web', bg: 'rgba(59,130,246,.08)', title: 'Full-Stack Development', desc: 'Websites, mobile apps, browser extensions, custom scripts, and automation tools built with modern tech stacks.', color: '#3b82f6' },
+  { icon: 'projects', bg: 'rgba(99,102,241,.08)', title: 'DevOps & Cloud Expertise', desc: 'End-to-end cloud management, deployment automation, security monitoring, and Kubernetes orchestration.', color: '#6366f1' },
+  { icon: 'marketing', bg: 'rgba(249,115,22,.08)', title: 'Digital Marketing Services', desc: 'SEO, SMM, PPC, content writing, and email marketing to grow your online presence.', color: '#f97316' },
+  { icon: 'data', bg: 'rgba(20,184,166,.08)', title: 'Managed IT Services', desc: 'Website management, affiliate management, web research, data entry, and data analysis support.', color: '#14b8a6' },
+  { icon: 'briefcase', bg: 'rgba(139,92,246,.08)', title: 'Strategic Consultation', desc: 'Business consultation, technical architecture, growth hacking, security audits, and market research.', color: '#8b5cf6' },
 ]
 
 
@@ -518,15 +519,15 @@ const Hero = () => {
       <div style={{ position:'fixed', inset:0, zIndex:0, pointerEvents:'none',
         background: isDark 
           ? 'linear-gradient(160deg, #0a1120 0%, #0f1629 45%, #1a1432 100%)'
-          : 'linear-gradient(160deg,#e6f0ff 0%, #eef2ff 45%, #f3e8ff 100%)' }}
+          : 'linear-gradient(160deg,#f8fafc 0%, #f1f5f9 45%, #f8fafc 100%)' }}
         className="hp-fixed-bg">
         <div style={{ position:'absolute', inset:0,
-          backgroundImage:'linear-gradient(rgba(99,102,241,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.02) 1px,transparent 1px)',
-          backgroundSize:'64px 64px', opacity: isDark ? 0.3 : 0.9 }} />
+          backgroundImage:'linear-gradient(rgba(99,102,241,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.015) 1px,transparent 1px)',
+          backgroundSize:'64px 64px', opacity: isDark ? 0.3 : 0.4 }} />
         <div style={{ position:'absolute', inset:0, pointerEvents:'none',
           background: isDark
             ? 'radial-gradient(circle at 10% 15%, rgba(124,58,237,.08) 0%, transparent 25%), radial-gradient(circle at 90% 85%, rgba(29,78,216,.06) 0%, transparent 30%)'
-            : 'radial-gradient(circle at 10% 15%, rgba(124,58,237,.04) 0%, transparent 25%), radial-gradient(circle at 90% 85%, rgba(29,78,216,.03) 0%, transparent 30%)' }} />
+            : 'radial-gradient(circle at 10% 15%, rgba(99,102,241,.03) 0%, transparent 25%), radial-gradient(circle at 90% 85%, rgba(59,130,246,.02) 0%, transparent 30%)' }} />
       </div>
 
       <div className="hp" style={{ position:'relative', zIndex:10 }}>
@@ -800,7 +801,7 @@ const Hero = () => {
           {/* ════════════════════════════════════════════
               WHY CHOOSE US
           ════════════════════════════════════════════ */}
-          <section style={{ padding:'0 clamp(16px,5vw,28px) clamp(60px,8vw,80px)' }}>
+          <section id="why-choose-us" style={{ padding:'0 clamp(16px,5vw,28px) clamp(60px,8vw,80px)' }}>
             <div style={{ maxWidth:1040, margin:'0 auto' }}>
 
               <div style={{ textAlign:'center', marginBottom:40 }}>
@@ -1008,10 +1009,10 @@ const Hero = () => {
                   )}
                 </div>
               </section>
-
-              <div className="hp-div" style={{ padding:'0 clamp(16px,5vw,28px)' }}/>
             </>
           )}
+
+          <div className="hp-div" style={{ padding:'0 clamp(16px,5vw,28px)' }}/>
 
           {/* ════════════════════════════════════════════
               FAQ PREVIEW SECTION

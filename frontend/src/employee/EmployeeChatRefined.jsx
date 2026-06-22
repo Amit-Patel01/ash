@@ -7,7 +7,7 @@ export default function EmployeeChatRefined() {
       <EmployeePageHeader
         eyebrow="Communication"
         title="Messages"
-        description="Manage conversations with team members and customers in one place. The chat view matches the updated employee panel layout."
+        description="Manage conversations with team members and students in one place. The chat view matches the updated employee panel layout."
       />
 
       <EmployeeSurface

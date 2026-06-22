@@ -877,7 +877,7 @@ export default function EmployeeCourseManage() {
                     placeholder="https://meet.google.com/... or Zoom link"
                     className="input"
                   />
-                  <p className="text-[10px] text-gray-500 mt-1">Students on this plan will join this link directly from their customer panel.</p>
+                  <p className="text-[10px] text-gray-500 mt-1">Students on this plan will join this link directly from their student panel.</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-[1.6fr,1fr] gap-3">
                   <div>

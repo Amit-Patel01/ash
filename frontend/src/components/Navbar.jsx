@@ -11,9 +11,19 @@ const Navbar = () => {
   const lastScrollYRef = useRef(0)
   const location = useLocation()
   const navigate = useNavigate()
-  const { currentUser, logout } = useAuth()
+  const { currentUser, userProfile, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const isDark = theme === 'dark'
+  const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false)
+  const [mobileCompanyOpen, setMobileCompanyOpen] = useState(false)
+  const [whyUsDropdownOpen, setWhyUsDropdownOpen] = useState(false)
+  const [mobileWhyUsOpen, setMobileWhyUsOpen] = useState(false)
+
+  const isCompanyActive = location.pathname === '/infrastructure' || location.pathname === '/contact'
+  const isWhyUsActive = location.pathname.startsWith('/services') || location.hash === '#why-choose-us'
+
+  const avatarUrl = userProfile?.avatar || userProfile?.photoURL || currentUser?.photoURL || currentUser?.avatar || ''
+  const userDisplayName = userProfile?.displayName || currentUser?.displayName || 'User'
 
   const handleLogout = async () => {
     await logout()
@@ -45,9 +55,6 @@ const Navbar = () => {
     { name: 'Home',     path: '/' },
     { name: 'About',    path: '/about' },
     { name: 'Courses',  path: '/courses' },
-    { name: 'Services', path: '/services' },
-    { name: 'Projects', path: '/projects' },
-    { name: 'Contact',  path: '/contact' },
   ]
 
   /* ── Theme Toggle Button ── */
@@ -85,7 +92,7 @@ const Navbar = () => {
 
         {/* ── Floating Glass Container ── */}
         <div className={`
-          relative flex justify-between items-center px-4 md:px-8 lg:px-12 rounded-full
+          relative flex justify-between items-center px-4 md:px-6 lg:px-8 xl:px-12 rounded-full
           transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]
           ${isDark
             ? `border border-white/10 ${scrolled ? 'h-16 lg:h-20 bg-slate-900/80 backdrop-blur-2xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.7)] scale-100 mt-2' : 'h-20 lg:h-24 bg-slate-900/60 backdrop-blur-xl shadow-[0_40px_80px_-15px_rgba(0,0,0,0.6)] scale-[1.01]'}`
@@ -101,7 +108,7 @@ const Navbar = () => {
           </div>
 
           {/* Left: Logo + Nav Links */}
-          <div className="flex items-center gap-6 lg:gap-10 h-full">
+          <div className="flex items-center gap-3 lg:gap-5 xl:gap-10 h-full">
             <Link to="/" className="relative z-10 flex items-center group flex-shrink-0 outline-none">
               <div className="relative transform transition-all duration-500 group-hover:scale-105 group-hover:-rotate-1">
                 <img
@@ -113,14 +120,14 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop Links */}
-            <div className="hidden lg:flex items-center gap-1 xl:gap-2 h-full py-2">
+            <div className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 h-full py-2">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path
                 return (
                   <Link
                     key={link.name}
                     to={link.path}
-                    className={`relative px-5 h-full flex items-center rounded-full text-sm lg:text-[15px] font-bold transition-all duration-300 group outline-none overflow-hidden ${
+                    className={`relative px-2.5 lg:px-3 xl:px-5 h-full flex items-center rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 group outline-none overflow-hidden ${
                       isActive
                         ? isDark ? 'text-indigo-300 bg-indigo-500/15 shadow-md' : 'text-blue-700 bg-white/90 shadow-md'
                         : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
@@ -133,46 +140,192 @@ const Navbar = () => {
                   </Link>
                 )
               })}
+
+              {/* Why Us Dropdown */}
+              <div
+                className="relative h-full flex items-center"
+                onMouseEnter={() => setWhyUsDropdownOpen(true)}
+                onMouseLeave={() => setWhyUsDropdownOpen(false)}
+              >
+                <button
+                  className={`relative px-2.5 lg:px-3 xl:px-5 h-12 flex items-center gap-1.5 rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
+                    isWhyUsActive
+                      ? isDark ? 'text-indigo-300 bg-indigo-500/15' : 'text-blue-700 bg-white/95 shadow-md'
+                      : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
+                  }`}
+                >
+                  <span className="relative z-10">Why Us</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-300 ${whyUsDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                  {isWhyUsActive && (
+                    <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-400' : 'bg-blue-600'}`} />
+                  )}
+                </button>
+
+                {/* Floating Dropdown Card */}
+                <div
+                  className={`absolute left-0 top-[85%] mt-1 w-52 rounded-2xl border shadow-2xl transition-all duration-300 origin-top-left ${
+                    whyUsDropdownOpen
+                      ? 'opacity-100 scale-100 translate-y-0 visible'
+                      : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
+                  } ${
+                    isDark
+                      ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
+                      : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
+                  }`}
+                >
+                  <div className="p-2 space-y-1">
+                    <Link
+                      to="/services"
+                      className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
+                        location.pathname === '/services'
+                          ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
+                          : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                      }`}
+                    >
+                      Our Services
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Projects Link */}
+              <Link
+                to="/projects"
+                className={`relative px-2.5 lg:px-3 xl:px-5 h-full flex items-center rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 group outline-none overflow-hidden ${
+                  location.pathname === '/projects'
+                    ? isDark ? 'text-indigo-300 bg-indigo-500/15 shadow-md' : 'text-blue-700 bg-white/90 shadow-md'
+                    : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
+                }`}
+              >
+                <span className="relative z-10">Projects</span>
+                {location.pathname === '/projects' && (
+                  <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-400' : 'bg-blue-600'}`} />
+                )}
+              </Link>
+
+              {/* Company Dropdown */}
+              <div
+                className="relative h-full flex items-center"
+                onMouseEnter={() => setCompanyDropdownOpen(true)}
+                onMouseLeave={() => setCompanyDropdownOpen(false)}
+              >
+                <button
+                  className={`relative px-2.5 lg:px-3 xl:px-5 h-12 flex items-center gap-1.5 rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
+                    isCompanyActive
+                      ? isDark ? 'text-indigo-300 bg-indigo-500/15' : 'text-blue-700 bg-white/95 shadow-md'
+                      : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
+                  }`}
+                >
+                  <span className="relative z-10">Company</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-300 ${companyDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                  {isCompanyActive && (
+                    <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-400' : 'bg-blue-600'}`} />
+                  )}
+                </button>
+
+                {/* Floating Dropdown Card */}
+                <div
+                  className={`absolute left-0 top-[85%] mt-1 w-52 rounded-2xl border shadow-2xl transition-all duration-300 origin-top-left ${
+                    companyDropdownOpen
+                      ? 'opacity-100 scale-100 translate-y-0 visible'
+                      : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
+                  } ${
+                    isDark
+                      ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
+                      : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
+                  }`}
+                >
+                  <div className="p-2 space-y-1">
+                    <Link
+                      to="/infrastructure"
+                      className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
+                        location.pathname === '/infrastructure'
+                          ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
+                          : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                      }`}
+                    >
+                      Our Infrastructure
+                    </Link>
+                    <Link
+                      to="/contact"
+                      className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
+                        location.pathname === '/contact'
+                          ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
+                          : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                      }`}
+                    >
+                      Contact Us
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Right: Theme + Auth + Chat */}
-          <div className="flex items-center gap-2 lg:gap-3 h-full">
+          <div className="flex items-center gap-1.5 lg:gap-2 xl:gap-3 h-full">
 
             {/* Desktop */}
-            <div className="hidden lg:flex items-center gap-2">
+            <div className="hidden lg:flex items-center gap-1.5 xl:gap-2">
               {/* Dark Mode Toggle */}
               <ThemeToggle />
 
               {currentUser ? (
                 <div className={`flex items-center gap-2 p-1 rounded-full border ${isDark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/5'}`}>
                   <Link
-                    to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'customer' ? '/customer' : '/employee'}
-                    className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-white shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 ${isDark ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-black hover:bg-slate-900'}`}
+                    to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'student' ? '/student' : '/employee'}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-white shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 ${isDark ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-black hover:bg-slate-900'}`}
                   >
-                    Dashboard
+                    <div className="w-6 h-6 rounded-full overflow-hidden bg-white/10 flex items-center justify-center shrink-0">
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt={userDisplayName} className="w-full h-full object-cover" />
+                      ) : (
+                        <svg className="w-full h-full text-slate-400 bg-slate-200 dark:bg-slate-800 dark:text-slate-500 p-0.5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                      )}
+                    </div>
+                    <span>Dashboard</span>
                   </Link>
                   <button
                     onClick={handleLogout}
                     className={`w-10 h-10 flex items-center justify-center rounded-full transition-all group active:scale-95 ${isDark ? 'text-red-400 hover:bg-red-500/10' : 'text-red-600 hover:bg-red-50'}`}
                     title="Logout"
                   >
-                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                      <polyline points="16 17 21 12 16 7" />
+                      <line x1="21" x2="9" y1="12" y2="12" />
                     </svg>
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 lg:gap-3">
+                <div className={`flex items-center p-1 rounded-full border transition-all duration-300 ${isDark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/5'}`}>
                   <Link
                     to="/login"
-                    className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/80'}`}
+                    className={`px-3.5 lg:px-4 xl:px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 ${isDark ? 'text-slate-300 hover:text-white' : 'text-slate-700 hover:text-black'}`}
                   >
                     Login
                   </Link>
                   <Link
                     to="/join-us"
-                    className="relative group overflow-hidden px-7 py-2.5 rounded-full text-[15px] font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-500/20 transition-all duration-500 transform hover:-translate-y-0.5 active:scale-95"
+                    className="relative group overflow-hidden px-3.5 lg:px-4 xl:px-5 py-2 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95"
                   >
                     Join Us
                   </Link>
@@ -182,7 +335,7 @@ const Navbar = () => {
               {/* Chat Button */}
               <Link
                 to="/chat"
-                className={`hidden sm:flex relative items-center gap-2 backdrop-blur-md px-5 py-2.5 rounded-full font-bold text-sm lg:text-[15px] hover:-translate-y-0.5 transition-all duration-300 shadow-md border ${
+                className={`hidden xl:flex relative items-center gap-2 backdrop-blur-md px-5 py-2.5 rounded-full font-bold text-sm lg:text-[15px] hover:-translate-y-0.5 transition-all duration-300 shadow-md border ${
                   isDark
                     ? 'bg-slate-800/80 text-slate-200 border-slate-700 hover:bg-slate-700'
                     : 'bg-white/90 text-slate-900 border-slate-200 hover:bg-white'
@@ -198,6 +351,25 @@ const Navbar = () => {
             {/* Mobile: theme toggle + hamburger */}
             <div className="lg:hidden flex items-center gap-2">
               <ThemeToggle mobile />
+
+              {currentUser && (
+                <Link
+                  to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'student' ? '/student' : '/employee'}
+                  title="Dashboard"
+                  className={`w-10 h-10 flex items-center justify-center rounded-full border overflow-hidden shadow-sm active:scale-95 transition-transform shrink-0 ${
+                    isDark ? 'border-slate-700 bg-slate-800 text-white' : 'border-slate-200 bg-white text-slate-800'
+                  }`}
+                >
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt={userDisplayName} className="w-full h-full object-cover" />
+                  ) : (
+                    <svg className="w-full h-full text-slate-400 bg-slate-200 dark:bg-slate-800 dark:text-slate-500 p-0.5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  )}
+                </Link>
+              )}
+
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={`relative w-12 h-12 flex items-center justify-center rounded-2xl shadow-lg border transition-all duration-300 active:scale-95 outline-none ${
@@ -223,6 +395,7 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   to={link.path}
+                  onClick={() => setIsOpen(false)}
                   className={`relative block px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 overflow-hidden ${
                     isActive
                       ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50 shadow-sm'
@@ -237,6 +410,113 @@ const Navbar = () => {
               )
             })}
 
+            {/* Mobile Why Us Dropdown Accordion */}
+            <div className="flex flex-col">
+              <button
+                onClick={() => setMobileWhyUsOpen(!mobileWhyUsOpen)}
+                className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${
+                  isWhyUsActive
+                    ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
+                    : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-650 hover:bg-slate-50'
+                }`}
+              >
+                <span className="flex items-center gap-3">
+                  {isWhyUsActive && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'}`} />}
+                  Why Us
+                </span>
+                <svg
+                  className={`w-4 h-4 transition-transform duration-300 ${mobileWhyUsOpen ? 'rotate-180' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              <div className={`overflow-hidden transition-all duration-300 ${mobileWhyUsOpen ? 'max-h-40 opacity-100 mt-1 pl-4' : 'max-h-0 opacity-0 pointer-events-none'}`}>
+                <Link
+                  to="/services"
+                  onClick={() => setIsOpen(false)}
+                  className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${
+                    location.pathname === '/services'
+                      ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                      : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
+                  }`}
+                >
+                  Our Services
+                </Link>
+              </div>
+            </div>
+
+            {/* Mobile Projects Link */}
+            <Link
+              to="/projects"
+              onClick={() => setIsOpen(false)}
+              className={`relative block px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 overflow-hidden ${
+                location.pathname === '/projects'
+                  ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50 shadow-sm'
+                  : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-650 hover:text-blue-600 hover:bg-slate-50'
+              }`}
+            >
+              <span className="relative z-10 flex items-center gap-3">
+                {location.pathname === '/projects' && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'}`} />}
+                Projects
+              </span>
+            </Link>
+
+            {/* Mobile Company Dropdown */}
+            <div className="flex flex-col">
+              <button
+                onClick={() => setMobileCompanyOpen(!mobileCompanyOpen)}
+                className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${
+                  isCompanyActive
+                    ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
+                    : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-650 hover:bg-slate-50'
+                }`}
+              >
+                <span className="flex items-center gap-3">
+                  {isCompanyActive && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'}`} />}
+                  Company
+                </span>
+                <svg
+                  className={`w-4 h-4 transition-transform duration-300 ${mobileCompanyOpen ? 'rotate-180' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              <div className={`overflow-hidden transition-all duration-300 ${mobileCompanyOpen ? 'max-h-40 opacity-100 mt-1 pl-4' : 'max-h-0 opacity-0 pointer-events-none'}`}>
+                <Link
+                  to="/infrastructure"
+                  onClick={() => setIsOpen(false)}
+                  className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${
+                    location.pathname === '/infrastructure'
+                      ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                      : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
+                  }`}
+                >
+                  Our Infrastructure
+                </Link>
+                <Link
+                  to="/contact"
+                  onClick={() => setIsOpen(false)}
+                  className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 mt-1 ${
+                    location.pathname === '/contact'
+                      ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                      : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
+                  }`}
+                >
+                  Contact Us
+                </Link>
+              </div>
+            </div>
+
             <div className={`h-px w-full my-2 ${isDark ? 'bg-slate-800' : 'bg-slate-200/50'}`} />
 
             {/* Mobile Auth */}
@@ -244,48 +524,48 @@ const Navbar = () => {
               {currentUser ? (
                 <>
                   <Link
-                    to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'customer' ? '/customer' : '/employee'}
+                    to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'student' ? '/student' : '/employee'}
                     onClick={() => setIsOpen(false)}
                     className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/50 transition-all duration-300 active:scale-95 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
                   >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25a2.25 2.25 0 01-2.25 2.25h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
-                    </svg>
+                    <div className="w-7 h-7 rounded-full overflow-hidden bg-emerald-500/20 flex items-center justify-center text-xs font-black text-emerald-700 dark:text-emerald-400 shrink-0">
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt={userDisplayName} className="w-full h-full object-cover" />
+                      ) : (
+                        userDisplayName.charAt(0).toUpperCase()
+                      )}
+                    </div>
                     Dashboard
                   </Link>
                   <button
                     onClick={() => { handleLogout(); setIsOpen(false) }}
                     className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-red-600 bg-red-50 border border-red-200/50 transition-all duration-300 active:scale-95 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
                   >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                      <polyline points="16 17 21 12 16 7" />
+                      <line x1="21" x2="9" y1="12" y2="12" />
                     </svg>
                     Logout
                   </button>
                 </>
               ) : (
-                <>
+                <div className={`col-span-2 flex items-center p-1 rounded-2xl border transition-all duration-300 ${isDark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/5'}`}>
                   <Link
                     to="/login"
                     onClick={() => setIsOpen(false)}
-                    className={`flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold border transition-all duration-300 active:scale-95 ${isDark ? 'text-slate-300 bg-white/5 border-white/10' : 'text-slate-600 bg-white/80 border-white/60 shadow-sm'}`}
+                    className={`flex-1 text-center py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${isDark ? 'text-slate-300 hover:text-white' : 'text-slate-700 hover:text-black'}`}
                   >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
-                    </svg>
                     Login
                   </Link>
                   <Link
                     to="/join-us"
                     onClick={() => setIsOpen(false)}
-                    className="relative flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg transition-all duration-300 active:scale-95"
+                    className="flex-1 text-center py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md transition-all duration-300 active:scale-95"
                   >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
-                    </svg>
                     Join Us
                   </Link>
-                </>
+                </div>
               )}
             </div>
 

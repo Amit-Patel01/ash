@@ -141,7 +141,7 @@ const GlowBackground = () => {
 
   // Light mode — original design
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-gradient-to-br from-slate-50 to-white">
+    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden" style={{ background: 'linear-gradient(165deg, #eef6ff 0%, #f4f9ff 50%, #f8fafc 100%)' }}>
       {/* Dynamic Network Plexus Canvas */}
       <canvas
         ref={canvasRef}
@@ -152,8 +152,9 @@ const GlowBackground = () => {
       <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
 
       {/* Hero Glow Accent */}
-      <div className="absolute top-[10%] left-[-10%] w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-[100px] animate-pulse"></div>
-      <div className="absolute bottom-[10%] right-[-10%] w-[500px] h-[500px] bg-indigo-400/10 rounded-full blur-[100px] animate-pulse"></div>
+      <div className="absolute top-[5%] left-[-5%] w-[600px] h-[600px] bg-blue-300/20 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s' }}></div>
+      <div className="absolute bottom-[5%] right-[-5%] w-[600px] h-[600px] bg-indigo-300/20 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '10s' }}></div>
+      <div className="absolute top-[40%] left-[20%] w-[500px] h-[500px] bg-sky-200/12 rounded-full blur-[100px]"></div>
     </div>
   );
 };

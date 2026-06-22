@@ -26,7 +26,7 @@ export default function OfferLetterDocument({ certificate, template, className =
 
   return (
     <div
-      className={`relative isolate aspect-[1/1.414] w-full overflow-hidden bg-white text-slate-800 shadow-[0_20px_48px_rgba(15,23,42,0.14)] ${className}`}
+      className={`keep-light relative isolate aspect-[1/1.414] w-full overflow-hidden bg-white text-slate-800 shadow-[0_20px_48px_rgba(15,23,42,0.14)] ${className}`}
       style={{ containerType: 'inline-size' }}
     >
       {/* Top Margin/Padding */}

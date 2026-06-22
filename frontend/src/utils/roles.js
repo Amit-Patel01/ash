@@ -1,11 +1,11 @@
 export const normalizeUserRole = (role) => {
   const normalized = String(role || '').trim().toLowerCase()
 
-  if (!normalized) return 'customer'
+  if (!normalized) return 'student'
   if (normalized === 'admin') return 'admin'
   if (normalized === 'mentor') return 'mentor'
   if (['employee', 'team', 'team member', 'staff', 'developer'].includes(normalized)) return 'employee'
-  if (['customer', 'student', 'client', 'user'].includes(normalized)) return 'customer'
+  if (['student', 'student', 'client', 'user'].includes(normalized)) return 'student'
 
   return normalized
 }
@@ -19,7 +19,7 @@ export const getHomePathForRole = (role) => {
   const normalized = normalizeUserRole(role)
 
   if (normalized === 'admin') return '/admin'
-  if (normalized === 'customer') return '/customer'
+  if (normalized === 'student') return '/student'
   if (isEmployeeRole(normalized)) return '/employee'
-  return '/customer'
+  return '/student'
 }

@@ -154,7 +154,7 @@ export default function ChatPanel({ embedded = false }) {
       getAllUsers().then(users => {
         console.log("Fetched users:", users)
         let f = users.filter(u => u.uid !== currentUser?.uid)
-        if (currentRole === 'customer') {
+        if (currentRole === 'student') {
           f = f.filter(u => normalizeUserRole(u.role) === 'admin' || isEmployeeRole(u.role))
         }
         console.log("Filtered users:", f)
@@ -167,11 +167,11 @@ export default function ChatPanel({ embedded = false }) {
     }
   }, [showNewChat, getAllUsers, currentUser?.uid, currentRole])
 
-  /* load staff roster so customer chats can fall back to AI when no staff is online */
+  /* load staff roster so student chats can fall back to AI when no staff is online */
   useEffect(() => {
     let cancelled = false
 
-    if (currentRole !== 'customer' || !getAllUsers) {
+    if (currentRole !== 'student' || !getAllUsers) {
       setSupportStaff([])
       return () => { cancelled = true }
     }
@@ -200,7 +200,7 @@ export default function ChatPanel({ embedded = false }) {
   )
   const isDark = theme !== 'light'
   const isTakenOver = activeChat?.isTakenOver
-  const shouldUseAiFallback = currentRole === 'customer' && !activeChat?.isGroup && !isTakenOver
+  const shouldUseAiFallback = currentRole === 'student' && !activeChat?.isGroup && !isTakenOver
 
   /* Dynamic Styles for Theme switching */
   const containerStyle = {
@@ -232,7 +232,7 @@ export default function ChatPanel({ embedded = false }) {
   const filteredChats = chats.filter(chat => {
     const p = getChatPartner(chat)
     if (!p) return false
-    if (currentRole === 'customer' && normalizeUserRole(p.role) === 'customer') return false
+    if (currentRole === 'student' && normalizeUserRole(p.role) === 'student') return false
     if (!searchQuery) return true
     return p?.name?.toLowerCase().includes(searchQuery.toLowerCase()) || p?.email?.toLowerCase().includes(searchQuery.toLowerCase())
   })
@@ -468,7 +468,7 @@ export default function ChatPanel({ embedded = false }) {
             {/* Header Actions */}
             <div className="flex items-center gap-1">
               {/* Video Call */}
-              {((partner.role !== 'customer' && userProfile?.role !== 'customer') || partner.isGroup) && (
+              {((partner.role !== 'student' && userProfile?.role !== 'student') || partner.isGroup) && (
                 <HeaderBtn onClick={() => startVideoCall(activeChatId)} title="Video Call"
                   icon="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"
                   hoverColor="rgba(59,130,246,0.2)" hoverBorder="rgba(59,130,246,0.3)" hoverText="#60a5fa"
@@ -766,7 +766,7 @@ export default function ChatPanel({ embedded = false }) {
             </div>
           )}
 
-          {currentRole !== 'customer' && !activeChat?.isGroup && !isTakenOver ? (
+          {currentRole !== 'student' && !activeChat?.isGroup && !isTakenOver ? (
             /* Employee Takeover Banner */
             <div className="flex-shrink-0 px-4 py-8 border-t flex flex-col items-center justify-center gap-3 text-center"
               style={{
@@ -785,7 +785,7 @@ export default function ChatPanel({ embedded = false }) {
               </div>
               <div className="max-w-md">
                 <p className="text-[13px] font-bold text-slate-800 dark:text-slate-200">AI Support Active</p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">SolutionHub AI is answering this customer's inquiries. Take over this chat to type a response directly.</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">SolutionHub AI is answering this student's inquiries. Take over this chat to type a response directly.</p>
               </div>
               <button
                 onClick={() => takeoverChat(activeChatId)}

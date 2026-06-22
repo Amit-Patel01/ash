@@ -67,7 +67,7 @@ const formatInstructorRole = (value, itemLabel) => {
     case 'employee':
     case 'mentor':
     case 'instructor':
-    case 'customer':
+    case 'student':
       return `${itemLabel} Instructor`
     case 'admin':
       return 'Lead Instructor'

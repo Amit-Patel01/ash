@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { api } from '../config/api'
 import {
   EmployeeBadge,
   EmployeePageHeader,
@@ -33,6 +34,7 @@ export default function EmployeeProfileRefined() {
   const [profileLoading, setProfileLoading] = useState(false)
   const [emailLoading, setEmailLoading] = useState(false)
   const [passwordLoading, setPasswordLoading] = useState(false)
+  const [imageLoading, setImageLoading] = useState(false)
 
   useEffect(() => {
     setProfileForm(createProfileForm(userProfile))
@@ -79,6 +81,53 @@ export default function EmployeeProfileRefined() {
       setProfileStatus({ type: 'error', message: error.message || 'Failed to update profile.' })
     } finally {
       setProfileLoading(false)
+    }
+  }
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+
+    if (!file) return
+    if (!userId) {
+      setProfileStatus({ type: 'error', message: 'Please log in again to upload your profile image.' })
+      return
+    }
+    if (!file.type.startsWith('image/')) {
+      setProfileStatus({ type: 'error', message: 'Please choose a valid image file.' })
+      return
+    }
+    if (file.size > 4 * 1024 * 1024) {
+      setProfileStatus({ type: 'error', message: 'Image size should be under 4MB.' })
+      return
+    }
+
+    setImageLoading(true)
+    setProfileStatus({ type: '', message: '' })
+
+    try {
+      const formData = new FormData()
+      formData.append('photo', file)
+
+      const response = await fetch(api.uploadTeam, {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await response.json()
+      if (!response.ok || !data.success || !data.url) {
+        throw new Error(data.message || 'Image upload failed.')
+      }
+
+      setProfileForm(current => ({
+        ...current,
+        avatar: data.url,
+      }))
+      setProfileStatus({ type: 'success', message: 'Profile image uploaded. Save profile to apply it everywhere.' })
+    } catch (error) {
+      setProfileStatus({ type: 'error', message: error.message || 'Unable to upload image right now.' })
+    } finally {
+      setImageLoading(false)
     }
   }
 
@@ -207,14 +256,50 @@ export default function EmployeeProfileRefined() {
                   className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
                 />
               </div>
-              <div className="md:col-span-2">
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-500">Avatar URL</label>
-                <input
-                  value={profileForm.avatar}
-                  onChange={(event) => setProfileForm(current => ({ ...current, avatar: event.target.value }))}
-                  placeholder="https://example.com/avatar.jpg"
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
-                />
+              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 md:col-span-2">
+                <div className="flex flex-col gap-5 md:flex-row md:items-center">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[20px] border border-white/10 bg-white/10 text-lg font-black text-white shrink-0">
+                      {profileForm.avatar?.startsWith('http') ? (
+                        <img src={profileForm.avatar} alt={displayName} className="h-full w-full object-cover" />
+                      ) : (
+                        initials
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Profile Photo</p>
+                      <p className="mt-1 text-xs leading-5 text-slate-400">
+                        Upload a photo or paste a URL to update your avatar.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3">
+                    <label className="inline-flex cursor-pointer items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15">
+                      {imageLoading ? 'Uploading...' : 'Upload Image'}
+                      <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={imageLoading} />
+                    </label>
+                    {profileForm.avatar && (
+                      <button
+                        type="button"
+                        onClick={() => setProfileForm(current => ({ ...current, avatar: '' }))}
+                        className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-white/10"
+                      >
+                        Remove Image
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-5">
+                  <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-500">Avatar URL</label>
+                  <input
+                    value={profileForm.avatar}
+                    onChange={(event) => setProfileForm(current => ({ ...current, avatar: event.target.value }))}
+                    placeholder="https://example.com/avatar.jpg"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  />
+                </div>
               </div>
             </div>
 

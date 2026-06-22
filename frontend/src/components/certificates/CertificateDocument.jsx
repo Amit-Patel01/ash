@@ -256,7 +256,7 @@ function AicteInternshipCertificateDocument({ certificate, template, className =
 
   return (
     <div
-      className={`relative isolate aspect-[1.414/1] w-full overflow-hidden bg-white text-slate-700 shadow-[0_18px_42px_rgba(15,23,42,0.12)] ${className}`}
+      className={`keep-light relative isolate aspect-[1.414/1] w-full overflow-hidden bg-white text-slate-700 shadow-[0_18px_42px_rgba(15,23,42,0.12)] ${className}`}
       style={{ containerType: 'inline-size', borderRadius: 'clamp(12px, 1.6cqw, 20px)' }}
     >
       <div
@@ -594,7 +594,7 @@ export default function CertificateDocument({ certificate, template, className =
 
   return (
     <div
-      className={`relative isolate aspect-[1.414/1] w-full overflow-hidden bg-white text-slate-700 shadow-[0_20px_48px_rgba(15,23,42,0.14)] ${className}`}
+      className={`keep-light relative isolate aspect-[1.414/1] w-full overflow-hidden bg-white text-slate-700 shadow-[0_20px_48px_rgba(15,23,42,0.14)] ${className}`}
       style={{ containerType: 'inline-size', borderRadius: borderRadiusBase }}
     >
       <div

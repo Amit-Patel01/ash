@@ -11,7 +11,7 @@ const createProfileForm = (profile, currentUser) => ({
 })
 
 const getInitials = (name) =>
-  (name || 'Customer')
+  (name || 'Student')
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
@@ -46,7 +46,7 @@ function FieldLabel({ children }) {
   return <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-500">{children}</label>
 }
 
-export default function CustomerProfile() {
+export default function StudentProfile() {
   const { currentUser, userProfile, updateUserProfile, updateUserPassword } = useAuth()
   const [profileForm, setProfileForm] = useState(() => createProfileForm(userProfile, currentUser))
   const [profileStatus, setProfileStatus] = useState({ type: '', message: '' })
@@ -60,7 +60,7 @@ export default function CustomerProfile() {
   }, [userProfile, currentUser])
 
   const userId = currentUser?.uid || userProfile?.uid || ''
-  const displayName = profileForm.displayName || userProfile?.displayName || currentUser?.displayName || 'Customer'
+  const displayName = profileForm.displayName || userProfile?.displayName || currentUser?.displayName || 'Student'
   const avatarUrl = profileForm.avatar || userProfile?.avatar || userProfile?.photoURL || currentUser?.photoURL || ''
   const initials = useMemo(() => getInitials(displayName), [displayName])
   const memberSince = formatJoinedDate(userProfile?.createdAt)
@@ -168,9 +168,9 @@ export default function CustomerProfile() {
             </div>
             <div>
               <p className="text-[11px] font-black uppercase tracking-[0.28em] text-blue-200/80">Account Center</p>
-              <h1 className="mt-2 text-3xl font-black tracking-tight text-white">Customer Profile</h1>
+              <h1 className="mt-2 text-3xl font-black tracking-tight text-white">Student Profile</h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-                Update your name, phone number, profile image, and account settings from one place. Your saved profile image will also appear across the customer workspace.
+                Update your name, phone number, profile image, and account settings from one place. Your saved profile image will also appear across the student workspace.
               </p>
             </div>
           </div>
@@ -182,11 +182,11 @@ export default function CustomerProfile() {
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3">
               <p className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-500">Role</p>
-              <p className="mt-2 text-sm font-semibold text-white capitalize">{userProfile?.role || 'customer'}</p>
+              <p className="mt-2 text-sm font-semibold text-white capitalize">{userProfile?.role || 'student'}</p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 col-span-2 sm:col-span-1">
               <p className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-500">Email</p>
-              <p className="mt-2 truncate text-sm font-semibold text-white">{currentUser?.email || 'customer@solutionhub.com'}</p>
+              <p className="mt-2 truncate text-sm font-semibold text-white">{currentUser?.email || 'student@solutionhub.com'}</p>
             </div>
           </div>
         </div>
@@ -197,7 +197,7 @@ export default function CustomerProfile() {
           <section className="rounded-[30px] border border-white/10 bg-gray-900/55 p-6 shadow-2xl backdrop-blur-xl">
             <div className="mb-6">
               <p className="text-[11px] font-black uppercase tracking-[0.28em] text-blue-300">Profile Details</p>
-              <h2 className="mt-2 text-2xl font-black text-white">Update your customer profile</h2>
+              <h2 className="mt-2 text-2xl font-black text-white">Update your student profile</h2>
               <p className="mt-2 text-sm leading-6 text-slate-400">
                 These details help keep your enrollments, certificates, and support conversations accurate.
               </p>
@@ -265,7 +265,7 @@ export default function CustomerProfile() {
                     <div>
                       <p className="text-sm font-semibold text-white">Profile Photo</p>
                       <p className="mt-1 text-xs leading-5 text-slate-400">
-                        Upload an image or paste a photo URL to update your customer profile picture.
+                        Upload an image or paste a photo URL to update your student profile picture.
                       </p>
                     </div>
                   </div>
@@ -366,7 +366,7 @@ export default function CustomerProfile() {
                 </div>
                 <div>
                   <p className="text-lg font-black text-white">{displayName}</p>
-                  <p className="mt-1 text-sm text-slate-400">{currentUser?.email || 'customer@solutionhub.com'}</p>
+                  <p className="mt-1 text-sm text-slate-400">{currentUser?.email || 'student@solutionhub.com'}</p>
                 </div>
               </div>
 
@@ -393,7 +393,7 @@ export default function CustomerProfile() {
             <p className="text-[11px] font-black uppercase tracking-[0.28em] text-emerald-300">Why It Matters</p>
             <div className="mt-4 space-y-3 text-sm leading-6 text-slate-300">
               <p>An updated profile keeps your identity clear across enrollments and support conversations.</p>
-              <p>Your saved profile image will appear consistently in the customer sidebar and top navigation.</p>
+              <p>Your saved profile image will appear consistently in the student sidebar and top navigation.</p>
               <p>Keeping your phone number and location current improves course coordination and certificate accuracy.</p>
             </div>
           </section>

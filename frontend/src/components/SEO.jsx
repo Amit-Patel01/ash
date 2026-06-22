@@ -25,7 +25,7 @@ export default function SEO({
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+91-7874248481",
-      "contactType": "customer service",
+      "contactType": "student service",
       "email": "support@amitsolutionhub.com"
     },
     "sameAs": [

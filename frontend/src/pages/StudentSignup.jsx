@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import TermsAndConditions from '../components/TermsAndConditions'
 
-export default function CustomerSignup() {
+export default function StudentSignup() {
   const { signup } = useAuth()
   const [showTerms, setShowTerms] = useState(false)
   const [agreed, setAgreed] = useState(false)
@@ -64,7 +64,7 @@ export default function CustomerSignup() {
               <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
             </div>
             <h2 className="text-3xl font-extrabold text-white mb-3 tracking-tight">Account Created</h2>
-            <p className="text-slate-400 mb-8 leading-relaxed">Your customer account has been created. Please check your email and reset your password to access your dashboard.</p>
+            <p className="text-slate-400 mb-8 leading-relaxed">Your student account has been created. Please check your email and reset your password to access your dashboard.</p>
 
             <div className="bg-slate-800/40 backdrop-blur-md rounded-2xl p-5 mb-8 border border-white/5 text-left space-y-3">
               <div className="flex justify-between items-center pb-2 border-b border-white/5">
@@ -77,7 +77,7 @@ export default function CustomerSignup() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Role</span>
-                <span className="text-sm text-emerald-400 font-medium uppercase tracking-tighter font-black">Customer</span>
+                <span className="text-sm text-emerald-400 font-medium uppercase tracking-tighter font-black">Student</span>
               </div>
             </div>
 
@@ -108,7 +108,7 @@ export default function CustomerSignup() {
           <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-3">
             Start Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Journey</span>
           </h1>
-          <p className="text-slate-400 text-lg font-medium max-w-md mx-auto">Create a customer account and explore our premium services.</p>
+          <p className="text-slate-400 text-lg font-medium max-w-md mx-auto">Create a student account and explore our premium services.</p>
         </div>
 
         <div className="bg-slate-900/40 backdrop-blur-2xl rounded-[2.5rem] p-8 md:p-10 border border-white/10 shadow-2xl shadow-emerald-500/5 hover:border-emerald-500/20 transition-all duration-500 group">
@@ -194,7 +194,7 @@ export default function CustomerSignup() {
             </Link>
 
             <p className="mt-8 text-[10px] text-slate-600 font-bold uppercase tracking-widest leading-relaxed">
-              * Dedicated support & real-time updates for all customers
+              * Dedicated support & real-time updates for all students
             </p>
           </div>
         </div>

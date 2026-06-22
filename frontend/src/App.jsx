@@ -124,13 +124,14 @@ const About = lazyWithRetry(() => import('./pages/About'))
 const PublicEmployeeProfile = lazyWithRetry(() => import('./pages/PublicEmployeeProfile'))
 const Services = lazyWithRetry(() => import('./pages/Services'))
 const Contact = lazyWithRetry(() => import('./pages/Contact'))
+const Infrastructure = lazyWithRetry(() => import('./pages/Infrastructure'))
 const Help = lazyWithRetry(() => import('./pages/help'))
 const Projects = lazyWithRetry(() => import('./pages/Projects'))
 const ProjectDetails = lazyWithRetry(() => import('./pages/ProjectDetails'))
 const Checkout = lazyWithRetry(() => import('./pages/Checkout'))
 const CustomProject = lazyWithRetry(() => import('./pages/CustomProject'))
 const LoginPage = lazyWithRetry(() => import('./pages/LoginPage'))
-const CustomerSignup = lazyWithRetry(() => import('./pages/CustomerSignup'))
+const StudentSignup = lazyWithRetry(() => import('./pages/StudentSignup'))
 const ForgotPassword = lazyWithRetry(() => import('./pages/ForgotPassword'))
 const RoleSelect = lazyWithRetry(() => import('./pages/RoleSelect'))
 const ComingSoon = lazyWithRetry(() => import('./pages/ComingSoon'))
@@ -161,7 +162,7 @@ const AdminAccountRequests = lazyWithRetry(() => import('./admin/AdminAccountReq
 const AdminSellRequests = lazyWithRetry(() => import('./admin/AdminSellRequests'))
 const AdminServiceRequests = lazyWithRetry(() => import('./admin/AdminServiceRequests'))
 const AdminSettings = lazyWithRetry(() => import('./admin/AdminSettings'))
-const AdminCustomers = lazyWithRetry(() => import('./admin/AdminCustomers'))
+const AdminStudents = lazyWithRetry(() => import('./admin/AdminStudents'))
 const AdminQrCertificates = lazyWithRetry(() => import('./admin/AdminQrCertificates'))
 const AdminTestimonials = lazyWithRetry(() => import('./admin/AdminTestimonials'))
 
@@ -177,12 +178,12 @@ const SellProjectRequest = lazyWithRetry(() => import('./employee/SellProjectReq
 const EmployeeChat = lazyWithRetry(() => import('./employee/EmployeeChatRefined'))
 const EmployeeBroadcast = lazyWithRetry(() => import('./employee/EmployeeBroadcastRefined'))
 
-const CustomerLayout = lazyWithRetry(() => import('./customer/CustomerLayout'))
-const CustomerOverview = lazyWithRetry(() => import('./customer/CustomerOverview'))
-const CustomerOrders = lazyWithRetry(() => import('./customer/CustomerOrders'))
-const CustomerSupport = lazyWithRetry(() => import('./customer/CustomerSupport'))
-const CustomerProfile = lazyWithRetry(() => import('./customer/CustomerProfile'))
-const CustomerCertificates = lazyWithRetry(() => import('./customer/CustomerCertificates'))
+const StudentLayout = lazyWithRetry(() => import('./student/StudentLayout'))
+const StudentOverview = lazyWithRetry(() => import('./student/StudentOverview'))
+const StudentOrders = lazyWithRetry(() => import('./student/StudentOrders'))
+const StudentSupport = lazyWithRetry(() => import('./student/StudentSupport'))
+const StudentProfile = lazyWithRetry(() => import('./student/StudentProfile'))
+const StudentCertificates = lazyWithRetry(() => import('./student/StudentCertificates'))
 
 const ChatPage = lazyWithRetry(() => import('./pages/ChatPage'))
 const AdminCourses = lazyWithRetry(() => import('./admin/AdminCourses'))
@@ -192,7 +193,7 @@ const AdminCourseEnrollments = lazyWithRetry(() => import('./admin/AdminCourseEn
 const EmployeeCourseManage = lazyWithRetry(() => import('./employee/EmployeeCourseManageRefined'))
 const CoursesPage = lazyWithRetry(() => import('./pages/CoursesPage'))
 const CourseDetailPage = lazyWithRetry(() => import('./pages/CourseDetailPage'))
-const CustomerMyCourses = lazyWithRetry(() => import('./customer/CustomerMyCourses'))
+const StudentMyCourses = lazyWithRetry(() => import('./student/StudentMyCourses'))
 const AboutTradingMentorship = lazyWithRetry(() => import('./pages/AboutTradingMentorship'))
 
 function AppShellFallback() {
@@ -234,13 +235,13 @@ function ProtectedEmployee({ children }) {
   return children
 }
 
-function ProtectedCustomer({ children }) {
+function ProtectedStudent({ children }) {
   const { currentUser, loading } = useAuth()
   const normalizedRole = normalizeUserRole(currentUser?.role)
 
   if (loading) return null
   if (!currentUser) return <Navigate to="/login" replace />
-  if (normalizedRole !== 'customer') {
+  if (normalizedRole !== 'student') {
     return <Navigate to={getHomePathForRole(normalizedRole)} replace />
   }
   return children
@@ -329,7 +330,7 @@ function AppContent() {
   const location = useLocation()
   const isAdminRoute = location.pathname === '/admin-login' || location.pathname.startsWith('/admin')
   const isMaintenanceActive = maintenance?.isActive === true
-  const allowedChatbotPaths = ['/about', '/courses', '/services', '/projects', '/contact']
+  const allowedChatbotPaths = ['/about', '/courses', '/services', '/projects', '/contact', '/infrastructure']
   const isHome = location.pathname === '/'
   const isAllowedPath = allowedChatbotPaths.some(path => location.pathname.startsWith(path))
   const isVerifyPage = location.pathname.startsWith('/verify')
@@ -371,6 +372,7 @@ function AppContent() {
             <Route path="projects/:slug" element={<ProjectDetails />} />
             <Route path="checkout/:slug" element={<Checkout />} />
             <Route path="contact" element={<Contact />} />
+            <Route path="infrastructure" element={<Infrastructure />} />
             <Route path="custom-project" element={<CustomProject />} />
             <Route path="help" element={<Help />} />
             <Route path="chat" element={<ChatPage />} />
@@ -384,7 +386,7 @@ function AppContent() {
             <Route path="courses/:slug" element={<CourseDetailPage />} />
             <Route path="coming-soon" element={<ComingSoon />} />
             <Route path="join-us" element={<RoleSelect />} />
-            <Route path="signup" element={<CustomerSignup />} />
+            <Route path="signup" element={<StudentSignup />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="verify" element={<VerifyCertificate />} />
             <Route path="verify/:certificateId/*" element={<VerifyCertificate />} />
@@ -408,7 +410,7 @@ function AppContent() {
             <Route path="team" element={<AdminTeam />} />
             <Route path="employees" element={<AdminEmployees />} />
             <Route path="permissions" element={<AdminPermissions />} />
-            <Route path="customers" element={<AdminCustomers />} />
+            <Route path="students" element={<AdminStudents />} />
             <Route path="qr-certificates" element={<AdminQrCertificates />} />
             <Route path="sales" element={<AdminSales />} />
             <Route path="account-requests" element={<AdminAccountRequests />} />
@@ -437,21 +439,30 @@ function AppContent() {
             <Route path="projects" element={<EmployeeProjects />} />
             <Route path="sell-project" element={<SellProjectRequest />} />
             <Route path="course-manage" element={<EmployeeCourseManage />} />
+            <Route path="enrollments" element={<AdminCourseEnrollments />} />
+            <Route path="students" element={<AdminStudents />} />
+            <Route path="team" element={<AdminTeam />} />
+            <Route path="employees" element={<AdminEmployees />} />
+            <Route path="account-requests" element={<AdminAccountRequests />} />
+            <Route path="services" element={<AdminServices />} />
+            <Route path="sales" element={<AdminSales />} />
+            <Route path="testimonials" element={<AdminTestimonials />} />
+            <Route path="settings" element={<AdminSettings />} />
             <Route path="certificates" element={<AdminQrCertificates />} />
             <Route path="broadcast" element={<EmployeeBroadcast />} />
             <Route path="chat" element={<EmployeeChat />} />
             <Route path="profile" element={<EmployeeProfile />} />
           </Route>
 
-          {/* Customer Panel */}
-          <Route path="/customer" element={<ProtectedCustomer><CustomerLayout /></ProtectedCustomer>}>
-            <Route index element={<CustomerOverview />} />
-            <Route path="orders" element={<CustomerOrders />} />
-            <Route path="support" element={<CustomerSupport />} />
+          {/* Student Panel */}
+          <Route path="/student" element={<ProtectedStudent><StudentLayout /></ProtectedStudent>}>
+            <Route index element={<StudentOverview />} />
+            <Route path="orders" element={<StudentOrders />} />
+            <Route path="support" element={<StudentSupport />} />
             <Route path="trading-mentorship" element={<AboutTradingMentorship />} />
-            <Route path="my-courses" element={<CustomerMyCourses />} />
-            <Route path="certificates" element={<CustomerCertificates />} />
-            <Route path="profile" element={<CustomerProfile />} />
+            <Route path="my-courses" element={<StudentMyCourses />} />
+            <Route path="certificates" element={<StudentCertificates />} />
+            <Route path="profile" element={<StudentProfile />} />
           </Route>
         </Routes>
       </Suspense>

@@ -8,11 +8,11 @@ export default function MobileRequiredPopup() {
   const [saving, setSaving] = useState(false)
   const [dismissed, setDismissed] = useState(false)
 
-  // Show only for customers/students without phone
+  // Show only for students/students without phone
   const needsMobile = 
     !dismissed &&
     currentUser &&
-    (userProfile?.role === 'customer' || userProfile?.role === 'student') &&
+    (userProfile?.role === 'student' || userProfile?.role === 'student') &&
     !userProfile?.phone
 
   if (!needsMobile) return null

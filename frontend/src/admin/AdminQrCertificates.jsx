@@ -146,7 +146,7 @@ export default function AdminQrCertificates() {
   const [error, setError] = useState('')
   const downloadRef = useRef(null)
   const assigneeOptions = useMemo(() => {
-    const selectableRoles = new Set(['employee', 'mentor', 'student', 'customer', 'client', 'user'])
+    const selectableRoles = new Set(['employee', 'mentor', 'student', 'student', 'client', 'user'])
     const prioritized = users.filter((user) => selectableRoles.has(String(user.role || '').trim().toLowerCase()))
     const fallback = users.filter((user) => String(user.role || '').trim().toLowerCase() !== 'admin')
     const pool = prioritized.length > 0 ? prioritized : fallback

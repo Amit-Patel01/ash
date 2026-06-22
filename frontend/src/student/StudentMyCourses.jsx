@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { getCertificateDocumentLabel } from '../utils/certificateHelpers'
 import { getLearningTypeLabel } from '../utils/learningType'
 
-export default function CustomerMyCourses() {
+export default function StudentMyCourses() {
   const { getUserEnrollments, courses, certificates } = useStore()
   const { currentUser } = useAuth()
   const navigate = useNavigate()
@@ -366,7 +366,7 @@ export default function CustomerMyCourses() {
         </div>
         <div className="flex items-center gap-3">
           <Link
-            to="/customer/certificates"
+            to="/student/certificates"
             className="px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-xl text-sm font-medium text-amber-300 hover:bg-amber-500/15 transition-all"
           >
             Documents
@@ -631,7 +631,7 @@ export default function CustomerMyCourses() {
                     )}
                     {!hasMaterials && !planEntries.some((entry) => entry.hasMeetingLink) && allDocuments.length === 0 && (
                       <button
-                        onClick={() => navigate('/customer/support')}
+                        onClick={() => navigate('/student/support')}
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white/5 text-gray-300 hover:bg-white/10 border border-white/10 transition-colors"
                       >
                         Contact Support

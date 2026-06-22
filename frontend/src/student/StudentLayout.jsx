@@ -4,12 +4,12 @@ import { useAuth } from '../context/AuthContext'
 import MobileRequiredPopup from '../components/MobileRequiredPopup'
 
 const navItems = [
-  { path: '/customer', label: 'Dashboard', icon: 'dashboard' },
-  { path: '/customer/my-courses', label: 'My Courses', icon: 'book' },
-  { path: '/customer/certificates', label: 'Documents', icon: 'award' },
-  { path: '/customer/orders', label: 'My Orders', icon: 'orders' },
-  { path: '/customer/support', label: 'Support Chat', icon: 'chat' },
-  { path: '/customer/profile', label: 'Profile', icon: 'user' },
+  { path: '/student', label: 'Dashboard', icon: 'dashboard' },
+  { path: '/student/my-courses', label: 'My Courses', icon: 'book' },
+  { path: '/student/certificates', label: 'Documents', icon: 'award' },
+  { path: '/student/orders', label: 'My Orders', icon: 'orders' },
+  { path: '/student/support', label: 'Support Chat', icon: 'chat' },
+  { path: '/student/profile', label: 'Profile', icon: 'user' },
 ]
 
 const iconMap = {
@@ -22,24 +22,38 @@ const iconMap = {
   trending: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg>),
 }
 
-export default function CustomerLayout() {
+export default function StudentLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
   const { currentUser, userProfile, logout } = useAuth()
 
+  const handleWheel = (e) => {
+    const target = e.target
+    const scrollable = target.closest('.overflow-x-auto') || target.closest('.overflow-y-auto')
+    if (scrollable) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollable
+      const atTop = scrollTop === 0
+      const atBottom = scrollTop + clientHeight >= scrollHeight - 1
+      if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+  }
+
   const handleLogout = async () => {
     await logout()
     navigate('/')
   }
 
-  const customerName = userProfile?.displayName || currentUser?.displayName || 'Customer'
-  const customerEmail = currentUser?.email || 'customer@solutionhub.com'
-  const customerAvatar = userProfile?.avatar || userProfile?.photoURL || currentUser?.avatar || currentUser?.photoURL || ''
+  const studentName = userProfile?.displayName || currentUser?.displayName || 'Student'
+  const studentEmail = currentUser?.email || 'student@solutionhub.com'
+  const studentAvatar = userProfile?.avatar || userProfile?.photoURL || currentUser?.avatar || currentUser?.photoURL || ''
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex">
+    <div className="h-screen bg-gray-950 text-white flex overflow-hidden dark">
       <MobileRequiredPopup />
       {mobileMenuOpen && <div className="fixed inset-0 bg-black/60 z-40 lg:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
@@ -52,7 +66,7 @@ export default function CustomerLayout() {
             {sidebarOpen && (
               <div>
                 <h1 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">SolutionHub</h1>
-                <p className="text-[10px] text-gray-500 -mt-0.5 tracking-wider uppercase">Customer / Student Portal</p>
+                 <p className="text-[10px] text-gray-500 -mt-0.5 tracking-wider uppercase">Student Portal</p>
               </div>
             )}
           </div>
@@ -60,7 +74,7 @@ export default function CustomerLayout() {
 
         <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
-            const isActive = item.path === '/customer' ? location.pathname === '/customer' : location.pathname.startsWith(item.path)
+            const isActive = item.path === '/student' ? location.pathname === '/student' : location.pathname.startsWith(item.path)
             return (
               <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive ? 'bg-gradient-to-r from-blue-500/20 to-violet-500/20 text-white shadow-lg shadow-blue-500/10' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}>
                 <span className={`flex-shrink-0 transition-colors ${isActive ? 'text-blue-400' : 'text-gray-500 group-hover:text-gray-300'}`}>{iconMap[item.icon]}</span>
@@ -74,16 +88,16 @@ export default function CustomerLayout() {
         <div className="p-4 border-t border-white/5">
           <div className={`flex items-center gap-3 ${!sidebarOpen ? 'justify-center' : ''}`}>
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 flex items-center justify-center flex-shrink-0 overflow-hidden text-sm font-bold">
-              {customerAvatar ? (
-                <img src={customerAvatar} alt={customerName} className="w-full h-full object-cover" />
+              {studentAvatar ? (
+                <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
               ) : (
-                customerName.charAt(0)
+                studentName.charAt(0)
               )}
             </div>
             {sidebarOpen && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{customerName}</p>
-                <p className="text-xs text-gray-500 truncate">{customerEmail}</p>
+                <p className="text-sm font-medium text-white truncate">{studentName}</p>
+                <p className="text-xs text-gray-500 truncate">{studentEmail}</p>
               </div>
             )}
             {sidebarOpen && (
@@ -105,29 +119,29 @@ export default function CustomerLayout() {
             <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5">
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
             </button>
-            <div>
-              <p className="text-sm text-gray-400">Welcome back,</p>
-              <p className="text-sm font-medium text-white">{customerName}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link to="/customer/profile" className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
-              <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-xs font-bold text-white">
-                {customerAvatar ? (
-                  <img src={customerAvatar} alt={customerName} className="w-full h-full object-cover" />
-                ) : (
-                  customerName.charAt(0)
-                )}
-              </div>
-              <span className="hidden sm:inline">Profile</span>
-            </Link>
+             <div>
+               <p className="text-sm text-gray-400">Welcome back,</p>
+               <p className="text-sm font-medium text-white">{studentName}</p>
+             </div>
+           </div>
+           <div className="flex items-center gap-3">
+             <Link to="/student/profile" className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+               <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-xs font-bold text-white">
+                 {studentAvatar ? (
+                   <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
+                 ) : (
+                   studentName.charAt(0)
+                 )}
+               </div>
+               <span className="hidden sm:inline">Profile</span>
+             </Link>
             <Link to="/" className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
               <span className="hidden xs:inline">View Site</span>
             </Link>
           </div>
         </header>
-        <main className="flex-1 p-4 lg:p-6 overflow-y-auto">
+        <main className="flex-1 p-4 lg:p-6 overflow-y-auto overscroll-contain" onWheel={handleWheel}>
           <Outlet />
         </main>
       </div>

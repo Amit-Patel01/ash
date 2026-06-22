@@ -9,7 +9,7 @@
  *   await emailNotify('welcome', { name: 'Amit', email: 'a@b.com' })
  * 
  * Types:
- *   welcome                   — new customer signup
+ *   welcome                   — new student signup
  *   enrollment_student        — student enrolled in course
  *   enrollment_employee       — employee gets new student alert
  *   account_request           — admin notified of new account request

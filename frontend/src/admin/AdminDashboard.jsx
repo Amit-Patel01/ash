@@ -1,16 +1,6 @@
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
-
-function StatIcon({ icon }) {
-  const icons = {
-    folder: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" /></svg>,
-    task: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>,
-    group: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>,
-    dollar: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-    book: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>,
-  }
-  return icons[icon]
-}
+import { TrendingUp, Clock, DollarSign, BookOpen, FolderOpen } from 'lucide-react'
 
 export default function AdminDashboard() {
   const { projects, orders, getTotalRevenue, courses, loading: storeLoading } = useStore()
@@ -18,38 +8,54 @@ export default function AdminDashboard() {
 
   if (storeLoading) return null
 
+  const totalRevenue = getTotalRevenue()
+  const pendingCount = orders.filter(o => o.status === 'pending').length
+  const completedCount = orders.filter(o => o.status === 'completed').length
+
   const stats = [
-    { label: 'Total Projects', value: projects.length, change: '', changeType: 'positive', icon: 'folder', color: 'from-blue-500 to-cyan-500' },
-    { label: 'Pending Orders', value: orders.filter(o => o.status === 'pending').length, change: '', changeType: 'positive', icon: 'task', color: 'from-emerald-500 to-teal-500' },
-    { label: 'Total Sales', value: orders.length, change: '', changeType: 'positive', icon: 'group', color: 'from-purple-500 to-pink-500' },
-    { label: 'Revenue', value: `₹${getTotalRevenue().toLocaleString('en-IN')}`, change: '', changeType: 'positive', icon: 'dollar', color: 'from-orange-500 to-amber-500' },
-    { label: 'Total Courses', value: courses.length, change: '', changeType: 'positive', icon: 'book', color: 'from-indigo-500 to-purple-500' },
+    { label: 'Total Projects', value: projects.length, icon: FolderOpen, color: 'from-blue-500 to-cyan-500', bg: 'bg-blue-500/10' },
+    { label: 'Pending Orders', value: pendingCount, icon: Clock, color: 'from-amber-500 to-orange-600', bg: 'bg-amber-500/10' },
+    { label: 'Total Orders', value: orders.length, icon: TrendingUp, color: 'from-purple-500 to-pink-600', bg: 'bg-purple-500/10' },
+    { label: 'Revenue', value: `₹${totalRevenue.toLocaleString('en-IN')}`, icon: DollarSign, color: 'from-emerald-500 to-teal-600', bg: 'bg-emerald-500/10' },
+    { label: 'Total Courses', value: courses.length, icon: BookOpen, color: 'from-indigo-500 to-violet-600', bg: 'bg-indigo-500/10' },
   ]
 
   const recentOrders = orders.slice(0, 5)
 
+  const statusStyle = (status) => {
+    switch (status) {
+      case 'completed':
+        return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+      case 'pending':
+        return 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+      default:
+        return 'bg-gray-500/10 text-gray-400 border border-gray-500/20'
+    }
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in duration-700">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-sm text-gray-400 mt-1">Welcome back, {currentUser?.displayName || 'Admin'}. Here's what's happening.</p>
+          <h1 className="text-2xl font-black text-white tracking-tight">Dashboard</h1>
+          <p className="text-sm text-gray-400 mt-1">
+            Welcome back, {currentUser?.displayName || 'Admin'}. Here&apos;s what&apos;s happening.
+          </p>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {stats.map((stat, i) => (
-          <div key={i} className="group relative bg-gray-900/50 backdrop-blur-sm border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-all duration-300">
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br opacity-0 group-hover:opacity-5 transition-opacity" style={{ background: `linear-gradient(135deg, var(--tw-gradient-stops))` }} />
+          <div key={i} className="bg-gray-900/50 backdrop-blur-sm border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-all duration-300 group">
             <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-gray-400">{stat.label}</p>
-                <p className="text-3xl font-bold text-white mt-1">{stat.value}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{stat.label}</p>
+                <p className="text-2xl font-black text-white mt-2 tracking-tight truncate">{stat.value}</p>
               </div>
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center text-white/90 shadow-lg`}>
-                <StatIcon icon={stat.icon} />
+              <div className={`w-11 h-11 rounded-xl ${stat.bg} flex items-center justify-center flex-shrink-0 ml-3`}>
+                <stat.icon className={`w-5 h-5 bg-gradient-to-br ${stat.color} bg-clip-text text-transparent`} strokeWidth={2} />
               </div>
             </div>
           </div>
@@ -57,53 +63,62 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Orders Table */}
-      <div className="bg-gray-900/50 backdrop-blur-sm border border-white/5 rounded-2xl overflow-hidden">
-        <div className="flex items-center justify-between p-6 border-b border-white/5">
-          <h2 className="text-lg font-semibold text-white">Recent Orders</h2>
-          <a href="/admin/sales" className="text-sm text-blue-400 hover:text-blue-300 font-medium">View All</a>
+      <div className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-[2rem] overflow-hidden shadow-2xl">
+        <div className="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-white/5">
+          <h2 className="text-lg font-black text-white tracking-tight">Recent Orders</h2>
+          <a href="/admin/sales" className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors uppercase tracking-wider">View All</a>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="text-left font-medium text-xs text-gray-500 uppercase tracking-wider">
-                <th className="px-6 py-4">Project</th>
-                <th className="px-6 py-4">Customer</th>
-                <th className="px-6 py-4">Amount</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">Date</th>
+              <tr className="border-b border-white/5 bg-white/[0.02]">
+                <th className="text-left px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-gray-500">Order</th>
+                <th className="text-left px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-gray-500">Project</th>
+                <th className="text-left px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-gray-500">Student</th>
+                <th className="text-left px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-gray-500">Amount</th>
+                <th className="text-left px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-gray-500">Status</th>
+                <th className="text-left px-6 sm:px-8 py-4 text-[10px] font-black uppercase tracking-widest text-gray-500">Date</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
               {recentOrders.map((order, i) => (
-                <tr key={i} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="px-6 py-4">
-                    <p className="text-sm font-medium text-white">{order.project_title}</p>
+                <tr key={i} className="hover:bg-white/[0.02] transition-colors group">
+                  <td className="px-6 sm:px-8 py-4">
+                    <span className="text-xs font-mono text-gray-500 group-hover:text-gray-300 transition-colors">#{order.id.slice(-6).toUpperCase()}</span>
                   </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm text-gray-300">{order.customer_name}</p>
-                    <p className="text-xs text-gray-500">{order.customer_email}</p>
+                  <td className="px-6 sm:px-8 py-4">
+                    <p className="text-sm font-bold text-white group-hover:text-blue-300 transition-colors">{order.project_title}</p>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className="text-sm font-semibold text-white">₹{Number(order.amount).toLocaleString('en-IN')}</span>
+                  <td className="px-6 sm:px-8 py-4">
+                    <div>
+                      <p className="text-sm font-medium text-gray-300">{order.customer_name}</p>
+                      <p className="text-[10px] text-gray-600 mt-0.5">{order.customer_email}</p>
+                    </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      order.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400' :
-                      order.status === 'pending' ? 'bg-amber-500/10 text-amber-400' :
-                      'bg-gray-500/10 text-gray-400'
-                    }`}>
+                  <td className="px-6 sm:px-8 py-4">
+                    <span className="text-sm font-black text-white">₹{Number(order.amount).toLocaleString('en-IN')}</span>
+                  </td>
+                  <td className="px-6 sm:px-8 py-4">
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${statusStyle(order.status)}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${order.status === 'completed' ? 'bg-emerald-400' : order.status === 'pending' ? 'bg-amber-400 animate-pulse' : 'bg-gray-400'}`} />
                       {order.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-xs text-gray-500">{order.date}</p>
+                  <td className="px-6 sm:px-8 py-4 whitespace-nowrap">
+                    <p className="text-xs text-gray-500 font-medium">{order.date}</p>
                   </td>
                 </tr>
               ))}
               {recentOrders.length === 0 && (
                 <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center text-gray-500">
-                    No orders found yet.
+                  <td colSpan="6" className="px-6 py-16 text-center">
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                        <TrendingUp className="w-8 h-8 text-gray-600" />
+                      </div>
+                      <p className="text-gray-500 font-bold text-sm">No orders found yet.</p>
+                      <p className="text-gray-600 text-xs mt-1">Orders will appear here once students purchase.</p>
+                    </div>
                   </td>
                 </tr>
               )}
