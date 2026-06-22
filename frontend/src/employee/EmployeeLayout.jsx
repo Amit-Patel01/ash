@@ -58,16 +58,38 @@ const iconMap = {
   ),
 }
 
-const getFilteredNavItems = (userRole) => {
+const PERMISSION_MAP = {
+  '/employee/projects': ['manage_projects', 'view_projects'],
+  '/employee/course-manage': ['manage_courses'],
+  '/employee/broadcast': ['send_broadcasts'],
+  '/employee/chat': ['manage_messages'],
+}
+
+const hasPermissionForPath = (path, permissions) => {
+  const required = PERMISSION_MAP[path]
+  if (!required) return null
+  return required.some(p => permissions?.[p] === true)
+}
+
+const getFilteredNavItems = (userRole, permissions) => {
   const normalized = String(userRole || '').trim().toLowerCase()
   if (!normalized || normalized === 'admin') return navItems
 
+  const hasPermissions = permissions && Object.keys(permissions).length > 0
+
   return navItems.filter((item) => {
-    // Dashboard, My Tasks, and Profile are always allowed for all roles
+    // Dashboard, My Tasks, and Profile are always allowed
     if (['/employee', '/employee/tasks', '/employee/profile'].includes(item.path)) {
       return true
     }
 
+    // If employee has granular permissions, use those first
+    if (hasPermissions) {
+      const permResult = hasPermissionForPath(item.path, permissions)
+      if (permResult !== null) return permResult
+    }
+
+    // Fallback to role-based filtering
     if (item.path === '/employee/projects') {
       return [
         'hr & recruitment executive',
@@ -156,8 +178,8 @@ export default function EmployeeLayout() {
   const employeeInitial = employeeName.charAt(0).toUpperCase()
 
   const filteredNavItems = useMemo(() => {
-    return getFilteredNavItems(employeeRole)
-  }, [employeeRole])
+    return getFilteredNavItems(employeeRole, currentUser?.permissions)
+  }, [employeeRole, currentUser?.permissions])
 
   // Enforce Role-Based Access Control (RBAC) path protection
   useEffect(() => {
