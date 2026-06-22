@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useStore } from '../store/StoreContext'
 import NotificationBell from '../components/NotificationBell'
 
 const navItems = [
@@ -8,6 +9,7 @@ const navItems = [
   { path: '/employee/tasks', label: 'My Tasks', icon: 'task', color: 'from-sky-500 to-blue-600' },
   { path: '/employee/projects', label: 'Projects', icon: 'folder', color: 'from-violet-500 to-purple-600' },
   { path: '/employee/course-manage', label: 'Manage Courses', icon: 'book', color: 'from-amber-500 to-orange-500' },
+  { path: '/employee/certificates', label: 'Certificates', icon: 'certificate', color: 'from-teal-500 to-cyan-500' },
   { path: '/employee/broadcast', label: 'Bulk Email', icon: 'speaker', color: 'from-rose-500 to-pink-600' },
   { path: '/employee/chat', label: 'Messages', icon: 'chat', color: 'from-cyan-500 to-sky-500' },
   { path: '/employee/sell-project', label: 'Sell Project', icon: 'tag', color: 'from-lime-500 to-green-600' },
@@ -56,11 +58,17 @@ const iconMap = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 0 8.835-2.535m0 0A23.74 23.74 0 0 0 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 0 1 0 3.46" />
     </svg>
   ),
+  certificate: (
+    <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+    </svg>
+  ),
 }
 
 const PERMISSION_MAP = {
   '/employee/projects': ['manage_projects', 'view_projects'],
   '/employee/course-manage': ['manage_courses'],
+  '/employee/certificates': ['manage_certificates'],
   '/employee/broadcast': ['send_broadcasts'],
   '/employee/chat': ['manage_messages'],
 }
@@ -163,7 +171,32 @@ export default function EmployeeLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
-  const { currentUser, userProfile, logout } = useAuth()
+  const { currentUser, userProfile, logout, refreshCurrentUser } = useAuth()
+  const { users } = useStore()
+
+  // Fast-poll permissions every 15s so sidebar updates ~instantly after admin grants access
+  const permPollRef = useRef(null)
+  useEffect(() => {
+    if (!currentUser?.uid) return
+    permPollRef.current = setInterval(() => {
+      refreshCurrentUser().catch(() => {})
+    }, 15000)
+    return () => clearInterval(permPollRef.current)
+  }, [currentUser?.uid, refreshCurrentUser])
+
+  // Merge latest permissions from StoreContext (updated via admin PATCH + 60s poll)
+  // storeUser is preferred (more recent) but we also merge currentUser.permissions as fallback
+  const mergedPermissions = useMemo(() => {
+    if (!currentUser?.uid) return {}
+    const storeUser = users.find(u =>
+      u.uid === currentUser.uid ||
+      u.email === currentUser.email
+    )
+    const fromStore = (storeUser?.permissions && typeof storeUser.permissions === 'object') ? storeUser.permissions : {}
+    const fromAuth = (currentUser?.permissions && typeof currentUser.permissions === 'object') ? currentUser.permissions : {}
+    // Merge both — storeUser (live poll) takes precedence over cached JWT permissions
+    return { ...fromAuth, ...fromStore }
+  }, [currentUser, users])
 
   const isTeamMember = userProfile?.role === 'team' || userProfile?.role === 'Team Member'
 
@@ -178,8 +211,8 @@ export default function EmployeeLayout() {
   const employeeInitial = employeeName.charAt(0).toUpperCase()
 
   const filteredNavItems = useMemo(() => {
-    return getFilteredNavItems(employeeRole, currentUser?.permissions)
-  }, [employeeRole, currentUser?.permissions])
+    return getFilteredNavItems(employeeRole, mergedPermissions)
+  }, [employeeRole, mergedPermissions])
 
   // Enforce Role-Based Access Control (RBAC) path protection
   useEffect(() => {

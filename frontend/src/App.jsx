@@ -437,6 +437,7 @@ function AppContent() {
             <Route path="projects" element={<EmployeeProjects />} />
             <Route path="sell-project" element={<SellProjectRequest />} />
             <Route path="course-manage" element={<EmployeeCourseManage />} />
+            <Route path="certificates" element={<AdminQrCertificates />} />
             <Route path="broadcast" element={<EmployeeBroadcast />} />
             <Route path="chat" element={<EmployeeChat />} />
             <Route path="profile" element={<EmployeeProfile />} />

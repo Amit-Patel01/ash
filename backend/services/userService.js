@@ -141,6 +141,7 @@ const mapFirestoreUser = (doc, { includeSensitive = false } = {}) => {
     cvFileName: doc.cvFileName || "",
     cvFilePath: doc.cvFilePath || "",
     cvUploadedAt: doc.cvUploadedAt || null,
+    permissions: (doc.permissions && typeof doc.permissions === 'object' && !Array.isArray(doc.permissions)) ? doc.permissions : {},
     createdAt: doc.createdAt ? toIsoString(doc.createdAt) : null,
     updatedAt: doc.updatedAt ? toIsoString(doc.updatedAt) : null,
   };
