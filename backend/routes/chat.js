@@ -25,12 +25,25 @@ router.post("/create", async (req, res) => {
 
     // Check if a direct chat between these two already exists
     const chatDocs = await getDb().collection("chats")
-      .find({ isGroup: false, participants: userId })
+      .find({ isGroup: false })
       .toArray();
 
+    // Normalize participants (legacy data may be space-separated string)
+    const participantsIncludes = (chat, uid) => {
+      const list = Array.isArray(chat.participants) ? chat.participants
+        : typeof chat.participants === "string" ? chat.participants.trim().split(/\s+/)
+        : [];
+      return list.includes(uid);
+    };
+
     let existingChat = chatDocs
-      .map(d => ({ id: d._id.toString(), ...d }))
-      .find(c => c.participants.includes(otherUserId));
+      .map(d => ({
+        id: d._id.toString(),
+        ...d,
+        participants: normalizeParticipants(d.participants),
+        participantInfo: normalizeParticipantInfo(d.participantInfo),
+      }))
+      .find(c => participantsIncludes(c, userId) && participantsIncludes(c, otherUserId));
 
     if (existingChat) {
       return res.json({ success: true, chatId: existingChat.id, chat: existingChat });
@@ -277,6 +290,19 @@ router.post("/read", async (req, res) => {
   }
 });
 
+// Ensure participants is always an array (fix legacy data stored as space-separated string)
+const normalizeParticipants = (val) => {
+  if (Array.isArray(val)) return val;
+  if (typeof val === "string") return val.trim().split(/\s+/).filter(Boolean);
+  return [];
+};
+
+// Ensure participantInfo is always a plain object
+const normalizeParticipantInfo = (val) => {
+  if (val && typeof val === "object" && !Array.isArray(val)) return val;
+  return {};
+};
+
 // List all chat rooms (for employee dashboard support queue)
 router.get("/rooms", async (req, res) => {
   try {
@@ -301,13 +327,15 @@ router.get("/rooms", async (req, res) => {
       }
       roomSummaries.push({
         id: r.id,
-        participants: r.participants,
-        participantInfo: r.participantInfo,
+        participants: normalizeParticipants(r.participants),
+        participantInfo: normalizeParticipantInfo(r.participantInfo),
         lastMessage: r.lastMessage,
         lastMessageAt: r.lastMessageAt,
-        assignedRole: r.assignedRole,
-        isTakenOver: r.isTakenOver,
-        assignedTo: r.assignedTo,
+        lastSenderId: r.lastSenderId || "",
+        lastSenderName: r.lastSenderName || "",
+        assignedRole: r.assignedRole || "Support",
+        isTakenOver: r.isTakenOver || false,
+        assignedTo: r.assignedTo || null,
         unreadCount,
       });
     }
