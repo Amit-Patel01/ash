@@ -39,6 +39,9 @@ const app = express();
 app.disable("x-powered-by");
 app.set('trust proxy', 1);
 
+const passport = require("./services/passport");
+app.use(passport.initialize());
+
 // Maintenance middleware moved below webhooks to allow webhooks to bypass automatically
 
 // ─── Webhook route FIRST (needs raw body before express.json) ────────────────
