@@ -7,7 +7,7 @@ import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePn
 import { formatCertificateDate, getCertificateDocumentLabel, getCertificateDocumentType } from '../utils/certificateHelpers'
 import CertificateDocument from '../components/certificates/CertificateDocument'
 
-function CertificateCard({ certificate, templateState, currentUser, copiedId, onCopy }) {
+function CertificateCard({ certificate, templateState, currentUser, copiedId, onCopy, isGrid }) {
   const previewRef = useRef(null)
   const [downloading, setDownloading] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
@@ -33,6 +33,134 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
     }
   }
 
+  // Google Drive Style PDF Document Viewer Modal
+  const renderModal = () => (
+    modalOpen && (
+      <div 
+        className="fixed inset-0 z-50 flex flex-col bg-slate-950/98 backdrop-blur-md text-white select-none animate-in fade-in duration-200" 
+        onClick={() => setModalOpen(false)}
+      >
+        {/* PDF Header / Controls */}
+        <div className="h-14 bg-slate-900/90 border-b border-white/5 px-4 md:px-6 flex items-center justify-between z-10 shrink-0" onClick={e => e.stopPropagation()}>
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="text-lg shrink-0">📄</span>
+            <span className="font-semibold text-sm truncate max-w-[200px] md:max-w-md">{documentLabel}.pdf</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handleDownload('pdf')}
+              disabled={downloading === 'pdf'}
+              className="p-2 hover:bg-white/10 rounded-lg text-slate-300 hover:text-white transition flex items-center justify-center"
+              title="Download PDF"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </button>
+            <button
+              onClick={() => handleDownload('png')}
+              disabled={downloading === 'png'}
+              className="px-2.5 py-1.5 hover:bg-white/10 rounded-lg text-slate-300 hover:text-white transition text-xs font-bold uppercase tracking-wider"
+              title="Download PNG image"
+            >
+              PNG
+            </button>
+            <button
+              onClick={() => setModalOpen(false)}
+              className="ml-2 w-9 h-9 rounded-lg bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 text-slate-300 transition-all font-black flex items-center justify-center text-sm"
+              title="Close Document Viewer"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        {/* PDF Page Canvas Wrapper */}
+        <div className="flex-1 overflow-auto p-4 md:p-8 flex items-start justify-center bg-slate-950/20">
+          <div 
+            className="w-full max-w-[1000px] shadow-[0_25px_60px_rgba(0,0,0,0.8)] rounded-2xl overflow-hidden bg-black transform scale-[0.98] transition-transform duration-300 origin-top mt-2 md:mt-4" 
+            onClick={e => e.stopPropagation()}
+          >
+            <CertificateDocument certificate={certificate} template={template} />
+          </div>
+        </div>
+      </div>
+    )
+  )
+
+  const renderCaptureContainer = () => (
+    <div style={{ position: 'fixed', top: '-9999px', left: 0, pointerEvents: 'none', zIndex: -9999 }}>
+      <div ref={previewRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
+        <CertificateDocument certificate={certificate} template={template} />
+      </div>
+    </div>
+  )
+
+  if (isGrid) {
+    return (
+      <div
+        className="rounded-[28px] p-5 md:p-6 transition-all duration-300 hover:scale-[1.02] flex flex-col justify-between aspect-square h-full"
+        style={{
+          background: `linear-gradient(135deg, ${hexToRgba(template.accentColor, 0.15)}, rgba(17, 24, 39, 0.95))`,
+          border: `1px solid ${hexToRgba(template.accentColor, 0.2)}`,
+        }}
+      >
+        <div className="flex flex-col h-full justify-between">
+          <div>
+            <div className="flex justify-between items-start">
+              <p className="text-[10px] font-bold uppercase tracking-[0.24em]" style={{ color: template.accentColor }}>
+                {template.sealLabel}
+              </p>
+              <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-emerald-300">
+                Verified
+              </span>
+            </div>
+            
+            <h2 className="mt-4 text-lg font-black text-white line-clamp-2 leading-snug">{documentLabel}</h2>
+            {certificate.courseName && (
+              <p className="mt-2 text-xs font-semibold truncate" style={{ color: template.accentColor }}>
+                Course: {certificate.courseName}
+              </p>
+            )}
+            <p className="mt-1 text-xs text-slate-300">
+              Issued to: {certificate.userName || currentUser?.displayName || 'Student'}
+            </p>
+            <p className="mt-0.5 text-[11px] text-slate-500">{issueDate}</p>
+          </div>
+
+          <div>
+            <div className="mt-4 pt-4 border-t border-white/5 flex gap-2">
+              <button
+                onClick={() => setModalOpen(true)}
+                className="flex-1 rounded-xl py-2 text-xs font-bold text-slate-950 transition-colors text-center"
+                style={{ backgroundColor: template.accentColor }}
+              >
+                View
+              </button>
+              <button
+                onClick={() => handleDownload('pdf')}
+                disabled={downloading === 'pdf'}
+                className="flex-1 rounded-xl border border-amber-400/20 bg-amber-400/10 py-2 text-xs font-semibold text-amber-300 hover:bg-amber-400/15 transition disabled:opacity-50"
+              >
+                {downloading === 'pdf' ? 'PDF...' : 'PDF'}
+              </button>
+              <Link
+                to={`/verify?id=${certificate.certificate_id}`}
+                className="rounded-xl border border-white/10 bg-white/5 px-2.5 py-2 text-xs text-slate-200 hover:bg-white/10 flex items-center justify-center"
+                title="Verify Credential Link"
+              >
+                🔗
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {renderCaptureContainer()}
+        {renderModal()}
+      </div>
+    )
+  }
+
   return (
     <div
       className="rounded-[32px] p-5 md:p-6 transition-all"
@@ -56,31 +184,6 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
           Verified
         </span>
       </div>
-
-      {/* Hidden high-res container for downloading — must be fixed+invisible so container queries resolve */}
-      <div style={{ position: 'fixed', top: '-9999px', left: 0, pointerEvents: 'none', zIndex: -9999 }}>
-        <div ref={previewRef} style={{ width: `${CERTIFICATE_EXPORT_WIDTH}px` }}>
-          <CertificateDocument certificate={certificate} template={template} />
-        </div>
-      </div>
-
-      {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 py-8 backdrop-blur-sm" onClick={() => setModalOpen(false)}>
-          <div className="relative w-full max-w-[1100px]" onClick={e => e.stopPropagation()}>
-            <button
-              onClick={() => setModalOpen(false)}
-              className="absolute -top-12 right-0 rounded-full bg-white/10 w-10 h-10 flex items-center justify-center text-white hover:bg-white/20 hover:scale-105 transition-all outline-none"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <div className="w-full shadow-[0_0_100px_rgba(255,255,255,0.05)] rounded-[28px] overflow-hidden bg-black">
-              <CertificateDocument certificate={certificate} template={template} />
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
@@ -182,6 +285,9 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
           </div>
         );
       })()}
+
+      {renderCaptureContainer()}
+      {renderModal()}
     </div>
   )
 }
@@ -190,22 +296,33 @@ export default function StudentCertificates() {
   const { certificates, certificateTemplate } = useStore()
   const { currentUser } = useAuth()
   const [copiedId, setCopiedId] = useState('')
+  const [viewMode, setViewMode] = useState('grid')
+  const [selectedFolder, setSelectedFolder] = useState(null)
 
   const myCertificates = useMemo(
     () => certificates.filter(cert => {
       if (cert.status !== 'approved' && cert.status !== 'active') return false
       const uid = currentUser?.uid
       const email = currentUser?.email
-      // Standard course certificates use userId
       if (uid && cert.userId === uid) return true
-      // QR certificates assigned to this employee/student
       if (uid && cert.assignedEmployeeUid === uid) return true
-      // Email-based assignment (for external users or unlinked accounts)
       if (email && cert.assignedEmployeeEmail === email) return true
       return false
     }),
     [certificates, currentUser]
   )
+
+  const groupedCertificates = useMemo(() => {
+    const groups = {}
+    myCertificates.forEach(cert => {
+      const courseKey = cert.courseName || 'General / Other Credentials'
+      if (!groups[courseKey]) {
+        groups[courseKey] = []
+      }
+      groups[courseKey].push(cert)
+    })
+    return groups
+  }, [myCertificates])
 
   const handleCopy = async (certificateId) => {
     try {
@@ -256,31 +373,109 @@ export default function StudentCertificates() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-white">Certificates & Letters</h1>
+          <div className="flex items-center gap-2">
+            <h1 
+              className={`text-2xl font-bold text-white transition-all ${selectedFolder ? 'cursor-pointer hover:text-blue-400' : ''}`}
+              onClick={() => setSelectedFolder(null)}
+            >
+              Certificates & Letters
+            </h1>
+            {selectedFolder && (
+              <>
+                <span className="text-gray-500">/</span>
+                <span className="text-sm font-semibold text-blue-400 max-w-[200px] truncate md:max-w-none">{selectedFolder}</span>
+              </>
+            )}
+          </div>
           <p className="text-sm text-gray-400 mt-1">
-            {myCertificates.length} verified document{myCertificates.length !== 1 ? 's' : ''} ready to share, download, and verify
+            {selectedFolder 
+              ? `${groupedCertificates[selectedFolder]?.length || 0} document(s) in this folder` 
+              : `${myCertificates.length} verified documents ready to share, download, and verify`
+            }
           </p>
         </div>
-        <Link
-          to="/student/my-courses"
-          className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm font-medium text-gray-300 hover:bg-white/10 transition-colors"
-        >
-          Back to My Courses
-        </Link>
+        <div className="flex items-center gap-3">
+          {selectedFolder && (
+            <button
+              onClick={() => setSelectedFolder(null)}
+              className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm font-medium text-gray-300 hover:bg-white/10 hover:text-white transition-all flex items-center gap-1.5"
+            >
+              ← Back to Folders
+            </button>
+          )}
+
+          <div className="flex bg-gray-950/60 rounded-xl p-1 border border-white/5">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${viewMode === 'grid' ? 'bg-white/10 text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+            >
+              Grid
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${viewMode === 'list' ? 'bg-white/10 text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+            >
+              List
+            </button>
+          </div>
+          
+          <Link
+            to="/student/my-courses"
+            className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm font-medium text-gray-300 hover:bg-white/10 transition-colors"
+          >
+            Back to My Courses
+          </Link>
+        </div>
       </div>
 
-      <div className="space-y-6">
-        {myCertificates.map((certificate) => (
-          <CertificateCard
-            key={certificate.id}
-            certificate={certificate}
-            templateState={certificateTemplate}
-            currentUser={currentUser}
-            copiedId={copiedId}
-            onCopy={handleCopy}
-          />
-        ))}
-      </div>
+      {!selectedFolder ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Object.entries(groupedCertificates).map(([courseName, certList]) => (
+            <div
+              key={courseName}
+              onClick={() => setSelectedFolder(courseName)}
+              className="group cursor-pointer rounded-3xl border border-white/5 bg-gray-900/40 p-6 hover:bg-gray-800/40 hover:border-white/10 hover:scale-[1.02] transition-all duration-300 shadow-xl flex items-center gap-5 relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700"></div>
+              
+              <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-4xl shadow-md transition-transform duration-300 group-hover:rotate-6">
+                📁
+              </div>
+              
+              <div className="flex-1 min-w-0">
+                <h3 className="text-base font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                  {courseName}
+                </h3>
+                <p className="text-xs text-gray-400 mt-1 font-medium">
+                  {certList.length} Verified Document{certList.length !== 1 ? 's' : ''}
+                </p>
+              </div>
+              
+              <div className="text-gray-500 group-hover:text-white transition-colors">
+                <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="space-y-4 animate-in fade-in duration-300">
+          <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-6"}>
+            {(groupedCertificates[selectedFolder] || []).map((certificate) => (
+              <CertificateCard
+                key={certificate.id}
+                certificate={certificate}
+                templateState={certificateTemplate}
+                currentUser={currentUser}
+                copiedId={copiedId}
+                onCopy={handleCopy}
+                isGrid={viewMode === 'grid'}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

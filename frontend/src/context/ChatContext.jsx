@@ -95,11 +95,16 @@ export function ChatProvider({ children }) {
       if (response.ok && data.success && Array.isArray(data.rooms)) {
         let userChats = data.rooms
 
+        // For employees/mentors/staff: show all rooms where they are a participant
         if (currentRole !== 'admin' && isEmployeeOrAdmin) {
-          userChats = userChats.filter(r => r.assignedRole === currentUser.role || r.assignedTo === currentUser.displayName)
+          userChats = userChats.filter(r =>
+            (r.participants && r.participants.includes(currentUser.uid))
+          )
         } else if (currentRole === 'student') {
-          userChats = userChats.filter(r => r.participants.includes(currentUser.uid))
+          // Students only see their own chats
+          userChats = userChats.filter(r => r.participants && r.participants.includes(currentUser.uid))
         }
+        // Admins see all rooms (no filter)
 
         userChats.sort((a, b) => getChatSortMs(b) - getChatSortMs(a))
         const dedupedChats = dedupeChats(userChats, currentUser.uid)
@@ -452,12 +457,28 @@ export function ChatProvider({ children }) {
       }
     }
 
-    const partnerId = chat.participants.find(p => p !== currentUser.uid)
+    const participants = Array.isArray(chat.participants) ? chat.participants : []
+
+    // Find the partner: the participant who is NOT the current user
+    // If all participants are the same (buggy legacy data), use first participant
+    let partnerId = participants.find(p => p !== currentUser.uid)
+    if (!partnerId && participants.length > 0) {
+      // Degenerate room: both participants are same UID — show self as partner
+      partnerId = participants[0]
+    }
     if (!partnerId) return null
 
-    const partnerInfo = chat.participantInfo?.[partnerId] || {}
+    // Look up partner info. Also check all participantInfo entries
+    // in case the key doesn't match exactly (legacy data)
+    const partnerInfo =
+      chat.participantInfo?.[partnerId] ||
+      Object.values(chat.participantInfo || {}).find(
+        (info, _, arr) => arr.length === 1 ? info : null
+      ) ||
+      {}
+
     const roleStr = String(partnerInfo.role || '').toLowerCase()
-    const isAlwaysOnline = ['admin', 'employee', 'support'].includes(roleStr) || partnerId === AI_ASSISTANT_ID
+    const isAlwaysOnline = ['admin', 'employee', 'support', 'mentor', 'staff', 'developer'].includes(roleStr) || partnerId === AI_ASSISTANT_ID
     const hasRecentActivity = chat.lastMessageAt && (new Date() - new Date(chat.lastMessageAt)) < 300000
 
     return {

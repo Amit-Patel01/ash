@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 180 33% 98%;
+  --foreground: 222 47% 11%;
+  --muted: 184 20% 92%;
+  --muted-foreground: 220 10% 42%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --border: 186 18% 84%;
+  --primary: 173 80% 27%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 41 94% 55%;
+  --accent-foreground: 222 47% 11%;
+  --success: 145 63% 37%;
+  --warning: 16 84% 55%;
+}
+
+.dark {
+  --background: 220 31% 8%;
+  --foreground: 190 30% 96%;
+  --muted: 217 24% 18%;
+  --muted-foreground: 216 14% 70%;
+  --card: 218 28% 12%;
+  --card-foreground: 190 30% 96%;
+  --border: 214 22% 24%;
+  --primary: 174 72% 41%;
+  --primary-foreground: 222 47% 8%;
+  --accent: 39 91% 58%;
+  --accent-foreground: 222 47% 11%;
+  --success: 148 58% 46%;
+  --warning: 18 88% 62%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.glass {
+  background: color-mix(in srgb, hsl(var(--card)) 76%, transparent);
+  border: 1px solid color-mix(in srgb, hsl(var(--border)) 80%, transparent);
+  backdrop-filter: blur(18px);
+}

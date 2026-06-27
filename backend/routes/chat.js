@@ -71,8 +71,8 @@ router.post("/create", async (req, res) => {
 
     await getDb().collection("chats").insertOne({ _id: chatId, ...chat });
 
-    // AUTOMATIC WELCOME MESSAGE
-    if (currentRole === "customer" && (otherRole === "admin" || otherRole === "employee" || otherRole === "support")) {
+    const isStudentOrCust = ["customer", "student"].includes(currentRole);
+    if (isStudentOrCust && (otherRole === "admin" || otherRole === "employee" || otherRole === "support" || otherRole === "staff")) {
       const welcomeText = `Hello! 👋 Thanks for reaching out. A member of our support team will be with you shortly. How can we help you today?`;
       const welcomeMessageId = `msg_welcome_${Date.now()}`;
       const welcomeMessage = {
@@ -179,7 +179,8 @@ router.post("/send", async (req, res) => {
     // AI Intent classification and response logic
     // Trigger only if sent by the customer and NOT yet taken over by an employee
     const senderInfo = chat.participantInfo[senderId] || {};
-    const isCustomer = String(senderInfo.role || "").toLowerCase() === "customer";
+    const senderRole = String(senderInfo.role || "").toLowerCase();
+    const isCustomer = senderRole === "customer" || senderRole === "student";
     if (isCustomer && !chat.isTakenOver) {
       try {
         // Fetch all messages to count user messages
@@ -310,8 +311,15 @@ router.get("/rooms", async (req, res) => {
     let rooms = await getDb().collection("chats").find({}).toArray();
     rooms = rooms.map(d => ({ id: d._id.toString(), ...d }));
 
-    // Employees can filter by their assigned role
-    if (role) {
+    // Filter rooms: they must either be a participant, OR it must match their assigned support role
+    if (userId) {
+      rooms = rooms.filter((r) => {
+        const parts = normalizeParticipants(r.participants);
+        const isParticipant = parts.includes(userId);
+        const matchesRole = role && (r.assignedRole === role || r.assignedTo === role);
+        return isParticipant || matchesRole;
+      });
+    } else if (role) {
       rooms = rooms.filter((r) => r.assignedRole === role || r.assignedTo === role);
     }
 

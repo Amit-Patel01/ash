@@ -5,7 +5,7 @@ import { useStore } from '../store/StoreContext'
 
 const WELCOME_MESSAGE = {
   role: 'assistant',
-  content: "👋 Hi! I'm the **SolutionHub AI Assistant** — powered by **Gemini 2.5 Flash**.\n\nI can help you with:\n• 🛒 Finding the right source code project\n• 📈 Trading mentorship details & pricing\n• 🔧 Technical support guidance\n• 📋 Account & order questions\n\nHow can I help you today?"
+  content: "👋 Hi! I'm the **SolutionHub AI Assistant** — powered by **SolutionHub**.\n\nI can help you with:\n• 🛒 Finding the right source code project\n• 📈 Trading mentorship details & pricing\n• 🔧 Technical support guidance\n• 📋 Account & order questions\n\nHow can I help you today?"
 }
 
 const QUICK_PROMPTS = [
@@ -519,18 +519,8 @@ export default function AIChatbot() {
                     display: 'inline-block',
                     boxShadow: assistantStatus.checked && !assistantStatus.available ? '0 0 6px #f97316' : '0 0 6px #4ade80'
                   }} />
-                  Powered by Gemini 2.5 Flash
+                  Powered by SolutionHub
                 </div>
-                {assistantStatus.checked && assistantStatus.message && (
-                  <div style={{
-                    marginTop: '4px',
-                    color: assistantStatus.available ? 'rgba(255,255,255,0.72)' : '#fed7aa',
-                    fontSize: '10px',
-                    lineHeight: 1.4,
-                  }}>
-                    {assistantStatus.message}
-                  </div>
-                )}
               </div>
               <button
                 onClick={clearChat}

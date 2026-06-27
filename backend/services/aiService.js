@@ -237,4 +237,4 @@ Respond with a concise, bulleted list of specific recommendations with brief rea
   }
 };
 
-module.exports = { chatWithAI, getRecommendations, getAIStatus };
+module.exports = { chatWithAI, getRecommendations, getAIStatus, generateText };

@@ -128,37 +128,52 @@ export default function AdminSettings() {
       setProfileError('Please choose a valid image file.')
       return
     }
-    if (file.size > 4 * 1024 * 1024) {
-      setProfileError('Image size should be under 4MB.')
-      return
-    }
 
     setImageLoading(true)
     setProfileError('')
     setSaveSuccess('')
 
     try {
-      const formData = new FormData()
-      formData.append('photo', file)
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const img = new Image()
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          const MAX_WIDTH = 200
+          const MAX_HEIGHT = 200
+          let width = img.width
+          let height = img.height
 
-      const response = await fetch(api.uploadTeam, {
-        method: 'POST',
-        body: formData,
-      })
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width
+              width = MAX_WIDTH
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height
+              width = MAX_HEIGHT
+            }
+          }
 
-      const data = await response.json()
-      if (!response.ok || !data.success || !data.url) {
-        throw new Error(data.message || 'Image upload failed.')
+          canvas.width = width
+          canvas.height = height
+          const ctx = canvas.getContext('2d')
+          ctx.drawImage(img, 0, 0, width, height)
+
+          const base64Url = canvas.toDataURL('image/jpeg', 0.8)
+          setProfileForm(current => ({
+            ...current,
+            avatar: base64Url,
+          }))
+          setImageLoading(false)
+          setSaveSuccess('Photo loaded successfully! Click "Save Changes" to save.')
+        }
+        img.src = e.target.result
       }
-
-      setProfileForm(current => ({
-        ...current,
-        avatar: data.url,
-      }))
-      setSaveSuccess('Profile image uploaded! Click "Save Changes" to save.')
+      reader.readAsDataURL(file)
     } catch (error) {
-      setProfileError(error.message || 'Unable to upload image.')
-    } finally {
+      setProfileError(error.message || 'Unable to process image.')
       setImageLoading(false)
     }
   }

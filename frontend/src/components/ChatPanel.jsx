@@ -202,7 +202,7 @@ export default function ChatPanel({ embedded = false }) {
   const chatStaffParticipants = activeParticipantEntries.filter(([uid, info]) =>
     uid !== currentUser?.uid && ['admin', 'employee'].includes(String(info?.role || '').toLowerCase())
   )
-  const isDark = theme !== 'light'
+  const isDark = true
   const isTakenOver = activeChat?.isTakenOver
   const shouldUseAiFallback = currentRole === 'student' && !activeChat?.isGroup && !isTakenOver
 

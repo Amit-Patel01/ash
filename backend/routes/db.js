@@ -103,7 +103,7 @@ router.get("/:collection", optionalAuth, async (req, res) => {
       _id: d._id.toString()
     }));
 
-    res.json({ success: true, documents: formattedDocs });
+    res.json({ success: true, documents: formattedDocs, items: formattedDocs });
   } catch (error) {
     logger.error(`Error fetching collection ${req.params.collection}:`, error);
     res.status(500).json({ success: false, message: error.message });
@@ -178,7 +178,10 @@ router.get("/:collection/:id", optionalAuth, async (req, res) => {
         id: doc._id.toString(),
         ...doc,
         _id: doc._id.toString()
-      }
+      },
+      id: doc._id.toString(),
+      _id: doc._id.toString(),
+      ...doc
     });
   } catch (error) {
     logger.error(`Error fetching document ${req.params.id} from ${req.params.collection}:`, error);

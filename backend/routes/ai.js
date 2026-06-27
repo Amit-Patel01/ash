@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { chatWithAI, getRecommendations, getAIStatus } = require("../services/aiService");
+const { chatWithAI, getRecommendations, getAIStatus, generateText } = require("../services/aiService");
 const { optionalAuth } = require("../middlewares/authMiddleware");
 const { logger } = require("../logger");
 
@@ -82,6 +82,94 @@ router.post("/recommend", optionalAuth, async (req, res) => {
       success: false,
       recommendations: "Unable to generate recommendations at this time. Browse our projects at amitsolutionhub.com/projects.",
     });
+  }
+});
+
+/**
+ * POST /api/ai/resume-builder
+ * Body: { skills: string }
+ */
+router.post("/resume-builder", optionalAuth, async (req, res) => {
+  const { skills } = req.body;
+  const status = getAIStatus();
+
+  if (!status.available) {
+    return res.status(503).json({ success: false, message: status.message });
+  }
+
+  try {
+    const prompt = `Create a professional resume summary, suggested job roles, and key bullet points for a developer with the following skills/experience:\n${skills || "React, Node.js, JavaScript"}\n\nFormat the response nicely in clean Markdown.`;
+    const result = await generateText({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      temperature: 0.7,
+      maxOutputTokens: 600,
+    });
+    res.json({ success: true, result });
+  } catch (error) {
+    logger.error("AI resume builder error:", error);
+    res.status(500).json({ success: false, message: "Failed to generate resume guidance" });
+  }
+});
+
+/**
+ * POST /api/ai/project-suggestions
+ * Body: { skills: string }
+ */
+router.post("/project-suggestions", optionalAuth, async (req, res) => {
+  const { skills } = req.body;
+  const status = getAIStatus();
+
+  if (!status.available) {
+    return res.status(503).json({ success: false, message: status.message });
+  }
+
+  try {
+    const prompt = `Suggest 3 unique, real-world portfolio project ideas for a student interested in: ${skills || "Web Development"}. For each project, provide:
+1. Title
+2. Description
+3. Recommended Tech Stack
+4. Difficulty Level (Beginner/Intermediate/Advanced)
+
+Format the response nicely in clean Markdown.`;
+    const result = await generateText({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      temperature: 0.7,
+      maxOutputTokens: 600,
+    });
+    res.json({ success: true, result });
+  } catch (error) {
+    logger.error("AI project suggestions error:", error);
+    res.status(500).json({ success: false, message: "Failed to generate project suggestions" });
+  }
+});
+
+/**
+ * POST /api/ai/interview-preparation
+ * Body: { role: string }
+ */
+router.post("/interview-preparation", optionalAuth, async (req, res) => {
+  const { role } = req.body;
+  const status = getAIStatus();
+
+  if (!status.available) {
+    return res.status(503).json({ success: false, message: status.message });
+  }
+
+  try {
+    const prompt = `Generate a preparation guide for an interview for the role of: ${role || "Frontend Developer"}. Include:
+1. Top 5 common technical interview questions with brief answers.
+2. 3 essential tips for cracking this role's interview.
+
+Format the response nicely in clean Markdown.`;
+    const result = await generateText({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      temperature: 0.7,
+      maxOutputTokens: 800,
+    });
+    res.json({ success: true, result });
+  } catch (error) {
+    logger.error("AI interview prep error:", error);
+    res.status(500).json({ success: false, message: "Failed to generate interview preparation guide" });
   }
 });
 

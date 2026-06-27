@@ -143,7 +143,7 @@ const hasPermissionForPath = (path, permissions) => {
   return required.some(p => permissions?.[p] === true)
 }
 
-const getFilteredNavItems = (userRole, permissions) => {
+const getFilteredNavItems = (userRole, permissions, hasAssignedCourses = false) => {
   const normalized = String(userRole || '').trim().toLowerCase()
   if (!normalized || normalized === 'admin') return navItems
 
@@ -152,6 +152,11 @@ const getFilteredNavItems = (userRole, permissions) => {
   return navItems.filter((item) => {
     // Dashboard, My Tasks, and Profile are always allowed
     if (['/employee', '/employee/tasks', '/employee/profile'].includes(item.path)) {
+      return true
+    }
+
+    // Automatically allow Course Management if the employee has assigned courses
+    if (item.path === '/employee/course-manage' && hasAssignedCourses) {
       return true
     }
 
@@ -236,7 +241,7 @@ export default function EmployeeLayout() {
   const location = useLocation()
   const navigate = useNavigate()
   const { currentUser, userProfile, logout, refreshCurrentUser } = useAuth()
-  const { users } = useStore()
+  const { users, courses } = useStore()
 
   const handleWheel = (e) => {
     const target = e.target
@@ -289,9 +294,21 @@ export default function EmployeeLayout() {
   const employeeInitial = employeeName.charAt(0).toUpperCase()
   const employeeAvatar = userProfile?.avatar || userProfile?.photoURL || currentUser?.photoURL || currentUser?.avatar || ''
 
+  const hasAssignedCourses = useMemo(() => {
+    const uid = currentUser?.uid
+    const email = currentUser?.email
+    if (!uid) return false
+    return (courses || []).some(c => 
+      c.assignedEmployeeId === uid || 
+      c.assignedEmployeeRef === uid || 
+      (email && c.assignedEmployeeEmail === email) ||
+      c.assignedEmployeeName === currentUser?.displayName
+    )
+  }, [courses, currentUser])
+
   const filteredNavItems = useMemo(() => {
-    return getFilteredNavItems(employeeRole, mergedPermissions)
-  }, [employeeRole, mergedPermissions])
+    return getFilteredNavItems(employeeRole, mergedPermissions, hasAssignedCourses)
+  }, [employeeRole, mergedPermissions, hasAssignedCourses])
 
   // Enforce Role-Based Access Control (RBAC) path protection
   useEffect(() => {
@@ -395,6 +412,42 @@ export default function EmployeeLayout() {
               const isActive = item.path === '/employee'
                 ? location.pathname === '/employee'
                 : location.pathname.startsWith(item.path)
+
+              if (item.isLms) {
+                return (
+                  <a
+                    key={item.path}
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const token = localStorage.getItem('token') || '';
+                      const lmsUrl = import.meta.env.VITE_LMS_URL || 'http://localhost:3000';
+                      window.open(`${lmsUrl}/auth/sso?token=${token}`, '_blank');
+                    }}
+                    title={!sidebarOpen ? item.label : undefined}
+                    className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 ${sidebarOpen ? '' : 'justify-center'}`}
+                    style={{
+                      border: '1px solid transparent',
+                      color: 'rgba(148,163,184,0.8)',
+                    }}
+                  >
+                    <span
+                      className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg transition-all duration-200 group-hover:bg-white/5"
+                    >
+                      <span className="text-slate-500 group-hover:text-slate-300">
+                        {iconMap[item.icon]}
+                      </span>
+                    </span>
+                    {sidebarOpen && <span className="truncate">{item.label}</span>}
+                    {sidebarOpen && (
+                      <svg className="w-3.5 h-3.5 ml-auto text-slate-500 group-hover:text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                      </svg>
+                    )}
+                  </a>
+                )
+              }
+
               return (
                 <Link
                   key={item.path}

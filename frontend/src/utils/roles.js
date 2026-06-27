@@ -5,7 +5,7 @@ export const normalizeUserRole = (role) => {
   if (normalized === 'admin') return 'admin'
   if (normalized === 'mentor') return 'mentor'
   if (['employee', 'team', 'team member', 'staff', 'developer'].includes(normalized)) return 'employee'
-  if (['student', 'student', 'client', 'user'].includes(normalized)) return 'student'
+  if (['student', 'client', 'user', 'customer'].includes(normalized)) return 'student'
 
   return normalized
 }

@@ -184,6 +184,7 @@ const StudentOrders = lazyWithRetry(() => import('./student/StudentOrders'))
 const StudentSupport = lazyWithRetry(() => import('./student/StudentSupport'))
 const StudentProfile = lazyWithRetry(() => import('./student/StudentProfile'))
 const StudentCertificates = lazyWithRetry(() => import('./student/StudentCertificates'))
+const StudentCustomProject = lazyWithRetry(() => import('./student/StudentCustomProject'))
 
 const ChatPage = lazyWithRetry(() => import('./pages/ChatPage'))
 const AdminCourses = lazyWithRetry(() => import('./admin/AdminCourses'))
@@ -463,6 +464,7 @@ function AppContent() {
             <Route path="my-courses" element={<StudentMyCourses />} />
             <Route path="certificates" element={<StudentCertificates />} />
             <Route path="profile" element={<StudentProfile />} />
+            <Route path="custom-project" element={<StudentCustomProject />} />
           </Route>
         </Routes>
       </Suspense>

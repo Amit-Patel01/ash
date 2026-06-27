@@ -192,6 +192,16 @@ const Navbar = () => {
                     >
                       Our Services
                     </Link>
+                    <Link
+                      to="/custom-project"
+                      className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
+                        location.pathname === '/custom-project'
+                          ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
+                          : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                      }`}
+                    >
+                      Custom Build
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -446,6 +456,17 @@ const Navbar = () => {
                   }`}
                 >
                   Our Services
+                </Link>
+                <Link
+                  to="/custom-project"
+                  onClick={() => setIsOpen(false)}
+                  className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 mt-1 ${
+                    location.pathname === '/custom-project'
+                      ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                      : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
+                  }`}
+                >
+                  Custom Build
                 </Link>
               </div>
             </div>
