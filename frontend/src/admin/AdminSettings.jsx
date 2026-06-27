@@ -10,7 +10,7 @@ import {
   normalizeCertificateTemplate,
   updateTemplateVariant,
 } from '../utils/certificateTemplate'
-import CertificateDocument from '../components/certificates/CertificateDocument'
+import CertificateDocument from '../components/Certificate'
 
 export default function AdminSettings() {
   const { currentUser, updateUserProfile, updateUserEmail, updateUserPassword } = useAuth()
@@ -783,7 +783,7 @@ export default function AdminSettings() {
                   </p>
                 </div>
 
-                <div className="overflow-hidden rounded-[30px] border border-white/10 bg-slate-950/40 p-3">
+                <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-slate-50 p-3">
                   <div className="mx-auto w-full max-w-[860px]">
                     <CertificateDocument certificate={certificatePreview} template={certificateForm} />
                   </div>

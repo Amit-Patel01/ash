@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { getDocumentTypeMeta, hexToRgba, mergeCertificateTemplate } from '../utils/certificateTemplate'
 import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
 import { formatCertificateDate, getCertificateDocumentLabel, getCertificateDocumentType } from '../utils/certificateHelpers'
-import CertificateDocument from '../components/certificates/CertificateDocument'
+import CertificateDocument from '../components/Certificate'
 
 function CertificateCard({ certificate, templateState, currentUser, copiedId, onCopy, isGrid }) {
   const previewRef = useRef(null)
@@ -76,9 +76,9 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
         </div>
 
         {/* PDF Page Canvas Wrapper */}
-        <div className="flex-1 overflow-auto p-4 md:p-8 flex items-start justify-center bg-slate-950/20">
+        <div className="flex-1 overflow-auto p-4 md:p-8 flex items-start justify-center bg-slate-800/50">
           <div 
-            className="w-full max-w-[1000px] shadow-[0_25px_60px_rgba(0,0,0,0.8)] rounded-2xl overflow-hidden bg-black transform scale-[0.98] transition-transform duration-300 origin-top mt-2 md:mt-4" 
+            className="w-full max-w-[1000px] shadow-[0_25px_60px_rgba(0,0,0,0.6)] rounded-2xl overflow-hidden bg-white transform scale-[0.98] transition-transform duration-300 origin-top mt-2 md:mt-4" 
             onClick={e => e.stopPropagation()}
           >
             <CertificateDocument certificate={certificate} template={template} />

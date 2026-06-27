@@ -12,6 +12,10 @@ const { sendEmail, emailTemplate } = require("../services/emailService");
 const { logger } = require("../logger");
 
 
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
+
+const STUDENT_ROLES = new Set(["student", "customer"]);
+
 const QR_CERTIFICATE_TYPES = {
   "AICTE Internship Completion": "Completion Certificate",
   LOR: "Letter of Recommendation",
@@ -179,6 +183,18 @@ const validateQrCertificateInput = (payload = {}, { partial = false } = {}) => {
     }
   }
 
+  if (Object.prototype.hasOwnProperty.call(payload, "mentorSignatureImageUrl")) {
+    const mentorSignatureImageUrl = String(payload.mentorSignatureImageUrl || "").trim();
+    if (mentorSignatureImageUrl && !mentorSignatureImageUrl.startsWith("/")) {
+      errors.push("Mentor signature image URL must be a relative path.");
+    } else {
+      updates.mentorSignatureImageUrl = mentorSignatureImageUrl;
+    }
+  }
+  if (Object.prototype.hasOwnProperty.call(payload, "mentorName")) {
+    updates.mentorName = String(payload.mentorName || "").trim();
+  }
+
   const assignmentFieldsTouched =
     !partial ||
     ["assignedEmployeeUid", "assignedEmployeeId", "assignedEmployeeName", "assignedEmployeeEmail"].some((key) =>
@@ -190,6 +206,7 @@ const validateQrCertificateInput = (payload = {}, { partial = false } = {}) => {
     const assignedEmployeeId = normalizeOptionalText(payload.assignedEmployeeId);
     const assignedEmployeeName = normalizeOptionalText(payload.assignedEmployeeName);
     const assignedEmployeeEmail = normalizeOptionalText(payload.assignedEmployeeEmail).toLowerCase();
+    const assignedEmployeeRole = normalizeOptionalText(payload.assignedEmployeeRole).toLowerCase();
 
     if (assignedEmployeeUid.length > 160) {
       errors.push("Assigned user UID is too long.");
@@ -215,6 +232,12 @@ const validateQrCertificateInput = (payload = {}, { partial = false } = {}) => {
       errors.push("Assigned user email must be valid.");
     } else {
       updates.assignedEmployeeEmail = assignedEmployeeEmail;
+    }
+
+    if (assignedEmployeeRole.length > 40) {
+      errors.push("Assigned user role is too long.");
+    } else {
+      updates.assignedEmployeeRole = assignedEmployeeRole;
     }
 
     updates.assignedEmployeeRef = assignedEmployeeUid || assignedEmployeeId || assignedEmployeeEmail || "";
@@ -288,6 +311,8 @@ const buildVerifyResponseData = (certificate, req) => {
     certificateText: certificate?.certificateText || "",
     signatureImageUrl: certificate?.signatureImageUrl || "",
     stampImageUrl: certificate?.stampImageUrl || "",
+    mentorSignatureImageUrl: certificate?.mentorSignatureImageUrl || "",
+    mentorName: certificate?.mentorName || "",
     // Signatory fallbacks (defensive access)
     signatoryName: certificate?.signatoryName || "Amit Patel",
     signatoryRole: certificate?.signatoryRole || "Managing Director",
@@ -297,6 +322,7 @@ const buildVerifyResponseData = (certificate, req) => {
     assignedEmployeeRef: certificate?.assignedEmployeeRef || "",
     assignedEmployeeName: certificate?.assignedEmployeeName || "",
     assignedEmployeeEmail: certificate?.assignedEmployeeEmail || "",
+    assignedEmployeeRole: certificate?.assignedEmployeeRole || "",
     status: rawStatus || "unknown",
     statusDisplay,
     source,
@@ -308,20 +334,49 @@ const buildVerifyResponseData = (certificate, req) => {
 
 const sendAssignedCertificateEmail = async (certificate, req, { updated = false } = {}) => {
   const assignedEmployeeEmail = normalizeOptionalText(certificate?.assignedEmployeeEmail).toLowerCase();
-
-  if (!assignedEmployeeEmail || !EMAIL_PATTERN.test(assignedEmployeeEmail)) {
-    return false;
-  }
+  const assigneeRole = (certificate?.assignedEmployeeRole || "").toLowerCase();
+  const isStudent = STUDENT_ROLES.has(assigneeRole);
 
   const certificateView = buildVerifyResponseData(certificate, req);
   const assigneeName =
     certificate?.assignedEmployeeName ||
     certificateView.name ||
     "User";
+
+  const recipientEmail = isStudent
+    ? (ADMIN_EMAIL || "")
+    : (assignedEmployeeEmail || "");
+
+  const finalEmail = recipientEmail && EMAIL_PATTERN.test(recipientEmail)
+    ? recipientEmail
+    : (assignedEmployeeEmail && EMAIL_PATTERN.test(assignedEmployeeEmail) ? assignedEmployeeEmail : "");
+
+  if (!finalEmail || !EMAIL_PATTERN.test(finalEmail)) {
+    if (ADMIN_EMAIL && EMAIL_PATTERN.test(ADMIN_EMAIL)) {
+      logger.warn("QR certificate email — no valid recipient, falling back to ADMIN_EMAIL");
+    }
+    return false;
+  }
+
+  const isSendingToAdmin = finalEmail === ADMIN_EMAIL;
   const subject = updated
-    ? `Certificate updated for ${assigneeName}`
-    : `New certificate assigned to ${assigneeName}`;
-  const content = `
+    ? `Certificate ${isSendingToAdmin ? "updated for" : "updated for"} ${assigneeName}`
+    : `Certificate ${isSendingToAdmin ? "assigned to" : "assigned to"} ${assigneeName}`;
+
+  const content = isSendingToAdmin
+    ? `
+    <p>Hello Admin,</p>
+    <p>A QR certificate has been ${updated ? "updated for" : "assigned to"} <strong>${assigneeName}</strong> (${assignedEmployeeEmail}).</p>
+    <div style="margin: 24px 0; padding: 20px; border: 1px solid #e2e8f0; border-radius: 14px; background: #f8fafc;">
+      <p style="margin: 0 0 10px;"><strong>Certificate ID:</strong> ${certificateView.certificate_id}</p>
+      <p style="margin: 0 0 10px;"><strong>Certificate Type:</strong> ${certificateView.certificateTypeLabel}</p>
+      <p style="margin: 0 0 10px;"><strong>Date:</strong> ${certificateView.date}</p>
+      <p style="margin: 0 0 10px;"><strong>Assignee:</strong> ${assigneeName} (${assignedEmployeeEmail})</p>
+      <p style="margin: 0;"><strong>Status:</strong> ${certificateView.statusDisplay}</p>
+    </div>
+    <p>You can view and manage this certificate from the admin panel.</p>
+    `
+    : `
     <p>Hello ${assigneeName},</p>
     <p>${updated ? "Your QR certificate has been updated." : "A new QR certificate has been assigned to you."}</p>
     <div style="margin: 24px 0; padding: 20px; border: 1px solid #e2e8f0; border-radius: 14px; background: #f8fafc;">
@@ -331,26 +386,28 @@ const sendAssignedCertificateEmail = async (certificate, req, { updated = false 
       <p style="margin: 0;"><strong>Status:</strong> ${certificateView.statusDisplay}</p>
     </div>
     <p>You can open the certificate preview, verify it online, and download it from your dashboard or the verification page.</p>
-  `;
+    `;
+
+  const ctaLabel = isSendingToAdmin ? "View Certificate" : "Open Certificate";
 
   try {
     const emailResult = await sendEmail({
-      to: assignedEmployeeEmail,
+      to: finalEmail,
       subject,
-      html: emailTemplate(subject, content, "Open Certificate", certificateView.verifyUrl),
+      html: emailTemplate(subject, content, ctaLabel, certificateView.verifyUrl),
     });
-    
+
     if (!emailResult.success) {
       logger.error("QR certificate assignment email failed:", {
-        email: assignedEmployeeEmail,
+        email: finalEmail,
         certificateId: certificateView.certificate_id,
         error: emailResult.error,
       });
       return false;
     }
-    
+
     logger.info("QR certificate assignment email sent:", {
-      email: assignedEmployeeEmail,
+      email: finalEmail,
       certificateId: certificateView.certificate_id,
       emailId: emailResult.id,
     });

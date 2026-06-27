@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
-import { ChevronDown, Download, FileImage, FileText, Link2, Mail, PencilLine, Plus, QrCode, RefreshCcw, ShieldCheck, ShieldOff, Trash2, Upload, UserRound } from 'lucide-react'
+import { ChevronDown, Download, FileImage, FileText, Link2, Mail, PencilLine, Plus, QrCode, RefreshCcw, ShieldCheck, ShieldOff, Trash2, Upload, UserRound, Search, LayoutGrid, List } from 'lucide-react'
 import { useStore } from '../store/StoreContext'
 import { api, readApiJson, API_BASE } from '../config/api'
-import CertificateDocument from '../components/certificates/CertificateDocument'
+import CertificateDocument from '../components/Certificate'
 import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
 import { normalizeCertificateAssetUrl } from '../utils/certificateHelpers'
 
@@ -67,10 +67,18 @@ const createInitialForm = () => ({
   assignedEmployeeId: '',
   assignedEmployeeName: '',
   assignedEmployeeEmail: '',
+  assignedEmployeeRole: '',
   signatureImageUrl: '',
   signatoryName: '',
   signatoryRole: '',
   stampImageUrl: '',
+  mentorSignatureImageUrl: '',
+  mentorName: '',
+  domain: '',
+  duration: '',
+  startDate: '',
+  endDate: '',
+  mode: '',
 })
 
 const mapCertificateToForm = (certificate = {}) => ({
@@ -84,10 +92,18 @@ const mapCertificateToForm = (certificate = {}) => ({
   assignedEmployeeId: certificate.assignedEmployeeId || '',
   assignedEmployeeName: certificate.assignedEmployeeName || '',
   assignedEmployeeEmail: certificate.assignedEmployeeEmail || '',
+  assignedEmployeeRole: certificate.assignedEmployeeRole || '',
   signatureImageUrl: certificate.signatureImageUrl || '',
   signatoryName: certificate.signatoryName || '',
   signatoryRole: certificate.signatoryRole || '',
   stampImageUrl: certificate.stampImageUrl || '',
+  mentorSignatureImageUrl: certificate.mentorSignatureImageUrl || '',
+  mentorName: certificate.mentorName || '',
+  domain: certificate.domain || '',
+  duration: certificate.duration || '',
+  startDate: certificate.startDate || '',
+  endDate: certificate.endDate || '',
+  mode: certificate.mode || '',
 })
 
 const formatDisplayDate = (value) => {
@@ -136,6 +152,8 @@ export default function AdminQrCertificates() {
   } = useStore()
 
   const [form, setForm] = useState(createInitialForm)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [viewMode, setViewMode] = useState('list')
   const [editingId, setEditingId] = useState('')
   const [previewCertificateId, setPreviewCertificateId] = useState('')
   const [busyId, setBusyId] = useState('')
@@ -146,7 +164,7 @@ export default function AdminQrCertificates() {
   const [error, setError] = useState('')
   const downloadRef = useRef(null)
   const assigneeOptions = useMemo(() => {
-    const selectableRoles = new Set(['employee', 'mentor', 'student', 'student', 'client', 'user'])
+    const selectableRoles = new Set(['employee', 'mentor', 'student', 'customer', 'client', 'user'])
     const prioritized = users.filter((user) => selectableRoles.has(String(user.role || '').trim().toLowerCase()))
     const fallback = users.filter((user) => String(user.role || '').trim().toLowerCase() !== 'admin')
     const pool = prioritized.length > 0 ? prioritized : fallback
@@ -162,16 +180,26 @@ export default function AdminQrCertificates() {
   const revokedCount = qrCertificates.filter(certificate => certificate.status === 'revoked').length
   const groupedCertificates = useMemo(() => {
     const groups = {}
+    const query = searchQuery.toLowerCase().trim()
+
     qrCertificates.forEach(cert => {
       const name = cert.name || cert.userName || 'Unknown'
-      if (!groups[name]) groups[name] = []
-      groups[name].push(cert)
+      const email = cert.assignedEmployeeEmail || cert.email || ''
+      const cid = cert.certificate_id || ''
+      
+      if (query && !name.toLowerCase().includes(query) && !email.toLowerCase().includes(query) && !cid.toLowerCase().includes(query)) {
+        return
+      }
+
+      if (!groups[name]) groups[name] = { items: [], email: '' }
+      groups[name].items.push(cert)
+      if (email && !groups[name].email) groups[name].email = email
     })
     
     const sortedNames = Object.keys(groups).sort()
     
     sortedNames.forEach(name => {
-      groups[name].sort((a, b) => {
+      groups[name].items.sort((a, b) => {
         const dateA = new Date(a.rawDate || a.date).getTime()
         const dateB = new Date(b.rawDate || b.date).getTime()
         return dateB - dateA
@@ -229,7 +257,14 @@ export default function AdminQrCertificates() {
     signatoryName: form.signatoryName || '',
     signatoryRole: form.signatoryRole || '',
     stampImageUrl: form.stampImageUrl || '',
+    mentorSignatureImageUrl: form.mentorSignatureImageUrl || '',
+    mentorName: form.mentorName || '',
     verifyUrl: buildVerifyUrl(previewDisplayId),
+    domain: form.domain || 'Web Development',
+    duration: form.duration || '8 Weeks',
+    startDate: form.startDate || '01 May 2026',
+    endDate: form.endDate || '27 June 2026',
+    mode: form.mode || 'Online',
   }), [editingCertificate, form, isAictePreview, previewDisplayId, previewType])
   const canDownloadPreview = Boolean(form.name.trim() && form.certificateText.trim())
 
@@ -307,6 +342,7 @@ export default function AdminQrCertificates() {
         assignedEmployeeId: selectedEmployee?.employeeId || '',
         assignedEmployeeName: nextAssignedEmployeeName,
         assignedEmployeeEmail: selectedEmployee?.email || '',
+        assignedEmployeeRole: selectedEmployee?.role || '',
       }
     })
   }
@@ -359,7 +395,7 @@ export default function AdminQrCertificates() {
       // The backend API (createQrCertificate / updateQrCertificate) receives the raw URL
       // and handles normalization server-side before persisting to Firestore.
       setForm((current) => ({ ...current, [field]: data.url }))
-      setMessage(`${field === 'signatureImageUrl' ? 'Signature' : 'Stamp'} uploaded.`)
+      setMessage(`${field === 'signatureImageUrl' ? 'Signature' : field === 'mentorSignatureImageUrl' ? 'Mentor Signature' : 'Stamp'} uploaded.`)
     } catch (uploadError) {
       setError(uploadError.message || 'Unable to upload image.')
     } finally {
@@ -379,6 +415,7 @@ export default function AdminQrCertificates() {
       ...form,
       signatureImageUrl: normalizeCertificateAssetUrl(form.signatureImageUrl),
       stampImageUrl: normalizeCertificateAssetUrl(form.stampImageUrl),
+      mentorSignatureImageUrl: normalizeCertificateAssetUrl(form.mentorSignatureImageUrl),
     }
 
     try {
@@ -570,6 +607,60 @@ export default function AdminQrCertificates() {
                     required
                   />
                 </label>
+              )}
+              {form.certificateType === AICTE_INTERNSHIP_CERTIFICATE_TYPE && (
+                <div className="md:col-span-2 grid gap-4 md:grid-cols-3 rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+                  <label className="block">
+                    <span className="text-sm font-semibold text-slate-300">Internship Domain</span>
+                    <input
+                      type="text"
+                      value={form.domain}
+                      onChange={(event) => handleChange('domain', event.target.value)}
+                      placeholder="e.g. Web Development"
+                      className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-sm font-semibold text-slate-300">Duration</span>
+                    <input
+                      type="text"
+                      value={form.duration}
+                      onChange={(event) => handleChange('duration', event.target.value)}
+                      placeholder="e.g. 8 Weeks"
+                      className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-sm font-semibold text-slate-300">Mode</span>
+                    <input
+                      type="text"
+                      value={form.mode}
+                      onChange={(event) => handleChange('mode', event.target.value)}
+                      placeholder="e.g. Online"
+                      className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-sm font-semibold text-slate-300">Start Date</span>
+                    <input
+                      type="text"
+                      value={form.startDate}
+                      onChange={(event) => handleChange('startDate', event.target.value)}
+                      placeholder="e.g. 01 May 2026"
+                      className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                    />
+                  </label>
+                  <label className="block md:col-span-2">
+                    <span className="text-sm font-semibold text-slate-300">End Date</span>
+                    <input
+                      type="text"
+                      value={form.endDate}
+                      onChange={(event) => handleChange('endDate', event.target.value)}
+                      placeholder="e.g. 27 June 2026"
+                      className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                    />
+                  </label>
+                </div>
               )}
             </div>
 
@@ -776,6 +867,59 @@ export default function AdminQrCertificates() {
               </div>
             </div>
 
+            <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-white">Mentor Signature</p>
+                  <p className="mt-1 text-xs text-slate-400">Add mentor name and upload their signature image.</p>
+                </div>
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+                  <Upload size={16} />
+                  {uploadingField === 'mentorSignatureImageUrl' ? 'Uploading...' : 'Upload Mentor Sign'}
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    className="hidden"
+                    onChange={(event) => uploadAsset('mentorSignatureImageUrl', event.target.files?.[0])}
+                  />
+                </label>
+              </div>
+
+              <div className="mt-4">
+                <label className="block">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Mentor Name</span>
+                  <input
+                    type="text"
+                    value={form.mentorName}
+                    onChange={(e) => handleChange('mentorName', e.target.value)}
+                    placeholder="e.g. Jay Patel"
+                    className="mt-1.5 w-full rounded-xl border border-white/5 bg-black/20 px-4 py-2 text-sm text-white placeholder:text-slate-600 focus:border-cyan-400/30 focus:outline-none"
+                  />
+                </label>
+              </div>
+
+              {form.mentorSignatureImageUrl ? (
+                <div className="mt-4 space-y-3">
+                  <img
+                    src={resolveAssetSrc(form.mentorSignatureImageUrl)}
+                    alt="Mentor signature preview"
+                    className="h-28 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleChange('mentorSignatureImageUrl', '')}
+                    className="inline-flex rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10"
+                  >
+                    Remove Mentor Signature
+                  </button>
+                </div>
+              ) : (
+                <div className="mt-4 rounded-2xl border border-dashed border-white/10 px-4 py-6 text-center text-xs text-slate-500">
+                  No mentor signature image (certificate will show founder signature only)
+                </div>
+              )}
+            </div>
+
             {message ? (
               <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm font-medium text-emerald-200">
                 {message}
@@ -834,7 +978,7 @@ export default function AdminQrCertificates() {
             </button>
           </div>
 
-          <div className="mt-5 overflow-hidden rounded-[30px] border border-white/10 bg-slate-950/40 p-3">
+          <div className="mt-5 overflow-hidden rounded-[30px] border border-slate-200 bg-slate-50 p-3">
             <div className="overflow-x-auto">
               <div className="mx-auto w-fit min-w-full">
                 <CertificateDocument certificate={previewCertificate} template={certificateTemplate} />
@@ -874,12 +1018,39 @@ export default function AdminQrCertificates() {
       </div>
 
       <section className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">QR Registry</p>
             <h2 className="mt-2 text-2xl font-black text-white">Manage issued QR certificates</h2>
           </div>
-          <p className="text-sm text-slate-400">Create, edit, revoke, or delete without affecting manual certificates.</p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
+              <input
+                type="text"
+                placeholder="Search name, ID, or email..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full sm:w-64 rounded-2xl border border-white/10 bg-slate-900/50 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+              />
+            </div>
+            <div className="flex items-center gap-1 rounded-2xl border border-white/10 bg-slate-900/50 p-1">
+              <button
+                type="button"
+                onClick={() => setViewMode('list')}
+                className={`rounded-xl p-1.5 transition ${viewMode === 'list' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+              >
+                <List size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('grid')}
+                className={`rounded-xl p-1.5 transition ${viewMode === 'grid' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+              >
+                <LayoutGrid size={16} />
+              </button>
+            </div>
+          </div>
         </div>
 
         {groupedCertificates.sortedNames.length === 0 ? (
@@ -898,7 +1069,10 @@ export default function AdminQrCertificates() {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-white">{name}</h3>
-                      <p className="mt-1 text-sm text-slate-400">{groupedCertificates.groups[name].length} Certificate(s)</p>
+                      <p className="mt-1 text-sm text-slate-400">
+                        {groupedCertificates.groups[name].items.length} Certificate{groupedCertificates.groups[name].items.length > 1 ? 's' : ''}
+                        {groupedCertificates.groups[name].email ? <><span className="mx-2 text-slate-600">·</span><span className="text-cyan-300">{groupedCertificates.groups[name].email}</span></> : null}
+                      </p>
                     </div>
                   </div>
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/5 text-slate-400 transition-transform group-open:rotate-180">
@@ -907,16 +1081,16 @@ export default function AdminQrCertificates() {
                 </summary>
                 
                 <div className="border-t border-white/5 p-5 pt-0">
-                  <div className="mt-5 flex flex-col gap-5">
-                    {groupedCertificates.groups[name].map((certificate) => {
+                  <div className={`mt-5 ${viewMode === 'grid' ? 'grid gap-5 xl:grid-cols-2' : 'flex flex-col gap-5'}`}>
+                    {groupedCertificates.groups[name].items.map((certificate) => {
                       const verifyUrl = buildVerifyUrl(certificate.certificate_id, certificate.verifyUrl)
                       const isBusy = busyId === certificate.id
                       const isActive = certificate.status === 'active'
 
                       return (
-                        <article key={certificate.id} className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
-                          <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-                    <div className="min-w-0 flex-1">
+                        <article key={certificate.id} className={`rounded-3xl border border-white/10 bg-white/[0.03] p-5 ${viewMode === 'grid' ? 'flex flex-col' : ''}`}>
+                          <div className={`flex flex-col gap-5 ${viewMode === 'grid' ? '' : 'md:flex-row md:items-start md:justify-between'}`}>
+                    <div className="min-w-0 flex-1 flex flex-col">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.24em] text-cyan-200">
                           QR Verified Certificate

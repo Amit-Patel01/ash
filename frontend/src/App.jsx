@@ -84,7 +84,7 @@ function ModuleLoadErrorFallback({ error }) {
     const isModuleLoadIssue = isRecoverableModuleLoadError(error)
 
     const timeoutId = window.setTimeout(() => {
-      if (refreshCount < MAX_MODULE_ERROR_AUTO_REFRESHES) {
+      if (isModuleLoadIssue && refreshCount < MAX_MODULE_ERROR_AUTO_REFRESHES) {
         window.sessionStorage.setItem(
           MODULE_ERROR_AUTO_REFRESH_KEY,
           String(refreshCount + 1)

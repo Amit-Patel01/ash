@@ -26,8 +26,11 @@ export default function AdminStudents() {
   const [sendingBroadcast, setSendingBroadcast] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
-  // Filter for only students
-  const students = users.filter(u => (u.role || '').toLowerCase() === 'student')
+  // Filter for students (includes legacy "customer" role)
+  const students = users.filter(u => {
+    const role = (u.role || '').toLowerCase();
+    return role === 'student' || role === 'customer';
+  })
 
   const filteredStudents = students.filter(student =>
     (student.displayName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||

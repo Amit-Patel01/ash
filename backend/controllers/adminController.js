@@ -339,6 +339,8 @@ const lookupUserByEmail = async (req, res) => {
   }
 };
 
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
+
 const createUser = async (req, res) => {
   try {
     const role = req.body.role || "customer";
@@ -354,6 +356,29 @@ const createUser = async (req, res) => {
         createdBy: req.user,
       }
     );
+
+    if (ADMIN_EMAIL) {
+      const label = role === "employee" ? "Employee" : "Student";
+      sendEmail({
+        to: ADMIN_EMAIL,
+        subject: `New ${label} account created: ${user.displayName || user.email}`,
+        html: emailTemplate(
+          `New ${label} Account`,
+          `
+          <p>A new ${label.toLowerCase()} account has been created:</p>
+          <div style="margin: 24px 0; padding: 20px; border: 1px solid #e2e8f0; border-radius: 14px; background: #f8fafc;">
+            <p style="margin: 0 0 8px;"><strong>Name:</strong> ${user.displayName || "—"}</p>
+            <p style="margin: 0 0 8px;"><strong>Email:</strong> ${user.email}</p>
+            <p style="margin: 0 0 8px;"><strong>Role:</strong> ${role}</p>
+            <p style="margin: 0;"><strong>Phone:</strong> ${user.phone || "—"}</p>
+          </div>
+          <p style="color: #94a3b8; font-size: 13px;">Created by ${req.user?.email || "admin"} from the admin panel.</p>
+          `,
+          "Open Admin Panel",
+          process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/admin/students` : "https://www.amitsolutionhub.com/admin/students"
+        ),
+      }).catch(err => logger.warn("Admin notification email failed:", err.message));
+    }
 
     return res.status(201).json({
       success: true,

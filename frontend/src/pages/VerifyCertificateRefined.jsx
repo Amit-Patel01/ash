@@ -22,7 +22,7 @@ import { api, readApiJson } from '../config/api'
 import { getDocumentTypeMeta, hexToRgba, mergeCertificateTemplate } from '../utils/certificateTemplate'
 import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
 import { formatCertificateDate, getCertificateDocumentLabel, getCertificateDocumentType } from '../utils/certificateHelpers'
-import CertificateDocument from '../components/certificates/CertificateDocument'
+import CertificateDocument from '../components/Certificate'
 
 function Surface({ children, className = '' }) {
   return (
@@ -604,7 +604,7 @@ export default function VerifyCertificateRefined() {
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-[34px] border border-white/10 bg-slate-950/45 p-3 md:p-4">
+              <div className="overflow-hidden rounded-[34px] border border-slate-200 bg-slate-50 p-3 md:p-4">
                 <div className="overflow-x-auto">
                   <div
                     className="mx-auto w-full"
