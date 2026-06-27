@@ -465,6 +465,8 @@ export function ChatProvider({ children }) {
       name: getReadableName(partnerInfo),
       email: partnerInfo.email || '',
       role: partnerInfo.role || 'User',
+      avatar: partnerInfo.avatar || partnerInfo.photoURL || '',
+      photoURL: partnerInfo.avatar || partnerInfo.photoURL || '',
       status: (isAlwaysOnline || hasRecentActivity) ? 'online' : 'offline',
       lastSeen: chat.lastMessageAt ? new Date(chat.lastMessageAt).getTime() : null,
     }

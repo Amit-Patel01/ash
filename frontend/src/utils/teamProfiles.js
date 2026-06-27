@@ -103,7 +103,10 @@ export const getTeamMemberKeys = (member) =>
 export const getTeamMemberProfileId = (member) =>
   encodeURIComponent(getTeamMemberKeys(member)[0] || 'team-member')
 
-const isDirectImageUrl = (value) => normalizeText(value).startsWith('http')
+const isDirectImageUrl = (value) => {
+  const text = normalizeText(value)
+  return text.startsWith('http') || text.startsWith('/')
+}
 
 export const getTeamMemberImageUrl = (member = {}) => {
   if (member.avatarSource === 'custom' && member.customImageUrl) return member.customImageUrl

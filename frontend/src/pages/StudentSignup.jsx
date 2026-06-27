@@ -53,7 +53,7 @@ export default function StudentSignup() {
 
   if (submitted) {
     return (
-      <section className="relative w-full min-h-screen pt-24 md:pt-32 pb-20 px-4 overflow-hidden" style={{ background: 'rgb(var(--bg))' }}>
+      <section className="dark relative w-full min-h-screen pt-24 md:pt-32 pb-20 px-4 overflow-hidden" style={{ background: 'rgb(var(--bg))' }}>
         {/* Background Blobs */}
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] animate-blob" />
         <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] animate-blob delay-75" />
@@ -91,7 +91,7 @@ export default function StudentSignup() {
   }
 
   return (
-    <section className="relative w-full min-h-screen pt-24 md:pt-32 pb-20 px-4 overflow-hidden flex flex-col items-center" style={{ background: 'rgb(var(--bg))' }}>
+    <section className="dark relative w-full min-h-screen pt-24 md:pt-32 pb-20 px-4 overflow-hidden flex flex-col items-center" style={{ background: 'rgb(var(--bg))' }}>
       {/* Immersive Background Elements */}
       <div className={`transition-all duration-[2000ms] ease-out ${mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
         <div className="absolute top-[10%] -left-[10%] w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[120px] animate-blob" />

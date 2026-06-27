@@ -64,12 +64,16 @@ const EMOJIS = [
 ]
 
 /* ─── Avatar ─────────────────────────────────────────── */
-function Avatar({ name = '?', size = 10, online = false, gradient = 'from-emerald-500 to-cyan-500' }) {
+function Avatar({ name = '?', size = 10, online = false, gradient = 'from-emerald-500 to-cyan-500', src = '' }) {
   return (
     <div className="relative flex-shrink-0">
-      <div className={`w-${size} h-${size} rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-black shadow-lg`}
+      <div className={`w-${size} h-${size} rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-black shadow-lg overflow-hidden border border-white/5`}
         style={{ fontSize: size >= 10 ? 18 : size >= 8 ? 14 : 10 }}>
-        {name?.charAt(0)?.toUpperCase() ?? '?'}
+        {src ? (
+          <img src={src} alt={name} className="w-full h-full object-cover" />
+        ) : (
+          name?.charAt(0)?.toUpperCase() ?? '?'
+        )}
       </div>
       {online && <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#080d1a] shadow-lg shadow-emerald-500/50" />}
     </div>
@@ -368,7 +372,7 @@ export default function ChatPanel({ embedded = false }) {
                     onMouseEnter={e => { e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.02)'; e.currentTarget.style.borderColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)' }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent' }}
                   >
-                    <Avatar name={getContactName(user)} size={9} online={userStatuses[user.uid]?.state === 'online'} gradient="from-blue-500 to-indigo-600" />
+                    <Avatar name={getContactName(user)} size={9} online={userStatuses[user.uid]?.state === 'online'} gradient="from-blue-500 to-indigo-600" src={user.avatar || user.photoURL} />
                     <div className="min-w-0 flex-1">
                       <p className="text-[13px] font-bold text-slate-800 dark:text-white truncate">{getContactName(user)}</p>
                       <p className="text-[10px] font-black uppercase tracking-[0.15em] text-indigo-500 dark:text-indigo-400">{user.role || 'User'}</p>
@@ -411,7 +415,7 @@ export default function ChatPanel({ embedded = false }) {
                   onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.02)'; e.currentTarget.style.borderColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)' } }}
                   onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent' } }}
                 >
-                  <Avatar name={p.name} size={10} online={p.status === 'online'} gradient="from-emerald-500 to-cyan-500" />
+                  <Avatar name={p.name} size={10} online={p.status === 'online'} gradient="from-emerald-500 to-cyan-500" src={p.avatar || p.photoURL} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between">
                       <p className={`text-[13px] font-bold truncate ${unread > 0 ? 'text-slate-900 dark:text-white font-black' : 'text-slate-700 dark:text-slate-300'}`}>{p.name}</p>
@@ -452,7 +456,7 @@ export default function ChatPanel({ embedded = false }) {
               </svg>
             </button>
 
-            <Avatar name={partner.name} size={9} online={isPartnerOnline} gradient="from-emerald-500 to-cyan-500" />
+            <Avatar name={partner.name} size={9} online={isPartnerOnline} gradient="from-emerald-500 to-cyan-500" src={partner.avatar || partner.photoURL} />
 
             <div className="flex-1 min-w-0">
               <p className="text-[14px] font-black text-slate-800 dark:text-white truncate leading-tight">{partner.name}</p>
@@ -609,8 +613,14 @@ export default function ChatPanel({ embedded = false }) {
 
                         {/* Avatar (for received messages) */}
                         {!isMe && !selectionMode && (
-                          <div className={`w-7 h-7 rounded-xl bg-gradient-to-br ${isAiMessage ? 'from-indigo-500 to-violet-500' : 'from-emerald-500 to-cyan-500'} flex items-center justify-center text-[10px] font-black text-white flex-shrink-0 ${showAvatar ? 'opacity-100' : 'opacity-0'}`}>
-                            {isAiMessage ? 'AI' : msg.senderName?.charAt(0)?.toUpperCase()}
+                          <div className={`w-7 h-7 rounded-xl bg-gradient-to-br ${isAiMessage ? 'from-indigo-500 to-violet-500' : 'from-emerald-500 to-cyan-500'} flex items-center justify-center text-[10px] font-black text-white flex-shrink-0 overflow-hidden border border-white/5 ${showAvatar ? 'opacity-100' : 'opacity-0'}`}>
+                            {isAiMessage ? (
+                              'AI'
+                            ) : (activeChat?.participantInfo?.[msg.senderId]?.avatar || activeChat?.participantInfo?.[msg.senderId]?.photoURL) ? (
+                              <img src={activeChat.participantInfo[msg.senderId].avatar || activeChat.participantInfo[msg.senderId].photoURL} alt="Sender" className="w-full h-full object-cover" />
+                            ) : (
+                              msg.senderName?.charAt(0)?.toUpperCase()
+                            )}
                           </div>
                         )}
 
@@ -1012,9 +1022,13 @@ export default function ChatPanel({ embedded = false }) {
               </button>
             </div>
             <div className="px-5 py-8 text-center" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-              <div className="h-20 w-20 rounded-3xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-3xl font-black text-white mx-auto mb-4"
+              <div className="h-20 w-20 rounded-3xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-3xl font-black text-white mx-auto mb-4 overflow-hidden border border-white/5"
                 style={{ boxShadow: '0 8px 30px rgba(16,185,129,0.3)' }}>
-                {partner.name?.charAt(0)?.toUpperCase()}
+                {partner.avatar || partner.photoURL ? (
+                  <img src={partner.avatar || partner.photoURL} alt={partner.name} className="w-full h-full object-cover" />
+                ) : (
+                  partner.name?.charAt(0)?.toUpperCase()
+                )}
               </div>
               <h4 className="text-[16px] font-black text-white mb-1">{partner.name}</h4>
               <span className="inline-block px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.2em]"
