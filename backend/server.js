@@ -383,7 +383,7 @@ app.use("/api/chat", require("./routes/chat"));
 app.use("/api/db", require("./routes/db"));
 
 if (fs.existsSync(frontendDistDir)) {
-  app.get("*all", (req, res) => {
+  app.get("/{*path}", (req, res) => {
     // Exclude /api routes just in case, though they are defined above
     if (req.path.startsWith("/api")) {
       return res.status(404).json({ success: false, message: "API endpoint not found" });

@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const https = require("https");
 const { getDb } = require("../utils/mongo");
 const { logger } = require("../logger");
 const {
@@ -10,6 +11,61 @@ const {
   completePasswordReset,
   createHttpError,
 } = require("../services/userService");
+
+// ─── Google OAuth Helpers ─────────────────────────────────────────────────────
+
+const GOOGLE_CLIENT_ID     = process.env.GOOGLE_CLIENT_ID     || '';
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
+const GOOGLE_CALLBACK_URL  = process.env.GOOGLE_CALLBACK_URL  || 'http://localhost:5000/api/auth/google/callback';
+const FRONTEND_URL         = process.env.FRONTEND_URL         || 'http://localhost:5173';
+
+/** Simple https GET/POST helper (no extra packages) */
+const httpsPost = (url, postData) =>
+  new Promise((resolve, reject) => {
+    const urlObj = new URL(url);
+    const body   = typeof postData === 'string' ? postData : new URLSearchParams(postData).toString();
+    const options = {
+      hostname: urlObj.hostname,
+      path:     urlObj.pathname + urlObj.search,
+      method:   'POST',
+      headers: {
+        'Content-Type':   'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(body),
+      },
+    };
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => (data += chunk));
+      res.on('end', () => {
+        try { resolve(JSON.parse(data)); }
+        catch { reject(new Error('Invalid JSON from Google: ' + data)); }
+      });
+    });
+    req.on('error', reject);
+    req.write(body);
+    req.end();
+  });
+
+const httpsGet = (url, accessToken) =>
+  new Promise((resolve, reject) => {
+    const urlObj = new URL(url);
+    const options = {
+      hostname: urlObj.hostname,
+      path:     urlObj.pathname + urlObj.search,
+      method:   'GET',
+      headers:  { Authorization: `Bearer ${accessToken}` },
+    };
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => (data += chunk));
+      res.on('end', () => {
+        try { resolve(JSON.parse(data)); }
+        catch { reject(new Error('Invalid JSON from Google: ' + data)); }
+      });
+    });
+    req.on('error', reject);
+    req.end();
+  });
 
 const handleControllerError = (res, error, fallbackMessage) => {
   logger.error(error);
@@ -168,6 +224,131 @@ const login = async (req, res) => {
   }
 };
 
+// ─── Google OAuth Controllers ─────────────────────────────────────────────────
+
+/**
+ * Step 1 – Redirect the browser to Google's consent screen.
+ * GET /api/auth/google
+ */
+const googleAuthRedirect = (req, res) => {
+  if (!GOOGLE_CLIENT_ID) {
+    return res.status(500).json({ success: false, message: 'Google OAuth is not configured on this server.' });
+  }
+
+  const params = new URLSearchParams({
+    client_id:     GOOGLE_CLIENT_ID,
+    redirect_uri:  GOOGLE_CALLBACK_URL,
+    response_type: 'code',
+    scope:         'openid email profile',
+    access_type:   'online',
+    prompt:        'select_account',
+  });
+
+  return res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`);
+};
+
+/**
+ * Step 2 – Google redirects here with ?code=...
+ * GET /api/auth/google/callback
+ */
+const googleAuthCallback = async (req, res) => {
+  const { code, error: oauthError } = req.query;
+
+  if (oauthError || !code) {
+    logger.warn('[Google OAuth] User denied access or error:', oauthError);
+    return res.redirect(`${FRONTEND_URL}/login?error=google_denied`);
+  }
+
+  try {
+    // 1. Exchange code → access_token
+    const tokenData = await httpsPost('https://oauth2.googleapis.com/token', {
+      code,
+      client_id:     GOOGLE_CLIENT_ID,
+      client_secret: GOOGLE_CLIENT_SECRET,
+      redirect_uri:  GOOGLE_CALLBACK_URL,
+      grant_type:    'authorization_code',
+    });
+
+    if (!tokenData.access_token) {
+      logger.error('[Google OAuth] Token exchange failed:', tokenData);
+      return res.redirect(`${FRONTEND_URL}/login?error=google_token_failed`);
+    }
+
+    // 2. Get user profile from Google
+    const profile = await httpsGet('https://www.googleapis.com/oauth2/v3/userinfo', tokenData.access_token);
+    const { email, name, picture, sub: googleId } = profile;
+
+    if (!email) {
+      return res.redirect(`${FRONTEND_URL}/login?error=google_no_email`);
+    }
+
+    const db  = getDb();
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // 3. Find or create user in MongoDB
+    let user = await db.collection('users').findOne({ email: normalizedEmail });
+
+    if (!user) {
+      // New user — create as student (customer)
+      const uid = `google_${googleId}`;
+      const newUser = {
+        uid,
+        email:         normalizedEmail,
+        displayName:   name || email.split('@')[0],
+        photoURL:      picture || '',
+        role:          'customer',
+        status:        'active',
+        authProvider:  'google',
+        googleId,
+        createdAt:     new Date(),
+        updatedAt:     new Date(),
+      };
+      await db.collection('users').insertOne(newUser);
+      user = newUser;
+      logger.info(`[Google OAuth] New user created: ${normalizedEmail}`);
+    } else {
+      // Existing user — update Google info & ensure active
+      await db.collection('users').updateOne(
+        { email: normalizedEmail },
+        {
+          $set: {
+            googleId,
+            photoURL:     user.photoURL || picture || '',
+            authProvider: user.authProvider || 'google',
+            updatedAt:    new Date(),
+          }
+        }
+      );
+      logger.info(`[Google OAuth] Existing user logged in via Google: ${normalizedEmail}`);
+    }
+
+    if (user.status && user.status !== 'active') {
+      return res.redirect(`${FRONTEND_URL}/login?error=account_inactive`);
+    }
+
+    // 4. Issue our own JWT (same shape as email/password login)
+    const uid = user.uid || user._id?.toString();
+    const jwtToken = jwt.sign(
+      {
+        uid,
+        email:       user.email,
+        role:        user.role  || 'customer',
+        employeeId:  user.employeeId || null,
+        permissions: user.permissions || {},
+      },
+      process.env.JWT_SECRET || 'your_jwt_secret_here',
+      { expiresIn: '7d' }
+    );
+
+    // 5. Redirect to frontend with token in URL
+    return res.redirect(`${FRONTEND_URL}/auth/callback?token=${encodeURIComponent(jwtToken)}`);
+
+  } catch (err) {
+    logger.error('[Google OAuth] Callback error:', err);
+    return res.redirect(`${FRONTEND_URL}/login?error=google_server_error`);
+  }
+};
+
 module.exports = {
   login,
   registerCustomer,
@@ -175,4 +356,6 @@ module.exports = {
   forgotPassword,
   verifyPasswordResetToken,
   resetPassword,
+  googleAuthRedirect,
+  googleAuthCallback,
 };

@@ -1,9 +1,0 @@
-{
-  "/student/internship-dashboard/page": "app/student/internship-dashboard/page.js",
-  "/student/internship-training-dashboard/page": "app/student/internship-training-dashboard/page.js",
-  "/student/quizzes/page": "app/student/quizzes/page.js",
-  "/student/courses/page": "app/student/courses/page.js",
-  "/student/assignments/page": "app/student/assignments/page.js",
-  "/auth/sso/page": "app/auth/sso/page.js",
-  "/student/dashboard/page": "app/student/dashboard/page.js"
-}

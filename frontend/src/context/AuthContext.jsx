@@ -140,11 +140,9 @@ export function AuthProvider({ children }) {
   }, [])
 
   const loginWithGoogle = useCallback(async () => {
-    setAuthError('')
-    const err = new Error('Google Sign-in is disabled in local authentication mode. Please use email & password.')
-    setAuthError(err.message)
-    throw err
+    window.location.href = `${api.base}/api/auth/google`
   }, [])
+
 
   const clearAuthError = useCallback(() => {
     setAuthError('')

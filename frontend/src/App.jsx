@@ -131,6 +131,7 @@ const ProjectDetails = lazyWithRetry(() => import('./pages/ProjectDetails'))
 const Checkout = lazyWithRetry(() => import('./pages/Checkout'))
 const CustomProject = lazyWithRetry(() => import('./pages/CustomProject'))
 const LoginPage = lazyWithRetry(() => import('./pages/LoginPage'))
+const AuthCallback = lazyWithRetry(() => import('./pages/AuthCallback'))
 const StudentSignup = lazyWithRetry(() => import('./pages/StudentSignup'))
 const ForgotPassword = lazyWithRetry(() => import('./pages/ForgotPassword'))
 const RoleSelect = lazyWithRetry(() => import('./pages/RoleSelect'))
@@ -389,6 +390,7 @@ function AppContent() {
             <Route path="join-us" element={<RoleSelect />} />
             <Route path="signup" element={<StudentSignup />} />
             <Route path="login" element={<LoginPage />} />
+            <Route path="auth/callback" element={<AuthCallback />} />
             <Route path="verify" element={<VerifyCertificate />} />
             <Route path="verify/:certificateId/*" element={<VerifyCertificate />} />
             

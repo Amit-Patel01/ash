@@ -1138,32 +1138,8 @@ const About = () => {
         {/* ════════════════════════════════════
             TEAM CAROUSEL SLIDER
         ════════════════════════════════════ */}
-        <section className="abt-sec" id="team-section" style={{ scrollMarginTop:100 }}>
-          <div className="abt-section">
-            <div style={{ textAlign:'center', marginBottom:20 }}>
-              <div className="abt-sec-pill">👥 The Team</div>
-              <h2 className="abt-sec-title">Our Mentors & <span className="abt-grad">Software Team</span></h2>
-              <p className="abt-sec-sub" style={{ maxWidth: 460, margin:'8px auto 0' }}>The industry mentors and builders behind AmitSolutionHub's codebases.</p>
-            </div>
-            {teamLoading ? (
-              <div style={{ padding:'32px 24px', textAlign:'center', maxWidth:460, margin:'36px auto 0', background:'rgba(var(--card), 0.8)', border:'1px solid rgba(var(--border), 0.8)', borderRadius:20, boxShadow:'var(--card-shadow)' }}>
-                <div style={{ fontSize:32, marginBottom:10 }}>⏳</div>
-                <h3 style={{ fontWeight:800, color:'rgb(var(--fg))', fontSize:'14px', marginBottom:6 }}>Loading Profile Data...</h3>
-                <p style={{ color:'rgb(var(--fg-muted))', fontSize:12.5, lineHeight:1.6 }}>Fetching registered public developer and mentor profiles.</p>
-              </div>
-            ) : sortedTeam.length > 0 ? (
-              renderSlider(sortedTeam, activeIndex, prevSlide, nextSlide)
-            ) : (
-              <div style={{ padding:'32px 24px', textAlign:'center', maxWidth:460, margin:'36px auto 0', background:'rgba(var(--card), 0.8)', border:'1px solid rgba(var(--border), 0.8)', borderRadius:20, boxShadow:'var(--card-shadow)' }}>
-                <div style={{ fontSize:32, marginBottom:10 }}>👷</div>
-                <h3 style={{ fontWeight:800, color:'rgb(var(--fg))', fontSize:'14px', marginBottom:6 }}>Profiles Updating</h3>
-                <p style={{ color:'rgb(var(--fg-muted))', fontSize:12.5, lineHeight:1.6 }}>Developer profile lists are currently being refreshed by the admin.</p>
-              </div>
-            )}
-          </div>
-        </section>
 
-        <div className="abt-div" />
+
 
         {/* ════════════════════════════════════
             FINAL CALL TO ACTION

@@ -413,41 +413,6 @@ export default function EmployeeLayout() {
                 ? location.pathname === '/employee'
                 : location.pathname.startsWith(item.path)
 
-              if (item.isLms) {
-                return (
-                  <a
-                    key={item.path}
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const token = localStorage.getItem('token') || '';
-                      const lmsUrl = import.meta.env.VITE_LMS_URL || 'http://localhost:3000';
-                      window.open(`${lmsUrl}/auth/sso?token=${token}`, '_blank');
-                    }}
-                    title={!sidebarOpen ? item.label : undefined}
-                    className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 ${sidebarOpen ? '' : 'justify-center'}`}
-                    style={{
-                      border: '1px solid transparent',
-                      color: 'rgba(148,163,184,0.8)',
-                    }}
-                  >
-                    <span
-                      className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg transition-all duration-200 group-hover:bg-white/5"
-                    >
-                      <span className="text-slate-500 group-hover:text-slate-300">
-                        {iconMap[item.icon]}
-                      </span>
-                    </span>
-                    {sidebarOpen && <span className="truncate">{item.label}</span>}
-                    {sidebarOpen && (
-                      <svg className="w-3.5 h-3.5 ml-auto text-slate-500 group-hover:text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                      </svg>
-                    )}
-                  </a>
-                )
-              }
-
               return (
                 <Link
                   key={item.path}

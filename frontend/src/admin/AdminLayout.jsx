@@ -272,32 +272,6 @@ export default function AdminLayout({ onLogout }) {
                       ? location.pathname === '/admin'
                       : location.pathname.startsWith(item.path)
                     
-                    if (item.isLms) {
-                      return (
-                        <a
-                          key={item.path}
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            const token = localStorage.getItem('token') || '';
-                            const lmsUrl = import.meta.env.VITE_LMS_URL || 'http://localhost:3000';
-                            window.open(`${lmsUrl}/auth/sso?token=${token}`, '_blank');
-                          }}
-                          className="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-gray-400 hover:text-white hover:bg-white/5"
-                        >
-                          <span className="flex-shrink-0 text-gray-500 group-hover:text-gray-300">
-                            {iconMap[item.icon]}
-                          </span>
-                          {sidebarOpen && <span className="flex-1">{item.label}</span>}
-                          {sidebarOpen && (
-                            <svg className="w-3.5 h-3.5 ml-auto text-gray-500 group-hover:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                            </svg>
-                          )}
-                        </a>
-                      )
-                    }
-
                     return (
                       <Link
                         key={item.path}

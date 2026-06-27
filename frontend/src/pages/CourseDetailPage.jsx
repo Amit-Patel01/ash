@@ -539,80 +539,9 @@ export default function CourseDetailPage() {
             </section>
           )}
 
-          {/* INSTRUCTOR */}
-          {(instructor || course.instructor || course.assignedEmployeeName) && (
-            <section className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-900/30' : 'bg-slate-50'}`}>
-              <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-14">
-                  <h2 className={`text-3xl md:text-5xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-slate-905'}`}>Meet Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-indigo-400 dark:to-blue-400">Instructor</span></h2>
-                </div>
-                <div className="flex flex-col lg:flex-row items-center gap-12 max-w-4xl mx-auto">
-                  <div className={`w-48 h-48 rounded-3xl border-4 overflow-hidden shadow-lg flex-shrink-0 flex items-center justify-center ${isDark ? 'border-slate-800 bg-slate-950' : 'border-blue-100 bg-slate-200'}`}>
-                    {instructorImage ? (
-                      <img src={instructorImage} alt={instructorName} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-5xl font-black text-white">
-                        {instructorName.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1 text-center lg:text-left">
-                    <h3 className={`text-2xl font-bold mb-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                      {instructorName}
-                    </h3>
-                    <p className="text-blue-600 dark:text-indigo-400 font-semibold mb-3">
-                      {instructorRole}
-                    </p>
-                    <p className={`${instructor?.bio ? (isDark ? 'text-slate-350' : 'text-slate-500') : 'text-slate-400 italic'} leading-relaxed mb-4`}>
-                      {instructorBio}
-                    </p>
-                    {(instructor?.department || instructorLinks.length > 0 || publicProfileId) && (
-                      <div className="flex flex-wrap items-center justify-center gap-3 lg:justify-start mb-5">
-                        {instructor?.department ? (
-                          <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] ${isDark ? 'border-indigo-500/20 bg-indigo-500/10 text-indigo-400' : 'border-blue-100 bg-blue-50 text-blue-600'}`}>
-                            {instructor.department}
-                          </span>
-                        ) : null}
-                        {publicProfileId ? (
-                          <Link
-                            to={`/team/${publicProfileId}`}
-                            className={`inline-flex items-center rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] transition ${isDark ? 'border-slate-800 bg-slate-900 text-slate-300 hover:border-indigo-500/40 hover:text-indigo-400' : 'border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:text-blue-600'}`}
-                          >
-                            View Profile
-                          </Link>
-                        ) : null}
-                        {instructorLinks.map((link) => (
-                          <a
-                            key={link.label}
-                            href={link.href}
-                            target="_blank"
-                            rel="noreferrer"
-                            className={`inline-flex items-center rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] transition ${isDark ? 'border-slate-800 bg-slate-900 text-slate-300 hover:border-indigo-500/40 hover:text-indigo-400' : 'border-slate-200 bg-white text-slate-700 hover:border-blue-200 hover:text-blue-600'}`}
-                          >
-                            {link.label}
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                    <div className="grid grid-cols-3 gap-4 mt-6">
-                      {[
-                        { label: 'Experience', value: instructorExperience },
-                        { label: 'Students', value: enrolledCount > 0 ? `${enrolledCount}+` : 'Growing' },
-                        { label: 'Rating', value: '4.9/5' }
-                      ].map((stat, i) => (
-                        <div key={i} className={`text-center p-4 rounded-2xl border shadow-sm ${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-100'}`}>
-                          <p className="text-2xl font-black text-blue-600 dark:text-indigo-400">{stat.value}</p>
-                          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{stat.label}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
 
           {/* PRICING / PLANS */}
+
           <section id="pricing" ref={planRef} className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
             <div className={`max-w-6xl mx-auto ${fade(planVisible)}`}>
               <div className="text-center mb-14">
