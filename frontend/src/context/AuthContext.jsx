@@ -117,7 +117,9 @@ export function AuthProvider({ children }) {
 
       const data = await response.json()
       if (!response.ok || !data.success) {
-        throw new Error(data.message || 'Login failed')
+        const err = new Error(data.message || 'Login failed')
+        err.code = data.code
+        throw err
       }
 
       localStorage.setItem('token', data.token)

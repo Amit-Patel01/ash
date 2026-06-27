@@ -172,31 +172,52 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const MAX_LOGIN_ATTEMPTS = 3;
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({ success: false, message: "Email and password are required." });
+      return res.status(400).json({ success: false, message: "Email and password are required.", code: "missing_fields" });
     }
 
     const db = getDb();
-    const user = await db.collection("users").findOne({ email: email.trim().toLowerCase() });
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await db.collection("users").findOne({ email: normalizedEmail });
     if (!user) {
-      return res.status(401).json({ success: false, message: "Invalid email or password." });
+      return res.status(401).json({ success: false, message: "No account found with this email.", code: "invalid_email" });
     }
 
     if (user.status !== "active") {
-      return res.status(403).json({ success: false, message: "Your account is inactive. Please contact support." });
+      return res.status(403).json({ success: false, message: "Your account is inactive. Please contact support.", code: "inactive" });
     }
 
     if (!user.passwordHash) {
-      return res.status(401).json({ success: false, message: "Please reset your password to establish a local login." });
+      return res.status(401).json({ success: false, message: "Please reset your password to establish a local login.", code: "no_password" });
+    }
+
+    const attempts = user.loginAttempts || 0;
+    if (attempts >= MAX_LOGIN_ATTEMPTS) {
+      return res.status(401).json({ success: false, message: "Too many failed attempts. Please reset your password.", code: "forgot_password_required" });
     }
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: "Invalid email or password." });
+      const newAttempts = attempts + 1;
+      await db.collection("users").updateOne(
+        { email: normalizedEmail },
+        { $set: { loginAttempts: newAttempts, lastLoginAttempt: new Date() } }
+      );
+      if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
+        return res.status(401).json({ success: false, message: "Too many failed attempts. Please reset your password.", code: "forgot_password_required" });
+      }
+      return res.status(401).json({ success: false, message: "Incorrect password.", code: "invalid_password" });
     }
+
+    await db.collection("users").updateOne(
+      { email: normalizedEmail },
+      { $set: { loginAttempts: 0, lastLoginAt: new Date() } }
+    );
 
     const token = jwt.sign(
       {
@@ -220,7 +241,7 @@ const login = async (req, res) => {
     });
   } catch (error) {
     logger.error("Login error:", error);
-    return res.status(500).json({ success: false, message: "An error occurred during login." });
+    return res.status(500).json({ success: false, message: "An error occurred during login.", code: "server_error" });
   }
 };
 

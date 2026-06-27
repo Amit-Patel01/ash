@@ -1,7 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getHomePathForRole } from '../utils/roles'
+
+const FAILED_KEY = 'solutionhub:login_fails'
+
+function getStoredFails() {
+  try { return Number(sessionStorage.getItem(FAILED_KEY)) || 0 } catch { return 0 }
+}
 
 export default function LoginPage() {
   const { login, loginWithGoogle, currentUser, loading: authLoading, authError, clearAuthError } = useAuth()
@@ -12,15 +18,18 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [errorCode, setErrorCode] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
+  const [dashboardLoading, setDashboardLoading] = useState(false)
+  const [failedAttempts, setFailedAttempts] = useState(getStoredFails)
 
   useEffect(() => {
-    if (!authLoading && currentUser) {
+    if (!authLoading && currentUser && !dashboardLoading) {
       navigate(redirectPath || getHomePathForRole(currentUser.role), { replace: true })
     }
-  }, [authLoading, currentUser, navigate, redirectPath])
+  }, [authLoading, currentUser, navigate, redirectPath, dashboardLoading])
 
   useEffect(() => {
     if (!authLoading) setGoogleLoading(false)
@@ -36,17 +45,36 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    setErrorCode('')
     setLoading(true)
     try {
       const user = await login(email, password)
-      navigate(redirectPath || getHomePathForRole(user?.role), { replace: true })
+      sessionStorage.removeItem(FAILED_KEY)
+      setFailedAttempts(0)
+      setDashboardLoading(true)
+      setTimeout(() => {
+        navigate(redirectPath || getHomePathForRole(user?.role), { replace: true })
+      }, 2000)
     } catch (err) {
-      const raw = String(err?.message || '').toLowerCase()
-      let msg = 'Invalid email or password.'
-      if (raw.includes('not found') || raw.includes('no account')) msg = 'No account found with this email.'
-      else if (raw.includes('inactive')) msg = 'Your account is inactive. Please contact support.'
-      else if (raw.includes('reset your password')) msg = 'Please reset your password to continue.'
-      setError(msg)
+      const code = err.code || ''
+      setErrorCode(code)
+      const newFails = failedAttempts + 1
+      setFailedAttempts(newFails)
+      try { sessionStorage.setItem(FAILED_KEY, String(newFails)) } catch {}
+
+      if (code === 'invalid_email') {
+        setError('No account found with this email.')
+      } else if (code === 'invalid_password') {
+        setError('Incorrect password.')
+      } else if (code === 'forgot_password_required') {
+        setError('Too many failed attempts. Please reset your password.')
+      } else if (code === 'inactive') {
+        setError('Your account is inactive. Please contact support.')
+      } else if (code === 'no_password') {
+        setError('Please reset your password to continue.')
+      } else {
+        setError(err.message || 'Invalid email or password.')
+      }
     } finally {
       setLoading(false)
     }
@@ -60,20 +88,38 @@ export default function LoginPage() {
   }
 
 
+  if (dashboardLoading) {
+    return (
+      <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center p-4" style={{ background: '#030712' }}>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute top-[-10%] left-[-5%] h-[500px] w-[500px] rounded-full bg-emerald-600/20 blur-[120px] animate-float-slow" />
+          <div className="absolute bottom-[-10%] right-[-5%] h-[500px] w-[500px] rounded-full bg-indigo-600/20 blur-[120px] animate-float-slow" style={{ animationDelay: '-5s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-violet-600/8 blur-[160px]" />
+        </div>
+        <div className="relative z-10 text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full border-4 border-emerald-500/30 border-t-emerald-400 animate-spin" />
+          <h2 className="text-2xl font-black text-white tracking-tight mb-2">Welcome Back!</h2>
+          <p className="text-slate-400 text-sm font-medium">Preparing your dashboard...</p>
+          <div className="mt-8 flex justify-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0s' }} />
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0.15s' }} />
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0.3s' }} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center p-4" style={{ background: '#030712' }}>
-      {/* Animated background orbs */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-[-10%] left-[-5%] h-[500px] w-[500px] rounded-full bg-blue-600/20 blur-[120px] animate-float-slow" />
         <div className="absolute bottom-[-10%] right-[-5%] h-[500px] w-[500px] rounded-full bg-indigo-600/20 blur-[120px] animate-float-slow" style={{ animationDelay: '-5s' }} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-violet-600/8 blur-[160px]" />
       </div>
-
-      {/* Grid overlay */}
       <div className="pointer-events-none absolute inset-0 [background-image:linear-gradient(rgba(99,102,241,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.04)_1px,transparent_1px)] [background-size:56px_56px] opacity-60" />
 
       <div className="relative z-10 w-full max-w-[440px]">
-        {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-3 group mb-5">
             <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-[0_8px_24px_-6px_rgba(99,102,241,0.6)] group-hover:scale-110 group-hover:shadow-[0_12px_32px_-6px_rgba(99,102,241,0.7)] transition-all duration-500">
@@ -89,112 +135,133 @@ export default function LoginPage() {
               <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Member Portal</div>
             </div>
           </Link>
-
           <h1 className="text-3xl font-black text-white tracking-tight mb-2">Welcome Back</h1>
           <p className="text-slate-400 text-sm font-medium">Sign in to access your dashboard and tools.</p>
         </div>
 
-        {/* Card */}
         <div className="relative rounded-[28px] border border-white/10 bg-white/[0.04] backdrop-blur-2xl p-8 sm:p-9 shadow-[0_24px_60px_-12px_rgba(0,0,0,0.8)]">
-          {/* Card top shimmer */}
           <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Error */}
-            {error && (
-              <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl">
-                <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
-                  <svg className="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          {errorCode === 'forgot_password_required' ? (
+            <div className="space-y-5">
+              <div className="flex items-center gap-3 p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl">
+                <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                  <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                   </svg>
                 </div>
-                <span className="text-sm text-red-400 font-medium leading-tight">{error}</span>
+                <span className="text-sm text-amber-400 font-medium leading-tight">{error}</span>
               </div>
-            )}
-
-            {/* Email */}
-            <div className="space-y-2">
-              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em]">Email Address</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                required
-                autoFocus
-                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/60 focus:bg-white/8 transition-all duration-300 text-sm font-medium"
-              />
+              <Link
+                to="/forgot-password?from=student"
+                className="block w-full text-center rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 text-white py-4 font-bold text-sm shadow-lg hover:opacity-90 transition-all"
+              >
+                Reset Password
+              </Link>
             </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <div className={`flex items-center gap-3 p-4 rounded-2xl border ${errorCode === 'invalid_email' || errorCode === 'invalid_password' ? 'bg-red-500/10 border-red-500/20' : 'bg-red-500/10 border-red-500/20'}`}>
+                  <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+                    <svg className="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                    </svg>
+                  </div>
+                  <span className="text-sm text-red-400 font-medium leading-tight">{error}</span>
+                </div>
+              )}
 
-            {/* Password */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em]">Password</label>
-                <Link to="/forgot-password?from=student" className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors">
-                  Forgot password?
-                </Link>
-              </div>
-              <div className="relative">
+              <div className="space-y-2">
+                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em]">Email Address</label>
                 <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
                   required
-                  className="w-full px-5 py-4 pr-12 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/60 focus:bg-white/8 transition-all duration-300 text-sm font-medium"
+                  autoFocus
+                  className={`w-full px-5 py-4 bg-white/5 border rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/60 focus:bg-white/8 transition-all duration-300 text-sm font-medium ${errorCode === 'invalid_email' ? 'border-red-500/50' : 'border-white/10'}`}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
-                >
-                  {showPassword ? (
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
-                    </svg>
-                  ) : (
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  )}
-                </button>
               </div>
-            </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading || !email || !password}
-              className="relative w-full group overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white py-4 font-bold text-sm shadow-[0_16px_40px_-12px_rgba(99,102,241,0.6)] hover:shadow-[0_24px_50px_-12px_rgba(99,102,241,0.7)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-            >
-              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-700" />
-              <span className="relative flex items-center justify-center gap-2">
-                {loading ? (
-                  <>
-                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Verifying Access...
-                  </>
-                ) : (
-                  <>
-                    Sign In to Dashboard
-                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                    </svg>
-                  </>
-                )}
-              </span>
-            </button>
-          </form>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em]">Password</label>
+                  <Link to="/forgot-password?from=student" className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors">
+                    Forgot password?
+                  </Link>
+                </div>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    className={`w-full px-5 py-4 pr-12 bg-white/5 border rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/60 focus:bg-white/8 transition-all duration-300 text-sm font-medium ${errorCode === 'invalid_password' ? 'border-red-500/50' : 'border-white/10'}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                  >
+                    {showPassword ? (
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
 
-          {/* Divider */}
+              <button
+                type="submit"
+                disabled={loading || !email || !password}
+                className="relative w-full group overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white py-4 font-bold text-sm shadow-[0_16px_40px_-12px_rgba(99,102,241,0.6)] hover:shadow-[0_24px_50px_-12px_rgba(99,102,241,0.7)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+              >
+                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-700" />
+                <span className="relative flex items-center justify-center gap-2">
+                  {loading ? (
+                    <>
+                      <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Verifying Access...
+                    </>
+                  ) : (
+                    <>
+                      Sign In to Dashboard
+                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                      </svg>
+                    </>
+                  )}
+                </span>
+              </button>
+
+              {failedAttempts >= 3 && errorCode !== 'forgot_password_required' && (
+                <div className="text-center mt-2">
+                  <Link
+                    to="/forgot-password?from=student"
+                    className="text-sm font-bold text-amber-400 hover:text-amber-300 transition-colors underline"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
+              )}
+            </form>
+          )}
+
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px bg-white/8" />
             <span className="text-[11px] font-bold text-slate-600 uppercase tracking-widest">or</span>
             <div className="flex-1 h-px bg-white/8" />
           </div>
 
-          {/* Google Sign In */}
           <button
             type="button"
             onClick={handleGoogleSignIn}
@@ -214,8 +281,6 @@ export default function LoginPage() {
             <span>{googleLoading ? 'Redirecting to Google...' : 'Continue with Google'}</span>
           </button>
 
-
-          {/* Bottom Links */}
           <div className="mt-6 pt-5 border-t border-white/6">
             <p className="text-center text-xs text-slate-500 font-medium mb-4">Don't have an account?</p>
             <div className="grid grid-cols-2 gap-3">
@@ -229,7 +294,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Footer note */}
         <p className="text-center mt-6 text-[10px] text-slate-600 font-bold uppercase tracking-[0.18em]">
           Secured by SolutionHub Security • © {new Date().getFullYear()}
         </p>
