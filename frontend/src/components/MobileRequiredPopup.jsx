@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 
 export default function MobileRequiredPopup() {
@@ -8,12 +8,19 @@ export default function MobileRequiredPopup() {
   const [saving, setSaving] = useState(false)
   const [dismissed, setDismissed] = useState(false)
 
-  // Show only for students/students without phone
+  // Pre-fill phone number if available in user profile
+  useEffect(() => {
+    if (userProfile?.phone) {
+      setMobile(userProfile.phone)
+    }
+  }, [userProfile?.phone])
+
+  // Show only for students/customers without phone, or if they haven't confirmed it on this device
   const needsMobile = 
     !dismissed &&
     currentUser &&
-    (userProfile?.role === 'student' || userProfile?.role === 'student') &&
-    !userProfile?.phone
+    (userProfile?.role === 'student' || userProfile?.role === 'customer') &&
+    (!userProfile?.phone || !localStorage.getItem(`phone_confirmed_${currentUser.uid}`))
 
   if (!needsMobile) return null
 
@@ -25,6 +32,7 @@ export default function MobileRequiredPopup() {
     setSaving(true)
     try {
       await updateUserProfile(currentUser.uid, { phone: c })
+      localStorage.setItem(`phone_confirmed_${currentUser.uid}`, 'true')
       setDismissed(true)
     } catch (err) {
       setError('Failed to save. Please try again.')
@@ -51,9 +59,13 @@ export default function MobileRequiredPopup() {
             </svg>
           </div>
 
-          <h2 className="text-2xl font-black text-white text-center mb-2">📞 Mobile Number Required</h2>
+          <h2 className="text-2xl font-black text-white text-center mb-2">
+            {userProfile?.phone ? '📞 Confirm Mobile Number' : '📞 Mobile Number Required'}
+          </h2>
           <p className="text-gray-400 text-sm text-center mb-6 leading-relaxed">
-            Your mobile number is required to complete your profile. Our team may need to call you about your enrolled courses and sessions.
+            {userProfile?.phone
+              ? 'Please confirm or update your mobile number to complete your profile registration.'
+              : 'Your mobile number is required to complete your profile. Our team may need to call you about your enrolled courses and sessions.'}
           </p>
 
           {/* Why required callout */}
@@ -106,6 +118,8 @@ export default function MobileRequiredPopup() {
           >
             {saving ? (
               <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Saving...</>
+            ) : userProfile?.phone && mobile === userProfile.phone ? (
+              <><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Confirm & Continue</>
             ) : (
               <><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Save & Continue</>
             )}
