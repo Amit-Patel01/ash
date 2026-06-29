@@ -14,6 +14,7 @@ const {
 
 router.post("/login", login);
 router.post("/register-customer", registerCustomer);
+router.post("/register-student", registerCustomer);
 router.post("/account-requests", submitAccountRequest);
 router.post("/forgot-password", forgotPassword);
 router.post("/verify-reset-token", verifyPasswordResetToken);

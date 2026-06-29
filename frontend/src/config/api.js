@@ -59,7 +59,7 @@ export const api = {
   forgotPassword: buildApiUrl('/api/auth/forgot-password'),
   verifyResetToken: buildApiUrl('/api/auth/verify-reset-token'),
   resetPassword: buildApiUrl('/api/auth/reset-password'),
-  registerCustomer: buildApiUrl('/api/auth/register-student'),
+  registerCustomer: buildApiUrl('/api/auth/register-customer'),
   submitAccountRequest: buildApiUrl('/api/auth/account-requests'),
   notify: buildApiUrl('/api/notify'),
   adminBroadcastEmail: buildApiUrl('/api/admin/broadcast-email'),
