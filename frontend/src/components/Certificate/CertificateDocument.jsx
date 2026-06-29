@@ -56,6 +56,8 @@ export default function CertificateDocument({ certificate, template, className =
   const sigRole      = certificate?.signatoryRole || activeTemplate.signatureRole || 'Authorized Signatory'
   const sigImg       = normalizeCertificateAssetUrl(certificate?.signatureImageUrl) || founderSign
   const stampImg     = normalizeCertificateAssetUrl(certificate?.stampImageUrl)     || stempImage
+  const mentorSignImg = normalizeCertificateAssetUrl(certificate?.mentorSignatureImageUrl) || mentorSign
+  const mentorNameResolved = certificate?.mentorName || 'Program Mentor'
   const narrative    = getDocumentNarrative(documentType, holderName, courseName, activeTemplate, certificate)
   const statusLabel  = resolveAicteStatus(certificate)
 
@@ -250,10 +252,10 @@ export default function CertificateDocument({ certificate, template, className =
             {/* Col 2: Mentor */}
             <div className="flex flex-col items-center justify-end text-center w-full z-20">
               <div className="flex items-end justify-center" style={{ height: 'clamp(25px, 3.8cqw, 50px)' }}>
-                <img src={mentorSign} alt="" crossOrigin="anonymous" className="mix-blend-multiply" style={{ height: '100%', width: 'auto', maxWidth: 'clamp(40px,6.5cqw,90px)', objectFit: 'contain' }} />
+                <img src={mentorSignImg} alt="" crossOrigin="anonymous" className="mix-blend-multiply" style={{ height: '100%', width: 'auto', maxWidth: 'clamp(40px,6.5cqw,90px)', objectFit: 'contain' }} />
               </div>
-              <p className="font-bold text-[#1F2937] mt-[0.5cqw]" style={{ fontSize: 'clamp(8px,1.1cqw,15px)' }}>Program Mentor</p>
-              <p className="font-bold text-slate-400 uppercase mt-[0.3cqw]" style={{ fontSize: 'clamp(5.5px,0.75cqw,10px)', letterSpacing: '0.1em' }}>TECHNICAL LEAD</p>
+              <p className="font-bold text-[#1F2937] mt-[0.5cqw]" style={{ fontSize: 'clamp(8px,1.1cqw,15px)' }}>{mentorNameResolved}</p>
+              <p className="font-bold text-slate-400 uppercase mt-[0.3cqw]" style={{ fontSize: 'clamp(5.5px,0.75cqw,10px)', letterSpacing: '0.1em' }}>{certificate?.mentorName ? 'PROGRAM MENTOR' : 'TECHNICAL LEAD'}</p>
             </div>
 
             {/* Col 3: Stamp */}

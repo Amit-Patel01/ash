@@ -195,6 +195,22 @@ const validateQrCertificateInput = (payload = {}, { partial = false } = {}) => {
     updates.mentorName = String(payload.mentorName || "").trim();
   }
 
+  if (Object.prototype.hasOwnProperty.call(payload, "domain")) {
+    updates.domain = String(payload.domain || "").trim();
+  }
+  if (Object.prototype.hasOwnProperty.call(payload, "duration")) {
+    updates.duration = String(payload.duration || "").trim();
+  }
+  if (Object.prototype.hasOwnProperty.call(payload, "startDate")) {
+    updates.startDate = String(payload.startDate || "").trim();
+  }
+  if (Object.prototype.hasOwnProperty.call(payload, "endDate")) {
+    updates.endDate = String(payload.endDate || "").trim();
+  }
+  if (Object.prototype.hasOwnProperty.call(payload, "mode")) {
+    updates.mode = String(payload.mode || "").trim();
+  }
+
   const assignmentFieldsTouched =
     !partial ||
     ["assignedEmployeeUid", "assignedEmployeeId", "assignedEmployeeName", "assignedEmployeeEmail"].some((key) =>
@@ -313,6 +329,11 @@ const buildVerifyResponseData = (certificate, req) => {
     stampImageUrl: certificate?.stampImageUrl || "",
     mentorSignatureImageUrl: certificate?.mentorSignatureImageUrl || "",
     mentorName: certificate?.mentorName || "",
+    domain: certificate?.domain || "",
+    duration: certificate?.duration || "",
+    startDate: certificate?.startDate || "",
+    endDate: certificate?.endDate || "",
+    mode: certificate?.mode || "",
     // Signatory fallbacks (defensive access)
     signatoryName: certificate?.signatoryName || "Amit Patel",
     signatoryRole: certificate?.signatoryRole || "Managing Director",

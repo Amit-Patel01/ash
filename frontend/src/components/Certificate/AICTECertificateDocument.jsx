@@ -33,6 +33,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
   const sigImg       = normalizeCertificateAssetUrl(certificate?.signatureImageUrl) || founderSign
   const stampImg     = normalizeCertificateAssetUrl(certificate?.stampImageUrl)     || stempImage
   const orgName      = activeTemplate.organizationName || 'Amit Solution Hub'
+  const mentorSignImg = normalizeCertificateAssetUrl(certificate?.mentorSignatureImageUrl) || mentorSign
+  const mentorNameResolved = certificate?.mentorName || 'Program Mentor'
 
   const nameFontSize =
     holderName.length > 28
@@ -296,11 +298,11 @@ export default function AICTECertificateDocument({ certificate, template, classN
             {/* Col 2: Mentor */}
             <div className="flex flex-col items-center justify-end text-center w-full">
               <div className="flex items-end justify-center" style={{ height: 'clamp(25px, 3.5cqw, 50px)' }}>
-                <img src={mentorSign} alt="" crossOrigin="anonymous" className="mix-blend-multiply" style={{ height: '100%', width: 'auto', maxWidth: 'clamp(40px,6.5cqw,90px)', objectFit: 'contain' }} />
+                <img src={mentorSignImg} alt="" crossOrigin="anonymous" className="mix-blend-multiply" style={{ height: '100%', width: 'auto', maxWidth: 'clamp(40px,6.5cqw,90px)', objectFit: 'contain' }} />
               </div>
               <div className="h-[1px] w-[clamp(70px,10cqw,150px)] bg-slate-300 my-[0.3cqw]" />
-              <p className="font-bold text-[#173F8A] uppercase" style={{ fontSize: 'clamp(5.5px,0.75cqw,11px)' }}>PROGRAM MENTOR</p>
-              <p className="font-medium text-slate-500 uppercase mt-[0.1cqw]" style={{ fontSize: 'clamp(4.5px,0.6cqw,9px)' }}>TECHNICAL LEAD</p>
+              <p className="font-bold text-[#173F8A] uppercase" style={{ fontSize: 'clamp(5.5px,0.75cqw,11px)' }}>{mentorNameResolved.toUpperCase()}</p>
+              <p className="font-medium text-slate-500 uppercase mt-[0.1cqw]" style={{ fontSize: 'clamp(4.5px,0.6cqw,9px)' }}>{certificate?.mentorName ? 'PROGRAM MENTOR' : 'TECHNICAL LEAD'}</p>
             </div>
 
             {/* Col 3: Stamp */}
