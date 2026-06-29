@@ -1,16 +1,16 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import MobileRequiredPopup from '../components/MobileRequiredPopup'
 
 const navItems = [
-  { path: '/student', label: 'Dashboard', icon: 'dashboard' },
-  { path: '/student/my-courses', label: 'My Courses', icon: 'book' },
-  { path: '/student/certificates', label: 'Documents', icon: 'award' },
-  { path: '/student/custom-project', label: 'Build Project', icon: 'build' },
-  { path: '/student/orders', label: 'My Orders', icon: 'orders' },
-  { path: '/student/support', label: 'Support Chat', icon: 'chat' },
-  { path: '/student/profile', label: 'Profile', icon: 'user' },
+  { path: '/user', label: 'Dashboard', icon: 'dashboard' },
+  { path: '/user/my-courses', label: 'My Courses', icon: 'book' },
+  { path: '/user/certificates', label: 'Documents', icon: 'award' },
+  { path: '/user/custom-project', label: 'Build Project', icon: 'build' },
+  { path: '/user/orders', label: 'My Orders', icon: 'orders' },
+  { path: '/user/support', label: 'Support Chat', icon: 'chat' },
+  { path: '/user/profile', label: 'Profile', icon: 'user' },
 ]
 
 const iconMap = {
@@ -23,7 +23,7 @@ const iconMap = {
   build: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l5.654-4.654m5.654-4.654l3.029-2.498a1.5 1.5 0 012.122 2.122l-2.498 3.029m-5.654 4.654l5.654-4.654" /></svg>),
 }
 
-export default function StudentLayout() {
+export default function UserLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
@@ -49,9 +49,9 @@ export default function StudentLayout() {
     navigate('/')
   }
 
-  const studentName = userProfile?.displayName || currentUser?.displayName || 'Student'
-  const studentEmail = currentUser?.email || 'student@solutionhub.com'
-  const studentAvatar = userProfile?.avatar || userProfile?.photoURL || currentUser?.avatar || currentUser?.photoURL || ''
+  const userName = userProfile?.displayName || currentUser?.displayName || 'Student'
+  const userEmail = currentUser?.email || 'student@solutionhub.com'
+  const userAvatar = userProfile?.avatar || userProfile?.photoURL || currentUser?.avatar || currentUser?.photoURL || ''
 
   return (
     <div className="h-screen bg-gray-950 text-white flex overflow-hidden dark">
@@ -67,7 +67,7 @@ export default function StudentLayout() {
             {sidebarOpen && (
               <div>
                 <h1 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">SolutionHub</h1>
-                 <p className="text-[10px] text-gray-500 -mt-0.5 tracking-wider uppercase">Student Portal</p>
+                 <p className="text-[10px] text-gray-500 -mt-0.5 tracking-wider uppercase">User Portal</p>
               </div>
             )}
           </div>
@@ -75,7 +75,7 @@ export default function StudentLayout() {
 
         <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
-            const isActive = item.path === '/student' ? location.pathname === '/student' : location.pathname.startsWith(item.path)
+            const isActive = item.path === '/user' ? location.pathname === '/user' : location.pathname.startsWith(item.path)
             return (
               <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive ? 'bg-gradient-to-r from-blue-500/20 to-violet-500/20 text-white shadow-lg shadow-blue-500/10' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}>
                 <span className={`flex-shrink-0 transition-colors ${isActive ? 'text-blue-400' : 'text-gray-500 group-hover:text-gray-300'}`}>{iconMap[item.icon]}</span>
@@ -89,16 +89,16 @@ export default function StudentLayout() {
         <div className="p-4 border-t border-white/5">
           <div className={`flex items-center gap-3 ${!sidebarOpen ? 'justify-center' : ''}`}>
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 flex items-center justify-center flex-shrink-0 overflow-hidden text-sm font-bold">
-              {studentAvatar ? (
-                <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
+              {userAvatar ? (
+                <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
               ) : (
-                studentName.charAt(0)
+                userName.charAt(0)
               )}
             </div>
             {sidebarOpen && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{studentName}</p>
-                <p className="text-xs text-gray-500 truncate">{studentEmail}</p>
+                <p className="text-sm font-medium text-white truncate">{userName}</p>
+                <p className="text-xs text-gray-500 truncate">{userEmail}</p>
               </div>
             )}
             {sidebarOpen && (
@@ -122,16 +122,16 @@ export default function StudentLayout() {
             </button>
              <div>
                <p className="text-sm text-gray-400">Welcome back,</p>
-               <p className="text-sm font-medium text-white">{studentName}</p>
+               <p className="text-sm font-medium text-white">{userName}</p>
              </div>
            </div>
            <div className="flex items-center gap-3">
-             <Link to="/student/profile" className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+             <Link to="/user/profile" className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
                <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-xs font-bold text-white">
-                 {studentAvatar ? (
-                   <img src={studentAvatar} alt={studentName} className="w-full h-full object-cover" />
+                 {userAvatar ? (
+                   <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
                  ) : (
-                   studentName.charAt(0)
+                   userName.charAt(0)
                  )}
                </div>
                <span className="hidden sm:inline">Profile</span>

@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react"
+﻿import { useState, useEffect } from "react"
 import { useAuth } from "../context/AuthContext"
 import { useTheme } from "../context/ThemeContext"
 import { api } from "../config/api"
 import { emailNotify } from "../utils/emailNotify"
 
-export default function StudentCustomProject() {
+export default function UserCustomProject() {
   const { currentUser, userProfile } = useAuth()
   const { theme } = useTheme()
   const isDark = theme === "dark"

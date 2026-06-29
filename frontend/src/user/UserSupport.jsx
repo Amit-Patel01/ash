@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+﻿import { useState, useEffect, useRef } from 'react'
 import { useChat } from '../context/ChatContext'
 import { useAuth } from '../context/AuthContext'
 import ChatPanel from '../components/ChatPanel'
 
-export default function StudentSupport() {
+export default function UserSupport() {
   const { currentUser, getAllUsers } = useAuth()
   const { getOrCreateChat, setActiveChatId, chats } = useChat()
   const [initialized, setInitialized] = useState(false)

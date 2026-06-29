@@ -1,4 +1,4 @@
-export const normalizeUserRole = (role) => {
+﻿export const normalizeUserRole = (role) => {
   const normalized = String(role || '').trim().toLowerCase()
 
   if (!normalized) return 'student'
@@ -19,7 +19,20 @@ export const getHomePathForRole = (role) => {
   const normalized = normalizeUserRole(role)
 
   if (normalized === 'admin') return '/admin'
-  if (normalized === 'student') return '/student'
+  if (normalized === 'student') return '/user'
   if (isEmployeeRole(normalized)) return '/employee'
-  return '/student'
+  return '/user'
+}
+
+/**
+ * Returns a friendly display label for a role.
+ * 'customer' and 'student' both show as 'User' on the website.
+ */
+export const getRoleDisplayLabel = (role) => {
+  const normalized = String(role || '').trim().toLowerCase()
+  if (['customer', 'student', 'user', 'client'].includes(normalized)) return 'User'
+  if (normalized === 'admin') return 'Admin'
+  if (normalized === 'employee' || normalized === 'staff' || normalized === 'developer') return 'Employee'
+  if (normalized === 'mentor') return 'Mentor'
+  return 'User'
 }

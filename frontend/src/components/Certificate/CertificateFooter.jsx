@@ -20,7 +20,7 @@ export default function CertificateFooter({
   supportEmail = 'support@amitsolutionhub.com',
   navyColor = '#1e3a8a',
 }) {
-  const isMentorMode = type === 'mentor' || mentorSignatureUrl || mentorName
+  const isMentorMode = type === 'mentor' || Boolean(mentorSignatureUrl) || Boolean(mentorName)
 
   if (isMentorMode) {
     return (

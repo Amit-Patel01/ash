@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+﻿import { useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
@@ -292,7 +292,7 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
   )
 }
 
-export default function StudentCertificates() {
+export default function UserCertificates() {
   const { certificates, certificateTemplate } = useStore()
   const { currentUser } = useAuth()
   const [copiedId, setCopiedId] = useState('')
@@ -352,7 +352,7 @@ export default function StudentCertificates() {
           </p>
           <div className="flex items-center justify-center gap-3 mt-6 flex-wrap">
             <Link
-              to="/student/my-courses"
+              to="/user/my-courses"
               className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm font-medium text-white hover:bg-white/10 transition-colors"
             >
               Go to My Courses
@@ -420,7 +420,7 @@ export default function StudentCertificates() {
           </div>
           
           <Link
-            to="/student/my-courses"
+            to="/user/my-courses"
             className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm font-medium text-gray-300 hover:bg-white/10 transition-colors"
           >
             Back to My Courses

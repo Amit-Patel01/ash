@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
@@ -381,7 +381,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
             <p className="font-bold text-blue-600 mb-5">{actualCourseTitle}</p>
             <div className="flex gap-3">
               <button onClick={onClose} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition-all">Close</button>
-              <button onClick={() => navigate('/student/my-courses')} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all">My Courses</button>
+              <button onClick={() => navigate('/user/my-courses')} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all">My Courses</button>
             </div>
           </div>
         ) : availableSoon ? (
@@ -429,7 +429,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
             <p className="font-bold text-blue-600 mb-5">{actualCourseTitle}</p>
             <div className="flex gap-3">
               <button onClick={onClose} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition-all">Close</button>
-              <button onClick={() => navigate('/student/my-courses')} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all">View My Courses</button>
+              <button onClick={() => navigate('/user/my-courses')} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all">View My Courses</button>
             </div>
           </div>
         ) : (

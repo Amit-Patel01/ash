@@ -71,7 +71,7 @@ router.post("/create", async (req, res) => {
 
     await getDb().collection("chats").insertOne({ _id: chatId, ...chat });
 
-    const isStudentOrCust = ["customer", "student"].includes(currentRole);
+    const isStudentOrCust = ["customer", "student", "user"].includes(currentRole);
     if (isStudentOrCust && (otherRole === "admin" || otherRole === "employee" || otherRole === "support" || otherRole === "staff")) {
       const welcomeText = `Hello! 👋 Thanks for reaching out. A member of our support team will be with you shortly. How can we help you today?`;
       const welcomeMessageId = `msg_welcome_${Date.now()}`;
@@ -180,7 +180,7 @@ router.post("/send", async (req, res) => {
     // Trigger only if sent by the customer and NOT yet taken over by an employee
     const senderInfo = chat.participantInfo[senderId] || {};
     const senderRole = String(senderInfo.role || "").toLowerCase();
-    const isCustomer = senderRole === "customer" || senderRole === "student";
+    const isCustomer = senderRole === "customer" || senderRole === "student" || senderRole === "user";
     if (isCustomer && !chat.isTakenOver) {
       try {
         // Fetch all messages to count user messages

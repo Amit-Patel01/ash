@@ -15,11 +15,11 @@ export default function MobileRequiredPopup() {
     }
   }, [userProfile?.phone])
 
-  // Show only for students/customers without phone, or if they haven't confirmed it on this device
+  // Show for student/user roles without confirmed phone number
   const needsMobile = 
     !dismissed &&
     currentUser &&
-    (userProfile?.role === 'student' || userProfile?.role === 'customer') &&
+    (userProfile?.role === 'student' || userProfile?.role === 'user' || userProfile?.role === 'customer') &&
     (!userProfile?.phone || !localStorage.getItem(`phone_confirmed_${currentUser.uid}`))
 
   if (!needsMobile) return null
@@ -118,7 +118,7 @@ export default function MobileRequiredPopup() {
           >
             {saving ? (
               <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Saving...</>
-            ) : userProfile?.phone && mobile === userProfile.phone ? (
+            ) : userProfile?.phone && mobile.replace(/\D/g, '') === userProfile.phone.replace(/\D/g, '').slice(-10) ? (
               <><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Confirm & Continue</>
             ) : (
               <><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Save & Continue</>

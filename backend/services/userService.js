@@ -178,7 +178,7 @@ const normalizeStatus = (value = "active") =>
 
 const normalizeSystemRole = (value = "customer") => {
   const normalized = String(value || "customer").trim().toLowerCase();
-  if (["admin", "employee", "customer", "student"].includes(normalized)) {
+  if (["admin", "employee", "customer", "student", "user"].includes(normalized)) {
     return normalized;
   }
   return "customer";

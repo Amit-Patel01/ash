@@ -67,7 +67,7 @@ const EMOJIS = [
 function Avatar({ name = '?', size = 10, online = false, gradient = 'from-emerald-500 to-cyan-500', src = '' }) {
   return (
     <div className="relative flex-shrink-0">
-      <div className={`w-${size} h-${size} rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-black shadow-lg overflow-hidden border border-white/5`}
+      <div className={`w-${size} h-${size} rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-black shadow-[inset_0_2px_4px_rgba(255,255,255,0.2),0_4px_12px_rgba(0,0,0,0.4)] overflow-hidden border border-white/10 ring-1 ring-black/20`}
         style={{ fontSize: size >= 10 ? 18 : size >= 8 ? 14 : 10 }}>
         {src ? (
           <img src={src} alt={name} className="w-full h-full object-cover" />
@@ -75,7 +75,12 @@ function Avatar({ name = '?', size = 10, online = false, gradient = 'from-emeral
           name?.charAt(0)?.toUpperCase() ?? '?'
         )}
       </div>
-      {online && <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#080d1a] shadow-lg shadow-emerald-500/50" />}
+      {online && (
+        <>
+          <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-slate-900 z-10" />
+          <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-400 rounded-full animate-ping opacity-75" />
+        </>
+      )}
     </div>
   )
 }
@@ -206,27 +211,14 @@ export default function ChatPanel({ embedded = false }) {
   const isTakenOver = activeChat?.isTakenOver
   const shouldUseAiFallback = currentRole === 'student' && !activeChat?.isGroup && !isTakenOver
 
-  /* Dynamic Styles for Theme switching */
-  const containerStyle = {
-    background: isDark ? 'rgba(6,9,20,0.98)' : '#ffffff',
-    border: embedded ? 'none' : (isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)'),
-    color: isDark ? '#ffffff' : '#0f172a'
-  }
-  const sidebarStyle = {
-    background: isDark ? 'rgba(8,13,26,0.97)' : '#f8fafc',
-    borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)'
-  }
-  const mainStyle = {
-    background: isDark ? 'rgba(10,15,30,0.95)' : '#f1f5f9'
-  }
-  const headerStyle = {
-    background: isDark ? 'rgba(8,13,26,0.9)' : '#ffffff',
-    borderBottom: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)'
-  }
-  const inputContainerStyle = {
-    background: isDark ? 'rgba(255,255,255,0.04)' : '#f8fafc',
-    border: isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(0,0,0,0.08)'
-  }
+  /* Premium Glassmorphism Theme Classes */
+  const containerClass = embedded 
+    ? 'bg-transparent text-white' 
+    : 'bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-900 via-[#0a0f1c] to-slate-950 text-white shadow-[0_16px_48px_0_rgba(0,0,0,0.4)] backdrop-blur-3xl border border-white/10'
+  const sidebarClass = 'bg-slate-900/40 backdrop-blur-xl border-r border-white/5'
+  const mainClass = 'bg-slate-900/30 backdrop-blur-sm'
+  const headerClass = 'bg-slate-950/60 backdrop-blur-xl border-b border-white/5'
+  const inputContainerClass = 'bg-white/5 border border-white/10 rounded-3xl'
 
   const notificationPermission =
     typeof window !== 'undefined' && 'Notification' in window
@@ -301,16 +293,14 @@ export default function ChatPanel({ embedded = false }) {
 
   return (
     <div
-      className={`flex h-full w-full relative overflow-hidden ${!embedded ? 'rounded-3xl shadow-2xl' : ''}`}
-      style={containerStyle}
+      className={`flex h-full w-full relative overflow-hidden ${!embedded ? 'rounded-3xl' : ''} ${containerClass}`}
     >
       {/* ─── SIDEBAR ────────────────────────────────── */}
       <div
-        className={`flex flex-col border-r w-full md:w-80 lg:w-[310px] flex-shrink-0 transition-all duration-300 ${activeChatId ? 'hidden md:flex' : 'flex'}`}
-        style={sidebarStyle}
+        className={`flex flex-col w-full md:w-80 lg:w-[310px] flex-shrink-0 transition-all duration-300 ${activeChatId ? 'hidden md:flex' : 'flex'} ${sidebarClass}`}
       >
         {/* Sidebar Header */}
-        <div className="px-5 pt-5 pb-4" style={{ borderBottom: isDark ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.08)' }}>
+        <div className="px-5 pt-5 pb-4 border-b border-white/5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-[17px] font-black text-slate-800 dark:text-white tracking-tight">Messages</h2>
@@ -338,10 +328,9 @@ export default function ChatPanel({ embedded = false }) {
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search conversations..."
-              className="w-full pl-9 pr-3 py-2.5 text-[12px] text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-700 rounded-2xl focus:outline-none transition-all"
-              style={inputContainerStyle}
-              onFocus={e => e.target.style.borderColor = 'rgba(99,102,241,0.4)'}
-              onBlur={e => e.target.style.borderColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.08)'}
+              className={`w-full pl-9 pr-3 py-2.5 text-[12px] text-slate-800 dark:text-white placeholder-slate-500 dark:placeholder-slate-500 focus:outline-none transition-all ${inputContainerClass}`}
+              onFocus={e => e.target.style.borderColor = 'rgba(99,102,241,0.6)'}
+              onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
             />
           </div>
         </div>
@@ -403,17 +392,7 @@ export default function ChatPanel({ embedded = false }) {
                 <button
                   key={chat.id}
                   onClick={() => { setActiveChatId(chat.id); setShowNewChat(false) }}
-                  className="w-full flex items-center gap-3 px-3 py-3 rounded-2xl mb-0.5 text-left transition-all duration-200"
-                  style={isActive ? {
-                    background: 'rgba(99,102,241,0.15)',
-                    border: '1px solid rgba(99,102,241,0.25)',
-                    boxShadow: '0 0 20px rgba(99,102,241,0.1)',
-                  } : {
-                    border: '1px solid transparent',
-                    background: 'transparent',
-                  }}
-                  onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.02)'; e.currentTarget.style.borderColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)' } }}
-                  onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent' } }}
+                  className={`w-full flex items-center gap-3 px-3 py-3 rounded-2xl mb-1 text-left transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group ${isActive ? 'bg-indigo-500/15 border border-indigo-500/30 shadow-[0_4px_20px_rgba(99,102,241,0.15)] scale-[1.02] z-10' : 'bg-transparent border border-transparent hover:bg-white/5 hover:border-white/10 hover:scale-[1.01] hover:z-10'}`}
                 >
                   <Avatar name={p.name} size={10} online={p.status === 'online'} gradient="from-emerald-500 to-cyan-500" src={p.avatar || p.photoURL} />
                   <div className="flex-1 min-w-0">
@@ -426,8 +405,7 @@ export default function ChatPanel({ embedded = false }) {
                         {chat.lastMessage || 'No messages yet'}
                       </p>
                       {unread > 0 && (
-                        <span className="ml-2 flex-shrink-0 w-5 h-5 rounded-full text-white text-[9px] font-black flex items-center justify-center"
-                          style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', boxShadow: '0 0 10px rgba(99,102,241,0.5)' }}>
+                        <span className="ml-2 flex-shrink-0 w-5 h-5 rounded-full text-white text-[9px] font-black flex items-center justify-center bg-gradient-to-br from-indigo-500 to-violet-500 shadow-[0_0_10px_rgba(99,102,241,0.6)] border border-indigo-400/30">
                           {unread > 9 ? '9+' : unread}
                         </span>
                       )}
@@ -442,9 +420,9 @@ export default function ChatPanel({ embedded = false }) {
 
       {/* ─── CHAT AREA ───────────────────────────────── */}
       {activeChatId && partner ? (
-        <div className="flex-1 flex flex-col min-w-0" style={mainBg}>
+        <div className={`flex-1 flex flex-col min-w-0 ${mainClass}`}>
           {/* Chat Header */}
-          <div className="h-16 flex items-center px-4 gap-3 flex-shrink-0" style={headerStyle}>
+          <div className={`h-16 flex items-center px-4 gap-3 flex-shrink-0 ${headerClass}`}>
             {/* Back on mobile */}
             <button
               onClick={() => setActiveChatId(null)}
@@ -628,19 +606,7 @@ export default function ChatPanel({ embedded = false }) {
                         <div onClick={() => selectionMode && toggleMsgSel(msg.id)}
                           className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} ${selectionMode ? 'cursor-pointer' : ''}`}>
                           <div
-                            className={`rounded-2xl px-4 py-2.5 transition-all ${isMe ? 'rounded-br-md' : 'rounded-bl-md'} ${selectedIds.has(msg.id) ? 'ring-2 ring-indigo-500 ring-offset-2' : ''}`}
-                            style={isMe ? {
-                              background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-                              boxShadow: '0 4px 20px rgba(79,70,229,0.3)',
-                            } : isAiMessage ? {
-                              background: 'rgba(99,102,241,0.1)',
-                              border: '1px solid rgba(99,102,241,0.22)',
-                              boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
-                            } : {
-                              background: 'rgba(255,255,255,0.05)',
-                              border: '1px solid rgba(255,255,255,0.08)',
-                              boxShadow: '0 2px 12px rgba(0,0,0,0.2)',
-                            }}
+                            className={`rounded-2xl px-4 py-2.5 transition-all duration-300 ease-out hover:scale-[1.02] ${isMe ? 'rounded-br-sm bg-gradient-to-br from-indigo-500 to-violet-600 shadow-[0_8px_20px_-4px_rgba(99,102,241,0.4)]' : isAiMessage ? 'rounded-bl-sm bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-md shadow-lg shadow-black/20' : 'rounded-bl-sm bg-white/10 border border-white/10 backdrop-blur-md shadow-lg shadow-black/20'} ${selectedIds.has(msg.id) ? 'ring-2 ring-indigo-500 ring-offset-2 ring-offset-[#0a0f1c]' : ''}`}
                           >
                             {msg.type === 'video-call' ? (
                               <div className="min-w-[220px]">
@@ -807,12 +773,12 @@ export default function ChatPanel({ embedded = false }) {
             </div>
           ) : (
             /* Input Area */
-            <div className="flex-shrink-0 px-3 sm:px-4 py-3" style={{ borderTop: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.08)', background: isDark ? 'rgba(8,13,26,0.95)' : '#ffffff' }}>
-              <div className="flex items-center gap-2 p-1.5 rounded-2xl" style={{ background: isDark ? 'rgba(255,255,255,0.04)' : '#f1f5f9', border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.1)' }}>
+            <div className="flex-shrink-0 px-4 py-4 bg-transparent relative z-10">
+              <div className="flex items-center gap-3 p-2 rounded-[2rem] bg-slate-900/50 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)]">
                 {/* File input */}
                 <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
                 <button onClick={() => fileInputRef.current?.click()}
-                  className="h-9 w-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 transition-all flex-shrink-0 hover:bg-white/5">
+                  className="h-10 w-10 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-all flex-shrink-0 hover:bg-white/10 ml-1">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                   </svg>
@@ -821,7 +787,7 @@ export default function ChatPanel({ embedded = false }) {
                 {/* Emoji */}
                 <div className="relative flex-shrink-0">
                   <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                    className={`h-9 w-9 rounded-xl flex items-center justify-center transition-all ${showEmojiPicker ? 'text-indigo-400 bg-indigo-500/15' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 hover:bg-white/5'}`}>
+                    className={`h-10 w-10 rounded-full flex items-center justify-center transition-all ${showEmojiPicker ? 'text-indigo-400 bg-indigo-500/20' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}>
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
                     </svg>
@@ -853,9 +819,9 @@ export default function ChatPanel({ embedded = false }) {
                   value={messageText}
                   onChange={e => { setMessageText(e.target.value); if (activeChatId) handleTyping(activeChatId) }}
                   onKeyDown={handleKeyDown}
-                  placeholder={shouldUseAiFallback ? 'AI support is active...' : 'Type a message...'}
+                  placeholder={shouldUseAiFallback ? 'AI support is active...' : 'Type your message...'}
                   rows={1}
-                  className="flex-1 bg-transparent text-[13px] text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none resize-none py-2"
+                  className="flex-1 bg-transparent text-[14px] text-white placeholder-slate-400 focus:outline-none resize-none py-2.5 px-2"
                   style={{ maxHeight: 120 }}
                 />
 
@@ -863,8 +829,7 @@ export default function ChatPanel({ embedded = false }) {
                 <button
                   onClick={handleSend}
                   disabled={sending || aiReplying || (!messageText.trim() && !imageFile)}
-                  className="h-9 w-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all hover:scale-105 active:scale-95 disabled:opacity-30 disabled:hover:scale-100"
-                  style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)', boxShadow: '0 4px 14px rgba(79,70,229,0.4)' }}
+                  className="h-10 w-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ease-out hover:scale-110 active:scale-90 disabled:opacity-30 disabled:hover:scale-100 disabled:cursor-not-allowed bg-gradient-to-br from-indigo-500 to-violet-600 shadow-[0_4px_14px_rgba(99,102,241,0.5)] border border-indigo-400/30"
                 >
                   {sending || aiReplying ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

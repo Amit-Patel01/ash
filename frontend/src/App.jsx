@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, lazy, Suspense } from 'react'
+﻿import { useCallback, useEffect, useRef, lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -179,13 +179,13 @@ const SellProjectRequest = lazyWithRetry(() => import('./employee/SellProjectReq
 const EmployeeChat = lazyWithRetry(() => import('./employee/EmployeeChatRefined'))
 const EmployeeBroadcast = lazyWithRetry(() => import('./employee/EmployeeBroadcastRefined'))
 
-const StudentLayout = lazyWithRetry(() => import('./student/StudentLayout'))
-const StudentOverview = lazyWithRetry(() => import('./student/StudentOverview'))
-const StudentOrders = lazyWithRetry(() => import('./student/StudentOrders'))
-const StudentSupport = lazyWithRetry(() => import('./student/StudentSupport'))
-const StudentProfile = lazyWithRetry(() => import('./student/StudentProfile'))
-const StudentCertificates = lazyWithRetry(() => import('./student/StudentCertificates'))
-const StudentCustomProject = lazyWithRetry(() => import('./student/StudentCustomProject'))
+const UserLayout = lazyWithRetry(() => import('./user/UserLayout'))
+const UserOverview = lazyWithRetry(() => import('./user/UserOverview'))
+const UserOrders = lazyWithRetry(() => import('./user/UserOrders'))
+const UserSupport = lazyWithRetry(() => import('./user/UserSupport'))
+const UserProfile = lazyWithRetry(() => import('./user/UserProfile'))
+const UserCertificates = lazyWithRetry(() => import('./user/UserCertificates'))
+const UserCustomProject = lazyWithRetry(() => import('./user/UserCustomProject'))
 
 const ChatPage = lazyWithRetry(() => import('./pages/ChatPage'))
 const AdminCourses = lazyWithRetry(() => import('./admin/AdminCourses'))
@@ -195,7 +195,7 @@ const AdminCourseEnrollments = lazyWithRetry(() => import('./admin/AdminCourseEn
 const EmployeeCourseManage = lazyWithRetry(() => import('./employee/EmployeeCourseManageRefined'))
 const CoursesPage = lazyWithRetry(() => import('./pages/CoursesPage'))
 const CourseDetailPage = lazyWithRetry(() => import('./pages/CourseDetailPage'))
-const StudentMyCourses = lazyWithRetry(() => import('./student/StudentMyCourses'))
+const UserMyCourses = lazyWithRetry(() => import('./user/UserMyCourses'))
 const AboutTradingMentorship = lazyWithRetry(() => import('./pages/AboutTradingMentorship'))
 
 function AppShellFallback() {
@@ -457,16 +457,16 @@ function AppContent() {
             <Route path="profile" element={<EmployeeProfile />} />
           </Route>
 
-          {/* Student Panel */}
-          <Route path="/student" element={<ProtectedStudent><StudentLayout /></ProtectedStudent>}>
-            <Route index element={<StudentOverview />} />
-            <Route path="orders" element={<StudentOrders />} />
-            <Route path="support" element={<StudentSupport />} />
+          {/* User Panel */}
+          <Route path="/user" element={<ProtectedStudent><UserLayout /></ProtectedStudent>}>
+            <Route index element={<UserOverview />} />
+            <Route path="orders" element={<UserOrders />} />
+            <Route path="support" element={<UserSupport />} />
             <Route path="trading-mentorship" element={<AboutTradingMentorship />} />
-            <Route path="my-courses" element={<StudentMyCourses />} />
-            <Route path="certificates" element={<StudentCertificates />} />
-            <Route path="profile" element={<StudentProfile />} />
-            <Route path="custom-project" element={<StudentCustomProject />} />
+            <Route path="my-courses" element={<UserMyCourses />} />
+            <Route path="certificates" element={<UserCertificates />} />
+            <Route path="profile" element={<UserProfile />} />
+            <Route path="custom-project" element={<UserCustomProject />} />
           </Route>
         </Routes>
       </Suspense>

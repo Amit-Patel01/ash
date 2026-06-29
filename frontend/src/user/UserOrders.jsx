@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+﻿import { useMemo, useState } from 'react'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 
@@ -32,7 +32,7 @@ const formatDate = (ts) => {
   return dateObj.toLocaleDateString('en-IN', { dateStyle: 'medium' });
 }
 
-export default function StudentOrders() {
+export default function UserOrders() {
   const { currentUser } = useAuth()
   const { orders, serviceRequests } = useStore()
   const [activeTab, setActiveTab] = useState('orders')

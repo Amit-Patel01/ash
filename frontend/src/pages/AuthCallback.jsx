@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
@@ -42,7 +42,7 @@ export default function AuthCallback() {
         } else if (['employee', 'mentor', 'developer', 'staff'].includes(role)) {
           navigate('/employee', { replace: true })
         } else {
-          navigate('/student', { replace: true })
+          navigate('/user', { replace: true })
         }
       } catch {
         setStatus('error')
