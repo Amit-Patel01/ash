@@ -382,7 +382,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
             <div className="flex gap-3">
               <button onClick={onClose} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition-all">Close</button>
               <button onClick={() => navigate('/user/my-courses')} className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all">My Courses</button>
-            </div>
+            </div>    
           </div>
         ) : availableSoon ? (
           <div className="p-10 text-center">
