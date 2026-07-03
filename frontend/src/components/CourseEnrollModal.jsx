@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
@@ -366,8 +366,8 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
-
+      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+      
         {/* Already enrolled */}
         {enrolled && !success ? (
           <div className="p-10 text-center">
@@ -435,8 +435,9 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
         ) : (
           <>
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white">
-              <div className="flex items-start justify-between">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white shrink-0 relative overflow-hidden">
+              <div className="absolute top-0 right-0 -mt-10 -mr-10 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
+              <div className="flex items-start justify-between relative z-10">
                 <div>
                   <p className="text-blue-200 text-xs font-bold uppercase tracking-widest mb-1">{actionLabel} For</p>
                   <h3 className="text-xl font-bold leading-tight">{actualCourseTitle}</h3>
@@ -464,7 +465,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
             </div>
 
             {/* Body */}
-            <div className="p-6 space-y-5">
+            <div className="p-6 space-y-5 overflow-y-auto custom-scrollbar">
               {/* Features preview */}
               {Array.isArray(course.features) && course.features.length > 0 && (
                 <div className="space-y-2">
@@ -574,7 +575,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
               <button
                 onClick={handleEnroll}
                 disabled={submitting}
-                className="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 disabled:opacity-50 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2"
+                className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-2xl hover:from-blue-700 hover:to-indigo-700 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:transform-none transition-all shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2"
               >
                 {submitting ? (
                   <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Processing...</>
