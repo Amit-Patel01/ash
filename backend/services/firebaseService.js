@@ -8,12 +8,14 @@ const admin = {
     return {
       async createUser(data) {
         const db = getDb();
-        const { uid } = await db.collection("users").insertOne({
+        const result = await db.collection("users").insertOne({
           ...data,
           createdAt: new Date(),
           updatedAt: new Date(),
         });
-        return { uid: uid?.toString() || `user_${Date.now()}` };
+        const uid = result.insertedId ? result.insertedId.toString() : `user_${Date.now()}`;
+        await db.collection("users").updateOne({ _id: result.insertedId }, { $set: { uid } });
+        return { uid };
       },
       async setCustomUserClaims(uid, claims) {
         const db = getDb();

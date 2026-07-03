@@ -35,7 +35,7 @@ export default function MobileRequiredPopup() {
       localStorage.setItem(`phone_confirmed_${currentUser.uid}`, 'true')
       setDismissed(true)
     } catch (err) {
-      setError('Failed to save. Please try again.')
+      setError(err.message || 'Failed to save. Please try again.')
     } finally {
       setSaving(false)
     }
