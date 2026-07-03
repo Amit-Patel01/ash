@@ -10,6 +10,8 @@ import { ThemeProvider } from './context/ThemeContext'
 import AIChatbot from './components/AIChatbot'
 import Layout from './components/Layout'
 import { getHomePathForRole, isEmployeeRole, normalizeUserRole } from './utils/roles'
+import { SpeedInsights } from '@vercel/speed-insights/react'
+import { Analytics } from '@vercel/analytics/react'
 
 const MODULE_ERROR_AUTO_REFRESH_KEY = 'module-error-auto-refresh-count'
 const MODULE_ERROR_CACHE_BUST_KEY = 'module-error-cache-bust-count'
@@ -481,6 +483,8 @@ export default function App() {
             <AuthProvider>
               <ChatProvider>
                 <AppContent />
+                <SpeedInsights />
+                <Analytics />
               </ChatProvider>
             </AuthProvider>
           </StoreProvider>
