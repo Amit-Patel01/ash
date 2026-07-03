@@ -331,7 +331,7 @@ function AppContent() {
   const navigate = useNavigate()
   const location = useLocation()
   const isAdminRoute = location.pathname.startsWith('/admin') || location.pathname === '/login'
-  const isMaintenanceActive = maintenance?.isActive === true
+  const isMaintenanceActive = true // manually forced on
   const allowedChatbotPaths = ['/about', '/courses', '/services', '/projects', '/contact', '/infrastructure']
   const isHome = location.pathname === '/'
   const isAllowedPath = allowedChatbotPaths.some(path => location.pathname.startsWith(path))
