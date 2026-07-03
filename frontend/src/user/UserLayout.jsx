@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
-import MobileRequiredPopup from '../components/MobileRequiredPopup'
 
 const navItems = [
   { path: '/user', label: 'Dashboard', icon: 'dashboard' },
@@ -58,7 +57,6 @@ export default function UserLayout() {
 
   return (
     <div className={`h-screen flex overflow-hidden transition-colors duration-300 ${isDark ? 'bg-slate-950 text-white dark' : 'bg-slate-50 text-slate-800'}`}>
-      <MobileRequiredPopup />
       {mobileMenuOpen && <div className="fixed inset-0 bg-black/60 z-40 lg:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
       {/* Sidebar */}
