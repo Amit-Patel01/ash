@@ -14,7 +14,7 @@ import CertificateDocument from '../components/Certificate'
 
 export default function AdminSettings() {
   const { currentUser, updateUserProfile, updateUserEmail, updateUserPassword } = useAuth()
-  const { announcement, updateAnnouncement, maintenance, updateMaintenance, certificateTemplate, updateCertificateTemplate } = useStore()
+  const { announcement, updateAnnouncement, maintenance, updateMaintenance, certificateTemplate, updateCertificateTemplate, homepageStats, updateHomepageStats } = useStore()
   const [activeTab, setActiveTab] = useState('profile')
   const [saving, setSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState('')
@@ -45,6 +45,13 @@ export default function AdminSettings() {
   const [maintenanceForm, setMaintenanceForm] = useState({
     isActive: maintenance?.isActive || false,
     message: maintenance?.message || '',
+  })
+
+  const [statsForm, setStatsForm] = useState({
+    studentsTrained: homepageStats?.studentsTrained || '5,000+',
+    internshipPrograms: homepageStats?.internshipPrograms || '12+',
+    liveProjects: homepageStats?.liveProjects || '800+',
+    certificatesIssued: homepageStats?.certificatesIssued || '4,800+',
   })
 
   const [selectedDocumentType, setSelectedDocumentType] = useState('certificate')
@@ -87,6 +94,18 @@ export default function AdminSettings() {
     }
   }, [maintenance])
 
+  // Sync homepage stats when global state loads
+  useEffect(() => {
+    if (homepageStats) {
+      setStatsForm({
+        studentsTrained: homepageStats.studentsTrained || '5,000+',
+        internshipPrograms: homepageStats.internshipPrograms || '12+',
+        liveProjects: homepageStats.liveProjects || '800+',
+        certificatesIssued: homepageStats.certificatesIssued || '4,800+',
+      })
+    }
+  }, [homepageStats])
+
   useEffect(() => {
     setCertificateForm(normalizeCertificateTemplate(certificateTemplate))
   }, [certificateTemplate])
@@ -114,6 +133,7 @@ export default function AdminSettings() {
     { id: 'profile', label: 'Profile' },
     { id: 'announcement', label: 'Announcement' },
     { id: 'maintenance', label: 'Maintenance' },
+    { id: 'stats', label: 'Homepage Stats' },
     { id: 'certificate', label: 'Documents' },
     { id: 'notifications', label: 'Notifications' },
     { id: 'security', label: 'Security' },
@@ -255,6 +275,21 @@ export default function AdminSettings() {
     } catch (err) {
       console.error('Failed to save maintenance settings:', err)
       alert('Failed: ' + (err.message || 'Error updating maintenance settings'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleSaveStats = async () => {
+    setSaving(true)
+    setSaveSuccess('')
+    try {
+      await updateHomepageStats(statsForm)
+      setSaveSuccess('Homepage stats updated successfully!')
+      setTimeout(() => setSaveSuccess(''), 3000)
+    } catch (err) {
+      console.error('Failed to save homepage stats:', err)
+      alert('Failed: ' + (err.message || 'Error updating homepage stats'))
     } finally {
       setSaving(false)
     }
@@ -523,6 +558,73 @@ export default function AdminSettings() {
                   {saving ? 'Saving...' : 'Save Settings'}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'stats' && (
+        <div className="space-y-6">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6">
+            <h2 className="text-lg font-semibold text-slate-900 mb-6">Homepage Statistics Settings</h2>
+            
+            {saveSuccess && (
+              <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                <p className="text-sm text-emerald-400">{saveSuccess}</p>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-slate-500 mb-1.5">Students Trained</label>
+                <input
+                  type="text"
+                  value={statsForm.studentsTrained}
+                  onChange={e => setStatsForm({ ...statsForm, studentsTrained: e.target.value })}
+                  placeholder="5,000+"
+                  className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-505 focus:outline-none focus:border-blue-500/50 transition-all"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 mb-1.5">Internship Programs</label>
+                <input
+                  type="text"
+                  value={statsForm.internshipPrograms}
+                  onChange={e => setStatsForm({ ...statsForm, internshipPrograms: e.target.value })}
+                  placeholder="12+"
+                  className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-505 focus:outline-none focus:border-blue-500/50 transition-all"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 mb-1.5">Live Projects Completed</label>
+                <input
+                  type="text"
+                  value={statsForm.liveProjects}
+                  onChange={e => setStatsForm({ ...statsForm, liveProjects: e.target.value })}
+                  placeholder="800+"
+                  className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-505 focus:outline-none focus:border-blue-500/50 transition-all"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-500 mb-1.5">Certificates Issued</label>
+                <input
+                  type="text"
+                  value={statsForm.certificatesIssued}
+                  onChange={e => setStatsForm({ ...statsForm, certificatesIssued: e.target.value })}
+                  placeholder="4,800+"
+                  className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-505 focus:outline-none focus:border-blue-500/50 transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end mt-6">
+              <button 
+                onClick={handleSaveStats} 
+                disabled={saving} 
+                className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-slate-900 hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50"
+              >
+                {saving ? 'Saving...' : 'Save Stats'}
+              </button>
             </div>
           </div>
         </div>

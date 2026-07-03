@@ -186,10 +186,12 @@ export function StoreProvider({ children }) {
   const [certificateTemplate, setCertificateTemplate] = useState(DEFAULT_CERTIFICATE_TEMPLATE)
   const [announcement, setAnnouncement] = useState(null)
   const [maintenance, setMaintenance] = useState(null)
+  const [homepageStats, setHomepageStats] = useState(null)
   const [courses, setCourses] = useState([])
   const [enrollments, setEnrollments] = useState([])
   const [courseCategories, setCourseCategories] = useState([])
   const [testimonials, setTestimonials] = useState([])
+  const [internshipCategories, setInternshipCategories] = useState([])
   const [loading, setLoading] = useState(true)
 
   const qrCertificates = certificates.filter(certificate => certificate.source === 'qr')
@@ -358,6 +360,10 @@ export function StoreProvider({ children }) {
       });
     }
   };
+  const loadHomepageStats = async () => {
+    const doc = await fetchDocument('settings', 'homepageStats');
+    if (doc) setHomepageStats(doc);
+  };
   const loadGenericCourses = async () => {
     const data = await fetchCollection('courses');
     setCourses(data.map(d => ({
@@ -377,6 +383,11 @@ export function StoreProvider({ children }) {
   const loadTestimonials = async () => {
     const data = await fetchCollection('testimonials');
     setTestimonials(data);
+  };
+  const loadInternshipCategories = async () => {
+    const data = await fetchCollection('internshipCategories');
+    data.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+    setInternshipCategories(data);
   };
 
   useEffect(() => {
@@ -406,10 +417,12 @@ export function StoreProvider({ children }) {
         loadCertificateTemplate(),
         loadAnnouncement(),
         loadMaintenance(),
+        loadHomepageStats(),
         loadGenericCourses(),
         loadGenericEnrollments(),
         loadCourseCategories(),
-        loadTestimonials()
+        loadTestimonials(),
+        loadInternshipCategories()
       ]);
       if (isMounted) {
         setLoading(false);
@@ -448,6 +461,7 @@ export function StoreProvider({ children }) {
       loadGenericEnrollments();
       loadCourseCategories();
       loadTestimonials();
+      loadInternshipCategories();
     }, 60000);
 
     return () => {
@@ -1370,6 +1384,29 @@ export function StoreProvider({ children }) {
     } catch (err) { console.error("Error updating maintenance:", err); throw err }
   }
 
+  const updateHomepageStats = async (data) => {
+    try {
+      const headers = getAuthorizedHeaders();
+      let response = await fetch(`${api.base}/api/db/settings/homepageStats`, {
+        method: 'PATCH',
+        headers,
+        body: JSON.stringify(data)
+      });
+      if (response.status === 404) {
+        response = await fetch(`${api.base}/api/db/settings`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ id: 'homepageStats', ...data })
+        });
+      }
+      const resData = await response.json();
+      if (!response.ok || !resData.success) {
+        throw new Error(resData.message || 'Failed to update homepage stats');
+      }
+      setHomepageStats({ id: 'homepageStats', ...data });
+    } catch (err) { console.error("Error updating homepageStats:", err); throw err }
+  }
+
   const generateSlug = (title) =>
     title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Date.now().toString(36)
 
@@ -1881,6 +1918,40 @@ export function StoreProvider({ children }) {
       }
       setTestimonials(prev => prev.filter(t => t.id !== id));
     } catch (err) { console.error("Error deleting testimonial:", err); throw err }
+  }
+
+  const addInternshipCategory = async (category) => {
+    try {
+      const response = await fetch(`${api.base}/api/db/internshipCategories`, {
+        method: 'POST', headers: getAuthorizedHeaders(), body: JSON.stringify(category)
+      })
+      const data = await response.json()
+      if (!data.success) throw new Error(data.message || 'Failed to add internship category');
+      const added = data.document
+      setInternshipCategories(prev => [...prev, added].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)));
+    } catch (err) { console.error("Error adding internship category:", err); throw err }
+  }
+
+  const updateInternshipCategory = async (id, updates) => {
+    try {
+      const response = await fetch(`${api.base}/api/db/internshipCategories/${id}`, {
+        method: 'PATCH', headers: getAuthorizedHeaders(), body: JSON.stringify(updates)
+      })
+      const data = await response.json()
+      if (!data.success) throw new Error(data.message || 'Failed to update internship category');
+      setInternshipCategories(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c).sort((a, b) => (a.order ?? 0) - (b.order ?? 0)));
+    } catch (err) { console.error("Error updating internship category:", err); throw err }
+  }
+
+  const deleteInternshipCategory = async (id) => {
+    try {
+      const response = await fetch(`${api.base}/api/db/internshipCategories/${id}`, {
+        method: 'DELETE', headers: getAuthorizedHeaders()
+      })
+      const data = await response.json()
+      if (!data.success) throw new Error(data.message || 'Failed to delete internship category');
+      setInternshipCategories(prev => prev.filter(c => c.id !== id));
+    } catch (err) { console.error("Error deleting internship category:", err); throw err }
   };
 
   const value = {
@@ -1910,12 +1981,14 @@ export function StoreProvider({ children }) {
     getActiveProjects, getTotalRevenue, getPendingOrders,
     announcement, updateAnnouncement,
     maintenance, updateMaintenance,
+    homepageStats, updateHomepageStats,
     courses, addCourse, updateCourse, deleteCourse,
     enrollments, addEnrollment, updateEnrollment, deleteEnrollment,
     getUserEnrollments, isUserEnrolled,
     courseCategories, addCourseCategory, updateCourseCategory, deleteCourseCategory,
     seedCourseCategories,
     testimonials, addTestimonial, updateTestimonial, deleteTestimonial,
+    internshipCategories, addInternshipCategory, updateInternshipCategory, deleteInternshipCategory,
     loading
   }
 

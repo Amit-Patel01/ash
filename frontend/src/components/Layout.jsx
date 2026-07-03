@@ -11,7 +11,7 @@ const Layout = () => {
   const location = useLocation()
   const { theme } = useTheme()
   const isDark = theme === 'dark'
-  const hideShellRoutes = ['/chat', '/signup', '/login', '/verify']
+  const hideShellRoutes = ['/chat', '/signup', '/login', '/verify', '/checkout']
   
   // Hide navbar/footer on specific pages
   const hideNavbar = hideShellRoutes.some(path => location.pathname.startsWith(path))

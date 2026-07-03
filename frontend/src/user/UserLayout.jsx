@@ -1,6 +1,7 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 import MobileRequiredPopup from '../components/MobileRequiredPopup'
 
 const navItems = [
@@ -29,6 +30,8 @@ export default function UserLayout() {
   const location = useLocation()
   const navigate = useNavigate()
   const { currentUser, userProfile, logout } = useAuth()
+  const { theme, toggleTheme } = useTheme()
+  const isDark = theme === 'dark'
 
   const handleWheel = (e) => {
     const target = e.target
@@ -54,41 +57,69 @@ export default function UserLayout() {
   const userAvatar = userProfile?.avatar || userProfile?.photoURL || currentUser?.avatar || currentUser?.photoURL || ''
 
   return (
-    <div className="h-screen bg-gray-950 text-white flex overflow-hidden dark">
+    <div className={`h-screen flex overflow-hidden transition-colors duration-300 ${isDark ? 'bg-slate-950 text-white dark' : 'bg-slate-50 text-slate-800'}`}>
       <MobileRequiredPopup />
       {mobileMenuOpen && <div className="fixed inset-0 bg-black/60 z-40 lg:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
-      <aside className={`fixed lg:static inset-y-0 left-0 z-50 transform ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-72' : 'w-20'} flex flex-col bg-gray-900/80 backdrop-blur-xl border-r border-white/5`}>
-        <div className="flex items-center h-16 px-4 border-b border-white/5">
+      {/* Sidebar */}
+      <aside className={`fixed lg:static inset-y-0 left-0 z-50 transform ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-all duration-305 ease-in-out ${sidebarOpen ? 'w-72' : 'w-20'} flex flex-col border-r ${
+        isDark 
+          ? 'bg-slate-900/35 backdrop-blur-xl border-white/[0.06] shadow-[0_8px_32px_0_rgba(0,0,0,0.15)]' 
+          : 'bg-white/45 backdrop-blur-xl border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.03)]'
+      }`}>
+        
+        {/* Logo */}
+        <div className={`flex items-center h-16 px-4 border-b ${isDark ? 'border-white/[0.06]' : 'border-slate-200/50'}`}>
           <div className="flex items-center gap-3 overflow-hidden">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center flex-shrink-0">
               <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
             </div>
             {sidebarOpen && (
               <div>
-                <h1 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">SolutionHub</h1>
-                 <p className="text-[10px] text-gray-500 -mt-0.5 tracking-wider uppercase">User Portal</p>
+                <h1 className="text-lg font-bold bg-gradient-to-r from-blue-450 to-violet-500 bg-clip-text text-transparent">SolutionHub</h1>
+                <p className={`text-[10px] -mt-0.5 tracking-wider uppercase ${isDark ? 'text-gray-500' : 'text-slate-400 font-bold'}`}>User Portal</p>
               </div>
             )}
           </div>
         </div>
 
+        {/* Sidebar Nav */}
         <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const isActive = item.path === '/user' ? location.pathname === '/user' : location.pathname.startsWith(item.path)
             return (
-              <Link key={item.path} to={item.path} onClick={() => setMobileMenuOpen(false)} className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${isActive ? 'bg-gradient-to-r from-blue-500/20 to-violet-500/20 text-white shadow-lg shadow-blue-500/10' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}>
-                <span className={`flex-shrink-0 transition-colors ${isActive ? 'text-blue-400' : 'text-gray-500 group-hover:text-gray-300'}`}>{iconMap[item.icon]}</span>
+              <Link 
+                key={item.path} 
+                to={item.path} 
+                onClick={() => setMobileMenuOpen(false)} 
+                className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-250 ${
+                  isActive 
+                    ? 'bg-gradient-to-r from-blue-500/20 to-violet-500/20 text-blue-600 dark:text-white shadow-lg shadow-blue-500/5' 
+                    : isDark 
+                      ? 'text-gray-400 hover:text-white hover:bg-white/5' 
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <span className={`flex-shrink-0 transition-colors ${
+                  isActive 
+                    ? 'text-blue-500 dark:text-blue-400' 
+                    : isDark 
+                      ? 'text-gray-550 group-hover:text-gray-300' 
+                      : 'text-slate-400 group-hover:text-slate-600'
+                }`}>
+                  {iconMap[item.icon]}
+                </span>
                 {sidebarOpen && <span>{item.label}</span>}
-                {isActive && sidebarOpen && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-400 shadow-lg shadow-blue-400/50" />}
+                {isActive && sidebarOpen && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-500 shadow-lg shadow-blue-500/50" />}
               </Link>
             )
           })}
         </nav>
 
-        <div className="p-4 border-t border-white/5">
+        {/* Profile / Logout Footer */}
+        <div className={`p-4 border-t ${isDark ? 'border-white/[0.06]' : 'border-slate-200/50'}`}>
           <div className={`flex items-center gap-3 ${!sidebarOpen ? 'justify-center' : ''}`}>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 flex items-center justify-center flex-shrink-0 overflow-hidden text-sm font-bold">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 flex items-center justify-center flex-shrink-0 overflow-hidden text-sm font-bold border border-slate-350 dark:border-slate-800 text-white">
               {userAvatar ? (
                 <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
               ) : (
@@ -97,51 +128,100 @@ export default function UserLayout() {
             </div>
             {sidebarOpen && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{userName}</p>
-                <p className="text-xs text-gray-500 truncate">{userEmail}</p>
+                <p className={`text-sm font-medium truncate ${isDark ? 'text-white' : 'text-slate-800'}`}>{userName}</p>
+                <p className={`text-xs truncate ${isDark ? 'text-gray-550' : 'text-slate-405'}`}>{userEmail}</p>
               </div>
             )}
             {sidebarOpen && (
-              <button onClick={handleLogout} title="Logout" className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+              <button onClick={handleLogout} title="Logout" className={`p-1.5 rounded-lg transition-colors ${isDark ? 'text-gray-500 hover:text-red-400 hover:bg-red-500/10' : 'text-slate-405 hover:text-red-550 hover:bg-red-500/5'}`}>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
               </button>
             )}
           </div>
         </div>
 
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="hidden lg:flex absolute -right-3 top-20 w-6 h-6 items-center justify-center rounded-full bg-gray-800 border border-white/10 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors">
+        {/* Sidebar Collapse Toggle */}
+        <button 
+          onClick={() => setSidebarOpen(!sidebarOpen)} 
+          className={`hidden lg:flex absolute -right-3 top-20 w-6 h-6 items-center justify-center rounded-full border transition-all ${
+            isDark 
+              ? 'bg-slate-900 border-white/10 text-gray-400 hover:text-white hover:bg-slate-800' 
+              : 'bg-white border-slate-205 shadow-md text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+          }`}
+        >
           <svg className={`w-4 h-4 transition-transform ${sidebarOpen ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
         </button>
       </aside>
 
+      {/* Main Container */}
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 bg-gray-900/50 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 lg:px-6">
+        
+        {/* Header */}
+        <header className={`h-16 border-b flex items-center justify-between px-4 lg:px-6 transition-all ${
+          isDark 
+            ? 'bg-slate-950/45 backdrop-blur-xl border-white/[0.05]' 
+            : 'bg-white/40 backdrop-blur-xl border-white/50 shadow-sm'
+        }`}>
           <div className="flex items-center gap-4">
-            <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5">
+            <button onClick={() => setMobileMenuOpen(true)} className={`lg:hidden p-2 rounded-lg ${isDark ? 'text-gray-450 hover:text-white hover:bg-white/5' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
             </button>
-             <div>
-               <p className="text-sm text-gray-400">Welcome back,</p>
-               <p className="text-sm font-medium text-white">{userName}</p>
-             </div>
-           </div>
-           <div className="flex items-center gap-3">
-             <Link to="/user/profile" className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
-               <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-xs font-bold text-white">
-                 {userAvatar ? (
-                   <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
-                 ) : (
-                   userName.charAt(0)
-                 )}
-               </div>
-               <span className="hidden sm:inline">Profile</span>
-             </Link>
-            <Link to="/" className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+            <div>
+              <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-slate-400 font-medium'}`}>Welcome back,</p>
+              <p className={`text-sm font-semibold ${isDark ? 'text-white' : 'text-slate-800'}`}>{userName}</p>
+            </div>
+          </div>
+          
+          {/* Header Controls */}
+          <div className="flex items-center gap-3">
+            {/* Theme Toggle Button */}
+            <button 
+              onClick={toggleTheme} 
+              className={`p-2.5 rounded-xl border transition-all active:scale-95 flex items-center justify-center ${
+                isDark 
+                  ? 'text-yellow-400 bg-white/5 border-white/5 hover:bg-white/10 hover:text-yellow-355' 
+                  : 'text-amber-500 bg-slate-50 border-slate-250/80 hover:bg-slate-100 hover:border-slate-300 shadow-sm'
+              }`}
+              title="Toggle theme mode"
+            >
+              {isDark ? (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 12.83A9.53 9.53 0 0112 21.75c-5.25 0-9.5-4.25-9.5-9.5A9.53 9.53 0 0112 2.25c.8 0 1.57.1 2.31.29a7.5 7.5 0 00-1.74 4.82c0 4.14 3.36 7.5 7.5 7.5.3 0 .59-.02.88-.06z" />
+                </svg>
+              )}
+            </button>
+
+            <Link to="/user/profile" className={`flex items-center gap-2 px-2.5 sm:px-3.5 py-2 rounded-xl text-sm transition-all border ${
+              isDark 
+                ? 'text-gray-450 bg-white/5 border-white/5 hover:text-white hover:bg-white/10' 
+                : 'text-slate-655 bg-slate-50 border-slate-250/80 hover:text-slate-900 hover:bg-slate-100 shadow-sm'
+            }`}>
+              <div className="w-6 h-6 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-[10px] font-bold text-white">
+                {userAvatar ? (
+                  <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
+                ) : (
+                  userName.charAt(0)
+                )}
+              </div>
+              <span className="hidden sm:inline font-medium">Profile</span>
+            </Link>
+
+            <Link to="/" className={`flex items-center gap-2 px-2.5 sm:px-3.5 py-2 rounded-xl text-sm transition-all border ${
+              isDark 
+                ? 'text-gray-450 bg-white/5 border-white/5 hover:text-white hover:bg-white/10' 
+                : 'text-slate-655 bg-slate-50 border-slate-250/80 hover:text-slate-900 hover:bg-slate-100 shadow-sm'
+            }`}>
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
-              <span className="hidden xs:inline">View Site</span>
+              <span className="hidden xs:inline font-medium">View Site</span>
             </Link>
           </div>
         </header>
+
+        {/* Content Outlet */}
         <main className="flex-1 p-4 lg:p-6 overflow-y-auto overscroll-contain" onWheel={handleWheel}>
           <Outlet />
         </main>

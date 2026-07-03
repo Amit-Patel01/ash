@@ -36,8 +36,6 @@ const ThemeToggle = ({ mobile = false, isDark, toggleTheme }) => (
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [isHidden, setIsHidden] = useState(false)
-  const lastScrollYRef = useRef(0)
   const location = useLocation()
   const navigate = useNavigate()
   const { currentUser, userProfile, logout } = useAuth()
@@ -61,24 +59,16 @@ const Navbar = () => {
 
   useEffect(() => {
     setIsOpen(false)
-    setIsHidden(false)
-    lastScrollYRef.current = window.scrollY
   }, [location])
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      const scrollingDown = currentScrollY > lastScrollYRef.current
-      const shouldHideNavbar = scrollingDown && currentScrollY > 120 && !isOpen
-      setScrolled(currentScrollY > 20)
-      setIsHidden(currentScrollY <= 20 ? false : shouldHideNavbar)
-      lastScrollYRef.current = currentScrollY
+      setScrolled(window.scrollY > 20)
     }
-    lastScrollYRef.current = window.scrollY
     handleScroll()
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [isOpen])
+  }, [])
 
   const navLinks = [
     { name: 'Home',     path: '/' },
@@ -89,35 +79,37 @@ const Navbar = () => {
   // Theme toggle component moved outside to prevent re-renders
 
   return (
-    <nav className={`fixed left-0 right-0 z-[140] transform-gpu transition-all duration-500 ease-in-out top-0 ${isHidden ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'} ${scrolled ? 'py-2 lg:py-3' : 'py-4 lg:py-6'}`}>
+    <nav className={`fixed left-0 right-0 top-0 z-[140] border-b transition-all duration-300 ${
+      isDark
+        ? `border-white/10 ${scrolled ? 'bg-slate-900/80 backdrop-blur-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]' : 'bg-slate-900/60 backdrop-blur-xl'}`
+        : `border-slate-200/80 ${scrolled ? 'bg-white/80 backdrop-blur-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)]' : 'bg-white/50 backdrop-blur-xl'}`
+    }`}>
+      {/* Animated Glow */}
+      <div className={`absolute -inset-x-0 bottom-[-20px] h-20 blur-3xl opacity-35 pointer-events-none ${isDark ? 'bg-gradient-to-b from-indigo-500/10 to-transparent' : 'bg-gradient-to-b from-blue-400/10 to-transparent'}`} />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        {/* ── Floating Glass Container ── */}
         <div className={`
-          relative flex justify-between items-center px-4 md:px-6 lg:px-8 xl:px-12 rounded-full
-          transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)]
-          ${isDark
-            ? `border border-white/10 ${scrolled ? 'h-16 lg:h-20 bg-slate-900/80 backdrop-blur-2xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.7)] scale-100 mt-2' : 'h-20 lg:h-24 bg-slate-900/60 backdrop-blur-xl shadow-[0_40px_80px_-15px_rgba(0,0,0,0.6)] scale-[1.01]'}`
-            : `border border-white/20 ${scrolled ? 'h-16 lg:h-20 bg-white/10 backdrop-blur-2xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.5)] scale-100 mt-2' : 'h-20 lg:h-24 bg-white/5 backdrop-blur-xl shadow-[0_40px_80px_-15px_rgba(0,0,0,0.4)] scale-[1.01]'}`
-          }
+          relative flex justify-between items-center transition-all duration-300
+          ${scrolled ? 'h-16 lg:h-20' : 'h-20 lg:h-24'}
         `}>
-          {/* Animated Glow */}
-          <div className={`absolute top-[2px] -inset-x-2 bottom-[-10px] rounded-full blur-3xl opacity-50 animate-[bluePulse_8s_infinite] pointer-events-none ${isDark ? 'bg-gradient-to-r from-indigo-500/15 via-blue-400/10 to-indigo-500/15' : 'bg-gradient-to-r from-blue-400/20 via-cyan-300/15 to-blue-500/20'}`} />
-
-          {/* Glass Highlight */}
-          <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
-            <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-br from-white/30 to-transparent skew-x-[45deg] -translate-y-full animate-[reflection_10s_infinite]" />
-          </div>
 
           {/* Left: Logo + Nav Links */}
           <div className="flex items-center gap-3 lg:gap-5 xl:gap-10 h-full">
             <Link to="/" className="relative z-10 flex items-center group flex-shrink-0 outline-none">
-              <div className="relative transform transition-all duration-500 group-hover:scale-105 group-hover:-rotate-1">
+              <div className="relative overflow-hidden rounded-xl px-3 py-1.5 transform transition-all duration-500 group-hover:scale-105 group-hover:-rotate-1">
+                {/* Radial Glow on Hover */}
+                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 blur-lg transition-opacity duration-500 pointer-events-none ${isDark ? 'bg-indigo-500/20' : 'bg-blue-500/15'}`} />
+
                 <img
                   src={brandLogo}
                   alt="Brand Logo"
-                  className="h-10 lg:h-12 w-auto object-contain filter drop-shadow-[0_8px_15px_rgba(0,0,0,0.2)]"
+                  className="relative z-10 h-10 lg:h-12 w-auto object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.15)]"
                 />
+
+                {/* Shine Sweep Beam */}
+                <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
+                  <div className="absolute top-0 -left-[150%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/35 to-transparent skew-x-[-30deg] transition-all duration-1000 ease-out group-hover:left-[150%]" />
+                </div>
               </div>
             </Link>
 

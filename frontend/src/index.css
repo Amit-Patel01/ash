@@ -967,3 +967,9 @@ a {
 [class*="animate-"] {
   transition: none !important;
 }
+
+/* Hide navbar when payment/checkout modal is open */
+body.payment-modal-open nav {
+  display: none !important;
+}
+

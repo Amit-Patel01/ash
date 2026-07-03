@@ -167,6 +167,7 @@ const AdminSettings = lazyWithRetry(() => import('./admin/AdminSettings'))
 const AdminStudents = lazyWithRetry(() => import('./admin/AdminStudents'))
 const AdminQrCertificates = lazyWithRetry(() => import('./admin/AdminQrCertificates'))
 const AdminTestimonials = lazyWithRetry(() => import('./admin/AdminTestimonials'))
+const AdminInternshipCategories = lazyWithRetry(() => import('./admin/AdminInternshipCategories'))
 
 const RequestAccount = lazyWithRetry(() => import('./pages/RequestAccount'))
 
@@ -331,7 +332,7 @@ function AppContent() {
   const navigate = useNavigate()
   const location = useLocation()
   const isAdminRoute = location.pathname.startsWith('/admin') || location.pathname === '/login'
-  const isMaintenanceActive = true // manually forced on
+  const isMaintenanceActive = false // manually forced on
   const allowedChatbotPaths = ['/about', '/courses', '/services', '/projects', '/contact', '/infrastructure']
   const isHome = location.pathname === '/'
   const isAllowedPath = allowedChatbotPaths.some(path => location.pathname.startsWith(path))
@@ -424,6 +425,7 @@ function AppContent() {
             <Route path="course-categories" element={<AdminCourseCategories />} />
             <Route path="course-enrollments" element={<AdminCourseEnrollments />} />
             <Route path="testimonials" element={<AdminTestimonials />} />
+            <Route path="internship-categories" element={<AdminInternshipCategories />} />
             <Route path="messages" element={<AdminMessages />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>

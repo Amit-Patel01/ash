@@ -33,7 +33,8 @@ router.get("/:collection", optionalAuth, async (req, res) => {
       "settings",
       "tradingSettings",
       "certificates",
-      "testimonials"
+      "testimonials",
+      "internshipCategories"
     ];
 
     const isPublic = publicCollections.includes(collection);
@@ -142,7 +143,8 @@ router.get("/:collection/:id", optionalAuth, async (req, res) => {
       "settings",
       "tradingSettings",
       "certificates",
-      "testimonials"
+      "testimonials",
+      "internshipCategories"
     ];
 
     const isPublic = publicCollections.includes(collection);
@@ -213,7 +215,7 @@ router.post("/:collection", optionalAuth, async (req, res) => {
 
     // Security check for writing
     const isEmployeeOrAdmin = req.user && ["admin", "employee"].includes(req.user.role);
-    const adminOnlyCollections = ["categories", "services", "tradingCourses", "courses", "courseCategories", "tradingSettings", "settings", "testimonials"];
+    const adminOnlyCollections = ["categories", "services", "tradingCourses", "courses", "courseCategories", "tradingSettings", "settings", "testimonials", "internshipCategories"];
     
     if (adminOnlyCollections.includes(collection) && !isEmployeeOrAdmin) {
       return res.status(403).json({ success: false, message: "Forbidden: Admin only" });
@@ -264,7 +266,7 @@ router.patch("/:collection/:id", verifyFirebaseToken, async (req, res) => {
 
     // Security check
     const isEmployeeOrAdmin = ["admin", "employee"].includes(req.user.role);
-    const adminOnlyCollections = ["categories", "services", "tradingCourses", "courses", "courseCategories", "tradingSettings", "settings", "testimonials"];
+    const adminOnlyCollections = ["categories", "services", "tradingCourses", "courses", "courseCategories", "tradingSettings", "settings", "testimonials", "internshipCategories"];
 
     if (adminOnlyCollections.includes(collection) && !isEmployeeOrAdmin) {
       return res.status(403).json({ success: false, message: "Forbidden: Admin only" });

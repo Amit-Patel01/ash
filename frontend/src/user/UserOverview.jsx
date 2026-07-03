@@ -1,11 +1,75 @@
-﻿import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
+import { 
+  BookOpen, 
+  Award, 
+  ShoppingBag, 
+  ChevronRight, 
+  Play, 
+  MessageSquare,
+  Sparkles,
+  ArrowRight
+} from 'lucide-react'
 
 export default function UserOverview() {
   const { currentUser, userProfile } = useAuth()
-  const { orders } = useStore()
+  const { orders, getUserEnrollments, courses, certificates } = useStore()
+  const { theme } = useTheme()
+  const isDark = theme === 'dark'
+
+  // Load lesson progress count
+  const [completedLessonsCount, setCompletedLessonsCount] = useState(0)
+
+  useEffect(() => {
+    if (!currentUser?.uid) return
+    try {
+      const progressKey = `solutionhub:lms-progress:${currentUser.uid}`
+      const savedProgress = JSON.parse(localStorage.getItem(progressKey) || '{}')
+      if (savedProgress && typeof savedProgress === 'object') {
+        setCompletedLessonsCount(Object.keys(savedProgress).length)
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }, [currentUser])
+
+  // Get student's enrollments & active courses
+  const myEnrollments = useMemo(() => {
+    return currentUser ? getUserEnrollments(currentUser.uid) : []
+  }, [getUserEnrollments, currentUser])
+
+  // Map enrollments to courses
+  const myCourses = useMemo(() => {
+    return myEnrollments.map(enrollment => {
+      const course = courses.find(c => c.id === enrollment.courseId || (enrollment.courseTitle && c.title === enrollment.courseTitle))
+      return {
+        enrollment,
+        course: course || {
+          title: enrollment.courseTitle || enrollment.courseName || 'Active Track',
+          category: enrollment.category || 'Technology',
+          deliveryType: enrollment.deliveryType || 'course',
+          materials: []
+        }
+      }
+    })
+  }, [myEnrollments, courses])
+
+  // Get student's certificates
+  const myCertificatesCount = useMemo(() => {
+    if (!currentUser) return 0
+    return certificates.filter(cert => {
+      if (cert.status !== 'approved' && cert.status !== 'active') return false
+      const uid = currentUser.uid
+      const email = currentUser.email
+      if (uid && cert.userId === uid) return true
+      if (uid && cert.assignedEmployeeUid === uid) return true
+      if (email && cert.assignedEmployeeEmail === email) return true
+      return false
+    }).length
+  }, [certificates, currentUser])
 
   const myOrders = useMemo(() => {
     return orders.filter(o => o.customer_email === currentUser?.email || o.customer_uid === currentUser?.uid)
@@ -13,109 +77,243 @@ export default function UserOverview() {
 
   const totalSpent = myOrders.filter(o => o.status === 'completed').reduce((sum, o) => sum + Number(o.amount || 0), 0)
   const pendingOrders = myOrders.filter(o => o.status === 'pending').length
-  const completedOrders = myOrders.filter(o => o.status === 'completed').length
-  const recentOrders = myOrders.slice(0, 5)
+  const recentOrders = myOrders.slice(0, 3)
+
+  const userName = userProfile?.displayName || currentUser?.displayName || 'Student'
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Dashboard</h1>
-          <p className="text-sm text-gray-400 mt-1">Welcome back, <span className="text-blue-400 font-semibold">{userProfile?.displayName || currentUser?.displayName || 'Student'}</span>. Here's your overview.</p>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
+      
+      {/* Premium Welcome Hero Card */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-650 p-8 sm:p-10 border border-white/10 shadow-xl">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -mr-20 -mt-20 blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 max-w-xl space-y-4">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-blue-200 border border-white/10 uppercase tracking-wider backdrop-blur-md">
+            <Sparkles className="w-3.5 h-3.5" /> Student Portal
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            Welcome back, <br className="xs:hidden" />
+            <span className="bg-gradient-to-r from-white via-blue-100 to-indigo-100 bg-clip-text text-transparent">{userName}</span>!
+          </h1>
+          <p className="text-sm sm:text-base text-blue-100/90 font-medium max-w-md leading-relaxed">
+            Ready to continue your tech journey? Access your enrolled tracks, download documents, or explore help desk tickets directly from here.
+          </p>
+          <div className="pt-2">
+            <Link 
+              to="/user/my-courses" 
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-blue-600 hover:bg-slate-100 font-bold text-xs shadow-md hover:scale-105 active:scale-95 transition-all"
+            >
+              Continue Learning <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats Summary Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Total Orders', value: myOrders.length, icon: '📦', color: 'from-blue-500 to-indigo-600' },
-          { label: 'Completed', value: completedOrders, icon: '✅', color: 'from-emerald-500 to-green-600' },
-          { label: 'Pending', value: pendingOrders, icon: '⏳', color: 'from-amber-500 to-orange-600' },
-          { label: 'Total Spent', value: `₹${totalSpent.toLocaleString('en-IN')}`, icon: '💰', color: 'from-purple-500 to-violet-600' },
-        ].map((stat, i) => (
-          <div key={i} className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 hover:bg-gray-800/50 hover:border-white/10 transition-all duration-300 shadow-xl group">
-            <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-300 mb-4`}>
-              <span className="text-xl">{stat.icon}</span>
+          { label: 'Active Tracks', value: myCourses.length, icon: BookOpen, color: 'from-blue-500 to-indigo-650', glow: 'rgba(59,130,246,0.25)' },
+          { label: 'Lessons Completed', value: completedLessonsCount, icon: Play, color: 'from-purple-500 to-violet-650', glow: 'rgba(139,92,246,0.25)' },
+          { label: 'Verified Certificates', value: myCertificatesCount, icon: Award, color: 'from-emerald-500 to-green-650', glow: 'rgba(16,185,129,0.25)' },
+          { label: 'Enrolled Orders', value: myOrders.length, icon: ShoppingBag, color: 'from-pink-500 to-rose-650', glow: 'rgba(236,72,153,0.25)' },
+        ].map((stat, i) => {
+          const IconComp = stat.icon
+          return (
+            <div 
+              key={i} 
+              className={`backdrop-blur-xl border rounded-3xl p-6 transition-all duration-300 shadow-glass hover:shadow-glass-hover group relative overflow-hidden ${
+                isDark 
+                  ? 'bg-slate-900/35 border-white/[0.06] hover:bg-slate-900/50 hover:border-white/[0.12] shadow-[0_8px_30px_rgb(0,0,0,0.15)]' 
+                  : 'bg-white/45 border-white/60 hover:bg-white/65 hover:border-white/80 shadow-[0_8px_30px_rgba(31,38,135,0.03)]'
+              }`}
+            >
+              <div 
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" 
+                style={{ background: `radial-gradient(circle at 50% 50%, ${stat.glow} 0%, transparent 60%)` }}
+              />
+              <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-md transform group-hover:scale-110 transition-transform duration-300 mb-4 text-white`}>
+                <IconComp className="w-5 h-5" />
+              </div>
+              <p className={`text-3xl font-extrabold tracking-tight relative z-10 ${isDark ? 'text-white' : 'text-slate-800'}`}>{stat.value}</p>
+              <p className={`text-xs font-semibold mt-1 uppercase tracking-wider relative z-10 ${isDark ? 'text-gray-400' : 'text-slate-450'}`}>{stat.label}</p>
             </div>
-            <p className="text-3xl font-extrabold text-white tracking-tight">{stat.value}</p>
-            <p className="text-sm font-medium text-gray-400 mt-1">{stat.label}</p>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-        {/* Recent Orders */}
-        <div className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-8 hover:border-white/10 transition-colors shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
-          <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-            <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-            </svg>
-            Recent Orders
-          </h3>
-          {recentOrders.length === 0 ? (
-            <div className="text-center py-10 bg-white/5 rounded-2xl border border-dashed border-white/10">
-              <p className="text-gray-500 font-medium">No orders yet</p>
-              <Link to="/projects" className="text-blue-400 text-sm hover:text-blue-300 mt-2 inline-block">Browse projects</Link>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Enrolled Courses / Progress Section */}
+        <div className={`backdrop-blur-xl border rounded-3xl p-6 sm:p-8 transition-all relative overflow-hidden flex flex-col justify-between min-h-[360px] lg:col-span-2 ${
+          isDark 
+            ? 'bg-slate-900/35 border-white/[0.06] hover:border-white/[0.12] hover:bg-slate-900/50 shadow-[0_8px_30px_rgb(0,0,0,0.15)]' 
+            : 'bg-white/45 border-white/60 hover:border-white/80 hover:bg-white/65 shadow-[0_8px_30px_rgba(31,38,135,0.03)]'
+        }`}>
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className={`text-xl font-bold flex items-center gap-2.5 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+                <BookOpen className="w-5 h-5 text-blue-500" />
+                Active Learning Tracks
+              </h3>
+              {myCourses.length > 0 && (
+                <Link to="/user/my-courses" className="text-xs font-bold text-blue-500 hover:text-blue-600 flex items-center gap-1">
+                  View All <ChevronRight className="w-4 h-4" />
+                </Link>
+              )}
             </div>
-          ) : (
+
+            {myCourses.length === 0 ? (
+              <div className={`text-center py-12 rounded-2xl border border-dashed ${isDark ? 'bg-white/5 border-white/10' : 'bg-slate-100/50 border-slate-200'}`}>
+                <p className={`font-medium text-sm ${isDark ? 'text-gray-500' : 'text-slate-400'}`}>You haven't enrolled in any tracks yet</p>
+                <Link to="/courses" className="text-blue-550 text-xs hover:text-blue-600 mt-2 font-bold inline-block">Explore Internship Tracks</Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {myCourses.slice(0, 3).map(({ course, enrollment }) => (
+                  <div 
+                    key={enrollment.id} 
+                    className={`p-4 border rounded-2xl transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                      isDark 
+                        ? 'bg-white/[0.03] hover:bg-white/[0.07] border-white/[0.05]' 
+                        : 'bg-white/60 hover:bg-white/90 border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.01)]'
+                    }`}
+                  >
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-blue-500 px-2 py-0.5 rounded bg-blue-500/10">
+                        {course.category}
+                      </span>
+                      <h4 className={`text-sm font-bold ${isDark ? 'text-gray-100' : 'text-slate-800'}`}>{course.title}</h4>
+                      <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-slate-450'}`}>Mode: {course.deliveryType === 'course' ? 'Self-Paced Learning' : 'Internship & Training'}</p>
+                    </div>
+                    <div className="flex items-center gap-3 justify-between sm:justify-end">
+                      <Link 
+                        to="/user/my-courses"
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-xs font-bold rounded-xl transition-all text-white text-center"
+                      >
+                        Enter LMS
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Quick Links & Shortcuts */}
+        <div className={`backdrop-blur-xl border rounded-3xl p-6 sm:p-8 transition-all relative overflow-hidden flex flex-col justify-between ${
+          isDark 
+            ? 'bg-slate-900/35 border-white/[0.06] hover:border-white/[0.12] hover:bg-slate-900/50 shadow-[0_8px_30px_rgb(0,0,0,0.15)]' 
+            : 'bg-white/45 border-white/60 hover:border-white/80 hover:bg-white/65 shadow-[0_8px_30px_rgba(31,38,135,0.03)]'
+        }`}>
+          <div>
+            <h3 className={`text-xl font-bold mb-6 flex items-center gap-2.5 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+              <Sparkles className="w-5 h-5 text-purple-500" />
+              Quick Shortcuts
+            </h3>
             <div className="space-y-3">
-              {recentOrders.map(order => (
-                <div key={order.id} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-gray-200 truncate">{order.project_title || 'Project'}</p>
-                    <p className="text-xs text-gray-500">{order.date || 'Recent'}</p>
-                  </div>
-                  <div className="text-right ml-4">
-                    <p className="text-sm font-bold text-emerald-400">₹{Number(order.amount || 0).toLocaleString('en-IN')}</p>
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full ${order.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>{order.status || 'pending'}</span>
-                  </div>
+              <Link 
+                to="/courses" 
+                className={`flex items-center gap-3 p-3.5 rounded-2xl border transition-all group ${
+                  isDark 
+                    ? 'bg-white/[0.03] border-white/[0.05] hover:bg-white/[0.08]' 
+                    : 'bg-white/60 border-slate-200/80 hover:bg-white/90 shadow-[0_4px_20px_rgba(0,0,0,0.01)]'
+                }`}
+              >
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-650 flex items-center justify-center text-white shrink-0">
+                  <BookOpen className="w-5 h-5" />
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-bold group-hover:text-blue-500 transition-colors ${isDark ? 'text-white' : 'text-slate-800'}`}>Courses Directory</p>
+                  <p className={`text-[10px] ${isDark ? 'text-gray-400' : 'text-slate-450'}`}>Explore new technologies</p>
+                </div>
+              </Link>
 
-        {/* Quick Actions */}
-        <div className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-8 hover:border-white/10 transition-colors shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
-          <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-            <svg className="w-5 h-5 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-            </svg>
-            Quick Actions
-          </h3>
-          <div className="space-y-3">
-            <Link to="/projects" className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-500/20 hover:border-blue-500/40 transition-all">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" /></svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">Browse Projects</p>
-                <p className="text-xs text-gray-400">Explore available projects</p>
-              </div>
-            </Link>
-            <Link to="/user/support" className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 hover:border-emerald-500/40 transition-all">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" /></svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">Contact Support</p>
-                <p className="text-xs text-gray-400">Get help from our team</p>
-              </div>
-            </Link>
-            <Link to="/user/profile" className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-violet-500/10 to-blue-500/10 border border-violet-500/20 hover:border-violet-500/40 transition-all">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-blue-600 flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-white">Update Profile</p>
-                <p className="text-xs text-gray-400">Manage photo, phone and password</p>
-              </div>
-            </Link>
+              <Link 
+                to="/user/certificates" 
+                className={`flex items-center gap-3 p-3.5 rounded-2xl border transition-all group ${
+                  isDark 
+                    ? 'bg-white/[0.03] border-white/[0.05] hover:bg-white/[0.08]' 
+                    : 'bg-white/60 border-slate-200/80 hover:bg-white/90 shadow-[0_4px_20px_rgba(0,0,0,0.01)]'
+                }`}
+              >
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-650 flex items-center justify-center text-white shrink-0">
+                  <Award className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-bold group-hover:text-emerald-500 transition-colors ${isDark ? 'text-white' : 'text-slate-800'}`}>Documents & Certificates</p>
+                  <p className={`text-[10px] ${isDark ? 'text-gray-400' : 'text-slate-450'}`}>Download offer letters</p>
+                </div>
+              </Link>
+
+              <Link 
+                to="/user/support" 
+                className={`flex items-center gap-3 p-3.5 rounded-2xl border transition-all group ${
+                  isDark 
+                    ? 'bg-white/[0.03] border-white/[0.05] hover:bg-white/[0.08]' 
+                    : 'bg-white/60 border-slate-200/80 hover:bg-white/90 shadow-[0_4px_20px_rgba(0,0,0,0.01)]'
+                }`}
+              >
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-violet-650 flex items-center justify-center text-white shrink-0">
+                  <MessageSquare className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-bold group-hover:text-purple-500 transition-colors ${isDark ? 'text-white' : 'text-slate-800'}`}>Help Desk Chat</p>
+                  <p className={`text-[10px] ${isDark ? 'text-gray-400' : 'text-slate-450'}`}>Instant query support</p>
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
+
       </div>
+
+      {/* Recent Purchases Section */}
+      <div className={`backdrop-blur-xl border rounded-3xl p-6 sm:p-8 transition-colors ${
+        isDark 
+          ? 'bg-slate-900/35 border-white/[0.06] hover:bg-slate-900/50 shadow-[0_8px_30px_rgb(0,0,0,0.15)]' 
+          : 'bg-white/45 border-white/60 hover:border-white/80 hover:bg-white/65 shadow-[0_8px_30px_rgba(31,38,135,0.03)]'
+      }`}>
+        <h3 className={`text-xl font-bold mb-6 flex items-center gap-2.5 ${isDark ? 'text-white' : 'text-slate-800'}`}>
+          <ShoppingBag className="w-5 h-5 text-pink-500" />
+          Recent Orders
+        </h3>
+        {recentOrders.length === 0 ? (
+          <div className={`text-center py-10 rounded-2xl border border-dashed ${isDark ? 'bg-white/5 border-white/10' : 'bg-slate-100/50 border-slate-200'}`}>
+            <p className={`font-medium text-sm ${isDark ? 'text-gray-500' : 'text-slate-400'}`}>No transaction records found</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {recentOrders.map(order => (
+              <div 
+                key={order.id} 
+                className={`p-5 border rounded-2xl transition-all space-y-4 ${
+                  isDark 
+                    ? 'bg-white/[0.03] hover:bg-white/[0.07] border-white/[0.05]' 
+                    : 'bg-white/60 hover:bg-white/90 border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.01)]'
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="space-y-1">
+                    <h4 className={`text-sm font-bold truncate max-w-[150px] ${isDark ? 'text-gray-100' : 'text-slate-800'}`}>{order.project_title || 'Project Enrollment'}</h4>
+                    <p className={`text-[10px] ${isDark ? 'text-gray-500' : 'text-slate-450'}`}>{order.date || 'Recent purchase'}</p>
+                  </div>
+                  <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${order.status === 'completed' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}`}>
+                    {order.status || 'pending'}
+                  </span>
+                </div>
+                <div className={`flex justify-between items-center border-t pt-3 ${isDark ? 'border-white/5' : 'border-slate-200'}`}>
+                  <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-slate-450'}`}>Amount Paid</span>
+                  <span className={`text-sm font-extrabold ${isDark ? 'text-white' : 'text-slate-800'}`}>₹{Number(order.amount || 0).toLocaleString('en-IN')}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
     </div>
   )
 }

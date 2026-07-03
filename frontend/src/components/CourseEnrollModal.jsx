@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
@@ -81,6 +81,13 @@ const matchesPlanEnrollment = (enrollment, planRef = null) => {
 
 export default function CourseEnrollModal({ course, onClose, onSuccess }) {
   const { addEnrollment, isUserEnrolled } = useStore()
+
+  useEffect(() => {
+    document.body.classList.add('payment-modal-open')
+    return () => {
+      document.body.classList.remove('payment-modal-open')
+    }
+  }, [])
   const { currentUser } = useAuth()
   const navigate = useNavigate()
   const [mobile, setMobile] = useState('')

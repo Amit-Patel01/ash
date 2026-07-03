@@ -1,1126 +1,912 @@
-import { Link } from 'react-router-dom'
 import { useEffect, useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  Check, 
+  Shield, 
+  GraduationCap, 
+  Award, 
+  Users, 
+  Code, 
+  Cpu, 
+  LineChart, 
+  Globe, 
+  Sparkles, 
+  BookOpen, 
+  Clock, 
+  Play, 
+  FileText, 
+  ChevronDown, 
+  MessageSquare, 
+  ArrowRight,
+  Database,
+  Terminal,
+  Cloud,
+  FileCode2,
+  Calendar,
+  Layers,
+  ChevronRight,
+  Star
+} from 'lucide-react'
 import { useStore } from '../store/StoreContext'
 import { useTheme } from '../context/ThemeContext'
 import SEO from './SEO'
 import msmeQR from '../assets/msme-qr.png'
 import msmeLogo from '../assets/msme.png'
 
-/* ══════════════════════════════════════════════════════════════
-   INLINE STYLES — No external CSS dependencies
-══════════════════════════════════════════════════════════════ */
-const CSS = `
-  .hp { font-family:inherit; color:#0f172a; }
-  .hp * { box-sizing:border-box; margin:0; padding:0; }
+/* ── Counter component ── */
+const Counter = ({ value, duration = 1.8 }) => {
+  const [count, setCount] = useState(0)
 
-  /* ── Animations ── */
-  @keyframes hp-up   { from{opacity:0;transform:translateY(26px)} to{opacity:1;transform:none} }
-  @keyframes hp-pulse{ 0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.18)} 50%{box-shadow:0 0 0 8px rgba(34,197,94,.06)} }
-  @keyframes hp-float{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
-  @keyframes hp-shine{ 0%{transform:translateX(-100%) skewX(-18deg)} 100%{transform:translateX(260%) skewX(-18deg)} }
-  @keyframes hp-spin  { to{transform:rotate(360deg)} }
-  @keyframes hp-bounce{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-  @keyframes hp-glow{ 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:0.8;transform:scale(1.05)} }
-  @keyframes hp-slideIn{ from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
-  @keyframes hp-scaleIn{ from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
-  @keyframes hp-rotate{ from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-  @keyframes hp-wiggle{ 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-3deg)} 75%{transform:rotate(3deg)} }
-  @keyframes hp-heartbeat{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
-  @keyframes hp-wave{ 0%{transform:translateY(0)} 50%{transform:translateY(-8px)} 100%{transform:translateY(0)} }
+  useEffect(() => {
+    let start = 0
+    const end = parseInt(value.replace(/[^0-9]/g, ''), 10)
+    if (isNaN(end)) return
 
-  .hp-in  { animation:hp-up .65s cubic-bezier(.22,1,.36,1) both; }
-  .d1{animation-delay:.06s} .d2{animation-delay:.14s} .d3{animation-delay:.24s}
-  .d4{animation-delay:.34s} .d5{animation-delay:.46s} .d6{animation-delay:.60s}
-  .d7{animation-delay:.76s}
+    const totalMiliseconds = duration * 1000
+    const steps = 50
+    const stepValue = Math.ceil(end / steps)
+    const incrementTime = totalMiliseconds / steps
 
-  /* ── Gradient text ── */
-  .hp-grad {
-    background:linear-gradient(130deg,#1d4ed8 0%,#4f46e5 50%,#7c3aed 100%);
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  }
-
-  /* ── Section pill ── */
-  .hp-pill {
-    display:inline-flex; align-items:center; gap:7px;
-    padding:5px 16px; border-radius:999px;
-    background:rgba(99,102,241,.08); border:1px solid rgba(99,102,241,.18);
-    font-size:11px; font-weight:700; letter-spacing:.07em;
-    text-transform:uppercase; color:#6366f1; margin-bottom:12px;
-    animation: hp-bounce 2s ease-in-out infinite;
-  }
-
-  /* ── CTA Primary ── */
-  .hp-cta-primary {
-    display:inline-flex; align-items:center; gap:9px;
-    padding:14px 30px; border-radius:999px;
-    background:linear-gradient(135deg,#1d4ed8,#6366f1);
-    color:white; font-weight:700; font-size:15px;
-    text-decoration:none; border:none; cursor:pointer;
-    box-shadow:0 6px 24px rgba(29,78,216,.36),inset 0 1px 0 rgba(255,255,255,.18);
-    transition:transform .28s,box-shadow .28s; position:relative; overflow:hidden;
-    animation: hp-heartbeat 2s ease-in-out infinite;
-  }
-  .hp-cta-primary::after {
-    content:''; position:absolute; top:0; left:0; width:38%; height:100%;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
-    animation:hp-shine 2.8s infinite;
-  }
-  .hp-cta-primary:hover { 
-    transform:translateY(-3px) scale(1.05); 
-    box-shadow:0 14px 38px rgba(29,78,216,.46); 
-    animation: none;
-  }
-
-  /* ── CTA Secondary ── */
-  .hp-cta-secondary {
-    display:inline-flex; align-items:center; gap:9px;
-    padding:14px 28px; border-radius:999px;
-    background:white; border:1.5px solid rgba(29,78,216,.22);
-    color:#1d4ed8; font-weight:700; font-size:15px;
-    text-decoration:none; cursor:pointer;
-    box-shadow:0 4px 16px rgba(29,78,216,.1);
-    transition:transform .28s,box-shadow .28s,background .25s;
-  }
-  .hp-cta-secondary:hover { transform:translateY(-3px); background:#eff6ff; box-shadow:0 10px 28px rgba(29,78,216,.18); }
-
-  /* ── Glass card ── */
-  .hp-glass {
-    background:rgba(255,255,255,.82);
-    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-    border:1px solid rgba(255,255,255,.95);
-    border-radius:22px;
-    box-shadow:0 4px 24px rgba(29,78,216,.07);
-    transition:transform .32s,box-shadow .32s,border-color .32s;
-    position:relative; overflow:hidden;
-    animation: hp-scaleIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .hp-glass::before {
-    content:''; position:absolute; inset:0;
-    background:linear-gradient(135deg,rgba(29,78,216,.022) 0%,transparent 55%);
-    pointer-events:none;
-    animation: hp-glow 3s ease-in-out infinite;
-  }
-  .hp-glass:hover {
-    transform:translateY(-6px) scale(1.02);
-    border-color:rgba(99,102,241,.22);
-    box-shadow:0 16px 48px rgba(29,78,216,.12);
-  }
-
-  /* ── Section title ── */
-  .hp-stitle {
-    font-weight:800;
-    font-size:clamp(1.5rem,3.6vw,2.2rem);
-    color:#0f172a; letter-spacing:-.02em; line-height:1.18;
-  }
-
-  /* ── Divider ── */
-  .hp-div {
-    height:1px; margin:clamp(48px,7vw,72px) 0;
-    background:linear-gradient(90deg,transparent,rgba(29,78,216,.15),rgba(99,102,241,.12),transparent);
-  }
-
-  /* ── Internship card top bar ── */
-  .hp-icard {
-    padding:28px 24px;
-    border-radius:20px;
-    background:rgba(255,255,255,.85);
-    border:1px solid rgba(255,255,255,.96);
-    box-shadow:0 4px 22px rgba(29,78,216,.07);
-    transition:transform .3s,box-shadow .3s,border-color .3s;
-    position:relative; overflow:hidden;
-  }
-  .hp-icard::before {
-    content:''; position:absolute; top:0; left:0; right:0; height:3px;
-  }
-  .hp-icard:hover { transform:translateY(-7px); box-shadow:0 18px 48px rgba(29,78,216,.13); border-color:rgba(99,102,241,.24); }
-
-  /* ── Why choose item ── */
-  .hp-why-item {
-    display:flex; align-items:flex-start; gap:14px;
-    padding:20px 22px; border-radius:18px;
-    background:rgba(255,255,255,.8);
-    border:1px solid rgba(255,255,255,.96);
-    box-shadow:0 2px 14px rgba(29,78,216,.06);
-    transition:transform .28s,box-shadow .28s;
-    animation: hp-slideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .hp-why-item:hover { 
-    transform:translateY(-4px) scale(1.02); 
-    box-shadow:0 10px 32px rgba(29,78,216,.1); 
-  }
-  .hp-why-icon {
-    width:48px; height:48px; border-radius:14px; flex-shrink:0;
-    display:flex; align-items:center; justify-content:center; font-size:22px;
-    animation: hp-float 3s ease-in-out infinite;
-  }
-
-  /* ── Testimonial card ── */
-  .hp-tcard {
-    padding:26px 24px; border-radius:20px;
-    background:rgba(255,255,255,.85);
-    border:1px solid rgba(255,255,255,.96);
-    box-shadow:0 4px 20px rgba(29,78,216,.07);
-    transition:transform .3s,box-shadow .3s,border-color .3s;
-    position:relative;
-    animation: hp-scaleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .hp-tcard::before {
-    content:'"'; position:absolute; top:14px; left:20px;
-    font-size:4rem; color:rgba(99,102,241,.15); line-height:1;
-    font-family:'Inter',sans-serif; font-weight:800;
-    animation: hp-wiggle 4s ease-in-out infinite;
-  }
-  .hp-tcard:hover { 
-    transform:translateY(-5px) rotate(-1deg); 
-    box-shadow:0 14px 40px rgba(29,78,216,.11); 
-    border-color:rgba(99,102,241,.2);
-  }
-
-  /* ── Trust / MSME bar ── */
-  .hp-trust {
-    background:linear-gradient(135deg,#1e3a8a,#312e81);
-    border-radius:20px; padding:clamp(22px,4vw,32px);
-    display:flex; align-items:center; gap:20px; flex-wrap:wrap;
-    box-shadow:0 8px 36px rgba(30,58,138,.3);
-    position:relative; overflow:hidden;
-  }
-  .hp-trust::before {
-    content:''; position:absolute;
-    width:280px; height:280px; border-radius:50%;
-    background:rgba(255,255,255,.04); top:-80px; right:-80px; pointer-events:none;
-  }
-
-  /* ── Certificate card ── */
-  .hp-cert {
-    background:linear-gradient(135deg,#f8faff,#eff6ff);
-    border:2px dashed rgba(29,78,216,.25);
-    border-radius:20px; padding:clamp(24px,4vw,36px);
-    text-align:center;
-    box-shadow:0 4px 20px rgba(29,78,216,.06);
-    transition:transform .3s;
-  }
-  .hp-cert:hover { transform:scale(1.015); }
-
-  /* ── Stats bar ── */
-  .hp-stats {
-    display:flex; align-items:stretch; flex-wrap:wrap;
-    background:rgba(255,255,255,.8);
-    backdrop-filter:blur(20px);
-    border:1px solid rgba(255,255,255,.95); border-radius:20px;
-    box-shadow:0 4px 24px rgba(29,78,216,.07); overflow:hidden;
-  }
-  .hp-stat-item {
-    flex:1; min-width:160px; padding:clamp(16px,3vw,26px) 20px;
-    text-align:center; position:relative;
-    transition:background .25s;
-  }
-  .hp-stat-item:not(:last-child)::after {
-    content:''; position:absolute; right:0; top:20%; bottom:20%;
-    width:1px; background:rgba(29,78,216,.1);
-  }
-  .hp-stat-num {
-    font-weight:800;
-    font-size:clamp(1.5rem,4vw,2.2rem); color:#1d4ed8; line-height:1;
-  }
-  .hp-stat-label { font-size:11px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:.05em; margin-top:5px; }
-  .hp-stat-icon { font-size: 28px; margin-bottom: 8px; }
-  .hp-counter { animation: hp-pulse 2s ease-in-out infinite; }
-  .dark .hp-counter { color: #818cf8; }
-
-
-  /* ══ MOBILE ══ */
-  @media (max-width:768px) {
-    .hp-stat-item:not(:last-child)::after { display:none; }
-    .hp-stat-item { min-width:50%; border-bottom:1px solid rgba(29,78,216,.06); }
-  }
-  @media (max-width:480px) {
-    .hp-cta-primary, .hp-cta-secondary { width:100%; justify-content:center; padding:13px 20px; font-size:14px; }
-    .hp-trust { flex-direction:column; }
-    .hp-glass { border-radius:16px; }
-  }
-
-  /* ── FAQ styling ── */
-  .hp-faq-item {
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.96);
-    box-shadow: 0 4px 16px rgba(29, 78, 216, 0.05);
-    margin-bottom: 12px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    animation: hp-slideIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .hp-faq-item:hover {
-    border-color: rgba(99, 102, 241, 0.22);
-    box-shadow: 0 8px 24px rgba(29, 78, 216, 0.08);
-    transform: translateX(4px);
-  }
-  .hp-faq-trigger {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 24px;
-    background: none;
-    border: none;
-    font-size: 15px;
-    font-weight: 700;
-    color: #0f172a;
-    text-align: left;
-    cursor: pointer;
-    transition: color 0.2s ease;
-  }
-  .hp-faq-trigger:hover {
-    color: #1d4ed8;
-  }
-  .hp-faq-answer {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
-    padding: 0 24px;
-    font-size: 14px;
-    color: #64748b;
-    line-height: 1.65;
-  }
-  .hp-faq-item.active .hp-faq-answer {
-    max-height: 200px;
-    padding-bottom: 20px;
-  }
-  .hp-faq-arrow {
-    transition: transform 0.3s ease;
-    color: #64748b;
-  }
-  .hp-faq-item.active .hp-faq-arrow {
-    transform: rotate(180deg);
-    color: #1d4ed8;
-  }
-
-  /* ── Dark Mode Overrides ── */
-  .dark .hp { color: #f1f5f9; }
-  .dark .hp-stitle { color: #f1f5f9; }
-  .dark h1, .dark h2, .dark h3 { color: #f1f5f9 !important; }
-  .dark p { color: #cbd5e1 !important; }
-  .dark .hp-hero-sub { color: #94a3b8 !important; }
-  .dark .hp-glass {
-    background: rgba(10, 18, 40, 0.85) !important;
-    border-color: rgba(255, 255, 255, 0.06) !important;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5) !important;
-  }
-  .dark .hp-glass::before {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, transparent 55%);
-  }
-  .dark .hp-icard {
-    background: rgba(10, 18, 40, 0.85) !important;
-    border-color: rgba(255, 255, 255, 0.06) !important;
-    box-shadow: 0 4px 22px rgba(0, 0, 0, 0.5) !important;
-  }
-  .dark .hp-icard div { color: #f1f5f9 !important; }
-  .dark .hp-icard p { color: #94a3b8 !important; }
-  .dark .hp-why-item {
-    background: rgba(10, 18, 40, 0.82) !important;
-    border-color: rgba(255, 255, 255, 0.05) !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
-  }
-  .dark .hp-why-item > div > div:first-child { color: #f1f5f9 !important; }
-  .dark .hp-why-item > div > div:last-child { color: #94a3b8 !important; }
-  .dark .hp-tcard {
-    background: rgba(10, 18, 40, 0.82) !important;
-    border-color: rgba(255, 255, 255, 0.05) !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
-  }
-  .dark .hp-tcard p { color: #cbd5e1 !important; }
-  .dark .hp-tcard > div:last-child > div:first-child { color: #f1f5f9 !important; }
-  .dark .hp-tcard > div:last-child > div:last-child { color: #94a3b8 !important; }
-  .dark .hp-cert {
-    background: linear-gradient(135deg, #0a1228, #0e1630) !important;
-    border-color: rgba(99, 102, 241, 0.35) !important;
-  }
-  .dark .hp-faq-item {
-    background: rgba(10, 18, 40, 0.82) !important;
-    border-color: rgba(255, 255, 255, 0.05) !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
-  }
-  .dark .hp-faq-trigger {
-    color: #f1f5f9 !important;
-  }
-  .dark .hp-faq-trigger:hover {
-    color: #818cf8 !important;
-  }
-  .dark .hp-faq-answer {
-    color: #94a3b8 !important;
-  }
-  .dark .hp-stats {
-    background: rgba(10, 18, 40, 0.85) !important;
-    border-color: rgba(255, 255, 255, 0.06) !important;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5) !important;
-  }
-`
-
-const SvgIcon = ({ name, size = 20, color = 'currentColor', strokeWidth = 1.9, style = {} }) => {
-  const iconName = typeof name === 'string' ? name : ''
-  const props = {
-    width: size,
-    height: size,
-    viewBox: '0 0 24 24',
-    fill: 'none',
-    xmlns: 'http://www.w3.org/2000/svg',
-    style,
-    'aria-hidden': 'true',
-  }
-
-  switch (iconName) {
-    case 'academy':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-4 9 4-9 4-9-4Z" /><path d="M7 10.8v3.2c0 1.8 2.7 3.5 5 3.5s5-1.7 5-3.5v-3.2" /><path d="M21 9v5" /></svg>
-    case 'projects':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M4 14l4-4 4 4 8-8" /><path d="M15 6h5v5" /><path d="M4 20h16" /></svg>
-    case 'briefcase':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><rect x="3.5" y="7" width="17" height="11" rx="2.5" /><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7" /><path d="M3.5 11.5h17" /></svg>
-    case 'certificate':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="4" width="14" height="16" rx="2.5" /><path d="M9 8h6M9 12h6M9 16h3" /><path d="m15.5 17.5 1.5 2 1.5-2" /></svg>
-    case 'mentor':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="8" r="3" /><path d="M4.5 18a4.5 4.5 0 0 1 9 0" /><path d="M16.5 7.5h4M18.5 5.5v4" /></svg>
-    case 'clock':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8" /><path d="M12 8v4l3 2" /></svg>
-    case 'device':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><rect x="7" y="3.5" width="10" height="17" rx="2.5" /><path d="M11 17.5h2" /></svg>
-    case 'status':
-      return <svg {...props} viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill={color} fillOpacity="0.18" /><circle cx="10" cy="10" r="4.5" fill={color} /></svg>
-    case 'office':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M4 20h16" /><path d="M6 20V6.5A1.5 1.5 0 0 1 7.5 5H16a2 2 0 0 1 2 2v13" /><path d="M9 9h1M9 12h1M9 15h1M13 9h1M13 12h1M13 15h1" /></svg>
-    case 'courses':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M5 6.5A2.5 2.5 0 0 1 7.5 4H19v14H7.5A2.5 2.5 0 0 0 5 20V6.5Z" /><path d="M9 8h6M9 11h6" /></svg>
-    case 'comingSoon':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M6 9.5h12v4H6z" /><path d="M8 9.5 10 6h4l2 3.5" /><path d="M8 13.5v4M16 13.5v4" /><path d="M8 9.5l2.2 2.2M12 9.5l2.2 2.2M14.8 9.5 17 11.7" /></svg>
-    case 'check':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="m8.5 12 2.5 2.5 4.5-5" /></svg>
-    case 'trophy':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M8 4h8v2a4 4 0 0 1-8 0V4Z" /><path d="M9 14h6M10 18h4" /><path d="M12 10v4" /><path d="M8 6H5a2 2 0 0 0 2 2h1M16 6h3a2 2 0 0 1-2 2h-1" /></svg>
-    case 'rocket':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M14 4c2.8.8 4.6 3.2 5 6-2.2.6-4.6.2-6.4-1.2C10.8 7 10.1 4.7 10 3c1.3-.1 2.7.1 4 .4Z" /><path d="M10.5 9.5 6 14l-1.5 4.5L9 17l4.5-4.5" /><path d="M6.5 10.5 4 8c.6-1.8 2.2-3.4 4-4l2.5 2.5M13.5 17.5 16 20c1.8-.6 3.4-2.2 4-4l-2.5-2.5" /><circle cx="14.5" cy="8.5" r="1.2" fill={color} stroke="none" /></svg>
-    case 'trading':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M4 16l4-4 3 3 6-7" /><path d="M13 8h4v4" /><path d="M4 20h16" /></svg>
-    case 'web':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><rect x="3.5" y="5" width="17" height="12" rx="2" /><path d="M3.5 9h17M8 19h8" /></svg>
-    case 'python':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M9 4.5h3.5A2.5 2.5 0 0 1 15 7v2.5H9a2 2 0 0 0-2 2V14A2.5 2.5 0 0 0 9.5 16.5H13" /><path d="M15 19.5h-3.5A2.5 2.5 0 0 1 9 17v-2.5h6a2 2 0 0 0 2-2V10A2.5 2.5 0 0 0 14.5 7.5H11" /><circle cx="10" cy="7.5" r="0.8" fill={color} stroke="none" /><circle cx="14" cy="16.5" r="0.8" fill={color} stroke="none" /></svg>
-    case 'marketing':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M4 14V10a2 2 0 0 1 2-2h2l7-3v14l-7-3H6a2 2 0 0 1-2-2Z" /><path d="M15 10.5a4 4 0 0 1 0 3" /><path d="M17.5 8.5a7 7 0 0 1 0 7" /></svg>
-    case 'design':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M12 4a8 8 0 1 0 0 16h1a2 2 0 0 0 2-2 2 2 0 0 1 2-2h1a4 4 0 0 0 0-8 6 6 0 0 0-6-4Z" /><circle cx="7.5" cy="10" r="1" fill={color} stroke="none" /><circle cx="10" cy="7.5" r="1" fill={color} stroke="none" /><circle cx="14" cy="7.5" r="1" fill={color} stroke="none" /><circle cx="16.5" cy="11" r="1" fill={color} stroke="none" /></svg>
-    case 'data':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M5 19V11M10 19V7M15 19v-5M20 19V9" /><path d="M3 19h18" /></svg>
-    case 'ai':
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M12 4.5 13.8 8.2 17.5 10 13.8 11.8 12 15.5 10.2 11.8 6.5 10 10.2 8.2 12 4.5Z" /><path d="M18.2 4.8v2.6M19.5 6.1h-2.6" /><path d="M5.4 15.6v2.2M6.5 16.7H4.3" /></svg>
-    default:
-      if (iconName.includes('👨') || iconName.includes('ðŸ‘¨')) {
-        return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="8" r="3" /><path d="M4.5 18a4.5 4.5 0 0 1 9 0" /><path d="M16.5 7.5h4M18.5 5.5v4" /></svg>
+    const timer = setInterval(() => {
+      start += stepValue
+      if (start >= end) {
+        clearInterval(timer)
+        setCount(end)
+      } else {
+        setCount(start)
       }
-      return <svg {...props} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"><path d="M5 6.5A2.5 2.5 0 0 1 7.5 4H19v14H7.5A2.5 2.5 0 0 0 5 20V6.5Z" /><path d="M9 8h6M9 11h6M9 14h4" /></svg>
-  }
+    }, incrementTime)
+
+    return () => clearInterval(timer)
+  }, [value, duration])
+
+  const suffix = value.replace(/[0-9,]/g, '')
+  return <span>{count.toLocaleString('en-IN')}{suffix}</span>
 }
 
-const getCourseIconName = (course, catMeta) => {
-  const value = `${catMeta?.name || ''} ${catMeta?.icon || ''} ${course?.title || ''}`.toLowerCase()
-
-  if (value.includes('trading') || value.includes('stock') || value.includes('📈')) return 'trading'
-  if (value.includes('web') || value.includes('development') || value.includes('💻')) return 'web'
-  if (value.includes('python') || value.includes('🐍')) return 'python'
-  if (value.includes('marketing') || value.includes('📣')) return 'marketing'
-  if (value.includes('design') || value.includes('🎨') || value.includes('ui/ux')) return 'design'
-  if (value.includes('excel') || value.includes('data') || value.includes('analytics') || value.includes('📊')) return 'data'
-  if (value.includes('ai') || value.includes('artificial intelligence')) return 'ai'
-
-  return 'courses'
-}
-
-
-/* ── Why Choose Us (Services Focused) ── */
-const WHY = [
-  { icon: 'design', bg: 'rgba(236,72,153,.08)', title: '360° Design Solutions', desc: 'Layout, graphics design, logo & branding, product design, prototyping, and video production — all under one roof.', color: '#ec4899' },
-  { icon: 'web', bg: 'rgba(59,130,246,.08)', title: 'Full-Stack Development', desc: 'Websites, mobile apps, browser extensions, custom scripts, and automation tools built with modern tech stacks.', color: '#3b82f6' },
-  { icon: 'projects', bg: 'rgba(99,102,241,.08)', title: 'DevOps & Cloud Expertise', desc: 'End-to-end cloud management, deployment automation, security monitoring, and Kubernetes orchestration.', color: '#6366f1' },
-  { icon: 'marketing', bg: 'rgba(249,115,22,.08)', title: 'Digital Marketing Services', desc: 'SEO, SMM, PPC, content writing, and email marketing to grow your online presence.', color: '#f97316' },
-  { icon: 'data', bg: 'rgba(20,184,166,.08)', title: 'Managed IT Services', desc: 'Website management, affiliate management, web research, data entry, and data analysis support.', color: '#14b8a6' },
-  { icon: 'briefcase', bg: 'rgba(139,92,246,.08)', title: 'Strategic Consultation', desc: 'Business consultation, technical architecture, growth hacking, security audits, and market research.', color: '#8b5cf6' },
-]
-
-
-
-
-/* ── FAQs ── */
-const FAQS = [
-  {
-    q: 'Is the internship certification valid and recognized?',
-    a: 'Yes, AmitSolutionHub is an MSME-registered and AICTE-approved organization. All our certificates are valid, verifiable on our portal, and widely accepted by companies.'
-  },
-  {
-    q: 'Are the internship programs online or offline?',
-    a: 'All our internship programs are 100% online. You get access to recorded sessions, code repositories, and online mentorship sessions, allowing you to study at your own pace.'
-  },
-  {
-    q: 'Do you offer placement assistance after completion?',
-    a: 'Yes! We provide portfolio guidance, resume reviews, LinkedIn profile optimization, and share job openings with our alumni network.'
-  },
-  {
-    q: 'What are the prerequisites to enroll in the programs?',
-    a: 'Most of our programs start from the absolute basics, so there are no strict prerequisites. A basic understanding of computers and programming logic is helpful.'
-  },
-  {
-    q: 'How long does each internship program last?',
-    a: 'Our standard programs last for 4 to 8 weeks, depending on the track and pace of your project work.'
-  },
-  {
-    q: 'Can I work on live projects during the internship?',
-    a: 'Yes, working on real-world projects and client case studies is a core part of our curriculum to build your portfolio.'
-  },
-  {
-    q: 'Is there any support available if I get stuck?',
-    a: 'Absolutely. We have a dedicated support channel where you can connect with mentors and peers to resolve queries.'
-  },
-  {
-    q: 'How can I verify my certificate?',
-    a: 'You can verify your certificate instantly by entering your unique Certificate ID on our /verify page.'
-  }
-]
-
-
-/* ══════════════════════════════════════════════════════════════
-   COMPONENT
-══════════════════════════════════════════════════════════════ */
-const Hero = () => {
-  const [loaded, setLoaded] = useState(false)
-  const { courses, courseCategories, testimonials } = useStore()
+/* ── Custom Animated Tech Illustration ── */
+const TechIllustration = () => {
   const { theme } = useTheme()
-  const [showAllReviews, setShowAllReviews] = useState(false)
-  const [showAllFaqs, setShowAllFaqs] = useState(false)
-  const [activeFaq, setActiveFaq] = useState(null)
   const isDark = theme === 'dark'
 
-  const activeCourses = useMemo(() => {
-    return courses?.filter(c => c.published !== false).slice(0, 3) || []
-  }, [courses])
+  return (
+    <div className="relative w-full max-w-lg mx-auto aspect-square flex items-center justify-center select-none">
+      {/* Glow Orbs */}
+      <motion.div 
+        animate={{ scale: [1, 1.12, 1], opacity: [0.25, 0.4, 0.25] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute top-10 left-10 w-48 h-48 rounded-full bg-blue-500/20 blur-3xl pointer-events-none" 
+      />
+      <motion.div 
+        animate={{ scale: [1.1, 1, 1.1], opacity: [0.35, 0.2, 0.35] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        className="absolute bottom-10 right-10 w-56 h-56 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none" 
+      />
 
-  const displayedTestimonials = useMemo(() => {
-    return testimonials || []
+      <svg className="w-[85%] h-[85%] relative z-10" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="250" cy="250" r="220" stroke="currentColor" className="text-slate-200/40 dark:text-slate-800/40" strokeWidth="1" strokeDasharray="6 6" />
+        <circle cx="250" cy="250" r="170" stroke="currentColor" className="text-slate-200/70 dark:text-slate-800/70" strokeWidth="1.5" />
+        
+        {/* Coding Terminal Mockup */}
+        <motion.g
+          initial={{ y: 25, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <rect x="75" y="110" width="350" height="230" rx="16" className="fill-slate-900/95 dark:fill-slate-950/95 stroke-slate-200 dark:stroke-slate-800/80 shadow-2xl" strokeWidth="2" />
+          <rect x="75" y="110" width="350" height="38" rx="16" className="fill-slate-850 dark:fill-slate-900" />
+          <circle cx="98" cy="129" r="6" fill="#ef4444" />
+          <circle cx="114" cy="129" r="6" fill="#eab308" />
+          <circle cx="130" cy="129" r="6" fill="#22c55e" />
+          <text x="250" y="133" textAnchor="middle" className="fill-slate-400 text-xs font-mono">App.jsx</text>
+          
+          {/* Coding lines */}
+          <motion.rect x="100" y="170" width="120" height="8" rx="4" fill="#3b82f6" animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 2.2, repeat: Infinity }} />
+          <motion.rect x="100" y="190" width="220" height="8" rx="4" fill="#a855f7" animate={{ opacity: [1, 0.45, 1] }} transition={{ duration: 2.8, repeat: Infinity }} />
+          <rect x="100" y="210" width="180" height="8" rx="4" fill="#10b981" />
+          <motion.rect x="100" y="230" width="140" height="8" rx="4" fill="#f59e0b" animate={{ opacity: [0.7, 1, 0.7] }} transition={{ duration: 3.2, repeat: Infinity }} />
+          <rect x="100" y="250" width="245" height="8" rx="4" fill="#64748b" />
+          
+          <rect x="250" y="275" width="155" height="50" rx="10" className="fill-blue-500/10 stroke-blue-500/30" strokeWidth="1" />
+          <text x="328" y="304" textAnchor="middle" className="fill-blue-400 text-[10px] font-bold font-mono">Build Success ✓</text>
+        </motion.g>
+
+        {/* Floating Database Badge */}
+        <motion.g
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <rect x="45" y="275" width="68" height="68" rx="16" className="fill-white dark:fill-slate-900 stroke-slate-200 dark:stroke-slate-800 shadow-xl" strokeWidth="1.5" />
+          <Database className="w-7 h-7 text-indigo-500" x="65" y="295" />
+        </motion.g>
+
+        {/* Floating AI/CPU Badge */}
+        <motion.g
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+        >
+          <rect x="385" y="65" width="68" height="68" rx="16" className="fill-white dark:fill-slate-900 stroke-slate-200 dark:stroke-slate-800 shadow-xl" strokeWidth="1.5" />
+          <Cpu className="w-7 h-7 text-pink-500" x="405" y="85" />
+        </motion.g>
+
+        {/* Floating Certificate Trophy */}
+        <motion.g
+          animate={{ scale: [1, 1.04, 1] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <rect x="365" y="290" width="76" height="76" rx="18" className="fill-white dark:fill-slate-900 stroke-slate-200 dark:stroke-slate-800 shadow-xl" strokeWidth="1.5" />
+          <Award className="w-9 h-9 text-emerald-500" x="384" y="309" />
+        </motion.g>
+      </svg>
+    </div>
+  )
+}
+
+/* ── Static Data ── */
+const STATS = [
+  { value: '5,000+', label: 'Students Trained', icon: Users, color: 'text-blue-500' },
+  { value: '12+',    label: 'Internship Programs', icon: BookOpen, color: 'text-indigo-500' },
+  { value: '800+',   label: 'Live Projects Completed', icon: Code, color: 'text-purple-500' },
+  { value: '4,800+', label: 'Certificates Issued', icon: Award, color: 'text-emerald-500' },
+]
+
+const CATEGORIES = [
+  {
+    title: 'Full Stack Development',
+    desc: 'Build scalable modern web applications from scratch using MERN and modern frontend tools.',
+    icon: Code,
+    duration: '4-8 Weeks',
+    level: 'Beginner',
+    color: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
+  },
+  {
+    title: 'Artificial Intelligence',
+    desc: 'Dive into machine learning models, neural networks, natural language processing, and computer vision.',
+    icon: Cpu,
+    duration: '4-8 Weeks',
+    level: 'Intermediate',
+    color: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
+  },
+  {
+    title: 'Cyber Security',
+    icon: Shield,
+    desc: 'Understand threat detection, ethical hacking practices, network security, and risk analysis.',
+    duration: '4-8 Weeks',
+    level: 'Intermediate',
+    color: 'text-red-500 bg-red-500/10 border-red-500/20',
+  },
+  {
+    title: 'Data Science',
+    icon: Database,
+    desc: 'Analyze massive datasets, build automated predictive models, and master scientific libraries.',
+    duration: '4-8 Weeks',
+    level: 'Beginner',
+    color: 'text-teal-500 bg-teal-500/10 border-teal-500/20',
+  },
+  {
+    title: 'UI/UX Design',
+    icon: Layers,
+    desc: 'Design beautiful, user-centered screens, master modern layouts, and build responsive wireframes.',
+    duration: '4-8 Weeks',
+    level: 'Beginner',
+    color: 'text-orange-500 bg-orange-500/10 border-orange-500/20',
+  },
+  {
+    title: 'Digital Marketing',
+    icon: Globe,
+    desc: 'Master organic SEO, social media strategies, audience optimization, and marketing funnels.',
+    duration: '4-8 Weeks',
+    level: 'Beginner',
+    color: 'text-cyan-500 bg-cyan-500/10 border-cyan-500/20',
+  },
+  {
+    title: 'Python Programming',
+    icon: Terminal,
+    desc: 'Build foundational programming skills, object-oriented code, algorithm logic, and basic utilities.',
+    duration: '4-8 Weeks',
+    level: 'Beginner',
+    color: 'text-violet-500 bg-violet-500/10 border-violet-500/20',
+  },
+  {
+    title: 'Cloud Computing',
+    icon: Cloud,
+    desc: 'Understand virtual architecture, serverless infrastructure, continuous integration, and deployments.',
+    duration: '4-8 Weeks',
+    level: 'Intermediate',
+    color: 'text-sky-500 bg-sky-500/10 border-sky-500/20',
+  }
+]
+
+const WHY_CHOOSE = [
+  {
+    title: 'Practical Learning',
+    desc: 'Build real-world projects that simulate technical assignments in modern organizations.',
+    icon: Code,
+  },
+  {
+    title: 'Mentor Guidance',
+    desc: 'Connect with experienced industry professionals for feedback and track optimization.',
+    icon: Users,
+  },
+  {
+    title: 'Flexible Online Learning',
+    desc: 'Learn on your own schedule with self-paced assignments and online resources.',
+    icon: Clock,
+  },
+  {
+    title: 'Verified Certificate',
+    desc: 'Receive an official verifiable certificate with a unique tracking ID and QR code.',
+    icon: Award,
+  },
+  {
+    title: 'Portfolio Development',
+    desc: 'Develop codebases you can host on GitHub to showcase to prospective employers.',
+    icon: Sparkles,
+  },
+  {
+    title: 'Career Skill Development',
+    desc: 'Improve your overall engineering practices, problem solving, and design patterns.',
+    icon: GraduationCap,
+  }
+]
+
+const STEPS = [
+  {
+    step: 'Step 1',
+    title: 'Register',
+    desc: 'Select your preferred technology track and fill out the details.',
+    icon: FileText,
+  },
+  {
+    step: 'Step 2',
+    title: 'Get Selected',
+    desc: 'Receive your selection notification with credentials and dashboard access.',
+    icon: Check,
+  },
+  {
+    step: 'Step 3',
+    title: 'Start Learning',
+    desc: 'Access video instructions, guidelines, and assignment files.',
+    icon: Play,
+  },
+  {
+    step: 'Step 4',
+    title: 'Complete Projects',
+    desc: 'Submit your completed project assignments for mentor review.',
+    icon: Code,
+  },
+  {
+    step: 'Step 5',
+    title: 'Receive Certificate',
+    desc: 'Download your verified certificate co-signed by our training lead.',
+    icon: Award,
+  }
+]
+
+const TESTIMONIALS = [
+  {
+    name: 'Sneha Patel',
+    course: 'Full Stack Development Intern',
+    rating: 5,
+    feedback: 'The project-based curriculum was incredible. I built a functional MERN app and verified my certificate instantly on the website. Highly recommended!',
+    avatar: '👩‍💻'
+  },
+  {
+    name: 'Rohan Sharma',
+    course: 'AI & Data Science Intern',
+    rating: 5,
+    feedback: 'Excellent mentor support. The feedback on my machine learning assignments was quick and constructive. The self-paced layout fits my college schedule perfectly.',
+    avatar: '👨‍🎓'
+  },
+  {
+    name: 'Anjali Gupta',
+    course: 'UI/UX Design Intern',
+    rating: 5,
+    feedback: 'I loved working on responsive prototypes. The program taught me how to present projects on my resume and portfolio.',
+    avatar: '👩‍🎨'
+  }
+]
+
+const FAQS = [
+  {
+    q: 'Is the internship online?',
+    a: 'Yes, all our internship and training programs are 100% online, allowing you to learn from anywhere at your own pace.'
+  },
+  {
+    q: 'How long are the programs?',
+    a: 'The standard duration of our programs is 4 to 8 weeks, depending on the speed at which you complete the projects.'
+  },
+  {
+    q: 'Will I receive a certificate?',
+    a: 'Absolutely! Upon successful completion of all projects, you will receive a verified certificate co-signed by an industry mentor.'
+  },
+  {
+    q: 'What projects will I build?',
+    a: 'You will build practical, real-world projects customized to your track (e.g., full-stack websites, AI models, security audits) to showcase in your portfolio.'
+  },
+  {
+    q: 'Who can apply?',
+    a: 'Students, graduates, and professionals wanting to transition into tech can apply. Basic programming logic or track familiarity is recommended.'
+  }
+]
+
+const Hero = () => {
+  const { theme } = useTheme()
+  const { homepageStats, testimonials, internshipCategories } = useStore()
+  const isDark = theme === 'dark'
+  const [activeFaq, setActiveFaq] = useState(null)
+
+  // Icon name → Lucide component map (for DB-stored categories)
+  const ICON_MAP = useMemo(() => ({
+    Code, Cpu, Shield, Database, Layers, Globe, Terminal, Cloud,
+    BookOpen, Users, Award, Sparkles, GraduationCap, Clock, Play,
+    FileText, Check, ArrowRight, Star, MessageSquare, LineChart,
+    BarChart2: LineChart, Smartphone: MessageSquare, Lock: Shield,
+    Zap: Sparkles,
+  }), [])
+
+  // Dynamic categories – fall back to static CATEGORIES if DB is empty
+  const categoriesList = useMemo(() => {
+    if (internshipCategories && internshipCategories.length > 0) {
+      return internshipCategories.map(cat => ({
+        ...cat,
+        icon: ICON_MAP[cat.icon] || Code,
+      }))
+    }
+    return CATEGORIES
+  }, [internshipCategories, ICON_MAP])
+
+  // Dynamic testimonials – fall back to static TESTIMONIALS if DB is empty
+  const testimonialsList = useMemo(() => {
+    if (testimonials && testimonials.length > 0) {
+      return testimonials.map(t => ({
+        name: t.name,
+        course: t.role || t.course || '',
+        rating: Number(t.rating) || 5,
+        feedback: t.text || t.feedback || '',
+        avatar: t.avatar || '👨‍🎓',
+      }))
+    }
+    return TESTIMONIALS
   }, [testimonials])
 
-  const getCatMeta = (catId) => {
-    return courseCategories?.find(c => c.id === catId) || null
-  }
-
-  useEffect(() => { setTimeout(() => setLoaded(true), 80) }, [])
+  const statsList = useMemo(() => {
+    return [
+      { value: homepageStats?.studentsTrained || '5,000+', label: 'Students Trained', icon: Users, color: 'text-blue-500' },
+      { value: homepageStats?.internshipPrograms || '12+',    label: 'Internship Programs', icon: BookOpen, color: 'text-indigo-500' },
+      { value: homepageStats?.liveProjects || '800+',   label: 'Live Projects Completed', icon: Code, color: 'text-purple-500' },
+      { value: homepageStats?.certificatesIssued || '4,800+', label: 'Certificates Issued', icon: Award, color: 'text-emerald-500' },
+    ]
+  }, [homepageStats])
 
   return (
     <>
       <SEO />
-      <style>{CSS}</style>
 
-      {/* Fixed background — respects dark/light mode via CSS variable */}
-      <div style={{ position:'fixed', inset:0, zIndex:0, pointerEvents:'none',
-        background: isDark 
-          ? 'linear-gradient(160deg, #0a1120 0%, #0f1629 45%, #1a1432 100%)'
-          : 'linear-gradient(160deg,#f8fafc 0%, #f1f5f9 45%, #f8fafc 100%)' }}
-        className="hp-fixed-bg">
-        <div style={{ position:'absolute', inset:0,
-          backgroundImage:'linear-gradient(rgba(99,102,241,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.015) 1px,transparent 1px)',
-          backgroundSize:'64px 64px', opacity: isDark ? 0.3 : 0.4 }} />
-        <div style={{ position:'absolute', inset:0, pointerEvents:'none',
-          background: isDark
-            ? 'radial-gradient(circle at 10% 15%, rgba(124,58,237,.08) 0%, transparent 25%), radial-gradient(circle at 90% 85%, rgba(29,78,216,.06) 0%, transparent 30%)'
-            : 'radial-gradient(circle at 10% 15%, rgba(99,102,241,.03) 0%, transparent 25%), radial-gradient(circle at 90% 85%, rgba(59,130,246,.02) 0%, transparent 30%)' }} />
-      </div>
+      <div className={`w-full min-h-screen relative overflow-hidden transition-colors duration-300 ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
+        
+        {/* Animated Background Grids */}
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
+          <div style={{
+            backgroundImage: isDark
+              ? 'linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px)'
+              : 'linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.025) 1px,transparent 1px)',
+            backgroundSize: '40px 40px'
+          }} className="absolute inset-0" />
+        </div>
 
-      <div className="hp" style={{ position:'relative', zIndex:10 }}>
-        <div style={{
-          opacity: loaded ? 1 : 0, transform: loaded ? 'none' : 'translateY(16px)',
-          transition:'opacity .7s ease,transform .7s ease',
-        }}>
-
-          {/* ════════════════════════════════════════════
-              HERO SECTION
-          ════════════════════════════════════════════ */}
-          <section style={{
-            minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center',
-            padding:'clamp(100px,13vw,140px) clamp(16px,5vw,28px) clamp(60px,8vw,80px)',
-          }}>
-            <div style={{ maxWidth:1040, width:'100%', margin:'0 auto', textAlign:'center' }}>
-              {/* Status badge */}
-              <div className="hp-in d1" style={{ display:'inline-flex', alignItems:'center', gap:8,
-                padding:'7px 18px', borderRadius:999, marginBottom:28,
-                background:'rgba(255,255,255,.75)', backdropFilter:'blur(12px)',
-                border:'1px solid rgba(255,255,255,.9)',
-                boxShadow:'0 2px 14px rgba(29,78,216,.1)',
-                animation: 'hp-wiggle 3s ease-in-out infinite' }}>
-                <span style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:13, fontWeight:700, color:'#1d4ed8' }}>
-                  <SvgIcon name="check" size={15} color="#16a34a" strokeWidth={2.8} style={{ animation: 'hp-spin 4s linear infinite' }} />
-                  AICTE APPROVED
+        {/* ── HERO SECTION ── */}
+        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-24 md:pt-40 md:pb-32">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            
+            {/* Left Content */}
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              className="lg:col-span-7 space-y-8 text-center lg:text-left"
+            >
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-white/70 dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-350">
+                  AICTE Approved Internship Programs
                 </span>
               </div>
 
-              {/* Tagline */}
-              <p className="hp-in d1" style={{ fontSize:12, fontWeight:700, color:'#6366f1', letterSpacing:'.12em', textTransform:'uppercase', marginBottom:14 }}>
-                Empowering Students with Real-World Skills
-              </p>
-
-              {/* Main headline */}
-              <h1 className="hp-in d2" style={{
-                fontWeight:900,
-                fontSize:'clamp(2rem,6vw,3.8rem)', 
-                color: isDark ? '#f1f5f9' : '#0f172a',
-                letterSpacing:'-.045em', lineHeight:1.10, marginBottom:20,
-              }}>
-                Industry-Oriented{' '}
-                <span className="hp-grad">Internship Programs</span>
-                <br/>for Future Professionals
+              {/* Main Headline */}
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight">
+                Learn Today. <br />
+                <span className="bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">
+                  Build Tomorrow.
+                </span>
               </h1>
 
               {/* Subheading */}
-              <p className="hp-in d3" style={{
-                fontSize:'clamp(.95rem,2.2vw,1.15rem)', 
-                color: isDark ? '#cbd5e1' : '#475569',
-                maxWidth:620, margin:'0 auto 36px', lineHeight:1.85,
-              }}>
-                Providing practical training in{' '}
-                <strong style={{ color: isDark ? '#818cf8' : '#1d4ed8' }}>Web Development</strong>,{' '}
-                <strong style={{ color: isDark ? '#c084fc' : '#7c3aed' }}>AI</strong>,{' '}
-                <strong style={{ color: isDark ? '#34d399' : '#059669' }}>Stock Market</strong>, and{' '}
-                <strong style={{ color: isDark ? '#22d3ee' : '#0891b2' }}>Emerging Technologies</strong>
+              <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                Develop practical skills through project-based internship and training programs in Web Development, Artificial Intelligence, Cyber Security, Data Science, UI/UX Design, Digital Marketing, and other emerging technologies.
               </p>
 
               {/* CTA Buttons */}
-              <div className="hp-in d4" style={{ display:'flex', gap:14, justifyContent:'center', flexWrap:'wrap', marginBottom:52 }}>
-                <Link to="/signup" className="hp-cta-primary">
-                  <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Link 
+                  to="/signup" 
+                  className="px-8 py-4 rounded-2xl font-extrabold text-sm text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/20 active:scale-95 transition-all text-center"
+                >
                   Apply for Internship
                 </Link>
-                <a href="#programs" className="hp-cta-secondary">
-                  <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                  View Programs
+                <a 
+                  href="#categories" 
+                  className="px-8 py-4 rounded-2xl font-extrabold text-sm border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all text-center"
+                >
+                  Explore Programs
                 </a>
               </div>
 
-              {/* Trust pills row */}
-              <div className="hp-in d5" style={{ display:'flex', gap:10, flexWrap:'wrap', justifyContent:'center', maxWidth:720, margin:'0 auto' }}>
-                {[
-                  { icon:'status', text:'100% Online', bg:'rgba(5,150,105,.07)', color:'#059669', border:'rgba(5,150,105,.18)', delay: '0s' },
-                  { icon:'office', text:'MSME Govt. Certified', bg:'rgba(124,58,237,.07)', color:'#7c3aed', border:'rgba(124,58,237,.18)', delay: '0.2s' },
-                  { icon:'certificate', text:'Verified Certificate', bg:'rgba(29,78,216,.07)', color:'#1d4ed8', border:'rgba(29,78,216,.18)', delay: '0.4s' },
-                  { icon:'👨\u200d🏫', text:'Expert Mentorship',  bg:'rgba(217,119,6,.07)',  color:'#b45309', border:'rgba(217,119,6,.18)', delay: '0.6s' },
-                ].map(({ icon, text, bg, color, border, delay }) => (
-                  <div key={text} style={{ 
-                    display:'inline-flex', alignItems:'center', gap:7, padding:'9px 18px', 
-                    borderRadius:999, background:bg, border:`1px solid ${border}`, 
-                    color, fontWeight:700, fontSize:13,
-                    animation: `hp-wave 2s ease-in-out infinite`,
-                    animationDelay: delay,
-                    transition: 'transform 0.3s ease'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1) rotate(-2deg)'}
-                  onMouseLeave={e => e.currentTarget.style.transform = 'scale(1) rotate(0deg)'}
-                  >
-                    <SvgIcon name={text === 'Expert Mentorship' ? 'mentor' : icon} size={16} color={color} /> {text}
-                  </div>
-                ))}
-              </div>
-
-              <div className="hp-in d6" style={{ marginTop:28 }}>
-                <div style={{
-                  display:'grid',
-                  gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',
-                  gap:12,
-                  maxWidth:860,
-                  margin:'0 auto',
-                }}>
+              {/* Highlights tags */}
+              <div className="pt-4 border-t border-slate-200/50 dark:border-slate-800/50">
+                <div className="flex flex-wrap justify-center lg:justify-start gap-2.5">
                   {[
-                    { label:'About', sub:'Founder, team, and public profiles', to:'/about' },
-                    { label:'Courses', sub:'Internships and skill tracks', to:'/courses' },
-                    { label:'Services', sub:'Business and technical solutions', to:'/services' },
-                    { label:'Contact', sub:'Quick enquiry and support', to:'/contact' },
-                  ].map((item) => (
-                    <Link
-                      key={item.label}
-                      to={item.to}
-                      style={{
-                        textDecoration:'none',
-                        padding:'16px 18px',
-                        borderRadius:20,
-                        background:'rgba(255,255,255,.82)',
-                        border:'1px solid rgba(255,255,255,.96)',
-                        boxShadow:'0 16px 38px -26px rgba(15,23,42,.34)',
-                        textAlign:'left',
-                        transition:'transform .28s ease, box-shadow .28s ease, border-color .28s ease',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-4px)'
-                        e.currentTarget.style.boxShadow = '0 24px 48px -24px rgba(37,99,235,.24)'
-                        e.currentTarget.style.borderColor = 'rgba(59,130,246,.18)'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'none'
-                        e.currentTarget.style.boxShadow = '0 16px 38px -26px rgba(15,23,42,.34)'
-                        e.currentTarget.style.borderColor = 'rgba(255,255,255,.96)'
-                      }}
+                    '100% Online Learning',
+                    'Verified Certificate',
+                    'Mentor Guidance',
+                    'Real Projects',
+                    'Flexible Learning',
+                    'Career-Focused Training'
+                  ].map((tag) => (
+                    <span 
+                      key={tag} 
+                      className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-200/40 dark:bg-slate-900/40 text-slate-500 dark:text-slate-400 border border-slate-200/30 dark:border-slate-800/30"
                     >
-                      <div style={{ fontSize:15, fontWeight:800, color: isDark ? '#f1f5f9' : '#0f172a', marginBottom:5 }}>{item.label}</div>
-                      <div style={{ fontSize:12, lineHeight:1.6, color: isDark ? '#94a3b8' : '#64748b' }}>{item.sub}</div>
-                    </Link>
+                      {tag}
+                    </span>
                   ))}
                 </div>
               </div>
+            </motion.div>
 
-            </div>
-          </section>
+            {/* Right: Premium Interactive Illustration */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="lg:col-span-5 w-full flex justify-center"
+            >
+              <TechIllustration />
+            </motion.div>
+          </div>
+        </section>
 
-          {/* ════════════════════════════════════════════
-              INTERNSHIP PROGRAMS — COMING SOON
-          ════════════════════════════════════════════ */}
-          <section id="programs" style={{ padding:'0 clamp(16px,5vw,28px) clamp(60px,8vw,80px)' }}>
-            <div style={{ maxWidth:1040, margin:'0 auto' }}>
-
-              <div style={{ textAlign:'center', marginBottom:36 }}>
-                <div className="hp-pill"><SvgIcon name="academy" size={14} color="currentColor" /> Our Programs</div>
-                <h2 className="hp-stitle">Internship <span className="hp-grad">Categories</span></h2>
-              </div>
-
-              {/* Programs Cards Container */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24, alignItems: 'stretch' }}>
-                
-                {activeCourses.map((course, idx) => {
-                  const catMeta = getCatMeta(course.category)
-                  
-                  // Use a default color based on category if available
-                  const btnColor = catMeta?.color || '#3b82f6';
-                  
-                  return (
-                    <div key={course.id} style={{
-                      display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
-                      padding:'32px 24px',
-                      borderRadius:24,
-                      background:'rgba(255,255,255,.9)',
-                      border:'1px solid rgba(255,255,255,.95)',
-                      textAlign:'center',
-                      gap:16,
-                      boxShadow:'0 10px 30px -10px rgba(0,0,0,0.06)',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      transition: 'transform 0.3s, box-shadow 0.3s',
-                      animation: `hp-scaleIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) ${idx * 0.1}s both`
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; e.currentTarget.style.boxShadow = '0 20px 40px -10px rgba(0,0,0,0.12)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 10px 30px -10px rgba(0,0,0,0.06)'; }}
-                    >
-                      {/* Badge */}
-                      {course.badge && (
-                        <div style={{ display:'inline-block', padding:'4px 12px', background: btnColor, color:'white', fontSize:11, fontWeight:800, borderRadius:99, marginBottom:10, letterSpacing:1, textTransform:'uppercase', animation: course.highlighted ? 'hp-pulse 2s infinite' : 'none' }}>
-                          {course.badge}
-                        </div>
-                      )}
-                      
-                      {/* Icon */}
-                      <div style={{
-                        width:72,
-                        height:72,
-                        borderRadius:22,
-                        display:'flex',
-                        alignItems:'center',
-                        justifyContent:'center',
-                        color: btnColor,
-                        background:`linear-gradient(145deg, ${btnColor}18, ${btnColor}08)`,
-                        border:`1px solid ${btnColor}22`,
-                        boxShadow:`inset 0 1px 0 rgba(255,255,255,.8), 0 10px 24px ${btnColor}14`,
-                        animation: course.highlighted ? 'hp-float 3s ease-in-out infinite' : 'none',
-                      }}>
-                        <SvgIcon name={getCourseIconName(course, catMeta)} size={34} color={btnColor} strokeWidth={1.8} />
+        {/* ── ABOUT AMITSOLUTIONHUB ── */}
+        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Stats (Grid format) */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="lg:col-span-6 grid grid-cols-2 gap-4"
+            >
+              {statsList.map((stat) => {
+                const IconComp = stat.icon
+                return (
+                  <div key={stat.label} className="p-6 rounded-2xl border bg-white/60 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between aspect-video">
+                    <IconComp className={`w-6 h-6 ${stat.color} mb-3`} />
+                    <div>
+                      <div className="text-2xl sm:text-3xl font-black tracking-tight mb-1">
+                        <Counter value={stat.value} />
                       </div>
-                      
-                      <div>
-                        <div style={{ fontWeight:800, fontSize:'clamp(1.2rem,2.5vw,1.55rem)', color: isDark ? '#f1f5f9' : '#0f172a', marginBottom:8, letterSpacing:'-0.02em', lineHeight:1.2 }}>
-                          {course.title}
-                        </div>
-                        <p style={{ fontSize:13, color: isDark ? '#94a3b8' : '#64748b', lineHeight:1.6, maxWidth:300, margin:'0 auto' }}>
-                          {course.description?.substring(0, 80) || 'Master practical skills with our premium program.'}...
-                        </p>
-                      </div>
-                      <Link to={`/courses/${course.slug || course.id}`} style={{ 
-                        marginTop:'auto', padding:'10px 24px', background: `linear-gradient(135deg, ${btnColor}, ${btnColor}dd)`, 
-                        color:'white', fontWeight:700, borderRadius:99, fontSize:14, textDecoration:'none',
-                        boxShadow:`0 4px 14px ${btnColor}40`, transition:'0.3s'
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
-                      onMouseLeave={e => e.currentTarget.style.transform = 'none'}
-                      >
-                        Course Details ➔
-                      </Link>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{stat.label}</p>
                     </div>
-                  )
-                })}
-
-                {/* Programs / View All banner */}
-                <div style={{
-                  display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
-                  padding:'32px 24px',
-                  borderRadius:24,
-                  background:'linear-gradient(135deg,rgba(29,78,216,.03),rgba(99,102,241,.02))',
-                  border:'2px dashed rgba(99,102,241,.2)',
-                  textAlign:'center',
-                  gap:16,
-                }}>
-                  <div style={{ opacity:0.8, color:'#8b5cf6' }}>
-                    <SvgIcon name="comingSoon" size={40} color="#8b5cf6" strokeWidth={1.7} />
                   </div>
-                  <div>
-                    <div style={{ fontWeight:800, fontSize:'clamp(1.1rem,2vw,1.35rem)', color: isDark ? '#f1f5f9' : '#334155', marginBottom:6, letterSpacing:'-0.015em', lineHeight:1.25 }}>
-                      More Programs <span style={{ color:'#8b5cf6' }}>Live</span>
+                )
+              })}
+            </motion.div>
+
+            {/* Description Text */}
+            <motion.div 
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="lg:col-span-6 space-y-6"
+            >
+              <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold text-indigo-500 bg-indigo-500/10 uppercase tracking-wider">
+                <GraduationCap className="w-3.5 h-3.5" /> About Us
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                Helping Students Build Real Skills
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                AmitSolutionHub is an education and technology platform focused on practical learning through internship and training programs. Our goal is to help students strengthen their technical skills, build real-world projects, and gain hands-on experience that supports their academic and career growth.
+              </p>
+              <p className="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                We provide structured learning paths, mentor guidance, project-based assignments, and verified internship certificates in multiple technology domains.
+              </p>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ── INTERNSHIP CATEGORIES ── */}
+        <section id="categories" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
+          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+            <span className="px-3 py-1 rounded-full text-xs font-bold text-blue-500 bg-blue-500/10 uppercase tracking-wider">
+              Explore Paths
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+              Internship Categories
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
+              Choose from our curated technology tracks designed to teach you coding, logic, and problem-solving through live projects.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {categoriesList.map((cat, idx) => {
+              const IconComp = cat.icon
+              return (
+                <motion.div 
+                  initial={{ opacity: 0, y: 25 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.05, duration: 0.5 }}
+                  whileHover={{ y: -6 }}
+                  key={cat.title} 
+                  className="p-6 rounded-2xl border bg-white/60 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between group"
+                >
+                  <div className="space-y-4">
+                    {/* Icon & Badges */}
+                    <div className="flex justify-between items-start">
+                      <div className={`p-3 rounded-xl border ${cat.color}`}>
+                        <IconComp className="w-6 h-6" />
+                      </div>
+                      <div className="flex flex-col items-end gap-1">
+                        <span className="text-[10px] font-black uppercase tracking-wider bg-slate-200/60 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-md">
+                          {cat.level}
+                        </span>
+                        <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> {cat.duration}
+                        </span>
+                      </div>
                     </div>
-                    <p style={{ fontSize:12, color: isDark ? '#94a3b8' : '#64748b', lineHeight:1.6, maxWidth:320, margin:'0 auto 16px' }}>
-                      Web Development, AI, Data Science, UI/UX, and Cyber Security internships are now open for enrollment.
+
+                    {/* Title & Description */}
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-bold group-hover:text-blue-500 transition-colors">
+                        {cat.title}
+                      </h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                        {cat.desc}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Learn More Button */}
+                  <Link 
+                    to="/courses"
+                    className="mt-6 flex items-center justify-between text-xs font-extrabold text-blue-600 dark:text-indigo-400 group-hover:gap-2 transition-all"
+                  >
+                    <span>Learn More</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </motion.div>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* ── WHY CHOOSE AMITSOLUTIONHUB ── */}
+        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
+          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+            <span className="px-3 py-1 rounded-full text-xs font-bold text-indigo-500 bg-indigo-500/10 uppercase tracking-wider">
+              Our Core Strengths
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+              Why Choose AmitSolutionHub
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
+              We focus on delivering high-quality, practical learning experiences to help students bridge the gap between academic theory and technical skills.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {WHY_CHOOSE.map((item) => {
+              const IconComp = item.icon
+              return (
+                <div key={item.title} className="p-6 rounded-2xl border bg-white/60 dark:bg-slate-900/40 border-slate-200/85 dark:border-slate-800/80 flex gap-4">
+                  <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 flex-shrink-0 h-fit">
+                    <IconComp className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-bold text-slate-800 dark:text-slate-100">{item.title}</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                      {item.desc}
                     </p>
                   </div>
-                  
-                  <Link to="/courses" className="hp-cta-primary" style={{ marginTop:'auto', padding:'10px 24px', fontSize:14, width:'80%', textAlign:'center', justifyContent: 'center' }}>
-                    View All Courses →
-                  </Link>
                 </div>
+              )
+            })}
+          </div>
+        </section>
 
-              </div>
+        {/* ── LEARNING PROCESS (TIMELINE) ── */}
+        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
+          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+            <span className="px-3 py-1 rounded-full text-xs font-bold text-emerald-500 bg-emerald-500/10 uppercase tracking-wider">
+              Roadmap
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+              Our Learning Process
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
+              A simple, step-by-step roadmap from initial enrollment to certificate delivery.
+            </p>
+          </div>
 
-              {/* Adjust grid to single column on mobile */}
-              <style dangerouslySetInnerHTML={{__html:`
-                @media (max-width: 768px) {
-                  #programs > div > div:nth-child(2) {
-                    grid-template-columns: 1fr !important;
-                  }
-                }
-              `}} />
+          {/* Horizontal Timeline (Desktop) & Vertical (Mobile) */}
+          <div className="relative">
+            {/* Connector Line (Desktop) */}
+            <div className="hidden lg:block absolute top-[28px] left-[5%] right-[5%] h-[2px] bg-slate-200 dark:bg-slate-800 z-0" />
+            
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-4 relative z-10">
+              {STEPS.map((step, idx) => {
+                const IconComp = step.icon
+                return (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.1 }}
+                    key={step.title} 
+                    className="flex lg:flex-col items-center lg:items-center text-left lg:text-center gap-4 lg:gap-4"
+                  >
+                    {/* Circle Node */}
+                    <div className="w-14 h-14 rounded-full bg-white dark:bg-slate-900 border-2 border-slate-250 dark:border-slate-850 flex items-center justify-center text-blue-600 dark:text-indigo-400 shadow-sm flex-shrink-0 relative">
+                      <IconComp className="w-6 h-6" />
+                      {/* Step Number Tag */}
+                      <span className="absolute -top-2 -right-2 bg-slate-900 dark:bg-slate-800 text-[9px] font-black text-white px-1.5 py-0.5 rounded-full">
+                        {idx + 1}
+                      </span>
+                    </div>
 
+                    {/* Step details */}
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-black uppercase text-indigo-500 tracking-wider">
+                        {step.step}
+                      </span>
+                      <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">{step.title}</h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs leading-relaxed font-medium">
+                        {step.desc}
+                      </p>
+                    </div>
+                  </motion.div>
+                )
+              })}
             </div>
-          </section>
+          </div>
+        </section>
 
-          <div className="hp-div" style={{ padding:'0 clamp(16px,5vw,28px)' }}/>
-
-          {/* ════════════════════════════════════════════
-              WHY CHOOSE US
-          ════════════════════════════════════════════ */}
-          <section id="why-choose-us" style={{ padding:'0 clamp(16px,5vw,28px) clamp(60px,8vw,80px)' }}>
-            <div style={{ maxWidth:1040, margin:'0 auto' }}>
-
-              <div style={{ textAlign:'center', marginBottom:40 }}>
-                <div className="hp-pill"><SvgIcon name="check" size={14} color="currentColor" /> Why Choose Us</div>
-                <h2 className="hp-stitle">Why <span className="hp-grad">AmitSolutionHub?</span></h2>
-                <p style={{ color: isDark ? '#94a3b8' : '#64748b', fontSize:14, marginTop:10, lineHeight:1.8 }}>
-                  We are committed to quality education, real skill-building, and professional growth
-                </p>
+        {/* ── CERTIFICATE SECTION ── */}
+        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            
+            {/* Left Description */}
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="lg:col-span-6 space-y-6"
+            >
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-emerald-500 bg-emerald-500/10 uppercase tracking-wider">
+                <Award className="w-3.5 h-3.5" /> Certificate
               </div>
+              <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                Verified Internship Certificate
+              </h2>
+              <p className="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                Students who successfully complete their internship receive a verifiable internship certificate that can be added to resumes and professional profiles.
+              </p>
 
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(min(100%,290px),1fr))', gap:14 }}>
-                {WHY.map(({ icon, bg, title, desc, color }, idx) => (
-                  <div key={title} className="hp-why-item" style={{
-                    animationDelay: `${idx * 0.1}s`
-                  }}>
-                    <div className="hp-why-icon" style={{ background:`linear-gradient(145deg, ${bg}, rgba(255,255,255,.7))`, color, border:`1px solid ${color}18`, boxShadow:`inset 0 1px 0 rgba(255,255,255,.7), 0 10px 22px ${color}12` }}>
-                      <SvgIcon name={icon} size={22} color={color} strokeWidth={2} />
-                    </div>
-                    <div>
-                      <div style={{ fontWeight:700, fontSize:14, color: isDark ? '#f1f5f9' : '#0f172a', marginBottom:4 }}>{title}</div>
-                      <div style={{ fontSize:12, color: isDark ? '#94a3b8' : '#64748b', lineHeight:1.7 }}>{desc}</div>
-                    </div>
+              {/* Certificate Features */}
+              <div className="grid grid-cols-2 gap-4 pt-2">
+                {[
+                  'Digital Verification',
+                  'Resume Friendly',
+                  'LinkedIn Ready',
+                  'QR Verification'
+                ].map((feat) => (
+                  <div key={feat} className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-xs flex-shrink-0">✓</div>
+                    <span className="text-sm font-bold text-slate-650 dark:text-slate-300">{feat}</span>
                   </div>
                 ))}
               </div>
-            </div>
-          </section>
 
-          <div className="hp-div" style={{ padding:'0 clamp(16px,5vw,28px)' }}/>
+              <div className="pt-4">
+                <Link 
+                  to="/verify" 
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-bold text-xs bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-500 transition-colors"
+                >
+                  Verify a Certificate <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </motion.div>
 
-          {/* ════════════════════════════════════════════
-              CERTIFICATE SECTION
-          ════════════════════════════════════════════ */}
-          <section style={{ padding:'0 clamp(16px,5vw,28px) clamp(60px,8vw,80px)' }}>
-            <div style={{ maxWidth:1040, margin:'0 auto' }}>
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,340px),1fr))', gap:32, alignItems:'center' }}>
-
-                {/* Left text */}
-                <div>
-                  <div className="hp-pill"><SvgIcon name="certificate" size={14} color="currentColor" /> Certification</div>
-                  <h2 className="hp-stitle" style={{ marginBottom:16 }}>
-                    Get a <span className="hp-grad">Verified Certificate</span>
-                  </h2>
-                  <p style={{ color:'#64748b', fontSize:'clamp(.9rem,2vw,1rem)', lineHeight:1.85, marginBottom:20 }}>
-                    Upon successful completion of your internship program, you will receive an official, verifiable certificate from <strong style={{ color:'#1d4ed8' }}>AmitSolutionHub</strong> — recognized by companies during job applications.
-                  </p>
-                  <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-                    {[
-                      'Certificate issued within 7 days of completion',
-                      'Shareable on LinkedIn & resume',
-                      'Verifiable online via our portal',
-                      'Co-signed by industry mentor',
-                    ].map(item => (
-                      <div key={item} style={{ fontSize:14, fontWeight:500, color:'#374151', display:'flex', alignItems:'center', gap:8 }}>
-                        <SvgIcon name="check" size={16} color="#059669" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <Link to="/verify" style={{ display:'inline-flex', alignItems:'center', gap:8, marginTop:24, padding:'11px 22px', borderRadius:999, background:'rgba(29,78,216,.08)', border:'1px solid rgba(29,78,216,.2)', color:'#1d4ed8', fontWeight:700, fontSize:14, textDecoration:'none', transition:'all .25s' }}
-                    onMouseEnter={e=>{ e.currentTarget.style.background='rgba(29,78,216,.14)'; e.currentTarget.style.transform='translateY(-2px)' }}
-                    onMouseLeave={e=>{ e.currentTarget.style.background='rgba(29,78,216,.08)'; e.currentTarget.style.transform='none' }}>
-                    Verify a Certificate →
-                  </Link>
+            {/* Right: Mockup Certificate Preview */}
+            <motion.div 
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="lg:col-span-6"
+            >
+              <div className="p-8 sm:p-10 rounded-3xl border bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 shadow-xl relative overflow-hidden flex flex-col justify-between aspect-[1.4] text-center max-w-lg mx-auto">
+                {/* Vintage Border styling */}
+                <div className="absolute inset-4 border border-indigo-500/20 pointer-events-none" />
+                
+                {/* Header info */}
+                <div className="space-y-1">
+                  <div className="text-slate-400 uppercase tracking-widest text-[9px] font-black">Certificate of Completion</div>
+                  <h3 className="text-base sm:text-lg font-black tracking-tight text-blue-600 dark:text-indigo-400">AMITSOLUTIONHUB</h3>
                 </div>
 
-                {/* Right: Certificate preview */}
-                <div className="hp-cert">
-                  <div style={{ color:'#1d4ed8', marginBottom:12 }}>
-                    <SvgIcon name="trophy" size={36} color="#1d4ed8" strokeWidth={1.7} />
+                {/* Main signature block */}
+                <div className="space-y-2">
+                  <div className="font-serif italic text-2xl text-slate-800 dark:text-slate-100">Student Name</div>
+                  <p className="text-[10px] text-slate-400 font-medium">has successfully completed all assignments for the</p>
+                  <div className="inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-indigo-400 text-xs font-extrabold uppercase tracking-wide">
+                    Web Development Track
                   </div>
-                  <div style={{ fontWeight:800, fontSize:'clamp(1rem,2.5vw,1.25rem)', color:'#1d4ed8', marginBottom:4, letterSpacing:'-0.015em' }}>
-                    Certificate of Completion
+                </div>
+
+                {/* Footer details co-sign */}
+                <div className="border-t border-slate-200/50 dark:border-slate-800 pt-4 flex justify-between items-center text-[9px] font-bold text-slate-400">
+                  <div className="text-left space-y-0.5">
+                    <div>Duration: 6 Weeks</div>
+                    <div>Verifiable Online</div>
                   </div>
-                  <div style={{ fontSize:12, color:'#94a3b8', fontWeight:600, letterSpacing:'.06em', textTransform:'uppercase', marginBottom:16 }}>
-                    AmitSolutionHub
-                  </div>
-                  <div style={{ height:1, background:'linear-gradient(90deg,transparent,rgba(29,78,216,.2),transparent)', margin:'0 0 16px' }}/>
-                  <div style={{ fontFamily:'cursive', fontSize:22, color:'#0f172a', marginBottom:4 }}>Student Name</div>
-                  <div style={{ fontSize:12, color:'#64748b', marginBottom:16 }}>has successfully completed the</div>
-                  <div style={{ fontSize:14, fontWeight:700, color:'#1d4ed8', padding:'8px 20px', borderRadius:999, background:'rgba(29,78,216,.08)', border:'1px solid rgba(29,78,216,.18)', display:'inline-block', marginBottom:16 }}>
-                    Web Development Internship
-                  </div>
-                  <div style={{ display:'flex', justifyContent:'space-between', fontSize:11, color:'#94a3b8', fontWeight:600, paddingTop:12, borderTop:'1px solid rgba(29,78,216,.1)' }}>
-                    <span>Duration: 6 Weeks</span>
-                    <span>MSME Certified</span>
-                    <span>Year: 2025</span>
+                  <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-950 p-1.5 rounded-lg border border-slate-200/50 dark:border-slate-850">
+                    <img src={msmeLogo} alt="MSME Seal" className="h-6 object-contain" />
+                    <span className="text-[7px] leading-tight">Govt. of India<br/>MSME Registered</span>
                   </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </motion.div>
+          </div>
+        </section>
 
-          <div className="hp-div" style={{ padding:'0 clamp(16px,5vw,28px)' }}/>
+        {/* ── STUDENT TESTIMONIALS ── */}
+        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
+          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+            <span className="px-3 py-1 rounded-full text-xs font-bold text-indigo-500 bg-indigo-500/10 uppercase tracking-wider">
+              Feedback
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+              Student Testimonials
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
+              Read review write-ups from students who finished their tracks and completed real projects.
+            </p>
+          </div>
 
-          {/* ════════════════════════════════════════════
-              TRUST / MSME SECTION
-          ════════════════════════════════════════════ */}
-          <section style={{ padding:'0 clamp(16px,5vw,28px) clamp(60px,8vw,80px)' }}>
-            <div style={{ maxWidth:1040, margin:'0 auto' }}>
-              <div className="hp-trust" style={{
-                animation: 'hp-scaleIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both'
-              }}>
-                <div style={{ background:'rgba(255,255,255,.12)', borderRadius:16, padding:'18px 22px', display:'flex', alignItems:'center', justifyCenter:'center', flexShrink:0, color:'white', animation: 'hp-float 4s ease-in-out infinite' }}>
-                  <SvgIcon name="office" size={46} color="white" strokeWidth={1.6} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonialsList.map((item, idx) => (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1, duration: 0.5 }}
+                key={item.name} 
+                className="p-6 rounded-2xl border bg-white/60 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between relative shadow-sm"
+              >
+                {/* Rating stars */}
+                <div className="flex gap-1 text-amber-400 text-sm mb-4">
+                  {[...Array(item.rating)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-current" />
+                  ))}
                 </div>
-                <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', marginBottom:8 }}>
-                    <span style={{ fontWeight:800, color:'white', fontSize:'clamp(1rem,2.5vw,1.25rem)', letterSpacing:'-0.01em' }}>
-                      Officially Recognized &amp; Trusted
-                    </span>
-                    <span style={{ fontSize:11, fontWeight:700, padding:'3px 11px', borderRadius:999, background:'rgba(255,255,255,.18)', color:'white', letterSpacing:'.06em', textTransform:'uppercase' }}>MSME · Govt. of India</span>
-                    <span style={{ display:'inline-flex', alignItems:'center', gap:5, fontSize:11, fontWeight:700, padding:'3px 11px', borderRadius:999, background:'rgba(34,197,94,.18)', color:'#bbf7d0', letterSpacing:'.06em', textTransform:'uppercase' }}>
-                      <SvgIcon name="check" size={12} color="#22c55e" strokeWidth={2.8} />
-                      AICTE Approved
-                    </span>
-                  </div>
-                  <p style={{ color:'rgba(255,255,255,.85)', fontSize:'clamp(12px,2vw,14px)', lineHeight:1.8 }}>
-                    AmitSolutionHub is a <strong style={{ color:'white' }}>MSME-registered</strong> organization under the Ministry of MSME, Government of India.
-                    We are also <strong style={{ color:'white' }}>AICTE approved</strong> for internship-focused learning and certification delivery.
-                  </p>
-                  <p style={{ color:'rgba(255,255,255,.85)', fontSize:13, marginTop:8, fontWeight:600 }}>
-                    <span style={{ color:'#60a5fa' }}>UDYAM REGISTRATION:</span> UDYAM-GJ-17-0037282
-                  </p>
-                </div>
-                {/* Verification Action / QR */}
-                <div style={{ flexShrink:0, display:'flex', gap:12, alignItems:'center' }}>
-                  <div style={{ background:'white', borderRadius:10, padding:6, height:80, width:80, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 14px rgba(0,0,0,0.2)' }}>
-                    <img src={msmeQR} alt="Scan to Verify MSME" style={{ width:'100%', height:'100%', objectFit:'contain' }} onError={(e) => e.target.style.display='none'} />
-                    <div style={{ position:'absolute', width:68, height:68, display:!('src' in document.createElement('img') && msmeQR) ? 'flex' : 'none', alignItems:'center', justifyContent:'center', background:'#f8fafc', fontSize:10, color:'#94a3b8', textAlign:'center', borderRadius:6 }}>QR<br/>Code</div>
-                  </div>
-                  <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-                    <div style={{ background:'rgba(255,255,255,.14)', borderRadius:12, padding:'10px 16px', border:'1px solid rgba(255,255,255,.25)', display:'flex', alignItems:'center', gap:10 }}>
-                      <img src={msmeLogo} alt="MSME Logo" style={{ height: 28, background:'white', borderRadius:4, padding:2 }} />
-                      <div>
-                        <div style={{ fontSize:10, color:'rgba(255,255,255,.65)', fontWeight:600, letterSpacing:'.04em', textTransform:'uppercase', marginBottom:2 }}>Status</div>
-                        <div style={{ fontSize:12, color:'white', fontWeight:800, display:'flex', alignItems:'center', gap:6 }}>
-                          <SvgIcon name="status" size={12} color="#22c55e" />
-                          <span>Active</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
 
-          {displayedTestimonials.length > 0 && (
-            <>
-              {/* ════════════════════════════════════════════
-                  MINI TESTIMONIALS PREVIEW
-              ════════════════════════════════════════════ */}
-              <section id="testimonials-preview" style={{ padding:'0 clamp(16px,5vw,28px) clamp(60px,8vw,80px)' }}>
-                <div style={{ maxWidth:1040, margin:'0 auto' }}>
-                  <div style={{ textAlign:'center', marginBottom:40 }}>
-                    <div className="hp-pill"><SvgIcon name="mentor" size={14} color="currentColor" /> Testimonials</div>
-                    <h2 className="hp-stitle">What Our <span className="hp-grad">Students Say</span></h2>
-                    <p style={{ color:'#64748b', fontSize:14, marginTop:10, lineHeight:1.8 }}>
-                      Real feedback from students and interns who kickstarted their tech careers with us.
-                    </p>
-                  </div>
-
-                  <div style={{ display:'grid', gap:12 }}>
-                    {displayedTestimonials.slice(0, showAllReviews ? 6 : 3).map((item, idx) => (
-                      <div key={item.id || idx} className="hp-tcard" style={{ 
-                        display:'flex', flexDirection:'column', justifyContent:'space-between', minHeight:200,
-                        animationDelay: `${idx * 0.15}s`
-                      }}>
-                        {/* Stars */}
-                        <div style={{ display:'flex', gap:3, color:'#fbbf24', marginBottom:14, fontSize:14 }}>
-                          {[...Array(Number(item.rating || 5))].map((_, i) => (
-                            <span key={i}>★</span>
-                          ))}
-                        </div>
-                        {/* Review text */}
-                        <p style={{ color:'#475569', fontSize:14, lineHeight:1.65, flexGrow:1, fontStyle:'italic', marginBottom:18 }}>
-                          "{item.text}"
-                        </p>
-                        {/* User profile */}
-                        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-                          <div style={{ width:40, height:40, borderRadius:'50%', background:'linear-gradient(135deg, #e0e7ff, #c7d2fe)', display:'flex', alignItems:'center', justifyCenter:'center', fontSize:20 }}>
-                            {item.avatar || '👨‍🎓'}
-                          </div>
-                          <div>
-                            <div style={{ fontWeight:700, fontSize:13, color:'#0f172a' }}>{item.name}</div>
-                            <div style={{ fontSize:11, color:'#64748b', fontWeight:500 }}>{item.role}</div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* View All Reviews Button */}
-                  {displayedTestimonials.length > 3 && (
-                    <div style={{ textAlign:'center', marginTop:32 }}>
-                      <button
-                        onClick={() => setShowAllReviews(!showAllReviews)}
-                        className="hp-cta-secondary"
-                        style={{ fontSize:14, padding:'11px 24px' }}
-                      >
-                        {showAllReviews ? 'Show Less' : 'View All Reviews'}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </section>
-            </>
-          )}
-
-          <div className="hp-div" style={{ padding:'0 clamp(16px,5vw,28px)' }}/>
-
-          {/* ════════════════════════════════════════════
-              FAQ PREVIEW SECTION
-          ════════════════════════════════════════════ */}
-          <section id="faq-preview" style={{ padding:'0 clamp(16px,5vw,28px) clamp(60px,8vw,80px)' }}>
-            <div style={{ maxWidth:800, margin:'0 auto' }}>
-              <div style={{ textAlign:'center', marginBottom:40 }}>
-                <div className="hp-pill"><SvgIcon name="clock" size={14} color="currentColor" /> FAQ</div>
-                <h2 className="hp-stitle">Frequently Asked <span className="hp-grad">Questions</span></h2>
-                <p style={{ color:'#64748b', fontSize:14, marginTop:10, lineHeight:1.8 }}>
-                  Find answers to common questions about our internship programs and services.
+                {/* Review body */}
+                <p className="text-sm text-slate-550 dark:text-slate-350 leading-relaxed font-medium italic flex-grow">
+                  "{item.feedback}"
                 </p>
-              </div>
 
-              <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
-                {FAQS.slice(0, showAllFaqs ? 8 : 4).map((faq, idx) => {
-                  const isOpen = activeFaq === idx
-                  return (
-                    <div 
-                      key={idx} 
-                      className={`hp-faq-item ${isOpen ? 'active' : ''}`}
-                      style={{ animationDelay: `${idx * 0.08}s` }}
-                    >
-                      <button 
-                        className="hp-faq-trigger"
-                        onClick={() => setActiveFaq(isOpen ? null : idx)}
-                        aria-expanded={isOpen}
+                {/* User row */}
+                <div className="mt-6 flex items-center gap-3 border-t border-slate-200/50 dark:border-slate-800/60 pt-4 flex-shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-lg">
+                    {item.avatar}
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-black text-slate-800 dark:text-slate-200">{item.name}</h4>
+                    <span className="text-[10px] font-bold text-slate-450 dark:text-slate-400">{item.course}</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── FREQUENTLY ASKED QUESTIONS ── */}
+        <section className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
+          <div className="text-center mb-12 space-y-4">
+            <span className="px-3 py-1 rounded-full text-xs font-bold text-blue-500 bg-blue-500/10 uppercase tracking-wider">
+              Answers
+            </span>
+            <h2 className="text-3xl font-extrabold tracking-tight">
+              Frequently Asked Questions
+            </h2>
+          </div>
+
+          {/* Accordion List */}
+          <div className="space-y-4">
+            {FAQS.map((faq, idx) => {
+              const isOpen = activeFaq === idx
+              return (
+                <div 
+                  key={idx}
+                  className="rounded-2xl border bg-white/60 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 shadow-sm overflow-hidden"
+                >
+                  <button 
+                    onClick={() => setActiveFaq(isOpen ? null : idx)}
+                    className="w-full px-6 py-5 flex items-center justify-between text-left font-bold text-sm sm:text-base text-slate-800 dark:text-slate-100 transition-colors"
+                  >
+                    <span>{faq.q}</span>
+                    <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${isOpen ? 'rotate-180 text-blue-500' : ''}`} />
+                  </button>
+                  
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div 
+                        initial={{ height: 0 }}
+                        animate={{ height: 'auto' }}
+                        exit={{ height: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="overflow-hidden"
                       >
-                        <span>{faq.q}</span>
-                        <svg 
-                          className="hp-faq-arrow" 
-                          width="18" 
-                          height="18" 
-                          fill="none" 
-                          viewBox="0 0 24 24" 
-                          stroke="currentColor" 
-                          strokeWidth="2.5"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                        </svg>
-                      </button>
-                      <div className="hp-faq-answer">
-                        <div style={{ paddingTop: 0, paddingBottom: 20 }}>
+                        <div className="px-6 pb-5 text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                           {faq.a}
                         </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-
-              {/* View All FAQs Button */}
-              <div style={{ textAlign:'center', marginTop:32 }}>
-                <button
-                  onClick={() => {
-                    setShowAllFaqs(!showAllFaqs)
-                    if (showAllFaqs) {
-                      setActiveFaq(null)
-                    }
-                  }}
-                  className="hp-cta-secondary"
-                  style={{ fontSize:14, padding:'11px 24px' }}
-                >
-                  {showAllFaqs ? 'Show Less' : 'View All FAQs'}
-                </button>
-              </div>
-            </div>
-          </section>
-
-          <div className="hp-div" style={{ padding:'0 clamp(16px,5vw,28px)' }}/>
-
-          {/* ════════════════════════════════════════════
-              CONTACT CTA
-          ════════════════════════════════════════════ */}
-          <section style={{ padding:'0 clamp(16px,5vw,28px) clamp(60px,8vw,80px)' }}>
-            <div style={{ maxWidth:1040, margin:'0 auto' }}>
-              <div style={{
-                textAlign:'center',
-                background:'linear-gradient(135deg,rgba(29,78,216,.08),rgba(99,102,241,.06))',
-                border:'1px solid rgba(29,78,216,.14)',
-                borderRadius:'clamp(20px,4vw,28px)',
-                padding:'clamp(40px,7vw,64px) clamp(24px,6vw,50px)',
-                position:'relative', overflow:'hidden',
-                animation: 'hp-scaleIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both'
-              }}>
-                <div style={{ position:'absolute', top:-60, right:-60, width:200, height:200, borderRadius:'50%', background:'rgba(99,102,241,.06)', pointerEvents:'none', animation: 'hp-glow 3s ease-in-out infinite' }}/>
-                <div className="hp-pill" style={{ marginBottom:16, animation: 'hp-bounce 2s ease-in-out infinite' }}><SvgIcon name="rocket" size={14} color="currentColor" style={{ animation: 'hp-wiggle 2s ease-in-out infinite' }} /> Join Us Today</div>
-                <h2 style={{ fontWeight:800, fontSize:'clamp(1.5rem,3.8vw,2.3rem)', color:'#0f172a', marginBottom:12, letterSpacing:'-.02em', lineHeight:1.18 }}>
-                  Start Your <span className="hp-grad">Career Journey</span> Today
-                </h2>
-                <p style={{ color:'#64748b', fontSize:'clamp(.9rem,2vw,1rem)', lineHeight:1.85, maxWidth:520, margin:'0 auto 32px' }}>
-                  Join hundreds of students who have already kickstarted their careers through our structured, industry-aligned internship programs.
-                </p>
-                <div style={{ display:'flex', gap:14, justifyContent:'center', flexWrap:'wrap' }}>
-                  <Link to="/signup" className="hp-cta-primary">
-                    <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                    Apply Now
-                  </Link>
-                  <Link to="/contact" className="hp-cta-secondary">
-                    <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-                    Contact Us
-                  </Link>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* ── FINAL CALL TO ACTION ── */}
+        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-600 p-8 sm:p-12 md:p-16 text-center text-white shadow-xl">
+            {/* Background elements */}
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.06)_0%,transparent_50%)] pointer-events-none" />
+            
+            <div className="relative z-10 max-w-2xl mx-auto space-y-6">
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
+                Start Your Learning Journey Today
+              </h2>
+              <p className="text-sm sm:text-base text-blue-100 leading-relaxed font-semibold max-w-lg mx-auto">
+                Take the next step toward building practical skills through structured internship and training programs.
+              </p>
+              <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center">
+                <Link 
+                  to="/signup" 
+                  className="px-8 py-4 rounded-xl font-bold text-sm bg-white text-blue-600 hover:bg-slate-50 shadow-md active:scale-95 transition-all"
+                >
+                  Apply Now
+                </Link>
+                <Link 
+                  to="/contact" 
+                  className="px-8 py-4 rounded-xl font-bold text-sm bg-transparent border border-white/35 hover:bg-white/10 active:scale-95 transition-all"
+                >
+                  Contact Us
+                </Link>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-        </div>
       </div>
     </>
   )

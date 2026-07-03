@@ -323,12 +323,20 @@ export default function EmployeeLayout() {
   }, [location.pathname, filteredNavItems, navigate])
 
   const currentNavItem = useMemo(() => {
-    return filteredNavItems.find(item =>
+    const byPath = navItems.find((item) =>
       item.path === '/employee'
         ? location.pathname === '/employee'
         : location.pathname.startsWith(item.path)
-    ) || filteredNavItems[0] || navItems[0]
+    )
+
+    const allowed = filteredNavItems.find((item) => item.path === byPath?.path)
+
+    // If RBAC filtering hides the current route, keep the header stable using byPath.
+    // But the sidebar item itself remains permission-filtered.
+    return allowed || byPath || filteredNavItems[0] || navItems[0]
   }, [location.pathname, filteredNavItems])
+
+
 
   return (
     <div className="relative h-screen overflow-hidden bg-slate-50 text-slate-900">

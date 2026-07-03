@@ -9,7 +9,7 @@ const { logger } = require("../logger");
 const { sendEmail, emailTemplate } = require("./emailService");
 
 const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000;
-const DEFAULT_SITE_URL = (process.env.APP_URL || "https://www.amitsolutionhub.com").replace(/\/+$/, "");
+const DEFAULT_SITE_URL = (process.env.FRONTEND_URL || process.env.APP_URL || "https://www.amitsolutionhub.com").replace(/\/+$/, "");
 /** Shown when email or phone already belongs to an account (registration or conflict). */
 const ACCOUNT_ALREADY_EXISTS_MESSAGE = "Account already exists. Please reset your password.";
 const NEW_CUSTOMER_EMAIL_INTRO = `
@@ -2323,17 +2323,17 @@ const completePasswordReset = async ({ token, newPassword } = {}) => {
     let matched = 0;
     // 1. by _id (ObjectId)
     try {
-      const upd = await usersCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { passwordHash, status: "active", updatedAt: new Date() } });
+      const upd = await usersCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { passwordHash, loginAttempts: 0, status: "active", updatedAt: new Date() } });
       matched = upd.matchedCount;
     } catch {}
     // 2. by uid / firebaseUid
     if (!matched) {
-      const upd = await usersCollection.updateOne({ $or: [{ uid: userId }, { firebaseUid: userId }] }, { $set: { passwordHash, status: "active", updatedAt: new Date() } });
+      const upd = await usersCollection.updateOne({ $or: [{ uid: userId }, { firebaseUid: userId }] }, { $set: { passwordHash, loginAttempts: 0, status: "active", updatedAt: new Date() } });
       matched = upd.matchedCount;
     }
     // 3. by email (most reliable fallback)
     if (!matched && normalizedDocEmail) {
-      await usersCollection.updateOne({ email: normalizedDocEmail }, { $set: { passwordHash, status: "active", updatedAt: new Date() } });
+      await usersCollection.updateOne({ email: normalizedDocEmail }, { $set: { passwordHash, loginAttempts: 0, status: "active", updatedAt: new Date() } });
     }
 
     // mark token used
@@ -2377,6 +2377,19 @@ const completePasswordReset = async ({ token, newPassword } = {}) => {
 
   const refreshedUser = await getManagedUser(user.id, { includeSensitive: true });
   await syncUserToFirebase(refreshedUser);
+
+  // Reset loginAttempts in MongoDB
+  try {
+    const mongo = getDb();
+    if (mongo) {
+      await mongo.collection("users").updateOne(
+        { email: normalizeEmail(user.email || "") },
+        { $set: { loginAttempts: 0 } }
+      );
+    }
+  } catch (err) {
+    console.error("Failed to reset MongoDB loginAttempts in MySQL mode:", err);
+  }
 
   return { success: true, email: verification.email };
 };

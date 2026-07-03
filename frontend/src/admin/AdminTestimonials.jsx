@@ -79,7 +79,7 @@ export default function AdminTestimonials() {
           <p className="text-sm text-slate-500 mt-1">{testimonials?.length || 0} reviews</p>
         </div>
         <button onClick={openCreate}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-slate-900 hover:shadow-lg hover:shadow-blue-500/25 transition-all">
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
@@ -122,10 +122,10 @@ export default function AdminTestimonials() {
 
               {/* Actions */}
               <div className="flex items-center gap-2 mt-6 pt-4 border-t border-slate-200 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={() => openEdit(t)} className="flex-1 py-2 text-center rounded-xl text-xs font-bold bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-all">
+                <button onClick={() => openEdit(t)} className="flex-1 py-2 text-center rounded-xl text-xs font-bold bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 transition-all">
                   Edit Testimonial
                 </button>
-                <button onClick={() => handleDelete(t)} className="py-2 px-3 text-center rounded-xl text-xs font-bold bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all">
+                <button onClick={() => handleDelete(t)} className="py-2 px-3 text-center rounded-xl text-xs font-bold bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-all">
                   Delete
                 </button>
               </div>
@@ -195,7 +195,7 @@ export default function AdminTestimonials() {
 
               <div className="flex gap-3 pt-4">
                 <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-3 bg-slate-100 border border-slate-300 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-200 transition-all">Cancel</button>
-                <button type="submit" disabled={saving} className="flex-[2] px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-sm font-bold text-slate-900 hover:shadow-lg disabled:opacity-50 transition-all">
+                <button type="submit" disabled={saving} className="flex-[2] px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-sm font-bold text-white hover:shadow-lg disabled:opacity-50 transition-all">
                   {saving ? 'Saving...' : editing ? 'Update Testimonial' : 'Add Testimonial'}
                 </button>
               </div>
