@@ -241,17 +241,20 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      
-      const isAllowed = allowedOrigins.some((allowed) => {
-        const cleanedAllowed = allowed.replace(/\/$/, "");
-        return origin.replace(/\/$/, "") === cleanedAllowed;
-      });
+
+      // Suffix matching helper
+      const isAllowed = 
+        allowedOrigins.some(allowed => allowed.replace(/\/$/, "") === origin.replace(/\/$/, "")) ||
+        origin.endsWith(".vercel.app") ||
+        origin.endsWith(".amitsolutionhub.com") ||
+        origin.endsWith(".onrender.com") ||
+        /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 
       if (isAllowed) {
         callback(null, true);
       } else {
-        logger.warn(`[CORS] Blocked origin: ${origin}`);
-        callback(new Error("Not allowed by CORS"));
+        logger.warn(`[CORS] Request from disallowed origin: ${origin}`);
+        callback(null, false);
       }
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
