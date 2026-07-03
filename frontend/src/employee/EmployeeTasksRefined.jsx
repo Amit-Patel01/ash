@@ -190,7 +190,7 @@ export default function EmployeeTasksRefined() {
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search task or project"
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 pr-11 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 pr-11 text-sm text-slate-900 placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
               />
               <svg className="pointer-events-none absolute right-3 top-3.5 h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -199,7 +199,7 @@ export default function EmployeeTasksRefined() {
             <select
               value={filter}
               onChange={(event) => setFilter(event.target.value)}
-              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200 focus:border-cyan-400/30 focus:outline-none"
+              className="rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-200 focus:border-cyan-400/30 focus:outline-none"
             >
               <option value="all" className="bg-slate-950">All Tasks</option>
               <option value="active" className="bg-slate-950">Active</option>
@@ -219,7 +219,7 @@ export default function EmployeeTasksRefined() {
           <EmployeeSurface key={card.label} className="p-5">
             <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">{card.label}</p>
             <div className="mt-4 flex items-end justify-between gap-3">
-              <p className="text-4xl font-black text-white">{card.value}</p>
+              <p className="text-4xl font-black text-slate-900">{card.value}</p>
               <EmployeeBadge tone={card.tone}>{card.label}</EmployeeBadge>
             </div>
             <p className="mt-3 text-sm text-slate-400">{card.hint}</p>
@@ -246,7 +246,7 @@ export default function EmployeeTasksRefined() {
               const priority = priorityMeta[priorityKey]
 
               return (
-                <div key={task.id} className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 transition hover:border-cyan-400/20 hover:bg-white/[0.05]">
+                <div key={task.id} className="rounded-[24px] border border-slate-300 bg-white/[0.03] p-5 transition hover:border-cyan-400/20 hover:bg-white/[0.05]">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
@@ -254,7 +254,7 @@ export default function EmployeeTasksRefined() {
                         <EmployeeBadge tone={priority.tone}>{priority.label} Priority</EmployeeBadge>
                         {task.project && <EmployeeBadge>{task.project}</EmployeeBadge>}
                       </div>
-                      <h3 className="mt-4 text-lg font-black text-white">{task.title || 'Untitled Task'}</h3>
+                      <h3 className="mt-4 text-lg font-black text-slate-900">{task.title || 'Untitled Task'}</h3>
                       <p className="mt-2 text-sm leading-6 text-slate-400">
                         {task.description || 'No task description was provided. Use the status controls to move the workflow forward.'}
                       </p>
@@ -266,14 +266,14 @@ export default function EmployeeTasksRefined() {
                     </div>
 
                     <div className="flex flex-wrap gap-2 lg:justify-end items-center">
-                      <div className="flex items-center gap-1 bg-white/5 border border-white/10 p-1 rounded-xl">
+                      <div className="flex items-center gap-1 bg-slate-100 border border-slate-300 p-1 rounded-xl">
                         <button
                           onClick={() => handleStatusChange(task.id, 'todo')}
                           disabled={updatingId === task.id}
                           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                             statusKey === 'todo'
-                              ? 'bg-gray-500/20 text-gray-300 border border-gray-500/30'
-                              : 'text-gray-500 hover:text-gray-300 border border-transparent hover:bg-white/5'
+                              ? 'bg-gray-500/20 text-slate-600 border border-gray-500/30'
+                              : 'text-slate-400 hover:text-slate-600 border border-transparent hover:bg-slate-100'
                           }`}
                         >
                           To Do
@@ -284,7 +284,7 @@ export default function EmployeeTasksRefined() {
                           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                             statusKey === 'in-progress'
                               ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
-                              : 'text-gray-500 hover:text-cyan-400 border border-transparent hover:bg-white/5'
+                              : 'text-slate-400 hover:text-cyan-400 border border-transparent hover:bg-slate-100'
                           }`}
                         >
                           In Progress
@@ -295,7 +295,7 @@ export default function EmployeeTasksRefined() {
                           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                             statusKey === 'review'
                               ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                              : 'text-gray-500 hover:text-amber-400 border border-transparent hover:bg-white/5'
+                              : 'text-slate-400 hover:text-amber-400 border border-transparent hover:bg-slate-100'
                           }`}
                         >
                           Review
@@ -306,7 +306,7 @@ export default function EmployeeTasksRefined() {
                           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                             statusKey === 'done'
                               ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                              : 'text-gray-500 hover:text-emerald-400 border border-transparent hover:bg-white/5'
+                              : 'text-slate-400 hover:text-emerald-400 border border-transparent hover:bg-slate-100'
                           }`}
                         >
                           Done
@@ -325,22 +325,22 @@ export default function EmployeeTasksRefined() {
       {showCreateModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowCreateModal(false)} />
-          <div className="relative bg-slate-900 border border-white/10 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="border-b border-white/5 px-6 py-5 flex items-center justify-between bg-white/[0.02]">
-              <h2 className="text-xl font-bold text-white">Assign New Task</h2>
-              <button onClick={() => setShowCreateModal(false)} className="p-2 rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+          <div className="relative bg-slate-900 border border-slate-300 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="border-b border-slate-200 px-6 py-5 flex items-center justify-between bg-slate-50">
+              <h2 className="text-xl font-bold text-slate-900">Assign New Task</h2>
+              <button onClick={() => setShowCreateModal(false)} className="p-2 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-200 transition-colors">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
             <form onSubmit={handleCreateTask} className="p-6 space-y-5">
               <div>
                 <label className="block text-sm font-semibold text-slate-300 mb-2">Task Title *</label>
-                <input type="text" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required placeholder="Enter task title" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 transition-all" />
+                <input type="text" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required placeholder="Enter task title" className="w-full px-4 py-3 bg-slate-100 border border-slate-300 rounded-2xl text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 transition-all" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-semibold text-slate-300 mb-2">Project *</label>
-                  <input type="text" value={formData.project} onChange={e => setFormData({ ...formData, project: e.target.value })} required placeholder="Project name" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 transition-all" />
+                  <input type="text" value={formData.project} onChange={e => setFormData({ ...formData, project: e.target.value })} required placeholder="Project name" className="w-full px-4 py-3 bg-slate-100 border border-slate-300 rounded-2xl text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 transition-all" />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-300 mb-2">Assign To *</label>
@@ -349,7 +349,7 @@ export default function EmployeeTasksRefined() {
                       required
                       value={formData.assigneeRaw}
                       onChange={(e) => setFormData({ ...formData, assigneeRaw: e.target.value })}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-cyan-400/50 transition-all appearance-none"
+                      className="w-full px-4 py-3 bg-slate-100 border border-slate-300 rounded-2xl text-sm text-slate-900 focus:outline-none focus:border-cyan-400/50 transition-all appearance-none"
                     >
                       <option value="" className="bg-slate-900 text-slate-500">Select Employee</option>
                       {assigneeOptions.map((opt) => (
@@ -366,7 +366,7 @@ export default function EmployeeTasksRefined() {
                 <div>
                   <label className="block text-sm font-semibold text-slate-300 mb-2">Priority</label>
                   <div className="relative">
-                    <select value={formData.priority} onChange={e => setFormData({ ...formData, priority: e.target.value })} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-cyan-400/50 transition-all appearance-none">
+                    <select value={formData.priority} onChange={e => setFormData({ ...formData, priority: e.target.value })} className="w-full px-4 py-3 bg-slate-100 border border-slate-300 rounded-2xl text-sm text-slate-900 focus:outline-none focus:border-cyan-400/50 transition-all appearance-none">
                       {['Low', 'Medium', 'High'].map(p => <option key={p} value={p} className="bg-slate-900">{p}</option>)}
                     </select>
                     <svg className="pointer-events-none absolute right-3 top-3.5 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -376,12 +376,12 @@ export default function EmployeeTasksRefined() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-300 mb-2">Due Date</label>
-                  <input type="text" value={formData.dueDate} onChange={e => setFormData({ ...formData, dueDate: e.target.value })} placeholder="e.g. Tomorrow or Apr 15" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 transition-all" />
+                  <input type="text" value={formData.dueDate} onChange={e => setFormData({ ...formData, dueDate: e.target.value })} placeholder="e.g. Tomorrow or Apr 15" className="w-full px-4 py-3 bg-slate-100 border border-slate-300 rounded-2xl text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:border-cyan-400/50 transition-all" />
                 </div>
               </div>
               <div className="pt-4 flex gap-3">
                 <button type="submit" className="flex-1 px-4 py-3 bg-cyan-400 hover:bg-cyan-300 text-slate-900 rounded-2xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(34,211,238,0.2)]">Assign Task</button>
-                <button type="button" onClick={() => setShowCreateModal(false)} className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-sm font-semibold text-slate-300 transition-all">Cancel</button>
+                <button type="button" onClick={() => setShowCreateModal(false)} className="px-6 py-3 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-2xl text-sm font-semibold text-slate-300 transition-all">Cancel</button>
               </div>
             </form>
           </div>

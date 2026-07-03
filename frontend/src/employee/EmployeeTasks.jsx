@@ -44,7 +44,7 @@ function TaskCard({ task, userDisplayName, onStatusChange, updating }) {
       {/* Task title & project */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="min-w-0">
-          <h3 className="text-[14px] font-bold text-white leading-snug group-hover:text-blue-300 transition-colors">{task.title}</h3>
+          <h3 className="text-[14px] font-bold text-slate-900 leading-snug group-hover:text-blue-300 transition-colors">{task.title}</h3>
           {task.project && (
             <p className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">{task.project}</p>
           )}
@@ -167,7 +167,7 @@ export default function EmployeeTasks() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight">My Tasks</h1>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">My Tasks</h1>
           <p className="text-[13px] text-slate-500 mt-0.5">Manage your workload and track progress</p>
         </div>
 
@@ -195,7 +195,7 @@ export default function EmployeeTasks() {
             placeholder="Search tasks or projects..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full rounded-2xl px-4 py-2.5 pr-10 text-[13px] text-white placeholder-slate-600 focus:outline-none transition-all"
+            className="w-full rounded-2xl px-4 py-2.5 pr-10 text-[13px] text-slate-900 placeholder-slate-600 focus:outline-none transition-all"
             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)' }}
             onFocus={e => e.target.style.borderColor = 'rgba(99,102,241,0.4)'}
             onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.09)'}

@@ -11,7 +11,7 @@ function InputField({ label, type = 'text', value, onChange, placeholder, requir
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className={`w-full rounded-xl px-4 py-3 text-[13px] text-white placeholder-slate-700 focus:outline-none transition-all ${mono ? 'font-mono' : ''}`}
+        className={`w-full rounded-xl px-4 py-3 text-[13px] text-slate-900 placeholder-slate-700 focus:outline-none transition-all ${mono ? 'font-mono' : ''}`}
         style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}
         onFocus={e => e.target.style.borderColor = 'rgba(16,185,129,0.45)'}
         onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.09)'}
@@ -95,7 +95,7 @@ export default function EmployeeProfile() {
           {/* Avatar */}
           <div className="relative group">
             <div
-              className="h-20 w-20 rounded-2xl overflow-hidden flex items-center justify-center text-2xl font-black text-white flex-shrink-0"
+              className="h-20 w-20 rounded-2xl overflow-hidden flex items-center justify-center text-2xl font-black text-slate-900 flex-shrink-0"
               style={{ background: hasAvatar ? 'transparent' : 'linear-gradient(135deg, rgba(16,185,129,0.3), rgba(6,182,212,0.3))', border: '1px solid rgba(16,185,129,0.3)' }}
             >
               {hasAvatar ? (
@@ -106,14 +106,14 @@ export default function EmployeeProfile() {
               className="absolute -bottom-1.5 -right-1.5 h-7 w-7 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
               style={{ background: 'linear-gradient(135deg,#10b981,#06b6d4)', boxShadow: '0 2px 10px rgba(16,185,129,0.4)' }}
             >
-              <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-3.5 h-3.5 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
               </svg>
             </div>
           </div>
 
           <div>
-            <h1 className="text-xl font-black text-white">{profileForm.displayName || 'Your Name'}</h1>
+            <h1 className="text-xl font-black text-slate-900">{profileForm.displayName || 'Your Name'}</h1>
             <p className="text-[12px] text-slate-500 mt-0.5">{userProfile?.email}</p>
             <div className="flex gap-2 mt-2 flex-wrap">
               {profileForm.jobTitle && (
@@ -145,7 +145,7 @@ export default function EmployeeProfile() {
             </svg>
           </div>
           <div>
-            <h2 className="text-[14px] font-black text-white">Personal Information</h2>
+            <h2 className="text-[14px] font-black text-slate-900">Personal Information</h2>
             <p className="text-[11px] text-slate-600">Update your account details and profile picture</p>
           </div>
         </div>
@@ -200,7 +200,7 @@ export default function EmployeeProfile() {
                 onChange={updateProfile('bio')}
                 rows={3}
                 placeholder="Tell students about your background, expertise and teaching approach..."
-                className="w-full rounded-xl px-4 py-3 text-[13px] text-white placeholder-slate-700 focus:outline-none transition-all resize-none"
+                className="w-full rounded-xl px-4 py-3 text-[13px] text-slate-900 placeholder-slate-700 focus:outline-none transition-all resize-none"
                 style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)' }}
                 onFocus={e => e.target.style.borderColor = 'rgba(16,185,129,0.45)'}
                 onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.09)'}
@@ -218,7 +218,7 @@ export default function EmployeeProfile() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 rounded-2xl text-[14px] font-black text-white flex items-center justify-center gap-2.5 transition-all duration-200"
+            className="w-full py-3.5 rounded-2xl text-[14px] font-black text-slate-900 flex items-center justify-center gap-2.5 transition-all duration-200"
             style={{ background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 4px 20px rgba(16,185,129,0.3)', opacity: loading ? 0.7 : 1 }}
             onMouseEnter={e => !loading && (e.currentTarget.style.boxShadow = '0 8px 30px rgba(16,185,129,0.45)')}
             onMouseLeave={e => e.currentTarget.style.boxShadow = '0 4px 20px rgba(16,185,129,0.3)'}
@@ -238,7 +238,7 @@ export default function EmployeeProfile() {
             </svg>
           </div>
           <div>
-            <h2 className="text-[14px] font-black text-white">Change Password</h2>
+            <h2 className="text-[14px] font-black text-slate-900">Change Password</h2>
             <p className="text-[11px] text-slate-600">Regularly update your password to maintain security</p>
           </div>
         </div>

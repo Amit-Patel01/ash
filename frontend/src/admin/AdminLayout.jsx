@@ -9,41 +9,11 @@ const navGroups = [
     label: 'Core',
     items: [
       { path: '/admin', label: 'Dashboard', icon: 'dashboard' },
-      { path: '/admin/projects', label: 'Projects', icon: 'folder', permission: 'can_manage_projects' },
+      { path: '/admin/projects', label: 'Source Codes', icon: 'folder', permission: 'can_manage_projects' },
       { path: '/admin/tasks', label: 'Tasks', icon: 'task', permission: 'can_manage_tasks' },
       { path: '/admin/sales', label: 'Sales', icon: 'cart', permission: 'can_manage_sales' },
       { path: '/admin/services', label: 'Services', icon: 'design_services', permission: 'can_manage_services' },
-    ]
-  },
-  {
-    label: 'Personnel',
-    items: [
-      { path: '/admin/employees', label: 'Staff Accounts', icon: 'badge', permission: 'can_manage_employees' },
-      { path: '/admin/team', label: 'Team (About Page)', icon: 'group', permission: 'can_manage_employees' },
-      { path: '/admin/permissions', label: 'Permissions', icon: 'shield', permission: 'can_manage_employees' },
-    ]
-  },
-  {
-    label: 'Students',
-    items: [
-      { path: '/admin/students', label: 'All Students', icon: 'group' },
-      { path: '/admin/course-enrollments', label: 'Enrollments', icon: 'book' },
-      { path: '/admin/qr-certificates', label: 'QR Certificates', icon: 'award' },
-      { path: '/admin/account-requests', label: 'Account Requests', icon: 'userPlus', permission: 'can_approve_accounts' },
-    ]
-  },
-  {
-    label: 'Communication',
-    items: [
-      { path: '/admin/messages', label: 'Messages', icon: 'mail', permission: 'can_manage_messages' },
       { path: '/admin/testimonials', label: 'Testimonials', icon: 'comment' },
-    ]
-  },
-  {
-    label: 'Requests',
-    items: [
-      { path: '/admin/service-requests', label: 'Service Requests', icon: 'clipboardList', permission: 'can_manage_service_requests' },
-      { path: '/admin/sell-requests', label: 'Sell Requests', icon: 'tag', permission: 'can_manage_sell_requests' },
     ]
   },
   {
@@ -52,6 +22,26 @@ const navGroups = [
       { path: '/admin/courses', label: 'All Courses', icon: 'book' },
       { path: '/admin/coupons', label: 'Coupons', icon: 'coupon' },
       { path: '/admin/course-categories', label: 'Categories', icon: 'tag' },
+      { path: '/admin/course-enrollments', label: 'Enrollments', icon: 'book' },
+    ]
+  },
+  {
+    label: 'User Management',
+    items: [
+      { path: '/admin/students', label: 'Students', icon: 'group' },
+      { path: '/admin/employees', label: 'Staff Accounts', icon: 'badge', permission: 'can_manage_employees' },
+      { path: '/admin/team', label: 'Team', icon: 'group', permission: 'can_manage_employees' },
+      { path: '/admin/permissions', label: 'Permissions', icon: 'shield', permission: 'can_manage_employees' },
+      { path: '/admin/qr-certificates', label: 'QR Certificates', icon: 'award' },
+    ]
+  },
+  {
+    label: 'Inbox & Requests',
+    items: [
+      { path: '/admin/messages', label: 'Messages', icon: 'mail', permission: 'can_manage_messages' },
+      { path: '/admin/account-requests', label: 'Account Requests', icon: 'userPlus', permission: 'can_approve_accounts' },
+      { path: '/admin/service-requests', label: 'Service Requests', icon: 'clipboardList', permission: 'can_manage_service_requests' },
+      { path: '/admin/sell-requests', label: 'Sell Requests', icon: 'tag', permission: 'can_manage_sell_requests' },
     ]
   },
   {
@@ -220,7 +210,7 @@ export default function AdminLayout({ onLogout }) {
   const avatar = displayName.charAt(0).toUpperCase()
 
   return (
-    <div className="h-screen bg-gray-950 text-white flex overflow-hidden dark">
+    <div className="h-screen bg-slate-50 text-slate-900 flex overflow-hidden">
       {/* Mobile overlay */}
       {mobileMenuOpen && (
         <div
@@ -231,20 +221,20 @@ export default function AdminLayout({ onLogout }) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-50 transform ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-72' : 'w-20'} flex flex-col bg-gray-900/80 backdrop-blur-xl border-r border-white/5`}
+        className={`fixed lg:static inset-y-0 left-0 z-50 transform ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-all duration-300 ease-in-out ${sidebarOpen ? 'w-72' : 'w-20'} flex flex-col bg-white backdrop-blur-xl border-r border-slate-200`}
       >
         {/* Logo */}
-        <div className="flex items-center h-16 px-4 border-b border-white/5">
+        <div className="flex items-center h-16 px-4 border-b border-slate-200">
           <div className="flex items-center gap-3 overflow-hidden">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-6 h-6 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
               </svg>
             </div>
             {sidebarOpen && (
               <div className="transition-opacity duration-200">
                 <h1 className="text-lg font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">SolutionHub</h1>
-                <p className="text-[10px] text-gray-500 -mt-0.5 tracking-wider uppercase">Admin Panel</p>
+                <p className="text-[10px] text-slate-400 -mt-0.5 tracking-wider uppercase">Admin Panel</p>
               </div>
             )}
           </div>
@@ -259,12 +249,12 @@ export default function AdminLayout({ onLogout }) {
               <div key={group.label}>
                 {/* Group Label */}
                 {sidebarOpen && (
-                  <p className="px-3 mb-1 text-[10px] font-bold uppercase tracking-widest text-gray-600">
+                  <p className="px-3 mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                     {group.label}
                   </p>
                 )}
                 {!sidebarOpen && (
-                  <div className="h-px bg-white/5 mx-2 mb-2" />
+                  <div className="h-px bg-slate-100 mx-2 mb-2" />
                 )}
                 <div className="space-y-0.5">
                   {visibleItems.map((item) => {
@@ -279,12 +269,12 @@ export default function AdminLayout({ onLogout }) {
                         onClick={() => setMobileMenuOpen(false)}
                         className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                           isActive
-                            ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-white shadow-lg shadow-blue-500/10'
-                            : 'text-gray-400 hover:text-white hover:bg-white/5'
+                            ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-slate-900 shadow-lg shadow-blue-500/10'
+                            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
                         }`}
                       >
                         <span className={`flex-shrink-0 transition-colors ${
-                          isActive ? 'text-blue-400' : 'text-gray-500 group-hover:text-gray-300'
+                          isActive ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-600'
                         }`}>
                           {iconMap[item.icon]}
                         </span>
@@ -292,22 +282,22 @@ export default function AdminLayout({ onLogout }) {
                         {sidebarOpen && (
                           <>
                             {item.path === '/admin/account-requests' && accountRequests.filter(r => r.status === 'pending').length > 0 && (
-                              <span className="px-1.5 py-0.5 rounded-full bg-blue-500 text-[10px] font-bold text-white">
+                              <span className="px-1.5 py-0.5 rounded-full bg-blue-500 text-[10px] font-bold text-slate-900">
                                 {accountRequests.filter(r => r.status === 'pending').length}
                               </span>
                             )}
                             {item.path === '/admin/service-requests' && serviceRequests.filter(r => r.status === 'pending').length > 0 && (
-                              <span className="px-1.5 py-0.5 rounded-full bg-amber-500 text-[10px] font-bold text-white">
+                              <span className="px-1.5 py-0.5 rounded-full bg-amber-500 text-[10px] font-bold text-slate-900">
                                 {serviceRequests.filter(r => r.status === 'pending').length}
                               </span>
                             )}
                             {item.path === '/admin/sell-requests' && sellRequests.filter(r => r.status === 'pending').length > 0 && (
-                              <span className="px-1.5 py-0.5 rounded-full bg-purple-500 text-[10px] font-bold text-white">
+                              <span className="px-1.5 py-0.5 rounded-full bg-purple-500 text-[10px] font-bold text-slate-900">
                                 {sellRequests.filter(r => r.status === 'pending').length}
                               </span>
                             )}
                             {item.path === '/admin/messages' && messages.filter(m => m.status === 'unread').length > 0 && (
-                              <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-[10px] font-bold text-white">
+                              <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-[10px] font-bold text-slate-900">
                                 {messages.filter(m => m.status === 'unread').length}
                               </span>
                             )}
@@ -329,9 +319,9 @@ export default function AdminLayout({ onLogout }) {
         </nav>
 
         {/* User Profile */}
-        <div className="p-4 border-t border-white/5">
+        <div className="p-4 border-t border-slate-200">
           <div className={`flex items-center gap-3 ${!sidebarOpen ? 'justify-center' : ''}`}>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center flex-shrink-0 text-sm font-bold overflow-hidden border border-white/10">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center flex-shrink-0 text-sm font-bold overflow-hidden border border-slate-300">
               {avatarUrl ? (
                 <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
               ) : (
@@ -340,15 +330,15 @@ export default function AdminLayout({ onLogout }) {
             </div>
             {sidebarOpen && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{displayName}</p>
-                <p className="text-xs text-gray-500 truncate">{displayEmail}</p>
+                <p className="text-sm font-medium text-slate-900 truncate">{displayName}</p>
+                <p className="text-xs text-slate-400 truncate">{displayEmail}</p>
               </div>
             )}
             {sidebarOpen && (
               <button
                 onClick={onLogout}
                 title="Logout"
-                className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
@@ -361,7 +351,7 @@ export default function AdminLayout({ onLogout }) {
         {/* Toggle sidebar button (desktop) */}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="hidden lg:flex absolute -right-3 top-20 w-6 h-6 items-center justify-center rounded-full bg-gray-800 border border-white/10 text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+          className="hidden lg:flex absolute -right-3 top-20 w-6 h-6 items-center justify-center rounded-full bg-slate-100 border border-slate-300 text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition-colors"
         >
           <svg className={`w-4 h-4 transition-transform ${sidebarOpen ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
@@ -372,11 +362,11 @@ export default function AdminLayout({ onLogout }) {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <header className="h-16 bg-gray-900/50 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-4 lg:px-6">
+        <header className="h-16 bg-white backdrop-blur-xl border-b border-slate-200 flex items-center justify-between px-4 lg:px-6">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5"
+              className="lg:hidden p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -385,7 +375,7 @@ export default function AdminLayout({ onLogout }) {
             <form onSubmit={handleSearch} className="relative h-11 hidden sm:block group">
               <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                 <svg 
-                  className="w-5 h-5 text-gray-400 group-focus-within:text-blue-400 transition-all duration-300 ease-in-out transform group-focus-within:scale-110" 
+                  className="w-5 h-5 text-slate-500 group-focus-within:text-blue-400 transition-all duration-300 ease-in-out transform group-focus-within:scale-110" 
                   fill="none" 
                   viewBox="0 0 24 24" 
                   stroke="currentColor" 
@@ -399,7 +389,7 @@ export default function AdminLayout({ onLogout }) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search projects, tasks, employee..."
-                className="h-full w-80 pl-14 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.08] focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 ease-in-out"
+                className="h-full w-80 pl-14 pr-4 py-2 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.08] focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 ease-in-out"
               />
             </form>
           </div>
@@ -409,7 +399,7 @@ export default function AdminLayout({ onLogout }) {
             <div className="relative">
               <button 
                 onClick={() => setShowNotifications(!showNotifications)}
-                className={`relative p-2 rounded-xl transition-colors ${showNotifications ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+                className={`relative p-2 rounded-xl transition-colors ${showNotifications ? 'bg-slate-200 text-slate-900' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'}`}
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
@@ -426,56 +416,56 @@ export default function AdminLayout({ onLogout }) {
               {showNotifications && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setShowNotifications(false)} />
-                  <div className="absolute right-0 mt-2 w-80 bg-gray-900 border border-white/10 rounded-2xl shadow-2xl z-20 overflow-hidden animate-in fade-in slide-in-from-top-2">
-                    <div className="p-4 border-b border-white/5 bg-white/[0.02]">
-                      <h3 className="text-sm font-bold text-white">Notifications</h3>
+                  <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-300 rounded-2xl shadow-2xl z-20 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                    <div className="p-4 border-b border-slate-200 bg-slate-50">
+                      <h3 className="text-sm font-bold text-slate-900">Notifications</h3>
                     </div>
                     <div className="max-h-[400px] overflow-y-auto py-2">
                       {/* Account Requests */}
                       {accountRequests.filter(r => r.status === 'pending').length > 0 && (
-                        <Link to="/admin/account-requests" onClick={() => setShowNotifications(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 grow">
+                        <Link to="/admin/account-requests" onClick={() => setShowNotifications(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100 transition-colors border-b border-slate-200 last:border-0 grow">
                           <div className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center flex-shrink-0">
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" /></svg>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-white">New Account Request</p>
-                            <p className="text-[10px] text-gray-500 truncate">{accountRequests.filter(r => r.status === 'pending').length} requests pending</p>
+                            <p className="text-xs font-bold text-slate-900">New Account Request</p>
+                            <p className="text-[10px] text-slate-400 truncate">{accountRequests.filter(r => r.status === 'pending').length} requests pending</p>
                           </div>
                         </Link>
                       )}
                       {/* Sell Requests */}
                       {sellRequests.filter(r => r.status === 'pending').length > 0 && (
-                        <Link to="/admin/sell-requests" onClick={() => setShowNotifications(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 grow">
+                        <Link to="/admin/sell-requests" onClick={() => setShowNotifications(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100 transition-colors border-b border-slate-200 last:border-0 grow">
                           <div className="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center flex-shrink-0">
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" /></svg>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-white">New Sell Request</p>
-                            <p className="text-[10px] text-gray-500 truncate">{sellRequests.filter(r => r.status === 'pending').length} code listings to review</p>
+                            <p className="text-xs font-bold text-slate-900">New Sell Request</p>
+                            <p className="text-[10px] text-slate-400 truncate">{sellRequests.filter(r => r.status === 'pending').length} code listings to review</p>
                           </div>
                         </Link>
                       )}
                       {/* Service Requests */}
                       {serviceRequests.filter(r => r.status === 'pending').length > 0 && (
-                        <Link to="/admin/service-requests" onClick={() => setShowNotifications(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 grow">
+                        <Link to="/admin/service-requests" onClick={() => setShowNotifications(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100 transition-colors border-b border-slate-200 last:border-0 grow">
                           <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0">
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25" /></svg>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-white">Project Inquiry</p>
-                            <p className="text-[10px] text-gray-500 truncate">{serviceRequests.filter(r => r.status === 'pending').length} custom orders pending</p>
+                            <p className="text-xs font-bold text-slate-900">Project Inquiry</p>
+                            <p className="text-[10px] text-slate-400 truncate">{serviceRequests.filter(r => r.status === 'pending').length} custom orders pending</p>
                           </div>
                         </Link>
                       )}
                       {/* Messages */}
                       {messages.filter(m => m.status === 'unread').length > 0 && (
-                        <Link to="/admin/messages" onClick={() => setShowNotifications(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 grow">
+                        <Link to="/admin/messages" onClick={() => setShowNotifications(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-slate-100 transition-colors border-b border-slate-200 last:border-0 grow">
                           <div className="w-8 h-8 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center flex-shrink-0">
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-white">New Messages</p>
-                            <p className="text-[10px] text-gray-500 truncate">{messages.filter(m => m.status === 'unread').length} unread messages</p>
+                            <p className="text-xs font-bold text-slate-900">New Messages</p>
+                            <p className="text-[10px] text-slate-400 truncate">{messages.filter(m => m.status === 'unread').length} unread messages</p>
                           </div>
                         </Link>
                       )}
@@ -486,8 +476,8 @@ export default function AdminLayout({ onLogout }) {
                         serviceRequests.filter(r => r.status === 'pending').length === 0 && 
                         messages.filter(m => m.status === 'unread').length === 0) && (
                         <div className="py-8 text-center">
-                          <svg className="w-10 h-10 mx-auto text-gray-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
-                          <p className="text-xs text-gray-500">No new notifications</p>
+                          <svg className="w-10 h-10 mx-auto text-slate-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                          <p className="text-xs text-slate-400">No new notifications</p>
                         </div>
                       )}
                     </div>
@@ -499,7 +489,7 @@ export default function AdminLayout({ onLogout }) {
             {/* View Site */}
             <Link
               to="/"
-              className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+              className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-sm text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />

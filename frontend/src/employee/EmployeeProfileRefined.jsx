@@ -208,8 +208,8 @@ export default function EmployeeProfileRefined() {
         description="Manage your employee profile, mentor details, CV, and account security from one place."
         stats={profileStats}
         actions={
-          <div className="flex items-center gap-3 rounded-[24px] border border-white/10 bg-white/[0.04] px-4 py-3">
-            <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/10 text-sm font-black text-white">
+          <div className="flex items-center gap-3 rounded-[24px] border border-slate-300 bg-white/[0.04] px-4 py-3">
+            <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-slate-300 bg-slate-200 text-sm font-black text-slate-900">
               {profileForm.avatar?.startsWith('http') ? (
                 <img src={profileForm.avatar} alt={displayName} className="h-full w-full object-cover" />
               ) : (
@@ -217,7 +217,7 @@ export default function EmployeeProfileRefined() {
               )}
             </div>
             <div>
-              <p className="text-sm font-semibold text-white">{displayName}</p>
+              <p className="text-sm font-semibold text-slate-900">{displayName}</p>
               <p className="text-xs text-slate-400">{accountEmail || 'employee@solutionhub.com'}</p>
             </div>
           </div>
@@ -243,7 +243,7 @@ export default function EmployeeProfileRefined() {
                 <input
                   value={profileForm.displayName}
                   onChange={(event) => setProfileForm(current => ({ ...current, displayName: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                   required
                 />
               </div>
@@ -252,7 +252,7 @@ export default function EmployeeProfileRefined() {
                 <input
                   value={profileForm.phone}
                   onChange={(event) => setProfileForm(current => ({ ...current, phone: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 />
               </div>
               <div>
@@ -260,7 +260,7 @@ export default function EmployeeProfileRefined() {
                 <input
                   value={profileForm.department}
                   onChange={(event) => setProfileForm(current => ({ ...current, department: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 />
               </div>
               <div>
@@ -268,13 +268,13 @@ export default function EmployeeProfileRefined() {
                 <input
                   value={profileForm.jobTitle}
                   onChange={(event) => setProfileForm(current => ({ ...current, jobTitle: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 />
               </div>
-              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5 md:col-span-2">
+              <div className="rounded-[24px] border border-slate-300 bg-white/[0.03] p-5 md:col-span-2">
                 <div className="flex flex-col gap-5 md:flex-row md:items-center">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[20px] border border-white/10 bg-white/10 text-lg font-black text-white shrink-0">
+                    <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[20px] border border-slate-300 bg-slate-200 text-lg font-black text-slate-900 shrink-0">
                       {profileForm.avatar?.startsWith('http') ? (
                         <img src={profileForm.avatar} alt={displayName} className="h-full w-full object-cover" />
                       ) : (
@@ -282,7 +282,7 @@ export default function EmployeeProfileRefined() {
                       )}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-white">Profile Photo</p>
+                      <p className="text-sm font-semibold text-slate-900">Profile Photo</p>
                       <p className="mt-1 text-xs leading-5 text-slate-400">
                         Upload a photo or paste a URL to update your avatar.
                       </p>
@@ -298,7 +298,7 @@ export default function EmployeeProfileRefined() {
                       <button
                         type="button"
                         onClick={() => setProfileForm(current => ({ ...current, avatar: '' }))}
-                        className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-white/10"
+                        className="rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-slate-200"
                       >
                         Remove Image
                       </button>
@@ -312,13 +312,13 @@ export default function EmployeeProfileRefined() {
                     value={profileForm.avatar}
                     onChange={(event) => setProfileForm(current => ({ ...current, avatar: event.target.value }))}
                     placeholder="https://example.com/avatar.jpg"
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                    className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
+            <div className="rounded-[24px] border border-slate-300 bg-white/[0.03] p-5">
               <div className="flex flex-wrap gap-2">
                 <EmployeeBadge tone="info">Mentor Profile</EmployeeBadge>
                 <EmployeeBadge>{profileForm.experience || 'Experience pending'}</EmployeeBadge>
@@ -333,7 +333,7 @@ export default function EmployeeProfileRefined() {
                     value={profileForm.experience}
                     onChange={(event) => setProfileForm(current => ({ ...current, experience: event.target.value }))}
                     placeholder="5+ Years"
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                    className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                   />
                 </div>
                 <div className="flex items-end">
@@ -342,9 +342,9 @@ export default function EmployeeProfileRefined() {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4">
+              <div className="mt-4 flex items-center justify-between rounded-2xl border border-slate-300 bg-white/[0.04] px-4 py-4">
                 <div className="pr-4">
-                  <p className="text-sm font-semibold text-white">Show On Public Team Profile</p>
+                  <p className="text-sm font-semibold text-slate-900">Show On Public Team Profile</p>
                   <p className="mt-1 text-xs leading-5 text-slate-400">
                     Turn this on if your employee profile should appear on the public team page and team profile route.
                   </p>
@@ -364,7 +364,7 @@ export default function EmployeeProfileRefined() {
                   value={profileForm.bio}
                   onChange={(event) => setProfileForm(current => ({ ...current, bio: event.target.value }))}
                   rows={5}
-                  className="w-full rounded-[24px] border border-white/10 bg-white/5 px-4 py-4 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-[24px] border border-slate-300 bg-slate-100 px-4 py-4 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 />
               </div>
             </div>
@@ -375,7 +375,7 @@ export default function EmployeeProfileRefined() {
                 <input
                   value={profileForm.github}
                   onChange={(event) => setProfileForm(current => ({ ...current, github: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 />
               </div>
               <div>
@@ -383,7 +383,7 @@ export default function EmployeeProfileRefined() {
                 <input
                   value={profileForm.linkedin}
                   onChange={(event) => setProfileForm(current => ({ ...current, linkedin: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 />
               </div>
               <div>
@@ -391,7 +391,7 @@ export default function EmployeeProfileRefined() {
                 <input
                   value={profileForm.portfolio}
                   onChange={(event) => setProfileForm(current => ({ ...current, portfolio: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 />
               </div>
             </div>
@@ -408,9 +408,9 @@ export default function EmployeeProfileRefined() {
 
         <div className="space-y-6">
           <EmployeeSurface title="Profile Snapshot" description="A quick preview of your current employee profile.">
-            <div className="rounded-[26px] border border-white/10 bg-white/[0.03] p-5">
+            <div className="rounded-[26px] border border-slate-300 bg-white/[0.03] p-5">
               <div className="flex items-center gap-4">
-                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-white/10 text-lg font-black text-white">
+                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl border border-slate-300 bg-slate-200 text-lg font-black text-slate-900">
                   {profileForm.avatar?.startsWith('http') ? (
                     <img src={profileForm.avatar} alt={displayName} className="h-full w-full object-cover" />
                   ) : (
@@ -418,7 +418,7 @@ export default function EmployeeProfileRefined() {
                   )}
                 </div>
                 <div>
-                  <p className="text-lg font-black text-white">{displayName}</p>
+                  <p className="text-lg font-black text-slate-900">{displayName}</p>
                   <p className="mt-1 text-sm text-slate-400">{profileForm.jobTitle || 'Employee'}</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <EmployeeBadge tone="info">{profileForm.department || 'Operations'}</EmployeeBadge>
@@ -462,7 +462,7 @@ export default function EmployeeProfileRefined() {
                   <input
                     readOnly
                     value={publicProfileUrl}
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200 focus:outline-none"
+                    className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-200 focus:outline-none"
                   />
                   {publicProfileStatus.message && (
                     <p className={`text-xs ${publicProfileStatus.type === 'success' ? 'text-emerald-300' : 'text-rose-300'}`}>
@@ -486,8 +486,8 @@ export default function EmployeeProfileRefined() {
             )}
 
             <form onSubmit={handleEmailSubmit} className="space-y-4">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
-                Current email: <span className="font-semibold text-white">{accountEmail || 'Not linked yet'}</span>
+              <div className="rounded-2xl border border-slate-300 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
+                Current email: <span className="font-semibold text-slate-900">{accountEmail || 'Not linked yet'}</span>
               </div>
               <div>
                 <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-500">New Email Address</label>
@@ -496,7 +496,7 @@ export default function EmployeeProfileRefined() {
                   value={emailForm}
                   onChange={(event) => setEmailForm(event.target.value)}
                   placeholder="employee@amitsolutionhub.com"
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                   required
                 />
               </div>
@@ -512,7 +512,7 @@ export default function EmployeeProfileRefined() {
 
           <EmployeeSurface title="CV / Resume Link" description="Add your Google Drive link or external URL for your CV.">
             <div className="space-y-4">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
+              <div className="rounded-2xl border border-slate-300 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
                 Instead of uploading a file, you can now provide a direct <strong>Google Drive link</strong> or any public URL to your latest resume.
                 Save the profile after editing this link so it persists across refreshes.
               </div>
@@ -524,7 +524,7 @@ export default function EmployeeProfileRefined() {
                     value={profileForm.cvFilePath}
                     onChange={(event) => setProfileForm(current => ({ ...current, cvFilePath: event.target.value }))}
                     placeholder="https://drive.google.com/..."
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none pr-12"
+                    className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none pr-12"
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2">
                     <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -562,8 +562,8 @@ export default function EmployeeProfileRefined() {
             )}
 
             <form onSubmit={handlePasswordSubmit} className="space-y-4">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
-                We will send a secure password reset link to <span className="font-semibold text-white">{accountEmail || 'your account email'}</span>.
+              <div className="rounded-2xl border border-slate-300 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
+                We will send a secure password reset link to <span className="font-semibold text-slate-900">{accountEmail || 'your account email'}</span>.
               </div>
               <button
                 type="submit"

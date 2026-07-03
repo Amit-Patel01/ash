@@ -196,8 +196,8 @@ export default function AdminPermissions() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Employee Permissions</h1>
-          <p className="text-sm text-gray-400 mt-1">
+          <h1 className="text-2xl font-bold text-slate-900">Employee Permissions</h1>
+          <p className="text-sm text-slate-500 mt-1">
             Grant admin-level access to specific employees
           </p>
         </div>
@@ -206,18 +206,18 @@ export default function AdminPermissions() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Employee List */}
         <div className="lg:col-span-1">
-          <div className="bg-gray-900/50 backdrop-blur-sm border border-white/5 rounded-2xl overflow-hidden">
-            <div className="p-4 border-b border-white/5">
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">Select Employee</h3>
+          <div className="bg-white backdrop-blur-sm border border-slate-200 rounded-2xl overflow-hidden">
+            <div className="p-4 border-b border-slate-200">
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Select Employee</h3>
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Search employees..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50"
+                  className="w-full pl-9 pr-3 py-2 bg-slate-100 border border-slate-300 rounded-lg text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50"
                 />
-                <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                 </svg>
               </div>
@@ -232,19 +232,19 @@ export default function AdminPermissions() {
                   <button
                     key={emp.uid || emp.id}
                     onClick={() => setSelectedEmployee({ ...emp, adminPermissions: getPermissionsArray(emp) })}
-                    className={`w-full p-4 border-b border-white/5 text-left transition-colors ${
+                    className={`w-full p-4 border-b border-slate-200 text-left transition-colors ${
                       isSelected
                         ? 'bg-blue-500/10 border-l-4 border-l-blue-500'
-                        : 'hover:bg-white/5'
+                        : 'hover:bg-slate-100'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-slate-900 font-bold">
                         {emp.displayName?.charAt(0) || 'E'}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-white truncate">{emp.displayName}</p>
-                        <p className="text-xs text-gray-500 truncate">{emp.email}</p>
+                        <p className="text-sm font-semibold text-slate-900 truncate">{emp.displayName}</p>
+                        <p className="text-xs text-slate-400 truncate">{emp.email}</p>
                         {permCount > 0 && (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold mt-1">
                             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -265,16 +265,16 @@ export default function AdminPermissions() {
         {/* Permissions Panel */}
         <div className="lg:col-span-2">
           {selectedEmployee ? (
-            <div className="bg-gray-900/50 backdrop-blur-sm border border-white/5 rounded-2xl overflow-hidden">
-              <div className="p-6 border-b border-white/5">
+            <div className="bg-white backdrop-blur-sm border border-slate-200 rounded-2xl overflow-hidden">
+              <div className="p-6 border-b border-slate-200">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-xl">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-slate-900 font-bold text-xl">
                       {selectedEmployee.displayName?.charAt(0) || 'E'}
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-white">{selectedEmployee.displayName}</h3>
-                      <p className="text-sm text-gray-400">{selectedEmployee.email}</p>
+                      <h3 className="text-lg font-bold text-slate-900">{selectedEmployee.displayName}</h3>
+                      <p className="text-sm text-slate-500">{selectedEmployee.email}</p>
                       <span className="inline-flex items-center px-2 py-1 rounded-lg bg-blue-500/10 text-blue-400 text-xs font-medium mt-1">
                         {selectedEmployee.jobTitle || 'Employee'}
                       </span>
@@ -283,7 +283,7 @@ export default function AdminPermissions() {
                   <button
                     onClick={handleSavePermissions}
                     disabled={saving}
-                    className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-white hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-50 transition-all"
+                    className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-slate-900 hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-50 transition-all"
                   >
                     {saving ? 'Saving...' : 'Save Changes'}
                   </button>
@@ -293,7 +293,7 @@ export default function AdminPermissions() {
               <div className="p-6 space-y-6 max-h-[600px] overflow-y-auto">
                 {Object.entries(groupedPermissions).map(([category, permissions]) => (
                   <div key={category}>
-                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                       </svg>
@@ -308,24 +308,24 @@ export default function AdminPermissions() {
                             className={`flex items-center justify-between p-4 rounded-xl border transition-all ${
                               hasPermission
                                 ? 'bg-emerald-500/5 border-emerald-500/20'
-                                : 'bg-white/5 border-white/10 hover:bg-white/10'
+                                : 'bg-slate-100 border-slate-300 hover:bg-slate-200'
                             }`}
                           >
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
-                                <h5 className="text-sm font-semibold text-white">{perm.name}</h5>
+                                <h5 className="text-sm font-semibold text-slate-900">{perm.name}</h5>
                                 {hasPermission && (
                                   <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                   </svg>
                                 )}
                               </div>
-                              <p className="text-xs text-gray-500 mt-1">{perm.description}</p>
+                              <p className="text-xs text-slate-400 mt-1">{perm.description}</p>
                             </div>
                             <button
                               onClick={() => handlePermissionToggle(perm.id)}
                               className={`w-12 h-6 rounded-full transition-all relative ${
-                                hasPermission ? 'bg-emerald-600' : 'bg-gray-700'
+                                hasPermission ? 'bg-emerald-600' : 'bg-slate-200'
                               }`}
                             >
                               <div
@@ -342,10 +342,10 @@ export default function AdminPermissions() {
                 ))}
               </div>
 
-              <div className="p-6 border-t border-white/5 bg-gray-900/80">
+              <div className="p-6 border-t border-slate-200 bg-white">
                   <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-400">
-                      <span className="font-semibold text-white">
+                    <div className="text-sm text-slate-500">
+                      <span className="font-semibold text-slate-900">
                         {selectedEmployee.adminPermissions.length}
                       </span>{' '}
                       of {ADMIN_PERMISSIONS.length} permissions granted
@@ -354,20 +354,20 @@ export default function AdminPermissions() {
                       <div className="relative">
                         <button
                           onClick={() => setShowPresets(!showPresets)}
-                          className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-medium text-gray-400 hover:bg-white/10 transition-colors"
+                          className="px-4 py-2 bg-slate-100 border border-slate-300 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-200 transition-colors"
                         >
                           Role Preset
                         </button>
                         {showPresets && (
-                          <div className="absolute bottom-full mb-2 right-0 w-56 bg-gray-800 border border-white/10 rounded-xl shadow-xl overflow-hidden z-50">
+                          <div className="absolute bottom-full mb-2 right-0 w-56 bg-slate-100 border border-slate-300 rounded-xl shadow-xl overflow-hidden z-50">
                             {Object.entries(ROLE_PRESETS).map(([key, preset]) => (
                               <button
                                 key={key}
                                 onClick={() => applyRolePreset(key)}
-                                className="w-full p-3 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
+                                className="w-full p-3 text-left hover:bg-slate-100 transition-colors border-b border-slate-200 last:border-0"
                               >
-                                <p className="text-sm font-semibold text-white">{preset.name}</p>
-                                <p className="text-xs text-gray-400">{preset.description}</p>
+                                <p className="text-sm font-semibold text-slate-900">{preset.name}</p>
+                                <p className="text-xs text-slate-500">{preset.description}</p>
                               </button>
                             ))}
                           </div>
@@ -375,14 +375,14 @@ export default function AdminPermissions() {
                       </div>
                       <button
                         onClick={() => setSelectedEmployee(null)}
-                        className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-medium text-gray-400 hover:bg-white/10 transition-colors"
+                        className="px-4 py-2 bg-slate-100 border border-slate-300 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-200 transition-colors"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={handleSavePermissions}
                         disabled={saving}
-                        className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-sm font-bold text-white hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-50 transition-all"
+                        className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-sm font-bold text-slate-900 hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-50 transition-all"
                       >
                         {saving ? 'Saving...' : 'Save Permissions'}
                       </button>
@@ -391,14 +391,14 @@ export default function AdminPermissions() {
               </div>
             </div>
           ) : (
-            <div className="bg-gray-900/50 backdrop-blur-sm border border-white/5 rounded-2xl p-12 text-center">
+            <div className="bg-white backdrop-blur-sm border border-slate-200 rounded-2xl p-12 text-center">
               <div className="w-20 h-20 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 mx-auto mb-4">
                 <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">Select an Employee</h3>
-              <p className="text-sm text-gray-400">
+              <h3 className="text-lg font-bold text-slate-900 mb-2">Select an Employee</h3>
+              <p className="text-sm text-slate-500">
                 Choose an employee from the list to manage their admin permissions
               </p>
             </div>

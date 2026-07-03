@@ -46,8 +46,8 @@ export default function AdminCourseCategories() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Course Categories</h1>
-          <p className="text-sm text-gray-400 mt-1">{courseCategories.length} categories</p>
+          <h1 className="text-2xl font-bold text-slate-900">Course Categories</h1>
+          <p className="text-sm text-slate-500 mt-1">{courseCategories.length} categories</p>
         </div>
         <div className="flex gap-3">
           {courseCategories.length === 0 && (
@@ -57,7 +57,7 @@ export default function AdminCourseCategories() {
             </button>
           )}
           <button onClick={openCreate}
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all">
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-slate-900 hover:shadow-lg hover:shadow-blue-500/25 transition-all">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
@@ -67,13 +67,13 @@ export default function AdminCourseCategories() {
       </div>
 
       {courseCategories.length === 0 ? (
-        <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-14 text-center">
-          <div className="flex justify-center mb-4 text-gray-500">
+        <div className="bg-white border border-slate-200 rounded-2xl p-14 text-center">
+          <div className="flex justify-center mb-4 text-slate-400">
             <CategoryIcon icon="BookOpen" className="w-12 h-12" />
           </div>
-          <p className="text-gray-400 font-medium mb-3">No categories yet</p>
+          <p className="text-slate-500 font-medium mb-3">No categories yet</p>
           <button onClick={seedCourseCategories}
-            className="px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-all">
+            className="px-5 py-2.5 bg-blue-600 text-slate-900 rounded-xl text-sm font-bold hover:bg-blue-700 transition-all">
             Seed Default Categories
           </button>
         </div>
@@ -82,7 +82,7 @@ export default function AdminCourseCategories() {
           {courseCategories.map(cat => {
             const courseCount = courses.filter(c => c.category === cat.name).length
             return (
-              <div key={cat.id} className="bg-gray-900/60 border border-white/5 rounded-2xl p-5 flex items-center gap-4 group hover:border-white/10 transition-all">
+              <div key={cat.id} className="bg-white/60 border border-slate-200 rounded-2xl p-5 flex items-center gap-4 group hover:border-slate-300 transition-all">
                 {/* Icon */}
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
                   style={{ backgroundColor: cat.color + '20', border: `1px solid ${cat.color}30`, color: cat.color }}>
@@ -90,11 +90,11 @@ export default function AdminCourseCategories() {
                 </div>
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-white">{cat.name}</h3>
-                  <p className="text-xs text-gray-500">{courseCount} course{courseCount !== 1 ? 's' : ''}</p>
+                  <h3 className="font-bold text-slate-900">{cat.name}</h3>
+                  <p className="text-xs text-slate-400">{courseCount} course{courseCount !== 1 ? 's' : ''}</p>
                   <div className="flex items-center gap-1 mt-1">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.color }} />
-                    <span className="text-[10px] text-gray-600 font-mono">{cat.color}</span>
+                    <span className="text-[10px] text-slate-500 font-mono">{cat.color}</span>
                   </div>
                 </div>
                 {/* Actions */}
@@ -111,10 +111,10 @@ export default function AdminCourseCategories() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-          <div className="relative bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md shadow-2xl">
-            <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">{editing ? 'Edit Category' : 'Add Category'}</h2>
-              <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10">
+          <div className="relative bg-white border border-slate-300 rounded-2xl w-full max-w-md shadow-2xl">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-slate-900">{editing ? 'Edit Category' : 'Add Category'}</h2>
+              <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-200">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -122,17 +122,17 @@ export default function AdminCourseCategories() {
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-400 mb-1.5">Category Name *</label>
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">Category Name *</label>
                 <input value={form.name} onChange={e => setForm({...form, name: e.target.value})} required placeholder="e.g. Web Development"
-                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50" />
+                  className="w-full px-3 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-blue-500/50" />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-400 mb-1.5">Icon</label>
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">Icon</label>
                 <div className="grid grid-cols-10 gap-1.5">
                   {CATEGORY_ICON_OPTIONS.map(icon => (
                     <button type="button" key={icon} onClick={() => setForm({...form, icon})}
-                      className={`h-9 flex items-center justify-center rounded-lg text-lg transition-all ${form.icon === icon ? 'bg-blue-500/30 ring-1 ring-blue-500 text-blue-400' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'}`}>
+                      className={`h-9 flex items-center justify-center rounded-lg text-lg transition-all ${form.icon === icon ? 'bg-blue-500/30 ring-1 ring-blue-500 text-blue-400' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900'}`}>
                       <CategoryIcon icon={icon} className="w-5 h-5" />
                     </button>
                   ))}
@@ -140,13 +140,13 @@ export default function AdminCourseCategories() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-400 mb-1.5">Color</label>
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">Color</label>
                 <div className="flex items-center gap-3">
                   <input type="color" value={form.color} onChange={e => setForm({...form, color: e.target.value})}
-                    className="w-12 h-10 rounded-xl border border-white/10 bg-transparent cursor-pointer" />
+                    className="w-12 h-10 rounded-xl border border-slate-300 bg-transparent cursor-pointer" />
                   <input value={form.color} onChange={e => setForm({...form, color: e.target.value})
                   } placeholder="#3b82f6"
-                    className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white font-mono focus:outline-none focus:border-blue-500/50" />
+                    className="flex-1 px-3 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 font-mono focus:outline-none focus:border-blue-500/50" />
                   <div className="w-10 h-10 rounded-xl" style={{ backgroundColor: form.color }} />
                 </div>
                 {/* Quick colors */}
@@ -159,19 +159,19 @@ export default function AdminCourseCategories() {
               </div>
 
               {/* Preview */}
-              <div className="p-3 rounded-xl border border-white/5 bg-white/[0.02] flex items-center gap-3">
+              <div className="p-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style={{ backgroundColor: form.color + '20', border: `1px solid ${form.color}30`, color: form.color }}>
                   <CategoryIcon icon={form.icon} className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-white">{form.name || 'Category Name'}</p>
-                  <p className="text-[10px] text-gray-500">Preview</p>
+                  <p className="text-sm font-bold text-slate-900">{form.name || 'Category Name'}</p>
+                  <p className="text-[10px] text-slate-400">Preview</p>
                 </div>
               </div>
 
               <div className="flex gap-3 pt-1">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-gray-400 hover:bg-white/10 transition-all">Cancel</button>
-                <button type="submit" disabled={saving} className="flex-[2] px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-sm font-bold text-white hover:shadow-lg disabled:opacity-50 transition-all">
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-3 bg-slate-100 border border-slate-300 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-200 transition-all">Cancel</button>
+                <button type="submit" disabled={saving} className="flex-[2] px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-sm font-bold text-slate-900 hover:shadow-lg disabled:opacity-50 transition-all">
                   {saving ? 'Saving...' : editing ? 'Update' : 'Add Category'}
                 </button>
               </div>

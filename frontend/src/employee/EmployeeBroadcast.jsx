@@ -86,13 +86,13 @@ export default function EmployeeBroadcast() {
   if (myCourses.length === 0) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-white">Broadcast Messages</h1>
-        <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-14 text-center">
+        <h1 className="text-2xl font-bold text-slate-900">Broadcast Messages</h1>
+        <div className="bg-white border border-slate-200 rounded-2xl p-14 text-center">
           <div className="flex justify-center mb-4">
             <Megaphone className="w-12 h-12 text-blue-400" />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">No courses assigned</h3>
-          <p className="text-gray-400 text-sm">You need active courses with students to send targeted broadcasts.</p>
+          <h3 className="text-xl font-bold text-slate-900 mb-2">No courses assigned</h3>
+          <p className="text-slate-500 text-sm">You need active courses with students to send targeted broadcasts.</p>
         </div>
       </div>
     )
@@ -102,8 +102,8 @@ export default function EmployeeBroadcast() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Student Broadcasts</h1>
-          <p className="text-sm text-gray-400 mt-1">Send bulk emails to your enrolled students</p>
+          <h1 className="text-2xl font-bold text-slate-900">Student Broadcasts</h1>
+          <p className="text-sm text-slate-500 mt-1">Send bulk emails to your enrolled students</p>
         </div>
         <div className="px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-xl text-blue-400 text-sm font-medium">
           Targeted Reach
@@ -113,16 +113,16 @@ export default function EmployeeBroadcast() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Col: Setup & Stats */}
         <div className="space-y-6">
-          <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-6 space-y-5">
-            <h3 className="text-sm font-bold text-white">Target Audience</h3>
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-5">
+            <h3 className="text-sm font-bold text-slate-900">Target Audience</h3>
             
             {/* Course Select */}
             <div>
-              <label className="block text-xs font-semibold text-gray-400 mb-2">Select Assigned Course</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-2">Select Assigned Course</label>
               <select 
                 value={form.courseId} 
                 onChange={e => setForm({...form, courseId: e.target.value, planId: ''})}
-                className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:border-blue-500/50 outline-none"
+                className="w-full px-3 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 focus:border-blue-500/50 outline-none"
               >
                 <option value="" className="text-gray-900">-- Choose Course --</option>
                 {myCourses.map(c => (
@@ -134,11 +134,11 @@ export default function EmployeeBroadcast() {
             {/* Plan Select */}
             {selectedCourse && uniquePlans.length > 0 && (
               <div>
-                <label className="block text-xs font-semibold text-gray-400 mb-2">Filter by Plan (Optional)</label>
+                <label className="block text-xs font-semibold text-slate-500 mb-2">Filter by Plan (Optional)</label>
                 <select 
                   value={form.planId} 
                   onChange={e => setForm({...form, planId: e.target.value})}
-                  className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:border-blue-500/50 outline-none"
+                  className="w-full px-3 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 focus:border-blue-500/50 outline-none"
                 >
                   <option value="" className="text-gray-900">All Plans</option>
                   {uniquePlans.map(p => {
@@ -164,8 +164,8 @@ export default function EmployeeBroadcast() {
 
         {/* Right Col: Composer */}
         <div className="lg:col-span-2">
-          <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-6 h-full flex flex-col space-y-4">
-            <h3 className="text-sm font-bold text-white mb-2">Message Composer</h3>
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 h-full flex flex-col space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 mb-2">Message Composer</h3>
             
             {result && (
               <div className={`p-4 rounded-xl text-sm font-medium ${result.success ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
@@ -174,23 +174,23 @@ export default function EmployeeBroadcast() {
             )}
 
             <div>
-              <label className="block text-xs font-semibold text-gray-400 mb-2">Email Subject</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-2">Email Subject</label>
               <input 
                 value={form.subject} 
                 onChange={e => setForm({...form, subject: e.target.value})}
                 placeholder="e.g. Schedule Update for Trading Mentorship"
-                className="w-full px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:border-blue-500/50 outline-none transition-colors"
+                className="w-full px-3 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 focus:border-blue-500/50 outline-none transition-colors"
                 disabled={!selectedCourse}
               />
             </div>
             
             <div className="flex-1 flex flex-col min-h-[300px]">
-              <label className="block text-xs font-semibold text-gray-400 mb-2">Email Body (HTML/Text)</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-2">Email Body (HTML/Text)</label>
               <textarea 
                 value={form.message} 
                 onChange={e => setForm({...form, message: e.target.value})}
                 placeholder={`Hello students,\n\nWe have an update regarding...`}
-                className="flex-1 w-full p-4 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:border-blue-500/50 outline-none resize-none transition-colors"
+                className="flex-1 w-full p-4 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 focus:border-blue-500/50 outline-none resize-none transition-colors"
                 disabled={!selectedCourse}
               />
             </div>
@@ -199,7 +199,7 @@ export default function EmployeeBroadcast() {
               <button 
                 onClick={handleSend}
                 disabled={sending || !selectedCourse || !form.subject.trim() || !form.message.trim() || filteredEnrolls.length === 0}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-sm font-bold text-white hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-sm font-bold text-slate-900 hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 {sending ? (
                   <>

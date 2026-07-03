@@ -25,8 +25,6 @@ export default function ForgotPassword() {
   const [userEmail, setUserEmail] = useState('') // Verified email from code
 
   const getBackPath = () => {
-    if (from === 'admin') return '/admin-login'
-    if (from === 'employee') return '/employee-login'
     return '/login'
   }
 

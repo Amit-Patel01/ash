@@ -54,8 +54,8 @@ export default function AdminCourseEnrollments() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Course Enrollments</h1>
-        <p className="text-sm text-gray-400 mt-1">Track all student course enrollments</p>
+        <h1 className="text-2xl font-bold text-slate-900">Course Enrollments</h1>
+        <p className="text-sm text-slate-500 mt-1">Track all student course enrollments</p>
       </div>
 
       {/* Stats */}
@@ -82,7 +82,7 @@ export default function AdminCourseEnrollments() {
         ].map((s) => (
           <div key={s.label} className={`rounded-2xl border p-4 ${s.cardClass}`}>
             <p className={`text-2xl font-black ${s.textClass}`}>{s.value}</p>
-            <p className="mt-1 text-xs text-gray-400">{s.label}</p>
+            <p className="mt-1 text-xs text-slate-500">{s.label}</p>
           </div>
         ))}
       </div>
@@ -92,7 +92,7 @@ export default function AdminCourseEnrollments() {
         <div className="relative flex-1 min-w-48 group">
           <div className="absolute inset-y-0 left-0 flex items-center justify-center w-14 pointer-events-none">
             <svg 
-              className="w-[18px] h-[18px] text-gray-500 group-focus-within:text-blue-400 transition-colors duration-300" 
+              className="w-[18px] h-[18px] text-slate-400 group-focus-within:text-blue-400 transition-colors duration-300" 
               fill="none" 
               viewBox="0 0 24 24" 
               stroke="currentColor" 
@@ -105,12 +105,12 @@ export default function AdminCourseEnrollments() {
           <input
             value={search} onChange={e => setSearch(e.target.value)}
             placeholder="Search student, email, course..."
-            className="w-full bg-white/[0.03] hover:bg-white/[0.05] border border-white/10 rounded-2xl py-3.5 pl-14 pr-12 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.05] focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 shadow-inner"
+            className="w-full bg-white/[0.03] hover:bg-white/[0.05] border border-slate-300 rounded-2xl py-3.5 pl-14 pr-12 text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.05] focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 shadow-inner"
           />
           {search && (
             <button 
               onClick={() => setSearch('')}
-              className="absolute inset-y-0 right-0 flex items-center justify-center w-12 text-gray-500 hover:text-red-400 transition-colors"
+              className="absolute inset-y-0 right-0 flex items-center justify-center w-12 text-slate-400 hover:text-red-400 transition-colors"
               title="Clear Search"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -120,12 +120,12 @@ export default function AdminCourseEnrollments() {
           )}
         </div>
         <select value={filterCourse} onChange={e => setFilterCourse(e.target.value)}
-          className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50">
+          className="px-3 py-2 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-blue-500/50">
           <option value="All">All Courses</option>
           {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
         </select>
         <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-          className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50">
+          className="px-3 py-2 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-blue-500/50">
           <option value="All">All Status</option>
           <option value="active">Active</option>
           <option value="expired">Expired</option>
@@ -134,32 +134,32 @@ export default function AdminCourseEnrollments() {
       </div>
 
       {/* Table */}
-      <div className="bg-gray-900/50 border border-white/5 rounded-2xl overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/5 bg-white/[0.02]">
+              <tr className="border-b border-slate-200 bg-slate-50">
                 {['Student','Course','Category','Amount','Mobile','Status','Enrolled On','Actions'].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left text-[11px] font-bold text-slate-400 uppercase tracking-wider">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.03]">
               {filtered.length === 0 ? (
-                <tr><td colSpan={8} className="px-4 py-12 text-center text-gray-500 text-sm">No enrollments found</td></tr>
+                <tr><td colSpan={8} className="px-4 py-12 text-center text-slate-400 text-sm">No enrollments found</td></tr>
               ) : filtered.map(enr => (
-                <tr key={enr.id} className="hover:bg-white/[0.02] transition-colors">
+                <tr key={enr.id} className="hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3">
                     <div>
-                      <p className="text-sm font-semibold text-white">{enr.userName || '—'}</p>
-                      <p className="text-[11px] text-gray-500">{enr.userEmail}</p>
+                      <p className="text-sm font-semibold text-slate-900">{enr.userName || '—'}</p>
+                      <p className="text-[11px] text-slate-400">{enr.userEmail}</p>
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <p className="text-sm text-gray-300 max-w-40 truncate">{enr.courseTitle || '—'}</p>
+                    <p className="text-sm text-slate-600 max-w-40 truncate">{enr.courseTitle || '—'}</p>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-xs text-gray-400">{enr.category || '—'}</span>
+                    <span className="text-xs text-slate-500">{enr.category || '—'}</span>
                   </td>
                   <td className="px-4 py-3">
                     <span className="text-sm font-bold text-blue-400">
@@ -168,7 +168,7 @@ export default function AdminCourseEnrollments() {
                       ) : `₹${Number(enr.amount).toLocaleString('en-IN')}`}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-400">{enr.userMobile || '—'}</td>
+                  <td className="px-4 py-3 text-sm text-slate-500">{enr.userMobile || '—'}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                       enr.status === 'active' ? 'bg-emerald-500/15 text-emerald-400' :
@@ -176,7 +176,7 @@ export default function AdminCourseEnrollments() {
                       'bg-red-500/15 text-red-400'
                     }`}>{enr.status}</span>
                   </td>
-                  <td className="px-4 py-3 text-xs text-gray-500">{formatDate(enr.enrolledAt)}</td>
+                  <td className="px-4 py-3 text-xs text-slate-400">{formatDate(enr.enrolledAt)}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
                       <button
@@ -210,7 +210,7 @@ export default function AdminCourseEnrollments() {
             </tbody>
           </table>
         </div>
-        <div className="px-4 py-3 border-t border-white/5 text-xs text-gray-500">
+        <div className="px-4 py-3 border-t border-slate-200 text-xs text-slate-400">
           {footerLabel}
         </div>
       </div>

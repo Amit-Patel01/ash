@@ -131,7 +131,7 @@ function StatCard({ label, value, tone = 'cyan' }) {
   }
 
   return (
-    <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5">
+    <div className="rounded-3xl border border-slate-300 bg-slate-950/70 p-5">
       <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">{label}</p>
       <div className={`mt-4 inline-flex rounded-2xl border px-4 py-2 text-2xl font-black ${tones[tone] || tones.cyan}`}>
         {value}
@@ -516,16 +516,16 @@ export default function AdminQrCertificates() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_28px_80px_rgba(2,6,23,0.34)]">
+      <section className="rounded-[32px] border border-slate-300 bg-slate-950/80 p-6 shadow-[0_28px_80px_rgba(2,6,23,0.34)]">
         <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.28em] text-cyan-200">
               <QrCode size={14} />
               QR Certificates
             </div>
-            <h1 className="mt-4 text-3xl font-black text-white">Create QR-based certificates without touching the old system.</h1>
+            <h1 className="mt-4 text-3xl font-black text-slate-900">Create QR-based certificates without touching the old system.</h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
-              These records stay isolated with <span className="font-semibold text-white">source = qr</span>, use the same public verification page, and can be revoked without affecting the manual certificate flow.
+              These records stay isolated with <span className="font-semibold text-slate-900">source = qr</span>, use the same public verification page, and can be revoked without affecting the manual certificate flow.
             </p>
           </div>
 
@@ -538,17 +538,17 @@ export default function AdminQrCertificates() {
       </section>
 
       <div className="flex flex-col gap-6">
-        <section className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
+        <section className="rounded-[32px] border border-slate-300 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Admin Form</p>
-              <h2 className="mt-2 text-2xl font-black text-white">{editingId ? 'Edit QR Certificate' : 'Create QR Certificate'}</h2>
+              <h2 className="mt-2 text-2xl font-black text-slate-900">{editingId ? 'Edit QR Certificate' : 'Create QR Certificate'}</h2>
             </div>
             {editingId ? (
               <button
                 type="button"
                 onClick={resetForm}
-                className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+                className="inline-flex items-center gap-2 rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-200"
               >
                 <RefreshCcw size={16} />
                 Reset
@@ -565,7 +565,7 @@ export default function AdminQrCertificates() {
                   value={form.certificate_id}
                   onChange={(event) => handleChange('certificate_id', event.target.value)}
                   placeholder="Leave empty for auto-generated ID"
-                  className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-900 px-4 py-3 text-slate-900 placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={!!editingId}
                 />
               </label>
@@ -577,7 +577,7 @@ export default function AdminQrCertificates() {
                   value={form.name}
                   onChange={(event) => handleChange('name', event.target.value)}
                   placeholder="Enter holder name"
-                  className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                  className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-900 px-4 py-3 text-slate-900 placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
                   required
                 />
               </label>
@@ -587,7 +587,7 @@ export default function AdminQrCertificates() {
                 <select
                   value={form.certificateType}
                   onChange={(event) => handleCertificateTypeChange(event.target.value)}
-                  className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-900 px-4 py-3 text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 >
                   {CERTIFICATE_TYPES.map((type) => (
                     <option key={type.value} value={type.value}>{type.value} - {type.label}</option>
@@ -603,13 +603,13 @@ export default function AdminQrCertificates() {
                     value={form.customTitle}
                     onChange={(event) => handleChange('customTitle', event.target.value)}
                     placeholder="e.g. Winner Certificate, Codefest Participation"
-                    className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                    className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-900 px-4 py-3 text-slate-900 placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
                     required
                   />
                 </label>
               )}
               {form.certificateType === AICTE_INTERNSHIP_CERTIFICATE_TYPE && (
-                <div className="md:col-span-2 grid gap-4 md:grid-cols-3 rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+                <div className="md:col-span-2 grid gap-4 md:grid-cols-3 rounded-2xl border border-slate-300 bg-slate-50 p-4">
                   <label className="block">
                     <span className="text-sm font-semibold text-slate-300">Internship Domain</span>
                     <input
@@ -617,7 +617,7 @@ export default function AdminQrCertificates() {
                       value={form.domain}
                       onChange={(event) => handleChange('domain', event.target.value)}
                       placeholder="e.g. Web Development"
-                      className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                      className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-900 px-4 py-3 text-slate-900 placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
                     />
                   </label>
                   <label className="block">
@@ -627,7 +627,7 @@ export default function AdminQrCertificates() {
                       value={form.duration}
                       onChange={(event) => handleChange('duration', event.target.value)}
                       placeholder="e.g. 8 Weeks"
-                      className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                      className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-900 px-4 py-3 text-slate-900 placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
                     />
                   </label>
                   <label className="block">
@@ -637,7 +637,7 @@ export default function AdminQrCertificates() {
                       value={form.mode}
                       onChange={(event) => handleChange('mode', event.target.value)}
                       placeholder="e.g. Online"
-                      className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                      className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-900 px-4 py-3 text-slate-900 placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
                     />
                   </label>
                   <label className="block">
@@ -647,7 +647,7 @@ export default function AdminQrCertificates() {
                       value={form.startDate}
                       onChange={(event) => handleChange('startDate', event.target.value)}
                       placeholder="e.g. 01 May 2026"
-                      className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                      className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-900 px-4 py-3 text-slate-900 placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
                     />
                   </label>
                   <label className="block md:col-span-2">
@@ -657,7 +657,7 @@ export default function AdminQrCertificates() {
                       value={form.endDate}
                       onChange={(event) => handleChange('endDate', event.target.value)}
                       placeholder="e.g. 27 June 2026"
-                      className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                      className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-900 px-4 py-3 text-slate-900 placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
                     />
                   </label>
                 </div>
@@ -670,15 +670,15 @@ export default function AdminQrCertificates() {
                 type="date"
                 value={form.date}
                 onChange={(event) => handleChange('date', event.target.value)}
-                className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white focus:border-cyan-400/30 focus:outline-none"
+                className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-900 px-4 py-3 text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 required
               />
             </label>
 
-            <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
+            <div className="rounded-3xl border border-slate-300 bg-slate-900/70 p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-sm font-semibold text-white">Assign Employee / Student</p>
+                  <p className="text-sm font-semibold text-slate-900">Assign Employee / Student</p>
                   <p className="mt-1 text-xs leading-5 text-slate-400">
                     Assigned QR certificates appear on that user&apos;s dashboard, and an email goes out automatically after save.
                   </p>
@@ -695,7 +695,7 @@ export default function AdminQrCertificates() {
                     <select
                       value={selectedEmployeeValue}
                       onChange={(event) => handleAssignedEmployeeChange(event.target.value)}
-                      className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white focus:border-cyan-400/30 focus:outline-none"
+                      className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-900 px-4 py-3 text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                     >
                       <option value="">No user assigned (External User)</option>
                       {assigneeOptions.map((employee) => {
@@ -718,13 +718,13 @@ export default function AdminQrCertificates() {
                         value={form.assignedEmployeeEmail}
                         onChange={(event) => handleChange('assignedEmployeeEmail', event.target.value)}
                         placeholder="email@example.com (Optional)"
-                        className="mt-1 w-full rounded-xl border border-white/10 bg-slate-900/50 px-4 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-cyan-400/30 focus:outline-none"
+                        className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-900/50 px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-600 focus:border-cyan-400/30 focus:outline-none"
                       />
                     </label>
                   )}
                 </div>
 
-                <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
+                <div className="rounded-2xl border border-slate-300 bg-black/20 px-4 py-4">
                   <p className="text-[11px] font-black uppercase tracking-[0.24em] text-slate-500">Assigned Details</p>
                   {form.assignedEmployeeName || form.assignedEmployeeEmail || form.assignedEmployeeId ? (
                     <div className="mt-3 space-y-2 text-sm text-slate-300">
@@ -758,19 +758,19 @@ export default function AdminQrCertificates() {
                 value={form.certificateText}
                 onChange={(event) => handleChange('certificateText', event.target.value)}
                 placeholder="Write what should appear inside the certificate"
-                className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                className="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-900 px-4 py-3 text-slate-900 placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
                 required
               />
             </label>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
+              <div className="rounded-3xl border border-slate-300 bg-slate-900/70 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-white">Signature Customization</p>
+                    <p className="text-sm font-semibold text-slate-900">Signature Customization</p>
                     <p className="mt-1 text-xs text-slate-400">Add custom name/role and upload sign image.</p>
                   </div>
-                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-200">
                     <Upload size={16} />
                     {uploadingField === 'signatureImageUrl' ? 'Uploading...' : 'Upload Sign'}
                     <input
@@ -790,7 +790,7 @@ export default function AdminQrCertificates() {
                       value={form.signatoryName}
                       onChange={(e) => handleChange('signatoryName', e.target.value)}
                       placeholder="e.g. Amit Patel"
-                      className="mt-1.5 w-full rounded-xl border border-white/5 bg-black/20 px-4 py-2 text-sm text-white placeholder:text-slate-600 focus:border-cyan-400/30 focus:outline-none"
+                      className="mt-1.5 w-full rounded-xl border border-slate-200 bg-black/20 px-4 py-2 text-sm text-slate-900 placeholder:text-slate-600 focus:border-cyan-400/30 focus:outline-none"
                     />
                   </label>
                   <label className="block">
@@ -800,7 +800,7 @@ export default function AdminQrCertificates() {
                       value={form.signatoryRole}
                       onChange={(e) => handleChange('signatoryRole', e.target.value)}
                       placeholder="e.g. Founder & Director"
-                      className="mt-1.5 w-full rounded-xl border border-white/5 bg-black/20 px-4 py-2 text-sm text-white placeholder:text-slate-600 focus:border-cyan-400/30 focus:outline-none"
+                      className="mt-1.5 w-full rounded-xl border border-slate-200 bg-black/20 px-4 py-2 text-sm text-slate-900 placeholder:text-slate-600 focus:border-cyan-400/30 focus:outline-none"
                     />
                   </label>
                 </div>
@@ -810,30 +810,30 @@ export default function AdminQrCertificates() {
                     <img
                       src={resolveAssetSrc(form.signatureImageUrl)}
                       alt="Signature preview"
-                      className="h-28 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
+                      className="h-28 w-full rounded-2xl border border-slate-300 bg-white object-contain p-2"
                     />
                     <button
                       type="button"
                       onClick={() => handleChange('signatureImageUrl', '')}
-                      className="inline-flex rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10"
+                      className="inline-flex rounded-2xl border border-slate-300 bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-900 transition hover:bg-slate-200"
                     >
                       Remove Signature Image
                     </button>
                   </div>
                 ) : (
-                  <div className="mt-4 rounded-2xl border border-dashed border-white/10 px-4 py-6 text-center text-xs text-slate-500">
+                  <div className="mt-4 rounded-2xl border border-dashed border-slate-300 px-4 py-6 text-center text-xs text-slate-500">
                     No custom signature image (using default)
                   </div>
                 )}
               </div>
 
-              <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
+              <div className="rounded-3xl border border-slate-300 bg-slate-900/70 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-white">Stamp Upload</p>
+                    <p className="text-sm font-semibold text-slate-900">Stamp Upload</p>
                     <p className="mt-1 text-xs text-slate-400">Optional company stamp or seal image.</p>
                   </div>
-                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-200">
                     <Upload size={16} />
                     {uploadingField === 'stampImageUrl' ? 'Uploading...' : 'Upload'}
                     <input
@@ -849,31 +849,31 @@ export default function AdminQrCertificates() {
                     <img
                       src={resolveAssetSrc(form.stampImageUrl)}
                       alt="Stamp preview"
-                      className="h-28 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
+                      className="h-28 w-full rounded-2xl border border-slate-300 bg-white object-contain p-2"
                     />
                     <button
                       type="button"
                       onClick={() => handleChange('stampImageUrl', '')}
-                      className="inline-flex rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10"
+                      className="inline-flex rounded-2xl border border-slate-300 bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-900 transition hover:bg-slate-200"
                     >
                       Remove Stamp
                     </button>
                   </div>
                 ) : (
-                  <div className="mt-4 rounded-2xl border border-dashed border-white/10 px-4 py-8 text-center text-sm text-slate-500">
+                  <div className="mt-4 rounded-2xl border border-dashed border-slate-300 px-4 py-8 text-center text-sm text-slate-500">
                     No stamp uploaded
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-4">
+            <div className="rounded-3xl border border-slate-300 bg-slate-900/70 p-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm font-semibold text-white">Mentor Signature</p>
+                  <p className="text-sm font-semibold text-slate-900">Mentor Signature</p>
                   <p className="mt-1 text-xs text-slate-400">Add mentor name and upload their signature image.</p>
                 </div>
-                <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-200">
                   <Upload size={16} />
                   {uploadingField === 'mentorSignatureImageUrl' ? 'Uploading...' : 'Upload Mentor Sign'}
                   <input
@@ -893,7 +893,7 @@ export default function AdminQrCertificates() {
                     value={form.mentorName}
                     onChange={(e) => handleChange('mentorName', e.target.value)}
                     placeholder="e.g. Jay Patel"
-                    className="mt-1.5 w-full rounded-xl border border-white/5 bg-black/20 px-4 py-2 text-sm text-white placeholder:text-slate-600 focus:border-cyan-400/30 focus:outline-none"
+                    className="mt-1.5 w-full rounded-xl border border-slate-200 bg-black/20 px-4 py-2 text-sm text-slate-900 placeholder:text-slate-600 focus:border-cyan-400/30 focus:outline-none"
                   />
                 </label>
               </div>
@@ -903,18 +903,18 @@ export default function AdminQrCertificates() {
                   <img
                     src={resolveAssetSrc(form.mentorSignatureImageUrl)}
                     alt="Mentor signature preview"
-                    className="h-28 w-full rounded-2xl border border-white/10 bg-white object-contain p-2"
+                    className="h-28 w-full rounded-2xl border border-slate-300 bg-white object-contain p-2"
                   />
                   <button
                     type="button"
                     onClick={() => handleChange('mentorSignatureImageUrl', '')}
-                    className="inline-flex rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition hover:bg-white/10"
+                    className="inline-flex rounded-2xl border border-slate-300 bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-900 transition hover:bg-slate-200"
                   >
                     Remove Mentor Signature
                   </button>
                 </div>
               ) : (
-                <div className="mt-4 rounded-2xl border border-dashed border-white/10 px-4 py-6 text-center text-xs text-slate-500">
+                <div className="mt-4 rounded-2xl border border-dashed border-slate-300 px-4 py-6 text-center text-xs text-slate-500">
                   No mentor signature image (certificate will show founder signature only)
                 </div>
               )}
@@ -943,11 +943,11 @@ export default function AdminQrCertificates() {
           </form>
         </section>
 
-        <aside className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
+        <aside className="rounded-[32px] border border-slate-300 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Live Preview</p>
-              <h3 className="mt-2 text-2xl font-black text-white">Certificate image preview</h3>
+              <h3 className="mt-2 text-2xl font-black text-slate-900">Certificate image preview</h3>
               <p className="mt-2 text-sm leading-6 text-slate-400">
                 Form me jo details bharoge, wahi yahan certificate image ke roop me dikhega. Save ke baad real `QR-` ID ke saath same preview download bhi ho jayega.
               </p>
@@ -994,34 +994,34 @@ export default function AdminQrCertificates() {
           </div>
         </aside>
 
-        <section className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
+        <section className="rounded-[32px] border border-slate-300 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
           <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Module Notes</p>
           <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4 text-sm leading-6 text-slate-300">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-              <p className="font-semibold text-white">Auto-generated IDs</p>
+            <div className="rounded-2xl border border-slate-300 bg-white/[0.03] px-4 py-4">
+              <p className="font-semibold text-slate-900">Auto-generated IDs</p>
               <p className="mt-1 text-slate-400">Every new record gets a unique `QR-` certificate ID from the backend.</p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-              <p className="font-semibold text-white">Verification link</p>
+            <div className="rounded-2xl border border-slate-300 bg-white/[0.03] px-4 py-4">
+              <p className="font-semibold text-slate-900">Verification link</p>
               <p className="mt-1 text-slate-400">Each QR points to `/verify/{'{certificate_id}'}` and reuses the shared verifier.</p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-              <p className="font-semibold text-white">Assigned delivery</p>
+            <div className="rounded-2xl border border-slate-300 bg-white/[0.03] px-4 py-4">
+              <p className="font-semibold text-slate-900">Assigned delivery</p>
               <p className="mt-1 text-slate-400">When assigned, the certificate appears on the user dashboard and the assignee receives an email on save.</p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-              <p className="font-semibold text-white">Revocation support</p>
+            <div className="rounded-2xl border border-slate-300 bg-white/[0.03] px-4 py-4">
+              <p className="font-semibold text-slate-900">Revocation support</p>
               <p className="mt-1 text-slate-400">Revoked certificates stay searchable but show a revoked status on the public verify page.</p>
             </div>
           </div>
         </section>
       </div>
 
-      <section className="rounded-[32px] border border-white/10 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
+      <section className="rounded-[32px] border border-slate-300 bg-slate-950/80 p-6 shadow-[0_24px_64px_rgba(2,6,23,0.28)]">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">QR Registry</p>
-            <h2 className="mt-2 text-2xl font-black text-white">Manage issued QR certificates</h2>
+            <h2 className="mt-2 text-2xl font-black text-slate-900">Manage issued QR certificates</h2>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="relative">
@@ -1031,21 +1031,21 @@ export default function AdminQrCertificates() {
                 placeholder="Search name, ID, or email..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full sm:w-64 rounded-2xl border border-white/10 bg-slate-900/50 py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
+                className="w-full sm:w-64 rounded-2xl border border-slate-300 bg-slate-900/50 py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none"
               />
             </div>
-            <div className="flex items-center gap-1 rounded-2xl border border-white/10 bg-slate-900/50 p-1">
+            <div className="flex items-center gap-1 rounded-2xl border border-slate-300 bg-slate-900/50 p-1">
               <button
                 type="button"
                 onClick={() => setViewMode('list')}
-                className={`rounded-xl p-1.5 transition ${viewMode === 'list' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                className={`rounded-xl p-1.5 transition ${viewMode === 'list' ? 'bg-slate-200 text-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
               >
                 <List size={16} />
               </button>
               <button
                 type="button"
                 onClick={() => setViewMode('grid')}
-                className={`rounded-xl p-1.5 transition ${viewMode === 'grid' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'}`}
+                className={`rounded-xl p-1.5 transition ${viewMode === 'grid' ? 'bg-slate-200 text-slate-900' : 'text-slate-500 hover:text-slate-300'}`}
               >
                 <LayoutGrid size={16} />
               </button>
@@ -1054,33 +1054,33 @@ export default function AdminQrCertificates() {
         </div>
 
         {groupedCertificates.sortedNames.length === 0 ? (
-          <div className="mt-6 rounded-[28px] border border-dashed border-white/10 bg-white/[0.03] px-6 py-16 text-center">
-            <p className="text-lg font-semibold text-white">No QR certificates yet.</p>
+          <div className="mt-6 rounded-[28px] border border-dashed border-slate-300 bg-white/[0.03] px-6 py-16 text-center">
+            <p className="text-lg font-semibold text-slate-900">No QR certificates yet.</p>
             <p className="mt-2 text-sm text-slate-400">Create the first record from the form above and it will appear here automatically.</p>
           </div>
         ) : (
           <div className="mt-6 flex flex-col gap-6">
             {groupedCertificates.sortedNames.map((name) => (
-              <details key={name} className="group rounded-[28px] border border-white/10 bg-slate-950/40" open={groupedCertificates.sortedNames.length < 5}>
+              <details key={name} className="group rounded-[28px] border border-slate-300 bg-slate-950/40" open={groupedCertificates.sortedNames.length < 5}>
                 <summary className="flex cursor-pointer select-none items-center justify-between p-5 list-none [&::-webkit-details-marker]:hidden">
                   <div className="flex items-center gap-4">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-400/10 text-cyan-200">
                       <UserRound size={22} />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-white">{name}</h3>
+                      <h3 className="text-xl font-bold text-slate-900">{name}</h3>
                       <p className="mt-1 text-sm text-slate-400">
                         {groupedCertificates.groups[name].items.length} Certificate{groupedCertificates.groups[name].items.length > 1 ? 's' : ''}
                         {groupedCertificates.groups[name].email ? <><span className="mx-2 text-slate-600">·</span><span className="text-cyan-300">{groupedCertificates.groups[name].email}</span></> : null}
                       </p>
                     </div>
                   </div>
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/5 text-slate-400 transition-transform group-open:rotate-180">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-400 transition-transform group-open:rotate-180">
                     <ChevronDown size={20} />
                   </div>
                 </summary>
                 
-                <div className="border-t border-white/5 p-5 pt-0">
+                <div className="border-t border-slate-200 p-5 pt-0">
                   <div className={`mt-5 ${viewMode === 'grid' ? 'grid gap-5 xl:grid-cols-2' : 'flex flex-col gap-5'}`}>
                     {groupedCertificates.groups[name].items.map((certificate) => {
                       const verifyUrl = buildVerifyUrl(certificate.certificate_id, certificate.verifyUrl)
@@ -1088,7 +1088,7 @@ export default function AdminQrCertificates() {
                       const isActive = certificate.status === 'active'
 
                       return (
-                        <article key={certificate.id} className={`rounded-3xl border border-white/10 bg-white/[0.03] p-5 ${viewMode === 'grid' ? 'flex flex-col' : ''}`}>
+                        <article key={certificate.id} className={`rounded-3xl border border-slate-300 bg-white/[0.03] p-5 ${viewMode === 'grid' ? 'flex flex-col' : ''}`}>
                           <div className={`flex flex-col gap-5 ${viewMode === 'grid' ? '' : 'md:flex-row md:items-start md:justify-between'}`}>
                     <div className="min-w-0 flex-1 flex flex-col">
                       <div className="flex flex-wrap items-center gap-2">
@@ -1104,12 +1104,12 @@ export default function AdminQrCertificates() {
                         </span>
                       </div>
 
-                      <h3 className="mt-4 text-2xl font-black text-white">{certificate.name || certificate.userName}</h3>
+                      <h3 className="mt-4 text-2xl font-black text-slate-900">{certificate.name || certificate.userName}</h3>
                       <p className="mt-2 text-sm text-slate-300">{certificate.certificateTypeLabel || getTypeMeta(certificate.certificateType).label}</p>
                       <p className="mt-4 break-all font-mono text-sm font-bold text-cyan-200">{certificate.certificate_id}</p>
                       {(certificate.assignedEmployeeName || certificate.assignedEmployeeEmail) ? (
                         <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-slate-300">
-                          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-slate-300">
+                          <span className="rounded-full border border-slate-300 bg-slate-100 px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-slate-300">
                             Assigned To
                           </span>
                           {certificate.assignedEmployeeName ? <span>{certificate.assignedEmployeeName}</span> : null}
@@ -1126,11 +1126,11 @@ export default function AdminQrCertificates() {
                       ) : null}
 
                       <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                        <div className="rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3">
+                        <div className="rounded-2xl border border-slate-300 bg-slate-950/70 px-4 py-3">
                           <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Certificate Date</p>
-                          <p className="mt-2 text-sm font-semibold text-white">{formatDisplayDate(certificate.rawDate || certificate.date)}</p>
+                          <p className="mt-2 text-sm font-semibold text-slate-900">{formatDisplayDate(certificate.rawDate || certificate.date)}</p>
                         </div>
-                        <div className="rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3">
+                        <div className="rounded-2xl border border-slate-300 bg-slate-950/70 px-4 py-3">
                           <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">Verify Link</p>
                           <a
                             href={verifyUrl}
@@ -1150,21 +1150,21 @@ export default function AdminQrCertificates() {
                             <img
                               src={resolveAssetSrc(certificate.signatureImageUrl)}
                               alt="Signature"
-                              className="h-20 rounded-2xl border border-white/10 bg-white p-2 object-contain"
+                              className="h-20 rounded-2xl border border-slate-300 bg-white p-2 object-contain"
                             />
                           ) : null}
                           {certificate.stampImageUrl ? (
                             <img
                               src={resolveAssetSrc(certificate.stampImageUrl)}
                               alt="Stamp"
-                              className="h-20 rounded-2xl border border-white/10 bg-white p-2 object-contain"
+                              className="h-20 rounded-2xl border border-slate-300 bg-white p-2 object-contain"
                             />
                           ) : null}
                         </div>
                       ) : null}
                     </div>
 
-                    <div className="rounded-[28px] border border-white/10 bg-white px-4 py-4">
+                    <div className="rounded-[28px] border border-slate-300 bg-white px-4 py-4">
                       <QRCodeCanvas value={verifyUrl || certificate.certificate_id} size={132} level="M" includeMargin />
                     </div>
                   </div>
@@ -1174,7 +1174,7 @@ export default function AdminQrCertificates() {
                       type="button"
                       onClick={() => handleEdit(certificate)}
                       disabled={isBusy || exportTarget?.id === certificate.id}
-                      className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex items-center gap-2 rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       <PencilLine size={16} />
                       Edit
@@ -1184,7 +1184,7 @@ export default function AdminQrCertificates() {
                       type="button"
                       onClick={() => triggerExport(certificate, 'png')}
                       disabled={isBusy || exportTarget?.id === certificate.id}
-                      className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex items-center gap-2 rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       <Download size={16} />
                       {exportTarget?.id === certificate.id && exportFormat === 'png' ? 'Exporting...' : 'PNG'}
@@ -1194,7 +1194,7 @@ export default function AdminQrCertificates() {
                       type="button"
                       onClick={() => triggerExport(certificate, 'pdf')}
                       disabled={isBusy || exportTarget?.id === certificate.id}
-                      className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex items-center gap-2 rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       <Download size={16} />
                       {exportTarget?.id === certificate.id && exportFormat === 'pdf' ? 'Exporting...' : 'PDF'}

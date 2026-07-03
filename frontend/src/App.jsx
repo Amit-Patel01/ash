@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useRef, lazy, Suspense } from 'react'
+import { useCallback, useEffect, useRef, lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -149,7 +149,6 @@ const EditingService = lazyWithRetry(() => import('./editing/EditingService'))
 const TechSupport = lazyWithRetry(() => import('./technicalsupport/TechSupport'))
 
 const AdminLayout = lazyWithRetry(() => import('./admin/AdminLayout'))
-const AdminLogin = lazyWithRetry(() => import('./admin/AdminLogin'))
 const AdminDashboard = lazyWithRetry(() => import('./admin/AdminDashboard'))
 const AdminProjects = lazyWithRetry(() => import('./admin/AdminProjects'))
 const AdminTasks = lazyWithRetry(() => import('./admin/AdminTasks'))
@@ -167,7 +166,6 @@ const AdminStudents = lazyWithRetry(() => import('./admin/AdminStudents'))
 const AdminQrCertificates = lazyWithRetry(() => import('./admin/AdminQrCertificates'))
 const AdminTestimonials = lazyWithRetry(() => import('./admin/AdminTestimonials'))
 
-const EmployeeLogin = lazyWithRetry(() => import('./employee/EmployeeLogin'))
 const RequestAccount = lazyWithRetry(() => import('./pages/RequestAccount'))
 
 const EmployeeLayout = lazyWithRetry(() => import('./employee/EmployeeLayout'))
@@ -217,7 +215,7 @@ function ProtectedAdmin({ children }) {
 
   if (loading) return null
   if (!currentUser) {
-    return <Navigate to="/admin-login" replace />
+    return <Navigate to="/login" replace />
   }
   if (normalizedRole !== 'admin') {
     return <Navigate to={getHomePathForRole(normalizedRole)} replace />
@@ -330,7 +328,7 @@ function AppContent() {
   const { logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const isAdminRoute = location.pathname === '/admin-login' || location.pathname.startsWith('/admin')
+  const isAdminRoute = location.pathname.startsWith('/admin') || location.pathname === '/login'
   const isMaintenanceActive = maintenance?.isActive === true
   const allowedChatbotPaths = ['/about', '/courses', '/services', '/projects', '/contact', '/infrastructure']
   const isHome = location.pathname === '/'
@@ -404,8 +402,7 @@ function AppContent() {
           {/* Role-based redirect */}
           <Route path="/dashboard" element={<RoleRedirect />} />
 
-          {/* Admin Login */}
-          <Route path="/admin-login" element={<AdminLogin />} />
+          {/* Admin Panel */}
           <Route path="/admin" element={<ProtectedAdmin><AdminLayout onLogout={handleLogout} /></ProtectedAdmin>}>
             <Route index element={<AdminDashboard />} />
             <Route path="projects" element={<AdminProjects />} />
@@ -429,8 +426,7 @@ function AppContent() {
             <Route path="settings" element={<AdminSettings />} />
           </Route>
 
-          {/* Employee Auth */}
-          <Route path="/employee-login" element={<EmployeeLogin />} />
+          {/* User & Employee Auth Routes */}
           <Route path="/request-account" element={<RequestAccount />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ForgotPassword />} />

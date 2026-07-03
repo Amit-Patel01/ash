@@ -97,7 +97,7 @@ export default function EmployeeProjectsRefined() {
           <EmployeeSurface key={card.label} className="p-5">
             <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">{card.label}</p>
             <div className="mt-4 flex items-end justify-between gap-3">
-              <p className="text-4xl font-black text-white">{card.value}</p>
+              <p className="text-4xl font-black text-slate-900">{card.value}</p>
               <EmployeeBadge tone={card.tone}>{card.label}</EmployeeBadge>
             </div>
             <p className="mt-3 text-sm text-slate-400">{card.hint}</p>
@@ -118,7 +118,7 @@ export default function EmployeeProjectsRefined() {
         ) : (
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
             {myProjects.map((project, index) => (
-              <div key={project.id} className="rounded-[26px] border border-white/10 bg-white/[0.03] p-5 transition hover:border-emerald-400/20 hover:bg-white/[0.05]">
+              <div key={project.id} className="rounded-[26px] border border-slate-300 bg-white/[0.03] p-5 transition hover:border-emerald-400/20 hover:bg-white/[0.05]">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <div className="flex flex-wrap gap-2">
@@ -127,16 +127,16 @@ export default function EmployeeProjectsRefined() {
                       </EmployeeBadge>
                       <EmployeeBadge>Project #{index + 101}</EmployeeBadge>
                     </div>
-                    <h3 className="mt-4 text-xl font-black text-white">{project.name}</h3>
+                    <h3 className="mt-4 text-xl font-black text-slate-900">{project.name}</h3>
                     <p className="mt-2 text-sm leading-6 text-slate-400">{project.description}</p>
                   </div>
-                  <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-center">
+                  <div className="rounded-2xl border border-slate-300 bg-black/20 px-4 py-3 text-center">
                     <p className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-500">Progress</p>
-                    <p className="mt-2 text-2xl font-black text-white">{project.progress}%</p>
+                    <p className="mt-2 text-2xl font-black text-slate-900">{project.progress}%</p>
                   </div>
                 </div>
 
-                <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-white/5">
+                <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-slate-100">
                   <div
                     className="h-full rounded-full bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 transition-all"
                     style={{ width: `${project.progress}%` }}
@@ -145,7 +145,7 @@ export default function EmployeeProjectsRefined() {
 
                 <div className="mt-5 grid grid-cols-3 gap-3 text-center">
                   <div className="rounded-2xl border border-white/8 bg-black/20 px-3 py-3">
-                    <p className="text-xl font-black text-white">{project.totalTasks}</p>
+                    <p className="text-xl font-black text-slate-900">{project.totalTasks}</p>
                     <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-slate-500">Total</p>
                   </div>
                   <div className="rounded-2xl border border-emerald-400/10 bg-emerald-400/[0.06] px-3 py-3">

@@ -131,9 +131,9 @@ export default function AdminCourses() {
     'Digital Marketing': 'text-pink-400 bg-pink-500/10 border-pink-500/20',
     'Graphic Design': 'text-purple-400 bg-purple-500/10 border-purple-500/20',
     'Excel / Data': 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
-    'Other': 'text-gray-400 bg-gray-500/10 border-gray-500/20',
+    'Other': 'text-slate-500 bg-gray-500/10 border-gray-500/20',
   }
-  const getCatColor = (cat) => categoryColors[cat] || 'text-gray-400 bg-gray-500/10 border-gray-500/20'
+  const getCatColor = (cat) => categoryColors[cat] || 'text-slate-500 bg-gray-500/10 border-gray-500/20'
 
   const allCategories = ['All', ...new Set([
     ...(courseCategories.map(c => c.name)),
@@ -145,16 +145,16 @@ export default function AdminCourses() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">All Courses</h1>
-          <p className="text-sm text-gray-400 mt-1">
+          <h1 className="text-2xl font-bold text-slate-900">All Courses</h1>
+          <p className="text-sm text-slate-500 mt-1">
             {courses.length} total &nbsp;·&nbsp;
             <span className="text-emerald-400">{courses.filter(c => c.published).length} published</span>
             &nbsp;·&nbsp;
-            <span className="text-gray-500">{courses.filter(c => !c.published).length} draft</span>
+            <span className="text-slate-400">{courses.filter(c => !c.published).length} draft</span>
           </p>
         </div>
         <button onClick={openCreate}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-white hover:shadow-lg hover:shadow-blue-500/25 transition-all">
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-slate-900 hover:shadow-lg hover:shadow-blue-500/25 transition-all">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
           </svg>
@@ -180,8 +180,8 @@ export default function AdminCourses() {
           <button key={cat} onClick={() => setFilterCategory(cat)}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
               filterCategory === cat
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
-                : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/5'
+                ? 'bg-blue-600 text-slate-900 shadow-lg shadow-blue-500/25'
+                : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-900 border border-slate-200'
             }`}>
             {cat}
             {cat !== 'All' && (
@@ -195,12 +195,12 @@ export default function AdminCourses() {
 
       {/* Course Grid */}
       {filtered.length === 0 ? (
-        <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-14 text-center">
-          <div className="flex justify-center mb-4 text-gray-500">
+        <div className="bg-white border border-slate-200 rounded-2xl p-14 text-center">
+          <div className="flex justify-center mb-4 text-slate-400">
             <CategoryIcon icon="BookOpen" className="w-12 h-12" />
           </div>
-          <p className="text-gray-400 font-medium mb-1">No courses yet</p>
-          <p className="text-sm text-gray-600">Click "Add Course" to create your first course</p>
+          <p className="text-slate-500 font-medium mb-1">No courses yet</p>
+          <p className="text-sm text-slate-500">Click "Add Course" to create your first course</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -211,12 +211,12 @@ export default function AdminCourses() {
 
             return (
             <div key={course.id}
-              className={`relative bg-gray-900/50 border rounded-2xl p-5 transition-all group ${
-                course.published ? 'border-emerald-500/20 hover:border-emerald-500/40' : 'border-white/5 opacity-70 hover:border-white/10'
+              className={`relative bg-white border rounded-2xl p-5 transition-all group ${
+                course.published ? 'border-emerald-500/20 hover:border-emerald-500/40' : 'border-slate-200 opacity-70 hover:border-slate-300'
               }`}>
               {/* Status badge */}
               <div className={`absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                course.published ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25' : 'bg-gray-700/50 text-gray-500 border-gray-600/25'
+                course.published ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/25' : 'bg-slate-200/50 text-slate-400 border-gray-600/25'
               }`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${course.published ? 'bg-emerald-400' : 'bg-gray-500'}`} />
                 {course.published ? 'Published' : 'Draft'}
@@ -226,7 +226,7 @@ export default function AdminCourses() {
               {getCourseThumbnail(course) ? (
                 <div className="relative w-full h-28 overflow-hidden rounded-xl mb-3 bg-gradient-to-br from-blue-900/40 to-purple-900/40">
                   <div className="absolute inset-0 flex items-center justify-center text-3xl">
-                    <CategoryIcon icon={courseCategories.find(c => c.name === course.category)?.icon || 'BookOpen'} className="w-10 h-10 text-white/20" />
+                    <CategoryIcon icon={courseCategories.find(c => c.name === course.category)?.icon || 'BookOpen'} className="w-10 h-10 text-slate-900/20" />
                   </div>
                   <img
                     key={getCourseThumbnail(course)}
@@ -262,8 +262,8 @@ export default function AdminCourses() {
                 )}
               </div>
 
-              <h3 className="font-bold text-white mb-1 line-clamp-1">{course.title}</h3>
-              <p className="text-xs text-gray-500 mb-3 line-clamp-2">{course.description}</p>
+              <h3 className="font-bold text-slate-900 mb-1 line-clamp-1">{course.title}</h3>
+              <p className="text-xs text-slate-400 mb-3 line-clamp-2">{course.description}</p>
               {deadlineText && (
                 <p className={`mb-3 text-[11px] font-semibold ${enrollmentClosed ? 'text-rose-300' : 'text-amber-300'}`}>
                   {enrollmentClosed ? `${actionLabel} closed on ${deadlineText}` : `${actionLabel} closes on ${deadlineText}`}
@@ -272,7 +272,7 @@ export default function AdminCourses() {
 
               {/* Stats row */}
               <div className="flex items-center justify-between mb-3 text-xs">
-                <div className="flex items-center gap-3 text-gray-500">
+                <div className="flex items-center gap-3 text-slate-400">
                   {course.duration && <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {course.duration}</span>}
                   {course.level && <span className="flex items-center gap-1"><BarChart className="w-3.5 h-3.5" /> {course.level}</span>}
                 </div>
@@ -282,18 +282,18 @@ export default function AdminCourses() {
               </div>
 
               {/* Instructor + Enrollments */}
-              <div className="flex items-center justify-between mb-4 text-xs text-gray-500">
+              <div className="flex items-center justify-between mb-4 text-xs text-slate-400">
                 {course.assignedEmployeeName ? (
                   <div className="flex items-center gap-1.5">
-                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-[9px] font-bold text-white">
+                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-[9px] font-bold text-slate-900">
                       {course.assignedEmployeeName.charAt(0).toUpperCase()}
                     </div>
                     <span>{course.assignedEmployeeName}</span>
                   </div>
                 ) : (
-                  <span className="text-gray-600 italic">No instructor assigned</span>
+                  <span className="text-slate-500 italic">No instructor assigned</span>
                 )}
-                <span className="flex items-center gap-1 text-gray-500">
+                <span className="flex items-center gap-1 text-slate-400">
                   <Users className="w-3.5 h-3.5" /> {getEnrollCount(course.id)} enrolled
                 </span>
               </div>
@@ -305,7 +305,7 @@ export default function AdminCourses() {
                   className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-colors ${
                     course.published
                       ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
-                      : 'bg-gray-700/50 text-gray-400 hover:bg-gray-700'
+                      : 'bg-slate-200/50 text-slate-500 hover:bg-slate-200'
                   }`}>
                   {course.published ? <><Eye className="w-3.5 h-3.5" /> Visible</> : <><EyeOff className="w-3.5 h-3.5" /> Hidden</>}
                 </button>
@@ -327,10 +327,10 @@ export default function AdminCourses() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-10 overflow-y-auto">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-          <div className="relative bg-gray-900 border border-white/10 rounded-2xl w-full max-w-2xl shadow-2xl mb-10">
-            <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between sticky top-0 bg-gray-900 rounded-t-2xl z-10">
-              <h2 className="text-lg font-bold text-white">{editingCourse ? 'Edit Course' : 'Create New Course'}</h2>
-              <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10">
+          <div className="relative bg-white border border-slate-300 rounded-2xl w-full max-w-2xl shadow-2xl mb-10">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white rounded-t-2xl z-10">
+              <h2 className="text-lg font-bold text-slate-900">{editingCourse ? 'Edit Course' : 'Create New Course'}</h2>
+              <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-200">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -383,7 +383,7 @@ export default function AdminCourses() {
                     onChange={e => setForm({ ...form, enrollmentDeadline: e.target.value })}
                     className="input"
                   />
-                  <p className="text-[11px] text-gray-500 mt-1">Leave this empty to keep enrollment open without a deadline.</p>
+                  <p className="text-[11px] text-slate-400 mt-1">Leave this empty to keep enrollment open without a deadline.</p>
                 </div>
               </div>
 
@@ -402,10 +402,10 @@ export default function AdminCourses() {
                   placeholder="https://example.com/course-image.jpg"
                   className="input"
                 />
-                <p className="text-[11px] text-gray-500 mt-1">Enter a direct image URL. It appears on the admin course card, the public courses page, and the student panel.</p>
-                <div className="mt-3 relative w-full h-36 overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-blue-900/30 to-purple-900/30">
-                  <div className="absolute inset-0 flex items-center justify-center text-3xl text-white/70">
-                    <CategoryIcon icon={courseCategories.find(c => c.name === form.category)?.icon || 'ImageIcon'} className="w-12 h-12 text-white/20" />
+                <p className="text-[11px] text-slate-400 mt-1">Enter a direct image URL. It appears on the admin course card, the public courses page, and the student panel.</p>
+                <div className="mt-3 relative w-full h-36 overflow-hidden rounded-xl border border-slate-300 bg-gradient-to-br from-blue-900/30 to-purple-900/30">
+                  <div className="absolute inset-0 flex items-center justify-center text-3xl text-slate-900/70">
+                    <CategoryIcon icon={courseCategories.find(c => c.name === form.category)?.icon || 'ImageIcon'} className="w-12 h-12 text-slate-900/20" />
                   </div>
                   {form.thumbnail ? (
                     <img
@@ -438,28 +438,28 @@ export default function AdminCourses() {
                     )
                   })}
                 </select>
-                <p className="text-[11px] text-gray-500 mt-1">Optional. You can assign this later when the instructor is finalized.</p>
+                <p className="text-[11px] text-slate-400 mt-1">Optional. You can assign this later when the instructor is finalized.</p>
               </div>
 
               {/* Visibility toggles */}
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-white/[0.02] rounded-xl border border-white/5">
+                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
                   <div>
-                    <p className="text-sm font-semibold text-white">Published</p>
-                    <p className="text-[10px] text-gray-500">Make visible to students on /courses</p>
+                    <p className="text-sm font-semibold text-slate-900">Published</p>
+                    <p className="text-[10px] text-slate-400">Make visible to students on /courses</p>
                   </div>
                   <button type="button" onClick={() => setForm({...form, published: !form.published})}
-                    className={`w-11 h-6 rounded-full relative transition-all ${form.published ? 'bg-blue-500' : 'bg-gray-700'}`}>
+                    className={`w-11 h-6 rounded-full relative transition-all ${form.published ? 'bg-blue-500' : 'bg-slate-200'}`}>
                     <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${form.published ? 'left-6' : 'left-1'}`} />
                   </button>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-white/[0.02] rounded-xl border border-white/5">
+                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
                   <div>
-                    <p className="text-sm font-semibold text-white">Available Soon</p>
-                    <p className="text-[10px] text-gray-500">Show publicly as an upcoming program and pause enrollment for now</p>
+                    <p className="text-sm font-semibold text-slate-900">Available Soon</p>
+                    <p className="text-[10px] text-slate-400">Show publicly as an upcoming program and pause enrollment for now</p>
                   </div>
                   <button type="button" onClick={() => setForm({...form, availableSoon: !form.availableSoon})}
-                    className={`w-11 h-6 rounded-full relative transition-all ${form.availableSoon ? 'bg-fuchsia-500' : 'bg-gray-700'}`}>
+                    className={`w-11 h-6 rounded-full relative transition-all ${form.availableSoon ? 'bg-fuchsia-500' : 'bg-slate-200'}`}>
                     <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${form.availableSoon ? 'left-6' : 'left-1'}`} />
                   </button>
                 </div>
@@ -467,8 +467,8 @@ export default function AdminCourses() {
 
               {/* Actions */}
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-gray-400 hover:bg-white/10 transition-all">Cancel</button>
-                <button type="submit" disabled={saving} className="flex-[2] px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-sm font-bold text-white hover:shadow-lg disabled:opacity-50 transition-all">
+                <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-3 bg-slate-100 border border-slate-300 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-200 transition-all">Cancel</button>
+                <button type="submit" disabled={saving} className="flex-[2] px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-sm font-bold text-slate-900 hover:shadow-lg disabled:opacity-50 transition-all">
                   {saving ? 'Saving...' : editingCourse ? 'Update Course' : 'Create Course'}
                 </button>
               </div>

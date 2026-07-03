@@ -108,7 +108,7 @@ export default function SellProjectRequestRefined() {
                   value={form.projectTitle}
                   onChange={(event) => setForm(current => ({ ...current, projectTitle: event.target.value }))}
                   required
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 />
               </div>
               <div>
@@ -116,7 +116,7 @@ export default function SellProjectRequestRefined() {
                 <select
                   value={form.category}
                   onChange={(event) => setForm(current => ({ ...current, category: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 >
                   {categories.map(category => (
                     <option key={category} value={category} className="bg-slate-950">{category}</option>
@@ -132,7 +132,7 @@ export default function SellProjectRequestRefined() {
                 onChange={(event) => setForm(current => ({ ...current, description: event.target.value }))}
                 rows={3}
                 required
-                className="w-full rounded-[24px] border border-white/10 bg-white/5 px-4 py-4 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                className="w-full rounded-[24px] border border-slate-300 bg-slate-100 px-4 py-4 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
               />
             </div>
 
@@ -142,7 +142,7 @@ export default function SellProjectRequestRefined() {
                 value={form.longDescription}
                 onChange={(event) => setForm(current => ({ ...current, longDescription: event.target.value }))}
                 rows={5}
-                className="w-full rounded-[24px] border border-white/10 bg-white/5 px-4 py-4 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                className="w-full rounded-[24px] border border-slate-300 bg-slate-100 px-4 py-4 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
               />
             </div>
 
@@ -154,7 +154,7 @@ export default function SellProjectRequestRefined() {
                   value={form.price}
                   onChange={(event) => setForm(current => ({ ...current, price: event.target.value }))}
                   required
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 />
               </div>
               <div>
@@ -162,7 +162,7 @@ export default function SellProjectRequestRefined() {
                 <input
                   value={form.demoUrl}
                   onChange={(event) => setForm(current => ({ ...current, demoUrl: event.target.value }))}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 />
               </div>
             </div>
@@ -174,7 +174,7 @@ export default function SellProjectRequestRefined() {
                   value={form.features}
                   onChange={(event) => setForm(current => ({ ...current, features: event.target.value }))}
                   placeholder="Responsive, Auth, Dashboard"
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 />
               </div>
               <div>
@@ -183,17 +183,17 @@ export default function SellProjectRequestRefined() {
                   value={form.techStack}
                   onChange={(event) => setForm(current => ({ ...current, techStack: event.target.value }))}
                   placeholder="React, Node, Firebase"
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                  className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
                 />
               </div>
             </div>
 
-            <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-300">
+            <label className="flex items-center gap-3 rounded-2xl border border-slate-300 bg-white/[0.03] px-4 py-3 text-sm text-slate-300">
               <input
                 type="checkbox"
                 checked={form.includeSource}
                 onChange={(event) => setForm(current => ({ ...current, includeSource: event.target.checked }))}
-                className="h-4 w-4 rounded border-white/20 bg-white/5"
+                className="h-4 w-4 rounded border-white/20 bg-slate-100"
               />
               Include source code with the sale
             </label>
@@ -209,27 +209,27 @@ export default function SellProjectRequestRefined() {
         </EmployeeSurface>
 
         <EmployeeSurface title="Listing Preview" description="Admin ko exactly kya dikhega uska quick summary.">
-          <div className="space-y-4 rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
+          <div className="space-y-4 rounded-[24px] border border-slate-300 bg-white/[0.03] p-5">
             <div className="flex flex-wrap gap-2">
               <EmployeeBadge tone="info">{form.category}</EmployeeBadge>
               <EmployeeBadge tone={form.includeSource ? 'success' : 'warning'}>
                 {form.includeSource ? 'Source Included' : 'Source Optional'}
               </EmployeeBadge>
             </div>
-            <h3 className="text-xl font-black text-white">{form.projectTitle || 'Untitled project'}</h3>
+            <h3 className="text-xl font-black text-slate-900">{form.projectTitle || 'Untitled project'}</h3>
             <p className="text-sm leading-6 text-slate-400">
               {form.description || 'Short project summary yahan preview hogi.'}
             </p>
             <div className="rounded-2xl border border-cyan-400/15 bg-cyan-400/[0.07] px-4 py-4">
               <p className="text-[11px] font-black uppercase tracking-[0.24em] text-cyan-300">Proposed Price</p>
-              <p className="mt-2 text-3xl font-black text-white">
+              <p className="mt-2 text-3xl font-black text-slate-900">
                 ₹{Number(form.price || 0).toLocaleString('en-IN')}
               </p>
             </div>
             <div className="space-y-2 text-sm text-slate-400">
-              <p><span className="font-semibold text-white">Tech:</span> {form.techStack || 'Not added yet'}</p>
-              <p><span className="font-semibold text-white">Features:</span> {form.features || 'Not added yet'}</p>
-              <p><span className="font-semibold text-white">Demo:</span> {form.demoUrl || 'Not added yet'}</p>
+              <p><span className="font-semibold text-slate-900">Tech:</span> {form.techStack || 'Not added yet'}</p>
+              <p><span className="font-semibold text-slate-900">Features:</span> {form.features || 'Not added yet'}</p>
+              <p><span className="font-semibold text-slate-900">Demo:</span> {form.demoUrl || 'Not added yet'}</p>
             </div>
           </div>
         </EmployeeSurface>

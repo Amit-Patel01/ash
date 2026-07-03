@@ -217,7 +217,7 @@ const Navbar = () => {
                     : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
                 }`}
               >
-                <span className="relative z-10">Projects</span>
+                <span className="relative z-10">Source Codes</span>
                 {location.pathname === '/projects' && (
                   <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-400' : 'bg-blue-600'}`} />
                 )}
@@ -485,7 +485,7 @@ const Navbar = () => {
             >
               <span className="relative z-10 flex items-center gap-3">
                 {location.pathname === '/projects' && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'}`} />}
-                Projects
+                Source Codes
               </span>
             </Link>
 

@@ -251,7 +251,7 @@ export default function EmployeeBroadcastRefined() {
               <select
                 value={form.courseId}
                 onChange={(event) => setForm(current => ({ ...current, courseId: event.target.value, planId: '' }))}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none"
+                className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none"
               >
                 <option value="" className="bg-slate-950">Choose Course</option>
                 {myCourses.map(course => (
@@ -268,7 +268,7 @@ export default function EmployeeBroadcastRefined() {
                 value={form.planId}
                 onChange={(event) => setForm(current => ({ ...current, planId: event.target.value }))}
                 disabled={!selectedCourse || !uniquePlans.length}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white focus:border-cyan-400/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 focus:border-cyan-400/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <option value="" className="bg-slate-950">All Plans</option>
                 {uniquePlans.map(plan => (
@@ -279,15 +279,15 @@ export default function EmployeeBroadcastRefined() {
 
             <div className="rounded-[24px] border border-cyan-400/15 bg-cyan-400/[0.07] p-5 text-center">
               <p className="text-[11px] font-black uppercase tracking-[0.28em] text-cyan-300">Audience Size</p>
-              <p className="mt-3 text-4xl font-black text-white">{filteredEnrollments.length}</p>
+              <p className="mt-3 text-4xl font-black text-slate-900">{filteredEnrollments.length}</p>
               <p className="mt-2 text-sm text-slate-300">
                 {selectedCourse ? 'Students currently in this selection' : 'Select a course to view recipients'}
               </p>
             </div>
 
             {selectedCourse && (
-              <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-5">
-                <p className="text-sm font-black text-white">{selectedCourse.title}</p>
+              <div className="rounded-[24px] border border-slate-300 bg-white/[0.03] p-5">
+                <p className="text-sm font-black text-slate-900">{selectedCourse.title}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <EmployeeBadge tone="info">{selectedCourse.category || 'General'}</EmployeeBadge>
                   <EmployeeBadge>{selectedCourse.level || 'Open Level'}</EmployeeBadge>
@@ -321,7 +321,7 @@ export default function EmployeeBroadcastRefined() {
                 onChange={(event) => setForm(current => ({ ...current, subject: event.target.value }))}
                 disabled={!selectedCourse}
                 placeholder="Schedule update, material release, live class reminder"
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
 
@@ -335,11 +335,11 @@ export default function EmployeeBroadcastRefined() {
                 disabled={!selectedCourse}
                 rows={12}
                 placeholder={`Hello students,\n\nWe have an important update regarding your course...\n\nRegards,\nTeam SolutionHub`}
-                className="w-full rounded-[24px] border border-white/10 bg-white/5 px-4 py-4 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-[24px] border border-slate-300 bg-slate-100 px-4 py-4 text-sm text-slate-900 placeholder:text-slate-500 focus:border-cyan-400/30 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               />
             </div>
 
-            <div className="rounded-[24px] border border-white/10 bg-white/[0.03] p-4">
+            <div className="rounded-[24px] border border-slate-300 bg-white/[0.03] p-4">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.24em] text-slate-500">Image Attachment</p>
@@ -370,8 +370,8 @@ export default function EmployeeBroadcastRefined() {
               )}
 
               {form.imageUrl && (
-                <div className="mt-4 rounded-[24px] border border-white/10 bg-slate-950/60 p-4">
-                  <div className="overflow-hidden rounded-[20px] border border-white/10 bg-white">
+                <div className="mt-4 rounded-[24px] border border-slate-300 bg-slate-950/60 p-4">
+                  <div className="overflow-hidden rounded-[20px] border border-slate-300 bg-white">
                     <img
                       src={form.imageUrl}
                       alt={form.imageLabel || 'Broadcast attachment'}
@@ -380,7 +380,7 @@ export default function EmployeeBroadcastRefined() {
                   </div>
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <p className="text-sm font-semibold text-white">{form.imageLabel || 'Broadcast image'}</p>
+                      <p className="text-sm font-semibold text-slate-900">{form.imageLabel || 'Broadcast image'}</p>
                       <p className="mt-1 text-xs text-slate-500">PNG, JPG ya WebP. Max 5MB.</p>
                     </div>
                     <button
@@ -392,7 +392,7 @@ export default function EmployeeBroadcastRefined() {
                     </button>
                   </div>
 
-                  <label className="mt-4 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-slate-300">
+                  <label className="mt-4 flex items-center gap-3 rounded-2xl border border-slate-300 bg-white/[0.04] px-4 py-3 text-sm text-slate-300">
                     <input
                       type="checkbox"
                       checked={form.attachImage}
@@ -405,9 +405,9 @@ export default function EmployeeBroadcastRefined() {
               )}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-300 bg-white/[0.03] px-4 py-3">
               <p className="text-sm text-slate-400">
-                This broadcast will be sent to <span className="font-semibold text-white">{filteredEnrollments.length}</span> student{filteredEnrollments.length !== 1 ? 's' : ''}
+                This broadcast will be sent to <span className="font-semibold text-slate-900">{filteredEnrollments.length}</span> student{filteredEnrollments.length !== 1 ? 's' : ''}
                 {form.imageUrl ? <span className="text-slate-500"> with image</span> : null}
               </p>
               <button
@@ -436,10 +436,10 @@ export default function EmployeeBroadcastRefined() {
           ) : (
             <div className="space-y-3">
               {filteredEnrollments.slice(0, 8).map(enrollment => (
-                <div key={enrollment.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div key={enrollment.id} className="rounded-2xl border border-slate-300 bg-white/[0.03] p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-white">{enrollment.userName || enrollment.userEmail}</p>
+                      <p className="truncate text-sm font-semibold text-slate-900">{enrollment.userName || enrollment.userEmail}</p>
                       <p className="mt-1 truncate text-xs text-slate-400">{enrollment.userEmail}</p>
                     </div>
                     <EmployeeBadge tone={Number(enrollment.amount || 0) > 0 ? 'success' : 'info'}>

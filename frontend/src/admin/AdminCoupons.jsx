@@ -213,24 +213,24 @@ export default function AdminCoupons() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Coupons</h1>
-          <p className="mt-1 text-sm text-gray-400">
+          <h1 className="text-2xl font-bold text-slate-900">Coupons</h1>
+          <p className="mt-1 text-sm text-slate-500">
             Create coupon codes, assign them to selected courses or plans, and manage usage from one place.
           </p>
         </div>
         <button
           type="button"
           onClick={resetForm}
-          className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-700"
+          className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-slate-900 transition hover:bg-blue-700"
         >
           New Coupon
         </button>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-white/5 bg-gray-900/50 p-5">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-gray-500">Total Codes</p>
-          <p className="mt-3 text-3xl font-black text-white">{coupons.length}</p>
+        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-slate-400">Total Codes</p>
+          <p className="mt-3 text-3xl font-black text-slate-900">{coupons.length}</p>
         </div>
         <div className="rounded-2xl border border-emerald-500/10 bg-emerald-500/5 p-5">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-emerald-300/70">Active Codes</p>
@@ -255,18 +255,18 @@ export default function AdminCoupons() {
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <div className="space-y-4">
           {loading ? (
-            <div className="rounded-2xl border border-white/5 bg-gray-900/50 p-10 text-center text-sm text-gray-400">
+            <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center text-sm text-slate-500">
               Loading coupons...
             </div>
           ) : coupons.length === 0 ? (
-            <div className="rounded-2xl border border-white/5 bg-gray-900/50 p-10 text-center text-sm text-gray-400">
+            <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center text-sm text-slate-500">
               No coupons created yet.
             </div>
           ) : (
             coupons.map((coupon) => {
               const scopeCount = Array.isArray(coupon.courseScopes) ? coupon.courseScopes.length : 0
               return (
-                <div key={coupon.id} className="rounded-2xl border border-white/5 bg-gray-900/50 p-5">
+                <div key={coupon.id} className="rounded-2xl border border-slate-200 bg-white p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
@@ -279,8 +279,8 @@ export default function AdminCoupons() {
                           {coupon.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </div>
-                      <p className="mt-3 text-2xl font-black text-white">{formatDiscount(coupon)}</p>
-                      <p className="mt-2 text-sm text-gray-400">
+                      <p className="mt-3 text-2xl font-black text-slate-900">{formatDiscount(coupon)}</p>
+                      <p className="mt-2 text-sm text-slate-500">
                         {scopeCount === 0
                           ? 'Applies to all paid courses'
                           : `${scopeCount} course scope${scopeCount === 1 ? '' : 's'} assigned`}
@@ -290,7 +290,7 @@ export default function AdminCoupons() {
                       <button
                         type="button"
                         onClick={() => openEdit(coupon)}
-                        className="rounded-xl border border-white/10 px-3 py-2 text-xs font-bold text-white transition hover:bg-white/5"
+                        className="rounded-xl border border-slate-300 px-3 py-2 text-xs font-bold text-slate-900 transition hover:bg-slate-100"
                       >
                         Edit
                       </button>
@@ -306,29 +306,29 @@ export default function AdminCoupons() {
                   </div>
 
                   <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
-                    <div className="rounded-xl border border-white/5 bg-black/20 p-3">
-                      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500">Validity</p>
-                      <p className="mt-2 text-sm text-white">
+                    <div className="rounded-xl border border-slate-200 bg-black/20 p-3">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Validity</p>
+                      <p className="mt-2 text-sm text-slate-900">
                         {coupon.validFrom ? formatDate(coupon.validFrom) : 'Immediate'} to {formatDate(coupon.validUntil)}
                       </p>
                     </div>
-                    <div className="rounded-xl border border-white/5 bg-black/20 p-3">
-                      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500">Usage</p>
-                      <p className="mt-2 text-sm text-white">
+                    <div className="rounded-xl border border-slate-200 bg-black/20 p-3">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Usage</p>
+                      <p className="mt-2 text-sm text-slate-900">
                         {Number(coupon.usedCount || 0)} used
                         {coupon.usageLimit !== null && coupon.usageLimit !== undefined ? ` / ${coupon.usageLimit}` : ' / Unlimited'}
                       </p>
                     </div>
-                    <div className="rounded-xl border border-white/5 bg-black/20 p-3">
-                      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-500">Updated By</p>
-                      <p className="mt-2 truncate text-sm text-white">{coupon.updatedByEmail || coupon.createdByEmail || 'Admin'}</p>
+                    <div className="rounded-xl border border-slate-200 bg-black/20 p-3">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Updated By</p>
+                      <p className="mt-2 truncate text-sm text-slate-900">{coupon.updatedByEmail || coupon.createdByEmail || 'Admin'}</p>
                     </div>
                   </div>
 
                   {scopeCount > 0 && (
                     <div className="mt-4 flex flex-wrap gap-2">
                       {coupon.courseScopes.map((scope) => (
-                        <span key={scope.courseId} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-200">
+                        <span key={scope.courseId} className="rounded-full border border-slate-300 bg-slate-100 px-3 py-1 text-xs text-gray-200">
                           {scope.courseTitle || scope.courseId}
                           {Array.isArray(scope.plans) && scope.plans.length > 0 ? ` · ${scope.plans.length} plan${scope.plans.length === 1 ? '' : 's'}` : ' · All plans'}
                         </span>
@@ -341,11 +341,11 @@ export default function AdminCoupons() {
           )}
         </div>
 
-        <form onSubmit={handleSubmit} className="rounded-3xl border border-white/5 bg-gray-900/60 p-6">
+        <form onSubmit={handleSubmit} className="rounded-3xl border border-slate-200 bg-white/60 p-6">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h2 className="text-xl font-black text-white">{editingCoupon ? 'Edit Coupon' : 'Create Coupon'}</h2>
-              <p className="mt-1 text-sm text-gray-400">
+              <h2 className="text-xl font-black text-slate-900">{editingCoupon ? 'Edit Coupon' : 'Create Coupon'}</h2>
+              <p className="mt-1 text-sm text-slate-500">
                 No course selected means the coupon works across all paid courses. No plan selected means all plans in that course.
               </p>
             </div>
@@ -353,7 +353,7 @@ export default function AdminCoupons() {
               <button
                 type="button"
                 onClick={resetForm}
-                className="rounded-xl border border-white/10 px-3 py-2 text-xs font-bold text-white transition hover:bg-white/5"
+                className="rounded-xl border border-slate-300 px-3 py-2 text-xs font-bold text-slate-900 transition hover:bg-slate-100"
               >
                 Cancel
               </button>
@@ -362,27 +362,27 @@ export default function AdminCoupons() {
 
           <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-gray-500">Coupon Code</label>
+              <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-400">Coupon Code</label>
               <input
                 value={form.code}
                 onChange={(event) => setForm((current) => ({ ...current, code: event.target.value.toUpperCase() }))}
                 placeholder="SUMMER100"
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500/40"
+                className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500/40"
               />
             </div>
             <div>
-              <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-gray-500">Discount Type</label>
+              <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-400">Discount Type</label>
               <select
                 value={form.discountType}
                 onChange={(event) => setForm((current) => ({ ...current, discountType: event.target.value }))}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500/40"
+                className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500/40"
               >
                 <option value="percentage" className="bg-slate-900">Percentage</option>
                 <option value="flat" className="bg-slate-900">Flat Amount</option>
               </select>
             </div>
             <div>
-              <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-gray-500">
+              <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-400">
                 {form.discountType === 'percentage' ? 'Discount (%)' : 'Discount Amount'}
               </label>
               <input
@@ -391,44 +391,44 @@ export default function AdminCoupons() {
                 step="0.01"
                 value={form.discountValue}
                 onChange={(event) => setForm((current) => ({ ...current, discountValue: event.target.value }))}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500/40"
+                className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500/40"
               />
             </div>
             <div>
-              <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-gray-500">Usage Limit</label>
+              <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-400">Usage Limit</label>
               <input
                 type="number"
                 min="0"
                 value={form.usageLimit}
                 onChange={(event) => setForm((current) => ({ ...current, usageLimit: event.target.value }))}
                 placeholder="Leave blank for unlimited"
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500/40"
+                className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500/40"
               />
             </div>
             <div>
-              <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-gray-500">Valid From</label>
+              <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-400">Valid From</label>
               <input
                 type="date"
                 value={form.validFrom}
                 onChange={(event) => setForm((current) => ({ ...current, validFrom: event.target.value }))}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500/40"
+                className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500/40"
               />
             </div>
             <div>
-              <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-gray-500">Valid Until</label>
+              <label className="mb-2 block text-xs font-black uppercase tracking-[0.22em] text-slate-400">Valid Until</label>
               <input
                 type="date"
                 value={form.validUntil}
                 onChange={(event) => setForm((current) => ({ ...current, validUntil: event.target.value }))}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-500/40"
+                className="w-full rounded-2xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500/40"
               />
             </div>
           </div>
 
-          <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4">
+          <div className="mt-4 flex items-center justify-between rounded-2xl border border-slate-300 bg-white/[0.04] px-4 py-4">
             <div>
-              <p className="text-sm font-semibold text-white">Coupon Active</p>
-              <p className="mt-1 text-xs text-gray-400">Inactive coupons stay saved but cannot be applied at checkout.</p>
+              <p className="text-sm font-semibold text-slate-900">Coupon Active</p>
+              <p className="mt-1 text-xs text-slate-500">Inactive coupons stay saved but cannot be applied at checkout.</p>
             </div>
             <button
               type="button"
@@ -442,8 +442,8 @@ export default function AdminCoupons() {
 
           <div className="mt-6">
             <div className="mb-3">
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-gray-500">Course Assignment</p>
-              <p className="mt-2 text-sm text-gray-400">Choose specific courses and optional plan-level targeting.</p>
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">Course Assignment</p>
+              <p className="mt-2 text-sm text-slate-500">Choose specific courses and optional plan-level targeting.</p>
             </div>
 
             <div className="max-h-[26rem] space-y-3 overflow-y-auto pr-1">
@@ -452,7 +452,7 @@ export default function AdminCoupons() {
                 const plans = Array.isArray(course.plans) ? course.plans : []
 
                 return (
-                  <div key={course.id} className="rounded-2xl border border-white/5 bg-black/20 p-4">
+                  <div key={course.id} className="rounded-2xl border border-slate-200 bg-black/20 p-4">
                     <label className="flex cursor-pointer items-start gap-3">
                       <input
                         type="checkbox"
@@ -461,8 +461,8 @@ export default function AdminCoupons() {
                         className="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-blue-500"
                       />
                       <div className="flex-1">
-                        <p className="text-sm font-semibold text-white">{course.title}</p>
-                        <p className="mt-1 text-xs text-gray-400">
+                        <p className="text-sm font-semibold text-slate-900">{course.title}</p>
+                        <p className="mt-1 text-xs text-slate-500">
                           {plans.length > 0
                             ? `${plans.length} plan${plans.length === 1 ? '' : 's'} available`
                             : Number(course.price || 0) > 0
@@ -473,15 +473,15 @@ export default function AdminCoupons() {
                     </label>
 
                     {activeScope && plans.length > 0 && (
-                      <div className="mt-4 rounded-2xl border border-white/5 bg-white/[0.03] p-3">
-                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-gray-500">Specific Plans</p>
-                        <p className="mt-1 text-xs text-gray-400">Leave all unchecked to allow every plan in this course.</p>
+                      <div className="mt-4 rounded-2xl border border-slate-200 bg-white/[0.03] p-3">
+                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Specific Plans</p>
+                        <p className="mt-1 text-xs text-slate-500">Leave all unchecked to allow every plan in this course.</p>
                         <div className="mt-3 space-y-2">
                           {plans.map((plan, index) => {
                             const planKey = buildPlanKey(course.id, plan.id || index)
                             const checked = activeScope.plans.some((item) => item.key === planKey)
                             return (
-                              <label key={planKey} className="flex cursor-pointer items-center gap-3 rounded-xl border border-white/5 bg-black/20 px-3 py-2">
+                              <label key={planKey} className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-black/20 px-3 py-2">
                                 <input
                                   type="checkbox"
                                   checked={checked}
@@ -489,8 +489,8 @@ export default function AdminCoupons() {
                                   className="h-4 w-4 rounded border-white/20 bg-transparent text-blue-500"
                                 />
                                 <div className="flex-1">
-                                  <p className="text-sm font-medium text-white">{plan.label || `Plan ${index + 1}`}</p>
-                                  <p className="text-xs text-gray-400">
+                                  <p className="text-sm font-medium text-slate-900">{plan.label || `Plan ${index + 1}`}</p>
+                                  <p className="text-xs text-slate-500">
                                     {plan.isFree || Number(plan.price || 0) === 0
                                       ? 'Free'
                                       : `₹${Number(plan.price || 0).toLocaleString('en-IN')}`}
@@ -511,7 +511,7 @@ export default function AdminCoupons() {
           <button
             type="submit"
             disabled={saving}
-            className="mt-6 w-full rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700 disabled:opacity-50"
+            className="mt-6 w-full rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-slate-900 transition hover:bg-blue-700 disabled:opacity-50"
           >
             {saving ? 'Saving Coupon...' : editingCoupon ? 'Update Coupon' : 'Create Coupon'}
           </button>

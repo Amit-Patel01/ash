@@ -461,8 +461,8 @@ export default function EmployeeCourseManage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">My Courses</h1>
-          <p className="mt-1 text-sm text-gray-400">
+          <h1 className="text-2xl font-bold text-slate-900">My Courses</h1>
+          <p className="mt-1 text-sm text-slate-500">
             {canCreateCourses
               ? 'Create draft courses from your employee panel and manage delivery details from one place.'
               : 'Manage your assigned course plans, materials, meeting links, and student activity.'}
@@ -471,7 +471,7 @@ export default function EmployeeCourseManage() {
         {canCreateCourses && (
           <button
             onClick={openCreateCourse}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5 text-sm font-bold text-white transition-all hover:shadow-lg"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2.5 text-sm font-bold text-slate-900 transition-all hover:shadow-lg"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -494,9 +494,9 @@ export default function EmployeeCourseManage() {
         {/* Course list */}
         <div className="lg:col-span-1 space-y-2">
           {visibleCourses.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-white/10 bg-gray-900/40 px-4 py-8 text-center">
-              <p className="text-sm font-semibold text-white">{emptyStateTitle}</p>
-              <p className="mt-2 text-xs text-gray-500">{emptyStateBody}</p>
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white/40 px-4 py-8 text-center">
+              <p className="text-sm font-semibold text-slate-900">{emptyStateTitle}</p>
+              <p className="mt-2 text-xs text-slate-400">{emptyStateBody}</p>
             </div>
           ) : visibleCourses.map(course => {
             const cnt = enrollments.filter(e => e.status === 'active' && matchesCourseEnrollment(e, course)).length
@@ -505,14 +505,14 @@ export default function EmployeeCourseManage() {
             const deadlineText = formatEnrollmentDeadline(course.enrollmentDeadline)
             return (
               <button key={course.id} onClick={() => openCourse(course)}
-                className={`w-full text-left p-4 rounded-2xl border transition-all ${selectedCourse?.id === course.id ? 'border-blue-500/50 bg-blue-500/10' : 'border-white/5 bg-gray-900/50 hover:border-white/10'}`}>
+                className={`w-full text-left p-4 rounded-2xl border transition-all ${selectedCourse?.id === course.id ? 'border-blue-500/50 bg-blue-500/10' : 'border-slate-200 bg-white hover:border-slate-300'}`}>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-900/60 to-purple-900/60 flex items-center justify-center flex-shrink-0">
                     <BookOpen className="w-5 h-5 text-blue-300" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="text-sm font-bold text-white truncate">{course.title}</h4>
-                    <div className="flex gap-2 text-[10px] text-gray-500 mt-0.5">
+                    <h4 className="text-sm font-bold text-slate-900 truncate">{course.title}</h4>
+                    <div className="flex gap-2 text-[10px] text-slate-400 mt-0.5">
                       <span>{planCount} plans</span>
                       <span>·</span>
                       <span>{cnt} students</span>
@@ -532,14 +532,14 @@ export default function EmployeeCourseManage() {
         {/* Right panel */}
         <div className="lg:col-span-3">
           {!selectedCourse ? (
-            <div className="bg-gray-900/50 border border-white/5 rounded-2xl p-14 text-center">
+            <div className="bg-white border border-slate-200 rounded-2xl p-14 text-center">
               <div className="flex justify-center mb-4 text-blue-400">
                 {visibleCourses.length === 0 ? <BookOpen className="w-12 h-12" /> : <MousePointerClick className="w-12 h-12" />}
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">
+              <h3 className="text-xl font-bold text-slate-900 mb-2">
                 {visibleCourses.length === 0 ? emptyStateTitle : 'Select a course to manage'}
               </h3>
-              <p className="text-gray-400 text-sm max-w-lg mx-auto">
+              <p className="text-slate-500 text-sm max-w-lg mx-auto">
                 {visibleCourses.length === 0
                   ? emptyStateBody
                   : 'Choose a course from the left to update its plans, materials, meeting links, and enrolled students.'}
@@ -547,7 +547,7 @@ export default function EmployeeCourseManage() {
               {canCreateCourses && visibleCourses.length === 0 && (
                 <button
                   onClick={openCreateCourse}
-                  className="mt-5 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-blue-700"
+                  className="mt-5 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-slate-900 transition-all hover:bg-blue-700"
                 >
                   Create Course
                 </button>
@@ -556,10 +556,10 @@ export default function EmployeeCourseManage() {
           ) : (
             <div className="space-y-4">
               {/* Header */}
-              <div className="bg-gray-900/60 border border-white/5 rounded-2xl p-5 flex items-center justify-between">
+              <div className="bg-white/60 border border-slate-200 rounded-2xl p-5 flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-bold text-white">{selectedCourse.title}</h2>
-                  <p className="text-sm text-gray-400">
+                  <h2 className="text-lg font-bold text-slate-900">{selectedCourse.title}</h2>
+                  <p className="text-sm text-slate-500">
                     {[selectedCourse.category, selectedCourse.level].filter(Boolean).join(' · ') || 'Course details'}
                   </p>
                   {selectedCourse.enrollmentDeadline && (
@@ -574,16 +574,16 @@ export default function EmployeeCourseManage() {
                   <p className="text-xl font-black text-blue-400">
                     {(selectedCourse.plans || []).length} plan{(selectedCourse.plans || []).length !== 1 ? 's' : ''}
                   </p>
-                  <p className="text-xs text-gray-500">{courseEnrollments.length} enrolled</p>
-                  <p className="text-[10px] text-gray-600 mt-1">{planMeetingStats.scheduled} scheduled · {planMeetingStats.linksReady} links ready</p>
+                  <p className="text-xs text-slate-400">{courseEnrollments.length} enrolled</p>
+                  <p className="text-[10px] text-slate-500 mt-1">{planMeetingStats.scheduled} scheduled · {planMeetingStats.linksReady} links ready</p>
                 </div>
               </div>
 
               {/* Tabs */}
-              <div className="flex gap-1 bg-gray-900/50 p-1 rounded-xl border border-white/5">
+              <div className="flex gap-1 bg-white p-1 rounded-xl border border-slate-200">
                 {TABS.map(t => (
                   <button key={t.id} onClick={() => setActiveTab(t.id)}
-                    className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${activeTab === t.id ? 'bg-blue-600 text-white' : 'text-gray-500 hover:text-gray-300'}`}>
+                    className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${activeTab === t.id ? 'bg-blue-600 text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}>
                     <t.icon className="w-4 h-4" />
                     {t.label}
                   </button>
@@ -592,14 +592,14 @@ export default function EmployeeCourseManage() {
 
               {/* ─── PLANS TAB ─────────────────────────────────── */}
               {activeTab === 'plans' && (
-                <div className="bg-gray-900/60 border border-white/5 rounded-2xl p-5">
+                <div className="bg-white/60 border border-slate-200 rounded-2xl p-5">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h3 className="text-sm font-bold text-white">Duration Plans & Pricing</h3>
-                      <p className="text-[11px] text-gray-500 mt-0.5">Students see these plans on the course page</p>
+                      <h3 className="text-sm font-bold text-slate-900">Duration Plans & Pricing</h3>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Students see these plans on the course page</p>
                     </div>
                     <button onClick={openAddPlan}
-                      className="px-3 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 transition-all flex items-center gap-1">
+                      className="px-3 py-1.5 bg-blue-600 text-slate-900 text-xs font-bold rounded-xl hover:bg-blue-700 transition-all flex items-center gap-1">
                       <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
                       Add Plan
                     </button>
@@ -608,10 +608,10 @@ export default function EmployeeCourseManage() {
                   {!(selectedCourse.plans || []).length ? (
                     <div className="py-10 text-center">
                       <div className="flex justify-center mb-2">
-                        <CircleDollarSign className="w-10 h-10 text-gray-500" />
+                        <CircleDollarSign className="w-10 h-10 text-slate-400" />
                       </div>
-                      <p className="text-gray-500 text-sm mb-1">No plans added yet</p>
-                      <p className="text-xs text-gray-600">Add plans like Basic 1-Month, Standard 3-Months, Premium 6-Months</p>
+                      <p className="text-slate-400 text-sm mb-1">No plans added yet</p>
+                      <p className="text-xs text-slate-500">Add plans like Basic 1-Month, Standard 3-Months, Premium 6-Months</p>
                       <button onClick={openAddPlan} className="mt-4 px-4 py-2 bg-blue-600/20 border border-blue-500/30 text-blue-400 text-xs font-bold rounded-xl hover:bg-blue-600/30 transition-all">
                         Add First Plan
                       </button>
@@ -619,39 +619,39 @@ export default function EmployeeCourseManage() {
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                       {(selectedCourse.plans || []).map((plan, idx) => (
-                        <div key={idx} className={`relative rounded-2xl border p-5 ${plan.highlighted ? 'border-blue-500/40 bg-blue-500/10' : 'border-white/5 bg-white/[0.02]'}`}>
+                        <div key={idx} className={`relative rounded-2xl border p-5 ${plan.highlighted ? 'border-blue-500/40 bg-blue-500/10' : 'border-slate-200 bg-slate-50'}`}>
                           {plan.highlighted && (
-                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-amber-500 text-white text-[10px] font-black rounded-full flex items-center gap-1">
-                              <Star className="w-3 h-3 fill-white text-white" /> Most Popular
+                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-amber-500 text-slate-900 text-[10px] font-black rounded-full flex items-center gap-1">
+                              <Star className="w-3 h-3 fill-white text-slate-900" /> Most Popular
                             </div>
                           )}
                           <div className="flex items-start justify-between mb-2">
                             <div>
-                              <h4 className="font-bold text-white">{plan.label}</h4>
-                              <p className="text-xs text-gray-500">{plan.duration}</p>
+                              <h4 className="font-bold text-slate-900">{plan.label}</h4>
+                              <p className="text-xs text-slate-400">{plan.duration}</p>
                               {plan.enrollmentDeadline && (
                                 <p className="text-[10px] text-amber-400 mt-1">Deadline: {formatEnrollmentDeadline(plan.enrollmentDeadline)}</p>
                               )}
                             </div>
-                            <p className={`text-lg font-black ${plan.highlighted ? 'text-blue-400' : 'text-white'}`}>
+                            <p className={`text-lg font-black ${plan.highlighted ? 'text-blue-400' : 'text-slate-900'}`}>
                               {plan.isFree || plan.price === 0 ? 'FREE' : `₹${Number(plan.price).toLocaleString('en-IN')}`}
                             </p>
                           </div>
                           {plan.features?.length > 0 && (
                             <ul className="space-y-1 mb-3">
                               {plan.features.slice(0, 3).map((f, fi) => (
-                                <li key={fi} className="flex items-center gap-1.5 text-[11px] text-gray-400">
+                                <li key={fi} className="flex items-center gap-1.5 text-[11px] text-slate-500">
                                   <Check className="w-3 h-3 text-emerald-400 flex-shrink-0" /> {f}
                                 </li>
                               ))}
-                              {plan.features.length > 3 && <li className="text-[10px] text-gray-600">+{plan.features.length - 3} more</li>}
+                              {plan.features.length > 3 && <li className="text-[10px] text-slate-500">+{plan.features.length - 3} more</li>}
                             </ul>
                           )}
-                          <div className="rounded-xl border border-white/5 bg-black/20 p-3 mb-3">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-500 mb-1">Plan Meeting</p>
-                            <p className="text-[11px] text-white">{formatMeetingPreview(plan.meetingStartsAt, plan.meetingTimezone)}</p>
+                          <div className="rounded-xl border border-slate-200 bg-black/20 p-3 mb-3">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Plan Meeting</p>
+                            <p className="text-[11px] text-slate-900">{formatMeetingPreview(plan.meetingStartsAt, plan.meetingTimezone)}</p>
                             <div className="flex flex-wrap items-center gap-2 mt-2">
-                              <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${plan.meetingLink ? 'bg-blue-500/10 border-blue-500/20 text-blue-300' : 'bg-white/5 border-white/10 text-gray-500'}`}>
+                              <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${plan.meetingLink ? 'bg-blue-500/10 border-blue-500/20 text-blue-300' : 'bg-slate-100 border-slate-300 text-slate-400'}`}>
                                 {plan.meetingLink ? 'Join link ready' : 'Join link pending'}
                               </span>
                               {plan.meetingReminderSentAt && (
@@ -667,8 +667,8 @@ export default function EmployeeCourseManage() {
                             </div>
                           </div>
                           <div className="flex gap-1 mt-auto">
-                            <button onClick={() => movePlan(idx, -1)} disabled={idx === 0} className="p-1.5 rounded-lg bg-white/5 text-gray-500 hover:bg-white/10 disabled:opacity-30 text-xs">↑</button>
-                            <button onClick={() => movePlan(idx, 1)} disabled={idx === (selectedCourse.plans || []).length - 1} className="p-1.5 rounded-lg bg-white/5 text-gray-500 hover:bg-white/10 disabled:opacity-30 text-xs">↓</button>
+                            <button onClick={() => movePlan(idx, -1)} disabled={idx === 0} className="p-1.5 rounded-lg bg-slate-100 text-slate-400 hover:bg-slate-200 disabled:opacity-30 text-xs">↑</button>
+                            <button onClick={() => movePlan(idx, 1)} disabled={idx === (selectedCourse.plans || []).length - 1} className="p-1.5 rounded-lg bg-slate-100 text-slate-400 hover:bg-slate-200 disabled:opacity-30 text-xs">↓</button>
                             <button onClick={() => openEditPlan(plan, idx)} className="flex-1 py-1.5 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 text-xs font-bold transition-colors">Edit</button>
                             <button onClick={() => deletePlan(idx)} className="px-2.5 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs transition-colors flex items-center justify-center">
                               <X className="w-3 h-3" />
@@ -683,23 +683,23 @@ export default function EmployeeCourseManage() {
 
               {/* ─── MATERIALS TAB ──────────────────────────────── */}
               {activeTab === 'materials' && (
-                <div className="bg-gray-900/60 border border-white/5 rounded-2xl p-5">
-                  <h3 className="text-sm font-bold text-white mb-4">Study Materials</h3>
+                <div className="bg-white/60 border border-slate-200 rounded-2xl p-5">
+                  <h3 className="text-sm font-bold text-slate-900 mb-4">Study Materials</h3>
                   <div className="flex gap-2 mb-4">
-                    <input value={matForm.title} onChange={e => setMatForm({...matForm, title: e.target.value})} placeholder="Material title" className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50" />
-                    <input value={matForm.url} onChange={e => setMatForm({...matForm, url: e.target.value})} placeholder="URL / link" className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50" />
-                    <button onClick={addMaterial} disabled={saving || !matForm.title || !matForm.url} className="px-4 py-2.5 bg-purple-600 text-white text-sm font-bold rounded-xl hover:bg-purple-700 disabled:opacity-40 transition-all">Add</button>
+                    <input value={matForm.title} onChange={e => setMatForm({...matForm, title: e.target.value})} placeholder="Material title" className="flex-1 px-3 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-blue-500/50" />
+                    <input value={matForm.url} onChange={e => setMatForm({...matForm, url: e.target.value})} placeholder="URL / link" className="flex-1 px-3 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-blue-500/50" />
+                    <button onClick={addMaterial} disabled={saving || !matForm.title || !matForm.url} className="px-4 py-2.5 bg-purple-600 text-slate-900 text-sm font-bold rounded-xl hover:bg-purple-700 disabled:opacity-40 transition-all">Add</button>
                   </div>
                   {!(selectedCourse.materials || []).length ? (
-                    <p className="text-sm text-gray-600 italic py-4">No materials added yet</p>
+                    <p className="text-sm text-slate-500 italic py-4">No materials added yet</p>
                   ) : (
                     <div className="space-y-2">
                       {(selectedCourse.materials || []).map((mat, i) => (
-                        <div key={i} className="flex items-center gap-3 p-3 bg-white/[0.02] rounded-xl border border-white/5">
-                          <FileText className="w-6 h-6 text-gray-400 flex-shrink-0" />
+                        <div key={i} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+                          <FileText className="w-6 h-6 text-slate-500 flex-shrink-0" />
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-white truncate">{mat.title}</p>
-                            <p className="text-[10px] text-gray-500 truncate">{mat.url}</p>
+                            <p className="text-sm font-medium text-slate-900 truncate">{mat.title}</p>
+                            <p className="text-[10px] text-slate-400 truncate">{mat.url}</p>
                           </div>
                           <button onClick={() => removeMaterial(i)} className="p-1.5 text-red-400 hover:bg-red-500/15 rounded-lg transition-colors">
                             <X className="w-4 h-4" />
@@ -713,11 +713,11 @@ export default function EmployeeCourseManage() {
 
               {/* ─── MEETING LINK TAB ───────────────────────────── */}
               {activeTab === 'meeting' && (
-                <div className="bg-gray-900/60 border border-white/5 rounded-2xl p-5">
+                <div className="bg-white/60 border border-slate-200 rounded-2xl p-5">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h3 className="text-sm font-bold text-white">Default Meeting / Live Session Link</h3>
-                      <p className="text-[11px] text-gray-500 mt-1">
+                      <h3 className="text-sm font-bold text-slate-900">Default Meeting / Live Session Link</h3>
+                      <p className="text-[11px] text-slate-400 mt-1">
                         {(selectedCourse.plans || []).length > 1
                           ? 'For multi-plan courses, students only see the meeting link for the plan they enrolled in. This default link is an optional fallback.'
                           : 'For single-plan courses, this link may be shown directly to students.'}
@@ -728,24 +728,24 @@ export default function EmployeeCourseManage() {
                   {editMeet ? (
                     <div className="flex gap-2">
                       <input value={meetingLink} onChange={e => setMeetingLink(e.target.value)} placeholder="https://meet.google.com/... or Zoom link"
-                        className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-blue-500/50" />
-                      <button onClick={saveMeeting} disabled={saving} className="px-4 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50 transition-all">Save</button>
+                        className="flex-1 px-3 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-blue-500/50" />
+                      <button onClick={saveMeeting} disabled={saving} className="px-4 py-2.5 bg-blue-600 text-slate-900 text-sm font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50 transition-all">Save</button>
                     </div>
                   ) : selectedCourse.meetingLink ? (
                     <a href={selectedCourse.meetingLink} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-400 underline break-all">{selectedCourse.meetingLink}</a>
                   ) : (
-                    <p className="text-sm text-gray-600 italic">No meeting link set. Click Edit to add.</p>
+                    <p className="text-sm text-slate-500 italic">No meeting link set. Click Edit to add.</p>
                   )}
                   {!!selectedCourse.plans?.length && (
                     <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3">
                       {selectedCourse.plans.map((plan, idx) => (
-                        <div key={`${plan.id || plan.label || idx}-meeting`} className="rounded-xl border border-white/5 bg-black/20 p-3">
+                        <div key={`${plan.id || plan.label || idx}-meeting`} className="rounded-xl border border-slate-200 bg-black/20 p-3">
                           <div className="flex items-center justify-between gap-3">
                             <div>
-                              <p className="text-sm font-semibold text-white">{plan.label}</p>
-                              <p className="text-[11px] text-gray-500">{formatMeetingPreview(plan.meetingStartsAt, plan.meetingTimezone)}</p>
+                              <p className="text-sm font-semibold text-slate-900">{plan.label}</p>
+                              <p className="text-[11px] text-slate-400">{formatMeetingPreview(plan.meetingStartsAt, plan.meetingTimezone)}</p>
                             </div>
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${plan.meetingLink ? 'border-blue-500/20 bg-blue-500/10 text-blue-300' : 'border-white/10 bg-white/5 text-gray-500'}`}>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${plan.meetingLink ? 'border-blue-500/20 bg-blue-500/10 text-blue-300' : 'border-slate-300 bg-slate-100 text-slate-400'}`}>
                               {plan.meetingLink ? 'Plan link ready' : 'No plan link set'}
                             </span>
                           </div>
@@ -758,9 +758,9 @@ export default function EmployeeCourseManage() {
 
               {/* ─── STUDENTS TAB ───────────────────────────────── */}
               {activeTab === 'students' && (
-                <div className="bg-gray-900/60 border border-white/5 rounded-2xl p-5">
-                  <h3 className="text-sm font-bold text-white mb-4">Enrolled Students ({courseEnrollments.length})</h3>
-                  {courseEnrollments.length === 0 ? <p className="text-sm text-gray-600 italic py-4">No students enrolled yet</p> : (
+                <div className="bg-white/60 border border-slate-200 rounded-2xl p-5">
+                  <h3 className="text-sm font-bold text-slate-900 mb-4">Enrolled Students ({courseEnrollments.length})</h3>
+                  {courseEnrollments.length === 0 ? <p className="text-sm text-slate-500 italic py-4">No students enrolled yet</p> : (
                     <div className="space-y-2">
                       {courseEnrollments.map(enr => {
                         const documents = DOCUMENT_TYPES.map(type => ({
@@ -769,16 +769,16 @@ export default function EmployeeCourseManage() {
                           record: getEnrollmentCertificate(enr, selectedCourse, type.id),
                         }))
                         return (
-                        <div key={enr.id} className="flex flex-col gap-4 p-4 bg-white/[0.02] rounded-xl border border-white/5 lg:flex-row lg:items-center">
-                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
+                        <div key={enr.id} className="flex flex-col gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 lg:flex-row lg:items-center">
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-sm font-bold text-slate-900 flex-shrink-0">
                             {(enr.userName || '?').charAt(0).toUpperCase()}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-white truncate">{enr.userName || '—'}</p>
-                            <p className="text-[10px] text-gray-500">{enr.userEmail} · {enr.planLabel || 'Standard'}</p>
+                            <p className="text-sm font-medium text-slate-900 truncate">{enr.userName || '—'}</p>
+                            <p className="text-[10px] text-slate-400">{enr.userEmail} · {enr.planLabel || 'Standard'}</p>
                             <div className="flex flex-wrap items-center gap-2 mt-2">
                               {documents.map(({ type, meta, record }) => (
-                                <span key={type} className={`px-2 py-0.5 rounded-full border text-[10px] font-bold ${record ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-white/5 border-white/10 text-gray-500'}`}>
+                                <span key={type} className={`px-2 py-0.5 rounded-full border text-[10px] font-bold ${record ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-slate-100 border-slate-300 text-slate-400'}`}>
                                   {record ? `${meta.shortLabel} Issued` : `${meta.shortLabel} Pending`}
                                 </span>
                               ))}
@@ -786,7 +786,7 @@ export default function EmployeeCourseManage() {
                           </div>
                           <div className="text-left lg:text-right flex-shrink-0">
                             <p className="text-xs font-bold text-blue-400">{Number(enr.amount) === 0 ? 'FREE' : `₹${Number(enr.amount).toLocaleString('en-IN')}`}</p>
-                            {enr.userMobile && <p className="text-[10px] text-gray-500">{enr.userMobile}</p>}
+                            {enr.userMobile && <p className="text-[10px] text-slate-400">{enr.userMobile}</p>}
                           </div>
                           <div className="flex flex-wrap items-center gap-2 lg:justify-end">
                             {documents.map(({ type, meta, record }) => {
@@ -829,10 +829,10 @@ export default function EmployeeCourseManage() {
       {showPlanModal && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-10 overflow-y-auto">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowPlanModal(false)} />
-          <div className="relative bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md shadow-2xl mb-10">
-            <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">{editingPlanIdx !== null ? 'Edit Plan' : 'Add Duration Plan'}</h2>
-              <button onClick={() => setShowPlanModal(false)} className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10">
+          <div className="relative bg-white border border-slate-300 rounded-2xl w-full max-w-md shadow-2xl mb-10">
+            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-slate-900">{editingPlanIdx !== null ? 'Edit Plan' : 'Add Duration Plan'}</h2>
+              <button onClick={() => setShowPlanModal(false)} className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-200">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -855,10 +855,10 @@ export default function EmployeeCourseManage() {
                 </div>
                 <div className="flex items-center gap-2 mt-5">
                   <button type="button" onClick={() => setPlanForm({...planForm, isFree: !planForm.isFree})}
-                    className={`w-10 h-5 rounded-full relative transition-all ${planForm.isFree ? 'bg-emerald-500' : 'bg-gray-700'}`}>
+                    className={`w-10 h-5 rounded-full relative transition-all ${planForm.isFree ? 'bg-emerald-500' : 'bg-slate-200'}`}>
                     <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${planForm.isFree ? 'left-5' : 'left-0.5'}`} />
                   </button>
-                  <span className="text-sm text-gray-400">Free</span>
+                  <span className="text-sm text-slate-500">Free</span>
                 </div>
               </div>
               {/* Features */}
@@ -877,7 +877,7 @@ export default function EmployeeCourseManage() {
                     placeholder="https://meet.google.com/... or Zoom link"
                     className="input"
                   />
-                  <p className="text-[10px] text-gray-500 mt-1">Students on this plan will join this link directly from their student panel.</p>
+                  <p className="text-[10px] text-slate-400 mt-1">Students on this plan will join this link directly from their student panel.</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-[1.6fr,1fr] gap-3">
                   <div>
@@ -888,7 +888,7 @@ export default function EmployeeCourseManage() {
                       onChange={e => setPlanForm({ ...planForm, meetingDateTime: e.target.value })}
                       className="input"
                     />
-                    <p className="text-[10px] text-gray-500 mt-1">Reminder mail goes 60 minutes before, and another mail goes when the meeting starts.</p>
+                    <p className="text-[10px] text-slate-400 mt-1">Reminder mail goes 60 minutes before, and another mail goes when the meeting starts.</p>
                   </div>
                   <div>
                     <label className="label">Timezone</label>
@@ -908,25 +908,25 @@ export default function EmployeeCourseManage() {
                     onChange={e => setPlanForm({ ...planForm, enrollmentDeadline: e.target.value })}
                     className="input"
                   />
-                  <p className="text-[10px] text-gray-500 mt-1">Leave empty to use course deadline. Enrollment for this plan will close after this date.</p>
+                  <p className="text-[10px] text-slate-400 mt-1">Leave empty to use course deadline. Enrollment for this plan will close after this date.</p>
                 </div>
               </div>
               {/* Highlighted */}
-              <div className="flex items-center justify-between p-3 bg-white/[0.02] rounded-xl border border-white/5">
+              <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
                 <div>
-                  <p className="text-sm font-semibold text-white">Mark as "Most Popular"</p>
-                  <p className="text-[10px] text-gray-500">Shows a highlighted badge on this plan</p>
+                  <p className="text-sm font-semibold text-slate-900">Mark as "Most Popular"</p>
+                  <p className="text-[10px] text-slate-400">Shows a highlighted badge on this plan</p>
                 </div>
                 <button type="button" onClick={() => setPlanForm({...planForm, highlighted: !planForm.highlighted})}
-                  className={`w-11 h-6 rounded-full relative transition-all ${planForm.highlighted ? 'bg-amber-500' : 'bg-gray-700'}`}>
+                  className={`w-11 h-6 rounded-full relative transition-all ${planForm.highlighted ? 'bg-amber-500' : 'bg-slate-200'}`}>
                   <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${planForm.highlighted ? 'left-6' : 'left-1'}`} />
                 </button>
               </div>
               {/* Actions */}
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowPlanModal(false)} className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-gray-400 hover:bg-white/10 transition-all">Cancel</button>
+                <button type="button" onClick={() => setShowPlanModal(false)} className="flex-1 px-4 py-3 bg-slate-100 border border-slate-300 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-200 transition-all">Cancel</button>
                 <button onClick={savePlan} disabled={saving || !planForm.label || !planForm.duration}
-                  className="flex-[2] px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-sm font-bold text-white hover:shadow-lg disabled:opacity-50 transition-all">
+                  className="flex-[2] px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-sm font-bold text-slate-900 hover:shadow-lg disabled:opacity-50 transition-all">
                   {saving ? 'Saving...' : editingPlanIdx !== null ? 'Update Plan' : 'Add Plan'}
                 </button>
               </div>
@@ -938,13 +938,13 @@ export default function EmployeeCourseManage() {
       {showCourseModal && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-10 overflow-y-auto">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={closeCreateCourse} />
-          <div className="relative mb-10 w-full max-w-2xl rounded-2xl border border-white/10 bg-gray-900 shadow-2xl">
-            <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-2xl border-b border-white/5 bg-gray-900 px-6 py-4">
+          <div className="relative mb-10 w-full max-w-2xl rounded-2xl border border-slate-300 bg-white shadow-2xl">
+            <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-2xl border-b border-slate-200 bg-white px-6 py-4">
               <div>
-                <h2 className="text-lg font-bold text-white">Create New Course</h2>
-                <p className="mt-1 text-xs text-gray-500">This course will be assigned to your employee account automatically.</p>
+                <h2 className="text-lg font-bold text-slate-900">Create New Course</h2>
+                <p className="mt-1 text-xs text-slate-400">This course will be assigned to your employee account automatically.</p>
               </div>
-              <button onClick={closeCreateCourse} className="rounded-lg p-1.5 text-gray-400 hover:bg-white/10 hover:text-white">
+              <button onClick={closeCreateCourse} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-200 hover:text-slate-900">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -1011,7 +1011,7 @@ export default function EmployeeCourseManage() {
                     onChange={event => setCourseForm({ ...courseForm, enrollmentDeadline: event.target.value })}
                     className="input"
                   />
-                  <p className="mt-1 text-[11px] text-gray-500">Leave this empty if students should be able to enroll at any time.</p>
+                  <p className="mt-1 text-[11px] text-slate-400">Leave this empty if students should be able to enroll at any time.</p>
                 </div>
               </div>
 
@@ -1034,41 +1034,41 @@ export default function EmployeeCourseManage() {
                   placeholder="https://example.com/course-image.jpg"
                   className="input"
                 />
-                <p className="mt-1 text-[11px] text-gray-500">Optional. This image can be used later on course cards and listing pages.</p>
+                <p className="mt-1 text-[11px] text-slate-400">Optional. This image can be used later on course cards and listing pages.</p>
               </div>
 
-              <div className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] p-4">
+              <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white/[0.03] p-4">
                 <div>
-                  <p className="text-sm font-semibold text-white">Available Soon</p>
-                  <p className="mt-1 text-[11px] text-gray-500">Mark this as an upcoming program so admin can publish it with a public coming soon state.</p>
+                  <p className="text-sm font-semibold text-slate-900">Available Soon</p>
+                  <p className="mt-1 text-[11px] text-slate-400">Mark this as an upcoming program so admin can publish it with a public coming soon state.</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setCourseForm({ ...courseForm, availableSoon: !courseForm.availableSoon })}
-                  className={`relative h-6 w-11 rounded-full transition-all ${courseForm.availableSoon ? 'bg-fuchsia-500' : 'bg-gray-700'}`}
+                  className={`relative h-6 w-11 rounded-full transition-all ${courseForm.availableSoon ? 'bg-fuchsia-500' : 'bg-slate-200'}`}
                 >
                   <div className={`absolute top-1 h-4 w-4 rounded-full bg-white transition-all ${courseForm.availableSoon ? 'left-6' : 'left-1'}`} />
                 </button>
               </div>
 
-              <div className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
-                <p className="text-sm font-semibold text-white">Assigned Instructor</p>
-                <p className="mt-1 text-sm text-gray-400">{displayName}</p>
-                <p className="mt-1 text-[11px] text-gray-500">Employee ID: {employeeId || 'Not set'}</p>
+              <div className="rounded-xl border border-slate-200 bg-white/[0.03] p-4">
+                <p className="text-sm font-semibold text-slate-900">Assigned Instructor</p>
+                <p className="mt-1 text-sm text-slate-500">{displayName}</p>
+                <p className="mt-1 text-[11px] text-slate-400">Employee ID: {employeeId || 'Not set'}</p>
               </div>
 
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
                   onClick={closeCreateCourse}
-                  className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-bold text-gray-400 transition-all hover:bg-white/10"
+                  className="flex-1 rounded-xl border border-slate-300 bg-slate-100 px-4 py-3 text-sm font-bold text-slate-500 transition-all hover:bg-slate-200"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={courseSaving || !courseForm.title.trim() || !courseForm.category}
-                  className="flex-[2] rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-sm font-bold text-white transition-all hover:shadow-lg disabled:opacity-50"
+                  className="flex-[2] rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-sm font-bold text-slate-900 transition-all hover:shadow-lg disabled:opacity-50"
                 >
                   {courseSaving ? 'Creating...' : 'Create Course'}
                 </button>

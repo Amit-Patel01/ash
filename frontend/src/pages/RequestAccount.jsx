@@ -412,7 +412,7 @@ export default function RequestAccount() {
                     </button>
 
                     <div className="border-t border-slate-200 pt-5 text-center dark:border-white/10">
-                      <Link to="/employee-login" className="inline-flex items-center justify-center gap-2 text-sm font-bold text-slate-500 transition hover:text-blue-700 dark:text-slate-400 dark:hover:text-white">
+                      <Link to="/login" className="inline-flex items-center justify-center gap-2 text-sm font-bold text-slate-500 transition hover:text-blue-700 dark:text-slate-400 dark:hover:text-white">
                         <ArrowLeft className="h-4 w-4" />
                         Already have an account? Sign in
                       </Link>

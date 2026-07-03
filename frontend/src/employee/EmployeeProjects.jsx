@@ -47,7 +47,7 @@ function ProjectCard({ project, index }) {
           className="flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
           style={{ background: `linear-gradient(135deg, ${g.from}, ${g.to})`, boxShadow: `0 4px 16px ${g.glow}` }}
         >
-          <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+          <svg className="w-6 h-6 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
           </svg>
         </div>
@@ -69,7 +69,7 @@ function ProjectCard({ project, index }) {
       </div>
 
       {/* Project name */}
-      <h3 className="text-lg font-black text-white leading-tight mb-1 group-hover:text-blue-300 transition-colors">
+      <h3 className="text-lg font-black text-slate-900 leading-tight mb-1 group-hover:text-blue-300 transition-colors">
         {project.name}
       </h3>
       <p className="text-[12px] text-slate-600 mb-6">Enterprise delivery · #{index + 101}</p>
@@ -79,11 +79,11 @@ function ProjectCard({ project, index }) {
         <div className="flex items-end justify-between">
           <div>
             <p className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-600 mb-1">Completion</p>
-            <p className="text-3xl font-black text-white">{project.progress}<span className="text-lg text-slate-500">%</span></p>
+            <p className="text-3xl font-black text-slate-900">{project.progress}<span className="text-lg text-slate-500">%</span></p>
           </div>
           <div className="text-right">
             <p className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-600 mb-1">Tasks</p>
-            <p className="text-lg font-black text-white">{project.completedTasks}<span className="text-sm text-slate-600">/{project.totalTasks}</span></p>
+            <p className="text-lg font-black text-slate-900">{project.completedTasks}<span className="text-sm text-slate-600">/{project.totalTasks}</span></p>
           </div>
         </div>
 
@@ -108,7 +108,7 @@ function ProjectCard({ project, index }) {
               TM
             </div>
           ))}
-          <div className="h-7 w-7 rounded-full border-2 flex items-center justify-center text-[8px] font-black text-white" style={{ borderColor: '#020617', background: `linear-gradient(135deg, ${g.from}, ${g.to})` }}>
+          <div className="h-7 w-7 rounded-full border-2 flex items-center justify-center text-[8px] font-black text-slate-900" style={{ borderColor: '#020617', background: `linear-gradient(135deg, ${g.from}, ${g.to})` }}>
             +2
           </div>
         </div>
@@ -166,7 +166,7 @@ export default function EmployeeProjects() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight">Active Projects</h1>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Active Projects</h1>
           <p className="text-[13px] text-slate-500 mt-0.5">Direct oversight of your technical contributions</p>
         </div>
 

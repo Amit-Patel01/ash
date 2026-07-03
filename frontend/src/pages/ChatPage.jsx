@@ -66,7 +66,7 @@ export default function ChatPage() {
             <h1 className="text-3xl font-bold text-gray-800 mb-4">Live Chat Support</h1>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">Sign in to start chatting with our support team in real-time. Send messages, share images, and get instant help.</p>
             <button
-              onClick={() => navigate('/employee-login')}
+              onClick={() => navigate('/login')}
               className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg shadow-blue-500/20"
             >
               Sign In to Chat
