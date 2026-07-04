@@ -93,20 +93,24 @@ export default function GuidanceModal() {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: 'spring', duration: 0.5 }}
-            className="relative z-10 w-full max-w-[480px] rounded-[32px] border border-slate-100 bg-white p-6 sm:p-8 shadow-[0_32px_80px_-20px_rgba(15,23,42,0.18)]"
+            className="relative z-10 w-full max-w-[480px] rounded-[32px] border border-slate-100 bg-white p-6 sm:p-8 shadow-[0_32px_80px_-20px_rgba(79,70,229,0.22)] overflow-hidden"
           >
+            {/* Decorative color wash top corner */}
+            <div className="pointer-events-none absolute -top-24 -right-24 w-56 h-56 rounded-full bg-gradient-to-br from-indigo-400/15 via-purple-400/10 to-transparent blur-2xl" />
+            <div className="pointer-events-none absolute -bottom-20 -left-16 w-48 h-48 rounded-full bg-gradient-to-tr from-amber-300/10 to-transparent blur-2xl" />
+
             {/* Close Button */}
             <button
               onClick={() => setIsOpen(false)}
-              className="absolute right-5 top-5 p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-50 active:scale-95 transition-all"
+              className="absolute right-5 top-5 z-10 p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 active:scale-95 transition-all"
               aria-label="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
 
             {success ? (
-              <div className="py-12 text-center">
-                <div className="w-16 h-16 bg-emerald-500/10 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-5">
+              <div className="relative py-12 text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-emerald-500 text-white rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg shadow-emerald-500/30">
                   <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
@@ -115,11 +119,17 @@ export default function GuidanceModal() {
                 <p className="text-slate-550 text-sm mt-2 font-medium">Our team will connect with you shortly.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="relative space-y-5">
                 {/* Header */}
                 <div className="text-center pb-2">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-indigo-600 bg-indigo-500/10 mb-3">
+                    Free Guidance
+                  </div>
                   <h2 className="text-[22px] font-black text-slate-900 leading-tight tracking-tight">
-                    Share your details for <span className="text-[#00b0ff] underline decoration-2 underline-offset-4">personalized guidance</span>.
+                    Share your details for{' '}
+                    <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                      personalized guidance
+                    </span>.
                   </h2>
                   <p className="text-slate-500 text-xs sm:text-[13px] leading-relaxed font-semibold mt-2.5">
                     Our team will connect with you to suggest the most relevant program / track.
@@ -136,14 +146,16 @@ export default function GuidanceModal() {
                 <div className="space-y-1.5">
                   <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Full Name</label>
                   <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
+                    <div className="absolute left-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                      <User className="w-4 h-4 text-indigo-500" />
+                    </div>
                     <input
                       type="text"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="Enter your full name"
                       required
-                      className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-800 placeholder-slate-400 text-sm outline-none focus:bg-white focus:border-[#00b0ff] focus:ring-4 focus:ring-sky-100 transition-all font-medium"
+                      className="w-full pl-14 pr-4 py-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-800 placeholder-slate-400 text-sm outline-none focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 transition-all font-medium"
                     />
                   </div>
                 </div>
@@ -156,7 +168,9 @@ export default function GuidanceModal() {
                       +91
                     </div>
                     <div className="relative flex-1">
-                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
+                      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                        <Phone className="w-4 h-4 text-emerald-500" />
+                      </div>
                       <input
                         type="tel"
                         maxLength={10}
@@ -164,7 +178,7 @@ export default function GuidanceModal() {
                         onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                         placeholder="10 digit mobile number"
                         required
-                        className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-800 placeholder-slate-400 text-sm outline-none focus:bg-white focus:border-[#00b0ff] focus:ring-4 focus:ring-sky-100 transition-all font-medium"
+                        className="w-full pl-14 pr-4 py-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-800 placeholder-slate-400 text-sm outline-none focus:bg-white focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 transition-all font-medium"
                       />
                     </div>
                   </div>
@@ -174,14 +188,16 @@ export default function GuidanceModal() {
                 <div className="space-y-1.5">
                   <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">College Name</label>
                   <div className="relative">
-                    <School className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
+                    <div className="absolute left-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                      <School className="w-4 h-4 text-amber-500" />
+                    </div>
                     <input
                       type="text"
                       value={college}
                       onChange={(e) => setCollege(e.target.value)}
                       placeholder="Example: XYZ Institute of Technology"
                       required
-                      className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-800 placeholder-slate-400 text-sm outline-none focus:bg-white focus:border-[#00b0ff] focus:ring-4 focus:ring-sky-100 transition-all font-medium"
+                      className="w-full pl-14 pr-4 py-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-800 placeholder-slate-400 text-sm outline-none focus:bg-white focus:border-amber-400 focus:ring-4 focus:ring-amber-100 transition-all font-medium"
                     />
                   </div>
                 </div>
@@ -192,14 +208,16 @@ export default function GuidanceModal() {
                   <div className="space-y-1.5">
                     <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Email</label>
                     <div className="relative">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
+                      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-lg bg-rose-500/10 flex items-center justify-center">
+                        <Mail className="w-4 h-4 text-rose-500" />
+                      </div>
                       <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
                         required
-                        className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-800 placeholder-slate-400 text-sm outline-none focus:bg-white focus:border-[#00b0ff] focus:ring-4 focus:ring-sky-100 transition-all font-medium"
+                        className="w-full pl-14 pr-4 py-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-800 placeholder-slate-400 text-sm outline-none focus:bg-white focus:border-rose-400 focus:ring-4 focus:ring-rose-100 transition-all font-medium"
                       />
                     </div>
                   </div>
@@ -208,12 +226,14 @@ export default function GuidanceModal() {
                   <div className="space-y-1.5">
                     <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">Department</label>
                     <div className="relative">
-                      <GraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
+                      <div className="absolute left-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-lg bg-purple-500/10 flex items-center justify-center z-10">
+                        <GraduationCap className="w-4 h-4 text-purple-500" />
+                      </div>
                       <select
                         value={department}
                         onChange={(e) => setDepartment(e.target.value)}
                         required
-                        className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-800 text-sm outline-none focus:bg-white focus:border-[#00b0ff] focus:ring-4 focus:ring-sky-100 transition-all font-medium appearance-none"
+                        className="w-full pl-14 pr-4 py-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl text-slate-800 text-sm outline-none focus:bg-white focus:border-purple-400 focus:ring-4 focus:ring-purple-100 transition-all font-medium appearance-none"
                       >
                         <option value="" disabled>Choose</option>
                         <option value="Computer Science">Computer Science</option>
@@ -237,7 +257,7 @@ export default function GuidanceModal() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 rounded-2xl bg-[#00b0ff] hover:bg-[#0091ea] text-white font-bold text-sm tracking-wide shadow-[0_12px_32px_-8px_rgba(0,176,255,0.4)] hover:shadow-[0_16px_40px_-8px_rgba(0,176,255,0.5)] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2"
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-[length:200%_auto] hover:bg-right text-white font-bold text-sm tracking-wide shadow-[0_12px_32px_-8px_rgba(99,102,241,0.45)] hover:shadow-[0_16px_40px_-8px_rgba(147,51,234,0.5)] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>
