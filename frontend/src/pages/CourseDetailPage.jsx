@@ -213,6 +213,15 @@ const resolveInstructorProfile = (course, users = [], teamMembers = []) => {
   return { instructor, publicProfileId }
 }
 
+/* ── Shared, purely presentational className helpers (no behavior) ── */
+const sectionHeading = (isDark) => `text-3xl md:text-5xl font-extrabold mb-4 tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`
+const gradientText = 'text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-indigo-400 dark:to-blue-400'
+const checkIcon = (cls) => (
+  <svg className={cls} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+)
+
 export default function CourseDetailPage() {
   const { slug } = useParams()
   const navigate = useNavigate()
@@ -268,7 +277,7 @@ export default function CourseDetailPage() {
     (enrollment.courseTitle && enrollment.courseTitle === course.title)
   const enrolled = currentUser ? isUserEnrolled(currentUser.uid, course.id) : false
   const enrolledCount = enrollments.filter(e => e.status === 'active' && matchesCourseEnrollment(e)).length
-  const availableSoon = course.availableSoon === true
+  const availableSoon = course.availableSoon === true || !course.plans || course.plans.length === 0
   const enrollmentClosed = isEnrollmentClosed(course)
   const enrollmentDeadlineText = formatEnrollmentDeadline(course.enrollmentDeadline)
   const actionLabel = learningType === 'webinar' ? 'Registration' : 'Enrollment'
@@ -312,14 +321,14 @@ export default function CourseDetailPage() {
       {canManage && (
         <div className={`sticky top-0 z-40 backdrop-blur-md border-b pt-20 ${isDark ? 'bg-slate-950/90 border-slate-900' : 'bg-white/90 border-slate-100'}`}>
           <div className="max-w-6xl mx-auto px-4 flex justify-center pb-3">
-            <div className={`inline-flex items-center gap-1 p-1.5 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100/50 border-slate-100'}`}>
+            <div className={`inline-flex items-center gap-1 p-1.5 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100/60 border-slate-200/70'}`}>
               {[
                 { id: 'overview', label: '📖 Overview' },
                 { id: 'enrollments', label: '👥 Enrollments' },
                 ...(isAdmin ? [{ id: 'settings', label: '⚙️ Settings' }] : []),
               ].map(tab => (
                 <button key={tab.id} onClick={() => setActiveSection(tab.id)}
-                  className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${activeSection === tab.id ? 'bg-blue-600 text-white shadow-lg' : isDark ? 'text-slate-400 hover:text-blue-400' : 'text-slate-500 hover:text-blue-600'}`}>
+                  className={`px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 ${activeSection === tab.id ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25' : isDark ? 'text-slate-400 hover:text-blue-400' : 'text-slate-500 hover:text-blue-600'}`}>
                   {tab.label}
                 </button>
               ))}
@@ -340,13 +349,13 @@ export default function CourseDetailPage() {
                 <thead className="bg-slate-50 border-b border-slate-100">
                   <tr>
                     {['Student','Email','Mobile','Plan','Amount','Status','Date'].map(h => (
-                      <th key={h} className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase">{h}</th>
+                      <th key={h} className="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
                   {enrollments.filter(matchesCourseEnrollment).map(enr => (
-                    <tr key={enr.id} className="hover:bg-slate-50">
+                    <tr key={enr.id} className="hover:bg-slate-50/80 transition-colors">
                       <td className="px-4 py-3 text-sm font-medium">{enr.userName || '—'}</td>
                       <td className="px-4 py-3 text-sm text-slate-500">{enr.userEmail}</td>
                       <td className="px-4 py-3 text-sm text-slate-500">{enr.userMobile || '—'}</td>
@@ -355,7 +364,7 @@ export default function CourseDetailPage() {
                         {Number(enr.amount) === 0 ? 'FREE' : `₹${Number(enr.amount).toLocaleString('en-IN')}`}
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${enr.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${enr.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
                           {enr.status}
                         </span>
                       </td>
@@ -407,10 +416,10 @@ export default function CourseDetailPage() {
                 )}
               </div>
 
-              <h1 className={`text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              <h1 className={`text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mb-5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                 {course.title.split(' ').map((word, i, arr) =>
                   i >= Math.floor(arr.length * 0.6)
-                    ? <span key={i} className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-indigo-400 dark:to-blue-400"> {word}</span>
+                    ? <span key={i} className={gradientText}> {word}</span>
                     : <span key={i}> {word}</span>
                 )}
               </h1>
@@ -420,11 +429,11 @@ export default function CourseDetailPage() {
               )}
 
               {/* Meta badges */}
-              <div className="flex flex-wrap items-center justify-center gap-4 mb-8 text-sm text-slate-500">
+              <div className="flex flex-wrap items-center justify-center gap-3 mb-8 text-sm text-slate-500">
                 {course.level && <span className={`px-3 py-1 rounded-full font-bold text-xs ${LEVEL_COLORS[course.level] || 'bg-slate-100 text-slate-600'}`}>{course.level}</span>}
-                {course.duration && <span>⏱ {course.duration}</span>}
-                {enrolledCount > 0 && <span>👥 {enrolledCount} Enrolled</span>}
-                {instructorName && <span>👨‍🏫 {instructorName}</span>}
+                {course.duration && <span className="inline-flex items-center gap-1.5">⏱ {course.duration}</span>}
+                {enrolledCount > 0 && <span className="inline-flex items-center gap-1.5">👥 {enrolledCount} Enrolled</span>}
+                {instructorName && <span className="inline-flex items-center gap-1.5">👨‍🏫 {instructorName}</span>}
                 {deadlineSummary && (
                   <span className={`rounded-full px-3 py-1 text-xs font-bold ${availableSoon ? 'bg-fuchsia-100 text-fuchsia-700' : enrollmentClosed ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}`}>
                     {deadlineSummary}
@@ -452,7 +461,7 @@ export default function CourseDetailPage() {
                   </button>
                 ) : (
                   <a href="#pricing"
-                    className="group inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg shadow-xl bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 transition-all duration-300">
+                    className="group inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg shadow-xl shadow-blue-600/20 bg-blue-600 text-white hover:bg-blue-700 hover:shadow-2xl hover:shadow-blue-600/30 hover:scale-105 transition-all duration-300">
                     {primaryCtaLabel}
                     <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -460,7 +469,7 @@ export default function CourseDetailPage() {
                   </a>
                 )}
                 {features.length > 0 && (
-                  <a href="#features" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg border-2 border-slate-200 text-slate-700 hover:bg-slate-50 transition-all">
+                  <a href="#features" className={`inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg border-2 transition-all ${isDark ? 'border-slate-800 text-slate-200 hover:bg-slate-900' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
                     View Curriculum
                   </a>
                 )}
@@ -496,16 +505,14 @@ export default function CourseDetailPage() {
             <section id="features" ref={featRef} className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-900/30' : 'bg-slate-50/50'}`}>
               <div className={`max-w-6xl mx-auto ${fade(featVisible)}`}>
                 <div className="text-center mb-14">
-                  <h2 className={`text-3xl md:text-5xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-slate-905'}`}>What You'll <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-indigo-400 dark:to-blue-400">Get</span></h2>
+                  <h2 className={sectionHeading(isDark)}>What You'll <span className={gradientText}>Get</span></h2>
                   <p className="text-slate-500 max-w-xl mx-auto">Everything included in this {learningType}</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {features.map((feat, i) => (
-                    <div key={i} className={`flex items-start gap-4 p-5 rounded-2xl border shadow-sm hover:shadow-md transition-all group ${isDark ? 'bg-slate-900/50 border-slate-800 hover:border-indigo-500/20' : 'bg-white border-slate-100 hover:border-blue-100'}`}>
+                    <div key={i} className={`flex items-start gap-4 p-5 rounded-2xl border shadow-sm hover:shadow-md transition-all duration-300 group ${isDark ? 'bg-slate-900/50 border-slate-800 hover:border-indigo-500/20' : 'bg-white border-slate-100 hover:border-blue-100'}`}>
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${isDark ? 'bg-indigo-950/40 group-hover:bg-indigo-900/40' : 'bg-blue-50 group-hover:bg-blue-100'}`}>
-                        <svg className="w-5 h-5 text-blue-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                        {checkIcon('w-5 h-5 text-blue-600 dark:text-indigo-400')}
                       </div>
                       <p className={`font-medium leading-snug pt-1 ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>{feat}</p>
                     </div>
@@ -520,18 +527,18 @@ export default function CourseDetailPage() {
             <section id="curriculum" className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-14">
-                  <h2 className={`text-3xl md:text-5xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-slate-905'}`}>{itemLabel} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-indigo-400 dark:to-blue-400">Curriculum</span></h2>
+                  <h2 className={sectionHeading(isDark)}>{itemLabel} <span className={gradientText}>Curriculum</span></h2>
                   <p className="text-slate-500 max-w-xl mx-auto">A comprehensive, structured learning path</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {curriculum.map((mod, i) => (
                     <div key={i} className={`relative p-6 rounded-3xl border shadow-sm hover:shadow-xl transition-all duration-300 group overflow-hidden ${isDark ? 'border-slate-800/80 bg-slate-900/40 hover:border-indigo-500/30' : 'border-slate-100 bg-white hover:border-blue-200'}`}>
-                      <div className={`absolute top-0 right-0 px-3 py-1 text-[10px] font-black rounded-bl-xl ${isDark ? 'bg-slate-800 text-indigo-300' : 'bg-blue-50 text-blue-600'}`}>MODULE {i + 1}</div>
+                      <div className={`absolute top-0 right-0 px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-bl-xl ${isDark ? 'bg-slate-800 text-indigo-300' : 'bg-blue-50 text-blue-600'}`}>Module {i + 1}</div>
                       <div className={`w-10 h-10 rounded-2xl flex items-center justify-center mb-3 transition-colors ${isDark ? 'bg-slate-800/60 group-hover:bg-indigo-950/60' : 'bg-slate-50 group-hover:bg-blue-50'}`}>
                         <span className="text-blue-600 dark:text-indigo-400 font-black text-sm">#{(i + 1).toString().padStart(2, '0')}</span>
                       </div>
                       <h4 className={`font-bold text-lg mb-1 group-hover:text-blue-600 dark:group-hover:text-indigo-400 transition-colors ${isDark ? 'text-white' : 'text-slate-900'}`}>{mod.title || mod}</h4>
-                      {mod.description && <p className="text-sm text-slate-400">{mod.description}</p>}
+                      {mod.description && <p className="text-sm text-slate-400 leading-relaxed">{mod.description}</p>}
                     </div>
                   ))}
                 </div>
@@ -545,8 +552,8 @@ export default function CourseDetailPage() {
           <section id="pricing" ref={planRef} className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
             <div className={`max-w-6xl mx-auto ${fade(planVisible)}`}>
               <div className="text-center mb-14">
-                <h2 className={`text-3xl md:text-5xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-slate-905'}`}>
-                  Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-indigo-400 dark:to-blue-400">Plan</span>
+                <h2 className={sectionHeading(isDark)}>
+                  Choose Your <span className={gradientText}>Plan</span>
                 </h2>
                 <p className="text-slate-500 max-w-xl mx-auto">
                   {enrollmentClosed && !enrolled
@@ -597,7 +604,7 @@ export default function CourseDetailPage() {
                             : 'border-slate-200 bg-white hover:border-blue-200 hover:shadow-xl'
                       }`}>
                       {plan.highlighted && (
-                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 bg-gradient-to-r from-amber-400 to-orange-400 text-white text-xs font-black rounded-full shadow-lg uppercase tracking-wider">
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 bg-gradient-to-r from-amber-400 to-orange-400 text-white text-xs font-black rounded-full shadow-lg shadow-amber-500/30 uppercase tracking-wider">
                           ★ Most Popular
                         </div>
                       )}
@@ -608,25 +615,19 @@ export default function CourseDetailPage() {
                           Enrollment closes: {formatEnrollmentDeadline(plan.enrollmentDeadline)}
                         </p>
                       )}
-                      <div className="mb-6">
-                        {plan.price === 0 || plan.isFree ? (
-                          <span className={`text-4xl font-black ${plan.highlighted ? 'text-white' : 'text-emerald-600'}`}>FREE</span>
-                        ) : (
-                          <>
-                            <span className={`text-4xl font-black ${plan.highlighted ? 'text-white' : isDark ? 'text-white' : 'text-slate-900'}`}>
-                              ₹{Number(plan.price).toLocaleString('en-IN')}
-                            </span>
-                            <span className={`text-sm ml-1 ${plan.highlighted ? 'text-blue-200' : 'text-slate-400'}`}>/{plan.duration}</span>
-                          </>
-                        )}
-                      </div>
+                      {!(plan.price === 0 || plan.isFree) && (
+                        <div className="mb-6">
+                          <span className={`text-4xl font-black ${plan.highlighted ? 'text-white' : isDark ? 'text-white' : 'text-slate-900'}`}>
+                            ₹{Number(plan.price).toLocaleString('en-IN')}
+                          </span>
+                          <span className={`text-sm ml-1 ${plan.highlighted ? 'text-blue-200' : 'text-slate-400'}`}>/{plan.duration}</span>
+                        </div>
+                      )}
                       {Array.isArray(plan.features) && plan.features.length > 0 && (
                         <ul className="space-y-3 mb-7">
                           {plan.features.map((f, fi) => (
                             <li key={fi} className="flex items-start gap-2 text-sm">
-                              <svg className={`w-4 h-4 flex-shrink-0 mt-0.5 ${plan.highlighted ? 'text-blue-300' : 'text-blue-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
+                              {checkIcon(`w-4 h-4 flex-shrink-0 mt-0.5 ${plan.highlighted ? 'text-blue-300' : 'text-blue-500'}`)}
                               <span className={plan.highlighted ? 'text-blue-100' : isDark ? 'text-slate-300' : 'text-slate-600'}>{f}</span>
                             </li>
                           ))}
@@ -639,13 +640,13 @@ export default function CourseDetailPage() {
                           if (disablePlanAction) return
                           setSelectedPlan({ ...course, ...plan, courseId: course.id, courseTitle: course.title, planLabel: plan.label, planId: plan.id || i, assignedEmployeeId: course.assignedEmployeeId || '' })
                         }}
-                        className={`w-full py-3.5 rounded-2xl font-bold text-sm transition-all ${
+                        className={`w-full py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 ${
                           disablePlanAction
                             ? 'cursor-not-allowed bg-slate-200 text-slate-500'
                             : plan.highlighted
                               ? 'bg-white text-blue-700 hover:bg-blue-50 hover:scale-105 shadow-lg'
                               : isDark
-                                ? 'bg-indigo-650 hover:bg-indigo-600 text-white hover:scale-105 shadow-md shadow-indigo-500/10'
+                                ? 'bg-indigo-600 hover:bg-indigo-500 text-white hover:scale-105 shadow-md shadow-indigo-500/20'
                                 : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 shadow-md shadow-blue-500/20'
                         }`}>
                         {planButtonLabel}
@@ -659,20 +660,16 @@ export default function CourseDetailPage() {
                   <div className="rounded-3xl border-2 border-blue-500 p-8 text-center bg-gradient-to-b from-blue-600 to-indigo-700 text-white shadow-2xl shadow-blue-500/30">
                     <h3 className="text-xl font-black mb-2">Full Access</h3>
                     {course.duration && <p className="text-blue-200 mb-5">{course.duration}</p>}
-                    <div className="mb-6">
-                      {course.isFree || course.price === 0 ? (
-                        <span className="text-5xl font-black">FREE</span>
-                      ) : (
+                    {!(course.isFree || !course.price || Number(course.price) === 0) && (
+                      <div className="mb-6">
                         <span className="text-5xl font-black">₹{Number(course.price || 0).toLocaleString('en-IN')}</span>
-                      )}
-                    </div>
+                      </div>
+                    )}
                     {features.length > 0 && (
                       <ul className="space-y-2 mb-7 text-left">
                         {features.map((f, i) => (
                           <li key={i} className="flex items-center gap-2 text-sm text-blue-100">
-                            <svg className="w-4 h-4 text-blue-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            {checkIcon('w-4 h-4 text-blue-300 flex-shrink-0')}
                             {f}
                           </li>
                         ))}
@@ -685,7 +682,7 @@ export default function CourseDetailPage() {
                         if (enrollmentLocked || (enrollmentClosed && !enrolled)) return
                         setSelectedPlan(course)
                       }}
-                      className={`w-full py-4 font-bold rounded-2xl transition-all shadow-lg text-lg ${
+                      className={`w-full py-4 font-bold rounded-2xl transition-all duration-300 shadow-lg text-lg ${
                         enrollmentLocked || (enrollmentClosed && !enrolled)
                           ? 'cursor-not-allowed bg-slate-200 text-slate-500'
                           : 'bg-white text-blue-700 hover:bg-blue-50 hover:scale-105'
@@ -702,11 +699,11 @@ export default function CourseDetailPage() {
           <section className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-900/30' : 'bg-slate-50'}`}>
             <div className="max-w-3xl mx-auto">
               <div className="text-center mb-14">
-                <h2 className={`text-3xl md:text-5xl font-extrabold mb-4 ${isDark ? 'text-white' : 'text-slate-905'}`}>Frequently Asked <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-indigo-400 dark:to-blue-400">Questions</span></h2>
+                <h2 className={sectionHeading(isDark)}>Frequently Asked <span className={gradientText}>Questions</span></h2>
               </div>
               <div className="space-y-3">
                 {faq.map((item, i) => (
-                  <div key={i} className={`rounded-2xl border overflow-hidden transition-all ${isDark ? 'border-slate-805 bg-slate-900/50' : 'border-slate-200 bg-white'}`}>
+                  <div key={i} className={`rounded-2xl border overflow-hidden transition-colors duration-200 ${isDark ? 'border-slate-800 bg-slate-900/50' : 'border-slate-200 bg-white'}`}>
                     <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
                       className="w-full flex items-center justify-between p-5 text-left outline-none">
                       <span className={`font-semibold pr-4 ${isDark ? 'text-slate-200' : 'text-slate-900'}`}>{item.q}</span>
@@ -723,9 +720,10 @@ export default function CourseDetailPage() {
 
           {/* FINAL CTA */}
           <section className="relative py-24 px-4 overflow-hidden" style={{ background: `linear-gradient(135deg, #1d4ed8, #4f46e5)` }}>
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.05),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.08),transparent_60%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(255,255,255,0.05),transparent_55%)]" />
             <div className="relative z-10 max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl md:text-5xl font-extrabold mb-6 text-white">
+              <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-6 text-white">
                 Ready to Build Your Next Skill?
               </h2>
               <p className="text-blue-100 text-lg max-w-xl mx-auto mb-10">

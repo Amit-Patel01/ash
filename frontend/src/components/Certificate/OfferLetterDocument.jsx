@@ -15,7 +15,7 @@ const GOLD  = '#b8912a'
 const LIGHT = '#FFFEF8'
 
 export default function OfferLetterDocument({ certificate, template, className = '' }) {
-  /* ── Data ── */
+  /* ── Data (unchanged) ── */
   const holderName   = getCertificateHolderName(certificate)
   const certId       = certificate?.certificate_id || 'PENDING-ID'
   const issueDate    = formatCertificateDate(certificate?.approval_date || certificate?.createdAt || certificate?.date)
@@ -26,7 +26,7 @@ export default function OfferLetterDocument({ certificate, template, className =
   const domain       = certificate?.customTitle    || certificate?.courseName   || 'Web Development'
   const duration     = certificate?.duration       || '1 month'
 
-  /* Body paragraphs */
+  /* Body paragraphs (unchanged) */
   const bodyParas = certificate?.certificateText
     ? certificate.certificateText.split('\n').map(p => p.trim()).filter(Boolean)
     : [
@@ -34,6 +34,10 @@ export default function OfferLetterDocument({ certificate, template, className =
         `Your internship will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application. Our team is confident that you will perform all work allocated to you to the best of your ability.`,
         `We look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful internship experience.`,
       ]
+
+  /* ── Shared visual tokens (purely presentational) ── */
+  const microLabel = { fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: `${NAVY}99` }
+  const hairline = (opacity = 0.14) => ({ height: '1px', backgroundColor: `${NAVY}${Math.round(opacity * 255).toString(16).padStart(2, '0')}` })
 
   return (
     <div
@@ -48,7 +52,11 @@ export default function OfferLetterDocument({ certificate, template, className =
       {/* ── Top accent bar (NPTEL-style navy header band) ── */}
       <div
         className="absolute left-0 right-0 top-0 pointer-events-none"
-        style={{ height: 'clamp(36px,7.5cqw,90px)', background: NAVY }}
+        style={{
+          height: 'clamp(36px,7.5cqw,90px)',
+          background: `linear-gradient(180deg, ${NAVY}, #142a52)`,
+          boxShadow: `0 4px 14px ${NAVY}22`,
+        }}
       />
 
       {/* ── Watermark ── */}
@@ -85,7 +93,7 @@ export default function OfferLetterDocument({ certificate, template, className =
             <p className="font-black uppercase text-white" style={{ fontSize: 'clamp(9px,1.6cqw,20px)', letterSpacing: '0.12em', fontFamily: 'Georgia, serif' }}>
               Amit Solution Hub
             </p>
-            <p className="text-white/70 uppercase" style={{ fontSize: 'clamp(5.5px,0.88cqw,11px)', letterSpacing: '0.16em' }}>
+            <p className="text-white/70 uppercase" style={{ fontSize: 'clamp(5.5px,0.88cqw,11px)', letterSpacing: '0.18em' }}>
               Technology · Innovation · Excellence
             </p>
           </div>
@@ -110,8 +118,7 @@ export default function OfferLetterDocument({ certificate, template, className =
         <div
           className="shrink-0"
           style={{
-            height: '1px',
-            backgroundColor: `${NAVY}22`,
+            ...hairline(0.13),
             marginLeft: 'clamp(-14px,-3cqw,-40px)',
             marginRight: 'clamp(-14px,-3cqw,-40px)',
             marginTop: 'clamp(1px,0.18cqw,2.5px)',
@@ -120,7 +127,7 @@ export default function OfferLetterDocument({ certificate, template, className =
 
         {/* ══ LETTER TITLE ══ */}
         <div className="mt-[2.5cqw] text-center shrink-0">
-          <p className="font-semibold uppercase text-slate-400 tracking-[0.45em]" style={{ fontSize: 'clamp(6px,0.8cqw,10px)' }}>
+          <p style={{ ...microLabel, letterSpacing: '0.4em', fontSize: 'clamp(6px,0.8cqw,10px)' }}>
             Official Document
           </p>
           <h1
@@ -135,17 +142,17 @@ export default function OfferLetterDocument({ certificate, template, className =
         {/* ══ REF + DATE ══ */}
         <div className="mt-[2cqw] flex items-start justify-between shrink-0" style={{ fontSize: 'clamp(8px,1.2cqw,16px)' }}>
           <div>
-            <p className="font-bold uppercase text-slate-400" style={{ fontSize: 'clamp(5.5px,0.72cqw,9px)', letterSpacing: '0.14em' }}>Reference No.</p>
+            <p style={{ ...microLabel, fontSize: 'clamp(5.5px,0.72cqw,9px)' }}>Reference No.</p>
             <p className="font-mono font-semibold text-slate-700 mt-0.5">{certId}</p>
           </div>
           <div className="text-right">
-            <p className="font-bold uppercase text-slate-400" style={{ fontSize: 'clamp(5.5px,0.72cqw,9px)', letterSpacing: '0.14em' }}>Date</p>
+            <p style={{ ...microLabel, fontSize: 'clamp(5.5px,0.72cqw,9px)' }}>Date</p>
             <p className="font-semibold text-slate-700 mt-0.5">{issueDate}</p>
           </div>
         </div>
 
         {/* ── Thin divider ── */}
-        <div className="shrink-0 mt-[1.5cqw]" style={{ height: '1px', backgroundColor: `${NAVY}18` }} />
+        <div className="shrink-0 mt-[1.5cqw]" style={hairline(0.1)} />
 
         {/* ══ SALUTATION ══ */}
         <p className="mt-[2cqw] font-semibold text-slate-800 shrink-0" style={{ fontSize: 'clamp(9px,1.3cqw,17px)' }}>
@@ -170,7 +177,7 @@ export default function OfferLetterDocument({ certificate, template, className =
           {/* Left: signatures (Mentor + CEO side-by-side) */}
           <div>
             <p className="text-slate-700 font-medium" style={{ fontSize: 'clamp(8.5px,1.2cqw,15.5px)' }}>Sincerely,</p>
-            
+
             <div className="flex items-end gap-[4cqw] mt-[0.8cqw]">
               {/* Mentor Signature */}
               <div className="flex flex-col">
@@ -180,7 +187,7 @@ export default function OfferLetterDocument({ certificate, template, className =
                     className="mix-blend-multiply"
                     style={{ height: '100%', width: 'auto', objectFit: 'contain', maxWidth: 'clamp(50px,9cqw,130px)' }} />
                 </div>
-                <div style={{ height: '1px', backgroundColor: `${NAVY}25`, marginTop: 'clamp(3px,0.5cqw,7px)' }} />
+                <div style={{ ...hairline(0.16), marginTop: 'clamp(3px,0.5cqw,7px)' }} />
                 <p className="mt-[0.4cqw] font-bold text-slate-900" style={{ fontSize: 'clamp(8px,1.1cqw,15px)' }}>Technical Lead</p>
               </div>
 
@@ -192,9 +199,9 @@ export default function OfferLetterDocument({ certificate, template, className =
                     className="mix-blend-multiply"
                     style={{ height: '100%', width: 'auto', objectFit: 'contain', maxWidth: 'clamp(60px,12cqw,160px)' }} />
                 </div>
-                <div style={{ height: '1px', backgroundColor: `${NAVY}25`, marginTop: 'clamp(3px,0.5cqw,7px)' }} />
+                <div style={{ ...hairline(0.16), marginTop: 'clamp(3px,0.5cqw,7px)' }} />
                 <p className="mt-[0.4cqw] font-bold text-slate-900" style={{ fontSize: 'clamp(8px,1.1cqw,15px)' }}>{sigName}</p>
-                <p className="text-slate-600 uppercase" style={{ fontSize: 'clamp(6px,0.78cqw,10px)', letterSpacing: '0.12em' }}>{sigRole}</p>
+                <p style={{ ...microLabel, color: `${NAVY}cc`, fontSize: 'clamp(6px,0.78cqw,10px)' }}>{sigRole}</p>
                 <p className="text-slate-500 mt-0.5" style={{ fontSize: 'clamp(6px,0.72cqw,9.5px)' }}>Mobile: +91-7874248481</p>
               </div>
             </div>
@@ -221,15 +228,15 @@ export default function OfferLetterDocument({ certificate, template, className =
             alignItems: 'center',
           }}
         >
-          <p className="font-semibold text-slate-500" style={{ fontSize: 'clamp(5.5px,0.72cqw,9.5px)' }}>
+          <p className="font-semibold" style={{ fontSize: 'clamp(5.5px,0.72cqw,9.5px)', color: `${NAVY}88` }}>
             www.amitsolutionhub.com
           </p>
           <div style={{ width: 'clamp(14px,2cqw,26px)', height: 'clamp(1.5px,0.2cqw,2.5px)', backgroundColor: GOLD }} />
-          <p className="font-semibold text-slate-500" style={{ fontSize: 'clamp(5.5px,0.72cqw,9.5px)' }}>
+          <p className="font-semibold" style={{ fontSize: 'clamp(5.5px,0.72cqw,9.5px)', color: `${NAVY}88` }}>
             +91 7874248481
           </p>
           <div style={{ width: 'clamp(14px,2cqw,26px)', height: 'clamp(1.5px,0.2cqw,2.5px)', backgroundColor: GOLD }} />
-          <p className="font-semibold text-slate-500" style={{ fontSize: 'clamp(5.5px,0.72cqw,9.5px)' }}>
+          <p className="font-semibold" style={{ fontSize: 'clamp(5.5px,0.72cqw,9.5px)', color: `${NAVY}88` }}>
             support@amitsolutionhub.com
           </p>
         </div>

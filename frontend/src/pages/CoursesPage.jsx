@@ -227,7 +227,7 @@ export default function CoursesPage() {
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {filtered.map((course) => {
                 const isEnrolled = currentUser ? isUserEnrolled(currentUser.uid, course.id) : false
-                const isAvailableSoon = course.availableSoon === true
+                const isAvailableSoon = course.availableSoon === true || !course.plans || course.plans.length === 0
                 const categoryMeta = getCategoryMeta(course.category)
                 const planPrices = Array.isArray(course.plans) ? course.plans.map((plan) => Number(plan.price) || 0) : []
                 const startingPrice = planPrices.length > 0 ? Math.min(...planPrices) : Number(course.price || 0)
@@ -347,19 +347,19 @@ export default function CoursesPage() {
                       </div>
 
                       <div className="mt-auto flex items-end justify-between gap-4 pt-6">
-                        <div>
-                          <div className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
-                            {Array.isArray(course.plans) && course.plans.length > 0 ? 'Starting At' : 'Fee'}
+                        {!isFree ? (
+                          <div>
+                            <div className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
+                              {Array.isArray(course.plans) && course.plans.length > 0 ? 'Starting At' : 'Fee'}
+                            </div>
+                            <div className={`mt-1 flex items-center gap-1 text-2xl font-black ${isDark ? 'text-white' : 'text-slate-955'}`}>
+                              <IndianRupee aria-hidden="true" size={21} strokeWidth={3} />
+                              {startingPrice.toLocaleString('en-IN')}
+                            </div>
                           </div>
-                          <div className={`mt-1 flex items-center gap-1 text-2xl font-black ${isDark ? 'text-white' : 'text-slate-955'}`}>
-                            {isFree ? 'FREE' : (
-                              <>
-                                <IndianRupee aria-hidden="true" size={21} strokeWidth={3} />
-                                {startingPrice.toLocaleString('en-IN')}
-                              </>
-                            )}
-                          </div>
-                        </div>
+                        ) : (
+                          <div />
+                        )}
 
                         <div className={`inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-black transition-all duration-300 ${
                           isEnrolled
