@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import brandLogo from '../assets/brand-logo.png'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
+import { useStore } from '../store/StoreContext'
 
 /* ── Theme Toggle Component ── */
 const ThemeToggle = ({ mobile = false, isDark, toggleTheme }) => (
@@ -45,9 +46,18 @@ const Navbar = () => {
   const [mobileCompanyOpen, setMobileCompanyOpen] = useState(false)
   const [whyUsDropdownOpen, setWhyUsDropdownOpen] = useState(false)
   const [mobileWhyUsOpen, setMobileWhyUsOpen] = useState(false)
+  const [programsDropdownOpen, setProgramsDropdownOpen] = useState(false)
+  const [mobileProgramsOpen, setMobileProgramsOpen] = useState(false)
+
+  // Pull course categories for Programs sub-menu
+  const { courses, courseCategories } = useStore()
+  const published = courses.filter(c => c.published !== false)
+  const domainLinks = [...new Set(published.map(c => c.category).filter(Boolean))]
+    .slice(0, 6) // max 6 domains in dropdown
 
   const isCompanyActive = location.pathname === '/about' || location.pathname === '/infrastructure' || location.pathname === '/contact'
   const isWhyUsActive = location.pathname.startsWith('/services') || location.hash === '#why-choose-us'
+  const isProgramsActive = location.pathname.startsWith('/programs') || location.pathname.startsWith('/courses')
 
   const avatarUrl = userProfile?.avatar || userProfile?.photoURL || currentUser?.photoURL || currentUser?.avatar || ''
   const userDisplayName = userProfile?.displayName || currentUser?.displayName || 'User'
@@ -156,11 +166,97 @@ const Navbar = () => {
                     : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
                 }`}
               >
-                <span className="relative z-10">Project Selling</span>
+                <span className="relative z-10">Project</span>
                 {location.pathname === '/projects' && (
                   <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-400' : 'bg-blue-600'}`} />
                 )}
               </Link>
+
+              {/* Programs Dropdown */}
+              <div
+                className="relative h-full flex items-center"
+                onMouseEnter={() => setProgramsDropdownOpen(true)}
+                onMouseLeave={() => setProgramsDropdownOpen(false)}
+              >
+                <button
+                  className={`relative px-2.5 lg:px-3 xl:px-5 h-12 flex items-center gap-1.5 rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
+                    isProgramsActive
+                      ? isDark ? 'text-indigo-300 bg-indigo-500/15' : 'text-blue-700 bg-white/95 shadow-md'
+                      : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
+                  }`}
+                >
+                  <span className="relative z-10">Programs</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-300 ${programsDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                  {isProgramsActive && (
+                    <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-400' : 'bg-blue-600'}`} />
+                  )}
+                </button>
+
+                {/* Programs Dropdown Panel */}
+                <div
+                  className={`absolute left-0 top-[85%] mt-1 w-64 rounded-2xl border shadow-2xl transition-all duration-300 origin-top-left ${
+                    programsDropdownOpen
+                      ? 'opacity-100 scale-100 translate-y-0 visible'
+                      : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
+                  } ${
+                    isDark
+                      ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
+                      : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
+                  }`}
+                >
+                  <div className="p-2">
+                    {/* All Programs link */}
+                    <Link
+                      to="/programs"
+                      className={`flex items-center gap-2 px-4 py-2.5 text-sm font-black rounded-xl transition-all duration-200 ${
+                        location.pathname === '/programs'
+                          ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
+                          : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                      }`}
+                    >
+                      <span className="text-base">🎓</span>
+                      All Programs
+                    </Link>
+
+                    {domainLinks.length > 0 && (
+                      <>
+                        <div className={`my-1.5 h-px mx-3 ${isDark ? 'bg-white/5' : 'bg-slate-100'}`} />
+                        <p className={`px-4 py-1 text-[10px] font-black uppercase tracking-[0.15em] ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>Domains</p>
+                        {domainLinks.map(domain => (
+                          <Link
+                            key={domain}
+                            to={`/courses?domain=${encodeURIComponent(domain)}`}
+                            className={`block px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 truncate ${
+                              location.search === `?domain=${encodeURIComponent(domain)}` && location.pathname === '/courses'
+                                ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
+                                : isDark ? 'hover:bg-white/5 hover:text-white text-slate-400' : 'hover:bg-slate-50 hover:text-blue-600 text-slate-600'
+                            }`}
+                          >
+                            {domain}
+                          </Link>
+                        ))}
+                        <div className={`my-1.5 h-px mx-3 ${isDark ? 'bg-white/5' : 'bg-slate-100'}`} />
+                        <Link
+                          to="/courses"
+                          className={`block px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 ${
+                            isDark ? 'hover:bg-white/5 hover:text-white text-slate-400' : 'hover:bg-slate-50 hover:text-blue-600 text-slate-500'
+                          }`}
+                        >
+                          View All Courses →
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
 
               {/* Why Us Dropdown */}
               <div
@@ -430,6 +526,67 @@ const Navbar = () => {
                 </Link>
               )
             })}
+
+            {/* Mobile Programs Dropdown Accordion */}
+            <div className="flex flex-col">
+              <button
+                onClick={() => setMobileProgramsOpen(!mobileProgramsOpen)}
+                className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${
+                  isProgramsActive
+                    ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
+                    : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-650 hover:bg-slate-50'
+                }`}
+              >
+                <span className="flex items-center gap-3">
+                  {isProgramsActive && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'}`} />}
+                  Programs
+                </span>
+                <svg
+                  className={`w-4 h-4 transition-transform duration-300 ${mobileProgramsOpen ? 'rotate-180' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              <div className={`overflow-hidden transition-all duration-300 ${mobileProgramsOpen ? 'max-h-80 opacity-100 mt-1 pl-4' : 'max-h-0 opacity-0 pointer-events-none'}`}>
+                <Link
+                  to="/programs"
+                  onClick={() => setIsOpen(false)}
+                  className={`block px-6 py-3 text-sm font-black rounded-xl transition-all duration-200 ${
+                    location.pathname === '/programs'
+                      ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                      : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
+                  }`}
+                >
+                  🎓 All Programs
+                </Link>
+                {domainLinks.map(domain => (
+                  <Link
+                    key={domain}
+                    to={`/courses?domain=${encodeURIComponent(domain)}`}
+                    onClick={() => setIsOpen(false)}
+                    className={`block px-6 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 mt-0.5 truncate ${
+                      isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
+                    }`}
+                  >
+                    {domain}
+                  </Link>
+                ))}
+                <Link
+                  to="/courses"
+                  onClick={() => setIsOpen(false)}
+                  className={`block px-6 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 mt-0.5 ${
+                    isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-blue-600'
+                  }`}
+                >
+                  View All Courses →
+                </Link>
+              </div>
+            </div>
 
             {/* Mobile Why Us Dropdown Accordion */}
             <div className="flex flex-col">

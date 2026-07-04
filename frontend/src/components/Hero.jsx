@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import TechMarquee from './TechMarquee'
 import { 
   Check, 
   Shield, 
@@ -971,6 +972,9 @@ const Hero = () => {
           </div>
         </section>
 
+        {/* Powered By – Tech Marquee */}
+        <TechMarquee />
+
         {/* ── FREQUENTLY ASKED QUESTIONS ── */}
         <section className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
           <div className="text-center mb-12 space-y-4">
@@ -1050,6 +1054,7 @@ const Hero = () => {
             </div>
           </div>
         </section>
+
 
       </div>
     </>

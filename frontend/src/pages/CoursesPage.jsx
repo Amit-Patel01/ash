@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
   ArrowRight,
   BadgeCheck,
@@ -56,8 +56,16 @@ export default function CoursesPage() {
   const { currentUser } = useAuth()
   const { theme } = useTheme()
   const isDark = theme === 'dark'
-  const [filterCat, setFilterCat] = useState('All')
+  const [searchParams] = useSearchParams()
+  const [filterCat, setFilterCat] = useState(() => searchParams.get('domain') || 'All')
   const [search, setSearch] = useState('')
+
+  // Sync filterCat when query param changes (e.g. clicking domain from Programs page)
+  useEffect(() => {
+    const domain = searchParams.get('domain')
+    if (domain) setFilterCat(domain)
+    else setFilterCat('All')
+  }, [searchParams])
 
   const published = useMemo(() => courses.filter((course) => course.published !== false), [courses])
 

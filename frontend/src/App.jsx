@@ -196,6 +196,7 @@ const AdminCourseEnrollments = lazyWithRetry(() => import('./admin/AdminCourseEn
 const EmployeeCourseManage = lazyWithRetry(() => import('./employee/EmployeeCourseManageRefined'))
 const CoursesPage = lazyWithRetry(() => import('./pages/CoursesPage'))
 const CourseDetailPage = lazyWithRetry(() => import('./pages/CourseDetailPage'))
+const ProgramsPage = lazyWithRetry(() => import('./pages/ProgramsPage'))
 const UserMyCourses = lazyWithRetry(() => import('./user/UserMyCourses'))
 const AboutTradingMentorship = lazyWithRetry(() => import('./pages/AboutTradingMentorship'))
 
@@ -387,6 +388,7 @@ function AppContent() {
             <Route path="trading-mentorship" element={<AboutTradingMentorship />} />
             <Route path="courses" element={<CoursesPage />} />
             <Route path="courses/:slug" element={<CourseDetailPage />} />
+            <Route path="programs" element={<ProgramsPage />} />
             <Route path="coming-soon" element={<ComingSoon />} />
             <Route path="join-us" element={<RoleSelect />} />
             <Route path="signup" element={<StudentSignup />} />

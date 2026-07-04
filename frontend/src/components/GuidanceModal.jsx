@@ -77,7 +77,7 @@ export default function GuidanceModal() {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[99999] flex items-end sm:items-center justify-center sm:p-4">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -89,24 +89,32 @@ export default function GuidanceModal() {
 
           {/* Modal Container */}
           <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            initial={{ scale: 0.95, opacity: 0, y: 30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            exit={{ scale: 0.95, opacity: 0, y: 30 }}
             transition={{ type: 'spring', duration: 0.5 }}
-            className="relative z-10 w-full max-w-[480px] rounded-[32px] border border-slate-100 bg-white p-6 sm:p-8 shadow-[0_32px_80px_-20px_rgba(79,70,229,0.22)] overflow-hidden"
+            className="relative z-10 w-full sm:max-w-[480px] bg-white sm:rounded-[32px] rounded-t-[28px] border border-slate-100 shadow-[0_32px_80px_-20px_rgba(79,70,229,0.22)] flex flex-col"
+            style={{ maxHeight: '92vh' }}
           >
-            {/* Decorative color wash top corner */}
+            {/* Decorative color wash */}
             <div className="pointer-events-none absolute -top-24 -right-24 w-56 h-56 rounded-full bg-gradient-to-br from-indigo-400/15 via-purple-400/10 to-transparent blur-2xl" />
             <div className="pointer-events-none absolute -bottom-20 -left-16 w-48 h-48 rounded-full bg-gradient-to-tr from-amber-300/10 to-transparent blur-2xl" />
 
-            {/* Close Button */}
-            <button
-              onClick={() => setIsOpen(false)}
-              className="absolute right-5 top-5 z-10 p-1.5 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 active:scale-95 transition-all"
-              aria-label="Close modal"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            {/* ── Sticky Close Bar ── always visible, never scrolls away */}
+            <div className="flex-shrink-0 flex items-center justify-between px-5 pt-4 pb-1">
+              <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto sm:hidden" />
+              <div className="hidden sm:block" />
+              <button
+                onClick={() => setIsOpen(false)}
+                className="ml-auto flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 active:scale-95 transition-all"
+                aria-label="Close modal"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Scrollable content */}
+            <div className="overflow-y-auto flex-1 px-6 pb-6 sm:px-8 sm:pb-8">
 
             {success ? (
               <div className="relative py-12 text-center">
@@ -275,6 +283,7 @@ export default function GuidanceModal() {
                 </p>
               </form>
             )}
+            </div>
           </motion.div>
         </div>
       )}
