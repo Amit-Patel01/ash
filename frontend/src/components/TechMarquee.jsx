@@ -29,7 +29,7 @@ const TECHS = [
   },
   {
     name: 'Razorpay',
-    logo: 'https://cdn.simpleicons.org/razorpay/2B6BE6',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg',
   },
   {
     name: 'Cashfree',
@@ -82,6 +82,18 @@ const TECHS = [
   {
     name: 'Figma',
     logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg',
+  },
+  {
+    name: 'Adobe Photoshop',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg',
+  },
+  {
+    name: 'Adobe After Effects',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/aftereffects/aftereffects-original.svg',
+  },
+  {
+    name: 'Adobe Premiere Pro',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/premierepro/premierepro-original.svg',
   },
 ]
 

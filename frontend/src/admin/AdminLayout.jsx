@@ -268,20 +268,44 @@ export default function AdminLayout({ onLogout }) {
                       ? location.pathname === '/admin'
                       : location.pathname.startsWith(item.path)
                     
+                    const getGroupStyles = (label, isActive) => {
+                      if (!isActive) return 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 border-l-4 border-transparent'
+                      switch (label) {
+                        case 'Core':
+                          return 'bg-blue-50/70 text-blue-600 border-l-4 border-blue-600 font-bold shadow-sm'
+                        case 'Courses':
+                          return 'bg-purple-50/70 text-purple-600 border-l-4 border-purple-600 font-bold shadow-sm'
+                        case 'User Management':
+                          return 'bg-emerald-50/70 text-emerald-600 border-l-4 border-emerald-600 font-bold shadow-sm'
+                        case 'Inbox & Requests':
+                          return 'bg-rose-50/70 text-rose-600 border-l-4 border-rose-600 font-bold shadow-sm'
+                        case 'System':
+                          return 'bg-indigo-50/70 text-indigo-600 border-l-4 border-indigo-600 font-bold shadow-sm'
+                        default:
+                          return 'bg-slate-50/70 text-slate-800 border-l-4 border-slate-600 font-bold shadow-sm'
+                      }
+                    }
+
+                    const getGroupIconColor = (label, isActive) => {
+                      if (!isActive) return 'text-slate-400 group-hover:text-slate-600'
+                      switch (label) {
+                        case 'Core': return 'text-blue-500'
+                        case 'Courses': return 'text-purple-500'
+                        case 'User Management': return 'text-emerald-500'
+                        case 'Inbox & Requests': return 'text-rose-500'
+                        case 'System': return 'text-indigo-500'
+                        default: return 'text-slate-500'
+                      }
+                    }
+
                     return (
                       <Link
                         key={item.path}
                         to={item.path}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                          isActive
-                            ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-slate-900 shadow-lg shadow-blue-500/10'
-                            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
-                        }`}
+                        className={`group flex items-center gap-3 px-3 py-2.5 rounded-r-xl text-sm font-medium transition-all duration-200 ${getGroupStyles(group.label, isActive)}`}
                       >
-                        <span className={`flex-shrink-0 transition-colors ${
-                          isActive ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-600'
-                        }`}>
+                        <span className={`flex-shrink-0 transition-colors ${getGroupIconColor(group.label, isActive)}`}>
                           {iconMap[item.icon]}
                         </span>
                         {sidebarOpen && <span className="flex-1">{item.label}</span>}

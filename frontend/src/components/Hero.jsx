@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import TechMarquee from './TechMarquee'
+import TrustedPartners from './TrustedPartners'
 import { 
   Check, 
   Shield, 
@@ -495,7 +496,7 @@ const Hero = () => {
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-white dark:bg-slate-900/80 border-emerald-200 dark:border-slate-800 shadow-sm shadow-emerald-500/10">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-350">
-                  AICTE Approved Internship Programs
+                  AICTE Internship Portal Registered Organization
                 </span>
               </div>
 
@@ -616,6 +617,9 @@ const Hero = () => {
           </div>
         </section>
 
+        {/* Powered By – Tech Marquee */}
+        <TechMarquee />
+
         {/* ── NEW: TECHNOLOGIES YOU'LL WORK WITH (icon strip, no external assets) ── */}
         <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-slate-200/40 dark:border-slate-900/50">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
@@ -648,6 +652,9 @@ const Hero = () => {
             })}
           </div>
         </section>
+
+        {/* Trusted Payment Partners */}
+        <TrustedPartners />
 
         {/* ── INTERNSHIP CATEGORIES ── */}
         <section id="categories" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
@@ -971,9 +978,6 @@ const Hero = () => {
             ))}
           </div>
         </section>
-
-        {/* Powered By – Tech Marquee */}
-        <TechMarquee />
 
         {/* ── FREQUENTLY ASKED QUESTIONS ── */}
         <section className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
