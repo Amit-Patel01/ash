@@ -108,10 +108,23 @@ const Navbar = () => {
 
                 {/* Shine Sweep Beam */}
                 <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
-                  <div className="absolute top-0 -left-[150%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/35 to-transparent skew-x-[-30deg] transition-all duration-1000 ease-out group-hover:left-[150%]" />
+                  <div 
+                    className="absolute top-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-[-30deg]" 
+                    style={{
+                      animation: 'logo-shine 4s infinite ease-in-out',
+                    }}
+                  />
                 </div>
               </div>
             </Link>
+
+            <style dangerouslySetInnerHTML={{ __html: `
+              @keyframes logo-shine {
+                0% { left: -150%; }
+                25% { left: 150%; }
+                100% { left: 150%; }
+              }
+            `}} />
 
             {/* Desktop Links */}
             <div className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 h-full py-2">
@@ -287,9 +300,6 @@ const Navbar = () => {
 
             {/* Desktop */}
             <div className="hidden lg:flex items-center gap-1.5 xl:gap-2">
-              {/* Dark Mode Toggle */}
-              <ThemeToggle isDark={isDark} toggleTheme={toggleTheme} />
-
               {currentUser ? (
                 <div className={`flex items-center gap-2 p-1 rounded-full border ${isDark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/5'}`}>
                   <Link
@@ -354,8 +364,6 @@ const Navbar = () => {
 
             {/* Mobile: theme toggle + hamburger */}
             <div className="lg:hidden flex items-center gap-2">
-              <ThemeToggle mobile isDark={isDark} toggleTheme={toggleTheme} />
-
               {currentUser && (
                 <Link
                   to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'student' ? '/user' : '/employee'}

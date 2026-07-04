@@ -3,6 +3,7 @@ import { useChat } from '../context/ChatContext'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
 import { normalizeUserRole, isEmployeeRole } from '../utils/roles'
+import chatbotLogo from '../assets/chatbot-logo.png'
 
 /* ─── helpers ─────────────────────────────────────────── */
 function toMessageDate(ts) {
@@ -593,7 +594,7 @@ export default function ChatPanel({ embedded = false }) {
                         {!isMe && !selectionMode && (
                           <div className={`w-7 h-7 rounded-xl bg-gradient-to-br ${isAiMessage ? 'from-indigo-500 to-violet-500' : 'from-emerald-500 to-cyan-500'} flex items-center justify-center text-[10px] font-black text-white flex-shrink-0 overflow-hidden border border-white/5 ${showAvatar ? 'opacity-100' : 'opacity-0'}`}>
                             {isAiMessage ? (
-                              'AI'
+                              <img src={chatbotLogo} alt="AI Chatbot" className="w-full h-full object-cover" />
                             ) : (activeChat?.participantInfo?.[msg.senderId]?.avatar || activeChat?.participantInfo?.[msg.senderId]?.photoURL) ? (
                               <img src={activeChat.participantInfo[msg.senderId].avatar || activeChat.participantInfo[msg.senderId].photoURL} alt="Sender" className="w-full h-full object-cover" />
                             ) : (

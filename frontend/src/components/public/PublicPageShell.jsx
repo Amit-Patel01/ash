@@ -99,6 +99,7 @@ export default function PublicPageShell({
   aside,
   children,
   compact = false,
+  hideHeader = false,
 }) {
   return (
     <div
@@ -133,11 +134,12 @@ export default function PublicPageShell({
       <div className="pointer-events-none absolute right-[-4%] top-10 h-96 w-96 rounded-full bg-indigo-400/20 blur-[90px] dark:bg-indigo-600/10 animate-float-slow" style={{ animationDelay: '-4s' }} />
       <div className="pointer-events-none absolute bottom-20 left-1/3 h-64 w-64 rounded-full bg-violet-300/20 blur-[70px] dark:bg-violet-600/8 animate-float-slow" style={{ animationDelay: '-8s' }} />
 
-      <PublicSection className={compact ? 'pt-24 sm:pt-28 lg:pt-32' : 'pt-28 sm:pt-32 lg:pt-36'}>
-        <div className={compact
-          ? 'grid gap-5 lg:grid-cols-[minmax(0,1.18fr)_320px] lg:items-start'
-          : 'grid gap-6 lg:grid-cols-[minmax(0,1.12fr)_370px] lg:items-start'
-        }>
+      {!hideHeader && (
+        <PublicSection className={compact ? 'pt-24 sm:pt-28 lg:pt-32' : 'pt-28 sm:pt-32 lg:pt-36'}>
+          <div className={compact
+            ? 'grid gap-5 lg:grid-cols-[minmax(0,1.18fr)_320px] lg:items-start'
+            : 'grid gap-6 lg:grid-cols-[minmax(0,1.12fr)_370px] lg:items-start'
+          }>
           {/* === HERO CARD === */}
           <PublicGlassCard className={compact ? 'relative overflow-hidden p-7 sm:p-8' : 'relative overflow-hidden p-8 sm:p-10'}>
             {/* Card inner glow */}
@@ -204,17 +206,23 @@ export default function PublicPageShell({
             </div>
           </PublicGlassCard>
 
-          {/* === ASIDE CARD === */}
-          <PublicGlassCard className={joinClasses(
-            'h-full',
-            compact ? 'p-5 sm:p-6' : 'p-6 sm:p-7'
-          )}>
-            {aside}
-          </PublicGlassCard>
-        </div>
-      </PublicSection>
+            {/* === ASIDE CARD === */}
+            <PublicGlassCard className={joinClasses(
+              'h-full',
+              compact ? 'p-5 sm:p-6' : 'p-6 sm:p-7'
+            )}>
+              {aside}
+            </PublicGlassCard>
+          </div>
+        </PublicSection>
+      )}
 
-      <div className={compact ? 'relative z-10 pb-16 pt-8 sm:pb-20 sm:pt-10' : 'relative z-10 pb-20 pt-10 sm:pb-24 sm:pt-14'}>
+      <div className={joinClasses(
+        'relative z-10',
+        hideHeader 
+          ? 'pt-24 sm:pt-28 lg:pt-32 pb-16 sm:pb-20'
+          : (compact ? 'pb-16 pt-8 sm:pb-20 sm:pt-10' : 'pb-20 pt-10 sm:pb-24 sm:pt-14')
+      )}>
         {children}
       </div>
     </div>

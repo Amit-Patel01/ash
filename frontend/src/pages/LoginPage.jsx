@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getHomePathForRole } from '../utils/roles'
@@ -83,23 +83,21 @@ export default function LoginPage() {
   const handleGoogleSignIn = () => {
     setError('')
     setGoogleLoading(true)
-    // loginWithGoogle does window.location.href redirect — no return value
     loginWithGoogle()
   }
 
-
   if (dashboardLoading) {
     return (
-      <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center p-4" style={{ background: '#030712' }}>
+      <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center p-4 bg-slate-50">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute top-[-10%] left-[-5%] h-[500px] w-[500px] rounded-full bg-emerald-600/20 blur-[120px] animate-float-slow" />
-          <div className="absolute bottom-[-10%] right-[-5%] h-[500px] w-[500px] rounded-full bg-indigo-600/20 blur-[120px] animate-float-slow" style={{ animationDelay: '-5s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-violet-600/8 blur-[160px]" />
+          <div className="absolute top-[-10%] left-[-5%] h-[500px] w-[500px] rounded-full bg-emerald-500/10 blur-[120px] animate-float-slow" />
+          <div className="absolute bottom-[-10%] right-[-5%] h-[500px] w-[500px] rounded-full bg-indigo-550/10 blur-[120px] animate-float-slow" style={{ animationDelay: '-5s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-violet-550/5 blur-[160px]" />
         </div>
         <div className="relative z-10 text-center">
           <div className="w-16 h-16 mx-auto mb-6 rounded-full border-4 border-emerald-500/30 border-t-emerald-400 animate-spin" />
-          <h2 className="text-2xl font-black text-white tracking-tight mb-2">Welcome Back!</h2>
-          <p className="text-slate-400 text-sm font-medium">Preparing your dashboard...</p>
+          <h2 className="text-2xl font-black text-slate-800 tracking-tight mb-2">Welcome Back!</h2>
+          <p className="text-slate-550 text-sm font-medium">Preparing your dashboard...</p>
           <div className="mt-8 flex justify-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0s' }} />
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0.15s' }} />
@@ -111,13 +109,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center p-4" style={{ background: '#030712' }}>
+    <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center p-4 bg-slate-50">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-[-10%] left-[-5%] h-[500px] w-[500px] rounded-full bg-blue-600/20 blur-[120px] animate-float-slow" />
-        <div className="absolute bottom-[-10%] right-[-5%] h-[500px] w-[500px] rounded-full bg-indigo-600/20 blur-[120px] animate-float-slow" style={{ animationDelay: '-5s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-violet-600/8 blur-[160px]" />
+        <div className="absolute top-[-10%] left-[-5%] h-[500px] w-[500px] rounded-full bg-blue-500/10 blur-[120px] animate-float-slow" />
+        <div className="absolute bottom-[-10%] right-[-5%] h-[500px] w-[500px] rounded-full bg-indigo-500/10 blur-[120px] animate-float-slow" style={{ animationDelay: '-5s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-violet-500/5 blur-[160px]" />
       </div>
-      <div className="pointer-events-none absolute inset-0 [background-image:linear-gradient(rgba(99,102,241,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.04)_1px,transparent_1px)] [background-size:56px_56px] opacity-60" />
+      <div className="pointer-events-none absolute inset-0 [background-image:linear-gradient(rgba(99,102,241,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.03)_1px,transparent_1px)] [background-size:56px_56px] opacity-60" />
 
       <div className="relative z-10 w-full max-w-[440px]">
         <div className="text-center mb-8">
@@ -129,28 +127,28 @@ export default function LoginPage() {
               <div className="absolute inset-0 rounded-2xl bg-white/20" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.2), transparent)' }} />
             </div>
             <div className="text-left">
-              <div className="text-xl font-black text-white tracking-tight">
-                Solution<span className="text-blue-400">Hub</span>
+              <div className="text-xl font-black text-slate-800 tracking-tight">
+                Solution<span className="text-blue-600">Hub</span>
               </div>
-              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Member Portal</div>
+              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Member Portal</div>
             </div>
           </Link>
-          <h1 className="text-3xl font-black text-white tracking-tight mb-2">Welcome Back</h1>
-          <p className="text-slate-400 text-sm font-medium">Sign in to access your dashboard and tools.</p>
+          <h1 className="text-3xl font-black text-slate-800 tracking-tight mb-2">Welcome Back</h1>
+          <p className="text-slate-500 text-sm font-medium">Sign in to access your dashboard and tools.</p>
         </div>
 
-        <div className="relative rounded-[28px] border border-white/10 bg-white/[0.04] backdrop-blur-2xl p-8 sm:p-9 shadow-[0_24px_60px_-12px_rgba(0,0,0,0.8)]">
-          <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        <div className="relative rounded-[28px] border border-slate-200 bg-white/80 backdrop-blur-2xl p-8 sm:p-9 shadow-[0_24px_60px_-12px_rgba(15,23,42,0.08)]">
+          <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
 
           {errorCode === 'forgot_password_required' ? (
             <div className="space-y-5">
               <div className="flex items-center gap-3 p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl">
                 <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
-                  <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <svg className="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                   </svg>
                 </div>
-                <span className="text-sm text-amber-400 font-medium leading-tight">{error}</span>
+                <span className="text-sm text-amber-600 font-medium leading-tight">{error}</span>
               </div>
               <Link
                 to="/forgot-password?from=student"
@@ -162,18 +160,18 @@ export default function LoginPage() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
-                <div className={`flex items-center gap-3 p-4 rounded-2xl border ${errorCode === 'invalid_email' || errorCode === 'invalid_password' ? 'bg-red-500/10 border-red-500/20' : 'bg-red-500/10 border-red-500/20'}`}>
-                  <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
-                    <svg className="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <div className="flex items-center gap-3 p-4 rounded-2xl border bg-red-500/10 border-red-200 text-red-700">
+                  <div className="w-8 h-8 rounded-full bg-red-500/15 flex items-center justify-center shrink-0">
+                    <svg className="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                     </svg>
                   </div>
-                  <span className="text-sm text-red-400 font-medium leading-tight">{error}</span>
+                  <span className="text-sm text-red-650 font-semibold leading-tight">{error}</span>
                 </div>
               )}
 
               <div className="space-y-2">
-                <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em]">Email Address</label>
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em]">Email Address</label>
                 <input
                   type="email"
                   value={email}
@@ -181,14 +179,14 @@ export default function LoginPage() {
                   placeholder="you@example.com"
                   required
                   autoFocus
-                  className={`w-full px-5 py-4 bg-white/5 border rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/60 focus:bg-white/8 transition-all duration-300 text-sm font-medium ${errorCode === 'invalid_email' ? 'border-red-500/50' : 'border-white/10'}`}
+                  className={`w-full px-5 py-4 bg-slate-50/50 border rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/40 focus:bg-white transition-all duration-300 text-sm font-medium ${errorCode === 'invalid_email' ? 'border-red-500' : 'border-slate-200'}`}
                 />
               </div>
 
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em]">Password</label>
-                  <Link to="/forgot-password?from=student" className="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors">
+                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em]">Password</label>
+                  <Link to="/forgot-password?from=student" className="text-xs font-bold text-indigo-600 hover:text-indigo-500 transition-colors">
                     Forgot password?
                   </Link>
                 </div>
@@ -199,12 +197,12 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className={`w-full px-5 py-4 pr-12 bg-white/5 border rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/60 focus:bg-white/8 transition-all duration-300 text-sm font-medium ${errorCode === 'invalid_password' ? 'border-red-500/50' : 'border-white/10'}`}
+                    className={`w-full px-5 py-4 pr-12 bg-slate-50/50 border rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/40 focus:bg-white transition-all duration-300 text-sm font-medium ${errorCode === 'invalid_password' ? 'border-red-500' : 'border-slate-200'}`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                   >
                     {showPassword ? (
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -223,7 +221,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading || !email || !password}
-                className="relative w-full group overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white py-4 font-bold text-sm shadow-[0_16px_40px_-12px_rgba(99,102,241,0.6)] hover:shadow-[0_24px_50px_-12px_rgba(99,102,241,0.7)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                className="relative w-full group overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white py-4 font-bold text-sm shadow-[0_16px_40px_-12px_rgba(99,102,241,0.4)] hover:shadow-[0_24px_50px_-12px_rgba(99,102,241,0.5)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
               >
                 <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-700" />
                 <span className="relative flex items-center justify-center gap-2">
@@ -247,7 +245,7 @@ export default function LoginPage() {
                 <div className="text-center mt-2">
                   <Link
                     to="/forgot-password?from=student"
-                    className="text-sm font-bold text-amber-400 hover:text-amber-300 transition-colors underline"
+                    className="text-sm font-bold text-amber-600 hover:text-amber-500 transition-colors underline"
                   >
                     Forgot Password?
                   </Link>
@@ -257,19 +255,19 @@ export default function LoginPage() {
           )}
 
           <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-white/8" />
-            <span className="text-[11px] font-bold text-slate-600 uppercase tracking-widest">or</span>
-            <div className="flex-1 h-px bg-white/8" />
+            <div className="flex-1 h-px bg-slate-200" />
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">or</span>
+            <div className="flex-1 h-px bg-slate-200" />
           </div>
 
           <button
             type="button"
             onClick={handleGoogleSignIn}
             disabled={googleLoading || loading}
-            className="w-full flex items-center justify-center gap-3 px-6 py-3.5 bg-white/[0.04] border border-white/10 rounded-2xl text-sm font-bold text-slate-200 hover:bg-white/[0.08] hover:border-white/20 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 px-6 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 hover:bg-slate-100 hover:border-slate-350 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {googleLoading ? (
-              <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span className="w-5 h-5 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin" />
             ) : (
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -281,20 +279,20 @@ export default function LoginPage() {
             <span>{googleLoading ? 'Redirecting to Google...' : 'Continue with Google'}</span>
           </button>
 
-          <div className="mt-6 pt-5 border-t border-white/6">
-            <p className="text-center text-xs text-slate-500 font-medium mb-4">Don't have an account?</p>
+          <div className="mt-6 pt-5 border-t border-slate-150">
+            <p className="text-center text-xs text-slate-400 font-medium mb-4">Don't have an account?</p>
             <div className="grid grid-cols-2 gap-3">
-              <Link to="/join-us" className="flex items-center justify-center px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-xs font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+              <Link to="/join-us" className="flex items-center justify-center px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all">
                 Become Member
               </Link>
-              <Link to="/" className="flex items-center justify-center px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-xs font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+              <Link to="/" className="flex items-center justify-center px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all">
                 ← Back to Site
               </Link>
             </div>
           </div>
         </div>
 
-        <p className="text-center mt-6 text-[10px] text-slate-600 font-bold uppercase tracking-[0.18em]">
+        <p className="text-center mt-6 text-[10px] text-slate-400 font-bold uppercase tracking-[0.18em]">
           Secured by SolutionHub Security • © {new Date().getFullYear()}
         </p>
       </div>

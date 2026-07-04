@@ -172,26 +172,6 @@ export default function UserLayout() {
           
           {/* Header Controls */}
           <div className="flex items-center gap-3">
-            {/* Theme Toggle Button */}
-            <button 
-              onClick={toggleTheme} 
-              className={`p-2.5 rounded-xl border transition-all active:scale-95 flex items-center justify-center ${
-                isDark 
-                  ? 'text-yellow-400 bg-white/5 border-white/5 hover:bg-white/10 hover:text-yellow-355' 
-                  : 'text-amber-500 bg-slate-50 border-slate-250/80 hover:bg-slate-100 hover:border-slate-300 shadow-sm'
-              }`}
-              title="Toggle theme mode"
-            >
-              {isDark ? (
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                </svg>
-              ) : (
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 12.83A9.53 9.53 0 0112 21.75c-5.25 0-9.5-4.25-9.5-9.5A9.53 9.53 0 0112 2.25c.8 0 1.57.1 2.31.29a7.5 7.5 0 00-1.74 4.82c0 4.14 3.36 7.5 7.5 7.5.3 0 .59-.02.88-.06z" />
-                </svg>
-              )}
-            </button>
 
             <Link to="/user/profile" className={`flex items-center gap-2 px-2.5 sm:px-3.5 py-2 rounded-xl text-sm transition-all border ${
               isDark 

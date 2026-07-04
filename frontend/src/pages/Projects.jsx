@@ -55,58 +55,7 @@ const Projects = () => {
         description="Browse ready-to-deploy professional projects — web apps, dashboards, and custom systems across all complexity levels."
       />
 
-      <PublicPageShell
-        badge="Ready-to-Deploy Projects"
-        title={
-          <>
-            A premium showcase of{' '}
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
-              professional projects
-            </span>
-          </>
-        }
-        description="Browse our prebuilt project catalogue across multiple complexity levels. Pick your match or request a custom build."
-        actions={[
-          { label: 'Custom Build', to: '/custom-project' },
-          { label: 'Talk to Us', to: '/contact', variant: 'secondary' },
-        ]}
-        pills={['Prebuilt Projects', 'Source Code Available', 'Custom Builds', 'All Complexity Levels']}
-        stats={stats}
-        aside={
-          <div className="space-y-5">
-            <div>
-              <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-indigo-600 dark:text-indigo-400">Our Catalogue</div>
-              <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-900 dark:text-slate-100 leading-snug">
-                Projects organized for quick decisions
-              </h3>
-            </div>
-            <div className="space-y-3">
-              {[
-                { emoji: '🟢', level: 'Basic', desc: 'Simple web apps for beginners and small businesses.' },
-                { emoji: '🟡', level: 'Medium', desc: 'Full-featured apps with dashboards and integrations.' },
-                { emoji: '🟣', level: 'Advanced', desc: 'Complex systems with AI, real-time, and enterprise features.' },
-              ].map((item) => (
-                <div key={item.level} className="flex items-start gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-4 dark:border-white/8 dark:bg-white/4">
-                  <span className="text-xl leading-none mt-0.5">{item.emoji}</span>
-                  <div>
-                    <div className="text-sm font-bold text-slate-900 dark:text-slate-100">{item.level}</div>
-                    <p className="text-xs leading-5 text-slate-600 dark:text-slate-400 mt-0.5">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="rounded-2xl border border-indigo-200/70 bg-gradient-to-br from-indigo-50 to-blue-50/50 p-5 dark:border-indigo-500/15 dark:from-indigo-500/8 dark:to-blue-500/5">
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <div className="text-sm font-bold text-slate-900 dark:text-slate-100">Need something unique?</div>
-              </div>
-              <p className="text-sm leading-6 text-slate-600 dark:text-slate-400">
-                We build fully custom projects tailored to your requirements and timeline.
-              </p>
-            </div>
-          </div>
-        }
-      >
+      <PublicPageShell hideHeader>
         <PublicSection className="space-y-8">
           {/* Filter Section */}
           <PublicGlassCard className="p-7 space-y-5">

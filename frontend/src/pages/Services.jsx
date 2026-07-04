@@ -159,58 +159,7 @@ const Services = () => {
         description="Explore web development, technical support, repair, and creative services from AmitSolutionHub — professional, fast, and mobile-friendly."
       />
 
-      <PublicPageShell
-        badge="Professional Service Stack"
-        title={
-          <>
-            Comprehensive IT Solutions for{' '}
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
-              Modern Business
-            </span>
-          </>
-        }
-        description="End-to-end software solutions, digital marketing, managed services, and strategic consultation — all under one roof. We transform ideas into powerful digital realities."
-        actions={[
-          { label: 'Start Your Project', to: '/contact' },
-          { label: 'View Our Work', to: '/projects', variant: 'secondary' },
-        ]}
-        pills={['Web Development', 'Mobile Apps', 'Cloud & DevOps', 'Digital Marketing', 'Internships', 'Managed Services']}
-        stats={stats}
-        aside={
-          <div className="space-y-5">
-            <div>
-              <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-indigo-600 dark:text-indigo-400">Why Choose Us</div>
-              <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-900 dark:text-slate-100 leading-snug">
-                Your trusted partner for digital transformation
-              </h3>
-            </div>
-            <div className="space-y-3">
-              {[
-                { icon: '⚡', text: 'Fast turnaround with no compromise on quality' },
-                { icon: '🎯', text: '360° solutions — design, develop, deploy, support' },
-                { icon: '🔒', text: 'Transparent pricing with no hidden costs' },
-                { icon: '📱', text: 'Mobile-first approach for modern audiences' },
-                { icon: '🏢', text: 'MSME registered with in-house infrastructure' },
-                { icon: '✅', text: 'AICTE approved with certified processes' },
-              ].map((item) => (
-                <div key={item.text} className="flex items-start gap-3 rounded-2xl border border-slate-200/70 bg-white/80 p-4 dark:border-white/8 dark:bg-white/4">
-                  <span className="text-lg leading-none mt-0.5">{item.icon}</span>
-                  <p className="text-sm leading-6 text-slate-600 dark:text-slate-300 font-medium">{item.text}</p>
-                </div>
-              ))}
-            </div>
-            <div className="rounded-2xl border border-indigo-200/70 bg-gradient-to-br from-indigo-50 to-blue-50 p-5 dark:border-indigo-500/15 dark:from-indigo-500/8 dark:to-blue-500/5">
-              <div className="text-sm font-bold text-slate-900 dark:text-slate-100">Internship & Training</div>
-              <p className="mt-1.5 text-sm leading-6 text-slate-600 dark:text-slate-400">
-                AICTE-approved internship programs with verified certificates, expert mentorship, and placement support.
-              </p>
-              <Link to="/courses" className="inline-flex items-center gap-1.5 mt-3 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
-                Explore Programs →
-              </Link>
-            </div>
-          </div>
-        }
-      >
+      <PublicPageShell hideHeader>
         <PublicSection className="space-y-8">
           {/* Hero Stats Banner */}
           <PublicGlassCard className="relative overflow-hidden p-0">

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { api } from '../config/api'
 import { useStore } from '../store/StoreContext'
+import chatbotLogo from '../assets/chatbot-logo.png'
 
 const WELCOME_MESSAGE = {
   role: 'assistant',
@@ -459,7 +460,9 @@ export default function AIChatbot() {
             exit={{ rotate: 90, opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            {open ? '✕' : '✦'}
+            {open ? '✕' : (
+              <img src={chatbotLogo} alt="AI Chatbot" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }} />
+            )}
           </motion.span>
         </AnimatePresence>
       </motion.button>
@@ -503,9 +506,12 @@ export default function AIChatbot() {
                 width: '40px', height: '40px', borderRadius: '50%',
                 background: 'rgba(255,255,255,0.15)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '20px', flexShrink: 0,
+                flexShrink: 0,
                 boxShadow: '0 0 12px rgba(255,255,255,0.2)',
-              }}>✦</div>
+                overflow: 'hidden'
+              }}>
+                <img src={chatbotLogo} alt="AI Chatbot" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
               <div style={{ flex: 1 }}>
                 <div style={{ color: 'white', fontWeight: 700, fontSize: '15px', fontFamily: 'Inter, system-ui, sans-serif' }}>
                   SolutionHub AI
