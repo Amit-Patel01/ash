@@ -87,9 +87,29 @@ app.use(async (req, res, next) => {
     return next();
   }
 
-  // 3. Allow Admin and Auth APIs
-  if (path.startsWith("/api/auth") || path.startsWith("/api/admin")) {
+  // 3. Allow Admin and Auth APIs, profile check, or maintenance status check
+  if (
+    path.startsWith("/api/auth") ||
+    path.startsWith("/api/admin") ||
+    path === "/api/users/me" ||
+    path.startsWith("/api/db/settings")
+  ) {
     return next();
+  }
+
+  // 4. Allow Admin and Employees to bypass maintenance mode entirely via token check
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.split("Bearer ")[1];
+    try {
+      const jwt = require("jsonwebtoken");
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret_here");
+      if (decoded && ["admin", "employee"].includes(decoded.role)) {
+        return next();
+      }
+    } catch (e) {
+      // Ignore token verification errors here; normal routing will handle it if needed
+    }
   }
 
   // If it's any other API request during maintenance, return 503

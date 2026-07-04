@@ -53,11 +53,11 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://backend-5u1w.onrender.com/api/$1"
+      "destination": "https://solutionhub-1.onrender.com/api/$1"
     },
     {
       "source": "/uploads/(.*)",
-      "destination": "https://backend-5u1w.onrender.com/uploads/$1"
+      "destination": "https://solutionhub-1.onrender.com/uploads/$1"
     },
     {
       "source": "/verify/:path*",
