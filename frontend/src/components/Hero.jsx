@@ -223,31 +223,37 @@ const WHY_CHOOSE = [
     title: 'Practical Learning',
     desc: 'Build real-world projects that simulate technical assignments in modern organizations.',
     icon: Code,
+    color: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
   },
   {
     title: 'Mentor Guidance',
     desc: 'Connect with experienced industry professionals for feedback and track optimization.',
     icon: Users,
+    color: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
   },
   {
     title: 'Flexible Online Learning',
     desc: 'Learn on your own schedule with self-paced assignments and online resources.',
     icon: Clock,
+    color: 'text-teal-500 bg-teal-500/10 border-teal-500/20',
   },
   {
     title: 'Verified Certificate',
     desc: 'Receive an official verifiable certificate with a unique tracking ID and QR code.',
     icon: Award,
+    color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
   },
   {
     title: 'Portfolio Development',
     desc: 'Develop codebases you can host on GitHub to showcase to prospective employers.',
     icon: Sparkles,
+    color: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
   },
   {
     title: 'Career Skill Development',
     desc: 'Improve your overall engineering practices, problem solving, and design patterns.',
     icon: GraduationCap,
+    color: 'text-indigo-500 bg-indigo-500/10 border-indigo-500/20',
   }
 ]
 
@@ -331,11 +337,53 @@ const FAQS = [
   }
 ]
 
+/* ── NEW: Tech stack strip data (icon-only, no external assets needed) ── */
+const TECH_STACK = [
+  { name: 'React', icon: Code, color: 'text-blue-500 bg-blue-500/10' },
+  { name: 'Node.js', icon: Terminal, color: 'text-emerald-500 bg-emerald-500/10' },
+  { name: 'Python', icon: FileCode2, color: 'text-amber-500 bg-amber-500/10' },
+  { name: 'MongoDB', icon: Database, color: 'text-teal-500 bg-teal-500/10' },
+  { name: 'AWS Cloud', icon: Cloud, color: 'text-sky-500 bg-sky-500/10' },
+  { name: 'Machine Learning', icon: Cpu, color: 'text-purple-500 bg-purple-500/10' },
+  { name: 'Cyber Security', icon: Shield, color: 'text-red-500 bg-red-500/10' },
+  { name: 'Analytics', icon: LineChart, color: 'text-indigo-500 bg-indigo-500/10' },
+]
+
+/* ── NEW: Trust / guarantee strip data ── */
+const TRUST_POINTS = [
+  {
+    title: 'Verified Certificate',
+    desc: 'Every certificate carries a unique ID and QR code that anyone can verify online.',
+    icon: Shield,
+    color: 'text-indigo-500 bg-indigo-500/10 border-indigo-500/20',
+  },
+  {
+    title: 'Mentor Support',
+    desc: 'Get your project doubts and reviews answered by real mentors, not bots.',
+    icon: Users,
+    color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
+  },
+  {
+    title: 'Lifetime Access',
+    desc: 'Keep access to your learning material and certificate record even after completion.',
+    icon: Clock,
+    color: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+  },
+]
+
 const Hero = () => {
   const { theme } = useTheme()
   const { homepageStats, testimonials, internshipCategories } = useStore()
   const isDark = theme === 'dark'
   const [activeFaq, setActiveFaq] = useState(null)
+
+  /* ── NEW: sticky announcement bar visibility on scroll (pure UI state, no backend calls) ── */
+  const [showStickyBar, setShowStickyBar] = useState(false)
+  useEffect(() => {
+    const handleScroll = () => setShowStickyBar(window.scrollY > 480)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // Icon name → Lucide component map (for DB-stored categories)
   const ICON_MAP = useMemo(() => ({
@@ -384,6 +432,41 @@ const Hero = () => {
     <>
       <SEO />
 
+      {/* ── NEW: Sticky announcement / CTA bar (pure UI, appears after scrolling) ── */}
+      <AnimatePresence>
+        {showStickyBar && (
+          <motion.div
+            initial={{ y: -60, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -60, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-bold truncate">
+                <Sparkles className="w-4 h-4 flex-shrink-0" />
+                <span className="truncate">Applications are open for the next batch — limited seats available.</span>
+              </div>
+              <Link
+                to="/signup"
+                className="flex-shrink-0 px-4 py-1.5 rounded-lg bg-white text-blue-600 text-xs font-extrabold hover:bg-slate-50 transition-colors"
+              >
+                Apply Now
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── NEW: Floating WhatsApp / Contact button (pure UI, no assets) ── */}
+      <a
+        href="/contact"
+        aria-label="Contact us"
+        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 transition-all hover:scale-105 active:scale-95"
+      >
+        <MessageSquare className="w-6 h-6" />
+      </a>
+
       <div className={`w-full min-h-screen relative overflow-hidden transition-colors duration-300 ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
         
         {/* Animated Background Grids */}
@@ -408,7 +491,7 @@ const Hero = () => {
               className="lg:col-span-7 space-y-8 text-center lg:text-left"
             >
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-white/70 dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 shadow-md">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-white dark:bg-slate-900/80 border-emerald-200 dark:border-slate-800 shadow-sm shadow-emerald-500/10">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-xs font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-350">
                   AICTE Approved Internship Programs
@@ -418,7 +501,7 @@ const Hero = () => {
               {/* Main Headline */}
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight">
                 Learn Today. <br />
-                <span className="bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
                   Build Tomorrow.
                 </span>
               </h1>
@@ -432,13 +515,14 @@ const Hero = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link 
                   to="/signup" 
-                  className="px-8 py-4 rounded-2xl font-extrabold text-sm text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/20 active:scale-95 transition-all text-center"
+                  className="group px-8 py-4 rounded-2xl font-extrabold text-sm text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:shadow-xl hover:shadow-indigo-500/30 shadow-lg shadow-blue-500/20 active:scale-95 transition-all text-center flex items-center justify-center gap-2"
                 >
                   Apply for Internship
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <a 
                   href="#categories" 
-                  className="px-8 py-4 rounded-2xl font-extrabold text-sm border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition-all text-center"
+                  className="px-8 py-4 rounded-2xl font-extrabold text-sm border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-indigo-300 hover:text-indigo-600 dark:hover:bg-slate-800 active:scale-95 transition-all text-center"
                 >
                   Explore Programs
                 </a>
@@ -448,18 +532,18 @@ const Hero = () => {
               <div className="pt-4 border-t border-slate-200/50 dark:border-slate-800/50">
                 <div className="flex flex-wrap justify-center lg:justify-start gap-2.5">
                   {[
-                    '100% Online Learning',
-                    'Verified Certificate',
-                    'Mentor Guidance',
-                    'Real Projects',
-                    'Flexible Learning',
-                    'Career-Focused Training'
+                    { label: '100% Online Learning', color: 'text-blue-600 bg-blue-500/10 border-blue-500/20' },
+                    { label: 'Verified Certificate', color: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20' },
+                    { label: 'Mentor Guidance', color: 'text-purple-600 bg-purple-500/10 border-purple-500/20' },
+                    { label: 'Real Projects', color: 'text-amber-600 bg-amber-500/10 border-amber-500/20' },
+                    { label: 'Flexible Learning', color: 'text-teal-600 bg-teal-500/10 border-teal-500/20' },
+                    { label: 'Career-Focused Training', color: 'text-indigo-600 bg-indigo-500/10 border-indigo-500/20' }
                   ].map((tag) => (
                     <span 
-                      key={tag} 
-                      className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-200/40 dark:bg-slate-900/40 text-slate-500 dark:text-slate-400 border border-slate-200/30 dark:border-slate-800/30"
+                      key={tag.label} 
+                      className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border ${tag.color} dark:bg-slate-900/40 dark:text-slate-400 dark:border-slate-800/30`}
                     >
-                      {tag}
+                      {tag.label}
                     </span>
                   ))}
                 </div>
@@ -492,8 +576,10 @@ const Hero = () => {
               {statsList.map((stat) => {
                 const IconComp = stat.icon
                 return (
-                  <div key={stat.label} className="p-6 rounded-2xl border bg-white/60 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between aspect-video">
-                    <IconComp className={`w-6 h-6 ${stat.color} mb-3`} />
+                  <div key={stat.label} className="p-6 rounded-2xl border bg-white dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between aspect-video">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${stat.color} bg-current/10`}>
+                      <IconComp className={`w-5 h-5 ${stat.color}`} />
+                    </div>
                     <div>
                       <div className="text-2xl sm:text-3xl font-black tracking-tight mb-1">
                         <Counter value={stat.value} />
@@ -529,6 +615,39 @@ const Hero = () => {
           </div>
         </section>
 
+        {/* ── NEW: TECHNOLOGIES YOU'LL WORK WITH (icon strip, no external assets) ── */}
+        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-slate-200/40 dark:border-slate-900/50">
+          <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
+            <span className="px-3 py-1 rounded-full text-xs font-bold text-purple-500 bg-purple-500/10 uppercase tracking-wider">
+              Tools & Tech
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+              Technologies You'll Work With
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+            {TECH_STACK.map((tech) => {
+              const IconComp = tech.icon
+              return (
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  whileHover={{ y: -4 }}
+                  key={tech.name}
+                  className="flex flex-col items-center gap-2.5 p-4 rounded-xl border bg-white dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:shadow-md hover:border-slate-300 transition-all"
+                >
+                  <div className={`p-2.5 rounded-lg ${tech.color}`}>
+                    <IconComp className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 text-center">{tech.name}</span>
+                </motion.div>
+              )
+            })}
+          </div>
+        </section>
+
         {/* ── INTERNSHIP CATEGORIES ── */}
         <section id="categories" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
@@ -554,7 +673,7 @@ const Hero = () => {
                   transition={{ delay: idx * 0.05, duration: 0.5 }}
                   whileHover={{ y: -6 }}
                   key={cat.title} 
-                  className="p-6 rounded-2xl border bg-white/60 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col justify-between group"
+                  className="p-6 rounded-2xl border bg-white dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:shadow-lg hover:border-blue-200 transition-all flex flex-col justify-between group"
                 >
                   <div className="space-y-4">
                     {/* Icon & Badges */}
@@ -615,8 +734,8 @@ const Hero = () => {
             {WHY_CHOOSE.map((item) => {
               const IconComp = item.icon
               return (
-                <div key={item.title} className="p-6 rounded-2xl border bg-white/60 dark:bg-slate-900/40 border-slate-200/85 dark:border-slate-800/80 flex gap-4">
-                  <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 flex-shrink-0 h-fit">
+                <div key={item.title} className="p-6 rounded-2xl border bg-white dark:bg-slate-900/40 border-slate-200/85 dark:border-slate-800/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex gap-4">
+                  <div className={`p-3 rounded-xl border flex-shrink-0 h-fit ${item.color}`}>
                     <IconComp className="w-5 h-5" />
                   </div>
                   <div className="space-y-1">
@@ -776,6 +895,29 @@ const Hero = () => {
           </div>
         </section>
 
+        {/* ── NEW: TRUST / GUARANTEE STRIP (icon-only, no assets needed) ── */}
+        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-slate-200/40 dark:border-slate-900/50">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {TRUST_POINTS.map((point) => {
+              const IconComp = point.icon
+              return (
+                <div
+                  key={point.title}
+                  className="p-6 rounded-2xl border bg-white dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-shadow flex items-start gap-4"
+                >
+                  <div className={`p-3 rounded-xl border flex-shrink-0 ${point.color}`}>
+                    <IconComp className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">{point.title}</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">{point.desc}</p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+
         {/* ── STUDENT TESTIMONIALS ── */}
         <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
@@ -798,7 +940,7 @@ const Hero = () => {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
                 key={item.name} 
-                className="p-6 rounded-2xl border bg-white/60 dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between relative shadow-sm"
+                className="p-6 rounded-2xl border bg-white dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 flex flex-col justify-between relative shadow-sm hover:shadow-md transition-shadow"
               >
                 {/* Rating stars */}
                 <div className="flex gap-1 text-amber-400 text-sm mb-4">
@@ -814,7 +956,9 @@ const Hero = () => {
 
                 {/* User row */}
                 <div className="mt-6 flex items-center gap-3 border-t border-slate-200/50 dark:border-slate-800/60 pt-4 flex-shrink-0">
-                  <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-lg">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
+                    ['bg-blue-100', 'bg-purple-100', 'bg-emerald-100'][idx % 3]
+                  }`}>
                     {item.avatar}
                   </div>
                   <div>
