@@ -100,7 +100,7 @@ const Footer = () => {
                 {[
                   { to: '/', name: 'Home' },
                   { to: '/about', name: 'About' },
-                  { to: '/courses', name: 'Courses' },
+                  { to: '/programs', name: 'Programs' },
                   { to: '/services', name: 'Services' },
                   { to: '/projects', name: 'Projects' },
                   { to: '/contact', name: 'Contact' },

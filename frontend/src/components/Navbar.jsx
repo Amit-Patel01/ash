@@ -48,6 +48,8 @@ const Navbar = () => {
   const [mobileWhyUsOpen, setMobileWhyUsOpen] = useState(false)
   const [programsDropdownOpen, setProgramsDropdownOpen] = useState(false)
   const [mobileProgramsOpen, setMobileProgramsOpen] = useState(false)
+  const [offeringsDropdownOpen, setOfferingsDropdownOpen] = useState(false)
+  const [mobileOfferingsOpen, setMobileOfferingsOpen] = useState(false)
 
   // Pull course categories for Programs sub-menu
   const { courses, courseCategories } = useStore()
@@ -82,7 +84,6 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Home',     path: '/' },
-    { name: 'Courses',  path: '/courses' },
   ]
 
   // Theme toggle component moved outside to prevent re-renders
@@ -254,6 +255,52 @@ const Navbar = () => {
                         </Link>
                       </>
                     )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Offerings Dropdown */}
+              <div
+                className="relative h-full flex items-center"
+                onMouseEnter={() => setOfferingsDropdownOpen(true)}
+                onMouseLeave={() => setOfferingsDropdownOpen(false)}
+              >
+                <button
+                  className={`relative px-2.5 lg:px-3 xl:px-5 h-12 flex items-center gap-1.5 rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
+                    isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
+                  }`}
+                >
+                  <span className="relative z-10">Offerings</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-300 ${offeringsDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {/* Floating Dropdown Card */}
+                <div
+                  className={`absolute left-0 top-[85%] mt-1 w-64 rounded-2xl border shadow-2xl transition-all duration-300 origin-top-left ${
+                    offeringsDropdownOpen
+                      ? 'opacity-100 scale-100 translate-y-0 visible'
+                      : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
+                  } ${
+                    isDark
+                      ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
+                      : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
+                  }`}
+                >
+                  <div className="p-4 text-center space-y-2">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase bg-blue-500/10 text-blue-500 dark:bg-indigo-500/10 dark:text-indigo-400">
+                      Coming Soon
+                    </span>
+                    <p className="text-xs font-semibold text-slate-550 dark:text-slate-400 leading-relaxed">
+                      New specialized courses, resource libraries, and bootcamps are on their way!
+                    </p>
                   </div>
                 </div>
               </div>
@@ -585,6 +632,38 @@ const Navbar = () => {
                 >
                   View All Courses →
                 </Link>
+              </div>
+            </div>
+
+            {/* Mobile Offerings Dropdown Accordion */}
+            <div className="flex flex-col">
+              <button
+                onClick={() => setMobileOfferingsOpen(!mobileOfferingsOpen)}
+                className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${
+                  isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-650 hover:bg-slate-50'
+                }`}
+              >
+                <span>Offerings</span>
+                <svg
+                  className={`w-4 h-4 transition-transform duration-300 ${mobileOfferingsOpen ? 'rotate-180' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              <div className={`overflow-hidden transition-all duration-300 ${mobileOfferingsOpen ? 'max-h-32 opacity-100 mt-1 pl-6 pr-4 pb-4' : 'max-h-0 opacity-0 pointer-events-none'}`}>
+                <div className={`p-4 rounded-xl border border-dashed text-center ${isDark ? 'border-white/10 bg-slate-950/20' : 'border-slate-200 bg-slate-50/50'}`}>
+                  <span className="inline-block px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase bg-blue-500/10 text-blue-500 dark:bg-indigo-500/10 dark:text-indigo-400 mb-1">
+                    Coming Soon
+                  </span>
+                  <p className="text-[11px] font-bold text-slate-450 dark:text-slate-400">
+                    New resources and bootcamps are on their way!
+                  </p>
+                </div>
               </div>
             </div>
 
