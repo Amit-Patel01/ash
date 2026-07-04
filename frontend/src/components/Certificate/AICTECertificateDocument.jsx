@@ -138,7 +138,7 @@ export default function AICTECertificateDocument({ certificate, template, classN
           }}
         >
           <p className="text-white font-bold uppercase leading-tight" style={{ fontSize: 'clamp(5px,0.68cqw,10px)', letterSpacing: '0.04em' }}>
-            AICTE<br />Approved
+            AICTE PORTAL<br />REGISTERED
           </p>
           <div className="my-[0.3cqw] h-[1px] w-[52%]" style={{ background: hexToRgba(accentColor, 0.65) }} />
           <p className="text-white/85 font-medium leading-tight" style={{ fontSize: 'clamp(3.5px,0.42cqw,6.5px)', letterSpacing: '0.08em' }}>
@@ -167,7 +167,7 @@ export default function AICTECertificateDocument({ certificate, template, classN
             <img src={AICTE_LOGO_SRC} alt="AICTE" crossOrigin="anonymous" style={{ height: 'clamp(30px,4.5cqw,65px)', width: 'auto', objectFit: 'contain' }} />
             <div className="flex flex-col justify-center">
               <p className="font-bold uppercase text-[#173F8A] leading-none" style={{ fontSize: 'clamp(7px,0.9cqw,13px)' }}>
-                AICTE APPROVED
+                AICTE PORTAL REGISTERED
               </p>
               <p className="font-semibold uppercase text-slate-600 mt-[0.2cqw] leading-none" style={{ fontSize: 'clamp(5px,0.6cqw,8px)' }}>
                 INTERNSHIP PROGRAM
@@ -238,7 +238,7 @@ export default function AICTECertificateDocument({ certificate, template, classN
           <div className="flex items-center gap-[0.6cqw] mb-[0.5cqw]">
             <div className="h-[1px] w-[clamp(16px,2.4cqw,34px)]" style={{ background: hexToRgba(accentColor, 0.6) }} />
             <p className="font-bold uppercase tracking-[0.22em]" style={{ color: navyColor, fontSize: 'clamp(7px,0.9cqw,14px)' }}>
-              AICTE RECOGNISED INTERNSHIP
+              AICTE PORTAL REGISTERED INTERNSHIP
             </p>
             <div className="h-[1px] w-[clamp(16px,2.4cqw,34px)]" style={{ background: hexToRgba(accentColor, 0.6) }} />
           </div>
@@ -300,8 +300,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
               ))
             ) : (
               <>
-                <p>has successfully completed the <span className="font-bold text-[#173F8A]">AICTE-Approved Internship Program</span></p>
-                <p>organized by Amit Solution Hub in association with All India Council for Technical Education (AICTE).</p>
+                <p>has successfully completed the <span className="font-bold text-[#173F8A]">AICTE National Internship Portal Registered Internship Program</span></p>
+                <p>organized by Amit Solution Hub, a registered organization on the AICTE National Internship Portal.</p>
                 <p>During the internship period, the student was found sincere, hardworking and</p>
                 <p>actively participated in all assigned tasks.</p>
                 <p>We wish him/her all the best for future endeavors.</p>

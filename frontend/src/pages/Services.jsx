@@ -536,7 +536,7 @@ const Services = () => {
                   <div className="space-y-3">
                     {[
                       '360° in-house capabilities — no outsourcing',
-                      'MSME registered with AICTE approved processes',
+                      'MSME Registered & AICTE National Internship Portal Registered Organization',
                       'End-to-end project ownership from design to deployment',
                       'Dedicated support teams for every service vertical',
                     ].map((point) => (

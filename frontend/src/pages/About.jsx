@@ -806,7 +806,7 @@ const About = () => {
                   <span className="abt-hero-grad">That Actually Work</span>
                 </h1>
                 <p className="abt-hero-sub">
-                  AmitSolutionHub is an MSME-registered and AICTE-approved organization delivering premium web development, custom software solutions, and internship mentorship to students and businesses nationwide.
+                  AmitSolutionHub is an MSME-registered and AICTE National Internship Portal Registered Organization delivering premium web development, custom software solutions, and internship mentorship to students and businesses nationwide.
                 </p>
                 <div className="abt-hero-stats">
                   {HERO_STATS.map(({ num, label }) => (
@@ -837,7 +837,7 @@ const About = () => {
                   </div>
                   <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
                     {[
-                      { label:'AICTE Approved', color:'#10b981' },
+                      { label:'AICTE Registered', color:'#10b981' },
                       { label:'Govt. Verified', color:'#3b82f6' },
                     ].map(({ label, color }) => (
                       <div key={label} style={{ background:'rgba(var(--bg-subtle), 0.6)', border:'1px solid rgba(var(--border), 0.5)', borderRadius:10, padding:'8px 12px', display:'flex', alignItems:'center', gap:6 }}>

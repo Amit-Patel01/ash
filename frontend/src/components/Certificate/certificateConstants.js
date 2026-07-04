@@ -2,7 +2,7 @@ import aicteLogo from './AICTE Logo Vector.svg .png';
 
 export const AICTE_LOGO_SRC = aicteLogo;
 export const AICTE_PREVIEW_CERTIFICATE_ID = 'ASH-AICTE-2026-001';
-export const AICTE_CERTIFICATE_PARAGRAPH = 'This is to certify that the above-named candidate has successfully completed the AICTE-approved internship program conducted by Amit Solution Hub. The internship included guided learning, assigned project work, practical training, and performance evaluation with verified participation.';
+export const AICTE_CERTIFICATE_PARAGRAPH = 'This is to certify that the above-named candidate has successfully completed the internship program conducted by Amit Solution Hub (AICTE National Internship Portal Registered Organization). The internship included guided learning, assigned project work, practical training, and performance evaluation with verified participation.';
 
 export const COLORS = {
   navy: '#1e3a8a',
