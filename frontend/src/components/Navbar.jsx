@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import brandLogo from '../assets/brand-logo.png'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
@@ -86,6 +87,12 @@ const Navbar = () => {
     { name: 'Home',     path: '/' },
   ]
 
+  const dropdownVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: -8 },
+    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] } },
+    exit: { opacity: 0, scale: 0.95, y: -8, transition: { duration: 0.15 } },
+  }
+
   // Theme toggle component moved outside to prevent re-renders
 
   return (
@@ -95,7 +102,7 @@ const Navbar = () => {
         : `border-slate-200/80 ${scrolled ? 'bg-white/80 backdrop-blur-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)]' : 'bg-white/50 backdrop-blur-xl'}`
     }`}>
       {/* Animated Glow */}
-      <div className={`absolute -inset-x-0 bottom-[-20px] h-20 blur-3xl opacity-35 pointer-events-none ${isDark ? 'bg-gradient-to-b from-indigo-500/10 to-transparent' : 'bg-gradient-to-b from-blue-400/10 to-transparent'}`} />
+      <div className={`absolute -inset-x-0 bottom-[-20px] h-20 blur-3xl opacity-40 pointer-events-none animate-pulse ${isDark ? 'bg-gradient-to-r from-indigo-500/20 via-purple-500/15 to-pink-500/10' : 'bg-gradient-to-r from-blue-400/15 via-indigo-400/10 to-purple-400/10'}`} style={{ animationDuration: '4s' }} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`
@@ -108,7 +115,7 @@ const Navbar = () => {
             <Link to="/" className="relative z-10 flex items-center group flex-shrink-0 outline-none">
               <div className="relative overflow-hidden rounded-xl px-3 py-1.5 transform transition-all duration-500 group-hover:scale-105 group-hover:-rotate-1">
                 {/* Radial Glow on Hover */}
-                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 blur-lg transition-opacity duration-500 pointer-events-none ${isDark ? 'bg-indigo-500/20' : 'bg-blue-500/15'}`} />
+                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 blur-lg transition-opacity duration-500 pointer-events-none ${isDark ? 'bg-gradient-to-br from-indigo-500/30 to-purple-500/20' : 'bg-gradient-to-br from-blue-500/20 to-purple-500/15'}`} />
 
                 <img
                   src={brandLogo}
@@ -134,6 +141,15 @@ const Navbar = () => {
                 25% { left: 150%; }
                 100% { left: 150%; }
               }
+              @keyframes navGradientShift {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+              }
+              .nav-active-pill {
+                background-size: 200% 200%;
+                animation: navGradientShift 3s ease infinite;
+              }
             `}} />
 
             {/* Desktop Links */}
@@ -146,13 +162,13 @@ const Navbar = () => {
                     to={link.path}
                     className={`relative px-2.5 lg:px-3 xl:px-5 h-full flex items-center rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 group outline-none overflow-hidden ${
                       isActive
-                        ? isDark ? 'text-indigo-300 bg-indigo-500/15 shadow-md' : 'text-blue-700 bg-white/90 shadow-md'
+                        ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-500/30 via-purple-500/25 to-indigo-500/30 shadow-md' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md'
                         : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
                     }`}
                   >
                     <span className="relative z-10">{link.name}</span>
                     {isActive && (
-                      <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-400' : 'bg-blue-600'}`} />
+                      <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-300' : 'bg-white'}`} />
                     )}
                   </Link>
                 )
@@ -163,13 +179,13 @@ const Navbar = () => {
                 to="/projects"
                 className={`relative px-2.5 lg:px-3 xl:px-5 h-full flex items-center rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 group outline-none overflow-hidden ${
                   location.pathname === '/projects'
-                    ? isDark ? 'text-indigo-300 bg-indigo-500/15 shadow-md' : 'text-blue-700 bg-white/90 shadow-md'
+                    ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-500/30 via-purple-500/25 to-indigo-500/30 shadow-md' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md'
                     : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
                 }`}
               >
                 <span className="relative z-10">Project</span>
                 {location.pathname === '/projects' && (
-                  <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-400' : 'bg-blue-600'}`} />
+                  <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-300' : 'bg-white'}`} />
                 )}
               </Link>
 
@@ -182,7 +198,7 @@ const Navbar = () => {
                 <button
                   className={`relative px-2.5 lg:px-3 xl:px-5 h-12 flex items-center gap-1.5 rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
                     isProgramsActive
-                      ? isDark ? 'text-indigo-300 bg-indigo-500/15' : 'text-blue-700 bg-white/95 shadow-md'
+                      ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-500/30 via-purple-500/25 to-indigo-500/30' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md'
                       : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
                   }`}
                 >
@@ -197,66 +213,70 @@ const Navbar = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                   {isProgramsActive && (
-                    <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-400' : 'bg-blue-600'}`} />
+                    <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-300' : 'bg-white'}`} />
                   )}
                 </button>
 
                 {/* Programs Dropdown Panel */}
-                <div
-                  className={`absolute left-0 top-[85%] mt-1 w-64 rounded-2xl border shadow-2xl transition-all duration-300 origin-top-left ${
-                    programsDropdownOpen
-                      ? 'opacity-100 scale-100 translate-y-0 visible'
-                      : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
-                  } ${
-                    isDark
-                      ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
-                      : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
-                  }`}
-                >
-                  <div className="p-2">
-                    {/* All Programs link */}
-                    <Link
-                      to="/programs"
-                      className={`flex items-center gap-2 px-4 py-2.5 text-sm font-black rounded-xl transition-all duration-200 ${
-                        location.pathname === '/programs'
-                          ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
-                          : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                <AnimatePresence>
+                  {programsDropdownOpen && (
+                    <motion.div
+                      variants={dropdownVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      className={`absolute left-0 top-[85%] mt-1 w-64 rounded-2xl border shadow-2xl origin-top-left ${
+                        isDark
+                          ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
+                          : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
                       }`}
                     >
-                      <span className="text-base">🎓</span>
-                      All Programs
-                    </Link>
-
-                    {domainLinks.length > 0 && (
-                      <>
-                        <div className={`my-1.5 h-px mx-3 ${isDark ? 'bg-white/5' : 'bg-slate-100'}`} />
-                        <p className={`px-4 py-1 text-[10px] font-black uppercase tracking-[0.15em] ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>Domains</p>
-                        {domainLinks.map(domain => (
-                          <Link
-                            key={domain}
-                            to={`/courses?domain=${encodeURIComponent(domain)}`}
-                            className={`block px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 truncate ${
-                              location.search === `?domain=${encodeURIComponent(domain)}` && location.pathname === '/courses'
-                                ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
-                                : isDark ? 'hover:bg-white/5 hover:text-white text-slate-400' : 'hover:bg-slate-50 hover:text-blue-600 text-slate-600'
-                            }`}
-                          >
-                            {domain}
-                          </Link>
-                        ))}
-                        <div className={`my-1.5 h-px mx-3 ${isDark ? 'bg-white/5' : 'bg-slate-100'}`} />
+                      <div className="p-2">
+                        {/* All Programs link */}
                         <Link
-                          to="/courses"
-                          className={`block px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 ${
-                            isDark ? 'hover:bg-white/5 hover:text-white text-slate-400' : 'hover:bg-slate-50 hover:text-blue-600 text-slate-500'
+                          to="/programs"
+                          className={`flex items-center gap-2 px-4 py-2.5 text-sm font-black rounded-xl transition-all duration-200 ${
+                            location.pathname === '/programs'
+                              ? isDark ? 'bg-gradient-to-r from-indigo-500/25 to-purple-500/20 text-indigo-300' : 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700'
+                              : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
                           }`}
                         >
-                          View All Courses →
+                          <span className="text-base">🎓</span>
+                          All Programs
                         </Link>
-                      </>
-                    )}
-                  </div>
-                </div>
+
+                        {domainLinks.length > 0 && (
+                          <>
+                            <div className={`my-1.5 h-px mx-3 ${isDark ? 'bg-white/5' : 'bg-slate-100'}`} />
+                            <p className={`px-4 py-1 text-[10px] font-black uppercase tracking-[0.15em] ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>Domains</p>
+                            {domainLinks.map(domain => (
+                              <Link
+                                key={domain}
+                                to={`/courses?domain=${encodeURIComponent(domain)}`}
+                                className={`block px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 truncate ${
+                                  location.search === `?domain=${encodeURIComponent(domain)}` && location.pathname === '/courses'
+                                    ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
+                                    : isDark ? 'hover:bg-white/5 hover:text-white text-slate-400' : 'hover:bg-slate-50 hover:text-blue-600 text-slate-600'
+                                }`}
+                              >
+                                {domain}
+                              </Link>
+                            ))}
+                            <div className={`my-1.5 h-px mx-3 ${isDark ? 'bg-white/5' : 'bg-slate-100'}`} />
+                            <Link
+                              to="/courses"
+                              className={`block px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 ${
+                                isDark ? 'hover:bg-white/5 hover:text-white text-slate-400' : 'hover:bg-slate-50 hover:text-blue-600 text-slate-500'
+                              }`}
+                            >
+                              View All Courses →
+                            </Link>
+                          </>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Offerings Dropdown */}
@@ -283,26 +303,30 @@ const Navbar = () => {
                 </button>
 
                 {/* Floating Dropdown Card */}
-                <div
-                  className={`absolute left-0 top-[85%] mt-1 w-64 rounded-2xl border shadow-2xl transition-all duration-300 origin-top-left ${
-                    offeringsDropdownOpen
-                      ? 'opacity-100 scale-100 translate-y-0 visible'
-                      : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
-                  } ${
-                    isDark
-                      ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
-                      : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
-                  }`}
-                >
-                  <div className="p-4 text-center space-y-2">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase bg-blue-500/10 text-blue-500 dark:bg-indigo-500/10 dark:text-indigo-400">
-                      Coming Soon
-                    </span>
-                    <p className="text-xs font-semibold text-slate-550 dark:text-slate-400 leading-relaxed">
-                      New specialized courses, resource libraries, and bootcamps are on their way!
-                    </p>
-                  </div>
-                </div>
+                <AnimatePresence>
+                  {offeringsDropdownOpen && (
+                    <motion.div
+                      variants={dropdownVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      className={`absolute left-0 top-[85%] mt-1 w-64 rounded-2xl border shadow-2xl origin-top-left ${
+                        isDark
+                          ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
+                          : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
+                      }`}
+                    >
+                      <div className="p-4 text-center space-y-2">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-sm">
+                          Coming Soon
+                        </span>
+                        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 leading-relaxed">
+                          New specialized courses, resource libraries, and bootcamps are on their way!
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Why Us Dropdown */}
@@ -314,7 +338,7 @@ const Navbar = () => {
                 <button
                   className={`relative px-2.5 lg:px-3 xl:px-5 h-12 flex items-center gap-1.5 rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
                     isWhyUsActive
-                      ? isDark ? 'text-indigo-300 bg-indigo-500/15' : 'text-blue-700 bg-white/95 shadow-md'
+                      ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-500/30 via-purple-500/25 to-indigo-500/30' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md'
                       : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
                   }`}
                 >
@@ -329,45 +353,49 @@ const Navbar = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                   {isWhyUsActive && (
-                    <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-400' : 'bg-blue-600'}`} />
+                    <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-300' : 'bg-white'}`} />
                   )}
                 </button>
 
                 {/* Floating Dropdown Card */}
-                <div
-                  className={`absolute left-0 top-[85%] mt-1 w-52 rounded-2xl border shadow-2xl transition-all duration-300 origin-top-left ${
-                    whyUsDropdownOpen
-                      ? 'opacity-100 scale-100 translate-y-0 visible'
-                      : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
-                  } ${
-                    isDark
-                      ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
-                      : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
-                  }`}
-                >
-                  <div className="p-2 space-y-1">
-                    <Link
-                      to="/services"
-                      className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
-                        location.pathname === '/services'
-                          ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
-                          : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                <AnimatePresence>
+                  {whyUsDropdownOpen && (
+                    <motion.div
+                      variants={dropdownVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      className={`absolute left-0 top-[85%] mt-1 w-52 rounded-2xl border shadow-2xl origin-top-left ${
+                        isDark
+                          ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
+                          : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
                       }`}
                     >
-                      Our Services
-                    </Link>
-                    <Link
-                      to="/custom-project"
-                      className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
-                        location.pathname === '/custom-project'
-                          ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
-                          : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
-                      }`}
-                    >
-                      Custom Build
-                    </Link>
-                  </div>
-                </div>
+                      <div className="p-2 space-y-1">
+                        <Link
+                          to="/services"
+                          className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
+                            location.pathname === '/services'
+                              ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
+                              : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                          }`}
+                        >
+                          Our Services
+                        </Link>
+                        <Link
+                          to="/custom-project"
+                          className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
+                            location.pathname === '/custom-project'
+                              ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
+                              : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                          }`}
+                        >
+                          Custom Build
+                        </Link>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Company Dropdown */}
@@ -379,7 +407,7 @@ const Navbar = () => {
                 <button
                   className={`relative px-2.5 lg:px-3 xl:px-5 h-12 flex items-center gap-1.5 rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
                     isCompanyActive
-                      ? isDark ? 'text-indigo-300 bg-indigo-500/15' : 'text-blue-700 bg-white/95 shadow-md'
+                      ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-500/30 via-purple-500/25 to-indigo-500/30' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md'
                       : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
                   }`}
                 >
@@ -394,55 +422,59 @@ const Navbar = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
                   {isCompanyActive && (
-                    <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-400' : 'bg-blue-600'}`} />
+                    <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-300' : 'bg-white'}`} />
                   )}
                 </button>
 
                 {/* Floating Dropdown Card */}
-                <div
-                  className={`absolute left-0 top-[85%] mt-1 w-52 rounded-2xl border shadow-2xl transition-all duration-300 origin-top-left ${
-                    companyDropdownOpen
-                      ? 'opacity-100 scale-100 translate-y-0 visible'
-                      : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
-                  } ${
-                    isDark
-                      ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
-                      : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
-                  }`}
-                >
-                  <div className="p-2 space-y-1">
-                    <Link
-                      to="/about"
-                      className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
-                        location.pathname === '/about'
-                          ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
-                          : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                <AnimatePresence>
+                  {companyDropdownOpen && (
+                    <motion.div
+                      variants={dropdownVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      className={`absolute left-0 top-[85%] mt-1 w-52 rounded-2xl border shadow-2xl origin-top-left ${
+                        isDark
+                          ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
+                          : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
                       }`}
                     >
-                      About Us
-                    </Link>
-                    <Link
-                      to="/infrastructure"
-                      className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
-                        location.pathname === '/infrastructure'
-                          ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
-                          : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
-                      }`}
-                    >
-                      Our Infrastructure
-                    </Link>
-                    <Link
-                      to="/contact"
-                      className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
-                        location.pathname === '/contact'
-                          ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
-                          : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
-                      }`}
-                    >
-                      Contact Us
-                    </Link>
-                  </div>
-                </div>
+                      <div className="p-2 space-y-1">
+                        <Link
+                          to="/about"
+                          className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
+                            location.pathname === '/about'
+                              ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
+                              : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                          }`}
+                        >
+                          About Us
+                        </Link>
+                        <Link
+                          to="/infrastructure"
+                          className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
+                            location.pathname === '/infrastructure'
+                              ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
+                              : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                          }`}
+                        >
+                          Our Infrastructure
+                        </Link>
+                        <Link
+                          to="/contact"
+                          className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
+                            location.pathname === '/contact'
+                              ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
+                              : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                          }`}
+                        >
+                          Contact Us
+                        </Link>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </div>
@@ -456,7 +488,7 @@ const Navbar = () => {
                 <div className={`flex items-center gap-2 p-1 rounded-full border ${isDark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/5'}`}>
                   <Link
                     to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'student' ? '/user' : '/employee'}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-white shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 ${isDark ? 'bg-indigo-600 hover:bg-indigo-500' : 'bg-black hover:bg-slate-900'}`}
+                    className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-white shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:shadow-indigo-500/30"
                   >
                     <div className="w-6 h-6 rounded-full overflow-hidden bg-white/10 flex items-center justify-center shrink-0">
                       {avatarUrl ? (
@@ -491,7 +523,7 @@ const Navbar = () => {
                   </Link>
                   <Link
                     to="/join-us"
-                    className="relative group overflow-hidden px-3.5 lg:px-4 xl:px-5 py-2 rounded-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95"
+                    className="relative group overflow-hidden px-3.5 lg:px-4 xl:px-5 py-2 rounded-full text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95"
                   >
                     Join Us
                   </Link>
@@ -551,315 +583,367 @@ const Navbar = () => {
         </div>
 
         {/* ── Mobile Menu ── */}
-        <div className={`lg:hidden absolute top-full left-4 right-4 mt-4 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] origin-top ${isOpen ? 'opacity-100 scale-y-100 max-h-[800px]' : 'opacity-0 scale-y-95 max-h-0 pointer-events-none'}`}>
-          <div className={`border shadow-2xl rounded-3xl p-4 flex flex-col gap-2 relative overflow-hidden ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.path
-              return (
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, scaleY: 0.95, y: -10 }}
+              animate={{ opacity: 1, scaleY: 1, y: 0 }}
+              exit={{ opacity: 0, scaleY: 0.95, y: -10 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:hidden absolute top-full left-4 right-4 mt-4 overflow-hidden origin-top"
+            >
+              <div className={`border shadow-2xl rounded-3xl p-4 flex flex-col gap-2 relative overflow-hidden ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+                {/* subtle color wash */}
+                <div className={`absolute -top-16 -right-16 w-48 h-48 rounded-full blur-3xl opacity-30 pointer-events-none ${isDark ? 'bg-indigo-600' : 'bg-blue-300'}`} />
+                {navLinks.map((link) => {
+                  const isActive = location.pathname === link.path
+                  return (
+                    <Link
+                      key={link.name}
+                      to={link.path}
+                      onClick={() => setIsOpen(false)}
+                      className={`relative block px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 overflow-hidden ${
+                        isActive
+                          ? isDark ? 'text-white bg-gradient-to-r from-indigo-500/25 to-purple-500/20' : 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm'
+                          : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-600 hover:text-blue-600 hover:bg-slate-50'
+                      }`}
+                    >
+                      <span className="relative z-10 flex items-center gap-3">
+                        {isActive && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-300 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]'}`} />}
+                        {link.name}
+                      </span>
+                    </Link>
+                  )
+                })}
+
+                {/* Mobile Programs Dropdown Accordion */}
+                <div className="flex flex-col">
+                  <button
+                    onClick={() => setMobileProgramsOpen(!mobileProgramsOpen)}
+                    className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${
+                      isProgramsActive
+                        ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
+                        : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    <span className="flex items-center gap-3">
+                      {isProgramsActive && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'}`} />}
+                      Programs
+                    </span>
+                    <svg
+                      className={`w-4 h-4 transition-transform duration-300 ${mobileProgramsOpen ? 'rotate-180' : ''}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {mobileProgramsOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="overflow-hidden pl-4"
+                      >
+                        <Link
+                          to="/programs"
+                          onClick={() => setIsOpen(false)}
+                          className={`block px-6 py-3 text-sm font-black rounded-xl transition-all duration-200 ${
+                            location.pathname === '/programs'
+                              ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
+                          }`}
+                        >
+                          🎓 All Programs
+                        </Link>
+                        {domainLinks.map(domain => (
+                          <Link
+                            key={domain}
+                            to={`/courses?domain=${encodeURIComponent(domain)}`}
+                            onClick={() => setIsOpen(false)}
+                            className={`block px-6 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 mt-0.5 truncate ${
+                              isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
+                            }`}
+                          >
+                            {domain}
+                          </Link>
+                        ))}
+                        <Link
+                          to="/courses"
+                          onClick={() => setIsOpen(false)}
+                          className={`block px-6 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 mt-0.5 ${
+                            isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-blue-600'
+                          }`}
+                        >
+                          View All Courses →
+                        </Link>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Mobile Offerings Dropdown Accordion */}
+                <div className="flex flex-col">
+                  <button
+                    onClick={() => setMobileOfferingsOpen(!mobileOfferingsOpen)}
+                    className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${
+                      isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    <span>Offerings</span>
+                    <svg
+                      className={`w-4 h-4 transition-transform duration-300 ${mobileOfferingsOpen ? 'rotate-180' : ''}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {mobileOfferingsOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="overflow-hidden pl-6 pr-4"
+                      >
+                        <div className={`p-4 mb-2 rounded-xl border border-dashed text-center ${isDark ? 'border-white/10 bg-slate-950/20' : 'border-slate-200 bg-slate-50/50'}`}>
+                          <span className="inline-block px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase bg-gradient-to-r from-blue-500 to-indigo-500 text-white mb-1">
+                            Coming Soon
+                          </span>
+                          <p className="text-[11px] font-bold text-slate-400">
+                            New resources and bootcamps are on their way!
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Mobile Why Us Dropdown Accordion */}
+                <div className="flex flex-col">
+                  <button
+                    onClick={() => setMobileWhyUsOpen(!mobileWhyUsOpen)}
+                    className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${
+                      isWhyUsActive
+                        ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
+                        : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    <span className="flex items-center gap-3">
+                      {isWhyUsActive && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'}`} />}
+                      Why Us
+                    </span>
+                    <svg
+                      className={`w-4 h-4 transition-transform duration-300 ${mobileWhyUsOpen ? 'rotate-180' : ''}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {mobileWhyUsOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="overflow-hidden pl-4"
+                      >
+                        <Link
+                          to="/services"
+                          onClick={() => setIsOpen(false)}
+                          className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${
+                            location.pathname === '/services'
+                              ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
+                          }`}
+                        >
+                          Our Services
+                        </Link>
+                        <Link
+                          to="/custom-project"
+                          onClick={() => setIsOpen(false)}
+                          className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 mt-1 ${
+                            location.pathname === '/custom-project'
+                              ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
+                          }`}
+                        >
+                          Custom Build
+                        </Link>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Mobile Projects Link */}
                 <Link
-                  key={link.name}
-                  to={link.path}
+                  to="/projects"
                   onClick={() => setIsOpen(false)}
                   className={`relative block px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 overflow-hidden ${
-                    isActive
-                      ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50 shadow-sm'
+                    location.pathname === '/projects'
+                      ? isDark ? 'text-white bg-gradient-to-r from-indigo-500/25 to-purple-500/20' : 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm'
                       : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-600 hover:text-blue-600 hover:bg-slate-50'
                   }`}
                 >
                   <span className="relative z-10 flex items-center gap-3">
-                    {isActive && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'}`} />}
-                    {link.name}
+                    {location.pathname === '/projects' && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-300 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]'}`} />}
+                    Source Codes
                   </span>
                 </Link>
-              )
-            })}
 
-            {/* Mobile Programs Dropdown Accordion */}
-            <div className="flex flex-col">
-              <button
-                onClick={() => setMobileProgramsOpen(!mobileProgramsOpen)}
-                className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${
-                  isProgramsActive
-                    ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
-                    : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-650 hover:bg-slate-50'
-                }`}
-              >
-                <span className="flex items-center gap-3">
-                  {isProgramsActive && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'}`} />}
-                  Programs
-                </span>
-                <svg
-                  className={`w-4 h-4 transition-transform duration-300 ${mobileProgramsOpen ? 'rotate-180' : ''}`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              <div className={`overflow-hidden transition-all duration-300 ${mobileProgramsOpen ? 'max-h-80 opacity-100 mt-1 pl-4' : 'max-h-0 opacity-0 pointer-events-none'}`}>
-                <Link
-                  to="/programs"
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-6 py-3 text-sm font-black rounded-xl transition-all duration-200 ${
-                    location.pathname === '/programs'
-                      ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
-                      : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
-                  }`}
-                >
-                  🎓 All Programs
-                </Link>
-                {domainLinks.map(domain => (
-                  <Link
-                    key={domain}
-                    to={`/courses?domain=${encodeURIComponent(domain)}`}
-                    onClick={() => setIsOpen(false)}
-                    className={`block px-6 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 mt-0.5 truncate ${
-                      isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
+                {/* Mobile Company Dropdown */}
+                <div className="flex flex-col">
+                  <button
+                    onClick={() => setMobileCompanyOpen(!mobileCompanyOpen)}
+                    className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${
+                      isCompanyActive
+                        ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
+                        : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
                     }`}
                   >
-                    {domain}
-                  </Link>
-                ))}
-                <Link
-                  to="/courses"
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-6 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 mt-0.5 ${
-                    isDark ? 'text-slate-500 hover:text-white' : 'text-slate-400 hover:text-blue-600'
-                  }`}
-                >
-                  View All Courses →
-                </Link>
-              </div>
-            </div>
-
-            {/* Mobile Offerings Dropdown Accordion */}
-            <div className="flex flex-col">
-              <button
-                onClick={() => setMobileOfferingsOpen(!mobileOfferingsOpen)}
-                className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${
-                  isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-650 hover:bg-slate-50'
-                }`}
-              >
-                <span>Offerings</span>
-                <svg
-                  className={`w-4 h-4 transition-transform duration-300 ${mobileOfferingsOpen ? 'rotate-180' : ''}`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              <div className={`overflow-hidden transition-all duration-300 ${mobileOfferingsOpen ? 'max-h-32 opacity-100 mt-1 pl-6 pr-4 pb-4' : 'max-h-0 opacity-0 pointer-events-none'}`}>
-                <div className={`p-4 rounded-xl border border-dashed text-center ${isDark ? 'border-white/10 bg-slate-950/20' : 'border-slate-200 bg-slate-50/50'}`}>
-                  <span className="inline-block px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase bg-blue-500/10 text-blue-500 dark:bg-indigo-500/10 dark:text-indigo-400 mb-1">
-                    Coming Soon
-                  </span>
-                  <p className="text-[11px] font-bold text-slate-450 dark:text-slate-400">
-                    New resources and bootcamps are on their way!
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile Why Us Dropdown Accordion */}
-            <div className="flex flex-col">
-              <button
-                onClick={() => setMobileWhyUsOpen(!mobileWhyUsOpen)}
-                className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${
-                  isWhyUsActive
-                    ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
-                    : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-650 hover:bg-slate-50'
-                }`}
-              >
-                <span className="flex items-center gap-3">
-                  {isWhyUsActive && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'}`} />}
-                  Why Us
-                </span>
-                <svg
-                  className={`w-4 h-4 transition-transform duration-300 ${mobileWhyUsOpen ? 'rotate-180' : ''}`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              <div className={`overflow-hidden transition-all duration-300 ${mobileWhyUsOpen ? 'max-h-40 opacity-100 mt-1 pl-4' : 'max-h-0 opacity-0 pointer-events-none'}`}>
-                <Link
-                  to="/services"
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${
-                    location.pathname === '/services'
-                      ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
-                      : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
-                  }`}
-                >
-                  Our Services
-                </Link>
-                <Link
-                  to="/custom-project"
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 mt-1 ${
-                    location.pathname === '/custom-project'
-                      ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
-                      : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
-                  }`}
-                >
-                  Custom Build
-                </Link>
-              </div>
-            </div>
-
-            {/* Mobile Projects Link */}
-            <Link
-              to="/projects"
-              onClick={() => setIsOpen(false)}
-              className={`relative block px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 overflow-hidden ${
-                location.pathname === '/projects'
-                  ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50 shadow-sm'
-                  : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-650 hover:text-blue-600 hover:bg-slate-50'
-              }`}
-            >
-              <span className="relative z-10 flex items-center gap-3">
-                {location.pathname === '/projects' && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'}`} />}
-                Source Codes
-              </span>
-            </Link>
-
-            {/* Mobile Company Dropdown */}
-            <div className="flex flex-col">
-              <button
-                onClick={() => setMobileCompanyOpen(!mobileCompanyOpen)}
-                className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${
-                  isCompanyActive
-                    ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
-                    : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-650 hover:bg-slate-50'
-                }`}
-              >
-                <span className="flex items-center gap-3">
-                  {isCompanyActive && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'}`} />}
-                  Company
-                </span>
-                <svg
-                  className={`w-4 h-4 transition-transform duration-300 ${mobileCompanyOpen ? 'rotate-180' : ''}`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              <div className={`overflow-hidden transition-all duration-300 ${mobileCompanyOpen ? 'max-h-60 opacity-100 mt-1 pl-4' : 'max-h-0 opacity-0 pointer-events-none'}`}>
-                <Link
-                  to="/about"
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${
-                    location.pathname === '/about'
-                      ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
-                      : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
-                  }`}
-                >
-                  About Us
-                </Link>
-                <Link
-                  to="/infrastructure"
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 mt-1 ${
-                    location.pathname === '/infrastructure'
-                      ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
-                      : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
-                  }`}
-                >
-                  Our Infrastructure
-                </Link>
-                <Link
-                  to="/contact"
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 mt-1 ${
-                    location.pathname === '/contact'
-                      ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
-                      : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
-                  }`}
-                >
-                  Contact Us
-                </Link>
-              </div>
-            </div>
-
-            <div className={`h-px w-full my-2 ${isDark ? 'bg-slate-800' : 'bg-slate-200/50'}`} />
-
-            {/* Mobile Auth */}
-            <div className="grid grid-cols-2 gap-3 mb-2">
-              {currentUser ? (
-                <>
-                  <Link
-                    to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'student' ? '/user' : '/employee'}
-                    onClick={() => setIsOpen(false)}
-                    className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/50 transition-all duration-300 active:scale-95 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
-                  >
-                    <div className="w-7 h-7 rounded-full overflow-hidden bg-emerald-500/20 flex items-center justify-center text-xs font-black text-emerald-700 dark:text-emerald-400 shrink-0">
-                      {avatarUrl ? (
-                        <img src={avatarUrl} alt={userDisplayName} className="w-full h-full object-cover" />
-                      ) : (
-                        userDisplayName.charAt(0).toUpperCase()
-                      )}
-                    </div>
-                    Dashboard
-                  </Link>
-                  <button
-                    onClick={() => { handleLogout(); setIsOpen(false) }}
-                    className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-red-600 bg-red-50 border border-red-200/50 transition-all duration-300 active:scale-95 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
-                  >
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                      <polyline points="16 17 21 12 16 7" />
-                      <line x1="21" x2="9" y1="12" y2="12" />
+                    <span className="flex items-center gap-3">
+                      {isCompanyActive && <span className={`w-2 h-2 rounded-full ${isDark ? 'bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.8)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'}`} />}
+                      Company
+                    </span>
+                    <svg
+                      className={`w-4 h-4 transition-transform duration-300 ${mobileCompanyOpen ? 'rotate-180' : ''}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2.5}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
-                    Logout
                   </button>
-                </>
-              ) : (
-                <div className={`col-span-2 flex items-center p-1 rounded-2xl border transition-all duration-300 ${isDark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/5'}`}>
-                  <Link
-                    to="/login"
-                    onClick={() => setIsOpen(false)}
-                    className={`flex-1 text-center py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${isDark ? 'text-slate-300 hover:text-white' : 'text-slate-700 hover:text-black'}`}
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/join-us"
-                    onClick={() => setIsOpen(false)}
-                    className="flex-1 text-center py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md transition-all duration-300 active:scale-95"
-                  >
-                    Join Us
-                  </Link>
-                </div>
-              )}
-            </div>
 
-            <Link
-              to="/chat"
-              onClick={() => setIsOpen(false)}
-              className={`relative group w-full outline-none flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-base transition-all duration-300 shadow-lg ${isDark ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white hover:from-indigo-500 hover:to-blue-500' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'}`}
-            >
-              Chat with Us
-              <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
-              </svg>
-            </Link>
-          </div>
-        </div>
+                  <AnimatePresence initial={false}>
+                    {mobileCompanyOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="overflow-hidden pl-4"
+                      >
+                        <Link
+                          to="/about"
+                          onClick={() => setIsOpen(false)}
+                          className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${
+                            location.pathname === '/about'
+                              ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
+                          }`}
+                        >
+                          About Us
+                        </Link>
+                        <Link
+                          to="/infrastructure"
+                          onClick={() => setIsOpen(false)}
+                          className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 mt-1 ${
+                            location.pathname === '/infrastructure'
+                              ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
+                          }`}
+                        >
+                          Our Infrastructure
+                        </Link>
+                        <Link
+                          to="/contact"
+                          onClick={() => setIsOpen(false)}
+                          className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 mt-1 ${
+                            location.pathname === '/contact'
+                              ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
+                          }`}
+                        >
+                          Contact Us
+                        </Link>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <div className={`h-px w-full my-2 ${isDark ? 'bg-slate-800' : 'bg-slate-200/50'}`} />
+
+                {/* Mobile Auth */}
+                <div className="grid grid-cols-2 gap-3 mb-2">
+                  {currentUser ? (
+                    <>
+                      <Link
+                        to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'student' ? '/user' : '/employee'}
+                        onClick={() => setIsOpen(false)}
+                        className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/50 transition-all duration-300 active:scale-95 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
+                      >
+                        <div className="w-7 h-7 rounded-full overflow-hidden bg-emerald-500/20 flex items-center justify-center text-xs font-black text-emerald-700 dark:text-emerald-400 shrink-0">
+                          {avatarUrl ? (
+                            <img src={avatarUrl} alt={userDisplayName} className="w-full h-full object-cover" />
+                          ) : (
+                            userDisplayName.charAt(0).toUpperCase()
+                          )}
+                        </div>
+                        Dashboard
+                      </Link>
+                      <button
+                        onClick={() => { handleLogout(); setIsOpen(false) }}
+                        className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-red-600 bg-red-50 border border-red-200/50 transition-all duration-300 active:scale-95 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
+                      >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                          <polyline points="16 17 21 12 16 7" />
+                          <line x1="21" x2="9" y1="12" y2="12" />
+                        </svg>
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <div className={`col-span-2 flex items-center p-1 rounded-2xl border transition-all duration-300 ${isDark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/5'}`}>
+                      <Link
+                        to="/login"
+                        onClick={() => setIsOpen(false)}
+                        className={`flex-1 text-center py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${isDark ? 'text-slate-300 hover:text-white' : 'text-slate-700 hover:text-black'}`}
+                      >
+                        Login
+                      </Link>
+                      <Link
+                        to="/join-us"
+                        onClick={() => setIsOpen(false)}
+                        className="flex-1 text-center py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 shadow-md transition-all duration-300 active:scale-95"
+                      >
+                        Join Us
+                      </Link>
+                    </div>
+                  )}
+                </div>
+
+                <Link
+                  to="/chat"
+                  onClick={() => setIsOpen(false)}
+                  className="relative group w-full outline-none flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-base transition-all duration-300 shadow-lg bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700"
+                >
+                  Chat with Us
+                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+                  </svg>
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </nav>
   )

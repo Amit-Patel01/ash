@@ -111,7 +111,7 @@ const CustomProject = () => {
   ];
 
   return (
-    <section className="relative w-full min-h-screen pt-[140px] md:pt-[160px] pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 px-4">
+    <section className="relative w-full min-h-screen pt-10 md:pt-14 pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 px-4">
       {/* Background */}
       <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
         <div className="absolute top-20 -right-20 w-[30rem] h-[30rem] bg-blue-500/15 rounded-full blur-[100px]"></div>

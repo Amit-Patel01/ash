@@ -133,11 +133,7 @@ export default function CoursesPage() {
           content="Browse Amit Solution Hub courses and webinars with industry-focused learning paths, mentor support, and verifiable outcomes."
         />
       </Helmet>
-<br />
-<br />
-<br />
-<br />
-    <div>
+      <div className="pt-8 lg:pt-12">
 
         <section id="course-catalogue" className="mx-auto w-full max-w-7xl space-y-7 px-4 pb-16 sm:px-6 lg:px-8 lg:pb-20">
           <div className={`rounded-[30px] border p-4 shadow-[0_22px_60px_-42px_rgba(15,23,42,0.4)] backdrop-blur-xl sm:p-5 ${isDark ? 'border-white/5 bg-slate-900/60 shadow-slate-950/40' : 'border-white/85 bg-white/[0.92]'}`}>

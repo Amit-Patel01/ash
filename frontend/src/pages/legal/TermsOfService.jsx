@@ -9,7 +9,7 @@ const TermsOfService = () => {
   return (
     <>
       <SEO title="Terms of Service | AmitSolutionHub" description="Terms and conditions for utilizing AmitSolutionHub's internship and trading mentorship programs." />
-      <div className="min-h-screen pt-32 pb-20 px-4 md:px-8 bg-slate-50">
+      <div className="min-h-screen pt-10 lg:pt-14 pb-20 px-4 md:px-8 bg-slate-50">
         <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100">
           <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-8 tracking-tight">Terms of Service</h1>
           <p className="text-sm text-slate-500 mb-8 font-medium">Last updated: {new Date().toLocaleDateString()}</p>

@@ -9,7 +9,7 @@ const GrievanceCell = () => {
   return (
     <>
       <SEO title="Grievance Redressal | AmitSolutionHub" description="Submit your complaints or grievances. AmitSolutionHub is committed to a transparent and fair resolution process." />
-      <div className="min-h-screen pt-32 pb-20 px-4 md:px-8 bg-slate-50">
+      <div className="min-h-screen pt-10 lg:pt-14 pb-20 px-4 md:px-8 bg-slate-50">
         <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100">
           <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Grievance Cell</h1>
           <p className="text-sm text-slate-500 mb-10 font-medium">Committed to Student & Client Satisfaction</p>

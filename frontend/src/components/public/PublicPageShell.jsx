@@ -135,7 +135,7 @@ export default function PublicPageShell({
       <div className="pointer-events-none absolute bottom-20 left-1/3 h-64 w-64 rounded-full bg-violet-300/20 blur-[70px] dark:bg-violet-600/8 animate-float-slow" style={{ animationDelay: '-8s' }} />
 
       {!hideHeader && (
-        <PublicSection className={compact ? 'pt-24 sm:pt-28 lg:pt-32' : 'pt-28 sm:pt-32 lg:pt-36'}>
+        <PublicSection className={compact ? 'pt-12 sm:pt-16 lg:pt-20' : 'pt-16 sm:pt-20 lg:pt-24'}>
           <div className={compact
             ? 'grid gap-5 lg:grid-cols-[minmax(0,1.18fr)_320px] lg:items-start'
             : 'grid gap-6 lg:grid-cols-[minmax(0,1.12fr)_370px] lg:items-start'
@@ -220,7 +220,7 @@ export default function PublicPageShell({
       <div className={joinClasses(
         'relative z-10',
         hideHeader 
-          ? 'pt-24 sm:pt-28 lg:pt-32 pb-16 sm:pb-20'
+          ? 'pt-12 sm:pt-16 lg:pt-20 pb-16 sm:pb-20'
           : (compact ? 'pb-16 pt-8 sm:pb-20 sm:pt-10' : 'pb-20 pt-10 sm:pb-24 sm:pt-14')
       )}>
         {children}

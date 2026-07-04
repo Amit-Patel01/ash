@@ -10,6 +10,7 @@ import {
   Sparkles,
   TrendingUp,
   Video,
+  MessageCircle,
 } from 'lucide-react'
 import { useStore } from '../store/StoreContext'
 import { useTheme } from '../context/ThemeContext'
@@ -24,15 +25,16 @@ const getDomainIcon = (name = '') => {
   return BookOpen
 }
 
+// [gradient, light badge bg+border, light badge text, dark badge bg+border, dark badge text, dark tint bg for card accents]
 const GRADIENTS = [
-  ['from-violet-500 to-purple-600', 'bg-violet-50 border-violet-200', 'text-violet-700'],
-  ['from-blue-500 to-indigo-600', 'bg-blue-50 border-blue-200', 'text-blue-700'],
-  ['from-emerald-500 to-teal-600', 'bg-emerald-50 border-emerald-200', 'text-emerald-700'],
-  ['from-amber-500 to-orange-600', 'bg-amber-50 border-amber-200', 'text-amber-700'],
-  ['from-pink-500 to-rose-600', 'bg-pink-50 border-pink-200', 'text-pink-700'],
-  ['from-cyan-500 to-sky-600', 'bg-cyan-50 border-cyan-200', 'text-cyan-700'],
-  ['from-lime-500 to-green-600', 'bg-lime-50 border-lime-200', 'text-lime-700'],
-  ['from-fuchsia-500 to-pink-600', 'bg-fuchsia-50 border-fuchsia-200', 'text-fuchsia-700'],
+  ['from-violet-500 to-purple-600', 'bg-violet-50 border-violet-200', 'text-violet-700', 'bg-violet-500/10 border-violet-500/30', 'text-violet-300'],
+  ['from-blue-500 to-indigo-600', 'bg-blue-50 border-blue-200', 'text-blue-700', 'bg-blue-500/10 border-blue-500/30', 'text-blue-300'],
+  ['from-emerald-500 to-teal-600', 'bg-emerald-50 border-emerald-200', 'text-emerald-700', 'bg-emerald-500/10 border-emerald-500/30', 'text-emerald-300'],
+  ['from-amber-500 to-orange-600', 'bg-amber-50 border-amber-200', 'text-amber-700', 'bg-amber-500/10 border-amber-500/30', 'text-amber-300'],
+  ['from-pink-500 to-rose-600', 'bg-pink-50 border-pink-200', 'text-pink-700', 'bg-pink-500/10 border-pink-500/30', 'text-pink-300'],
+  ['from-cyan-500 to-sky-600', 'bg-cyan-50 border-cyan-200', 'text-cyan-700', 'bg-cyan-500/10 border-cyan-500/30', 'text-cyan-300'],
+  ['from-lime-500 to-green-600', 'bg-lime-50 border-lime-200', 'text-lime-700', 'bg-lime-500/10 border-lime-500/30', 'text-lime-300'],
+  ['from-fuchsia-500 to-pink-600', 'bg-fuchsia-50 border-fuchsia-200', 'text-fuchsia-700', 'bg-fuchsia-500/10 border-fuchsia-500/30', 'text-fuchsia-300'],
 ]
 
 export default function ProgramsPage() {
@@ -78,24 +80,24 @@ export default function ProgramsPage() {
         />
       </Helmet>
 
-      <div className="pt-24 lg:pt-28" />
 
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className={`absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full blur-[120px] opacity-20 ${isDark ? 'bg-indigo-500' : 'bg-blue-400'}`} />
-          <div className={`absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full blur-[120px] opacity-20 ${isDark ? 'bg-purple-500' : 'bg-violet-400'}`} />
+          <div className={`absolute -top-40 -left-40 w-[500px] h-[500px] rounded-full blur-[120px] opacity-30 ${isDark ? 'bg-indigo-500' : 'bg-blue-400'}`} />
+          <div className={`absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full blur-[120px] opacity-30 ${isDark ? 'bg-purple-500' : 'bg-violet-400'}`} />
+          <div className={`absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] h-[400px] rounded-full blur-[120px] opacity-20 ${isDark ? 'bg-pink-500' : 'bg-pink-300'}`} />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-20 text-center">
-          <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-black uppercase tracking-widest mb-6 ${isDark ? 'border-indigo-500/30 bg-indigo-500/10 text-indigo-300' : 'border-blue-200 bg-blue-50 text-blue-700'}`}>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8 pb-16 lg:pt-12 lg:pb-20 text-center">
+          <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-black uppercase tracking-widest mb-6 shadow-sm ${isDark ? 'border-indigo-500/40 bg-indigo-500/15 text-indigo-300' : 'border-blue-200 bg-blue-50 text-blue-700'}`}>
             <GraduationCap size={14} />
             Learning Programs
           </div>
 
           <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-black leading-tight mb-6 ${isDark ? 'text-white' : 'text-slate-900'}`}>
             Choose Your{' '}
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
               Learning Path
             </span>
           </h1>
@@ -104,14 +106,14 @@ export default function ProgramsPage() {
             Pick a domain that matches your goals. Each program offers structured courses, hands-on projects, and industry-recognized certificates.
           </p>
 
-          <div className="inline-flex items-center gap-12">
+          <div className="inline-flex items-center gap-6 sm:gap-12">
             {[
-              { value: totalCourses, label: 'Total Courses' },
-              { value: domains.length, label: 'Domains' },
+              { value: totalCourses, label: 'Total Courses', color: 'from-blue-600 to-indigo-600' },
+              { value: domains.length, label: 'Domains', color: 'from-purple-600 to-pink-600' },
             ].map(stat => (
               <div key={stat.label} className="text-center">
-                <div className={`text-3xl font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>{stat.value}</div>
-                <div className="text-xs font-semibold uppercase tracking-widest mt-1 text-slate-500">{stat.label}</div>
+                <div className={`text-3xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>{stat.value}</div>
+                <div className={`text-xs font-semibold uppercase tracking-widest mt-1 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>{stat.label}</div>
               </div>
             ))}
           </div>
@@ -123,19 +125,21 @@ export default function ProgramsPage() {
         {loading && domains.length === 0 ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className={`h-60 animate-pulse rounded-3xl border ${isDark ? 'border-slate-800 bg-slate-900' : 'border-slate-200 bg-slate-100'}`} />
+              <div key={i} className={`h-60 animate-pulse rounded-3xl border bg-gradient-to-br ${isDark ? 'border-slate-800 from-slate-900 to-slate-800/60' : 'border-slate-200 from-slate-100 to-slate-50'}`} />
             ))}
           </div>
         ) : domains.length === 0 ? (
           <div className={`flex flex-col items-center justify-center py-32 text-center ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-            <GraduationCap size={48} className="mb-4 opacity-30" />
+            <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 bg-gradient-to-br ${isDark ? 'from-indigo-500/20 to-purple-500/20' : 'from-blue-100 to-violet-100'}`}>
+              <GraduationCap size={40} className={isDark ? 'text-indigo-300' : 'text-blue-500'} />
+            </div>
             <p className="text-lg font-semibold">No programs available yet</p>
             <p className="text-sm mt-2 opacity-70">Check back soon for exciting new learning programs!</p>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {domains.map((domain) => {
-              const [gradClass, badgeBg, badgeText] = domain.gradient
+              const [gradClass, badgeBg, badgeText, darkBadgeBg, darkBadgeText] = domain.gradient
               const DomainIcon = domain.Icon
               const preview = domain.courses.slice(0, 3)
 
@@ -143,7 +147,7 @@ export default function ProgramsPage() {
                 <Link
                   key={domain.name}
                   to={`/courses?domain=${encodeURIComponent(domain.name)}`}
-                  className={`group relative flex flex-col overflow-hidden rounded-3xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
+                  className={`group relative flex flex-col overflow-hidden rounded-3xl border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
                     isDark
                       ? 'border-slate-800 bg-slate-900/80 hover:border-slate-700 hover:shadow-black/40'
                       : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-slate-200/80'
@@ -156,7 +160,7 @@ export default function ProgramsPage() {
                       <div className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${gradClass} shadow-lg`}>
                         <DomainIcon size={26} className="text-white" />
                       </div>
-                      <span className={`rounded-full border px-3 py-1 text-xs font-black ${isDark ? 'border-slate-700 bg-slate-800 text-slate-300' : `${badgeBg} ${badgeText} border`}`}>
+                      <span className={`rounded-full border px-3 py-1 text-xs font-black ${isDark ? `${darkBadgeBg} ${darkBadgeText}` : `${badgeBg} ${badgeText} border`}`}>
                         {domain.count} Course{domain.count !== 1 ? 's' : ''}
                       </span>
                     </div>
@@ -176,7 +180,7 @@ export default function ProgramsPage() {
                           <span
                             key={course.id || course._id || course.title}
                             className={`rounded-full border px-3 py-1 text-xs font-semibold max-w-[160px] truncate ${
-                              isDark ? 'border-slate-700 bg-slate-800 text-slate-400' : 'border-slate-200 bg-slate-50 text-slate-600'
+                              isDark ? `${darkBadgeBg} ${darkBadgeText}` : `${badgeBg} ${badgeText}`
                             }`}
                           >
                             {course.title}
@@ -190,9 +194,9 @@ export default function ProgramsPage() {
                       </div>
                     )}
 
-                    <div className={`mt-auto flex items-center gap-2 text-sm font-black transition-all duration-300 group-hover:gap-3 ${isDark ? 'text-indigo-400' : 'text-blue-600'}`}>
+                    <div className={`mt-auto flex items-center gap-2 text-sm font-black transition-all duration-300 group-hover:gap-3 bg-gradient-to-r ${gradClass} bg-clip-text text-transparent`}>
                       Explore Courses
-                      <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                      <ArrowRight size={16} className={`transition-transform duration-300 group-hover:translate-x-1 ${isDark ? 'text-indigo-400' : 'text-blue-600'}`} />
                     </div>
                   </div>
                 </Link>
@@ -203,8 +207,8 @@ export default function ProgramsPage() {
       </section>
 
       {/* Bottom CTA */}
-      <section className={`py-16 ${isDark ? 'bg-slate-900/50' : 'bg-slate-50'}`}>
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 text-center">
+      <section className={`relative overflow-hidden py-16 ${isDark ? 'bg-slate-900/50' : 'bg-gradient-to-br from-blue-50 via-white to-purple-50'}`}>
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 text-center relative z-10">
           <h2 className={`text-3xl font-black mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>
             Not sure where to start?
           </h2>
@@ -214,17 +218,18 @@ export default function ProgramsPage() {
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
               to="/courses"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3.5 text-sm font-black text-white shadow-lg shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-500/30"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-8 py-3.5 text-sm font-black text-white shadow-lg shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-purple-500/30"
             >
               Browse All Courses
               <ArrowRight size={16} />
             </Link>
             <Link
               to="/chat"
-              className={`inline-flex items-center gap-2 rounded-full border px-8 py-3.5 text-sm font-black transition-all duration-300 hover:-translate-y-0.5 ${
-                isDark ? 'border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700' : 'border-slate-200 bg-white text-slate-800 hover:bg-slate-50'
+              className={`inline-flex items-center gap-2 rounded-full border-2 px-8 py-3.5 text-sm font-black transition-all duration-300 hover:-translate-y-0.5 ${
+                isDark ? 'border-indigo-800 bg-slate-800 text-indigo-300 hover:bg-slate-700' : 'border-indigo-200 bg-white text-indigo-700 hover:bg-indigo-50'
               }`}
             >
+              <MessageCircle size={16} />
               Chat with Us
             </Link>
           </div>

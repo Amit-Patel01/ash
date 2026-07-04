@@ -20,7 +20,7 @@ const ProjectDetails = () => {
 
   if (loading) {
     return (
-      <section className="min-h-screen pt-28 pb-20 bg-gradient-to-br from-slate-50 to-slate-100">
+      <section className="min-h-screen pt-10 lg:pt-14 pb-20 bg-gradient-to-br from-slate-50 to-slate-100">
         <div className="max-w-5xl mx-auto px-4 animate-pulse space-y-8">
           <div className="h-80 bg-slate-200/50 rounded-3xl"></div>
           <div className="h-10 bg-slate-200/50 rounded-xl w-2/3"></div>
@@ -33,7 +33,7 @@ const ProjectDetails = () => {
 
   if (!project) {
     return (
-      <section className="min-h-screen pt-28 pb-20 bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+      <section className="min-h-screen pt-10 lg:pt-14 pb-20 bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-4">🔍</div>
           <h2 className="text-3xl font-bold text-slate-800 mb-3">Project Not Found</h2>
@@ -50,7 +50,7 @@ const ProjectDetails = () => {
   const techStack = project.tech_stack ? JSON.parse(project.tech_stack) : []
 
   return (
-    <section className="relative min-h-screen pt-28 pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
+    <section className="relative min-h-screen pt-10 lg:pt-14 pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Background */}
       <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
         <div className="absolute top-20 -right-20 w-[30rem] h-[30rem] bg-blue-500/15 rounded-full blur-[100px]"></div>
