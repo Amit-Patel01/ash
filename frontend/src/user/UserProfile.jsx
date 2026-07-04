@@ -172,10 +172,10 @@ export default function UserProfile() {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-      <div className="overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(135deg,rgba(37,99,235,0.18),rgba(15,23,42,0.94),rgba(124,58,237,0.18))] p-6 shadow-[0_30px_80px_rgba(2,6,23,0.45)]">
+      <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-[linear-gradient(135deg,rgba(37,99,235,0.10),rgba(255,255,255,0.98),rgba(217,70,239,0.10))] p-6 shadow-[0_20px_60px_rgba(148,163,184,0.35)]">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[26px] border border-white/15 bg-white/10 text-xl font-black text-white shadow-xl">
+            <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[26px] border border-white bg-gradient-to-br from-blue-500 to-fuchsia-500 text-xl font-black text-white shadow-lg">
               {avatarUrl ? (
                 <img src={avatarUrl} alt={displayName} className="h-full w-full object-cover" />
               ) : (
@@ -183,26 +183,26 @@ export default function UserProfile() {
               )}
             </div>
             <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.28em] text-blue-200/80">Account Center</p>
-              <h1 className="mt-2 text-3xl font-black tracking-tight text-white">User Profile</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
+              <p className="text-[11px] font-black uppercase tracking-[0.28em] text-blue-600">Account Center</p>
+              <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-900">User Profile</h1>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
                 Update your name, phone number, profile image, and account settings from one place. Your saved profile image will also appear across the user workspace.
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3">
-              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-500">Member Since</p>
-              <p className="mt-2 text-sm font-semibold text-white">{memberSince}</p>
+            <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3">
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-blue-500">Member Since</p>
+              <p className="mt-2 text-sm font-semibold text-slate-800">{memberSince}</p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3">
-              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-500">Role</p>
-              <p className="mt-2 text-sm font-semibold text-white capitalize">{getRoleDisplayLabel(userProfile?.role)}</p>
+            <div className="rounded-2xl border border-fuchsia-100 bg-fuchsia-50 px-4 py-3">
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-fuchsia-500">Role</p>
+              <p className="mt-2 text-sm font-semibold text-slate-800 capitalize">{getRoleDisplayLabel(userProfile?.role)}</p>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 col-span-2 sm:col-span-1">
-              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-500">Email</p>
-              <p className="mt-2 truncate text-sm font-semibold text-white">{currentUser?.email || 'student@solutionhub.com'}</p>
+            <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 col-span-2 sm:col-span-1">
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-emerald-500">Email</p>
+              <p className="mt-2 truncate text-sm font-semibold text-slate-800">{currentUser?.email || 'student@solutionhub.com'}</p>
             </div>
           </div>
         </div>
@@ -210,11 +210,11 @@ export default function UserProfile() {
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.18fr_0.82fr]">
         <div className="space-y-6">
-          <section className="rounded-[30px] border border-white/10 bg-gray-900/55 p-6 shadow-2xl backdrop-blur-xl">
+          <section className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-[0_10px_40px_rgba(148,163,184,0.25)]">
             <div className="mb-6">
-              <p className="text-[11px] font-black uppercase tracking-[0.28em] text-blue-300">Profile Details</p>
-              <h2 className="mt-2 text-2xl font-black text-white">Update your profile</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-400">
+              <p className="text-[11px] font-black uppercase tracking-[0.28em] text-blue-600">Profile Details</p>
+              <h2 className="mt-2 text-2xl font-black text-slate-900">Update your profile</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-500">
                 These details help keep your enrollments, certificates, and support conversations accurate.
               </p>
             </div>
@@ -222,8 +222,8 @@ export default function UserProfile() {
             {profileStatus.message && (
               <div className={`mb-5 rounded-2xl border px-4 py-3 text-sm ${
                 profileStatus.type === 'success'
-                  ? 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300'
-                  : 'border-rose-400/20 bg-rose-400/10 text-rose-300'
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-600'
+                  : 'border-rose-200 bg-rose-50 text-rose-600'
               }`}>
                 {profileStatus.message}
               </div>
@@ -236,7 +236,7 @@ export default function UserProfile() {
                   <input
                     value={profileForm.displayName}
                     onChange={(event) => setProfileForm(current => ({ ...current, displayName: event.target.value }))}
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-blue-400/30 focus:outline-none"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
                     required
                   />
                 </div>
@@ -246,7 +246,7 @@ export default function UserProfile() {
                     value={profileForm.phone}
                     onChange={(event) => setProfileForm(current => ({ ...current, phone: event.target.value }))}
                     placeholder="+91 98765 43210"
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-blue-400/30 focus:outline-none"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
                   />
                 </div>
                 <div>
@@ -254,7 +254,7 @@ export default function UserProfile() {
                   <input
                     value={currentUser?.email || ''}
                     disabled
-                    className="w-full cursor-not-allowed rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-500"
+                    className="w-full cursor-not-allowed rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-400"
                   />
                 </div>
                 <div>
@@ -263,15 +263,15 @@ export default function UserProfile() {
                     value={profileForm.location}
                     onChange={(event) => setProfileForm(current => ({ ...current, location: event.target.value }))}
                     placeholder="City, State"
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-blue-400/30 focus:outline-none"
+                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
                   />
                 </div>
               </div>
 
-              <div className="rounded-[26px] border border-white/10 bg-white/[0.03] p-5">
+              <div className="rounded-[26px] border border-slate-200 bg-gradient-to-br from-blue-50 via-white to-fuchsia-50 p-5">
                 <div className="flex flex-col gap-5 lg:flex-row">
                   <div className="flex items-center gap-4">
-                    <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[24px] border border-white/10 bg-white/10 text-lg font-black text-white">
+                    <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-[24px] border border-white bg-gradient-to-br from-blue-500 to-fuchsia-500 text-lg font-black text-white shadow-md">
                       {avatarUrl ? (
                         <img src={avatarUrl} alt={displayName} className="h-full w-full object-cover" />
                       ) : (
@@ -279,22 +279,22 @@ export default function UserProfile() {
                       )}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-white">Profile Photo</p>
-                      <p className="mt-1 text-xs leading-5 text-slate-400">
+                      <p className="text-sm font-semibold text-slate-800">Profile Photo</p>
+                      <p className="mt-1 text-xs leading-5 text-slate-500">
                         Upload an image or paste a photo URL to update your User Profile picture.
                       </p>
                     </div>
                   </div>
 
                   <div className="flex flex-1 flex-wrap items-center gap-3">
-                    <label className="inline-flex cursor-pointer items-center justify-center rounded-2xl border border-blue-400/20 bg-blue-400/10 px-4 py-3 text-sm font-semibold text-blue-300 transition hover:bg-blue-400/15">
+                    <label className="inline-flex cursor-pointer items-center justify-center rounded-2xl border border-blue-200 bg-blue-100 px-4 py-3 text-sm font-semibold text-blue-600 transition hover:bg-blue-200">
                       {imageLoading ? 'Uploading...' : 'Upload Image'}
                       <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={imageLoading} />
                     </label>
                     <button
                       type="button"
                       onClick={() => setProfileForm(current => ({ ...current, avatar: '' }))}
-                      className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-white/10"
+                      className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
                     >
                       Remove Image
                     </button>
@@ -307,7 +307,7 @@ export default function UserProfile() {
                     value={profileForm.avatar}
                     onChange={(event) => setProfileForm(current => ({ ...current, avatar: event.target.value }))}
                     placeholder="https://example.com/profile-photo.jpg"
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-blue-400/30 focus:outline-none"
+                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
                   />
                 </div>
               </div>
@@ -319,25 +319,25 @@ export default function UserProfile() {
                   onChange={(event) => setProfileForm(current => ({ ...current, bio: event.target.value }))}
                   rows={5}
                   placeholder="Tell us a bit about yourself, your goals, or how our team can support you better."
-                  className="w-full rounded-[24px] border border-white/10 bg-white/5 px-4 py-4 text-sm text-white placeholder:text-slate-600 focus:border-blue-400/30 focus:outline-none"
+                  className="w-full rounded-[24px] border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={profileLoading}
-                className="rounded-2xl border border-blue-400/20 bg-blue-400/10 px-5 py-3 text-sm font-semibold text-blue-300 transition hover:bg-blue-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-2xl border border-transparent bg-gradient-to-r from-blue-600 to-fuchsia-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {profileLoading ? 'Saving Profile...' : 'Save Profile'}
               </button>
             </form>
           </section>
 
-          <section className="rounded-[30px] border border-white/10 bg-gray-900/55 p-6 shadow-2xl backdrop-blur-xl">
+          <section className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-[0_10px_40px_rgba(148,163,184,0.25)]">
             <div className="mb-6">
-              <p className="text-[11px] font-black uppercase tracking-[0.28em] text-amber-300">Security</p>
-              <h2 className="mt-2 text-2xl font-black text-white">Password Reset</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-400">
+              <p className="text-[11px] font-black uppercase tracking-[0.28em] text-amber-500">Security</p>
+              <h2 className="mt-2 text-2xl font-black text-slate-900">Password Reset</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-500">
                 For security, password changes are handled through a secure email reset link.
               </p>
             </div>
@@ -345,21 +345,21 @@ export default function UserProfile() {
             {passwordStatus.message && (
               <div className={`mb-5 rounded-2xl border px-4 py-3 text-sm ${
                 passwordStatus.type === 'success'
-                  ? 'border-emerald-400/20 bg-emerald-400/10 text-emerald-300'
-                  : 'border-rose-400/20 bg-rose-400/10 text-rose-300'
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-600'
+                  : 'border-rose-200 bg-rose-50 text-rose-600'
               }`}>
                 {passwordStatus.message}
               </div>
             )}
 
             <form onSubmit={handlePasswordSubmit} className="space-y-4">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
-                We will email a secure password reset link to <span className="font-semibold text-white">{currentUser?.email || 'your account email'}</span>.
+              <div className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-4 text-sm leading-6 text-slate-600">
+                We will email a secure password reset link to <span className="font-semibold text-slate-900">{currentUser?.email || 'your account email'}</span>.
               </div>
               <button
                 type="submit"
                 disabled={passwordLoading}
-                className="rounded-2xl border border-amber-400/20 bg-amber-400/10 px-5 py-3 text-sm font-semibold text-amber-300 transition hover:bg-amber-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-2xl border border-transparent bg-gradient-to-r from-amber-500 to-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-md transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {passwordLoading ? 'Sending Reset Link...' : 'Send Password Reset Link'}
               </button>
@@ -368,12 +368,12 @@ export default function UserProfile() {
         </div>
 
         <div className="space-y-6">
-          <section className="rounded-[30px] border border-white/10 bg-gray-900/55 p-6 shadow-2xl backdrop-blur-xl">
-            <p className="text-[11px] font-black uppercase tracking-[0.28em] text-blue-300">Live Preview</p>
-            <h2 className="mt-2 text-2xl font-black text-white">Profile Snapshot</h2>
-            <div className="mt-5 rounded-[26px] border border-white/10 bg-white/[0.03] p-5">
+          <section className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-[0_10px_40px_rgba(148,163,184,0.25)]">
+            <p className="text-[11px] font-black uppercase tracking-[0.28em] text-blue-600">Live Preview</p>
+            <h2 className="mt-2 text-2xl font-black text-slate-900">Profile Snapshot</h2>
+            <div className="mt-5 rounded-[26px] border border-slate-200 bg-gradient-to-br from-blue-50 via-white to-fuchsia-50 p-5">
               <div className="flex items-center gap-4">
-                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-white/10 text-lg font-black text-white">
+                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl border border-white bg-gradient-to-br from-blue-500 to-fuchsia-500 text-lg font-black text-white shadow-md">
                   {avatarUrl ? (
                     <img src={avatarUrl} alt={displayName} className="h-full w-full object-cover" />
                   ) : (
@@ -381,23 +381,23 @@ export default function UserProfile() {
                   )}
                 </div>
                 <div>
-                  <p className="text-lg font-black text-white">{displayName}</p>
-                  <p className="mt-1 text-sm text-slate-400">{currentUser?.email || 'student@solutionhub.com'}</p>
+                  <p className="text-lg font-black text-slate-900">{displayName}</p>
+                  <p className="mt-1 text-sm text-slate-500">{currentUser?.email || 'student@solutionhub.com'}</p>
                 </div>
               </div>
 
               <div className="mt-5 grid grid-cols-1 gap-3">
-                <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">Phone</p>
-                  <p className="mt-2 text-sm font-semibold text-white">{profileForm.phone || 'Not added yet'}</p>
+                <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-blue-500">Phone</p>
+                  <p className="mt-2 text-sm font-semibold text-slate-800">{profileForm.phone || 'Not added yet'}</p>
                 </div>
-                <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">Location</p>
-                  <p className="mt-2 text-sm font-semibold text-white">{profileForm.location || 'Not added yet'}</p>
+                <div className="rounded-2xl border border-fuchsia-100 bg-fuchsia-50 px-4 py-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-fuchsia-500">Location</p>
+                  <p className="mt-2 text-sm font-semibold text-slate-800">{profileForm.location || 'Not added yet'}</p>
                 </div>
-                <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">Bio</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-300">
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-emerald-500">Bio</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
                     {profileForm.bio || 'Your short bio preview will appear here.'}
                   </p>
                 </div>
@@ -405,9 +405,9 @@ export default function UserProfile() {
             </div>
           </section>
 
-          <section className="rounded-[30px] border border-white/10 bg-gray-900/55 p-6 shadow-2xl backdrop-blur-xl">
-            <p className="text-[11px] font-black uppercase tracking-[0.28em] text-emerald-300">Why It Matters</p>
-            <div className="mt-4 space-y-3 text-sm leading-6 text-slate-300">
+          <section className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-[0_10px_40px_rgba(148,163,184,0.25)]">
+            <p className="text-[11px] font-black uppercase tracking-[0.28em] text-emerald-500">Why It Matters</p>
+            <div className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
               <p>An updated profile keeps your identity clear across enrollments and support conversations.</p>
               <p>Your saved profile image will appear consistently in the user sidebar and top navigation.</p>
               <p>Keeping your phone number and location current improves course coordination and certificate accuracy.</p>

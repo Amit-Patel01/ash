@@ -9,111 +9,92 @@ import {
   Layers,
   Sparkles,
   ArrowRight,
-  Database,
-  CloudLightning,
-  Workflow,
-  Palette,
-  Code,
-  Smartphone,
   Globe,
-  BarChart3,
-  Shield,
-  TrendingUp,
-  MessageSquare,
+  BrainCircuit,
+  Rocket,
+  Code,
   FileText,
-  Mail,
-  Settings,
-  GitBranch,
-  Container,
-  Cloud,
-  Lock,
-  Search,
-  CloudCog,
-  FlaskConical,
-  Coins,
-  ShoppingCart,
-  LineChart,
-  Building2,
   Megaphone,
-  Lightbulb,
-  Fingerprint,
-  LineChart as LineChartIcon
+  GraduationCap,
+  Award,
+  Users,
+  CandlestickChart
 } from 'lucide-react'
 
 const coreInfrastructure = [
   {
     icon: Server,
-    title: 'End-to-End IT Infrastructure',
-    desc: 'We are a 360-degree software solution development company with the in-house resources for the entire software development life-cycle.',
-    details: ['Full-cycle development capability', 'In-house team of experts', 'Scalable architecture', 'Enterprise-grade security']
+    title: 'End-to-End Training Infrastructure',
+    desc: 'We are a full-cycle skill-training organisation with in-house resources to design, mentor, and deliver every stage of our internship programs.',
+    details: ['Structured curriculum design', 'In-house mentor team', 'Project-based learning tracks', 'Certificate & assessment pipeline']
   },
   {
     icon: Network,
-    title: 'Redundant High-Speed Networks',
-    desc: 'Equipped with multiple gigabit fiber-optic connections to ensure seamless collaboration, quick build deployments, and uninterrupted communication.',
-    details: ['Gigabit Redundant Links', 'Low Latency Routing', 'Global CDN Integration', 'Enterprise-grade VPN']
+    title: 'Reliable Online Learning Setup',
+    desc: 'High-speed connectivity and stable platforms ensure smooth live sessions, quick doubt resolution, and uninterrupted access to learning material.',
+    details: ['Low-latency live classes', 'Cloud-hosted resources', 'Recorded session backups', 'Secure student portal access']
   },
   {
     icon: Cpu,
-    title: 'Modern Workstation Labs',
-    desc: 'Our developer labs feature the latest computing technology, configured to handle demanding compilation, machine learning, and designer workflows.',
-    details: ['Latest Multi-core Processors', 'High-speed DDR5 RAM', 'NVIDIA RTX Studio GPUs', 'Ultrawide High-Color Monitors']
+    title: 'Modern Practice Environments',
+    desc: 'Our labs and virtual environments are configured to handle real coding practice, AI model training, and live market simulation for stock trading modules.',
+    details: ['Dedicated coding sandboxes', 'AI/ML practice environments', 'Simulated trading dashboards', 'Cross-device accessibility']
   },
   {
     icon: ShieldCheck,
-    title: 'Robust Security & Monitoring',
-    desc: 'Protecting intellectual property and project data through continuous firewall analysis, encryption at rest and transit, and secure physical access control.',
-    details: ['Biometric Access Control', '24/7 Security Operations', 'E2E Data Encryption', 'Intrusion Detection Systems']
+    title: 'Data & Student Privacy Protection',
+    desc: 'Student records, project submissions, and certificate data are protected through encryption, access control, and secure record-keeping practices.',
+    details: ['Encrypted student records', 'Controlled admin access', 'Secure certificate issuance', 'Privacy-first data handling']
   },
   {
     icon: Tv,
-    title: 'Smart Meeting & Presentation Rooms',
-    desc: 'Equipped with smart screens, immersive audio, and unified conferencing systems to enable high-definition client demos and team sprints.',
-    details: ['Interactive Smart Boards', 'High-fidelity Conference Audio', '4K Video Conferencing', 'Wireless Screen Sharing']
+    title: 'Interactive Live Sessions',
+    desc: 'Screen-sharing, live coding walkthroughs, and interactive Q&A tools make every session hands-on rather than one-way lectures.',
+    details: ['Live code-along sessions', 'Interactive doubt sessions', 'Screen-share demonstrations', 'Recorded session library']
   },
   {
     icon: Layers,
-    title: 'Scalable Software Architecture Stack',
-    desc: 'Using modern microservices and containerized workflows to guarantee deployment flexibility, fast loading speeds, and robust application scaling.',
-    details: ['Docker Containerization', 'CI/CD Automated Pipelines', 'Microservices Architecture', 'Real-time Analytics Logging']
+    title: 'Scalable Program Architecture',
+    desc: 'Our internship tracks are modular by design, allowing learners to progress from fundamentals to advanced, project-based, industry-relevant work.',
+    details: ['Beginner to advanced tracks', 'Real-world mini projects', 'Structured weekly milestones', 'Progress tracking for mentors']
   }
 ]
 
 const services = [
   {
-    category: 'Design',
-    items: ['Layout', 'Graphics design', 'Logo & Branding', 'Product design', 'Prototype', 'Video'],
-    icon: Palette,
-    color: 'from-pink-500 to-rose-600'
-  },
-  {
-    category: 'Development',
-    items: ['Website', 'Mobile app', 'Browser extension', 'Custom scripts', 'Automation'],
+    category: 'Web Development Internship',
+    items: ['HTML, CSS & JavaScript', 'React & Modern Frontend', 'Node.js Backend Basics', 'Full-stack Mini Projects', 'Git & Deployment'],
     icon: Code,
     color: 'from-blue-500 to-cyan-600'
   },
   {
-    category: 'DevOps & Cloud',
-    items: ['DevOps', 'Cloud management', 'Security monitoring', 'Deployment', 'AWS', 'Kubernetes', 'Docker'],
-    icon: Cloud,
+    category: 'AI Internship',
+    items: ['Python for AI', 'Machine Learning Basics', 'Neural Networks Intro', 'AI Project Building', 'Real-world Use Cases'],
+    icon: BrainCircuit,
     color: 'from-indigo-500 to-purple-600'
   },
   {
-    category: 'Marketing',
-    items: ['SEO', 'SMM', 'PPC', 'Content writing', 'Email marketing'],
-    icon: Megaphone,
+    category: 'Stock Market Internship',
+    items: ['Market Fundamentals', 'Technical Analysis', 'Trading Strategies', 'Risk Management', 'Live Market Practice'],
+    icon: CandlestickChart,
+    color: 'from-emerald-500 to-teal-600'
+  },
+  {
+    category: 'Emerging Technologies',
+    items: ['Cloud Computing Basics', 'Automation Tools', 'App Development', 'Data Analysis', 'Industry Trends'],
+    icon: Rocket,
     color: 'from-orange-500 to-amber-600'
   },
   {
-    category: 'Managed Services',
-    items: ['Website management', 'Affiliate management', 'Web research', 'Data entry', 'Data analysis'],
-    icon: Settings,
-    color: 'from-teal-500 to-emerald-600'
+    category: 'Mentorship & Support',
+    items: ['1:1 Doubt Sessions', 'Resume & Portfolio Help', 'Project Reviews', 'Mock Interviews', 'Career Guidance'],
+    icon: Users,
+    color: 'from-rose-500 to-red-600'
   },
   {
-    category: 'Consultation',
-    items: ['Business consultation', 'Technical architecture', 'Growth hacking', 'Security audits', 'Market research'],
-    icon: Lightbulb,
+    category: 'Certification',
+    items: ['Completion Certificate', 'Skill Assessment', 'Project Showcase', 'Verified Credentials', 'LOR on Request'],
+    icon: Award,
     color: 'from-violet-500 to-purple-600'
   }
 ]
@@ -121,118 +102,110 @@ const services = [
 const capabilities = [
   {
     icon: Globe,
-    title: 'Website Development',
-    desc: 'Highly scalable and responsive website development using the latest technologies',
+    title: 'Web Development Training',
+    desc: 'Hands-on training in building responsive, modern websites using current frontend and backend technologies',
     color: 'from-blue-500 to-indigo-600'
   },
   {
-    icon: Smartphone,
-    title: 'Android & iOS Mobile App Development',
-    desc: 'Fluid speed mobile app development for Android and iOS to tap into your mobile audience',
+    icon: BrainCircuit,
+    title: 'Artificial Intelligence Internship',
+    desc: 'Practical exposure to AI and machine learning concepts through guided projects and real datasets',
     color: 'from-indigo-500 to-purple-600'
   },
   {
-    icon: Globe,
-    title: 'Browser Extension Development',
-    desc: 'To enhance the functionality of a web browser, we develop extensions that are performance-friendly',
-    color: 'from-cyan-500 to-blue-600'
-  },
-  {
-    icon: FlaskConical,
-    title: 'Data Science',
-    desc: 'Identifying the data that stands out in some way, through measuring, tracking, and recording metrics',
+    icon: CandlestickChart,
+    title: 'Stock Market Training',
+    desc: 'Understanding market fundamentals, chart reading, and strategy building through simulated practice',
     color: 'from-emerald-500 to-teal-600'
   },
   {
-    icon: Coins,
-    title: 'Crypto Token Launching',
-    desc: 'Provide all consultation and market-fit guidelines to launch crypto tokens',
+    icon: Rocket,
+    title: 'Emerging Technologies Program',
+    desc: 'Introduction to fast-growing tech areas so learners stay ahead of industry shifts',
     color: 'from-amber-500 to-orange-600'
   },
   {
-    icon: ShoppingCart,
-    title: 'NFT Marketplace',
-    desc: 'Our expertise in NFT and eCommerce makes the NFT marketplace user-friendly, intuitive, and reliable',
-    color: 'from-purple-500 to-pink-600'
-  },
-  {
-    icon: LineChart,
-    title: 'Business Analytics Platform',
-    desc: 'Business analytics solutions are used by companies to retrieve, analyze, & transform data into useful insights',
+    icon: FileText,
+    title: 'Project-Based Learning',
+    desc: 'Every track ends with real project work so learners have something concrete to showcase',
     color: 'from-sky-500 to-blue-600'
   },
   {
-    icon: Building2,
-    title: 'Enterprise Development',
-    desc: 'Enhanced business solutions, products, and services to fit the client\'s requirements and market-size',
+    icon: GraduationCap,
+    title: 'Structured Internship Batches',
+    desc: 'Fixed-duration batches with clear milestones, mentor check-ins, and defined outcomes',
     color: 'from-slate-500 to-zinc-600'
   },
   {
-    icon: Megaphone,
-    title: 'Digital Marketing',
-    desc: 'Marketing guidance to reach and capture the widest audience possible at the right scale',
+    icon: Award,
+    title: 'Certification on Completion',
+    desc: 'Verified certificates issued on successful completion of the program and final assessment',
+    color: 'from-purple-500 to-pink-600'
+  },
+  {
+    icon: Users,
+    title: 'Personal Mentorship',
+    desc: 'Dedicated mentor support for doubts, code reviews, and guidance throughout the internship',
     color: 'from-rose-500 to-red-600'
+  },
+  {
+    icon: Megaphone,
+    title: 'Career Guidance',
+    desc: 'Resume building, interview preparation, and guidance on next steps after the internship',
+    color: 'from-teal-500 to-emerald-600'
   }
 ]
 
 const techStack = [
   {
-    category: 'Front end',
+    category: 'Web Development',
     techs: [
-      { name: 'Angular JS', icon: '⚡' },
-      { name: 'TypeScript', icon: '📘' },
+      { name: 'HTML5', icon: '🌐' },
+      { name: 'CSS3', icon: '🎨' },
+      { name: 'JavaScript', icon: '📜' },
       { name: 'React JS', icon: '⚛️' },
-      { name: 'Next JS', icon: '▲' },
-      { name: 'Vue JS', icon: '💚' },
-      { name: 'Tailwind CSS', icon: '🌊' },
-      { name: 'Bootstrap', icon: '🅱️' },
-      { name: 'HTML5', icon: '🌐' }
-    ]
-  },
-  {
-    category: 'Backend',
-    techs: [
       { name: 'Node.js', icon: '🟢' },
+      { name: 'Tailwind CSS', icon: '🌊' },
+      { name: 'Git & GitHub', icon: '🔧' },
+      { name: 'REST APIs', icon: '🔗' }
+    ]
+  },
+  {
+    category: 'AI & Data',
+    techs: [
       { name: 'Python', icon: '🐍' },
-      { name: 'Java', icon: '☕' },
-      { name: 'PHP', icon: '🐘' },
-      { name: 'MySQL', icon: '🗄️' },
-      { name: 'MongoDB', icon: '🍃' },
-      { name: 'PostgreSQL', icon: '🐘' },
-      { name: 'Firebase', icon: '🔥' }
+      { name: 'NumPy', icon: '🔢' },
+      { name: 'Pandas', icon: '📊' },
+      { name: 'Scikit-learn', icon: '🤖' },
+      { name: 'TensorFlow Basics', icon: '🧠' },
+      { name: 'Data Visualization', icon: '📈' }
     ]
   },
   {
-    category: 'Mobile',
+    category: 'Stock Market Tools',
     techs: [
-      { name: 'React Native', icon: '📱' },
+      { name: 'TradingView', icon: '📉' },
+      { name: 'Technical Indicators', icon: '📐' },
+      { name: 'Chart Patterns', icon: '📊' },
+      { name: 'Market Simulators', icon: '🕹️' }
+    ]
+  },
+  {
+    category: 'Mobile & Emerging Tech',
+    techs: [
       { name: 'Flutter', icon: '🦋' },
-      { name: 'Swift', icon: '🍎' },
-      { name: 'Kotlin', icon: '🤖' },
-      { name: 'Android', icon: '📲' },
-      { name: 'iOS', icon: '📱' }
+      { name: 'Android Basics', icon: '📲' },
+      { name: 'Cloud Fundamentals', icon: '☁️' },
+      { name: 'Automation Tools', icon: '⚙️' }
     ]
   },
   {
-    category: 'DevOps & Cloud',
+    category: 'Learning Platform',
     techs: [
-      { name: 'AWS', icon: '☁️' },
-      { name: 'Docker', icon: '🐳' },
-      { name: 'Kubernetes', icon: '☸️' },
-      { name: 'Jenkins', icon: '🔧' },
-      { name: 'GitHub Actions', icon: '🔄' },
-      { name: 'Terraform', icon: '🏗️' }
-    ]
-  },
-  {
-    category: 'Third Party Integration',
-    techs: [
-      { name: 'REST APIs', icon: '🔗' },
-      { name: 'GraphQL', icon: '◈' },
-      { name: 'WebSocket', icon: '🔌' },
-      { name: 'OAuth', icon: '🔐' },
-      { name: 'Stripe', icon: '💳' },
-      { name: 'Twilio', icon: '📞' }
+      { name: 'Live Classes', icon: '🎥' },
+      { name: 'Recorded Sessions', icon: '📼' },
+      { name: 'Assignments Portal', icon: '📝' },
+      { name: 'Progress Tracking', icon: '✅' }
     ]
   }
 ]
@@ -253,16 +226,16 @@ export default function Infrastructure() {
         <div className="text-center max-w-4xl mx-auto mb-20">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:bg-cyan-500/10 dark:text-cyan-300 text-xs font-bold uppercase tracking-wider mb-6">
             <Sparkles className="h-3.5 w-3.5" />
-            End-to-End IT Infrastructure
+            End-to-End Internship & Training Infrastructure
           </div>
           <h1 className="text-4xl font-black tracking-tight text-slate-950 dark:text-white sm:text-5.5xl leading-tight mb-6">
-            End-to-End In-House IT Infrastructure
+            Structured Programs. Real Mentorship. Real Skills.
           </h1>
           <p className="text-lg leading-8 text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-            We are a 360-degree software solution development company with the in-house resources for the entire software development life-cycle.
+            AmitSolutionHub is a skill-based internship and training company built to give learners hands-on, project-driven experience — not just theory.
           </p>
           <p className="text-base leading-7 text-slate-500 dark:text-slate-400 max-w-3xl mx-auto mt-4">
-            To create impactful software and solutions used by global customers. We are also embracing Web 3.0 technologies to maintain best-in-class standards for our products.
+            From Web Development to AI, Stock Market, and Emerging Technologies — every program is designed around real projects, mentor support, and industry-relevant outcomes.
           </p>
         </div>
 
@@ -283,7 +256,7 @@ export default function Infrastructure() {
               Our Infrastructure
             </h2>
             <p className="text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              A state-of-the-art technical foundation designed to deliver high speed, maximum reliability, and secure environments.
+              A dependable learning foundation designed to deliver quality instruction, mentorship, and secure student data handling.
             </p>
           </div>
 
@@ -331,10 +304,10 @@ export default function Infrastructure() {
         <div className="mb-24">
           <div className="text-center mb-14">
             <h2 className="text-3xl font-black tracking-tight text-slate-950 dark:text-white mb-4">
-              What We Do
+              What We Offer
             </h2>
             <p className="text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              To create impactful software and solutions used by global customers. We are also embracing Web 3.0 technologies to maintain best-in-class standards for our products.
+              Skill-based internship programs designed to take learners from fundamentals to real, project-ready capability.
             </p>
           </div>
 
@@ -377,10 +350,10 @@ export default function Infrastructure() {
         <div className="mb-24">
           <div className="text-center mb-14">
             <h2 className="text-3xl font-black tracking-tight text-slate-950 dark:text-white mb-4">
-              Development Capabilities
+              Program Highlights
             </h2>
             <p className="text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              End-to-end business solution development and related services
+              What learners get in every AmitSolutionHub internship track
             </p>
           </div>
 
@@ -414,7 +387,7 @@ export default function Infrastructure() {
               About Us
             </h2>
             <p className="text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Our Technology Stack Exposure — We have expertise in multiple cutting-edge technologies
+              Tools & Technologies Covered Across Our Programs
             </p>
           </div>
 
@@ -453,23 +426,23 @@ export default function Infrastructure() {
           </div>
 
           <div className="relative z-10 max-w-2xl mx-auto">
-            <h2 className="text-3xl font-black sm:text-4xl mb-4">Ready to Build Something Great?</h2>
+            <h2 className="text-3xl font-black sm:text-4xl mb-4">Ready to Start Your Internship?</h2>
             <p className="mx-auto max-w-xl text-sm sm:text-base leading-6 text-blue-100 font-medium">
-              Let's discuss your project requirements and how our end-to-end infrastructure can help bring your vision to life.
+              Explore our Web Development, AI, Stock Market, and Emerging Technologies programs and take the first step toward real, hands-on skills.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/contact"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-white px-6 text-sm font-black text-blue-700 shadow-lg transition hover:scale-105 hover:bg-slate-50"
               >
-                Discuss Your Project
+                Get in Touch
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 to="/services"
                 className="inline-flex h-12 items-center justify-center rounded-2xl border border-white/20 bg-white/5 px-6 text-sm font-black text-white hover:bg-white/10"
               >
-                Explore Services
+                Explore Programs
               </Link>
             </div>
           </div>

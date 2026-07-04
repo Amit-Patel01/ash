@@ -5,6 +5,7 @@ import Footer from './Footer'
 import GlowBackground from './GlowBackground'
 import AnnouncementPopup from './AnnouncementPopup'
 import DarkModeBackgroundFix from './DarkModeBackgroundFix'
+import GuidanceModal from './GuidanceModal'
 import { useTheme } from '../context/ThemeContext'
 
 const Layout = () => {
@@ -38,6 +39,7 @@ const Layout = () => {
       <DarkModeBackgroundFix />
       {!hideGlowBackground && <GlowBackground />}
       {!hideAnnouncement && <AnnouncementPopup />}
+      {!hideNavbar && <GuidanceModal />}
       
       <div className="relative z-10 flex flex-col min-h-screen w-full overflow-x-hidden">
         {!hideNavbar && <Navbar />}

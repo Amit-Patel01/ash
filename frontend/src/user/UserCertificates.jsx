@@ -99,10 +99,10 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
   if (isGrid) {
     return (
       <div
-        className="rounded-[28px] p-5 md:p-6 transition-all duration-300 hover:scale-[1.02] flex flex-col justify-between aspect-square h-full"
+        className="rounded-[28px] p-5 md:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between aspect-square h-full bg-white shadow-[0_10px_30px_rgba(148,163,184,0.25)]"
         style={{
-          background: `linear-gradient(135deg, ${hexToRgba(template.accentColor, 0.15)}, rgba(17, 24, 39, 0.95))`,
-          border: `1px solid ${hexToRgba(template.accentColor, 0.2)}`,
+          background: `linear-gradient(135deg, ${hexToRgba(template.accentColor, 0.10)}, rgba(255, 255, 255, 0.98))`,
+          border: `1px solid ${hexToRgba(template.accentColor, 0.25)}`,
         }}
       >
         <div className="flex flex-col h-full justify-between">
@@ -111,28 +111,28 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
               <p className="text-[10px] font-bold uppercase tracking-[0.24em]" style={{ color: template.accentColor }}>
                 {template.sealLabel}
               </p>
-              <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-emerald-300">
+              <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.18em] text-emerald-600">
                 Verified
               </span>
             </div>
             
-            <h2 className="mt-4 text-lg font-black text-white line-clamp-2 leading-snug">{documentLabel}</h2>
+            <h2 className="mt-4 text-lg font-black text-slate-900 line-clamp-2 leading-snug">{documentLabel}</h2>
             {certificate.courseName && (
               <p className="mt-2 text-xs font-semibold truncate" style={{ color: template.accentColor }}>
                 Course: {certificate.courseName}
               </p>
             )}
-            <p className="mt-1 text-xs text-slate-300">
+            <p className="mt-1 text-xs text-slate-500">
               Issued to: {certificate.userName || currentUser?.displayName || 'Student'}
             </p>
-            <p className="mt-0.5 text-[11px] text-slate-500">{issueDate}</p>
+            <p className="mt-0.5 text-[11px] text-slate-400">{issueDate}</p>
           </div>
 
           <div>
-            <div className="mt-4 pt-4 border-t border-white/5 flex gap-2">
+            <div className="mt-4 pt-4 border-t border-slate-100 flex gap-2">
               <button
                 onClick={() => setModalOpen(true)}
-                className="flex-1 rounded-xl py-2 text-xs font-bold text-slate-950 transition-colors text-center"
+                className="flex-1 rounded-xl py-2 text-xs font-bold text-white transition-colors text-center shadow-sm"
                 style={{ backgroundColor: template.accentColor }}
               >
                 View
@@ -140,13 +140,13 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
               <button
                 onClick={() => handleDownload('pdf')}
                 disabled={downloading === 'pdf'}
-                className="flex-1 rounded-xl border border-amber-400/20 bg-amber-400/10 py-2 text-xs font-semibold text-amber-300 hover:bg-amber-400/15 transition disabled:opacity-50"
+                className="flex-1 rounded-xl border border-amber-200 bg-amber-50 py-2 text-xs font-semibold text-amber-600 hover:bg-amber-100 transition disabled:opacity-50"
               >
                 {downloading === 'pdf' ? 'PDF...' : 'PDF'}
               </button>
               <Link
                 to={`/verify?id=${certificate.certificate_id}`}
-                className="rounded-xl border border-white/10 bg-white/5 px-2.5 py-2 text-xs text-slate-200 hover:bg-white/10 flex items-center justify-center"
+                className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-2 text-xs text-slate-600 hover:bg-slate-100 flex items-center justify-center"
                 title="Verify Credential Link"
               >
                 🔗
@@ -163,10 +163,10 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
 
   return (
     <div
-      className="rounded-[32px] p-5 md:p-6 transition-all"
+      className="rounded-[32px] p-5 md:p-6 transition-all bg-white shadow-[0_10px_30px_rgba(148,163,184,0.25)]"
       style={{
-        background: `linear-gradient(135deg, ${hexToRgba(template.accentColor, 0.18)}, rgba(15, 23, 42, 0.96))`,
-        border: `1px solid ${hexToRgba(template.accentColor, 0.18)}`,
+        background: `linear-gradient(135deg, ${hexToRgba(template.accentColor, 0.12)}, rgba(255, 255, 255, 0.98))`,
+        border: `1px solid ${hexToRgba(template.accentColor, 0.22)}`,
       }}
     >
       <div className="flex items-start justify-between gap-4 flex-wrap">
@@ -174,31 +174,31 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
           <p className="text-[11px] font-bold uppercase tracking-[0.34em]" style={{ color: template.accentColor }}>
             {template.sealLabel}
           </p>
-          <h2 className="mt-3 text-2xl font-black text-white">{documentLabel}</h2>
-          <p className="mt-2 text-sm text-slate-300">
+          <h2 className="mt-3 text-2xl font-black text-slate-900">{documentLabel}</h2>
+          <p className="mt-2 text-sm text-slate-600">
             Issued to {certificate.userName || currentUser?.displayName || 'Student'} on {issueDate}
           </p>
-          <p className="mt-1 text-sm text-slate-400">{certificate.courseName || template.organizationName}</p>
+          <p className="mt-1 text-sm text-slate-500">{certificate.courseName || template.organizationName}</p>
         </div>
-        <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-emerald-300">
+        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-emerald-600">
           Verified
         </span>
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">Document ID</p>
-          <p className="mt-3 break-all font-mono text-sm font-bold text-white">{certificate.certificate_id}</p>
+          <p className="mt-3 break-all font-mono text-sm font-bold text-slate-900">{certificate.certificate_id}</p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">Issued By</p>
-          <p className="mt-3 text-sm font-semibold text-white">{certificate.templateSnapshot?.issuerName || template.issuerName}</p>
-          <p className="mt-1 text-xs text-slate-400">{certificate.templateSnapshot?.issuerRole || template.issuerRole}</p>
+          <p className="mt-3 text-sm font-semibold text-slate-900">{certificate.templateSnapshot?.issuerName || template.issuerName}</p>
+          <p className="mt-1 text-xs text-slate-500">{certificate.templateSnapshot?.issuerRole || template.issuerRole}</p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">Support</p>
-          <p className="mt-3 text-sm font-semibold text-white">{certificate.templateSnapshot?.organizationName || template.organizationName}</p>
-          <p className="mt-1 text-xs text-slate-400">{certificate.templateSnapshot?.supportEmail || template.supportEmail}</p>
+          <p className="mt-3 text-sm font-semibold text-slate-900">{certificate.templateSnapshot?.organizationName || template.organizationName}</p>
+          <p className="mt-1 text-xs text-slate-500">{certificate.templateSnapshot?.supportEmail || template.supportEmail}</p>
         </div>
       </div>
 
@@ -222,34 +222,34 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <button
               onClick={() => setModalOpen(true)}
-              className="rounded-2xl px-6 py-3 text-sm font-bold text-slate-950 transition-colors shadow-lg shadow-amber-500/20 animate-pulse hover:animate-none"
+              className="rounded-2xl px-6 py-3 text-sm font-bold text-white transition-colors shadow-lg"
               style={{ backgroundColor: template.accentColor }}
             >
               View {documentMeta.shortLabel}
             </button>
             <Link
               to={`/verify?id=${certificate.certificate_id}`}
-              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+              className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
             >
               Verify Link
             </Link>
             <button
               onClick={() => onCopy(certificate.certificate_id)}
-              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+              className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
             >
               {copiedId === certificate.certificate_id ? 'Copied ID' : 'Copy ID'}
             </button>
             <button
               onClick={() => handleDownload('png')}
               disabled={downloading === 'png'}
-              className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-2xl border border-cyan-200 bg-cyan-50 px-4 py-3 text-sm font-semibold text-cyan-600 transition hover:bg-cyan-100 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {downloading === 'png' ? 'Generating PNG...' : 'Download PNG'}
             </button>
             <button
               onClick={() => handleDownload('pdf')}
               disabled={downloading === 'pdf'}
-              className="rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-300 transition hover:bg-amber-400/15 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-600 transition hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {downloading === 'pdf' ? 'Generating PDF...' : 'Download PDF'}
             </button>
@@ -259,7 +259,7 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
               href={linkedInAddUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-2xl border border-blue-400/20 bg-blue-400/10 px-4 py-3 text-sm font-semibold text-blue-300 transition hover:bg-blue-400/15 flex items-center gap-1.5 shadow-lg shadow-blue-500/5"
+              className="rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-600 transition hover:bg-blue-100 flex items-center gap-1.5 shadow-sm"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
               Add to LinkedIn
@@ -268,7 +268,7 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
               href={linkedInShareUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-2xl border border-slate-400/20 bg-slate-400/10 px-4 py-3 text-sm font-semibold text-slate-300 transition hover:bg-slate-400/15 flex items-center gap-1.5"
+              className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 flex items-center gap-1.5"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
               Share Feed
@@ -277,7 +277,7 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
               href={xShareUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/10 flex items-center gap-1.5"
+              className="rounded-2xl border border-slate-800 bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 flex items-center gap-1.5"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               Share on X
@@ -338,28 +338,28 @@ export default function UserCertificates() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Certificates & Letters</h1>
-          <p className="text-sm text-gray-400 mt-1">Your issued certificates, internship credentials, and offer letters will appear here.</p>
+          <h1 className="text-2xl font-bold text-slate-900">Certificates & Letters</h1>
+          <p className="text-sm text-slate-500 mt-1">Your issued certificates, internship credentials, and offer letters will appear here.</p>
         </div>
 
-        <div className="bg-gray-900/60 border border-white/5 rounded-3xl p-12 text-center">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-3xl mb-5">
+        <div className="bg-white border border-slate-200 rounded-3xl p-12 text-center shadow-[0_10px_30px_rgba(148,163,184,0.25)]">
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-3xl mb-5">
             🏆
           </div>
-          <h2 className="text-xl font-bold text-white">No documents yet</h2>
-          <p className="text-sm text-gray-400 mt-2 max-w-md mx-auto">
+          <h2 className="text-xl font-bold text-slate-900">No documents yet</h2>
+          <p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">
             Issued course certificates, internship certificates, and offer letters appear here with their verification links.
           </p>
           <div className="flex items-center justify-center gap-3 mt-6 flex-wrap">
             <Link
               to="/user/my-courses"
-              className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm font-medium text-white hover:bg-white/10 transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors"
             >
               Go to My Courses
             </Link>
             <Link
               to="/courses"
-              className="px-5 py-2.5 rounded-xl bg-amber-500 text-gray-950 text-sm font-bold hover:bg-amber-400 transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-bold hover:opacity-90 transition-colors shadow-md"
             >
               Browse Courses
             </Link>
@@ -375,19 +375,19 @@ export default function UserCertificates() {
         <div>
           <div className="flex items-center gap-2">
             <h1 
-              className={`text-2xl font-bold text-white transition-all ${selectedFolder ? 'cursor-pointer hover:text-blue-400' : ''}`}
+              className={`text-2xl font-bold text-slate-900 transition-all ${selectedFolder ? 'cursor-pointer hover:text-blue-600' : ''}`}
               onClick={() => setSelectedFolder(null)}
             >
               Certificates & Letters
             </h1>
             {selectedFolder && (
               <>
-                <span className="text-gray-500">/</span>
-                <span className="text-sm font-semibold text-blue-400 max-w-[200px] truncate md:max-w-none">{selectedFolder}</span>
+                <span className="text-slate-400">/</span>
+                <span className="text-sm font-semibold text-blue-600 max-w-[200px] truncate md:max-w-none">{selectedFolder}</span>
               </>
             )}
           </div>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             {selectedFolder 
               ? `${groupedCertificates[selectedFolder]?.length || 0} document(s) in this folder` 
               : `${myCertificates.length} verified documents ready to share, download, and verify`
@@ -398,22 +398,22 @@ export default function UserCertificates() {
           {selectedFolder && (
             <button
               onClick={() => setSelectedFolder(null)}
-              className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm font-medium text-gray-300 hover:bg-white/10 hover:text-white transition-all flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all flex items-center gap-1.5"
             >
               ← Back to Folders
             </button>
           )}
 
-          <div className="flex bg-gray-950/60 rounded-xl p-1 border border-white/5">
+          <div className="flex bg-slate-100 rounded-xl p-1 border border-slate-200">
             <button
               onClick={() => setViewMode('grid')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${viewMode === 'grid' ? 'bg-white/10 text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${viewMode === 'grid' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
             >
               Grid
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${viewMode === 'list' ? 'bg-white/10 text-white shadow-md' : 'text-gray-400 hover:text-white'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${viewMode === 'list' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'}`}
             >
               List
             </button>
@@ -421,7 +421,7 @@ export default function UserCertificates() {
           
           <Link
             to="/user/my-courses"
-            className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm font-medium text-gray-300 hover:bg-white/10 transition-colors"
+            className="px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
           >
             Back to My Courses
           </Link>
@@ -434,24 +434,24 @@ export default function UserCertificates() {
             <div
               key={courseName}
               onClick={() => setSelectedFolder(courseName)}
-              className="group cursor-pointer rounded-3xl border border-white/5 bg-gray-900/40 p-6 hover:bg-gray-800/40 hover:border-white/10 hover:scale-[1.02] transition-all duration-300 shadow-xl flex items-center gap-5 relative overflow-hidden"
+              className="group cursor-pointer rounded-3xl border border-slate-200 bg-white p-6 hover:bg-slate-50 hover:border-blue-200 hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_30px_rgba(148,163,184,0.2)] flex items-center gap-5 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700"></div>
+              <div className="absolute top-0 right-0 w-24 h-24 bg-amber-100/60 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700"></div>
               
-              <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-4xl shadow-md transition-transform duration-300 group-hover:rotate-6">
+              <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-4xl shadow-sm transition-transform duration-300 group-hover:rotate-6">
                 📁
               </div>
               
               <div className="flex-1 min-w-0">
-                <h3 className="text-base font-bold text-white truncate group-hover:text-blue-400 transition-colors">
+                <h3 className="text-base font-bold text-slate-900 truncate group-hover:text-blue-600 transition-colors">
                   {courseName}
                 </h3>
-                <p className="text-xs text-gray-400 mt-1 font-medium">
+                <p className="text-xs text-slate-500 mt-1 font-medium">
                   {certList.length} Verified Document{certList.length !== 1 ? 's' : ''}
                 </p>
               </div>
               
-              <div className="text-gray-500 group-hover:text-white transition-colors">
+              <div className="text-slate-400 group-hover:text-blue-600 transition-colors">
                 <svg className="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
@@ -478,4 +478,4 @@ export default function UserCertificates() {
       )}
     </div>
   )
-}
+} 

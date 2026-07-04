@@ -46,7 +46,7 @@ const Navbar = () => {
   const [whyUsDropdownOpen, setWhyUsDropdownOpen] = useState(false)
   const [mobileWhyUsOpen, setMobileWhyUsOpen] = useState(false)
 
-  const isCompanyActive = location.pathname === '/infrastructure' || location.pathname === '/contact'
+  const isCompanyActive = location.pathname === '/about' || location.pathname === '/infrastructure' || location.pathname === '/contact'
   const isWhyUsActive = location.pathname.startsWith('/services') || location.hash === '#why-choose-us'
 
   const avatarUrl = userProfile?.avatar || userProfile?.photoURL || currentUser?.photoURL || currentUser?.avatar || ''
@@ -72,7 +72,6 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Home',     path: '/' },
-    { name: 'About',    path: '/about' },
     { name: 'Courses',  path: '/courses' },
   ]
 
@@ -148,6 +147,21 @@ const Navbar = () => {
                 )
               })}
 
+              {/* Projects Link */}
+              <Link
+                to="/projects"
+                className={`relative px-2.5 lg:px-3 xl:px-5 h-full flex items-center rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 group outline-none overflow-hidden ${
+                  location.pathname === '/projects'
+                    ? isDark ? 'text-indigo-300 bg-indigo-500/15 shadow-md' : 'text-blue-700 bg-white/90 shadow-md'
+                    : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
+                }`}
+              >
+                <span className="relative z-10">Project Selling</span>
+                {location.pathname === '/projects' && (
+                  <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-400' : 'bg-blue-600'}`} />
+                )}
+              </Link>
+
               {/* Why Us Dropdown */}
               <div
                 className="relative h-full flex items-center"
@@ -213,21 +227,6 @@ const Navbar = () => {
                 </div>
               </div>
 
-              {/* Projects Link */}
-              <Link
-                to="/projects"
-                className={`relative px-2.5 lg:px-3 xl:px-5 h-full flex items-center rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 group outline-none overflow-hidden ${
-                  location.pathname === '/projects'
-                    ? isDark ? 'text-indigo-300 bg-indigo-500/15 shadow-md' : 'text-blue-700 bg-white/90 shadow-md'
-                    : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
-                }`}
-              >
-                <span className="relative z-10">Source Codes</span>
-                {location.pathname === '/projects' && (
-                  <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-400' : 'bg-blue-600'}`} />
-                )}
-              </Link>
-
               {/* Company Dropdown */}
               <div
                 className="relative h-full flex items-center"
@@ -269,6 +268,16 @@ const Navbar = () => {
                   }`}
                 >
                   <div className="p-2 space-y-1">
+                    <Link
+                      to="/about"
+                      className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
+                        location.pathname === '/about'
+                          ? isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-blue-50 text-blue-700'
+                          : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
+                      }`}
+                    >
+                      About Us
+                    </Link>
                     <Link
                       to="/infrastructure"
                       className={`block px-4 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
@@ -514,11 +523,22 @@ const Navbar = () => {
                 </svg>
               </button>
 
-              <div className={`overflow-hidden transition-all duration-300 ${mobileCompanyOpen ? 'max-h-40 opacity-100 mt-1 pl-4' : 'max-h-0 opacity-0 pointer-events-none'}`}>
+              <div className={`overflow-hidden transition-all duration-300 ${mobileCompanyOpen ? 'max-h-60 opacity-100 mt-1 pl-4' : 'max-h-0 opacity-0 pointer-events-none'}`}>
+                <Link
+                  to="/about"
+                  onClick={() => setIsOpen(false)}
+                  className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${
+                    location.pathname === '/about'
+                      ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                      : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
+                  }`}
+                >
+                  About Us
+                </Link>
                 <Link
                   to="/infrastructure"
                   onClick={() => setIsOpen(false)}
-                  className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${
+                  className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 mt-1 ${
                     location.pathname === '/infrastructure'
                       ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
                       : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-550 hover:text-blue-600'
