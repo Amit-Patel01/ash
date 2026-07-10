@@ -18,6 +18,22 @@ export default function TrustedPartners() {
       height: 'h-8',
       desc: 'Official Secure Gateway',
       type: 'image'
+    },
+
+    {
+      name: 'MongoDB',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/9/93/MongoDB_Logo.svg',
+      height: 'h-8',
+      desc: 'Official Database Partner',
+      type: 'image'
+    },
+
+    {
+      name: 'AICTE',
+      logo: 'https://upload.wikimedia.org/wikipedia/en/e/eb/All_India_Council_for_Technical_Education_logo.png',
+      height: 'h-12',
+      desc: 'Internship Portal Registered',
+      type: 'image'
     }
   ]
 
@@ -35,7 +51,7 @@ export default function TrustedPartners() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
         {partners.map((partner, index) => {
           const IconComp = partner.icon
           return (
