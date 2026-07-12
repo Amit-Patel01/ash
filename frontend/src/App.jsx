@@ -465,6 +465,7 @@ function AppContent() {
           <Route path="/user" element={<ProtectedStudent><UserLayout /></ProtectedStudent>}>
             <Route index element={<UserOverview />} />
             <Route path="orders" element={<UserOrders />} />
+            <Route path="receipts" element={<UserOrders />} />
             <Route path="support" element={<UserSupport />} />
             <Route path="trading-mentorship" element={<AboutTradingMentorship />} />
             <Route path="my-courses" element={<UserMyCourses />} />

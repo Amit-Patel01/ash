@@ -9,6 +9,7 @@ const navItems = [
   { path: '/user/certificates', label: 'Documents', icon: 'award' },
   { path: '/user/custom-project', label: 'Build Project', icon: 'build' },
   { path: '/user/orders', label: 'My Orders', icon: 'orders' },
+  { path: '/user/receipts', label: 'My Receipts', icon: 'receipt' },
   { path: '/user/support', label: 'Support Chat', icon: 'chat' },
   { path: '/user/profile', label: 'Profile', icon: 'user' },
 ]
@@ -21,6 +22,7 @@ const iconMap = {
   user: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>),
   award: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a2.25 2.25 0 002.25-2.25V5.25A2.25 2.25 0 0016.5 3h-9a2.25 2.25 0 00-2.25 2.25V16.5A2.25 2.25 0 007.5 18.75m9 0 1.154 1.154A1.125 1.125 0 0116.858 21H7.142a1.125 1.125 0 01-.796-1.92L7.5 18.75m4.5-10.5 1.068 2.165 2.39.347-1.729 1.685.408 2.381L12 13.762l-2.137 1.123.408-2.381-1.729-1.685 2.39-.347L12 8.25z" /></svg>),
   build: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l5.654-4.654m5.654-4.654l3.029-2.498a1.5 1.5 0 012.122 2.122l-2.498 3.029m-5.654 4.654l5.654-4.654" /></svg>),
+  receipt: (<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>),
 }
 
 export default function UserLayout() {

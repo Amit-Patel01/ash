@@ -59,9 +59,14 @@ router.get("/:collection", optionalAuth, async (req, res) => {
       sellRequests: "userId"
     };
 
-    if (req.user && !isEmployeeOrAdmin && privateCollections[collection]) {
-      const ownerField = privateCollections[collection];
-      filter[ownerField] = req.user.uid;
+    if (req.user && !isEmployeeOrAdmin) {
+      if (privateCollections[collection]) {
+        const ownerField = privateCollections[collection];
+        filter[ownerField] = req.user.uid;
+      } else if (collection === "receipts") {
+        const cleanedEmail = req.user.email ? req.user.email.trim() : "";
+        filter.customerEmail = { $regex: new RegExp(`^${cleanedEmail}$`, 'i') };
+      }
     }
 
     // Special case for notifications: filter by recipientId or recipientEmployeeId
@@ -167,10 +172,18 @@ router.get("/:collection/:id", optionalAuth, async (req, res) => {
       sellRequests: "userId"
     };
 
-    if (req.user && !isEmployeeOrAdmin && privateCollections[collection]) {
-      const ownerField = privateCollections[collection];
-      if (doc[ownerField] !== req.user.uid) {
-        return res.status(403).json({ success: false, message: "Forbidden" });
+    if (req.user && !isEmployeeOrAdmin) {
+      if (privateCollections[collection]) {
+        const ownerField = privateCollections[collection];
+        if (doc[ownerField] !== req.user.uid) {
+          return res.status(403).json({ success: false, message: "Forbidden" });
+        }
+      } else if (collection === "receipts") {
+        const docEmail = (doc.customerEmail || "").trim().toLowerCase();
+        const userEmail = (req.user.email || "").trim().toLowerCase();
+        if (docEmail !== userEmail) {
+          return res.status(403).json({ success: false, message: "Forbidden" });
+        }
       }
     }
 
@@ -215,7 +228,7 @@ router.post("/:collection", optionalAuth, async (req, res) => {
 
     // Security check for writing
     const isEmployeeOrAdmin = req.user && ["admin", "employee"].includes(req.user.role);
-    const adminOnlyCollections = ["categories", "services", "tradingCourses", "courses", "courseCategories", "tradingSettings", "settings", "testimonials", "internshipCategories"];
+    const adminOnlyCollections = ["categories", "services", "tradingCourses", "courses", "courseCategories", "tradingSettings", "settings", "testimonials", "internshipCategories", "receipts"];
     
     if (adminOnlyCollections.includes(collection) && !isEmployeeOrAdmin) {
       return res.status(403).json({ success: false, message: "Forbidden: Admin only" });
@@ -266,7 +279,7 @@ router.patch("/:collection/:id", verifyFirebaseToken, async (req, res) => {
 
     // Security check
     const isEmployeeOrAdmin = ["admin", "employee"].includes(req.user.role);
-    const adminOnlyCollections = ["categories", "services", "tradingCourses", "courses", "courseCategories", "tradingSettings", "settings", "testimonials", "internshipCategories"];
+    const adminOnlyCollections = ["categories", "services", "tradingCourses", "courses", "courseCategories", "tradingSettings", "settings", "testimonials", "internshipCategories", "receipts"];
 
     if (adminOnlyCollections.includes(collection) && !isEmployeeOrAdmin) {
       return res.status(403).json({ success: false, message: "Forbidden: Admin only" });

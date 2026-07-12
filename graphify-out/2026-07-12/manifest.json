@@ -2360,8 +2360,8 @@
     "semantic_hash": ""
   },
   "backend/routes/db.js": {
-    "mtime": 1783616369.142494,
-    "ast_hash": "11d6eb78291ead7c2ba9d72ec171bb93",
+    "mtime": 1783865742.6046178,
+    "ast_hash": "d65b9faa7a4eb8bade5d4f897d378ef1",
     "semantic_hash": ""
   },
   "backend/scripts/seedAdmin.js": {
@@ -2585,8 +2585,8 @@
     "semantic_hash": ""
   },
   "frontend/src/user/UserOrders.jsx": {
-    "mtime": 1783616372.8296597,
-    "ast_hash": "60a5a1b9e40619024eee181af644d370",
+    "mtime": 1783865882.106019,
+    "ast_hash": "6a0cf38ea6f1102e92eaae72f8bf8aeb",
     "semantic_hash": ""
   },
   "frontend/src/user/UserOverview.jsx": {
@@ -2625,8 +2625,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminReceipts.jsx": {
-    "mtime": 1783857636.1477432,
-    "ast_hash": "111e42778a05456404266c10f8a19cc1",
+    "mtime": 1783864786.2138917,
+    "ast_hash": "6b2ff9a36727f1294811d16b982a79f1",
     "semantic_hash": ""
   }
 }

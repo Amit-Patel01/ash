@@ -1,6 +1,67 @@
-﻿import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
+import { Search, FileText, Eye, X, ShieldCheck } from 'lucide-react'
+import { api } from '../config/api'
+import { useLocation } from 'react-router-dom'
+import logo from '../assets/logo.png'
+import msmeLogo from '../assets/msme.png'
+import msmeQR from '../assets/msme-qr.png'
+import founderSign from '../assets/founder-sign.png'
+
+const numberToWords = (num) => {
+  if (num === 0) return 'Zero';
+  const a = [
+    '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+    'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'
+  ];
+  const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+  const convertBelowThousand = (n) => {
+    let word = '';
+    if (n >= 100) {
+      word += a[Math.floor(n / 100)] + ' Hundred ';
+      n %= 100;
+    }
+    if (n > 0) {
+      if (word !== '') word += 'and ';
+      if (n < 20) {
+        word += a[n] + ' ';
+      } else {
+        word += b[Math.floor(n / 10)] + ' ';
+        if (n % 10 > 0) {
+          word += a[n % 10] + ' ';
+        }
+      }
+    }
+    return word.trim();
+  };
+
+  let str = '';
+  const parts = [];
+  parts.push(Math.floor(num / 10000000));
+  num %= 10000000;
+  parts.push(Math.floor(num / 100000));
+  num %= 100000;
+  parts.push(Math.floor(num / 1000));
+  num %= 1000;
+  parts.push(num);
+
+  const labels = ['Crore', 'Lakh', 'Thousand', ''];
+  for (let i = 0; i < parts.length; i++) {
+    const p = parts[i];
+    if (p > 0) {
+      str += convertBelowThousand(p) + ' ' + labels[i] + ' ';
+    }
+  }
+  return str.trim() + ' Rupees Only';
+};
+
+const getAbsoluteUrl = (path) => {
+  if (!path) return ''
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) return path
+  return window.location.origin + (path.startsWith('/') ? path : '/' + path)
+};
 
 const STEPS = [
   { label: 'Request Submitted', desc: 'We received your project idea' },
@@ -35,8 +96,75 @@ const formatDate = (ts) => {
 export default function UserOrders() {
   const { currentUser } = useAuth()
   const { orders, serviceRequests } = useStore()
-  const [activeTab, setActiveTab] = useState('orders')
+  const location = useLocation()
+  
+  const [activeTab, setActiveTab] = useState(() => {
+    return location.pathname.includes('receipts') ? 'receipts' : 'orders'
+  })
+
+  useEffect(() => {
+    setActiveTab(location.pathname.includes('receipts') ? 'receipts' : 'orders')
+  }, [location.pathname])
+
   const [filter, setFilter] = useState('all')
+  const [receipts, setReceipts] = useState([])
+  const [loadingReceipts, setLoadingReceipts] = useState(true)
+  const [showPreviewModal, setShowPreviewModal] = useState(false)
+  const [activeReceipt, setActiveReceipt] = useState(null)
+  const [receiptSearchQuery, setReceiptSearchQuery] = useState('')
+
+  useEffect(() => {
+    fetchReceipts()
+  }, [])
+
+  const fetchReceipts = async () => {
+    setLoadingReceipts(true)
+    try {
+      const token = localStorage.getItem('token')
+      const headers = { 'Content-Type': 'application/json' }
+      if (token) headers.Authorization = `Bearer ${token}`
+      const res = await fetch(`${api.base}/api/db/receipts`, { headers })
+      if (res.ok) {
+        const data = await res.json()
+        setReceipts(data.documents || [])
+      }
+    } catch (err) {
+      console.error("Error fetching receipts:", err)
+    } finally {
+      setLoadingReceipts(false)
+    }
+  }
+
+  const calculateTotals = (receipt) => {
+    if (!receipt) return { amount: 0, discount: 0, net: 0, tax: 0, cgst: 0, sgst: 0, igst: 0, total: 0 }
+    
+    const amount = Number(receipt.amount || 0)
+    const discount = Number(receipt.discount || 0)
+    const net = Math.max(0, amount - discount)
+    const taxPercent = Number(receipt.taxPercent || 0)
+    const tax = net * (taxPercent / 100)
+    
+    let cgst = 0, sgst = 0, igst = 0
+    if (receipt.taxType === 'cgst_sgst') {
+      cgst = tax / 2
+      sgst = tax / 2
+    } else if (receipt.taxType === 'igst') {
+      igst = tax
+    }
+    
+    const total = net + tax
+    return { amount, discount, net, tax, cgst, sgst, igst, total }
+  }
+
+  const filteredReceipts = useMemo(() => {
+    return receipts.filter(receipt => {
+      const matchesSearch =
+        (receipt.receiptId || '').toLowerCase().includes(receiptSearchQuery.toLowerCase()) ||
+        (receipt.itemName || '').toLowerCase().includes(receiptSearchQuery.toLowerCase()) ||
+        (receipt.paymentMethod || '').toLowerCase().includes(receiptSearchQuery.toLowerCase())
+      return matchesSearch
+    })
+  }, [receipts, receiptSearchQuery])
 
   const myOrders = useMemo(() => {
     return orders.filter(o => o.customer_email === currentUser?.email || o.customer_uid === currentUser?.uid)
@@ -77,6 +205,15 @@ export default function UserOrders() {
         >
           Custom Projects ({myCustomRequests.length})
           {activeTab === 'custom' && (
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 shadow-md shadow-blue-500/50" />
+          )}
+        </button>
+        <button
+          onClick={() => setActiveTab('receipts')}
+          className={`pb-4 text-sm font-bold relative transition-colors ${activeTab === 'receipts' ? 'text-blue-400' : 'text-gray-400 hover:text-white'}`}
+        >
+          Payment Receipts ({receipts.length})
+          {activeTab === 'receipts' && (
             <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 shadow-md shadow-blue-500/50" />
           )}
         </button>
@@ -150,7 +287,7 @@ export default function UserOrders() {
             </div>
           )}
         </div>
-      ) : (
+      ) : activeTab === 'custom' ? (
         <div className="space-y-6">
           {myCustomRequests.length === 0 ? (
             <div className="text-center py-20 bg-gray-900/30 rounded-2xl border border-white/5">
@@ -263,6 +400,320 @@ export default function UserOrders() {
               })}
             </div>
           )}
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {/* Search bar */}
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 group-focus-within:text-blue-500 transition-colors">
+              <Search size={16} />
+            </div>
+            <input
+              type="text"
+              placeholder="Search receipts by ID, project name, or payment method..."
+              value={receiptSearchQuery}
+              onChange={e => setReceiptSearchQuery(e.target.value)}
+              className="w-full pl-11 pr-4 py-2.5 bg-gray-900/30 border border-white/5 rounded-xl text-sm text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-gray-900/50 transition-all duration-300"
+            />
+          </div>
+
+          {loadingReceipts ? (
+            <div className="text-center py-20 bg-gray-900/30 rounded-2xl border border-white/5">
+              <div className="w-10 h-10 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-400 text-sm font-medium">Loading receipts...</p>
+            </div>
+          ) : filteredReceipts.length === 0 ? (
+            <div className="text-center py-20 bg-gray-900/30 rounded-2xl border border-white/5">
+              <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-gray-600" />
+              </div>
+              <p className="text-gray-400 font-medium">No receipts found</p>
+            </div>
+          ) : (
+            <div className="bg-gray-900/50 border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-white/5 text-gray-400 bg-white/[0.01]">
+                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Receipt ID</th>
+                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Particulars</th>
+                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Amount</th>
+                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Date</th>
+                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Status</th>
+                      <th className="text-right px-6 py-4 text-xs font-semibold uppercase tracking-wider">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {filteredReceipts.map(receipt => {
+                      const receiptTotals = calculateTotals(receipt)
+                      return (
+                        <tr key={receipt.id} className="hover:bg-white/[0.02] transition-colors">
+                          <td className="px-6 py-4 font-mono text-xs font-bold text-gray-300">
+                            {receipt.receiptId}
+                          </td>
+                          <td className="px-6 py-4">
+                            <p className="text-sm font-bold text-gray-200">{receipt.itemName}</p>
+                            <span className="inline-block mt-0.5 px-1.5 py-0.5 rounded bg-white/5 text-[9px] font-bold text-gray-400 uppercase">
+                              {receipt.itemCategory}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-emerald-400 font-bold">
+                            ₹{receiptTotals.total.toLocaleString('en-IN')}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-400">
+                            {receipt.paymentDate}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${receipt.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'}`}>
+                              {receipt.status === 'completed' ? 'Paid' : 'Pending'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <button
+                              onClick={() => {
+                                setActiveReceipt(receipt)
+                                setShowPreviewModal(true)
+                              }}
+                              className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-bold transition-all shadow-md"
+                            >
+                              <Eye size={13} />
+                              View
+                            </button>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* View-Only Preview Modal */}
+      {showPreviewModal && activeReceipt && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-md">
+          <div className="relative bg-white rounded-3xl w-full max-w-4xl p-6 md:p-8 my-8 shadow-2xl flex flex-col md:flex-row gap-6 text-slate-800">
+            
+            {/* Left Column: Actions */}
+            <div className="md:w-64 flex flex-col gap-4 shrink-0">
+              <h3 className="text-lg font-black text-slate-900">Receipt Viewer</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                You are viewing your official payment receipt. Download and print actions are restricted for this document. For assistance, contact support@amitsolutionhub.com.
+              </p>
+              
+              <button
+                onClick={() => setShowPreviewModal(false)}
+                className="w-full flex items-center justify-center gap-2 px-5 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold transition-all shadow-md cursor-pointer"
+              >
+                Close Preview
+              </button>
+            </div>
+
+            {/* Right Column: Receipt Layout */}
+            <div className="flex-1 bg-slate-50 md:p-6 rounded-2xl overflow-x-auto">
+              <div
+                className="bg-white border border-slate-200 p-8 shadow-lg max-w-[210mm] min-h-[297mm] mx-auto text-slate-800 flex flex-col justify-between"
+                style={{ fontSize: '12px', fontFamily: '"Outfit", "Inter", sans-serif' }}
+              >
+                {/* Header */}
+                <div>
+                  <div className="flex justify-between items-start gap-4 border-b-2 border-slate-100 pb-6 mb-6">
+                    <div>
+                      <div className="flex items-center gap-3.5 mb-2">
+                        <img src={getAbsoluteUrl(logo)} alt="Amit Solution Hub Logo" className="h-10 object-contain" />
+                        <div>
+                          <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none">Amit Solution Hub</h1>
+                          <p className="text-[9px] font-bold text-indigo-600 uppercase tracking-widest mt-1">MSME Govt. of India Registered</p>
+                        </div>
+                      </div>
+                      <div className="space-y-0.5 text-slate-500 font-medium text-[11px] mt-3">
+                        <p><strong>Udyam Reg:</strong> UDYAM-GJ-17-0037282</p>
+                        <p><strong>Email:</strong> support@amitsolutionhub.com</p>
+                        <p><strong>Mobile:</strong> +91 7874248481</p>
+                        <p><strong>Address:</strong> Godhra, Gujarat, India</p>
+                        <p><strong>Website:</strong> www.amitsolutionhub.com</p>
+                      </div>
+                    </div>
+
+                    <div className="text-right">
+                      <h2 className="text-2xl font-black tracking-tight text-slate-900">PAYMENT RECEIPT</h2>
+                      <div className="inline-block mt-2 px-3 py-1 rounded bg-emerald-50 border border-emerald-200 text-emerald-600 font-extrabold text-[10px] uppercase tracking-wider">
+                        {activeReceipt.status === 'completed' ? 'SUCCESSFUL / PAID' : 'PENDING'}
+                      </div>
+                      <div className="space-y-0.5 text-[11px] text-slate-500 font-medium mt-4">
+                        <p><strong>Receipt No:</strong> <span className="font-bold text-slate-900">{activeReceipt.receiptId}</span></p>
+                        <p><strong>Date:</strong> {activeReceipt.paymentDate}</p>
+                        <p><strong>Payment Mode:</strong> {activeReceipt.paymentMethod}</p>
+                        {activeReceipt.transactionId && <p><strong>Txn ID:</strong> {activeReceipt.transactionId}</p>}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Customer Information */}
+                  <div className="bg-slate-50/50 border border-slate-200/60 rounded-xl p-4 mb-6">
+                    <h3 className="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2">BILLED TO (CUSTOMER DETAILS)</h3>
+                    <div className="grid grid-cols-2 gap-4 text-[11.5px] font-medium text-slate-700">
+                      <div>
+                        <p className="text-slate-500 text-[10.5px]">Name:</p>
+                        <p className="font-bold text-slate-900">{activeReceipt.customerName}</p>
+                        
+                        <p className="text-slate-500 text-[10.5px] mt-2">Email:</p>
+                        <p>{activeReceipt.customerEmail}</p>
+                      </div>
+                      <div>
+                        {activeReceipt.customerPhone && (
+                          <>
+                            <p className="text-slate-500 text-[10.5px]">Phone:</p>
+                            <p>{activeReceipt.customerPhone}</p>
+                          </>
+                        )}
+                        {activeReceipt.customerCompany && (
+                          <>
+                            <p className="text-slate-500 text-[10.5px] mt-2">Institution/Company:</p>
+                            <p className="font-bold text-slate-800">{activeReceipt.customerCompany}</p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Particulars Table */}
+                  <table className="w-full border-collapse mb-6" style={{ fontSize: '11px' }}>
+                    <thead>
+                      <tr className="bg-slate-100 text-slate-600 font-black uppercase border-b border-slate-200">
+                        <th className="py-2.5 px-3 text-left">Description / Particulars</th>
+                        <th className="py-2.5 px-3 text-left">Category</th>
+                        <th className="py-2.5 px-3 text-right">Base Amount (₹)</th>
+                        <th className="py-2.5 px-3 text-right">Discount (₹)</th>
+                        <th className="py-2.5 px-3 text-right">Tax (%)</th>
+                        <th className="py-2.5 px-3 text-right">Total Amount (₹)</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      <tr className="font-medium text-slate-700">
+                        <td className="py-3 px-3">
+                          <p className="font-bold text-slate-900">{activeReceipt.itemName}</p>
+                          <p className="text-[10px] text-slate-400 mt-0.5">Professional training & software development services.</p>
+                        </td>
+                        <td className="py-3 px-3 uppercase text-slate-500 font-bold">{activeReceipt.itemCategory}</td>
+                        <td className="py-3 px-3 text-right">₹{calculateTotals(activeReceipt).amount.toFixed(2)}</td>
+                        <td className="py-3 px-3 text-right text-red-500">₹{calculateTotals(activeReceipt).discount.toFixed(2)}</td>
+                        <td className="py-3 px-3 text-right">
+                          {activeReceipt.taxType === 'exempt' ? 'Exempt' : `${activeReceipt.taxPercent}%`}
+                        </td>
+                        <td className="py-3 px-3 text-right font-bold text-slate-900">₹{calculateTotals(activeReceipt).total.toFixed(2)}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  {/* Summary Columns */}
+                  <div className="flex justify-between items-start gap-8 mb-6">
+                    <div className="flex-1 space-y-3">
+                      <div>
+                        <p className="text-[9px] font-black uppercase text-slate-400 tracking-wider">Amount in Words</p>
+                        <p className="text-slate-800 font-bold text-[11px] bg-slate-50 p-2 rounded-lg border border-slate-200 inline-block">
+                          {numberToWords(Math.round(calculateTotals(activeReceipt).total))}
+                        </p>
+                      </div>
+                      {activeReceipt.notes && (
+                        <div>
+                          <p className="text-[9px] font-black uppercase text-slate-400 tracking-wider">Terms & Notes</p>
+                          <p className="text-slate-500 text-[10px] italic leading-normal">{activeReceipt.notes}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="w-64 shrink-0 font-medium text-slate-600 space-y-1.5 text-right text-[11.5px]">
+                      <div className="flex justify-between">
+                        <span>Subtotal:</span>
+                        <span>₹{calculateTotals(activeReceipt).amount.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-red-500">
+                        <span>Discount:</span>
+                        <span>-₹{calculateTotals(activeReceipt).discount.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Net Taxable Value:</span>
+                        <span>₹{calculateTotals(activeReceipt).net.toFixed(2)}</span>
+                      </div>
+
+                      {activeReceipt.taxType === 'cgst_sgst' && (
+                        <>
+                          <div className="flex justify-between text-slate-500 text-[10.5px]">
+                            <span>CGST ({Number(activeReceipt.taxPercent)/2}%):</span>
+                            <span>₹{calculateTotals(activeReceipt).cgst.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between text-slate-500 text-[10.5px]">
+                            <span>SGST ({Number(activeReceipt.taxPercent)/2}%):</span>
+                            <span>₹{calculateTotals(activeReceipt).sgst.toFixed(2)}</span>
+                          </div>
+                        </>
+                      )}
+                      
+                      {activeReceipt.taxType === 'igst' && (
+                        <div className="flex justify-between text-slate-500 text-[10.5px]">
+                          <span>IGST ({activeReceipt.taxPercent}%):</span>
+                          <span>₹{calculateTotals(activeReceipt).igst.toFixed(2)}</span>
+                        </div>
+                      )}
+
+                      <div className="flex justify-between border-t border-slate-200 pt-2 text-slate-900 font-black text-sm">
+                        <span>GRAND TOTAL:</span>
+                        <span>₹{calculateTotals(activeReceipt).total.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footnotes / Signatures / Verification Details */}
+                <div className="border-t-2 border-slate-100 pt-6 mt-6 flex justify-between items-end">
+                  <div className="flex items-center gap-4">
+                    {activeReceipt.showMsmeQR !== false && (
+                      <div className="w-16 h-16 bg-white p-1 border border-slate-200 rounded-xl shadow-inner shrink-0">
+                        <img src={getAbsoluteUrl(msmeQR)} alt="MSME Registration Verification QR" className="w-full h-full object-contain" />
+                      </div>
+                    )}
+                    <div>
+                      <div className="flex items-center gap-1 text-[10px] font-black uppercase text-slate-500 tracking-wider">
+                        <ShieldCheck size={11} className="text-indigo-600" />
+                        Verification Details
+                      </div>
+                      <p className="text-[10px] font-medium text-slate-500 mt-1 max-w-[220px] leading-relaxed">
+                        Scan QR to verify our MSME Udyam Registration (UDYAM-GJ-17-0037282) online with the Ministry of MSME, Govt. of India.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-6 items-end">
+                    {activeReceipt.showStamp !== false && (
+                      <div className="text-center shrink-0">
+                        <div className="h-16 flex items-center justify-center mb-1">
+                          <img src={getAbsoluteUrl(msmeLogo)} alt="MSME Stamp" className="h-12 object-contain opacity-75 grayscale contrast-150 brightness-95" />
+                        </div>
+                        <p className="text-[9px] font-black uppercase text-slate-400 tracking-wider">Official Stamp</p>
+                      </div>
+                    )}
+
+                    {activeReceipt.showSignature !== false && (
+                      <div className="text-center shrink-0">
+                        <div className="h-16 flex items-end justify-center mb-1">
+                          <img src={getAbsoluteUrl(founderSign)} alt="Founder Signature" className="h-12 object-contain" />
+                        </div>
+                        <div className="text-[9px] font-black uppercase text-slate-800 tracking-wider border-t border-slate-200 pt-1">
+                          Authorized Signatory
+                          <p className="text-[8px] text-slate-400 lowercase font-medium">Amit Patel (Founder)</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            
+          </div>
         </div>
       )}
     </div>
