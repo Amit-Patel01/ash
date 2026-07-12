@@ -966,7 +966,6 @@ export default function AdminReceipts() {
       {/* View & Print Preview Modal */}
       {showPreviewModal && activeReceipt && (
         <div className="fixed inset-0 z-55 flex items-start justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-md modal-backdrop">
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-md modal-backdrop">
           <div className="relative bg-white rounded-3xl w-full max-w-4xl p-6 md:p-8 my-8 shadow-2xl flex flex-col md:flex-row gap-6">
             
             {/* Left Column: Controls (no-print) */}
