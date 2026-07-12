@@ -553,6 +553,211 @@ const downloadEmployeeCv = async (req, res) => {
   }
 };
 
+/**
+ * POST /api/admin/receipts/:id/send-email
+ * Email a payment receipt to the customer
+ */
+const sendReceiptEmail = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const db = getDb();
+    
+    // Find receipt in the db
+    const receipt = await db.collection("receipts").findOne({
+      $or: [
+        { _id: ObjectId.isValid(id) ? new ObjectId(id) : id },
+        { id: id }
+      ]
+    });
+
+    if (!receipt) {
+      return res.status(404).json({ success: false, message: "Receipt not found." });
+    }
+
+    if (!receipt.customerEmail) {
+      return res.status(400).json({ success: false, message: "Customer email is missing on the receipt." });
+    }
+
+    // Pricing calculation
+    const amount = Number(receipt.amount || 0);
+    const discount = Number(receipt.discount || 0);
+    const net = Math.max(0, amount - discount);
+    const taxPercent = Number(receipt.taxPercent || 0);
+    const tax = net * (taxPercent / 100);
+    const total = net + tax;
+
+    const totals = { amount, discount, net, tax, total };
+
+    // Number to Words converter (Indian System)
+    const localNumberToWords = (num) => {
+      if (num === 0) return 'Zero';
+      const a = [
+        '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+        'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'
+      ];
+      const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+      const convertBelowThousand = (n) => {
+        let word = '';
+        if (n >= 100) {
+          word += a[Math.floor(n / 100)] + ' Hundred ';
+          n %= 100;
+        }
+        if (n > 0) {
+          if (word !== '') word += 'and ';
+          if (n < 20) {
+            word += a[n] + ' ';
+          } else {
+            word += b[Math.floor(n / 10)] + ' ';
+            if (n % 10 > 0) {
+              word += a[n % 10] + ' ';
+            }
+          }
+        }
+        return word.trim();
+      };
+
+      let str = '';
+      const parts = [];
+      parts.push(Math.floor(num / 10000000));
+      num %= 10000000;
+      parts.push(Math.floor(num / 100000));
+      num %= 100000;
+      parts.push(Math.floor(num / 1000));
+      num %= 1000;
+      parts.push(num);
+
+      const labels = ['Crore', 'Lakh', 'Thousand', ''];
+      for (let i = 0; i < parts.length; i++) {
+        const p = parts[i];
+        if (p > 0) {
+          str += convertBelowThousand(p) + ' ' + labels[i] + ' ';
+        }
+      }
+      return str.trim() + ' Rupees Only';
+    };
+
+    const words = localNumberToWords(Math.round(total));
+
+    // Construct receipt subject & HTML email content
+    const subject = `Payment Receipt - ${receipt.receiptId} (Amit Solution Hub)`;
+    const emailHtml = `
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+        <div style="background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%); padding: 30px; text-align: center; color: white;">
+          <h1 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.5px;">PAYMENT RECEIPT</h1>
+          <p style="margin: 5px 0 0; font-size: 14px; opacity: 0.9; font-weight: 550;">Amit Solution Hub</p>
+        </div>
+        
+        <div style="padding: 30px; color: #1e293b;">
+          <p style="margin-top: 0; font-size: 15px;">Dear <strong>${receipt.customerName || 'Valued Customer'}</strong>,</p>
+          <p style="font-size: 14px; color: #475569; line-height: 1.6;">
+            Thank you for your payment. Your transaction has been successfully processed. Please find your official payment receipt details below:
+          </p>
+
+          <!-- Receipt Metadata -->
+          <div style="margin: 24px 0; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; font-size: 13px;">
+            <div style="background-color: #f8fafc; padding: 12px 16px; font-weight: bold; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
+              <span style="color: #1e293b;">Receipt No: ${receipt.receiptId}</span>
+              <span style="color: #10b981; font-weight: 800;">SUCCESSFUL</span>
+            </div>
+            <div style="padding: 16px; background-color: #ffffff; line-height: 1.8;">
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="color: #64748b; padding: 4px 0;">Payment Date:</td>
+                  <td style="font-weight: 600; text-align: right; color: #1e293b;">${receipt.paymentDate}</td>
+                </tr>
+                <tr>
+                  <td style="color: #64748b; padding: 4px 0;">Payment Method:</td>
+                  <td style="font-weight: 600; text-align: right; color: #1e293b;">${receipt.paymentMethod}</td>
+                </tr>
+                ${receipt.transactionId ? `
+                <tr>
+                  <td style="color: #64748b; padding: 4px 0;">Transaction Ref ID:</td>
+                  <td style="font-weight: 600; font-family: monospace; text-align: right; color: #1e293b;">${receipt.transactionId}</td>
+                </tr>
+                ` : ''}
+              </table>
+            </div>
+          </div>
+
+          <!-- Particulars -->
+          <table style="width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 13px;">
+            <thead>
+              <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; color: #475569; font-weight: bold;">
+                <th style="padding: 10px; text-align: left;">Particulars</th>
+                <th style="padding: 10px; text-align: right;">Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 12px 10px;">
+                  <div style="font-weight: bold; color: #1e293b;">${receipt.itemName}</div>
+                  <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">Category: ${receipt.itemCategory}</div>
+                </td>
+                <td style="padding: 12px 10px; text-align: right; font-weight: 600; color: #1e293b;">₹${totals.amount.toFixed(2)}</td>
+              </tr>
+              ${totals.discount > 0 ? `
+              <tr style="color: #ef4444; border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 8px 10px; text-align: right;">Discount:</td>
+                <td style="padding: 8px 10px; text-align: right; font-weight: 600;">-₹${totals.discount.toFixed(2)}</td>
+              </tr>
+              ` : ''}
+              ${receipt.taxType !== 'exempt' && totals.tax > 0 ? `
+              <tr style="border-bottom: 1px solid #f1f5f9; color: #64748b;">
+                <td style="padding: 8px 10px; text-align: right;">
+                  ${receipt.taxType === 'cgst_sgst' ? 'CGST + SGST' : 'IGST'} (${receipt.taxPercent}%):
+                </td>
+                <td style="padding: 8px 10px; text-align: right; font-weight: 600;">₹${totals.tax.toFixed(2)}</td>
+              </tr>
+              ` : ''}
+              <tr style="font-size: 15px; font-weight: bold; background-color: #f8fafc; border-top: 1px solid #e2e8f0;">
+                <td style="padding: 12px 10px; text-align: right; color: #1e293b;">Grand Total:</td>
+                <td style="padding: 12px 10px; text-align: right; color: #2563eb;">₹${totals.total.toFixed(2)}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin: 20px 0; background-color: #f0fdf4; border: 1px dashed #bbf7d0; border-radius: 12px; padding: 12px 16px; font-size: 12.5px; color: #166534; line-height: 1.5;">
+            <strong>Amount in Words:</strong><br />
+            ${words}
+          </div>
+
+          <!-- Company info card -->
+          <div style="margin-top: 30px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 14px; background: #f8fafc; font-size: 12px; color: #475569; line-height: 1.6;">
+            <p style="margin: 0 0 4px; font-weight: bold; color: #1e293b;">Amit Solution Hub</p>
+            <p style="margin: 0 0 4px;">Registered MSME Govt. of India (Udyam ID: UDYAM-GJ-17-0037282)</p>
+            <p style="margin: 0 0 4px;">Address: Godhra, Gujarat, India</p>
+            <p style="margin: 0;">Support: support@amitsolutionhub.com | +91 7874248481</p>
+          </div>
+
+          <div style="margin-top: 30px; text-align: center; font-size: 11px; color: #94a3b8;">
+            This is an official computer-generated receipt issued by Amit Solution Hub.
+          </div>
+        </div>
+        
+        <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #f1f5f9; font-size: 11px; color: #94a3b8;">
+          © 2026 Amit Solution Hub | Gujarat, India
+        </div>
+      </div>
+    `;
+
+    const emailResponse = await sendEmail({
+      to: receipt.customerEmail,
+      subject,
+      html: emailHtml
+    });
+
+    if (!emailResponse.success) {
+      return res.status(500).json({ success: false, message: emailResponse.error || "Email delivery failed." });
+    }
+
+    return res.json({ success: true, message: "Receipt sent successfully via email!" });
+  } catch (error) {
+    logger.error("Error sending receipt email:", error);
+    return res.status(500).json({ success: false, message: error.message || "Failed to send receipt email." });
+  }
+};
+
 module.exports = {
   broadcastEmail,
   notifyAccountApproval,
@@ -568,4 +773,5 @@ module.exports = {
   removeRequest,
   listEmployeeCvs,
   downloadEmployeeCv,
+  sendReceiptEmail,
 };

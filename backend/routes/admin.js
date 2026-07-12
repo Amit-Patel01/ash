@@ -15,6 +15,7 @@ const {
   removeRequest,
   listEmployeeCvs,
   downloadEmployeeCv,
+  sendReceiptEmail,
 } = require("../controllers/adminController");
 const { verifyFirebaseToken } = require("../middlewares/authMiddleware");
 const { adminOnly, employeeOrAdmin } = require("../middlewares/rbacMiddleware");
@@ -33,5 +34,6 @@ router.post("/account-requests/:requestId/reject", verifyFirebaseToken, adminOnl
 router.delete("/account-requests/:requestId", verifyFirebaseToken, adminOnly, removeRequest);
 router.get("/employee-cvs/:userId/download", verifyFirebaseToken, adminOnly, downloadEmployeeCv);
 router.get("/employee-cvs", verifyFirebaseToken, adminOnly, listEmployeeCvs);
+router.post("/receipts/:id/send-email", verifyFirebaseToken, employeeOrAdmin, sendReceiptEmail);
 
 module.exports = router;

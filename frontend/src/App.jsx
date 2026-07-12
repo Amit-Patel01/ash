@@ -160,6 +160,7 @@ const AdminPermissions = lazyWithRetry(() => import('./admin/AdminPermissions'))
 const AdminServices = lazyWithRetry(() => import('./admin/AdminServices'))
 const AdminMessages = lazyWithRetry(() => import('./admin/AdminMessages'))
 const AdminSales = lazyWithRetry(() => import('./admin/AdminSales'))
+const AdminReceipts = lazyWithRetry(() => import('./admin/AdminReceipts'))
 const AdminAccountRequests = lazyWithRetry(() => import('./admin/AdminAccountRequests'))
 const AdminSellRequests = lazyWithRetry(() => import('./admin/AdminSellRequests'))
 const AdminServiceRequests = lazyWithRetry(() => import('./admin/AdminServiceRequests'))
@@ -418,6 +419,7 @@ function AppContent() {
             <Route path="students" element={<AdminStudents />} />
             <Route path="qr-certificates" element={<AdminQrCertificates />} />
             <Route path="sales" element={<AdminSales />} />
+            <Route path="receipts" element={<AdminReceipts />} />
             <Route path="account-requests" element={<AdminAccountRequests />} />
             <Route path="service-requests" element={<AdminServiceRequests />} />
             <Route path="sell-requests" element={<AdminSellRequests />} />
