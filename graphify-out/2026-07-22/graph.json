@@ -3447,7 +3447,7 @@
       "label": "app",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L40",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "backend_server_app",
       "community": 20,
@@ -3457,7 +3457,7 @@
       "label": "passport",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L44",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "backend_server_passport",
       "community": 20,
@@ -3467,7 +3467,7 @@
       "label": "DEFAULT_ALLOWED_ORIGINS",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L246",
+      "source_location": "L240",
       "_origin": "ast",
       "id": "backend_server_default_allowed_origins",
       "community": 20,
@@ -3477,7 +3477,7 @@
       "label": "allowedOrigins",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L256",
+      "source_location": "L250",
       "_origin": "ast",
       "id": "backend_server_allowedorigins",
       "community": 20,
@@ -3487,7 +3487,7 @@
       "label": "apiLimiter",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L295",
+      "source_location": "L289",
       "_origin": "ast",
       "id": "backend_server_apilimiter",
       "community": 20,
@@ -3497,7 +3497,7 @@
       "label": "uploadsDir",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L306",
+      "source_location": "L300",
       "_origin": "ast",
       "id": "backend_server_uploadsdir",
       "community": 20,
@@ -3507,7 +3507,7 @@
       "label": "frontendDistDir",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L316",
+      "source_location": "L310",
       "_origin": "ast",
       "id": "backend_server_frontenddistdir",
       "community": 20,
@@ -3517,7 +3517,7 @@
       "label": "frontendIndexPath",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L317",
+      "source_location": "L311",
       "_origin": "ast",
       "id": "backend_server_frontendindexpath",
       "community": 20,
@@ -3527,7 +3527,7 @@
       "label": "sendFrontendIndex()",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L318",
+      "source_location": "L312",
       "_origin": "ast",
       "id": "backend_server_sendfrontendindex",
       "community": 20,
@@ -3537,7 +3537,7 @@
       "label": "{\r\n  uploadPayment: upload,\r\n  uploadTeam,\r\n  uploadProject,\r\n  uploadBroadcast,\r\n  uploadCertificateAsset,\r\n  uploadChat,\r\n  ALLOWED_MIME_TYPES,\r\n  imageFilter,\r\n}",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L354",
+      "source_location": "L348",
       "_origin": "ast",
       "id": "backend_server_uploadpayment_upload_uploadteam_uploadproject_uploadbroadcast_uploadcertificateasset_uploadchat_allowed_mime_types_imagefilter",
       "community": 20,
@@ -3547,7 +3547,7 @@
       "label": "getBaseUrl()",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L365",
+      "source_location": "L359",
       "_origin": "ast",
       "id": "backend_server_getbaseurl",
       "community": 20,
@@ -3557,7 +3557,7 @@
       "label": "{ sendEmail, emailTemplate }",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L442",
+      "source_location": "L436",
       "_origin": "ast",
       "id": "backend_server_sendemail_emailtemplate",
       "community": 20,
@@ -3567,7 +3567,7 @@
       "label": "{\r\n  sendSessionNotification,\r\n  sendCoursePlanNotification,\r\n}",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L503",
+      "source_location": "L497",
       "_origin": "ast",
       "id": "backend_server_sendsessionnotification_sendcourseplannotification",
       "community": 20,
@@ -3577,7 +3577,7 @@
       "label": "{\r\n  getSessionsForReminder,\r\n  getCoursesWithPlanMeetings,\r\n  getActiveCourseEnrollments,\r\n  updateCoursePlans,\r\n}",
       "file_type": "code",
       "source_file": "backend/server.js",
-      "source_location": "L507",
+      "source_location": "L501",
       "_origin": "ast",
       "id": "backend_server_getsessionsforreminder_getcourseswithplanmeetings_getactivecourseenrollments_updatecourseplans",
       "community": 20,
@@ -5850,7 +5850,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ha",
-      "community": 1,
+      "community": 11,
       "norm_label": "ha()"
     },
     {
@@ -5880,7 +5880,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_oa",
-      "community": 1,
+      "community": 2,
       "norm_label": "oa()"
     },
     {
@@ -5890,7 +5890,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_v",
-      "community": 1,
+      "community": 2,
       "norm_label": "v()"
     },
     {
@@ -6000,7 +6000,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_b_k",
-      "community": 2,
+      "community": 53,
       "norm_label": ".k()"
     },
     {
@@ -6400,7 +6400,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_x",
-      "community": 25,
+      "community": 2,
       "norm_label": "x()"
     },
     {
@@ -6510,7 +6510,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_gb",
-      "community": 2,
+      "community": 11,
       "norm_label": "gb()"
     },
     {
@@ -6810,7 +6810,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sc",
-      "community": 2,
+      "community": 11,
       "norm_label": "sc()"
     },
     {
@@ -6850,7 +6850,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_g",
-      "community": 2,
+      "community": 53,
       "norm_label": "g()"
     },
     {
@@ -6860,7 +6860,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yc",
-      "community": 2,
+      "community": 11,
       "norm_label": "yc()"
     },
     {
@@ -6920,7 +6920,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ad",
-      "community": 11,
+      "community": 53,
       "norm_label": "ad()"
     },
     {
@@ -6950,7 +6950,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_dd",
-      "community": 1,
+      "community": 11,
       "norm_label": "dd()"
     },
     {
@@ -6980,7 +6980,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ed",
-      "community": 2,
+      "community": 53,
       "norm_label": "ed()"
     },
     {
@@ -7000,7 +7000,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_fd",
-      "community": 2,
+      "community": 53,
       "norm_label": "fd()"
     },
     {
@@ -7030,7 +7030,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ld",
-      "community": 2,
+      "community": 53,
       "norm_label": "ld()"
     },
     {
@@ -7040,7 +7040,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_md",
-      "community": 11,
+      "community": 53,
       "norm_label": "md()"
     },
     {
@@ -7050,7 +7050,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_md_gettypename",
-      "community": 11,
+      "community": 53,
       "norm_label": ".gettypename()"
     },
     {
@@ -7080,7 +7080,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_pd",
-      "community": 11,
+      "community": 53,
       "norm_label": "pd()"
     },
     {
@@ -7090,7 +7090,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_pd_ctor",
-      "community": 11,
+      "community": 53,
       "norm_label": ".ctor()"
     },
     {
@@ -7100,7 +7100,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sd",
-      "community": 2,
+      "community": 53,
       "norm_label": "sd()"
     },
     {
@@ -7110,7 +7110,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ud",
-      "community": 2,
+      "community": 53,
       "norm_label": "ud()"
     },
     {
@@ -7120,7 +7120,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_wd",
-      "community": 2,
+      "community": 53,
       "norm_label": "wd()"
     },
     {
@@ -7140,7 +7140,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_xd",
-      "community": 2,
+      "community": 53,
       "norm_label": "xd()"
     },
     {
@@ -7150,7 +7150,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rd",
-      "community": 2,
+      "community": 53,
       "norm_label": "rd()"
     },
     {
@@ -7190,7 +7190,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_hd",
-      "community": 2,
+      "community": 53,
       "norm_label": "hd()"
     },
     {
@@ -7210,7 +7210,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qd",
-      "community": 2,
+      "community": 53,
       "norm_label": "qd()"
     },
     {
@@ -7220,7 +7220,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_l",
-      "community": 2,
+      "community": 53,
       "norm_label": "l()"
     },
     {
@@ -7230,7 +7230,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_l_equals",
-      "community": 2,
+      "community": 53,
       "norm_label": ".equals()"
     },
     {
@@ -7250,7 +7250,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_l_tostring",
-      "community": 2,
+      "community": 53,
       "norm_label": ".tostring()"
     },
     {
@@ -7270,7 +7270,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_wd_tostring",
-      "community": 2,
+      "community": 53,
       "norm_label": ".tostring()"
     },
     {
@@ -7330,7 +7330,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ke",
-      "community": 2,
+      "community": 53,
       "norm_label": "ke()"
     },
     {
@@ -7340,7 +7340,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_le",
-      "community": 2,
+      "community": 53,
       "norm_label": "le()"
     },
     {
@@ -7400,7 +7400,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qe",
-      "community": 2,
+      "community": 53,
       "norm_label": "qe()"
     },
     {
@@ -7440,7 +7440,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ue",
-      "community": 2,
+      "community": 53,
       "norm_label": "ue()"
     },
     {
@@ -7480,7 +7480,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ye",
-      "community": 2,
+      "community": 53,
       "norm_label": "ye()"
     },
     {
@@ -7490,7 +7490,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_r",
-      "community": 2,
+      "community": 53,
       "norm_label": "r()"
     },
     {
@@ -7500,7 +7500,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_vd",
-      "community": 2,
+      "community": 53,
       "norm_label": "vd()"
     },
     {
@@ -7510,7 +7510,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ze",
-      "community": 2,
+      "community": 53,
       "norm_label": "ze()"
     },
     {
@@ -7580,7 +7580,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_m",
-      "community": 2,
+      "community": 53,
       "norm_label": "m()"
     },
     {
@@ -7590,7 +7590,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_o",
-      "community": 2,
+      "community": 53,
       "norm_label": "o()"
     },
     {
@@ -7600,7 +7600,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ke_tostring",
-      "community": 2,
+      "community": 53,
       "norm_label": ".tostring()"
     },
     {
@@ -7670,7 +7670,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ff",
-      "community": 11,
+      "community": 2,
       "norm_label": "ff()"
     },
     {
@@ -7840,7 +7840,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_cf",
-      "community": 1,
+      "community": 2,
       "norm_label": "cf()"
     },
     {
@@ -7900,7 +7900,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qf",
-      "community": 25,
+      "community": 2,
       "norm_label": "qf()"
     },
     {
@@ -7960,7 +7960,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ag",
-      "community": 25,
+      "community": 2,
       "norm_label": "ag()"
     },
     {
@@ -7970,7 +7970,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_cg",
-      "community": 25,
+      "community": 2,
       "norm_label": "cg()"
     },
     {
@@ -7980,7 +7980,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_cg_reset",
-      "community": 25,
+      "community": 2,
       "norm_label": ".reset()"
     },
     {
@@ -8050,7 +8050,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_x_then",
-      "community": 25,
+      "community": 2,
       "norm_label": ".then()"
     },
     {
@@ -8180,7 +8180,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_lg",
-      "community": 25,
+      "community": 2,
       "norm_label": "lg()"
     },
     {
@@ -8260,7 +8260,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_lg_l",
-      "community": 25,
+      "community": 2,
       "norm_label": ".l()"
     },
     {
@@ -8840,7 +8840,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_oi",
-      "community": 2,
+      "community": 53,
       "norm_label": "oi()"
     },
     {
@@ -8880,7 +8880,7 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ui",
-      "community": 11,
+      "community": 2,
       "norm_label": "ui()"
     },
     {
@@ -8890,7 +8890,7 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_vi",
-      "community": 1,
+      "community": 2,
       "norm_label": "vi()"
     },
     {
@@ -8900,7 +8900,7 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_wi",
-      "community": 25,
+      "community": 2,
       "norm_label": "wi()"
     },
     {
@@ -9020,7 +9020,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_li_tostring",
-      "community": 11,
+      "community": 53,
       "norm_label": ".tostring()"
     },
     {
@@ -9060,7 +9060,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_jd",
-      "community": 2,
+      "community": 53,
       "norm_label": "jd()"
     },
     {
@@ -9110,7 +9110,7 @@
       "source_location": "L150",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_wi_z",
-      "community": 25,
+      "community": 2,
       "norm_label": ".z()"
     },
     {
@@ -9170,7 +9170,7 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_nj",
-      "community": 33,
+      "community": 2,
       "norm_label": "nj()"
     },
     {
@@ -9290,7 +9290,7 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_xj",
-      "community": 33,
+      "community": 2,
       "norm_label": "xj()"
     },
     {
@@ -9300,7 +9300,7 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_xj_g",
-      "community": 33,
+      "community": 2,
       "norm_label": ".g()"
     },
     {
@@ -9310,7 +9310,7 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yj",
-      "community": 33,
+      "community": 2,
       "norm_label": "yj()"
     },
     {
@@ -9480,7 +9480,7 @@
       "source_location": "L179",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ek",
-      "community": 52,
+      "community": 1,
       "norm_label": "ek()"
     },
     {
@@ -9560,7 +9560,7 @@
       "source_location": "L182",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ek_l",
-      "community": 52,
+      "community": 1,
       "norm_label": ".l()"
     },
     {
@@ -9670,7 +9670,7 @@
       "source_location": "L189",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yk",
-      "community": 52,
+      "community": 53,
       "norm_label": "yk()"
     },
     {
@@ -9690,7 +9690,7 @@
       "source_location": "L191",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_zk",
-      "community": 2,
+      "community": 53,
       "norm_label": "zk()"
     },
     {
@@ -9700,7 +9700,7 @@
       "source_location": "L191",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_zk_set",
-      "community": 2,
+      "community": 53,
       "norm_label": ".set()"
     },
     {
@@ -9710,7 +9710,7 @@
       "source_location": "L191",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_zk_reset",
-      "community": 2,
+      "community": 53,
       "norm_label": ".reset()"
     },
     {
@@ -9800,7 +9800,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yk_getmessage",
-      "community": 52,
+      "community": 53,
       "norm_label": ".getmessage()"
     },
     {
@@ -9810,7 +9810,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_al",
-      "community": 2,
+      "community": 53,
       "norm_label": "al()"
     },
     {
@@ -9840,7 +9840,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_el",
-      "community": 25,
+      "community": 2,
       "norm_label": "el()"
     },
     {
@@ -9850,7 +9850,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_fl",
-      "community": 2,
+      "community": 53,
       "norm_label": "fl()"
     },
     {
@@ -9870,7 +9870,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_fl_qa",
-      "community": 2,
+      "community": 53,
       "norm_label": ".qa()"
     },
     {
@@ -9900,7 +9900,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_jl",
-      "community": 1,
+      "community": 11,
       "norm_label": "jl()"
     },
     {
@@ -9990,7 +9990,7 @@
       "source_location": "L213",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rl",
-      "community": 11,
+      "community": 2,
       "norm_label": "rl()"
     },
     {
@@ -10000,7 +10000,7 @@
       "source_location": "L214",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sl",
-      "community": 11,
+      "community": 2,
       "norm_label": "sl()"
     },
     {
@@ -10010,7 +10010,7 @@
       "source_location": "L214",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_tl",
-      "community": 11,
+      "community": 2,
       "norm_label": "tl()"
     },
     {
@@ -10050,7 +10050,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_wl",
-      "community": 2,
+      "community": 53,
       "norm_label": "wl()"
     },
     {
@@ -10160,7 +10160,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_n",
-      "community": 42,
+      "community": 58,
       "norm_label": "n()"
     },
     {
@@ -10440,7 +10440,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_then",
-      "community": 4,
+      "community": 15,
       "norm_label": ".then()"
     },
     {
@@ -10460,7 +10460,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_ga",
-      "community": 4,
+      "community": 15,
       "norm_label": ".ga()"
     },
     {
@@ -10580,7 +10580,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_e_has",
-      "community": 42,
+      "community": 58,
       "norm_label": ".has()"
     },
     {
@@ -10760,7 +10760,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_x",
-      "community": 4,
+      "community": 25,
       "norm_label": "x()"
     },
     {
@@ -10820,7 +10820,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ta",
-      "community": 28,
+      "community": 58,
       "norm_label": "ta()"
     },
     {
@@ -10880,7 +10880,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jb",
-      "community": 24,
+      "community": 66,
       "norm_label": "jb()"
     },
     {
@@ -10900,7 +10900,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xb",
-      "community": 24,
+      "community": 66,
       "norm_label": "xb()"
     },
     {
@@ -10910,7 +10910,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yb",
-      "community": 24,
+      "community": 66,
       "norm_label": "yb()"
     },
     {
@@ -10930,7 +10930,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_kb",
-      "community": 24,
+      "community": 66,
       "norm_label": "kb()"
     },
     {
@@ -10950,7 +10950,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sb",
-      "community": 24,
+      "community": 66,
       "norm_label": "sb()"
     },
     {
@@ -10960,7 +10960,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_tb",
-      "community": 24,
+      "community": 66,
       "norm_label": "tb()"
     },
     {
@@ -10970,7 +10970,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vb",
-      "community": 24,
+      "community": 66,
       "norm_label": "vb()"
     },
     {
@@ -10980,7 +10980,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wb",
-      "community": 24,
+      "community": 66,
       "norm_label": "wb()"
     },
     {
@@ -10990,7 +10990,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ub",
-      "community": 24,
+      "community": 66,
       "norm_label": "ub()"
     },
     {
@@ -11030,7 +11030,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_fc",
-      "community": 24,
+      "community": 66,
       "norm_label": "fc()"
     },
     {
@@ -11040,7 +11040,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hc",
-      "community": 24,
+      "community": 66,
       "norm_label": "hc()"
     },
     {
@@ -11060,7 +11060,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jc",
-      "community": 24,
+      "community": 66,
       "norm_label": "jc()"
     },
     {
@@ -11070,7 +11070,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_kc",
-      "community": 24,
+      "community": 66,
       "norm_label": "kc()"
     },
     {
@@ -11080,7 +11080,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lc",
-      "community": 24,
+      "community": 66,
       "norm_label": "lc()"
     },
     {
@@ -11090,7 +11090,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_mc",
-      "community": 24,
+      "community": 66,
       "norm_label": "mc()"
     },
     {
@@ -11320,7 +11320,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dd",
-      "community": 24,
+      "community": 66,
       "norm_label": "dd()"
     },
     {
@@ -11340,7 +11340,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_fd",
-      "community": 14,
+      "community": 4,
       "norm_label": "fd()"
     },
     {
@@ -11960,7 +11960,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cf",
-      "community": 42,
+      "community": 58,
       "norm_label": "cf()"
     },
     {
@@ -12070,7 +12070,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pf",
-      "community": 4,
+      "community": 25,
       "norm_label": "pf()"
     },
     {
@@ -12150,7 +12150,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_w",
-      "community": 3,
+      "community": 58,
       "norm_label": "w()"
     },
     {
@@ -12160,7 +12160,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_w_dispose",
-      "community": 3,
+      "community": 58,
       "norm_label": ".dispose()"
     },
     {
@@ -12170,7 +12170,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_if",
-      "community": 42,
+      "community": 58,
       "norm_label": "if()"
     },
     {
@@ -12180,7 +12180,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_w_l",
-      "community": 3,
+      "community": 58,
       "norm_label": ".l()"
     },
     {
@@ -12290,7 +12290,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dg",
-      "community": 4,
+      "community": 25,
       "norm_label": "dg()"
     },
     {
@@ -12300,7 +12300,7 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_eg",
-      "community": 14,
+      "community": 3,
       "norm_label": "eg()"
     },
     {
@@ -12340,7 +12340,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lg",
-      "community": 14,
+      "community": 58,
       "norm_label": "lg()"
     },
     {
@@ -12350,7 +12350,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_x_then",
-      "community": 4,
+      "community": 25,
       "norm_label": ".then()"
     },
     {
@@ -12370,7 +12370,7 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sg",
-      "community": 4,
+      "community": 25,
       "norm_label": "sg()"
     },
     {
@@ -12380,7 +12380,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ng",
-      "community": 4,
+      "community": 25,
       "norm_label": "ng()"
     },
     {
@@ -12390,7 +12390,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ag",
-      "community": 4,
+      "community": 25,
       "norm_label": "ag()"
     },
     {
@@ -12400,7 +12400,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hg",
-      "community": 4,
+      "community": 25,
       "norm_label": "hg()"
     },
     {
@@ -12410,7 +12410,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vg",
-      "community": 4,
+      "community": 15,
       "norm_label": "vg()"
     },
     {
@@ -12420,7 +12420,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_tg",
-      "community": 4,
+      "community": 25,
       "norm_label": "tg()"
     },
     {
@@ -12480,7 +12480,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_mg",
-      "community": 4,
+      "community": 25,
       "norm_label": "mg()"
     },
     {
@@ -12560,7 +12560,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_mg_l",
-      "community": 4,
+      "community": 25,
       "norm_label": ".l()"
     },
     {
@@ -12580,7 +12580,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vg_g",
-      "community": 4,
+      "community": 15,
       "norm_label": ".g()"
     },
     {
@@ -12630,7 +12630,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bh",
-      "community": 42,
+      "community": 58,
       "norm_label": "bh()"
     },
     {
@@ -12760,7 +12760,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ph",
-      "community": 42,
+      "community": 58,
       "norm_label": "ph()"
     },
     {
@@ -12770,7 +12770,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_qh",
-      "community": 42,
+      "community": 58,
       "norm_label": "qh()"
     },
     {
@@ -12780,7 +12780,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_rh",
-      "community": 42,
+      "community": 58,
       "norm_label": "rh()"
     },
     {
@@ -12790,7 +12790,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh",
-      "community": 42,
+      "community": 58,
       "norm_label": "sh()"
     },
     {
@@ -12800,7 +12800,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_th",
-      "community": 42,
+      "community": 58,
       "norm_label": "th()"
     },
     {
@@ -12810,7 +12810,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_na",
-      "community": 42,
+      "community": 58,
       "norm_label": ".na()"
     },
     {
@@ -12820,7 +12820,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_removeall",
-      "community": 42,
+      "community": 58,
       "norm_label": ".removeall()"
     },
     {
@@ -12930,7 +12930,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_g",
-      "community": 42,
+      "community": 58,
       "norm_label": ".g()"
     },
     {
@@ -12940,7 +12940,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_notify",
-      "community": 42,
+      "community": 58,
       "norm_label": ".notify()"
     },
     {
@@ -12950,7 +12950,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_th_stoppropagation",
-      "community": 42,
+      "community": 58,
       "norm_label": ".stoppropagation()"
     },
     {
@@ -12960,7 +12960,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_th_preventdefault",
-      "community": 42,
+      "community": 58,
       "norm_label": ".preventdefault()"
     },
     {
@@ -13020,7 +13020,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bi",
-      "community": 28,
+      "community": 58,
       "norm_label": "bi()"
     },
     {
@@ -13200,7 +13200,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wi",
-      "community": 4,
+      "community": 58,
       "norm_label": "wi()"
     },
     {
@@ -13210,7 +13210,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xi",
-      "community": 4,
+      "community": 58,
       "norm_label": "xi()"
     },
     {
@@ -13220,7 +13220,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yi",
-      "community": 4,
+      "community": 25,
       "norm_label": "yi()"
     },
     {
@@ -13290,7 +13290,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ei",
-      "community": 42,
+      "community": 58,
       "norm_label": "ei()"
     },
     {
@@ -13400,7 +13400,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ui_aa",
-      "community": 24,
+      "community": 66,
       "norm_label": ".aa()"
     },
     {
@@ -13410,7 +13410,7 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wi_aa",
-      "community": 4,
+      "community": 58,
       "norm_label": ".aa()"
     },
     {
@@ -13660,7 +13660,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cj",
-      "community": 4,
+      "community": 3,
       "norm_label": "cj()"
     },
     {
@@ -13670,7 +13670,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cj_g",
-      "community": 4,
+      "community": 3,
       "norm_label": ".g()"
     },
     {
@@ -13770,7 +13770,7 @@
       "source_location": "L174",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dk",
-      "community": 28,
+      "community": 58,
       "norm_label": "dk()"
     },
     {
@@ -13830,7 +13830,7 @@
       "source_location": "L175",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ik",
-      "community": 42,
+      "community": 58,
       "norm_label": "ik()"
     },
     {
@@ -13840,7 +13840,7 @@
       "source_location": "L175",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_kk",
-      "community": 42,
+      "community": 58,
       "norm_label": "kk()"
     },
     {
@@ -13960,7 +13960,7 @@
       "source_location": "L183",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xk",
-      "community": 4,
+      "community": 25,
       "norm_label": "xk()"
     },
     {
@@ -14100,7 +14100,7 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ik_l",
-      "community": 28,
+      "community": 58,
       "norm_label": ".l()"
     },
     {
@@ -14120,7 +14120,7 @@
       "source_location": "L201",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wk_j",
-      "community": 42,
+      "community": 58,
       "norm_label": ".j()"
     },
     {
@@ -14160,7 +14160,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cl",
-      "community": 14,
+      "community": 58,
       "norm_label": "cl()"
     },
     {
@@ -14440,7 +14440,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yl",
-      "community": 4,
+      "community": 25,
       "norm_label": "yl()"
     },
     {
@@ -14460,7 +14460,7 @@
       "source_location": "L219",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cl_l",
-      "community": 3,
+      "community": 58,
       "norm_label": ".l()"
     },
     {
@@ -14490,7 +14490,7 @@
       "source_location": "L221",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cm",
-      "community": 14,
+      "community": 58,
       "norm_label": "cm()"
     },
     {
@@ -14540,7 +14540,7 @@
       "source_location": "L226",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dm",
-      "community": 14,
+      "community": 58,
       "norm_label": "dm()"
     },
     {
@@ -14550,7 +14550,7 @@
       "source_location": "L228",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_mm",
-      "community": 14,
+      "community": 4,
       "norm_label": "mm()"
     },
     {
@@ -14570,7 +14570,7 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_nm",
-      "community": 14,
+      "community": 3,
       "norm_label": "nm()"
     },
     {
@@ -14620,7 +14620,7 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_em",
-      "community": 14,
+      "community": 58,
       "norm_label": "em()"
     },
     {
@@ -21420,7 +21420,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_package_dependencies_jspdf",
-      "community": 6,
+      "community": 69,
       "norm_label": "jspdf"
     },
     {
@@ -22640,7 +22640,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_admincoursecategories",
-      "community": 6,
+      "community": 149,
       "norm_label": "admincoursecategories.jsx"
     },
     {
@@ -22650,7 +22650,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_admin_admincoursecategories_admincoursecategories",
-      "community": 6,
+      "community": 149,
       "norm_label": "admincoursecategories()"
     },
     {
@@ -23080,7 +23080,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminreceipts",
-      "community": 6,
+      "community": 69,
       "norm_label": "adminreceipts.jsx"
     },
     {
@@ -23090,7 +23090,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_src_admin_adminreceipts_numbertowords",
-      "community": 6,
+      "community": 69,
       "norm_label": "numbertowords()"
     },
     {
@@ -23100,7 +23100,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "frontend_src_admin_adminreceipts_getabsoluteurl",
-      "community": 6,
+      "community": 69,
       "norm_label": "getabsoluteurl()"
     },
     {
@@ -23110,7 +23110,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "frontend_src_admin_adminreceipts_adminreceipts",
-      "community": 6,
+      "community": 69,
       "norm_label": "adminreceipts()"
     },
     {
@@ -23250,7 +23250,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminstudents",
-      "community": 69,
+      "community": 6,
       "norm_label": "adminstudents.jsx"
     },
     {
@@ -23260,7 +23260,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_admin_adminstudents_avatarcolors",
-      "community": 69,
+      "community": 6,
       "norm_label": "avatarcolors"
     },
     {
@@ -23890,7 +23890,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_components_certificate_index_js_frontend_src_components_certificate_index",
-      "community": 0,
+      "community": 148,
       "norm_label": "index.js"
     },
     {
@@ -24020,7 +24020,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal",
-      "community": 22,
+      "community": 17,
       "norm_label": "courseenrollmodal.jsx"
     },
     {
@@ -24030,7 +24030,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal_loadrazorpayscript",
-      "community": 22,
+      "community": 17,
       "norm_label": "loadrazorpayscript()"
     },
     {
@@ -24040,7 +24040,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal_normalizeplankey",
-      "community": 22,
+      "community": 17,
       "norm_label": "normalizeplankey()"
     },
     {
@@ -24050,7 +24050,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal_compactplankey",
-      "community": 22,
+      "community": 17,
       "norm_label": "compactplankey()"
     },
     {
@@ -24060,7 +24060,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal_getplanidentity",
-      "community": 22,
+      "community": 17,
       "norm_label": "getplanidentity()"
     },
     {
@@ -24070,7 +24070,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal_matchesplanenrollment",
-      "community": 22,
+      "community": 17,
       "norm_label": "matchesplanenrollment()"
     },
     {
@@ -24080,7 +24080,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal_courseenrollmodal",
-      "community": 22,
+      "community": 17,
       "norm_label": "courseenrollmodal()"
     },
     {
@@ -24480,7 +24480,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee",
-      "community": 53,
+      "community": 29,
       "norm_label": "techmarquee.jsx"
     },
     {
@@ -24490,7 +24490,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_techs",
-      "community": 53,
+      "community": 29,
       "norm_label": "techs"
     },
     {
@@ -24500,7 +24500,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_mid",
-      "community": 53,
+      "community": 29,
       "norm_label": "mid"
     },
     {
@@ -24510,7 +24510,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_row1",
-      "community": 53,
+      "community": 29,
       "norm_label": "row1"
     },
     {
@@ -24520,7 +24520,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_row2",
-      "community": 53,
+      "community": 29,
       "norm_label": "row2"
     },
     {
@@ -24530,7 +24530,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_logocard",
-      "community": 53,
+      "community": 29,
       "norm_label": "logocard()"
     },
     {
@@ -24540,7 +24540,7 @@
       "source_location": "L134",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_marqueerow",
-      "community": 53,
+      "community": 29,
       "norm_label": "marqueerow()"
     },
     {
@@ -24550,7 +24550,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_animatedheading",
-      "community": 53,
+      "community": 29,
       "norm_label": "animatedheading()"
     },
     {
@@ -24560,7 +24560,7 @@
       "source_location": "L171",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_techmarquee",
-      "community": 53,
+      "community": 29,
       "norm_label": "techmarquee()"
     },
     {
@@ -24780,7 +24780,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_context_chatcontext",
-      "community": 17,
+      "community": 60,
       "norm_label": "chatcontext.jsx"
     },
     {
@@ -24790,7 +24790,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_context_chatcontext_chatcontext",
-      "community": 17,
+      "community": 60,
       "norm_label": "chatcontext"
     },
     {
@@ -24800,7 +24800,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "frontend_src_context_chatcontext_gettimestampms",
-      "community": 17,
+      "community": 60,
       "norm_label": "gettimestampms()"
     },
     {
@@ -24810,7 +24810,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "frontend_src_context_chatcontext_getchatsortms",
-      "community": 17,
+      "community": 60,
       "norm_label": "getchatsortms()"
     },
     {
@@ -24820,7 +24820,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "frontend_src_context_chatcontext_getdirectpairkey",
-      "community": 17,
+      "community": 60,
       "norm_label": "getdirectpairkey()"
     },
     {
@@ -24830,7 +24830,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "frontend_src_context_chatcontext_getconversationkey",
-      "community": 17,
+      "community": 60,
       "norm_label": "getconversationkey()"
     },
     {
@@ -24840,7 +24840,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "frontend_src_context_chatcontext_dedupechats",
-      "community": 17,
+      "community": 60,
       "norm_label": "dedupechats()"
     },
     {
@@ -24850,7 +24850,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "frontend_src_context_chatcontext_getreadablename",
-      "community": 17,
+      "community": 60,
       "norm_label": "getreadablename()"
     },
     {
@@ -24860,7 +24860,7 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "frontend_src_context_chatcontext_chatprovider",
-      "community": 17,
+      "community": 60,
       "norm_label": "chatprovider()"
     },
     {
@@ -25560,7 +25560,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks",
-      "community": 58,
+      "community": 6,
       "norm_label": "employeetasks.jsx"
     },
     {
@@ -25570,7 +25570,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_statusconfig",
-      "community": 58,
+      "community": 6,
       "norm_label": "statusconfig"
     },
     {
@@ -25580,7 +25580,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_priorityconfig",
-      "community": 58,
+      "community": 6,
       "norm_label": "priorityconfig"
     },
     {
@@ -25590,7 +25590,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_getstatus",
-      "community": 58,
+      "community": 6,
       "norm_label": "getstatus()"
     },
     {
@@ -25600,7 +25600,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_getpriority",
-      "community": 58,
+      "community": 6,
       "norm_label": "getpriority()"
     },
     {
@@ -25610,7 +25610,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_taskcard",
-      "community": 58,
+      "community": 6,
       "norm_label": "taskcard()"
     },
     {
@@ -25620,7 +25620,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_employeetasks",
-      "community": 58,
+      "community": 6,
       "norm_label": "employeetasks()"
     },
     {
@@ -27380,7 +27380,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_utils_categoryicon",
-      "community": 6,
+      "community": 149,
       "norm_label": "categoryicon.jsx"
     },
     {
@@ -27390,7 +27390,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "frontend_src_utils_categoryicon_icon_map",
-      "community": 6,
+      "community": 149,
       "norm_label": "icon_map"
     },
     {
@@ -27400,7 +27400,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_src_utils_categoryicon_categoryicon",
-      "community": 6,
+      "community": 149,
       "norm_label": "categoryicon()"
     },
     {
@@ -27410,7 +27410,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "frontend_src_utils_categoryicon_category_icon_options",
-      "community": 6,
+      "community": 149,
       "norm_label": "category_icon_options"
     },
     {
@@ -35436,7 +35436,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L354",
+      "source_location": "L348",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_middlewares_uploadmiddleware",
@@ -35458,7 +35458,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L354",
+      "source_location": "L348",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_middlewares_uploadmiddleware_allowed_mime_types",
@@ -35469,7 +35469,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L354",
+      "source_location": "L348",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_middlewares_uploadmiddleware_imagefilter",
@@ -35480,7 +35480,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L354",
+      "source_location": "L348",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_middlewares_uploadmiddleware_uploadpayment",
@@ -35491,7 +35491,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L354",
+      "source_location": "L348",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_middlewares_uploadmiddleware_uploadteam",
@@ -35502,7 +35502,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L354",
+      "source_location": "L348",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_middlewares_uploadmiddleware_uploadproject",
@@ -35513,7 +35513,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L354",
+      "source_location": "L348",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_middlewares_uploadmiddleware_uploadbroadcast",
@@ -35535,7 +35535,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L354",
+      "source_location": "L348",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_middlewares_uploadmiddleware_uploadcertificateasset",
@@ -35546,7 +35546,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L354",
+      "source_location": "L348",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_middlewares_uploadmiddleware_uploadchat",
@@ -37267,7 +37267,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L256",
+      "source_location": "L250",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_allowedorigins",
@@ -37277,7 +37277,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L295",
+      "source_location": "L289",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_apilimiter",
@@ -37287,7 +37287,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L40",
+      "source_location": "L38",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_app",
@@ -37337,7 +37337,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L246",
+      "source_location": "L240",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_default_allowed_origins",
@@ -37357,7 +37357,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L316",
+      "source_location": "L310",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_frontenddistdir",
@@ -37367,7 +37367,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L317",
+      "source_location": "L311",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_frontendindexpath",
@@ -37387,7 +37387,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L365",
+      "source_location": "L359",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_getbaseurl",
@@ -37397,7 +37397,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L507",
+      "source_location": "L501",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_getsessionsforreminder_getcourseswithplanmeetings_getactivecourseenrollments_updatecourseplans",
@@ -37447,7 +37447,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L44",
+      "source_location": "L42",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_passport",
@@ -37487,7 +37487,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L442",
+      "source_location": "L436",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_sendemail_emailtemplate",
@@ -37497,7 +37497,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L318",
+      "source_location": "L312",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_sendfrontendindex",
@@ -37507,7 +37507,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L503",
+      "source_location": "L497",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_sendsessionnotification_sendcourseplannotification",
@@ -37517,7 +37517,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L354",
+      "source_location": "L348",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_uploadpayment_upload_uploadteam_uploadproject_uploadbroadcast_uploadcertificateasset_uploadchat_allowed_mime_types_imagefilter",
@@ -37527,7 +37527,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L306",
+      "source_location": "L300",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_server_uploadsdir",
@@ -37538,7 +37538,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L442",
+      "source_location": "L436",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_services_emailservice",
@@ -37549,7 +37549,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L442",
+      "source_location": "L436",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_services_emailservice_emailtemplate",
@@ -37560,7 +37560,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L442",
+      "source_location": "L436",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_services_emailservice_sendemail",
@@ -37571,7 +37571,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L507",
+      "source_location": "L501",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_services_firebaseservice",
@@ -37582,7 +37582,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L507",
+      "source_location": "L501",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_services_firebaseservice_getactivecourseenrollments",
@@ -37593,7 +37593,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L507",
+      "source_location": "L501",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_services_firebaseservice_getcourseswithplanmeetings",
@@ -37604,7 +37604,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L507",
+      "source_location": "L501",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_services_firebaseservice_getsessionsforreminder",
@@ -37615,7 +37615,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L507",
+      "source_location": "L501",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_services_firebaseservice_updatecourseplans",
@@ -37626,7 +37626,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L503",
+      "source_location": "L497",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_services_notificationservice",
@@ -37637,7 +37637,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L503",
+      "source_location": "L497",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_services_notificationservice_sendcourseplannotification",
@@ -37648,7 +37648,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L503",
+      "source_location": "L497",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_services_notificationservice_sendsessionnotification",
@@ -37659,7 +37659,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L44",
+      "source_location": "L42",
       "weight": 1.0,
       "source": "backend_server",
       "target": "backend_services_passport",
@@ -94564,17 +94564,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/Certificate/index.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "frontend_src_components_certificate_index_js_frontend_src_components_certificate_index",
-      "target": "frontend_src_components_certificate_aictecertificatedocument_aictecertificatedocument",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/Certificate/index.jsx",
       "source_location": "L5",
       "weight": 1.0,
@@ -94864,17 +94853,6 @@
       "weight": 1.0,
       "source": "frontend_src_components_certificate_certificatedocument_certificatedocument",
       "target": "frontend_src_utils_certificatetemplate_mergecertificatetemplate"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/Certificate/index.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "frontend_src_components_certificate_index_js_frontend_src_components_certificate_index",
-      "target": "frontend_src_components_certificate_certificatedocument_certificatedocument",
-      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -95459,17 +95437,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/Certificate/index.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "frontend_src_components_certificate_index_js_frontend_src_components_certificate_index",
-      "target": "frontend_src_components_certificate_offerletterdocument_offerletterdocument",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/Certificate/index.jsx",
       "source_location": "L6",
       "weight": 1.0,
@@ -95627,22 +95594,11 @@
       "target": "frontend_src_utils_certificatetemplate_hextorgba"
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/components/Certificate/index.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "frontend_src_components_certificate_index_js_frontend_src_components_certificate_index",
-      "target": "frontend_src_components_certificate_index_certificaterouter",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "re_exports",
       "context": "export",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/Certificate/index.js",
-      "source_location": "L3",
+      "source_location": "L2",
       "weight": 1.0,
       "source": "frontend_src_components_certificate_index_js_frontend_src_components_certificate_index",
       "target": "frontend_src_components_certificate_index_js_frontend_src_components_certificate_index",

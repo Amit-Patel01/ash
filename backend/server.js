@@ -33,6 +33,8 @@ if (!geminiEnvKey) {
 // ─── Maintenance Mode State ──────────────────────────────────────────────────
 let isMaintenanceModeEnabled = false;
 let maintenanceMessage = "";
+let lastMaintenanceCheck = 0;
+const MAINTENANCE_CACHE_TTL_MS = 15000; // Cache maintenance status for 15 seconds
 
 // ─── Express App ─────────────────────────────────────────────────────────────
 const app = express();
@@ -49,20 +51,24 @@ app.use("/api/webhook", require("./routes/webhook"));
 
 // ─── Dynamic Maintenance Middleware ──────────────────────────────────────────
 app.use(async (req, res, next) => {
-  try {
-    const db = require("./utils/mongo").getDb();
-    const data = await db.collection("settings").findOne({ _id: "maintenance" });
-    if (data) {
-      const isDev = process.env.NODE_ENV !== "production";
-      isMaintenanceModeEnabled = isDev ? !!data.isActiveDev : !!data.isActive;
-      maintenanceMessage = data.message || "";
-    } else {
+  const now = Date.now();
+  if (now - lastMaintenanceCheck > MAINTENANCE_CACHE_TTL_MS) {
+    try {
+      const db = require("./utils/mongo").getDb();
+      const data = await db.collection("settings").findOne({ _id: "maintenance" });
+      if (data) {
+        const isDev = process.env.NODE_ENV !== "production";
+        isMaintenanceModeEnabled = isDev ? !!data.isActiveDev : !!data.isActive;
+        maintenanceMessage = data.message || "";
+      } else {
+        isMaintenanceModeEnabled = false;
+        maintenanceMessage = "";
+      }
+      lastMaintenanceCheck = now;
+    } catch (err) {
       isMaintenanceModeEnabled = false;
       maintenanceMessage = "";
     }
-  } catch (err) {
-    isMaintenanceModeEnabled = false;
-    maintenanceMessage = "";
   }
 
   if (!isMaintenanceModeEnabled) {

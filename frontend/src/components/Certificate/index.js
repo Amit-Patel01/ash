@@ -1,2 +1,4 @@
-export { default } from './index.jsx';
-export * from './index.jsx';
+import CertificateRouter, { CertificateDocument, AICTECertificateDocument, OfferLetterDocument } from './index.jsx';
+
+export default CertificateRouter;
+export { CertificateRouter, CertificateDocument, AICTECertificateDocument, OfferLetterDocument };

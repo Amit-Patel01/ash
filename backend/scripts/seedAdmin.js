@@ -2,7 +2,7 @@ const { MongoClient } = require("mongodb");
 const bcrypt = require("bcryptjs");
 require("dotenv").config({ path: __dirname + "/../.env" });
 
-const uri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/solutionhub";
+const uri = process.env.MONGODB_URI_ATLAS || process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/solutionhub";
 const client = new MongoClient(uri);
 
 async function run() {
