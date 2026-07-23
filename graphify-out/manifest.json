@@ -95,8 +95,8 @@
     "semantic_hash": ""
   },
   "backend/routes/notify.js": {
-    "mtime": 1783616369.142494,
-    "ast_hash": "f32d37a0a28ed228c7be999a907ca4df",
+    "mtime": 1784822307.1857176,
+    "ast_hash": "7ff3b260ae38e1301c557304f65629c5",
     "semantic_hash": ""
   },
   "backend/routes/projects.js": {
@@ -140,8 +140,8 @@
     "semantic_hash": ""
   },
   "backend/services/emailService.js": {
-    "mtime": 1783616369.1538324,
-    "ast_hash": "61678a019faef5e99ff449d5256571c6",
+    "mtime": 1784822498.5152843,
+    "ast_hash": "913495f5a7fc7e285ed70b670e25067c",
     "semantic_hash": ""
   },
   "backend/services/firebaseService.js": {
@@ -1315,8 +1315,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminCourseEnrollments.jsx": {
-    "mtime": 1783616372.613312,
-    "ast_hash": "91aa3238d8b5a42293447cc32d0efb54",
+    "mtime": 1784821661.37725,
+    "ast_hash": "d509862becd5b95963c051c1689b2750",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminCourses.jsx": {
@@ -1335,8 +1335,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminLayout.jsx": {
-    "mtime": 1783856454.61494,
-    "ast_hash": "17c411537735e73fe7268c09b5fd08e6",
+    "mtime": 1784821402.8260093,
+    "ast_hash": "b1440bf850ec07406deee3fdc4a65d41",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminMessages.jsx": {
@@ -1390,8 +1390,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/AIChatbot.jsx": {
-    "mtime": 1783616372.750527,
-    "ast_hash": "116a8a3c62dea5d00cd74605803115a4",
+    "mtime": 1784818794.8943331,
+    "ast_hash": "85c947ecf4d6669a375ed44031528a77",
     "semantic_hash": ""
   },
   "frontend/src/components/AnnouncementPopup.jsx": {
@@ -1420,8 +1420,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/Hero.jsx": {
-    "mtime": 1783616372.7807071,
-    "ast_hash": "b0a456319c9f5a931e9713f2232b6c90",
+    "mtime": 1784818875.4307578,
+    "ast_hash": "d4e0e2f7aa44c69df6b9f25d4f557c18",
     "semantic_hash": ""
   },
   "frontend/src/components/Layout.jsx": {
@@ -1430,8 +1430,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/Navbar.jsx": {
-    "mtime": 1783616372.7814095,
-    "ast_hash": "edd78f792d86b96dcb76e83739bd6561",
+    "mtime": 1784819021.792095,
+    "ast_hash": "6a04faf4171a8d4216d759200d8b8759",
     "semantic_hash": ""
   },
   "frontend/src/components/NotificationBell.jsx": {
@@ -1520,8 +1520,8 @@
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeCourseManage.jsx": {
-    "mtime": 1783616372.7953181,
-    "ast_hash": "d0fbf5965e9f16a18a5ccadc8ff477ac",
+    "mtime": 1784822040.799509,
+    "ast_hash": "0edfa259fa48eb96b5ae741fb2f5b0ea",
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeCourseManageRefined.jsx": {
@@ -1535,8 +1535,8 @@
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeLayout.jsx": {
-    "mtime": 1783616372.7988217,
-    "ast_hash": "63a5d0c042a2a596c61f1f836552663c",
+    "mtime": 1784821302.71196,
+    "ast_hash": "34090058637cf68b5102bc66be6e1bb6",
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeOverview.jsx": {
@@ -1725,8 +1725,8 @@
     "semantic_hash": ""
   },
   "frontend/src/store/StoreContext.jsx": {
-    "mtime": 1784804518.7388525,
-    "ast_hash": "93f5f7ce76fa9d44cb84da2bc9104a0c",
+    "mtime": 1784818963.517079,
+    "ast_hash": "ebe87688e79f3f09d41298fe4faeb255",
     "semantic_hash": ""
   },
   "frontend/src/technicalsupport/RepairService.jsx": {
@@ -2545,8 +2545,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/TechMarquee.jsx": {
-    "mtime": 1783616372.7814095,
-    "ast_hash": "d78e8afbba51b3cdb9e5b20966ce7988",
+    "mtime": 1784819082.5589435,
+    "ast_hash": "81e1284426ae88188e4e2773654b24ab",
     "semantic_hash": ""
   },
   "frontend/src/components/TrustedPartners.jsx": {
@@ -2555,8 +2555,8 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/AuthCallback.jsx": {
-    "mtime": 1783616372.8084295,
-    "ast_hash": "63fda5174db517b28136c7e26a973002",
+    "mtime": 1784819161.0863044,
+    "ast_hash": "8abd60ae2f0bdef285695309459f9ce5",
     "semantic_hash": ""
   },
   "frontend/src/pages/ProgramsPage.jsx": {
@@ -2565,33 +2565,33 @@
     "semantic_hash": ""
   },
   "frontend/src/user/UserCertificates.jsx": {
-    "mtime": 1783616372.8271394,
-    "ast_hash": "0d0308d0ecd6242b70e7b0e93f8b8e52",
+    "mtime": 1784821069.8054864,
+    "ast_hash": "4ede179de05c8223a9d6af4cf89e5b27",
     "semantic_hash": ""
   },
   "frontend/src/user/UserCustomProject.jsx": {
-    "mtime": 1783616372.828154,
-    "ast_hash": "ba6df909139debbd372acd07700998f7",
+    "mtime": 1784821102.0551586,
+    "ast_hash": "9dcb53747307ca4e28aeb7b962536f2d",
     "semantic_hash": ""
   },
   "frontend/src/user/UserLayout.jsx": {
-    "mtime": 1783865962.3185866,
-    "ast_hash": "eee7b055dcf76dd712553bd0b260d616",
+    "mtime": 1784821180.739928,
+    "ast_hash": "c84a4c62dce61793391f0c82d112558f",
     "semantic_hash": ""
   },
   "frontend/src/user/UserMyCourses.jsx": {
-    "mtime": 1783616372.828154,
-    "ast_hash": "676fd38b84f80f4459da53c15c0c3e4f",
+    "mtime": 1784821839.4988198,
+    "ast_hash": "eaa9233c6f38506e49ab33453d3a9035",
     "semantic_hash": ""
   },
   "frontend/src/user/UserOrders.jsx": {
-    "mtime": 1783865975.0526977,
-    "ast_hash": "ed11abd4273d578961a1875b047b80b6",
+    "mtime": 1784821121.924052,
+    "ast_hash": "fcb3a0455109d638eb0b7ce14c68c1f6",
     "semantic_hash": ""
   },
   "frontend/src/user/UserOverview.jsx": {
-    "mtime": 1783616372.8296597,
-    "ast_hash": "357ba2ac8192a587bd3cc26f4f7c62f9",
+    "mtime": 1784820123.7591605,
+    "ast_hash": "969955f502d5e5d8eb050bd9daeb2b7f",
     "semantic_hash": ""
   },
   "frontend/src/user/UserProfile.jsx": {
@@ -2600,8 +2600,8 @@
     "semantic_hash": ""
   },
   "frontend/src/user/UserSupport.jsx": {
-    "mtime": 1783616372.8321142,
-    "ast_hash": "072393af3ac225f5a8c3531a5f65cb14",
+    "mtime": 1784819440.335979,
+    "ast_hash": "d10dca06146c38dd38caf85708054679",
     "semantic_hash": ""
   },
   "frontend/public/chatbot-ai.png": {

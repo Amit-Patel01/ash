@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useChat } from '../context/ChatContext'
 import { useAuth } from '../context/AuthContext'
 import ChatPanel from '../components/ChatPanel'
@@ -51,9 +51,10 @@ export default function UserSupport() {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 h-[calc(100vh-12rem)]">
       <div>
-        <h1 className="text-3xl font-bold text-white tracking-tight">Support Chat</h1>
-        <p className="text-sm text-gray-400 mt-1">Chat with our support team in real-time</p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Support Chat</h1>
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Chat with our support team and technical mentors in real-time</p>
       </div>
+
 
       <div className="h-[calc(100%-5rem)]">
         <ChatPanel embedded />

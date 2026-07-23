@@ -120,8 +120,9 @@ const Navbar = () => {
                 <img
                   src={brandLogo}
                   alt="Brand Logo"
-                  className="relative z-10 h-10 lg:h-12 w-auto object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.15)]"
+                  className="relative z-10 h-10 max-h-10 lg:h-12 lg:max-h-12 w-auto max-w-[160px] sm:max-w-none object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.15)]"
                 />
+
 
                 {/* Shine Sweep Beam */}
                 <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
@@ -590,9 +591,10 @@ const Navbar = () => {
               animate={{ opacity: 1, scaleY: 1, y: 0 }}
               exit={{ opacity: 0, scaleY: 0.95, y: -10 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:hidden absolute top-full left-4 right-4 mt-4 overflow-hidden origin-top"
+              className="lg:hidden absolute top-full left-3 right-3 sm:left-4 sm:right-4 mt-2 max-h-[82vh] overflow-y-auto origin-top custom-scrollbar z-50 rounded-3xl"
             >
               <div className={`border shadow-2xl rounded-3xl p-4 flex flex-col gap-2 relative overflow-hidden ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+
                 {/* subtle color wash */}
                 <div className={`absolute -top-16 -right-16 w-48 h-48 rounded-full blur-3xl opacity-30 pointer-events-none ${isDark ? 'bg-indigo-600' : 'bg-blue-300'}`} />
                 {navLinks.map((link) => {

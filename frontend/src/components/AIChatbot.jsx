@@ -475,24 +475,17 @@ export default function AIChatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="fixed z-[9998] rounded-2xl overflow-hidden flex flex-col shadow-2xl border border-violet-500/30"
             style={{
-              position: 'fixed',
-              bottom: '100px',
-              right: '24px',
-              width: '380px',
-              maxWidth: 'calc(100vw - 48px)',
-              height: '540px',
-              maxHeight: 'calc(100vh - 140px)',
-              borderRadius: '20px',
-              overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column',
-              zIndex: 9998,
-              boxShadow: '0 25px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.08)',
+              bottom: '95px',
+              right: window.innerWidth < 640 ? '12px' : '24px',
+              width: window.innerWidth < 640 ? 'calc(100vw - 24px)' : '380px',
+              height: window.innerWidth < 640 ? 'calc(100vh - 120px)' : '540px',
+              maxHeight: 'calc(100vh - 110px)',
               background: 'linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%)',
-              border: '1px solid rgba(124, 58, 237, 0.3)',
             }}
           >
+
             {/* Header */}
             <div style={{
               padding: '16px 20px',

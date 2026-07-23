@@ -1,4 +1,4 @@
-﻿import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
@@ -6,6 +6,8 @@ import { getDocumentTypeMeta, hexToRgba, mergeCertificateTemplate } from '../uti
 import { CERTIFICATE_EXPORT_WIDTH, downloadCertificatePdf, downloadCertificatePng } from '../utils/certificateExport'
 import { formatCertificateDate, getCertificateDocumentLabel, getCertificateDocumentType } from '../utils/certificateHelpers'
 import CertificateDocument from '../components/Certificate'
+import { FileText, X, ExternalLink, Award, Folder } from 'lucide-react'
+
 
 function CertificateCard({ certificate, templateState, currentUser, copiedId, onCopy, isGrid }) {
   const previewRef = useRef(null)
@@ -43,7 +45,7 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
         {/* PDF Header / Controls */}
         <div className="h-14 bg-slate-900/90 border-b border-white/5 px-4 md:px-6 flex items-center justify-between z-10 shrink-0" onClick={e => e.stopPropagation()}>
           <div className="flex items-center gap-3 min-w-0">
-            <span className="text-lg shrink-0">📄</span>
+            <FileText className="w-5 h-5 text-blue-400 shrink-0" />
             <span className="font-semibold text-sm truncate max-w-[200px] md:max-w-md">{documentLabel}.pdf</span>
           </div>
           <div className="flex items-center gap-2">
@@ -70,9 +72,10 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
               className="ml-2 w-9 h-9 rounded-lg bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 text-slate-300 transition-all font-black flex items-center justify-center text-sm"
               title="Close Document Viewer"
             >
-              ✕
+              <X className="w-4 h-4" />
             </button>
           </div>
+
         </div>
 
         {/* PDF Page Canvas Wrapper */}
@@ -99,7 +102,8 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
   if (isGrid) {
     return (
       <div
-        className="rounded-[28px] p-5 md:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between aspect-square h-full bg-white shadow-[0_10px_30px_rgba(148,163,184,0.25)]"
+        className="rounded-[28px] p-5 md:p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between min-h-[260px] h-full bg-white shadow-[0_10px_30px_rgba(148,163,184,0.25)]"
+
         style={{
           background: `linear-gradient(135deg, ${hexToRgba(template.accentColor, 0.10)}, rgba(255, 255, 255, 0.98))`,
           border: `1px solid ${hexToRgba(template.accentColor, 0.25)}`,
@@ -149,8 +153,9 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
                 className="rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-2 text-xs text-slate-600 hover:bg-slate-100 flex items-center justify-center"
                 title="Verify Credential Link"
               >
-                🔗
+                <ExternalLink className="w-4 h-4 text-blue-600" />
               </Link>
+
             </div>
           </div>
         </div>
@@ -343,8 +348,8 @@ export default function UserCertificates() {
         </div>
 
         <div className="bg-white border border-slate-200 rounded-3xl p-12 text-center shadow-[0_10px_30px_rgba(148,163,184,0.25)]">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-3xl mb-5">
-            🏆
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mb-5">
+            <Award className="w-8 h-8 text-amber-500" />
           </div>
           <h2 className="text-xl font-bold text-slate-900">No documents yet</h2>
           <p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">
@@ -438,9 +443,10 @@ export default function UserCertificates() {
             >
               <div className="absolute top-0 right-0 w-24 h-24 bg-amber-100/60 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-700"></div>
               
-              <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-4xl shadow-sm transition-transform duration-300 group-hover:rotate-6">
-                📁
+              <div className="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:rotate-6">
+                <Folder className="w-8 h-8 text-amber-500" />
               </div>
+
               
               <div className="flex-1 min-w-0">
                 <h3 className="text-base font-bold text-slate-900 truncate group-hover:text-blue-600 transition-colors">

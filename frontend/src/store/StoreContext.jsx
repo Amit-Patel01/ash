@@ -216,22 +216,27 @@ export function StoreProvider({ children }) {
     }
   }
 
+  const PROTECTED_COLLECTIONS = new Set([
+    'orders', 'tasks', 'users', 'employees', 'accountRequests', 'sellRequests',
+    'custom_requests', 'messages', 'enrollments', 'payments', 'employeePermissions', 'coupons'
+  ]);
+
   const fetchCollection = async (collectionName, params = {}) => {
+    const token = localStorage.getItem('token');
+    if (PROTECTED_COLLECTIONS.has(collectionName) && !token) {
+      return [];
+    }
     try {
       const queryParams = new URLSearchParams(params).toString();
       const url = `${api.base}/api/db/${collectionName}${queryParams ? '?' + queryParams : ''}`;
       const headers = getRequestHeaders();
       const res = await fetch(url, { headers });
       if (!res.ok) {
-        if (res.status === 401 && !localStorage.getItem('token')) {
-          return [];
-        }
-        throw new Error(`Failed to fetch ${collectionName}`);
+        return [];
       }
       const data = await res.json();
       return data.documents || [];
     } catch (err) {
-      console.error(`Error fetching collection ${collectionName}:`, err);
       return [];
     }
   };
@@ -242,18 +247,15 @@ export function StoreProvider({ children }) {
       const headers = getRequestHeaders();
       const res = await fetch(url, { headers });
       if (!res.ok) {
-        if (res.status === 401 && !localStorage.getItem('token')) {
-          return null;
-        }
-        throw new Error(`Failed to fetch document ${docId} from ${collectionName}`);
+        return null;
       }
       const data = await res.json();
       return data.document || null;
     } catch (err) {
-      console.error(`Error fetching document ${docId} from ${collectionName}:`, err);
       return null;
     }
   };
+
 
   const loadProjects = async () => {
     const data = await fetchCollection('projects');
@@ -394,24 +396,14 @@ export function StoreProvider({ children }) {
     let isMounted = true;
 
     const loadAllData = async () => {
-      await Promise.all([
+      const token = localStorage.getItem('token');
+      const publicLoads = [
         loadProjects(),
         loadCategories(),
-        loadOrders(),
-        loadTasks(),
-        loadManualEmployees(),
-        loadUsers(),
         loadServices(),
-        loadAccountRequests(),
-        loadSellRequests(),
-        loadServiceRequests(),
-        loadMessages(),
         loadTradingCourses(),
         loadTradingSessions(),
-        loadTradingEnrollments(),
-        loadTradingPayments(),
         loadMentorProfile(),
-        loadEmployeePermissions(),
         loadTradingCurriculum(),
         loadCertificates(),
         loadCertificateTemplate(),
@@ -419,50 +411,75 @@ export function StoreProvider({ children }) {
         loadMaintenance(),
         loadHomepageStats(),
         loadGenericCourses(),
-        loadGenericEnrollments(),
         loadCourseCategories(),
         loadTestimonials(),
         loadInternshipCategories()
-      ]);
+      ];
+
+      const protectedLoads = token ? [
+        loadOrders(),
+        loadTasks(),
+        loadManualEmployees(),
+        loadUsers(),
+        loadAccountRequests(),
+        loadSellRequests(),
+        loadServiceRequests(),
+        loadMessages(),
+        loadTradingEnrollments(),
+        loadTradingPayments(),
+        loadEmployeePermissions(),
+        loadGenericEnrollments()
+      ] : [];
+
+      await Promise.all([...publicLoads, ...protectedLoads]);
       if (isMounted) {
         setLoading(false);
       }
     };
 
+
     loadAllData();
 
     const fastPoll = setInterval(() => {
-      loadOrders();
-      loadTasks();
-      loadAccountRequests();
-      loadSellRequests();
-      loadServiceRequests();
+      const token = localStorage.getItem('token');
+      if (token) {
+        loadOrders();
+        loadTasks();
+        loadAccountRequests();
+        loadSellRequests();
+        loadServiceRequests();
+      }
       loadMaintenance();
     }, 15000);
 
     const slowPoll = setInterval(() => {
+      const token = localStorage.getItem('token');
       loadProjects();
       loadCategories();
-      loadManualEmployees();
-      loadUsers();
       loadServices();
-      loadMessages();
       loadTradingCourses();
       loadTradingSessions();
-      loadTradingEnrollments();
-      loadTradingPayments();
       loadMentorProfile();
-      loadEmployeePermissions();
       loadTradingCurriculum();
       loadCertificates();
       loadCertificateTemplate();
       loadAnnouncement();
       loadGenericCourses();
-      loadGenericEnrollments();
       loadCourseCategories();
       loadTestimonials();
       loadInternshipCategories();
+
+      if (token) {
+        loadManualEmployees();
+        loadUsers();
+        loadMessages();
+        loadTradingEnrollments();
+        loadTradingPayments();
+        loadEmployeePermissions();
+        loadGenericEnrollments();
+      }
     }, 60000);
+
 
     return () => {
       isMounted = false;

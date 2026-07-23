@@ -1,7 +1,8 @@
 import { useMemo, useState, useEffect } from 'react'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
-import { Search, FileText, Eye, X, ShieldCheck } from 'lucide-react'
+import { Search, FileText, Eye, X, ShieldCheck, Check } from 'lucide-react'
+
 import { api } from '../config/api'
 import { useLocation } from 'react-router-dom'
 import logo from '../assets/logo.png'
@@ -180,41 +181,41 @@ export default function UserOrders() {
   const filteredOrders = filter === 'all' ? myOrders : myOrders.filter(o => o.status === filter)
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-16">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Order & Request Hub</h1>
-          <p className="text-sm text-gray-400 mt-1">Track prebuilt marketplace orders and custom build progress</p>
+          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Order & Request Hub</h1>
+          <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mt-1">Track prebuilt marketplace orders, custom build progress, and payment receipts</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-white/5 gap-6">
+      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6 overflow-x-auto">
         <button
           onClick={() => setActiveTab('orders')}
-          className={`pb-4 text-sm font-bold relative transition-colors ${activeTab === 'orders' ? 'text-blue-400' : 'text-gray-400 hover:text-white'}`}
+          className={`pb-4 text-sm font-extrabold relative transition-colors shrink-0 ${activeTab === 'orders' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}`}
         >
           Prebuilt Orders ({myOrders.length})
           {activeTab === 'orders' && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 shadow-md shadow-blue-500/50" />
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400 shadow-md" />
           )}
         </button>
         <button
           onClick={() => setActiveTab('custom')}
-          className={`pb-4 text-sm font-bold relative transition-colors ${activeTab === 'custom' ? 'text-blue-400' : 'text-gray-400 hover:text-white'}`}
+          className={`pb-4 text-sm font-extrabold relative transition-colors shrink-0 ${activeTab === 'custom' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}`}
         >
           Custom Projects ({myCustomRequests.length})
           {activeTab === 'custom' && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 shadow-md shadow-blue-500/50" />
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400 shadow-md" />
           )}
         </button>
         <button
           onClick={() => setActiveTab('receipts')}
-          className={`pb-4 text-sm font-bold relative transition-colors ${activeTab === 'receipts' ? 'text-blue-400' : 'text-gray-400 hover:text-white'}`}
+          className={`pb-4 text-sm font-extrabold relative transition-colors shrink-0 ${activeTab === 'receipts' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}`}
         >
           Payment Receipts ({receipts.length})
           {activeTab === 'receipts' && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 shadow-md shadow-blue-500/50" />
+            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400 shadow-md" />
           )}
         </button>
       </div>
@@ -227,77 +228,81 @@ export default function UserOrders() {
               <button
                 key={f}
                 onClick={() => setFilter(f)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${filter === f ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all border ${filter === f ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
               >
                 {f.charAt(0).toUpperCase() + f.slice(1)}
               </button>
             ))}
           </div>
 
+
           {filteredOrders.length === 0 ? (
-            <div className="text-center py-20 bg-gray-900/30 rounded-2xl border border-white/5">
-              <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <div className="text-center py-16 bg-slate-50/70 dark:bg-slate-800/30 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800">
+              <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto mb-3">
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                 </svg>
               </div>
-              <p className="text-gray-400 font-medium">No {filter !== 'all' ? filter : ''} orders found</p>
+              <p className="text-slate-500 dark:text-slate-400 font-semibold text-sm">No {filter !== 'all' ? filter : ''} orders found</p>
             </div>
+
           ) : (
-            <div className="bg-gray-900/50 border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-white/5 text-gray-400 bg-white/[0.01]">
-                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Project</th>
-                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Amount</th>
-                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Type</th>
-                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Status</th>
-                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Date</th>
+                    <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40">
+                      <th className="text-left px-6 py-4 text-xs font-bold uppercase tracking-wider">Project</th>
+                      <th className="text-left px-6 py-4 text-xs font-bold uppercase tracking-wider">Amount</th>
+                      <th className="text-left px-6 py-4 text-xs font-bold uppercase tracking-wider">Type</th>
+                      <th className="text-left px-6 py-4 text-xs font-bold uppercase tracking-wider">Status</th>
+                      <th className="text-left px-6 py-4 text-xs font-bold uppercase tracking-wider">Date</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                     {filteredOrders.map(order => (
-                      <tr key={order.id} className="hover:bg-white/[0.02] transition-colors">
+                      <tr key={order.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
                         <td className="px-6 py-4">
-                          <p className="text-sm font-bold text-gray-200">{order.project_title || 'Project'}</p>
-                          <p className="text-[11px] font-mono text-gray-500 mt-0.5">Order #{order.id?.slice(0, 8).toUpperCase()}</p>
+                          <p className="text-sm font-bold text-slate-900 dark:text-white">{order.project_title || 'Project'}</p>
+                          <p className="text-[11px] font-mono text-slate-400 dark:text-slate-500 mt-0.5">Order #{order.id?.slice(0, 8).toUpperCase()}</p>
                         </td>
-                        <td className="px-6 py-4 text-sm text-emerald-400 font-bold">₹{Number(order.amount || 0).toLocaleString('en-IN')}</td>
-                        <td className="px-6 py-4 text-sm text-gray-300 font-medium">
+                        <td className="px-6 py-4 text-sm text-emerald-600 dark:text-emerald-400 font-extrabold">₹{Number(order.amount || 0).toLocaleString('en-IN')}</td>
+                        <td className="px-6 py-4 text-sm text-slate-600 dark:text-slate-300 font-medium">
                           {order.purchase_type === 'project_with_source' ? (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/20">
                               With Source
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/20">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-500/20">
                               Project Only
                             </span>
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`text-xs px-2.5 py-1 rounded-full font-bold ${order.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}`}>{order.status || 'pending'}</span>
+                          <span className={`text-xs px-2.5 py-1 rounded-full font-bold ${order.status === 'completed' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20'}`}>{order.status || 'pending'}</span>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-400">{order.date || 'N/A'}</td>
+                        <td className="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">{order.date || 'N/A'}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </div>
+
           )}
         </div>
       ) : activeTab === 'custom' ? (
         <div className="space-y-6">
           {myCustomRequests.length === 0 ? (
-            <div className="text-center py-20 bg-gray-900/30 rounded-2xl border border-white/5">
-              <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <div className="text-center py-16 bg-slate-50/70 dark:bg-slate-800/30 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800">
+              <div className="w-14 h-14 rounded-2xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center mx-auto mb-3">
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                 </svg>
               </div>
-              <p className="text-gray-400 font-medium">No custom build requests found</p>
+              <p className="text-slate-500 dark:text-slate-400 font-semibold text-sm">No custom build requests found</p>
             </div>
+
           ) : (
             <div className="grid grid-cols-1 gap-6">
               {myCustomRequests.map(req => {
@@ -305,24 +310,25 @@ export default function UserOrders() {
                 const colorClass = getStatusColor(currentStep);
 
                 return (
-                  <div key={req.id} className="bg-gray-900/50 backdrop-blur-xl border border-white/5 rounded-3xl p-6 md:p-8 hover:border-white/10 transition-all shadow-2xl relative overflow-hidden group">
+                  <div key={req.id} className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 md:p-8 hover:border-slate-300 transition-all shadow-sm relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-700"></div>
                     
-                    <div className="flex flex-wrap items-start justify-between gap-4 border-b border-white/5 pb-4">
+                    <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
                       <div>
                         <div className="flex items-center gap-3">
-                          <h3 className="text-lg font-bold text-white">{req.projectType || 'Custom Project'}</h3>
+                          <h3 className="text-lg font-bold text-slate-900 dark:text-white">{req.projectType || 'Custom Project'}</h3>
                           <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase bg-gradient-to-r ${colorClass} border`}>
                             {req.status || 'pending'}
                           </span>
                         </div>
-                        <p className="text-xs font-mono text-gray-500 mt-1">Request ID: #{req.id?.toUpperCase()}</p>
+                        <p className="text-xs font-mono text-slate-400 dark:text-slate-500 mt-1">Request ID: #{req.id?.toUpperCase()}</p>
                       </div>
                       <div className="text-right">
-                        <span className="text-xs text-gray-500 block">Submitted on</span>
-                        <span className="text-sm font-semibold text-gray-300">{formatDate(req.createdAt)}</span>
+                        <span className="text-xs text-slate-400 dark:text-slate-500 block">Submitted on</span>
+                        <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">{formatDate(req.createdAt)}</span>
                       </div>
                     </div>
+
 
                     {/* Stepper Pipeline */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative mt-8 pb-6 border-b border-white/5">
@@ -356,7 +362,8 @@ export default function UserOrders() {
                                 'bg-gray-950 text-gray-600 border border-gray-800'
                               }`}
                             >
-                              {isCompleted ? '✓' : idx + 1}
+                              {isCompleted ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : idx + 1}
+
                             </div>
 
                             {/* Labels */}
@@ -405,66 +412,70 @@ export default function UserOrders() {
         <div className="space-y-6">
           {/* Search bar */}
           <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500 group-focus-within:text-blue-500 transition-colors">
-              <Search size={16} />
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 group-focus-within:text-blue-600 transition-colors">
+              <Search size={18} />
             </div>
             <input
               type="text"
               placeholder="Search receipts by ID, project name, or payment method..."
               value={receiptSearchQuery}
               onChange={e => setReceiptSearchQuery(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 bg-gray-900/30 border border-white/5 rounded-xl text-sm text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-blue-500/50 focus:bg-gray-900/50 transition-all duration-300"
+              className="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl text-sm font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 shadow-sm focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all duration-300"
             />
           </div>
 
           {loadingReceipts ? (
-            <div className="text-center py-20 bg-gray-900/30 rounded-2xl border border-white/5">
-              <div className="w-10 h-10 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-400 text-sm font-medium">Loading receipts...</p>
+            <div className="text-center py-16 bg-slate-50/70 dark:bg-slate-800/30 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800">
+              <div className="w-10 h-10 border-4 border-blue-500/30 border-t-blue-600 rounded-full animate-spin mx-auto mb-3"></div>
+              <p className="text-slate-500 dark:text-slate-400 text-sm font-bold">Loading payment receipts...</p>
             </div>
           ) : filteredReceipts.length === 0 ? (
-            <div className="text-center py-20 bg-gray-900/30 rounded-2xl border border-white/5">
-              <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mx-auto mb-4">
-                <FileText className="w-8 h-8 text-gray-600" />
+            <div className="text-center py-16 bg-slate-50/70 dark:bg-slate-800/30 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800">
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                <FileText className="w-7 h-7" />
               </div>
-              <p className="text-gray-400 font-medium">No receipts found</p>
+              <p className="text-slate-500 dark:text-slate-400 font-bold text-sm">No payment receipts found</p>
             </div>
           ) : (
-            <div className="bg-gray-900/50 border border-white/5 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-white/5 text-gray-400 bg-white/[0.01]">
-                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Receipt ID</th>
-                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Particulars</th>
-                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Amount</th>
-                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Date</th>
-                      <th className="text-left px-6 py-4 text-xs font-semibold uppercase tracking-wider">Status</th>
-                      <th className="text-right px-6 py-4 text-xs font-semibold uppercase tracking-wider">Action</th>
+                    <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40">
+                      <th className="text-left px-6 py-4 text-xs font-black uppercase tracking-wider">Receipt ID</th>
+                      <th className="text-left px-6 py-4 text-xs font-black uppercase tracking-wider">Particulars</th>
+                      <th className="text-left px-6 py-4 text-xs font-black uppercase tracking-wider">Amount</th>
+                      <th className="text-left px-6 py-4 text-xs font-black uppercase tracking-wider">Date</th>
+                      <th className="text-left px-6 py-4 text-xs font-black uppercase tracking-wider">Status</th>
+                      <th className="text-right px-6 py-4 text-xs font-black uppercase tracking-wider">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                     {filteredReceipts.map(receipt => {
                       const receiptTotals = calculateTotals(receipt)
                       return (
-                        <tr key={receipt.id} className="hover:bg-white/[0.02] transition-colors">
-                          <td className="px-6 py-4 font-mono text-xs font-bold text-gray-300">
+                        <tr key={receipt.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                          <td className="px-6 py-4 font-mono text-xs font-black text-slate-900 dark:text-white">
                             {receipt.receiptId}
                           </td>
                           <td className="px-6 py-4">
-                            <p className="text-sm font-bold text-gray-200">{receipt.itemName}</p>
-                            <span className="inline-block mt-0.5 px-1.5 py-0.5 rounded bg-white/5 text-[9px] font-bold text-gray-400 uppercase">
+                            <p className="text-sm font-black text-slate-900 dark:text-white">{receipt.itemName}</p>
+                            <span className="inline-block mt-1 px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-500/10 text-[10px] font-extrabold text-blue-600 dark:text-blue-400 uppercase border border-blue-200/60 dark:border-blue-500/20">
                               {receipt.itemCategory}
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-sm text-emerald-400 font-bold">
+                          <td className="px-6 py-4 text-sm text-emerald-600 dark:text-emerald-400 font-black">
                             ₹{receiptTotals.total.toLocaleString('en-IN')}
                           </td>
-                          <td className="px-6 py-4 text-sm text-gray-400">
+                          <td className="px-6 py-4 text-sm font-semibold text-slate-600 dark:text-slate-400">
                             {receipt.paymentDate}
                           </td>
                           <td className="px-6 py-4">
-                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${receipt.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'}`}>
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${
+                              receipt.status === 'completed' 
+                                ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' 
+                                : 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20'
+                            }`}>
                               {receipt.status === 'completed' ? 'Paid' : 'Pending'}
                             </span>
                           </td>
@@ -474,9 +485,9 @@ export default function UserOrders() {
                                 setActiveReceipt(receipt)
                                 setShowPreviewModal(true)
                               }}
-                              className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-bold transition-all shadow-md"
+                              className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black transition-all shadow-md shadow-blue-600/20 cursor-pointer active:scale-95"
                             >
-                              <Eye size={13} />
+                              <Eye size={14} />
                               View
                             </button>
                           </td>

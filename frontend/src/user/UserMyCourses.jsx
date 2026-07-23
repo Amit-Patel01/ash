@@ -1,15 +1,34 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
 import { getCertificateDocumentLabel } from '../utils/certificateHelpers'
 import { getLearningTypeLabel } from '../utils/learningType'
+import { 
+  ArrowLeft, 
+  BookOpen, 
+  Play, 
+  FileText, 
+  Award, 
+  CheckCircle2, 
+  Circle, 
+  Video, 
+  ExternalLink,
+  User,
+  Clock,
+  Sparkles,
+  ChevronRight,
+  Folder
+} from 'lucide-react'
 
 export default function UserMyCourses() {
   const { getUserEnrollments, courses, certificates } = useStore()
   const { currentUser } = useAuth()
   const navigate = useNavigate()
   const [expandedId, setExpandedId] = useState(null)
+  const [selectedFolder, setSelectedFolder] = useState('all')
+  const [activeCourseWorkspace, setActiveCourseWorkspace] = useState(null)
+
   const progressStorageKey = `solutionhub:lms-progress:${currentUser?.uid || 'guest'}`
   const [resourceProgress, setResourceProgress] = useState(() => {
     if (typeof window === 'undefined') return {}
@@ -40,30 +59,28 @@ export default function UserMyCourses() {
 
   const isResourceComplete = (resourceId) => Boolean(resourceProgress[resourceId])
 
+
   const getProgressPercent = (completed, total) => (
     total > 0 ? Math.round((completed / total) * 100) : 0
   )
 
   const saveResourceProgress = (nextProgress) => {
     if (typeof window === 'undefined') return
-
     try {
       window.localStorage.setItem(progressStorageKey, JSON.stringify(nextProgress))
     } catch {
-      // Progress tracking is helpful, but the portal should keep working if storage is blocked.
+      // Keep working if localstorage blocked
     }
   }
 
   const toggleResourceProgress = (resourceId) => {
     setResourceProgress((currentProgress) => {
       const nextProgress = { ...currentProgress }
-
       if (nextProgress[resourceId]) {
         delete nextProgress[resourceId]
       } else {
         nextProgress[resourceId] = new Date().toISOString()
       }
-
       saveResourceProgress(nextProgress)
       return nextProgress
     })
@@ -72,7 +89,6 @@ export default function UserMyCourses() {
   const formatDate = (value) => {
     if (!value) return 'Recently enrolled'
     if (typeof value?.toDate === 'function') return value.toDate().toLocaleDateString()
-
     const parsed = new Date(value)
     return Number.isNaN(parsed.getTime()) ? 'Recently enrolled' : parsed.toLocaleDateString()
   }
@@ -99,202 +115,116 @@ export default function UserMyCourses() {
     enrollment.courseId ||
     compact(enrollment.courseTitle || enrollment.courseName || enrollment.id)
 
-  const getCourseDocuments = (enrollment, course) => {
-    const courseNames = [
-      course?.title,
-      enrollment.courseTitle,
-      enrollment.courseName,
-    ]
-      .map(normalize)
-      .filter(Boolean)
-
-    return myCertificates.filter(cert =>
-      cert.enrollmentId === enrollment.id ||
-      cert.courseId === course?.id ||
-      courseNames.includes(normalize(cert.courseName))
-    )
+  const formatPlanPrice = (price, isFree) => {
+    if (isFree) return 'Free Plan'
+    if (price === undefined || price === null || price === '') return 'Enrolled'
+    const numericPrice = Number(price)
+    if (Number.isNaN(numericPrice)) return String(price)
+    return `₹${numericPrice.toLocaleString()}`
   }
 
-  const getEnrollmentPlan = (course, enrollment) => {
-    const plans = Array.isArray(course?.plans) ? course.plans : []
-    const planKeys = [enrollment.planId, enrollment.planLabel, enrollment.planName]
-      .map(normalize)
-      .filter(Boolean)
-    const compactPlanKeys = [enrollment.planId, enrollment.planLabel, enrollment.planName]
-      .map(compact)
-      .filter(Boolean)
+  // Group enrollments by course
+  const myCourseGroupsMap = myEnrollments.reduce((acc, enrollment) => {
+    const matchedCourse = getMyCourse(enrollment)
+    const course = matchedCourse || getCourseFallback(enrollment)
+    const key = getCourseGroupKey(course, enrollment)
 
-    if (planKeys.length === 0) return plans.length === 1 ? plans[0] : null
-
-    const directMatch = plans.find((plan, index) => {
-      const normalizedId = normalize(plan.id)
-      const normalizedLabel = normalize(plan.label)
-      const compactId = compact(plan.id)
-      const compactLabel = compact(plan.label)
-      const indexKey = String(index)
-
-      return (
-        planKeys.includes(normalizedId) ||
-        planKeys.includes(normalizedLabel) ||
-        planKeys.includes(indexKey) ||
-        compactPlanKeys.includes(compactId) ||
-        compactPlanKeys.includes(compactLabel)
-      )
-    })
-
-    if (directMatch) return directMatch
-
-    const enrollmentAmount = Number(enrollment.amount)
-    if (!Number.isNaN(enrollmentAmount)) {
-      const amountMatches = plans.filter(plan => {
-        const planAmount = Number(plan?.price || 0)
-        const freePlan = plan?.isFree || planAmount === 0
-        return freePlan ? enrollmentAmount === 0 : planAmount === enrollmentAmount
-      })
-      if (amountMatches.length === 1) return amountMatches[0]
-    }
-
-    return plans.length === 1 ? plans[0] : null
-  }
-
-  const resolveMeetingLink = (course, plan) => {
-    if (plan?.meetingLink) return plan.meetingLink
-    const plans = Array.isArray(course?.plans) ? course.plans : []
-    return plans.length <= 1 ? (course?.meetingLink || '') : ''
-  }
-
-  const formatMeetingDateTime = (meetingStartsAt, meetingTimezone) => {
-    if (!meetingStartsAt) return ''
-    const parsed = new Date(meetingStartsAt)
-    if (Number.isNaN(parsed.getTime())) return ''
-
-    try {
-      return new Intl.DateTimeFormat('en-IN', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-        timeZone: meetingTimezone || undefined,
-      }).format(parsed)
-    } catch {
-      return parsed.toLocaleString('en-IN')
-    }
-  }
-
-  const formatPlanPrice = (value, isFree = false) => {
-    if (isFree) return 'Free access'
-    const amount = Number(value || 0)
-    return amount > 0 ? `Rs ${amount.toLocaleString('en-IN')}` : 'Free access'
-  }
-
-  const myCourseGroups = Object.values(
-    myEnrollments.reduce((acc, enrollment) => {
-      const course = getMyCourse(enrollment) || getCourseFallback(enrollment)
-      const courseKey = getCourseGroupKey(course, enrollment)
-
-      if (!acc[courseKey]) {
-        acc[courseKey] = {
-          key: courseKey,
-          course,
-          enrollments: [],
-        }
+    if (!acc[key]) {
+      acc[key] = {
+        key,
+        course,
+        enrollments: []
       }
+    }
+    acc[key].enrollments.push(enrollment)
+    return acc
+  }, {})
 
-      acc[courseKey].enrollments.push(enrollment)
-      return acc
-    }, {})
-  )
+  const myCourseGroups = Object.values(myCourseGroupsMap)
 
-  const getCourseLearningData = (group) => {
+  // Build Learning Groups
+  const courseLearningGroups = myCourseGroups.map((group) => {
     const course = group.course
-    const hasMaterials = Array.isArray(course.materials) && course.materials.length > 0
     const planEntries = group.enrollments.map((enrollment) => {
-      const enrolledPlan = getEnrollmentPlan(course, enrollment)
-      const meetingLink = resolveMeetingLink(course, enrolledPlan)
-      const meetingDateTime = formatMeetingDateTime(enrolledPlan?.meetingStartsAt, enrolledPlan?.meetingTimezone)
-      const resolvedPlanLabel = enrolledPlan?.label || enrollment.planLabel || enrollment.planName || 'Standard Access'
-      const planFeatures = Array.isArray(enrolledPlan?.features)
-        ? enrolledPlan.features.filter(Boolean).slice(0, 4)
-        : []
-      const courseDocuments = getCourseDocuments(enrollment, course)
+      const planName = enrollment.selectedPlan || enrollment.planName || ''
+      const matchedPlan = course.pricingPlans?.find((p) => p.name === planName)
+      const resolvedPlanLabel = planName || matchedPlan?.name || 'Standard Access'
+      const meetingLink = matchedPlan?.meetingLink || course.meetingLink || enrollment.meetingLink || ''
+      const weeklySchedule = matchedPlan?.weeklySchedule || course.weeklySchedule || enrollment.weeklySchedule || ''
+      const meetingDateTime = matchedPlan?.meetingDateTime || course.meetingDateTime || enrollment.meetingDateTime || ''
+      const planFeatures = matchedPlan?.features || []
+
+      const courseDocuments = myCertificates.filter((cert) => {
+        const certCourseId = cert.courseId || cert.course_id
+        const certCourseName = cert.courseName || cert.courseTitle || cert.course_name
+        if (certCourseId && course.id && String(certCourseId) === String(course.id)) return true
+        if (certCourseName && course.title && compact(certCourseName) === compact(course.title)) return true
+        return false
+      })
 
       return {
         enrollment,
-        enrolledPlan,
-        meetingLink,
-        meetingDateTime,
+        enrolledPlan: matchedPlan,
         resolvedPlanLabel,
+        meetingLink,
+        weeklySchedule,
+        meetingDateTime,
+        hasMeetingLink: Boolean(meetingLink),
         planFeatures,
         courseDocuments,
-        hasMeetingLink: Boolean(meetingLink),
-        resourcesReady: [Boolean(meetingLink), hasMaterials, courseDocuments.length > 0].filter(Boolean).length,
+      }
+
+    })
+
+    const hasMaterials = (course.materials && course.materials.length > 0) || false
+    const nextSessionEntry = planEntries.find((entry) => entry.meetingDateTime || entry.hasMeetingLink)
+    const allDocuments = planEntries.flatMap((entry) => entry.courseDocuments)
+    const primaryDocument = allDocuments[0]
+
+    const learningResources = []
+
+    planEntries.forEach((entry) => {
+      if (entry.hasMeetingLink || entry.meetingDateTime) {
+        learningResources.push({
+          id: buildResourceId(group.key, 'live-session', entry.enrollment.id),
+          type: 'Live Session',
+          title: `Live Session • ${entry.resolvedPlanLabel}`,
+          subtitle: entry.meetingDateTime ? `Scheduled: ${entry.meetingDateTime}` : 'Join room when live',
+          url: entry.meetingLink || '',
+          entry,
+        })
       }
     })
 
-    const nextSessionEntry = planEntries.find((entry) => entry.meetingDateTime) || null
-    const allDocumentsMap = {}
+    if (hasMaterials) {
+      course.materials.forEach((mat, idx) => {
+        learningResources.push({
+          id: buildResourceId(group.key, 'material', mat.title || `item-${idx}`),
+          type: 'Material',
+          title: mat.title || `Resource Item ${idx + 1}`,
+          subtitle: mat.description || 'Curriculum resource material',
+          url: mat.fileUrl || mat.url || '',
+          material: mat,
+        })
+      })
+    }
 
-    planEntries.forEach((entry) => {
-      entry.courseDocuments.forEach((document) => {
-        const documentKey = document.id || document.certificate_id
-        if (!documentKey || allDocumentsMap[documentKey]) return
-        allDocumentsMap[documentKey] = {
-          ...document,
-          planLabel: entry.resolvedPlanLabel,
-        }
+    allDocuments.forEach((doc) => {
+      learningResources.push({
+        id: buildResourceId(group.key, 'document', doc.certificate_id || doc.id),
+        type: 'Document',
+        title: getCertificateDocumentLabel(doc),
+        subtitle: `Issued #${doc.certificate_id || 'ID'}`,
+        url: `/verify?id=${doc.certificate_id}`,
+        doc,
       })
     })
 
-    const allDocuments = Object.values(allDocumentsMap)
-    const primaryDocument = allDocuments[0] || null
-    const sessionResources = planEntries
-      .filter((entry) => entry.meetingDateTime || entry.hasMeetingLink)
-      .map((entry, index) => ({
-        id: buildResourceId(group.key, 'session', entry.enrollment.id || entry.resolvedPlanLabel || index),
-        type: 'Live Session',
-        title: entry.resolvedPlanLabel,
-        subtitle: entry.meetingDateTime || 'Meeting time will be shared soon',
-        url: entry.meetingLink,
-        internal: false,
-        actionLabel: entry.hasMeetingLink ? 'Join' : '',
-      }))
-    const materialResources = hasMaterials
-      ? course.materials.map((material, index) => {
-        const materialUrl = typeof material === 'string' ? material : material?.url || ''
-        const materialTitle = typeof material === 'string'
-          ? `Material ${index + 1}`
-          : material?.title || material?.name || `Material ${index + 1}`
-
-        return {
-          id: buildResourceId(group.key, 'material', material?.id || materialTitle || materialUrl || index),
-          type: 'Material',
-          title: materialTitle,
-          subtitle: materialUrl || 'Material link pending',
-          url: materialUrl,
-          internal: false,
-          actionLabel: materialUrl ? 'Open' : '',
-        }
-      })
-      : []
-    const documentResources = allDocuments.map((document, index) => ({
-      id: buildResourceId(group.key, 'document', document.id || document.certificate_id || index),
-      type: 'Document',
-      title: getCertificateDocumentLabel(document, document.templateSnapshot),
-      subtitle: document.certificate_id
-        ? `Plan: ${document.planLabel} • ID: ${document.certificate_id}`
-        : `Plan: ${document.planLabel}`,
-      url: document.certificate_id ? `/verify?id=${document.certificate_id}` : '',
-      internal: true,
-      actionLabel: document.certificate_id ? 'Verify' : '',
-    }))
-    const learningResources = [...sessionResources, ...materialResources, ...documentResources]
-    const completedResources = learningResources.filter((resource) => isResourceComplete(resource.id)).length
+    const completedResources = learningResources.filter((res) => isResourceComplete(res.id)).length
     const progressPercent = getProgressPercent(completedResources, learningResources.length)
-    const nextResource = learningResources.find((resource) => !isResourceComplete(resource.id)) || null
+    const nextResource = learningResources.find((res) => !isResourceComplete(res.id))
     const canExpand = learningResources.length > 0
-    const groupResourcesReady = [
-      planEntries.some((entry) => entry.hasMeetingLink),
-      hasMaterials,
-      allDocuments.length > 0,
-    ].filter(Boolean).length
+    const groupResourcesReady = (hasMaterials ? 1 : 0) + (planEntries.some(e => e.hasMeetingLink) ? 1 : 0) + (allDocuments.length > 0 ? 1 : 0)
 
     return {
       group,
@@ -304,9 +234,6 @@ export default function UserMyCourses() {
       nextSessionEntry,
       allDocuments,
       primaryDocument,
-      sessionResources,
-      materialResources,
-      documentResources,
       learningResources,
       completedResources,
       progressPercent,
@@ -314,426 +241,433 @@ export default function UserMyCourses() {
       canExpand,
       groupResourcesReady,
     }
-  }
+  })
 
-  const courseLearningGroups = myCourseGroups.map(getCourseLearningData)
-  const totalLearningResources = courseLearningGroups.reduce(
-    (total, group) => total + group.learningResources.length,
-    0
-  )
-  const completedLearningResources = courseLearningGroups.reduce(
-    (total, group) => total + group.completedResources,
-    0
-  )
+  const totalLearningResources = courseLearningGroups.reduce((total, group) => total + group.learningResources.length, 0)
+  const completedLearningResources = courseLearningGroups.reduce((total, group) => total + group.completedResources, 0)
   const overallProgress = getProgressPercent(completedLearningResources, totalLearningResources)
-  const readyLiveSessions = courseLearningGroups.reduce(
-    (total, group) => total + group.sessionResources.filter((resource) => resource.url).length,
-    0
-  )
-  const issuedDocuments = courseLearningGroups.reduce(
-    (total, group) => total + group.documentResources.length,
-    0
-  )
+  const readyLiveSessions = courseLearningGroups.reduce((total, group) => total + group.sessionResources?.filter((r) => r.url)?.length || 0, 0)
+  const issuedDocuments = courseLearningGroups.reduce((total, group) => total + group.allDocuments.length, 0)
+
+  const folderCategories = ['all', ...new Set(courseLearningGroups.map(g => g.group.enrollments[0]?.category || g.course.category || 'General'))]
+
+  const displayLearningGroups = selectedFolder === 'all' 
+    ? courseLearningGroups 
+    : courseLearningGroups.filter(g => (g.group.enrollments[0]?.category || g.course.category || 'General') === selectedFolder)
 
   if (myEnrollments.length === 0) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-slate-900">My Courses</h1>
-        <div className="bg-white border border-slate-200 rounded-2xl p-14 text-center shadow-[0_10px_30px_rgba(148,163,184,0.25)]">
-          <div className="text-5xl mb-4">📚</div>
-          <h3 className="text-xl font-bold text-slate-900 mb-2">No programs yet</h3>
-          <p className="text-slate-500 text-sm mb-6">Browse our courses and webinars to start learning</p>
+        <h1 className="text-2xl font-black text-slate-900 dark:text-white">My Courses</h1>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-12 text-center shadow-xs">
+          <div className="w-16 h-16 rounded-3xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 mx-auto flex items-center justify-center mb-4">
+            <BookOpen className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+          </div>
+          <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2">No active program enrollments</h3>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 max-w-md mx-auto">Browse our industry-leading courses and webinars to start your technical learning journey.</p>
           <button onClick={() => navigate('/courses')}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-2xl hover:shadow-lg hover:shadow-blue-500/25 transition-all">
-            Browse Courses
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-            </svg>
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-extrabold text-xs rounded-2xl shadow-lg shadow-blue-500/25 hover:scale-105 transition-all">
+            Browse Courses <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
     )
   }
 
+  // ── DEDICATED SEPARATE COURSE WORKSPACE VIEW ──────────────────────
+  if (activeCourseWorkspace) {
+    const { course, group, learningResources, completedResources, progressPercent, planEntries, allDocuments } = activeCourseWorkspace
+
+    return (
+      <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-300 pb-16">
+        {/* Workspace Top Bar */}
+        <div className="flex items-center justify-between gap-4 flex-wrap pb-4 border-b border-slate-200/80 dark:border-slate-800">
+          <button 
+            onClick={() => setActiveCourseWorkspace(null)}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-xs font-black text-slate-700 dark:text-slate-200 shadow-xs hover:bg-slate-50 transition-all"
+          >
+            <ArrowLeft className="w-4 h-4 text-blue-600" /> Back to My Courses
+          </button>
+          
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20 text-[11px] font-black uppercase tracking-wider">
+              {group.enrollments[0]?.category || course.category}
+            </span>
+            <span className="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20 text-[11px] font-black uppercase tracking-wider">
+              Active Workspace
+            </span>
+          </div>
+        </div>
+
+        {/* Dedicated Course Header Banner */}
+        <div className="p-8 sm:p-10 rounded-[32px] bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 text-white shadow-xl relative overflow-hidden">
+          <div className="relative z-10 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white shrink-0 font-black border border-white/20">
+                <BookOpen className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-blue-300 uppercase tracking-widest">{course.category || 'Technology Program'}</p>
+                <h1 className="text-2xl sm:text-4xl font-black tracking-tight">{course.title}</h1>
+              </div>
+            </div>
+
+            {(() => {
+              const assignedEmp = activeCourseWorkspace.group.enrollments.find(e => e.assignedEmployeeName)
+              const mentorName = assignedEmp?.assignedEmployeeName || course.instructor || 'Lead Mentor'
+              const mentorEmail = assignedEmp?.assignedEmployeeEmail || ''
+              return (
+                <div className="flex items-center gap-2 flex-wrap text-xs sm:text-sm font-medium text-slate-300">
+                  <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 font-bold text-white shadow-xs">
+                    <User className="w-4 h-4 text-indigo-300" /> Assigned Lead Mentor: <span className="text-blue-300">{mentorName}</span>
+                  </span>
+                  {mentorEmail && (
+                    <span className="text-xs font-semibold text-slate-300 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
+                      📧 {mentorEmail}
+                    </span>
+                  )}
+                </div>
+              )
+            })()}
+
+
+            {/* Overall Course Progress */}
+            <div className="mt-6 pt-6 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+              <div className="space-y-1">
+                <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">Curriculum Completion</p>
+                <p className="text-2xl font-black text-white">{progressPercent}%</p>
+              </div>
+              <div className="sm:col-span-2">
+                <div className="h-3 w-full bg-white/10 rounded-full overflow-hidden p-0.5 border border-white/10">
+                  <div className="h-full bg-gradient-to-r from-emerald-400 to-teal-300 rounded-full transition-all duration-500" style={{ width: `${progressPercent}%` }} />
+                </div>
+                <p className="text-xs font-medium text-slate-300 mt-1.5">{completedResources} of {learningResources.length} learning modules completed</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Workspace Dual Column Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* Left Column: Learning Curriculum Modules */}
+          <div className="lg:col-span-8 space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-blue-600" /> Program Curriculum & Lessons
+              </h2>
+              <span className="text-xs font-bold text-slate-500">{learningResources.length} items available</span>
+            </div>
+
+            <div className="space-y-3">
+              {learningResources.length === 0 ? (
+                <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center">
+                  <p className="text-sm font-bold text-slate-600 dark:text-slate-300">Curriculum content is being updated by your mentor.</p>
+                </div>
+              ) : (
+                learningResources.map((res, index) => {
+                  const resourceComplete = isResourceComplete(res.id)
+                  return (
+                    <div 
+                      key={res.id} 
+                      className={`p-5 rounded-3xl border transition-all ${
+                        resourceComplete 
+                          ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200/90 dark:border-emerald-500/30' 
+                          : 'bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800 hover:border-blue-300'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-3.5 min-w-0">
+                          <button 
+                            onClick={() => toggleResourceProgress(res.id)}
+                            className="mt-0.5 text-emerald-600 hover:scale-110 transition-transform shrink-0"
+                            title={resourceComplete ? "Mark incomplete" : "Mark completed"}
+                          >
+                            {resourceComplete ? (
+                              <CheckCircle2 className="w-6 h-6 text-emerald-600 fill-emerald-100 dark:fill-emerald-950" />
+                            ) : (
+                              <Circle className="w-6 h-6 text-slate-300 dark:text-slate-600" />
+                            )}
+                          </button>
+
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100">
+                                {res.type} #{index + 1}
+                              </span>
+                              {resourceComplete && (
+                                <span className="text-[10px] font-black text-emerald-600 bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full">
+                                  COMPLETED
+                                </span>
+                              )}
+                            </div>
+                            <h3 className="text-base font-black text-slate-900 dark:text-white mt-1">{res.title}</h3>
+                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">{res.subtitle}</p>
+                          </div>
+                        </div>
+
+                        {res.url && (
+                          <a 
+                            href={res.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-blue-600 text-white font-extrabold text-xs hover:bg-blue-700 shadow-sm transition-all shrink-0"
+                          >
+                            Open <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })
+              )}
+            </div>
+          </div>
+
+          {/* Right Column: Active Plans & Verified Documents */}
+          <div className="lg:col-span-4 space-y-6">
+            
+            {/* Active Plans Card */}
+            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-4">
+              <h3 className="text-sm font-black text-slate-900 dark:text-white tracking-tight uppercase">Enrolled Access Plans</h3>
+              {planEntries.map((entry) => (
+                <div key={entry.enrollment.id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-700 space-y-2">
+                  <p className="text-xs font-black text-slate-900 dark:text-white">{entry.resolvedPlanLabel}</p>
+                  <p className="text-[11px] text-slate-500 font-medium">Enrolled: {formatDate(entry.enrollment.enrolledAt || entry.enrollment.createdAt)}</p>
+                  {entry.hasMeetingLink && (
+                    <div className="space-y-1 mt-2">
+                      <a 
+                        href={entry.meetingLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs shadow-md shadow-blue-500/20"
+                      >
+                        <Video className="w-4 h-4" /> Join Live Meeting Room
+                      </a>
+                      {entry.weeklySchedule && (
+                        <p className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 text-center pt-1">
+                          📅 Weekly Schedule: {entry.weeklySchedule}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                </div>
+              ))}
+            </div>
+
+            {/* Issued Certificates Card */}
+            {allDocuments.length > 0 && (
+              <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-4">
+                <h3 className="text-sm font-black text-slate-900 dark:text-white tracking-tight uppercase flex items-center gap-2">
+                  <Award className="w-4 h-4 text-amber-500" /> Verified Certificates
+                </h3>
+                {allDocuments.map((doc) => (
+                  <div key={doc.id || doc.certificate_id} className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-500/20 flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-black text-slate-900 dark:text-white">{getCertificateDocumentLabel(doc)}</p>
+                      <p className="text-[10px] text-slate-500 font-medium">#{doc.certificate_id}</p>
+                    </div>
+                    <Link 
+                      to={`/verify?id=${doc.certificate_id}`}
+                      className="px-3 py-1.5 rounded-xl bg-amber-600 text-white font-black text-[11px] hover:bg-amber-700 transition-colors"
+                    >
+                      View Seal
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Support Desk Box */}
+            <div className="p-6 rounded-3xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/20 border border-indigo-100 dark:border-indigo-500/20 space-y-3">
+              <h4 className="text-xs font-black text-indigo-900 dark:text-indigo-200 uppercase tracking-wider">Need Technical Assistance?</h4>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">Contact your assigned lead mentor or submit a ticket to the SolutionHub support team.</p>
+              <button 
+                onClick={() => navigate('/user/support')}
+                className="w-full py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-indigo-200 dark:border-indigo-800 text-xs font-black text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 transition-colors"
+              >
+                Contact Support Desk
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    )
+  }
+
+  // ── MAIN COURSE CARDS GRID DIRECTORY ──────────────────────────────
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-16">
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">My Courses</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            {myCourseGroups.length} program{myCourseGroups.length !== 1 ? 's' : ''} • {myEnrollments.length} active plan{myEnrollments.length !== 1 ? 's' : ''}
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white">My Courses</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
+            {myCourseGroups.length} active program{myCourseGroups.length !== 1 ? 's' : ''} • Click any course to open its dedicated workspace
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Link
             to="/user/certificates"
-            className="px-4 py-2 bg-amber-50 border border-amber-200 rounded-xl text-sm font-medium text-amber-600 hover:bg-amber-100 transition-all"
+            className="px-4 py-2.5 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-2xl text-xs font-black text-amber-600 dark:text-amber-400 hover:bg-amber-100 transition-all"
           >
-            Documents
+            Documents & Seals
           </Link>
           <button onClick={() => navigate('/courses')}
-            className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition-all">
+            className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl text-xs font-black text-slate-700 dark:text-slate-300 hover:bg-slate-50 transition-all">
             Browse More
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-600">LMS Progress</p>
-          <div className="mt-3 flex items-end justify-between gap-3">
-            <p className="text-3xl font-black text-slate-900">{overallProgress}%</p>
-            <p className="text-xs font-semibold text-emerald-600">{completedLearningResources}/{totalLearningResources || 0} done</p>
+      {/* Metrics Row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-xs">
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-emerald-600 dark:text-emerald-400">LMS Progress</p>
+          <div className="mt-2 flex items-end justify-between gap-3">
+            <p className="text-3xl font-black text-slate-900 dark:text-white">{overallProgress}%</p>
+            <p className="text-xs font-bold text-emerald-600">{completedLearningResources}/{totalLearningResources || 0} done</p>
           </div>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-emerald-100">
-            <div
-              className="h-full rounded-full bg-emerald-500 transition-all duration-500"
-              style={{ width: `${overallProgress}%` }}
-            />
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+            <div className="h-full rounded-full bg-emerald-500 transition-all duration-500" style={{ width: `${overallProgress}%` }} />
           </div>
         </div>
-        <div className="rounded-2xl border border-sky-200 bg-sky-50 p-4">
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-sky-600">Learning Items</p>
-          <p className="mt-3 text-3xl font-black text-slate-900">{totalLearningResources}</p>
-          <p className="mt-1 text-xs font-semibold text-sky-600">Sessions, materials, and documents</p>
+
+        <div className="rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-xs">
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-sky-600 dark:text-sky-400">Learning Items</p>
+          <p className="mt-2 text-3xl font-black text-slate-900 dark:text-white">{totalLearningResources}</p>
+          <p className="mt-1 text-xs font-semibold text-slate-500">Sessions & materials</p>
         </div>
-        <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-blue-600">Live Ready</p>
-          <p className="mt-3 text-3xl font-black text-slate-900">{readyLiveSessions}</p>
-          <p className="mt-1 text-xs font-semibold text-blue-600">Joinable plan sessions</p>
+
+        <div className="rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-xs">
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-blue-600 dark:text-blue-400">Live Ready</p>
+          <p className="mt-2 text-3xl font-black text-slate-900 dark:text-white">{readyLiveSessions}</p>
+          <p className="mt-1 text-xs font-semibold text-slate-500">Joinable plan sessions</p>
         </div>
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-amber-600">Documents</p>
-          <p className="mt-3 text-3xl font-black text-slate-900">{issuedDocuments}</p>
-          <p className="mt-1 text-xs font-semibold text-amber-600">Issued certificates and files</p>
+
+        <div className="rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-xs">
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-amber-600 dark:text-amber-400">Documents</p>
+          <p className="mt-2 text-3xl font-black text-slate-900 dark:text-white">{issuedDocuments}</p>
+          <p className="mt-1 text-xs font-semibold text-slate-500">Issued certificates</p>
         </div>
       </div>
 
-      <div className="space-y-4">
-        {courseLearningGroups.map((learningGroup) => {
-          const {
-            group,
-            course,
-            hasMaterials,
-            planEntries,
-            nextSessionEntry,
-            allDocuments,
-            primaryDocument,
-            learningResources,
-            completedResources,
-            progressPercent,
-            nextResource,
-            canExpand,
-            groupResourcesReady,
-          } = learningGroup
-          const isExpanded = expandedId === group.key
+      {/* 📁 Folder Category Tabs */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-2">
+        <span className="text-xs font-black uppercase text-slate-400 dark:text-slate-500 mr-2 shrink-0 flex items-center gap-1">
+          <Folder className="w-4 h-4 text-blue-600" /> Folders:
+        </span>
+        {folderCategories.map(folder => {
+          const count = folder === 'all' 
+            ? courseLearningGroups.length 
+            : courseLearningGroups.filter(g => (g.group.enrollments[0]?.category || g.course.category || 'General') === folder).length
 
           return (
-            <div key={group.key} className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-200 transition-all shadow-[0_10px_30px_rgba(148,163,184,0.2)]">
-              <div className="p-5 flex items-start gap-4">
-                <div className="w-16 h-16 rounded-xl flex-shrink-0 overflow-hidden">
-                  {course.thumbnail ? (
-                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" onError={e => e.target.style.display='none'} />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center text-2xl">
-                      📚
-                    </div>
-                  )}
-                </div>
+            <button
+              key={folder}
+              onClick={() => setSelectedFolder(folder)}
+              className={`px-4 py-2.5 rounded-2xl text-xs font-black transition-all flex items-center gap-2 shrink-0 border ${
+                selectedFolder === folder
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-600 shadow-md shadow-blue-600/20'
+                  : 'bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+              }`}
+            >
+              <Folder className={`w-3.5 h-3.5 ${selectedFolder === folder ? 'text-white' : 'text-blue-500'}`} />
+              <span>{folder === 'all' ? 'All Program Folders' : folder}</span>
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                selectedFolder === folder ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+              }`}>
+                {count}
+              </span>
+            </button>
+          )
+        })}
+      </div>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xs text-slate-400 mb-1">{group.enrollments[0]?.category || course.category}</p>
-                      <h3 className="font-bold text-slate-900 mb-1">{course.title}</h3>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="px-2 py-0.5 rounded-full bg-sky-50 border border-sky-200 text-[10px] font-semibold text-sky-600">
-                          {getLearningTypeLabel(course)}
-                        </span>
-                        <p className="text-[11px] text-slate-400">
-                          {group.enrollments.length} active plan{group.enrollments.length !== 1 ? 's' : ''}
-                        </p>
-                        <span className="px-2 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-[10px] font-semibold text-blue-600">
-                          Latest enrollment: {formatDate(group.enrollments[0]?.enrolledAt || group.enrollments[0]?.createdAt)}
-                        </span>
-                      </div>
-                      {course.instructor && (
-                        <p className="text-xs text-slate-400">👨‍🏫 {course.instructor}</p>
-                      )}
-                      {nextSessionEntry?.meetingDateTime && (
-                        <p className="text-xs text-blue-600 mt-1">
-                          Next live session: {nextSessionEntry.resolvedPlanLabel} • {nextSessionEntry.meetingDateTime}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap justify-end">
-                      {allDocuments.length > 0 && (
-                        <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-200">
-                          {allDocuments.length} Document{allDocuments.length !== 1 ? 's' : ''} Ready
-                        </span>
-                      )}
-                      <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
-                        Active
-                      </span>
-                    </div>
+      {/* Course Cards Grid */}
+      <div className="grid grid-cols-1 gap-6">
+        {displayLearningGroups.map((learningGroup) => {
+          const { group, course, learningResources, completedResources, progressPercent, planEntries } = learningGroup
+
+          return (
+            <div 
+              key={group.key} 
+              className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-8 hover:border-blue-500/60 shadow-xs hover:shadow-xl transition-all group relative overflow-hidden"
+            >
+              <div className="flex flex-col sm:flex-row items-start justify-between gap-6">
+                
+                {/* Left Thumbnail & Info */}
+                <div className="flex items-start gap-5 min-w-0 flex-1">
+                  <div 
+                    onClick={() => setActiveCourseWorkspace(learningGroup)}
+                    className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white overflow-hidden shrink-0 shadow-lg shadow-blue-500/20 cursor-pointer group-hover:scale-105 transition-transform"
+                  >
+                    {course.thumbnail ? (
+                      <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <BookOpen className="w-8 h-8 text-white" />
+                    )}
                   </div>
 
-                  <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                    <div className="flex items-start justify-between gap-3 flex-wrap">
-                      <div>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-600">Learning Progress</p>
-                        <p className="mt-1 text-sm font-semibold text-slate-900">
-                          {completedResources}/{learningResources.length} items completed
-                        </p>
-                      </div>
-                      {nextResource ? (
-                        <button
-                          type="button"
-                          onClick={() => setExpandedId(group.key)}
-                          className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-600 transition-colors hover:bg-emerald-100"
-                        >
-                          Continue
-                          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                          </svg>
-                        </button>
-                      ) : learningResources.length > 0 ? (
-                        <span className="inline-flex items-center rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-600">
-                          Completed
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-400">
-                          Pending content
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-sky-400 transition-all duration-500"
-                        style={{ width: `${progressPercent}%` }}
-                      />
-                    </div>
-                    <div className="mt-3 flex items-center justify-between gap-3 text-[11px] font-semibold text-slate-500">
-                      <span className="flex-shrink-0">{progressPercent}% complete</span>
-                      <span className="min-w-0 truncate text-right">{nextResource ? `Next: ${nextResource.title}` : 'All caught up'}</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-3">
-                    {planEntries.map((entry) => (
-                      <div
-                        key={entry.enrollment.id}
-                        className="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 via-white to-purple-50 p-4"
-                      >
-                        <div className="flex items-start justify-between gap-3 flex-wrap">
-                          <div>
-                            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-blue-600">
-                              Enrolled Plan
-                            </p>
-                            <p className="mt-1 text-base font-bold text-slate-900">{entry.resolvedPlanLabel}</p>
-                            <p className="mt-1 text-[11px] text-blue-500">
-                              Enrolled {formatDate(entry.enrollment.enrolledAt || entry.enrollment.createdAt)}
-                            </p>
-                          </div>
-                          {entry.hasMeetingLink ? (
-                            <a
-                              href={entry.meetingLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition-colors shadow-sm"
-                            >
-                              Join Plan Session
-                            </a>
-                          ) : (
-                            <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-slate-200 text-[11px] font-semibold text-slate-400">
-                              Link pending
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {entry.enrolledPlan?.duration && (
-                            <span className="px-2.5 py-1 rounded-full border border-slate-200 bg-white text-[11px] font-medium text-slate-600">
-                              Duration: {entry.enrolledPlan.duration}
-                            </span>
-                          )}
-                          {(entry.enrolledPlan?.price !== undefined || entry.enrolledPlan?.isFree) && (
-                            <span className="px-2.5 py-1 rounded-full border border-emerald-200 bg-emerald-50 text-[11px] font-medium text-emerald-600">
-                              {formatPlanPrice(entry.enrolledPlan?.price, entry.enrolledPlan?.isFree)}
-                            </span>
-                          )}
-                          {entry.meetingDateTime && (
-                            <span className="px-2.5 py-1 rounded-full border border-blue-200 bg-blue-50 text-[11px] font-medium text-blue-600">
-                              Session: {entry.meetingDateTime}
-                            </span>
-                          )}
-                          {entry.courseDocuments.length > 0 && (
-                            <span className="px-2.5 py-1 rounded-full border border-amber-200 bg-amber-50 text-[11px] font-medium text-amber-600">
-                              {entry.courseDocuments.length} document{entry.courseDocuments.length !== 1 ? 's' : ''}
-                            </span>
-                          )}
-                        </div>
-
-                        {entry.planFeatures.length > 0 && (
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            {entry.planFeatures.map((feature, index) => (
-                              <span
-                                key={`${entry.enrollment.id}-plan-feature-${index}`}
-                                className="px-2.5 py-1 rounded-full border border-purple-200 bg-purple-50 text-[11px] font-medium text-purple-600"
-                              >
-                                {feature}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
-                    <p className="text-[11px] text-slate-400">{groupResourcesReady} of 3 shared resources ready</p>
+                  <div className="min-w-0 space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${planEntries.some((entry) => entry.hasMeetingLink) ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
-                        Live Session
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100">
+                        {group.enrollments[0]?.category || course.category || 'Technology Track'}
                       </span>
-                      <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${hasMaterials ? 'bg-purple-50 border-purple-200 text-purple-600' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
-                        Materials
-                      </span>
-                      <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${allDocuments.length > 0 ? 'bg-amber-50 border-amber-200 text-amber-600' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
-                        Documents
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-100">
+                        Active Plan
                       </span>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-3 mt-3 flex-wrap">
-                    {canExpand && (
-                      <button onClick={() => setExpandedId(isExpanded ? null : group.key)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-50 text-purple-600 hover:bg-purple-100 border border-purple-200 transition-colors">
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                        </svg>
-                        {isExpanded ? 'Hide Details' : 'Open Details'}
-                        <svg className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                        </svg>
-                      </button>
-                    )}
-                    {primaryDocument && (
-                      <Link
-                        to={`/verify?id=${primaryDocument.certificate_id}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 text-amber-600 hover:bg-amber-100 border border-amber-200 transition-colors"
-                      >
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0Z" />
-                        </svg>
-                        View Documents
-                      </Link>
-                    )}
-                    {!hasMaterials && !planEntries.some((entry) => entry.hasMeetingLink) && allDocuments.length === 0 && (
-                      <button
-                        onClick={() => navigate('/user/support')}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition-colors"
-                      >
-                        Contact Support
-                      </button>
-                    )}
+                    {/* Course Title Click to Open Dedicated Workspace */}
+                    <h3 
+                      onClick={() => setActiveCourseWorkspace(learningGroup)}
+                      className="text-xl font-black text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors cursor-pointer tracking-tight"
+                    >
+                      {course.title}
+                    </h3>
+
+                    {(() => {
+                      const assignedEmp = group.enrollments.find(e => e.assignedEmployeeName)
+                      const mentorName = assignedEmp?.assignedEmployeeName || course.instructor
+                      return mentorName ? (
+                        <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5 pt-0.5">
+                          <User className="w-3.5 h-3.5 text-indigo-500" /> Assigned Lead Mentor: {mentorName}
+                        </p>
+                      ) : null
+                    })()}
+
+
+                    <p className="text-xs text-slate-400 font-medium pt-1">
+                      {learningResources.length} curriculum items • Enrolled: {formatDate(group.enrollments[0]?.enrolledAt || group.enrollments[0]?.createdAt)}
+                    </p>
                   </div>
                 </div>
+
+                {/* Right Progress & Open Dedicated Workspace CTA */}
+                <div className="w-full sm:w-64 space-y-4 shrink-0 border-t sm:border-t-0 sm:border-l border-slate-100 dark:border-slate-800 pt-4 sm:pt-0 sm:pl-6">
+                  <div>
+                    <div className="flex items-center justify-between text-xs font-black mb-1.5">
+                      <span className="text-slate-400 uppercase tracking-wider text-[10px]">Overall Progress</span>
+                      <span className="text-emerald-600">{progressPercent}%</span>
+                    </div>
+                    <div className="h-2.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-blue-600 to-emerald-500 rounded-full transition-all duration-500" style={{ width: `${progressPercent}%` }} />
+                    </div>
+                    <p className="text-[10px] font-bold text-slate-400 mt-1">{completedResources}/{learningResources.length} lessons finished</p>
+                  </div>
+
+                  <button 
+                    onClick={() => setActiveCourseWorkspace(learningGroup)}
+                    className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs shadow-lg shadow-blue-500/25 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+                  >
+                    Open Course Workspace <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+
               </div>
-
-              {isExpanded && canExpand && (
-                <div className="px-5 pb-5 border-t border-slate-200 pt-4">
-                  <div className="flex items-center justify-between gap-3 flex-wrap">
-                    <div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Learning Path</p>
-                      <p className="mt-1 text-sm font-semibold text-slate-900">
-                        {completedResources}/{learningResources.length} completed
-                      </p>
-                    </div>
-                    <span className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-600">
-                      {progressPercent}% complete
-                    </span>
-                  </div>
-
-                  <div className="mt-4 space-y-3">
-                    {learningResources.map((resource) => {
-                      const resourceComplete = isResourceComplete(resource.id)
-                      const typeClasses =
-                        resource.type === 'Live Session'
-                          ? 'bg-blue-50 border-blue-200 text-blue-600'
-                          : resource.type === 'Material'
-                            ? 'bg-purple-50 border-purple-200 text-purple-600'
-                            : 'bg-amber-50 border-amber-200 text-amber-600'
-
-                      return (
-                        <div
-                          key={resource.id}
-                          className={`flex flex-col gap-3 rounded-2xl border px-4 py-3 transition-colors sm:flex-row sm:items-center ${resourceComplete ? 'border-emerald-200 bg-emerald-50' : 'border-slate-200 bg-white'}`}
-                        >
-                          <div className="flex min-w-0 flex-1 items-center gap-3">
-                            <button
-                              type="button"
-                              onClick={() => toggleResourceProgress(resource.id)}
-                              aria-label={resourceComplete ? `Mark ${resource.title} incomplete` : `Mark ${resource.title} complete`}
-                              className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border transition-colors ${resourceComplete ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-slate-200 bg-slate-50 text-slate-400 hover:border-emerald-400 hover:text-emerald-500'}`}
-                            >
-                              {resourceComplete ? (
-                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                </svg>
-                              ) : (
-                                <span className="h-2 w-2 rounded-full bg-current" />
-                              )}
-                            </button>
-
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] ${typeClasses}`}>
-                                  {resource.type}
-                                </span>
-                                {resourceComplete && (
-                                  <span className="rounded-full border border-emerald-200 bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-600">
-                                    Done
-                                  </span>
-                                )}
-                              </div>
-                              <p className="mt-1 truncate text-sm font-semibold text-slate-900">{resource.title}</p>
-                              <p className="mt-0.5 truncate text-[11px] text-slate-400">{resource.subtitle}</p>
-                            </div>
-                          </div>
-
-                          <div className="flex w-full flex-shrink-0 items-center gap-2 sm:w-auto">
-                            {resource.url && resource.internal ? (
-                              <Link
-                                to={resource.url}
-                                className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-center text-xs font-bold text-slate-700 transition-colors hover:bg-slate-100 sm:flex-none"
-                              >
-                                {resource.actionLabel}
-                              </Link>
-                            ) : resource.url ? (
-                              <a
-                                href={resource.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-center text-xs font-bold text-slate-700 transition-colors hover:bg-slate-100 sm:flex-none"
-                              >
-                                {resource.actionLabel}
-                              </a>
-                            ) : null}
-                            <button
-                              type="button"
-                              onClick={() => toggleResourceProgress(resource.id)}
-                              className={`flex-1 rounded-xl px-3 py-2 text-xs font-bold transition-colors sm:flex-none ${resourceComplete ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
-                            >
-                              {resourceComplete ? 'Undo' : 'Mark Done'}
-                            </button>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
             </div>
           )
         })}

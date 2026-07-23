@@ -22,35 +22,60 @@ const templates = {
   welcome: ({ name, email }) => ({
     to: email,
     subject: '🎉 Welcome to Amit Solution Hub!',
-    html: emailTemplate('Welcome to Amit Solution Hub!', `
-      <p>Hello <strong>${name}</strong>,</p>
-      <p>Welcome aboard! Your account has been successfully created on <strong>Amit Solution Hub</strong>.</p>
-      <div style="margin:24px 0;padding:20px;background:#f0fdf4;border-radius:12px;border-left:4px solid #22c55e;">
-        <p style="margin:0;font-size:14px;color:#166534;"><strong>✅ Account Active</strong></p>
-        <p style="margin:8px 0 0;font-size:13px;color:#166534;">You can now browse courses, enroll, and track your progress.</p>
+    html: emailTemplate(
+      'Welcome to Amit Solution Hub!',
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${name}</strong> 👋,</p>
+      <p>We are thrilled to welcome you to <strong>Amit Solution Hub</strong>! Your account is now fully active and ready.</p>
+      
+      <div style="margin:24px 0;padding:24px;background:#f0fdf4;border-radius:18px;border:1px solid #bbf7d0;">
+        <div style="font-size:15px;font-weight:800;color:#166534;margin-bottom:8px;">✅ Account Successfully Activated</div>
+        <p style="margin:0;font-size:13px;color:#15803d;line-height:1.5;">You have full access to browse industry-ready courses, manage your enrollments, and track certificates.</p>
       </div>
-      <p>Explore our latest courses and mentorship programs designed to help you grow.</p>
-    `, 'Browse Courses', `${SITE_URL}/courses`)
+
+      <p style="font-weight:700;color:#0f172a;margin-top:20px;">Here is how you can get started:</p>
+      <ul style="padding-left:20px;color:#475569;font-size:14px;line-height:1.8;">
+        <li>📚 <strong>Explore Courses:</strong> Find hands-on courses in Web Dev, Trading, & Software Engineering.</li>
+        <li>🎓 <strong>Learn with Mentors:</strong> Get weekly live sessions, doubt support, and guidance.</li>
+        <li>🏆 <strong>Earn Certificates:</strong> Complete courses to unlock verified certificates & offer letters.</li>
+      </ul>
+      `,
+      'Explore All Courses',
+      `${SITE_URL}/courses`,
+      '#16a34a',
+      'WELCOME'
+    )
   }),
 
   // 2. Course Enrollment — Student
   enrollment_student: ({ studentName, studentEmail, courseTitle, planLabel, amount, employeeName }) => ({
     to: studentEmail,
-    subject: `✅ Enrolled: ${courseTitle}`,
-    html: emailTemplate(`Successfully Enrolled in ${courseTitle}`, `
-      <p>Hello <strong>${studentName}</strong>,</p>
+    subject: `✅ Enrollment Confirmed: ${courseTitle}`,
+    html: emailTemplate(
+      `Course Enrollment Confirmed!`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${studentName}</strong> 🎉,</p>
       <p>Congratulations! You have been successfully enrolled in <strong>${courseTitle}</strong>.</p>
-      <div style="margin:24px 0;padding:24px;background:#eff6ff;border-radius:12px;border:1px solid #bfdbfe;">
+
+      <div style="margin:24px 0;padding:24px;background:#eff6ff;border-radius:18px;border:1px solid #bfdbfe;">
+        <div style="font-size:11px;font-weight:900;letter-spacing:1px;color:#1d4ed8;text-transform:uppercase;margin-bottom:12px;">Enrollment Summary</div>
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
-          <tr><td style="padding:6px 0;color:#64748b;width:40%;">Course</td><td style="font-weight:700;color:#1e40af;">${courseTitle}</td></tr>
-          ${planLabel ? `<tr><td style="padding:6px 0;color:#64748b;">Plan</td><td style="font-weight:600;">${planLabel}</td></tr>` : ''}
-          <tr><td style="padding:6px 0;color:#64748b;">Amount</td><td style="font-weight:700;color:#16a34a;">${amount === 0 || amount === '0' ? 'FREE' : `₹${Number(amount).toLocaleString('en-IN')}`}</td></tr>
-          ${employeeName ? `<tr><td style="padding:6px 0;color:#64748b;">Instructor</td><td style="font-weight:600;">${employeeName}</td></tr>` : ''}
+          <tr><td style="padding:8px 0;color:#64748b;width:35%;">Course</td><td style="font-weight:800;color:#1e40af;">${courseTitle}</td></tr>
+          ${planLabel ? `<tr><td style="padding:8px 0;color:#64748b;">Plan Tier</td><td style="font-weight:700;color:#0f172a;">${planLabel}</td></tr>` : ''}
+          <tr><td style="padding:8px 0;color:#64748b;">Investment</td><td style="font-weight:900;color:#16a34a;">${amount === 0 || amount === '0' ? 'FREE' : `₹${Number(amount).toLocaleString('en-IN')}`}</td></tr>
+          ${employeeName ? `<tr><td style="padding:8px 0;color:#64748b;">Assigned Lead Mentor</td><td style="font-weight:700;color:#2563eb;">${employeeName}</td></tr>` : ''}
         </table>
       </div>
-      <p>Your instructor will reach out to you shortly. Please ensure your mobile number is updated in your profile so they can contact you.</p>
-      <p style="font-size:13px;color:#64748b;">If you have any questions, reply to this email or WhatsApp us.</p>
-    `, 'Go to My Courses', `${SITE_URL}/customer/my-courses`)
+
+      <div style="margin:20px 0;padding:16px 20px;background:#f8fafc;border-radius:14px;border-left:4px solid #2563eb;">
+        <p style="margin:0;font-size:13px;color:#334155;font-weight:600;">💡 Your mentor will reach out shortly with live session instructions and learning resources.</p>
+      </div>
+      `,
+      'Access My Course Panel',
+      `${SITE_URL}/customer/my-courses`,
+      '#2563eb',
+      'COURSE ENROLLMENT'
+    )
   }),
 
   // 3. Course Meeting Scheduled - Student
@@ -59,6 +84,7 @@ const templates = {
     studentEmail,
     courseTitle,
     planLabel,
+    weeklySchedule,
     meetingTime,
     meetingLink,
     employeeName,
@@ -66,222 +92,341 @@ const templates = {
   }) => {
     const dashboardUrl = `${SITE_URL}/customer/my-courses`
     const ctaUrl = meetingLink || dashboardUrl
-    const subjectPrefix = reason === 'new_enrollment' ? 'Your Scheduled Session' : 'Session Scheduled'
+    const subjectPrefix = reason === 'new_enrollment' ? 'Live Class Schedule' : 'Live Meeting Scheduled'
     return {
       to: studentEmail,
-      subject: `📅 ${subjectPrefix} - ${courseTitle}`,
-      html: emailTemplate(`${courseTitle} Session Scheduled`, `
-        <p>Hello <strong>${studentName}</strong>,</p>
+      subject: `📅 ${subjectPrefix} — ${courseTitle}`,
+      html: emailTemplate(
+        `Live Meeting & Weekly Schedule`,
+        `
+        <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${studentName}</strong> 🎥,</p>
         <p>${reason === 'new_enrollment'
-          ? `You have been enrolled in a batch that already has a scheduled live session for <strong>${courseTitle}</strong>.`
-          : `A live session has been scheduled for your course <strong>${courseTitle}</strong>.`
+          ? `Your enrolled program <strong>${courseTitle}</strong> has scheduled live interactive sessions.`
+          : `A new live meeting & weekly schedule has been set for <strong>${courseTitle}</strong>.`
         }</p>
-        <div style="margin:24px 0;padding:24px;background:#eff6ff;border-radius:12px;border:1px solid #bfdbfe;">
+
+        <div style="margin:24px 0;padding:24px;background:#f0f9ff;border-radius:18px;border:1px solid #bae6fd;">
+          <div style="font-size:11px;font-weight:900;letter-spacing:1px;color:#0369a1;text-transform:uppercase;margin-bottom:12px;">Live Session Details</div>
           <table style="width:100%;border-collapse:collapse;font-size:14px;">
-            <tr><td style="padding:6px 0;color:#64748b;width:40%;">Course</td><td style="font-weight:700;color:#1e3a8a;">${courseTitle}</td></tr>
-            ${planLabel ? `<tr><td style="padding:6px 0;color:#64748b;">Plan</td><td style="font-weight:600;">${planLabel}</td></tr>` : ''}
-            ${meetingTime ? `<tr><td style="padding:6px 0;color:#64748b;">Meeting Time</td><td style="font-weight:700;color:#0f172a;">${meetingTime}</td></tr>` : ''}
-            ${employeeName ? `<tr><td style="padding:6px 0;color:#64748b;">Instructor</td><td style="font-weight:600;">${employeeName}</td></tr>` : ''}
-            <tr><td style="padding:6px 0;color:#64748b;">Join Link</td><td>${meetingLink ? `<a href="${meetingLink}" style="color:#1d4ed8;font-weight:700;">Open Meeting</a>` : 'Available in your dashboard'}</td></tr>
+            <tr><td style="padding:8px 0;color:#64748b;width:35%;">Course</td><td style="font-weight:800;color:#0f172a;">${courseTitle}</td></tr>
+            ${planLabel ? `<tr><td style="padding:8px 0;color:#64748b;">Plan Access</td><td style="font-weight:700;color:#0369a1;">${planLabel}</td></tr>` : ''}
+            ${weeklySchedule ? `<tr><td style="padding:8px 0;color:#64748b;">Weekly Schedule</td><td style="font-weight:800;color:#166534;">📅 ${weeklySchedule}</td></tr>` : ''}
+            ${meetingTime ? `<tr><td style="padding:8px 0;color:#64748b;">Next Session</td><td style="font-weight:700;color:#0f172a;">${meetingTime}</td></tr>` : ''}
+            ${employeeName ? `<tr><td style="padding:8px 0;color:#64748b;">Host Mentor</td><td style="font-weight:700;color:#2563eb;">${employeeName}</td></tr>` : ''}
           </table>
         </div>
-        <p>Please join on time and keep your dashboard open for the latest course updates.</p>
-        <p style="font-size:13px;color:#64748b;">You will also receive reminder emails before the session starts.</p>
-      `, meetingLink ? 'Join Meeting' : 'Open My Courses', ctaUrl),
+
+        ${meetingLink ? `
+          <div style="text-align:center;margin:24px 0;padding:20px;background:#eff6ff;border-radius:16px;border:1px stroke #bfdbfe;">
+            <p style="margin:0 0 10px;font-size:12px;font-weight:800;color:#1e40af;text-transform:uppercase;">Direct Live Room Link</p>
+            <a href="${meetingLink}" style="font-size:14px;font-weight:800;color:#2563eb;word-break:break-all;text-decoration:underline;">${meetingLink}</a>
+          </div>
+        ` : ''}
+
+        <p style="font-size:13px;color:#64748b;margin-top:16px;">Please log in 5 minutes early with a stable internet connection.</p>
+        `,
+        meetingLink ? 'Join Live Session Now' : 'Open My Student Panel',
+        ctaUrl,
+        '#0284c7',
+        'LIVE MEETING'
+      ),
     }
   },
 
   // 4. Course Enrollment — Employee (new student alert)
   enrollment_employee: ({ employeeEmail, employeeName, studentName, studentEmail, studentMobile, courseTitle, planLabel, amount }) => ({
     to: employeeEmail,
-    subject: `🎓 New Student Enrolled — ${courseTitle}`,
-    html: emailTemplate('New Student Enrolled in Your Course', `
-      <p>Hello <strong>${employeeName}</strong>,</p>
-      <p>A new student has enrolled in your course <strong>${courseTitle}</strong>.</p>
-      <div style="margin:24px 0;padding:24px;background:#fef9c3;border-radius:12px;border:1px solid #fde047;">
-        <p style="margin:0 0 12px;font-size:12px;font-weight:700;color:#854d0e;text-transform:uppercase;letter-spacing:0.5px;">Student Details</p>
+    subject: `🎓 New Student Assigned — ${studentName}`,
+    html: emailTemplate(
+      `New Student Enrolled in Your Batch!`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${employeeName}</strong> 👨‍🏫,</p>
+      <p>A new student has enrolled and been assigned to your course <strong>${courseTitle}</strong>.</p>
+
+      <div style="margin:24px 0;padding:24px;background:#fefce8;border-radius:18px;border:1px solid #fef08a;">
+        <div style="font-size:11px;font-weight:900;letter-spacing:1px;color:#854d0e;text-transform:uppercase;margin-bottom:12px;">Student Profile & Contact</div>
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
-          <tr><td style="padding:6px 0;color:#78350f;width:40%;">Name</td><td style="font-weight:700;">${studentName}</td></tr>
-          <tr><td style="padding:6px 0;color:#78350f;">Email</td><td><a href="mailto:${studentEmail}" style="color:#1d4ed8;">${studentEmail}</a></td></tr>
-          <tr><td style="padding:6px 0;color:#78350f;">Mobile</td><td><a href="tel:+91${studentMobile}" style="color:#1d4ed8;font-weight:700;">${studentMobile || 'Not provided'}</a></td></tr>
-          ${planLabel ? `<tr><td style="padding:6px 0;color:#78350f;">Plan</td><td style="font-weight:600;">${planLabel}</td></tr>` : ''}
-          <tr><td style="padding:6px 0;color:#78350f;">Amount</td><td style="font-weight:700;color:#16a34a;">${amount === 0 || amount === '0' ? 'FREE' : `₹${Number(amount).toLocaleString('en-IN')}`}</td></tr>
+          <tr><td style="padding:8px 0;color:#854d0e;width:35%;">Student Name</td><td style="font-weight:800;color:#0f172a;">${studentName}</td></tr>
+          <tr><td style="padding:8px 0;color:#854d0e;">Email Address</td><td><a href="mailto:${studentEmail}" style="color:#2563eb;font-weight:700;">${studentEmail}</a></td></tr>
+          <tr><td style="padding:8px 0;color:#854d0e;">Mobile Phone</td><td><a href="tel:+91${studentMobile}" style="color:#2563eb;font-weight:800;">${studentMobile || 'Not provided'}</a></td></tr>
+          ${planLabel ? `<tr><td style="padding:8px 0;color:#854d0e;">Selected Plan</td><td style="font-weight:700;">${planLabel}</td></tr>` : ''}
+          <tr><td style="padding:8px 0;color:#854d0e;">Amount Paid</td><td style="font-weight:900;color:#16a34a;">${amount === 0 || amount === '0' ? 'FREE' : `₹${Number(amount).toLocaleString('en-IN')}`}</td></tr>
         </table>
       </div>
-      <p>Please reach out to the student to welcome them and share course details.</p>
-    `, 'Manage Course', `${SITE_URL}/employee/course-manage`)
+
+      <p style="font-size:14px;color:#475569;">Please contact the student via phone/email to onboard them to the course portal and WhatsApp group.</p>
+      `,
+      'Open Course Management',
+      `${SITE_URL}/employee/course-manage`,
+      '#ca8a04',
+      'STUDENT ALERT'
+    )
   }),
 
   // 5. Account Request — Admin
   account_request: ({ requesterName, requesterEmail, requesterPhone, role }) => ({
     to: ADMIN_EMAIL,
-    subject: `🆕 New Account Request — ${requesterName}`,
-    html: emailTemplate('New Account Request Received', `
-      <p>A new account request has been submitted.</p>
-      <div style="margin:24px 0;padding:24px;background:#f0f9ff;border-radius:12px;border:1px solid #bae6fd;">
+    subject: `🆕 New Access Request — ${requesterName}`,
+    html: emailTemplate(
+      `New Account Approval Request`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello Admin 🔐,</p>
+      <p>A new employee/mentor registration request requires your admin review.</p>
+
+      <div style="margin:24px 0;padding:24px;background:#f0f9ff;border-radius:18px;border:1px solid #bae6fd;">
+        <div style="font-size:11px;font-weight:900;letter-spacing:1px;color:#0369a1;text-transform:uppercase;margin-bottom:12px;">Requester Information</div>
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
-          <tr><td style="padding:6px 0;color:#64748b;width:40%;">Name</td><td style="font-weight:700;">${requesterName}</td></tr>
-          <tr><td style="padding:6px 0;color:#64748b;">Email</td><td>${requesterEmail}</td></tr>
-          <tr><td style="padding:6px 0;color:#64748b;">Phone</td><td>${requesterPhone || 'Not provided'}</td></tr>
-          <tr><td style="padding:6px 0;color:#64748b;">Requested Role</td><td style="font-weight:600;text-transform:capitalize;">${role || 'Employee'}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;width:35%;">Applicant</td><td style="font-weight:800;color:#0f172a;">${requesterName}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Email</td><td style="font-weight:700;color:#2563eb;">${requesterEmail}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Phone</td><td style="font-weight:700;">${requesterPhone || 'Not provided'}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Target Role</td><td style="font-weight:800;color:#7c3aed;text-transform:capitalize;">${role || 'Employee'}</td></tr>
         </table>
       </div>
-      <p>Please review and approve/reject from the Admin Panel.</p>
-    `, 'Review in Admin Panel', `${SITE_URL}/admin/account-requests`)
+
+      <p style="font-size:14px;color:#475569;">Click below to review their request and assign permissions.</p>
+      `,
+      'Review Request in Admin Panel',
+      `${SITE_URL}/admin/account-requests`,
+      '#0284c7',
+      'ACCOUNT REQUEST'
+    )
   }),
 
   // 6. Account Approved — User
   account_approved: ({ name, email, role }) => ({
     to: email,
-    subject: '✅ Your Account Has Been Approved!',
-    html: emailTemplate('Account Approved — Welcome to the Team!', `
-      <p>Hello <strong>${name}</strong>,</p>
-      <p>Great news! Your account request has been <strong style="color:#16a34a;">approved</strong> by the admin.</p>
-      <div style="margin:24px 0;padding:20px;background:#f0fdf4;border-radius:12px;border-left:4px solid #22c55e;">
-        <p style="margin:0;font-size:14px;color:#166534;"><strong>Role Assigned: ${role || 'Employee'}</strong></p>
-        <p style="margin:8px 0 0;font-size:13px;color:#166534;">You can now log in to your dashboard to get started.</p>
+    subject: '🎉 Your Account Has Been Approved!',
+    html: emailTemplate(
+      `Account Approved — Welcome to Team!`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${name}</strong> 🚀,</p>
+      <p>Great news! Your account application has been <strong style="color:#16a34a;">Approved</strong> by the administrator.</p>
+
+      <div style="margin:24px 0;padding:24px;background:#f0fdf4;border-radius:18px;border:1px solid #bbf7d0;">
+        <div style="font-size:15px;font-weight:800;color:#166534;margin-bottom:6px;">Role Granted: ${role || 'Employee'}</div>
+        <p style="margin:0;font-size:13px;color:#15803d;">You can now log in to access your employee panel, manage courses, and review student tasks.</p>
       </div>
-      <p>If you haven't received your login credentials, please contact us at support@amitsolutionhub.com</p>
-    `, 'Login to Dashboard', `${SITE_URL}/employee`)
+
+      <p style="font-size:14px;color:#475569;">If you need onboarding assistance, reach out to support@amitsolutionhub.com</p>
+      `,
+      'Login to Employee Dashboard',
+      `${SITE_URL}/employee`,
+      '#16a34a',
+      'ACCOUNT APPROVED'
+    )
   }),
 
   // 7. Service / Custom Request — Admin
   service_request_admin: ({ clientName, clientEmail, clientPhone, serviceType, message }) => ({
     to: ADMIN_EMAIL,
-    subject: `📋 New Service Request — ${clientName}`,
-    html: emailTemplate('New Service Request Received', `
-      <p>A new service request has been submitted.</p>
-      <div style="margin:24px 0;padding:24px;background:#faf5ff;border-radius:12px;border:1px solid #e9d5ff;">
+    subject: `📋 New Client Service Inquiry — ${clientName}`,
+    html: emailTemplate(
+      `New Client Service Request Received`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello Admin 💼,</p>
+      <p>A new client has submitted a custom software/service inquiry.</p>
+
+      <div style="margin:24px 0;padding:24px;background:#faf5ff;border-radius:18px;border:1px solid #e9d5ff;">
+        <div style="font-size:11px;font-weight:900;letter-spacing:1px;color:#7e22ce;text-transform:uppercase;margin-bottom:12px;">Inquiry Details</div>
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
-          <tr><td style="padding:6px 0;color:#64748b;width:40%;">Name</td><td style="font-weight:700;">${clientName}</td></tr>
-          <tr><td style="padding:6px 0;color:#64748b;">Email</td><td>${clientEmail}</td></tr>
-          <tr><td style="padding:6px 0;color:#64748b;">Phone</td><td>${clientPhone || 'Not provided'}</td></tr>
-          <tr><td style="padding:6px 0;color:#64748b;">Service Type</td><td style="font-weight:600;">${serviceType || 'General'}</td></tr>
-          <tr><td style="padding:6px 0;color:#64748b;vertical-align:top;">Message</td><td style="font-style:italic;">${message || '—'}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;width:35%;">Client Name</td><td style="font-weight:800;color:#0f172a;">${clientName}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Email</td><td style="font-weight:700;color:#2563eb;">${clientEmail}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Phone</td><td style="font-weight:700;">${clientPhone || 'Not provided'}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Service Category</td><td style="font-weight:800;color:#7e22ce;">${serviceType || 'Custom Project'}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;vertical-align:top;">Message</td><td style="font-style:italic;color:#334155;">${message || 'No description provided.'}</td></tr>
         </table>
       </div>
-    `, 'View in Admin Panel', `${SITE_URL}/admin`)
+      `,
+      'Open Service Requests in Admin',
+      `${SITE_URL}/admin`,
+      '#7c3aed',
+      'SERVICE REQUEST'
+    )
   }),
 
   // 8. Service Request — User Acknowledgment
   service_request_user: ({ clientName, clientEmail, serviceType }) => ({
     to: clientEmail,
-    subject: '📋 Service Request Received — Amit Solution Hub',
-    html: emailTemplate('We Received Your Request!', `
-      <p>Hello <strong>${clientName}</strong>,</p>
-      <p>Thank you for reaching out! We have received your service request for <strong>${serviceType || 'our services'}</strong>.</p>
-      <div style="margin:24px 0;padding:20px;background:#f8fafc;border-radius:12px;border-left:4px solid #3b82f6;">
-        <p style="margin:0;font-size:14px;color:#1e40af;"><strong>⏱ Expected Response: 24 Business Hours</strong></p>
-        <p style="margin:8px 0 0;font-size:13px;color:#1e40af;">Our team will review your request and contact you shortly.</p>
+    subject: '📋 Inquiry Received — Amit Solution Hub',
+    html: emailTemplate(
+      `We Have Received Your Inquiry!`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${clientName}</strong> 👋,</p>
+      <p>Thank you for reaching out to <strong>Amit Solution Hub</strong>! We have received your request for <strong>${serviceType || 'Custom Solution Services'}</strong>.</p>
+
+      <div style="margin:24px 0;padding:24px;background:#f0f9ff;border-radius:18px;border:1px solid #bae6fd;">
+        <div style="font-size:14px;font-weight:800;color:#0369a1;margin-bottom:6px;">⏱ Expected SLA: Within 24 Hours</div>
+        <p style="margin:0;font-size:13px;color:#0284c7;">Our technical team is reviewing your requirements and will contact you via phone or email.</p>
       </div>
-    `, 'View Our Services', `${SITE_URL}/services`)
+
+      <p style="font-size:14px;color:#475569;">In the meantime, feel free to check out our pre-built software projects and services.</p>
+      `,
+      'Explore Our Portfolio',
+      `${SITE_URL}/services`,
+      '#0284c7',
+      'INQUIRY ACKNOWLEDGED'
+    )
   }),
 
   // 9. Sell Project Request — Admin
   sell_request_admin: ({ sellerName, sellerEmail, sellerPhone, projectTitle, projectDesc, price }) => ({
     to: ADMIN_EMAIL,
-    subject: `💼 New Sell Project Request — ${sellerName}`,
-    html: emailTemplate('New Project Sale Request', `
-      <p>Someone wants to sell a project on Amit Solution Hub.</p>
-      <div style="margin:24px 0;padding:24px;background:#fff7ed;border-radius:12px;border:1px solid #fed7aa;">
+    subject: `💼 Sell Project Request — ${sellerName}`,
+    html: emailTemplate(
+      `New Project Submission for Sale`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello Admin 💰,</p>
+      <p>A developer wants to list and sell a project on Amit Solution Hub.</p>
+
+      <div style="margin:24px 0;padding:24px;background:#fff7ed;border-radius:18px;border:1px solid #fed7aa;">
+        <div style="font-size:11px;font-weight:900;letter-spacing:1px;color:#c2410c;text-transform:uppercase;margin-bottom:12px;">Submission Details</div>
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
-          <tr><td style="padding:6px 0;color:#64748b;width:40%;">Seller</td><td style="font-weight:700;">${sellerName}</td></tr>
-          <tr><td style="padding:6px 0;color:#64748b;">Email</td><td>${sellerEmail}</td></tr>
-          <tr><td style="padding:6px 0;color:#64748b;">Phone</td><td>${sellerPhone || 'Not provided'}</td></tr>
-          <tr><td style="padding:6px 0;color:#64748b;">Project Title</td><td style="font-weight:600;">${projectTitle || '—'}</td></tr>
-          <tr><td style="padding:6px 0;color:#64748b;">Asking Price</td><td style="font-weight:700;color:#d97706;">${price ? `₹${price}` : 'Not specified'}</td></tr>
-          <tr><td style="padding:6px 0;color:#64748b;vertical-align:top;">Description</td><td style="font-style:italic;">${projectDesc || '—'}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;width:35%;">Seller Name</td><td style="font-weight:800;color:#0f172a;">${sellerName}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Email</td><td style="font-weight:700;color:#2563eb;">${sellerEmail}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Phone</td><td style="font-weight:700;">${sellerPhone || 'Not provided'}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Project Name</td><td style="font-weight:800;color:#c2410c;">${projectTitle || '—'}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;">Asking Price</td><td style="font-weight:900;color:#16a34a;">${price ? `₹${price}` : 'Quote Requested'}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;vertical-align:top;">Description</td><td style="font-style:italic;color:#334155;">${projectDesc || '—'}</td></tr>
         </table>
       </div>
-    `, 'Review in Admin Panel', `${SITE_URL}/admin`)
+      `,
+      'Review Submission in Admin',
+      `${SITE_URL}/admin`,
+      '#ea580c',
+      'SELL PROJECT'
+    )
   }),
 
   // 10. Sell Request — User Acknowledgment
   sell_request_user: ({ sellerName, sellerEmail, projectTitle }) => ({
     to: sellerEmail,
-    subject: '💼 Your Sell Request Received — Amit Solution Hub',
-    html: emailTemplate('Project Submission Received!', `
-      <p>Hello <strong>${sellerName}</strong>,</p>
-      <p>We've received your request to sell <strong>${projectTitle || 'your project'}</strong> on Amit Solution Hub.</p>
-      <div style="margin:24px 0;padding:20px;background:#fff7ed;border-radius:12px;border-left:4px solid #f97316;">
-        <p style="margin:0;font-size:14px;color:#c2410c;"><strong>📋 Under Review</strong></p>
-        <p style="margin:8px 0 0;font-size:13px;color:#c2410c;">Our team will evaluate your project and respond within 2-3 business days.</p>
+    subject: '💼 Sell Request Received — Amit Solution Hub',
+    html: emailTemplate(
+      `Project Submission Received!`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${sellerName}</strong> 👋,</p>
+      <p>We have successfully received your request to list <strong>${projectTitle || 'your project'}</strong> on Amit Solution Hub.</p>
+
+      <div style="margin:24px 0;padding:24px;background:#fff7ed;border-radius:18px;border:1px solid #fed7aa;">
+        <div style="font-size:14px;font-weight:800;color:#c2410c;margin-bottom:6px;">📋 Code Quality Evaluation</div>
+        <p style="margin:0;font-size:13px;color:#9a3412;">Our evaluation team will review your project code and contact you within 2-3 business days.</p>
       </div>
-    `)
+      `,
+      'View Platform Guidelines',
+      `${SITE_URL}`,
+      '#ea580c',
+      'SUBMISSION CONFIRMED'
+    )
   }),
 
   // 11. Certificate Issued
   certificate_issued: ({ studentName, studentEmail, courseName, certId, documentType, documentLabel }) => ({
     to: studentEmail,
-    subject: `🏆 ${documentLabel || (documentType === 'offer_letter' ? 'Offer Letter' : documentType === 'internship_certificate' ? 'Internship Certificate' : 'Certificate')} Issued — ${courseName}`,
-    html: emailTemplate('Your Verified Document is Ready!', `
-      <p>Hello <strong>${studentName}</strong>,</p>
-      <p>Your <strong>${documentLabel || (documentType === 'offer_letter' ? 'offer letter' : documentType === 'internship_certificate' ? 'internship certificate' : 'certificate')}</strong> for <strong>${courseName}</strong> has been issued successfully.</p>
-      <div style="margin:24px 0;padding:24px;background:linear-gradient(135deg,#fef9c3,#fef3c7);border-radius:12px;border:2px solid #fbbf24;text-align:center;">
-        <p style="margin:0;font-size:20px;">🏆</p>
-        <p style="margin:8px 0 0;font-size:18px;font-weight:800;color:#78350f;">${documentLabel || 'Verified Document'}</p>
-        <p style="margin:6px 0 0;font-size:13px;color:#92400e;">Program / Role: <strong>${courseName}</strong></p>
-        <p style="margin:6px 0 0;font-size:13px;color:#92400e;">Document ID: <strong>${certId}</strong></p>
+    subject: `🏆 Verified Document Issued — ${courseName}`,
+    html: emailTemplate(
+      `Verified Document Issued!`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Congratulations <strong>${studentName}</strong> 🎓,</p>
+      <p>Your official <strong>${documentLabel || (documentType === 'offer_letter' ? 'Offer Letter' : documentType === 'internship_certificate' ? 'Internship Certificate' : 'Certificate of Completion')}</strong> for <strong>${courseName}</strong> is now issued and verified.</p>
+
+      <div style="margin:24px 0;padding:28px;background:linear-gradient(135deg,#fef9c3 0%,#fef3c7 100%);border-radius:20px;border:2px solid #f59e0b;text-align:center;">
+        <div style="font-size:32px;margin-bottom:6px;">🏆</div>
+        <div style="font-size:20px;font-weight:900;color:#78350f;">${documentLabel || 'Verified Certificate'}</div>
+        <p style="margin:8px 0 0;font-size:14px;color:#92400e;">Program: <strong>${courseName}</strong></p>
+        <div style="display:inline-block;margin-top:12px;padding:6px 16px;background:#ffffff;border-radius:30px;border:1px solid #fde68a;font-size:12px;font-weight:800;color:#b45309;">
+          Document ID: ${certId}
+        </div>
       </div>
-      <p>You can verify, preview, and download this document from your student dashboard.</p>
-    `, 'View My Documents', `${SITE_URL}/customer/certificates`)
+
+      <p style="font-size:14px;color:#475569;">You can instantly verify, preview, and download your high-resolution PDF certificate from your student account.</p>
+      `,
+      'View & Download Certificate',
+      `${SITE_URL}/customer/certificates`,
+      '#d97706',
+      'VERIFIED CERTIFICATE'
+    )
   }),
 
   // 12. Task Assigned — Employee
   task_assigned: ({ employeeName, employeeEmail, taskTitle, taskDesc, dueDate, assignedBy }) => ({
     to: employeeEmail,
     subject: `📌 New Task Assigned — ${taskTitle}`,
-    html: emailTemplate('New Task Assigned to You', `
-      <p>Hello <strong>${employeeName}</strong>,</p>
-      <p>You have been assigned a new task by <strong>${assignedBy || 'Admin'}</strong>.</p>
-      <div style="margin:24px 0;padding:24px;background:#f0f9ff;border-radius:12px;border:1px solid #bae6fd;">
+    html: emailTemplate(
+      `New Action Task Assigned`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${employeeName}</strong> 📌,</p>
+      <p>A new assignment task has been assigned to you by <strong>${assignedBy || 'Admin Management'}</strong>.</p>
+
+      <div style="margin:24px 0;padding:24px;background:#f0fdf4;border-radius:18px;border:1px solid #bbf7d0;">
+        <div style="font-size:11px;font-weight:900;letter-spacing:1px;color:#166534;text-transform:uppercase;margin-bottom:12px;">Task Overview</div>
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
-          <tr><td style="padding:6px 0;color:#64748b;width:40%;">Task</td><td style="font-weight:700;">${taskTitle}</td></tr>
-          ${taskDesc ? `<tr><td style="padding:6px 0;color:#64748b;vertical-align:top;">Description</td><td style="font-style:italic;">${taskDesc}</td></tr>` : ''}
-          ${dueDate ? `<tr><td style="padding:6px 0;color:#64748b;">Due Date</td><td style="font-weight:600;color:#dc2626;">${dueDate}</td></tr>` : ''}
+          <tr><td style="padding:8px 0;color:#64748b;width:35%;">Task Title</td><td style="font-weight:800;color:#0f172a;">${taskTitle}</td></tr>
+          ${taskDesc ? `<tr><td style="padding:8px 0;color:#64748b;vertical-align:top;">Description</td><td style="font-style:italic;color:#334155;">${taskDesc}</td></tr>` : ''}
+          ${dueDate ? `<tr><td style="padding:8px 0;color:#64748b;">Target Deadline</td><td style="font-weight:900;color:#dc2626;">⏳ ${dueDate}</td></tr>` : ''}
         </table>
       </div>
-      <p>Please log in to your dashboard to view full task details and update the status.</p>
-    `, 'View My Tasks', `${SITE_URL}/employee/tasks`)
+
+      <p style="font-size:14px;color:#475569;">Please log in to your employee dashboard to start working on this task and post updates.</p>
+      `,
+      'Open My Employee Tasks',
+      `${SITE_URL}/employee/tasks`,
+      '#16a34a',
+      'TASK ASSIGNMENT'
+    )
   }),
 
   // 14. Permissions Updated — Employee
   permissions_updated: ({ employeeName, employeeEmail, updatedByName, rolePreset }) => ({
     to: employeeEmail,
-    subject: '🔑 Your Permissions Have Been Updated',
-    html: emailTemplate('Permissions Updated', `
-      <p>Hello <strong>${employeeName}</strong>,</p>
-      <p>Your admin permissions have been updated by <strong>${updatedByName || 'Admin'}</strong>.</p>
-      <div style="margin:24px 0;padding:20px;background:#f0f9ff;border-radius:12px;border-left:4px solid #3b82f6;">
-        <p style="margin:0;font-size:14px;color:#1e40af;">
-          ${rolePreset ? `<strong>Role: ${rolePreset}</strong><br>` : ''}
-          <strong>✅ Permissions Updated Successfully</strong>
-        </p>
-        <p style="margin:8px 0 0;font-size:13px;color:#1e40af;">Please log in to your dashboard to see your updated access.</p>
+    subject: '🔑 Your Security Access & Permissions Updated',
+    html: emailTemplate(
+      `Admin Permissions Updated`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${employeeName}</strong> 🔐,</p>
+      <p>Your administrative permissions and access privileges have been updated by <strong>${updatedByName || 'Admin'}</strong>.</p>
+
+      <div style="margin:24px 0;padding:24px;background:#eff6ff;border-radius:18px;border:1px solid #bfdbfe;">
+        ${rolePreset ? `<div style="font-size:14px;font-weight:800;color:#1d4ed8;margin-bottom:6px;">Assigned Role: ${rolePreset}</div>` : ''}
+        <p style="margin:0;font-size:13px;color:#1e40af;">Your dashboard controls have been synchronized. Please log in again if needed to see your updated menu.</p>
       </div>
-      <p>If you have any questions about your new permissions, please contact the admin.</p>
-    `, 'Go to Dashboard', `${SITE_URL}/employee`)
+      `,
+      'Go to Dashboard',
+      `${SITE_URL}/employee`,
+      '#2563eb',
+      'PERMISSIONS UPDATE'
+    )
   }),
 
   // 13. Trading Enrollment — Student
   trading_enrollment_student: ({ studentName, studentEmail, courseName, sessionDate, amount }) => ({
     to: studentEmail,
-    subject: `📈 Trading Mentorship Enrollment Confirmed`,
-    html: emailTemplate('Trading Mentorship Enrollment Confirmed', `
-      <p>Hello <strong>${studentName}</strong>,</p>
-      <p>Your enrollment in <strong>${courseName || 'Trading Mentorship'}</strong> has been confirmed!</p>
-      <div style="margin:24px 0;padding:24px;background:#f0fdf4;border-radius:12px;border:1px solid #86efac;">
+    subject: `📈 Trading Mentorship Confirmed — ${courseName || 'Trading Batch'}`,
+    html: emailTemplate(
+      `Trading Mentorship Confirmed!`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${studentName}</strong> 📈,</p>
+      <p>Your seat in the live <strong>${courseName || 'Trading Mentorship Program'}</strong> has been locked and confirmed!</p>
+
+      <div style="margin:24px 0;padding:24px;background:#f0fdf4;border-radius:18px;border:1px solid #86efac;">
+        <div style="font-size:11px;font-weight:900;letter-spacing:1px;color:#166534;text-transform:uppercase;margin-bottom:12px;">Trading Batch Summary</div>
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
-          <tr><td style="padding:6px 0;color:#64748b;width:40%;">Course</td><td style="font-weight:700;color:#166534;">${courseName || 'Trading Mentorship'}</td></tr>
-          ${sessionDate ? `<tr><td style="padding:6px 0;color:#64748b;">Next Session</td><td style="font-weight:600;">${sessionDate}</td></tr>` : ''}
-          <tr><td style="padding:6px 0;color:#64748b;">Amount Paid</td><td style="font-weight:700;color:#16a34a;">${amount === 0 ? 'FREE' : `₹${Number(amount || 0).toLocaleString('en-IN')}`}</td></tr>
+          <tr><td style="padding:8px 0;color:#64748b;width:35%;">Program</td><td style="font-weight:800;color:#166534;">${courseName || 'Trading Mentorship'}</td></tr>
+          ${sessionDate ? `<tr><td style="padding:8px 0;color:#64748b;">Next Live Market Session</td><td style="font-weight:800;color:#0f172a;">📊 ${sessionDate}</td></tr>` : ''}
+          <tr><td style="padding:8px 0;color:#64748b;">Fee Paid</td><td style="font-weight:900;color:#16a34a;">${amount === 0 ? 'FREE' : `₹${Number(amount || 0).toLocaleString('en-IN')}`}</td></tr>
         </table>
       </div>
-      <p>You will receive session reminders 1 hour before each live class. Stay motivated and trade smart!</p>
-    `, 'My Dashboard', `${SITE_URL}/customer`)
+
+      <p style="font-size:14px;color:#475569;">You will receive live webinar links and market analysis updates before every class.</p>
+      `,
+      'Go to Trading Dashboard',
+      `${SITE_URL}/customer`,
+      '#16a34a',
+      'TRADING MENTORSHIP'
+    )
   }),
 
 }
+
 
 // ── POST /api/notify ──────────────────────────────────────────────────────────
 

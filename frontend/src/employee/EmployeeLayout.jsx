@@ -3,6 +3,8 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
 import NotificationBell from '../components/NotificationBell'
+import { Globe } from 'lucide-react'
+
 
 /* ── Nav Items ────────────────────────────────────────────────────── */
 const navItems = [
@@ -397,17 +399,18 @@ export default function EmployeeLayout() {
               <span className="hidden sm:inline text-xs font-semibold text-slate-600">Profile</span>
             </Link>
 
+            {/* View Site Button */}
             <Link
               to="/"
-              className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-[12px] font-semibold text-slate-600 transition-all hover:bg-slate-50"
-              style={{ background: '#f8fafc', border: '1px solid #e2e8f0' }}
+              className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-black text-slate-700 hover:text-blue-600 hover:bg-blue-50 transition-all shadow-xs"
+              style={{ background: '#ffffff', border: '1px solid #e2e8f0' }}
+              title="View Main Website"
             >
-              <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-              </svg>
+              <Globe className="w-4 h-4 text-blue-600" />
               <span className="hidden sm:inline">View Site</span>
             </Link>
           </div>
+
         </header>
 
         {/* Page content */}

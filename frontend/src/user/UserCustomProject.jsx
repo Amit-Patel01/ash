@@ -1,13 +1,15 @@
-﻿import { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "../context/AuthContext"
 import { useTheme } from "../context/ThemeContext"
 import { api } from "../config/api"
 import { emailNotify } from "../utils/emailNotify"
+import { Wrench, CheckCircle2, Users, Rocket, FileText } from "lucide-react"
 
 export default function UserCustomProject() {
   const { currentUser, userProfile } = useAuth()
   const { theme } = useTheme()
   const isDark = theme === "dark"
+
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -135,18 +137,18 @@ export default function UserCustomProject() {
   const heroSub      = isDark ? "#cbd5e1" : "#475569"
   const heroLabel    = isDark ? "rgba(191,219,254,0.8)" : "#6366f1"
 
-  const cardBg       = isDark ? "rgba(17,24,39,0.55)" : "rgba(255,255,255,0.85)"
-  const cardBorder   = isDark ? "rgba(255,255,255,0.10)" : "rgba(99,102,241,0.15)"
+  const cardBg       = isDark ? "rgba(17,24,39,0.70)" : "#ffffff"
+  const cardBorder   = isDark ? "rgba(255,255,255,0.10)" : "#e2e8f0"
   const cardTitle    = isDark ? "#ffffff" : "#0f172a"
   const cardText     = isDark ? "#94a3b8" : "#475569"
 
-  const labelColor   = isDark ? "#64748b" : "#6366f1"
-  const inputBg      = isDark ? "rgba(255,255,255,0.05)" : "rgba(241,245,249,0.80)"
-  const inputBorder  = isDark ? "rgba(255,255,255,0.10)" : "rgba(99,102,241,0.18)"
+  const labelColor   = isDark ? "#64748b" : "#4f46e5"
+  const inputBg      = isDark ? "rgba(255,255,255,0.05)" : "#ffffff"
+  const inputBorder  = isDark ? "rgba(255,255,255,0.10)" : "#cbd5e1"
   const inputColor   = isDark ? "#ffffff" : "#0f172a"
   const inputPlaceholder = isDark ? "#4b5563" : "#94a3b8"
-  const selectBg     = isDark ? "#111827" : "#f1f5f9"
-  const selectBorder = isDark ? "rgba(255,255,255,0.10)" : "rgba(99,102,241,0.20)"
+  const selectBg     = isDark ? "#111827" : "#ffffff"
+  const selectBorder = isDark ? "rgba(255,255,255,0.10)" : "#cbd5e1"
   const selectColor  = isDark ? "#ffffff" : "#0f172a"
 
   const btnBg        = isDark ? "rgba(96,165,250,0.10)" : "rgba(99,102,241,0.10)"
@@ -155,6 +157,7 @@ export default function UserCustomProject() {
 
   const featureTitle = isDark ? "#ffffff" : "#1e293b"
   const featureText  = isDark ? "#94a3b8" : "#64748b"
+
 
   const sharedInputStyle = {
     background: inputBg,
@@ -210,10 +213,10 @@ export default function UserCustomProject() {
             </p>
           </div>
           <div
-            className="shrink-0 flex items-center justify-center w-16 h-16 rounded-2xl text-3xl"
+            className="shrink-0 flex items-center justify-center w-16 h-16 rounded-2xl"
             style={{ background: "rgba(59,130,246,0.10)", border: "1px solid rgba(59,130,246,0.20)" }}
           >
-            🛠️
+            <Wrench className="w-8 h-8 text-blue-500" />
           </div>
         </div>
       </div>
@@ -236,12 +239,13 @@ export default function UserCustomProject() {
               className="mb-6 p-4 rounded-2xl flex items-center gap-3"
               style={{ background: "rgba(16,185,129,0.10)", border: "1px solid rgba(16,185,129,0.22)", color: "#34d399" }}
             >
-              <span className="text-2xl">✓</span>
+              <CheckCircle2 className="w-6 h-6 shrink-0 text-emerald-500" />
               <div>
                 <p className="font-bold">Request Submitted Successfully!</p>
                 <p className="text-xs mt-0.5" style={{ color: cardText }}>
                   We will review your project requirements and contact you within 24 hours.
                 </p>
+
               </div>
             </div>
           )}
@@ -428,19 +432,25 @@ export default function UserCustomProject() {
 
             <div className="mt-6 space-y-4">
               {[
-                { icon: "🤝", title: "Full Collaboration", desc: "Our developers work hand-in-hand with you, showing updates step-by-step." },
-                { icon: "🚀", title: "Optimized Architecture", desc: "Clean code, high performance, structured databases, and scalable logic." },
-                { icon: "📜", title: "Comprehensive Documentation", desc: "We provide installation manuals, database schemas, and README docs for easy setup." },
-              ].map(item => (
-                <div key={item.title} className="flex gap-4 items-start">
-                  <span className="text-xl">{item.icon}</span>
-                  <div>
-                    <h4 className="text-sm font-semibold" style={{ color: featureTitle }}>{item.title}</h4>
-                    <p className="text-xs mt-1 leading-5" style={{ color: featureText }}>{item.desc}</p>
+                { icon: Users, title: "Full Collaboration", desc: "Our developers work hand-in-hand with you, showing updates step-by-step.", color: "text-blue-500" },
+                { icon: Rocket, title: "Optimized Architecture", desc: "Clean code, high performance, structured databases, and scalable logic.", color: "text-indigo-500" },
+                { icon: FileText, title: "Comprehensive Documentation", desc: "We provide installation manuals, database schemas, and README docs for easy setup.", color: "text-purple-500" },
+              ].map(item => {
+                const IconComp = item.icon
+                return (
+                  <div key={item.title} className="flex gap-4 items-start">
+                    <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 shrink-0">
+                      <IconComp className={`w-5 h-5 ${item.color}`} />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold" style={{ color: featureTitle }}>{item.title}</h4>
+                      <p className="text-xs mt-1 leading-5" style={{ color: featureText }}>{item.desc}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
+
           </section>
 
           <section

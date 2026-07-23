@@ -36,10 +36,12 @@ const PLAN_BLANK = {
   highlighted: false,
   features: '',
   meetingLink: '',
+  weeklySchedule: '',
   meetingDateTime: '',
   meetingTimezone: DEFAULT_TIMEZONE,
   enrollmentDeadline: '',
 }
+
 
 const normalizeText = (value) => String(value || '').trim().toLowerCase()
 const compactText = (value) => normalizeText(value).replace(/[^a-z0-9]/g, '')
@@ -185,12 +187,20 @@ export default function EmployeeCourseManage() {
 
   // ─── Meeting link states ────────────────────────────
   const [meetingLink, setMeetingLink] = useState('')
+  const [weeklySchedule, setWeeklySchedule] = useState('')
   const [editMeet, setEditMeet] = useState(false)
+  const [editingPlanMeetingIdx, setEditingPlanMeetingIdx] = useState(null)
+  const [planMeetingForm, setPlanMeetingForm] = useState({
+    meetingLink: '',
+    weeklySchedule: '',
+    meetingDateTime: '',
+    meetingTimezone: DEFAULT_TIMEZONE
+  })
   const [certificateBusyId, setCertificateBusyId] = useState('')
   const planMeetingStats = useMemo(() => {
     const plans = Array.isArray(selectedCourse?.plans) ? selectedCourse.plans : []
     return {
-      scheduled: plans.filter(plan => plan?.meetingStartsAt).length,
+      scheduled: plans.filter(plan => plan?.meetingStartsAt || plan?.weeklySchedule).length,
       linksReady: plans.filter(plan => plan?.meetingLink).length,
     }
   }, [selectedCourse])
@@ -213,9 +223,12 @@ export default function EmployeeCourseManage() {
   const openCourse = (course) => {
     setSelectedCourse(course)
     setMeetingLink(course.meetingLink || '')
+    setWeeklySchedule(course.weeklySchedule || '')
     setActiveTab('plans')
     setEditMeet(false)
+    setEditingPlanMeetingIdx(null)
   }
+
 
   const openCreateCourse = useCallback(() => {
     if (!canCreateCourses) return
@@ -285,6 +298,7 @@ export default function EmployeeCourseManage() {
       highlighted: plan.highlighted || false,
       features: Array.isArray(plan.features) ? plan.features.join('\n') : '',
       meetingLink: plan.meetingLink || '',
+      weeklySchedule: plan.weeklySchedule || '',
       meetingDateTime: formatDateTimeInput(plan.meetingStartsAt),
       meetingTimezone: plan.meetingTimezone || DEFAULT_TIMEZONE,
       enrollmentDeadline: normalizeEnrollmentDeadline(plan.enrollmentDeadline),
@@ -300,10 +314,12 @@ export default function EmployeeCourseManage() {
       const plans = Array.isArray(selectedCourse.plans) ? [...selectedCourse.plans] : []
       const existingPlan = editingPlanIdx !== null ? plans[editingPlanIdx] : null
       const normalizedMeetingLink = planForm.meetingLink.trim()
+      const normalizedWeeklySchedule = (planForm.weeklySchedule || '').trim()
       const normalizedMeetingStartsAt = planForm.meetingDateTime ? new Date(planForm.meetingDateTime).toISOString() : ''
       const normalizedMeetingTimezone = planForm.meetingTimezone || DEFAULT_TIMEZONE
       const meetingChanged =
         normalizeText(existingPlan?.meetingLink) !== normalizeText(normalizedMeetingLink) ||
+        normalizeText(existingPlan?.weeklySchedule) !== normalizeText(normalizedWeeklySchedule) ||
         (existingPlan?.meetingStartsAt || '') !== normalizedMeetingStartsAt ||
         (existingPlan?.meetingTimezone || DEFAULT_TIMEZONE) !== normalizedMeetingTimezone
       const planData = {
@@ -316,11 +332,13 @@ export default function EmployeeCourseManage() {
         highlighted: planForm.highlighted,
         features: planForm.features.split('\n').map(s => s.trim()).filter(Boolean),
         meetingLink: normalizedMeetingLink,
+        weeklySchedule: normalizedWeeklySchedule,
         meetingStartsAt: normalizedMeetingStartsAt,
         meetingTimezone: normalizedMeetingStartsAt ? normalizedMeetingTimezone : '',
         enrollmentDeadline: normalizeEnrollmentDeadline(planForm.enrollmentDeadline),
       }
       if (meetingChanged) {
+
         planData.meetingReminderSentAt = ''
         planData.meetingLiveSentAt = ''
       }
@@ -401,11 +419,86 @@ export default function EmployeeCourseManage() {
   const saveMeeting = async () => {
     setSaving(true)
     try {
-      await updateCourse(selectedCourse.id, { meetingLink })
-      setSelectedCourse({ ...selectedCourse, meetingLink })
+      await updateCourse(selectedCourse.id, { meetingLink, weeklySchedule })
+      setSelectedCourse({ ...selectedCourse, meetingLink, weeklySchedule })
       setEditMeet(false)
+
+      if (courseEnrollments.length > 0 && (meetingLink || weeklySchedule)) {
+        await Promise.all(
+          courseEnrollments.map(enr => 
+            emailNotify('course_meeting_scheduled', {
+              studentName: enr.userName || enr.userEmail,
+              studentEmail: enr.userEmail,
+              courseTitle: selectedCourse.title,
+              planLabel: 'Course Live Session',
+              weeklySchedule: weeklySchedule || 'Weekly Live Class',
+              meetingLink: meetingLink || '',
+              employeeName: userProfile?.displayName || currentUser?.displayName || selectedCourse.instructor || 'Lead Mentor',
+              reason: 'schedule_updated'
+            })
+          )
+        )
+      }
     } finally { setSaving(false) }
   }
+
+  const openPlanMeetingEditor = (plan, idx) => {
+    setEditingPlanMeetingIdx(idx)
+    setPlanMeetingForm({
+      meetingLink: plan.meetingLink || '',
+      weeklySchedule: plan.weeklySchedule || '',
+      meetingDateTime: formatDateTimeInput(plan.meetingStartsAt),
+      meetingTimezone: plan.meetingTimezone || DEFAULT_TIMEZONE
+    })
+  }
+
+  const savePlanMeetingDirect = async (idx) => {
+    setSaving(true)
+    try {
+      const plans = Array.isArray(selectedCourse.plans) ? [...selectedCourse.plans] : []
+      const existing = plans[idx] || {}
+      const normalizedStartsAt = planMeetingForm.meetingDateTime ? new Date(planMeetingForm.meetingDateTime).toISOString() : ''
+      const updatedPlan = {
+        ...existing,
+        meetingLink: planMeetingForm.meetingLink.trim(),
+        weeklySchedule: planMeetingForm.weeklySchedule.trim(),
+        meetingStartsAt: normalizedStartsAt,
+        meetingTimezone: normalizedStartsAt ? (planMeetingForm.meetingTimezone || DEFAULT_TIMEZONE) : '',
+        meetingReminderSentAt: '',
+        meetingLiveSentAt: ''
+      }
+      plans[idx] = updatedPlan
+      await updateCourse(selectedCourse.id, { plans })
+      setSelectedCourse({ ...selectedCourse, plans })
+      setEditingPlanMeetingIdx(null)
+
+      const recipients = courseEnrollments.filter(enr => 
+        enr.userEmail && matchesPlanEnrollment(enr, updatedPlan, selectedCourse)
+      )
+      if (recipients.length > 0 && (updatedPlan.meetingLink || updatedPlan.weeklySchedule)) {
+        await Promise.all(
+          recipients.map(enr =>
+            emailNotify('course_meeting_scheduled', {
+              studentName: enr.userName || enr.userEmail,
+              studentEmail: enr.userEmail,
+              courseTitle: selectedCourse.title,
+              planLabel: updatedPlan.label || 'Plan Access',
+              weeklySchedule: updatedPlan.weeklySchedule || 'Weekly Live Session',
+              meetingLink: updatedPlan.meetingLink || '',
+              employeeName: userProfile?.displayName || currentUser?.displayName || selectedCourse.instructor || 'Lead Mentor',
+              reason: 'schedule_updated'
+            })
+          )
+        )
+      }
+    } catch (err) {
+      alert(err?.message || 'Failed to save plan meeting details.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+
 
   const courseEnrollments = selectedCourse
     ? enrollments.filter(e => e.status === 'active' && matchesCourseEnrollment(e, selectedCourse))
@@ -606,78 +699,95 @@ export default function EmployeeCourseManage() {
                   </div>
 
                   {!(selectedCourse.plans || []).length ? (
-                    <div className="py-10 text-center">
-                      <div className="flex justify-center mb-2">
-                        <CircleDollarSign className="w-10 h-10 text-slate-400" />
+                    <div className="py-12 text-center bg-slate-50/50 rounded-2xl border border-dashed border-slate-300">
+                      <div className="flex justify-center mb-3">
+                        <CircleDollarSign className="w-12 h-12 text-slate-400" />
                       </div>
-                      <p className="text-slate-400 text-sm mb-1">No plans added yet</p>
-                      <p className="text-xs text-slate-500">Add plans like Basic 1-Month, Standard 3-Months, Premium 6-Months</p>
-                      <button onClick={openAddPlan} className="mt-4 px-4 py-2 bg-blue-600/20 border border-blue-500/30 text-blue-400 text-xs font-bold rounded-xl hover:bg-blue-600/30 transition-all">
-                        Add First Plan
+                      <p className="text-slate-900 font-bold text-base mb-1">No Access Plans Added Yet</p>
+                      <p className="text-xs text-slate-500 max-w-sm mx-auto">Create pricing tiers like Basic 1-Month, Standard 3-Months, or Premium Lifetime Access.</p>
+                      <button onClick={openAddPlan} className="mt-5 px-5 py-2.5 bg-blue-600 text-white text-xs font-extrabold rounded-xl hover:bg-blue-700 transition-all shadow-md shadow-blue-500/20">
+                        + Add First Duration Plan
                       </button>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                       {(selectedCourse.plans || []).map((plan, idx) => (
-                        <div key={idx} className={`relative rounded-2xl border p-5 ${plan.highlighted ? 'border-blue-500/40 bg-blue-500/10' : 'border-slate-200 bg-slate-50'}`}>
+                        <div key={idx} className={`relative rounded-3xl border p-6 flex flex-col justify-between transition-all duration-300 shadow-xs hover:shadow-lg ${plan.highlighted ? 'border-amber-300 bg-amber-50/30 ring-2 ring-amber-500/20' : 'border-slate-200 bg-white'}`}>
                           {plan.highlighted && (
-                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-amber-500 text-slate-900 text-[10px] font-black rounded-full flex items-center gap-1">
-                              <Star className="w-3 h-3 fill-white text-slate-900" /> Most Popular
+                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-black tracking-wider uppercase rounded-full flex items-center gap-1 shadow-md">
+                              <Star className="w-3 h-3 fill-white text-white" /> Most Popular Tier
                             </div>
                           )}
-                          <div className="flex items-start justify-between mb-2">
-                            <div>
-                              <h4 className="font-bold text-slate-900">{plan.label}</h4>
-                              <p className="text-xs text-slate-400">{plan.duration}</p>
-                              {plan.enrollmentDeadline && (
-                                <p className="text-[10px] text-amber-400 mt-1">Deadline: {formatEnrollmentDeadline(plan.enrollmentDeadline)}</p>
-                              )}
-                            </div>
-                            <p className={`text-lg font-black ${plan.highlighted ? 'text-blue-400' : 'text-slate-900'}`}>
-                              {plan.isFree || plan.price === 0 ? 'FREE' : `₹${Number(plan.price).toLocaleString('en-IN')}`}
-                            </p>
-                          </div>
-                          {plan.features?.length > 0 && (
-                            <ul className="space-y-1 mb-3">
-                              {plan.features.slice(0, 3).map((f, fi) => (
-                                <li key={fi} className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                                  <Check className="w-3 h-3 text-emerald-400 flex-shrink-0" /> {f}
-                                </li>
-                              ))}
-                              {plan.features.length > 3 && <li className="text-[10px] text-slate-500">+{plan.features.length - 3} more</li>}
-                            </ul>
-                          )}
-                          <div className="rounded-xl border border-slate-200 bg-black/20 p-3 mb-3">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Plan Meeting</p>
-                            <p className="text-[11px] text-slate-900">{formatMeetingPreview(plan.meetingStartsAt, plan.meetingTimezone)}</p>
-                            <div className="flex flex-wrap items-center gap-2 mt-2">
-                              <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${plan.meetingLink ? 'bg-blue-500/10 border-blue-500/20 text-blue-300' : 'bg-slate-100 border-slate-300 text-slate-400'}`}>
-                                {plan.meetingLink ? 'Join link ready' : 'Join link pending'}
-                              </span>
-                              {plan.meetingReminderSentAt && (
-                                <span className="px-2 py-0.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-[10px] font-semibold text-emerald-300">
-                                  Reminder sent
+                          
+                          <div>
+                            <div className="flex items-start justify-between gap-2 mb-3">
+                              <div>
+                                <h4 className="font-extrabold text-slate-900 text-base">{plan.label}</h4>
+                                <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-600">
+                                  ⏱️ {plan.duration}
                                 </span>
+                              </div>
+                              <div className="text-right">
+                                <p className={`text-xl font-black ${plan.highlighted ? 'text-amber-600' : 'text-blue-600'}`}>
+                                  {plan.isFree || plan.price === 0 ? 'FREE' : `₹${Number(plan.price).toLocaleString('en-IN')}`}
+                                </p>
+                              </div>
+                            </div>
+
+                            {plan.enrollmentDeadline && (
+                              <p className="text-[10px] font-bold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-100 mb-3">
+                                ⏳ Deadline: {formatEnrollmentDeadline(plan.enrollmentDeadline)}
+                              </p>
+                            )}
+
+                            {plan.features?.length > 0 && (
+                              <ul className="space-y-1.5 mb-4 border-t border-slate-100 pt-3">
+                                {plan.features.slice(0, 4).map((f, fi) => (
+                                  <li key={fi} className="flex items-center gap-2 text-xs font-semibold text-slate-700">
+                                    <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 stroke-[3]" /> <span className="truncate">{f}</span>
+                                  </li>
+                                ))}
+                                {plan.features.length > 4 && <li className="text-[10px] font-bold text-slate-400 pl-5">+{plan.features.length - 4} more benefits</li>}
+                              </ul>
+                            )}
+
+                            {/* Session Schedule Badge */}
+                            <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-3 mb-4 space-y-1">
+                              <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">Live Session Status</p>
+                              {plan.weeklySchedule ? (
+                                <p className="text-xs font-extrabold text-emerald-600 flex items-center gap-1">
+                                  📅 {plan.weeklySchedule}
+                                </p>
+                              ) : plan.meetingStartsAt ? (
+                                <p className="text-xs font-bold text-slate-800">{formatMeetingPreview(plan.meetingStartsAt, plan.meetingTimezone)}</p>
+                              ) : (
+                                <p className="text-[11px] text-slate-400 italic">No schedule set</p>
                               )}
-                              {plan.meetingLiveSentAt && (
-                                <span className="px-2 py-0.5 rounded-full border border-rose-500/20 bg-rose-500/10 text-[10px] font-semibold text-rose-300">
-                                  Live mail sent
+                              
+                              <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                                <span className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold ${plan.meetingLink ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-slate-100 text-slate-500'}`}>
+                                  {plan.meetingLink ? '✓ Meeting Link Set' : 'No Link Set'}
                                 </span>
-                              )}
+                              </div>
                             </div>
                           </div>
-                          <div className="flex gap-1 mt-auto">
-                            <button onClick={() => movePlan(idx, -1)} disabled={idx === 0} className="p-1.5 rounded-lg bg-slate-100 text-slate-400 hover:bg-slate-200 disabled:opacity-30 text-xs">↑</button>
-                            <button onClick={() => movePlan(idx, 1)} disabled={idx === (selectedCourse.plans || []).length - 1} className="p-1.5 rounded-lg bg-slate-100 text-slate-400 hover:bg-slate-200 disabled:opacity-30 text-xs">↓</button>
-                            <button onClick={() => openEditPlan(plan, idx)} className="flex-1 py-1.5 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 text-xs font-bold transition-colors">Edit</button>
-                            <button onClick={() => deletePlan(idx)} className="px-2.5 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs transition-colors flex items-center justify-center">
-                              <X className="w-3 h-3" />
+
+                          {/* Plan Actions */}
+                          <div className="flex items-center gap-1.5 pt-2 border-t border-slate-100 mt-auto">
+                            <button onClick={() => movePlan(idx, -1)} disabled={idx === 0} title="Move Up" className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 disabled:opacity-30 text-xs font-bold">↑</button>
+                            <button onClick={() => movePlan(idx, 1)} disabled={idx === (selectedCourse.plans || []).length - 1} title="Move Down" className="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 disabled:opacity-30 text-xs font-bold">↓</button>
+                            <button onClick={() => openEditPlan(plan, idx)} className="flex-1 py-2 px-3 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 text-xs font-black transition-colors">
+                              Edit Plan
+                            </button>
+                            <button onClick={() => deletePlan(idx)} title="Delete Plan" className="p-2 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 text-xs transition-colors">
+                              <X className="w-4 h-4" />
                             </button>
                           </div>
                         </div>
                       ))}
                     </div>
                   )}
+
                 </div>
               )}
 
@@ -713,48 +823,245 @@ export default function EmployeeCourseManage() {
 
               {/* ─── MEETING LINK TAB ───────────────────────────── */}
               {activeTab === 'meeting' && (
-                <div className="bg-white/60 border border-slate-200 rounded-2xl p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900">Default Meeting / Live Session Link</h3>
-                      <p className="text-[11px] text-slate-400 mt-1">
-                        {(selectedCourse.plans || []).length > 1
-                          ? 'For multi-plan courses, students only see the meeting link for the plan they enrolled in. This default link is an optional fallback.'
-                          : 'For single-plan courses, this link may be shown directly to students.'}
-                      </p>
+                <div className="bg-white/60 border border-slate-200 rounded-2xl p-5 space-y-6">
+                  {/* Course Default Meeting & Weekly Schedule Card */}
+                  <div className="p-4 rounded-xl border border-slate-200 bg-white/80 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-sm font-extrabold text-slate-900">Default Meeting & Weekly Schedule</h3>
+                        <p className="text-[11px] text-slate-500 mt-0.5">
+                          Set a default live session link and weekly schedule for students.
+                        </p>
+                      </div>
+                      <button 
+                        onClick={() => setEditMeet(!editMeet)} 
+                        className="px-3 py-1 rounded-xl bg-blue-50 border border-blue-200 text-xs font-bold text-blue-600 hover:bg-blue-100 transition-all"
+                      >
+                        {editMeet ? 'Cancel' : 'Edit Meeting & Schedule'}
+                      </button>
                     </div>
-                    <button onClick={() => setEditMeet(!editMeet)} className="text-xs font-bold text-blue-400 hover:text-blue-300">{editMeet ? 'Cancel' : 'Edit'}</button>
-                  </div>
-                  {editMeet ? (
-                    <div className="flex gap-2">
-                      <input value={meetingLink} onChange={e => setMeetingLink(e.target.value)} placeholder="https://meet.google.com/... or Zoom link"
-                        className="flex-1 px-3 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-blue-500/50" />
-                      <button onClick={saveMeeting} disabled={saving} className="px-4 py-2.5 bg-blue-600 text-slate-900 text-sm font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50 transition-all">Save</button>
-                    </div>
-                  ) : selectedCourse.meetingLink ? (
-                    <a href={selectedCourse.meetingLink} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-400 underline break-all">{selectedCourse.meetingLink}</a>
-                  ) : (
-                    <p className="text-sm text-slate-500 italic">No meeting link set. Click Edit to add.</p>
-                  )}
-                  {!!selectedCourse.plans?.length && (
-                    <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {selectedCourse.plans.map((plan, idx) => (
-                        <div key={`${plan.id || plan.label || idx}-meeting`} className="rounded-xl border border-slate-200 bg-black/20 p-3">
-                          <div className="flex items-center justify-between gap-3">
-                            <div>
-                              <p className="text-sm font-semibold text-slate-900">{plan.label}</p>
-                              <p className="text-[11px] text-slate-400">{formatMeetingPreview(plan.meetingStartsAt, plan.meetingTimezone)}</p>
-                            </div>
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${plan.meetingLink ? 'border-blue-500/20 bg-blue-500/10 text-blue-300' : 'border-slate-300 bg-slate-100 text-slate-400'}`}>
-                              {plan.meetingLink ? 'Plan link ready' : 'No plan link set'}
-                            </span>
-                          </div>
+
+                    {editMeet ? (
+                      <div className="space-y-3 pt-2">
+                        <div>
+                          <label className="text-[11px] font-bold text-slate-700 block mb-1">Live Meeting URL</label>
+                          <input 
+                            value={meetingLink} 
+                            onChange={e => setMeetingLink(e.target.value)} 
+                            placeholder="https://meet.google.com/... or Zoom link"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500" 
+                          />
                         </div>
-                      ))}
+
+                        <div>
+                          <label className="text-[11px] font-bold text-slate-700 block mb-1">Weekly Live Schedule (Days & Time)</label>
+                          <div className="flex gap-2 flex-wrap mb-2">
+                            {[
+                              'Sunday to Monday Live Session @ 7:00 PM',
+                              'Every Sunday @ 10:00 AM',
+                              'Every Monday @ 6:00 PM',
+                              'Every Mon, Wed, Fri @ 7:00 PM',
+                              'Every Tue & Thu @ 6:00 PM',
+                              'Weekend Special (Sat & Sun @ 11:00 AM)',
+                              'Daily Live Class (Mon to Sat @ 8:00 PM)'
+                            ].map(preset => (
+                              <button
+                                key={preset}
+                                type="button"
+                                onClick={() => setWeeklySchedule(preset)}
+                                className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-blue-50 hover:text-blue-600 border border-slate-200 text-[10px] font-semibold transition-all"
+                              >
+                                + {preset}
+                              </button>
+                            ))}
+                          </div>
+
+                          <input 
+                            value={weeklySchedule} 
+                            onChange={e => setWeeklySchedule(e.target.value)} 
+                            placeholder="e.g. Every Mon & Wed @ 7 PM"
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500" 
+                          />
+                        </div>
+
+                        <div className="flex justify-end">
+                          <button 
+                            onClick={saveMeeting} 
+                            disabled={saving} 
+                            className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50 transition-all shadow-md shadow-blue-500/20"
+                          >
+                            Save Meeting & Schedule
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-1.5 pt-1">
+                        {selectedCourse.meetingLink ? (
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-slate-500">Meeting Link:</span>
+                            <a href={selectedCourse.meetingLink} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 font-bold underline break-all">
+                              {selectedCourse.meetingLink}
+                            </a>
+                          </div>
+                        ) : (
+                          <p className="text-xs text-slate-400 italic">No default meeting link set.</p>
+                        )}
+
+                        {selectedCourse.weeklySchedule ? (
+                          <p className="text-xs font-bold text-emerald-600 flex items-center gap-1.5">
+                            📅 Weekly Schedule: <span className="text-slate-800 font-semibold">{selectedCourse.weeklySchedule}</span>
+                          </p>
+                        ) : (
+                          <p className="text-[11px] text-slate-400">No weekly schedule configured.</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Plan-specific Live Meeting & Weekly Schedule List */}
+                  {!!selectedCourse.plans?.length && (
+                    <div className="space-y-3">
+                      <h4 className="text-xs font-black uppercase text-slate-500 tracking-wider">Per-Plan Meeting Links & Weekly Schedules</h4>
+                      <div className="grid grid-cols-1 gap-3">
+                        {selectedCourse.plans.map((plan, idx) => {
+                          const isEditingThisPlan = editingPlanMeetingIdx === idx
+
+                          return (
+                            <div key={`${plan.id || plan.label || idx}-meeting`} className="rounded-2xl border border-slate-200 bg-white p-4 space-y-3 shadow-xs">
+                              <div className="flex items-center justify-between gap-3">
+                                <div>
+                                  <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+                                    Plan #{idx + 1}
+                                  </span>
+                                  <h4 className="text-sm font-bold text-slate-900 mt-1">{plan.label}</h4>
+                                </div>
+                                <button
+                                  onClick={() => {
+                                    if (isEditingThisPlan) {
+                                      setEditingPlanMeetingIdx(null)
+                                    } else {
+                                      openPlanMeetingEditor(plan, idx)
+                                    }
+                                  }}
+                                  className="px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-xs font-bold text-slate-700 transition-colors"
+                                >
+                                  {isEditingThisPlan ? 'Cancel' : 'Edit Plan Link & Schedule'}
+                                </button>
+                              </div>
+
+                              {isEditingThisPlan ? (
+                                <div className="space-y-3 pt-2 border-t border-slate-100">
+                                  <div>
+                                    <label className="text-[11px] font-bold text-slate-700 block mb-1">Plan Meeting Link</label>
+                                    <input 
+                                      value={planMeetingForm.meetingLink}
+                                      onChange={e => setPlanMeetingForm({ ...planMeetingForm, meetingLink: e.target.value })}
+                                      placeholder="https://meet.google.com/... or Zoom link"
+                                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="text-[11px] font-bold text-slate-700 block mb-1">Weekly Live Session Schedule</label>
+                                    <div className="flex gap-2 flex-wrap mb-2">
+                                      {[
+                                        'Every Mon, Wed, Fri @ 7:00 PM',
+                                        'Every Tue & Thu @ 6:00 PM',
+                                        'Weekend Special (Sat & Sun @ 11:00 AM)',
+                                        'Daily Live Class @ 8:00 PM'
+                                      ].map(preset => (
+                                        <button
+                                          key={preset}
+                                          type="button"
+                                          onClick={() => setPlanMeetingForm({ ...planMeetingForm, weeklySchedule: preset })}
+                                          className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-blue-50 hover:text-blue-600 border border-slate-200 text-[10px] font-medium transition-all"
+                                        >
+                                          + {preset}
+                                        </button>
+                                      ))}
+                                    </div>
+                                    <input 
+                                      value={planMeetingForm.weeklySchedule}
+                                      onChange={e => setPlanMeetingForm({ ...planMeetingForm, weeklySchedule: e.target.value })}
+                                      placeholder="e.g. Every Mon & Wed @ 7:00 PM"
+                                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                                    />
+                                  </div>
+
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div>
+                                      <label className="text-[11px] font-bold text-slate-700 block mb-1">Specific Start Date/Time (Optional)</label>
+                                      <input 
+                                        type="datetime-local"
+                                        value={planMeetingForm.meetingDateTime}
+                                        onChange={e => setPlanMeetingForm({ ...planMeetingForm, meetingDateTime: e.target.value })}
+                                        className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                                      />
+                                    </div>
+                                    <div>
+                                      <label className="text-[11px] font-bold text-slate-700 block mb-1">Timezone</label>
+                                      <input 
+                                        value={planMeetingForm.meetingTimezone}
+                                        onChange={e => setPlanMeetingForm({ ...planMeetingForm, meetingTimezone: e.target.value })}
+                                        placeholder="Asia/Kolkata"
+                                        className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="flex justify-end gap-2 pt-1">
+                                    <button
+                                      onClick={() => setEditingPlanMeetingIdx(null)}
+                                      className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-100"
+                                    >
+                                      Cancel
+                                    </button>
+                                    <button
+                                      onClick={() => savePlanMeetingDirect(idx)}
+                                      disabled={saving}
+                                      className="px-4 py-1.5 rounded-xl bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 disabled:opacity-50 transition-all shadow-md shadow-blue-500/20"
+                                    >
+                                      Save Plan Meeting & Schedule
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="space-y-1 text-xs">
+                                  {plan.meetingLink ? (
+                                    <p className="text-slate-600 flex items-center gap-1.5">
+                                      <span className="font-bold text-slate-900">Meeting Link:</span>
+                                      <a href={plan.meetingLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 font-bold underline truncate">
+                                        {plan.meetingLink}
+                                      </a>
+                                    </p>
+                                  ) : (
+                                    <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold border border-slate-200 bg-slate-100 text-slate-500">
+                                      No plan link set
+                                    </span>
+                                  )}
+
+                                  {plan.weeklySchedule && (
+                                    <p className="font-bold text-emerald-600 flex items-center gap-1 mt-1">
+                                      📅 Weekly Schedule: <span className="text-slate-800 font-medium">{plan.weeklySchedule}</span>
+                                    </p>
+                                  )}
+
+                                  {plan.meetingStartsAt && (
+                                    <p className="text-[11px] text-slate-500">
+                                      🕒 Next Class: {formatMeetingPreview(plan.meetingStartsAt, plan.meetingTimezone)}
+                                    </p>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
                     </div>
                   )}
                 </div>
               )}
+
 
               {/* ─── STUDENTS TAB ───────────────────────────────── */}
               {activeTab === 'students' && (
@@ -827,113 +1134,257 @@ export default function EmployeeCourseManage() {
 
       {/* ─── PLAN MODAL ──────────────────────────────────────── */}
       {showPlanModal && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-10 overflow-y-auto">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowPlanModal(false)} />
-          <div className="relative bg-white border border-slate-300 rounded-2xl w-full max-w-md shadow-2xl mb-10">
-            <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-900">{editingPlanIdx !== null ? 'Edit Plan' : 'Add Duration Plan'}</h2>
-              <button onClick={() => setShowPlanModal(false)} className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-200">
-                <X className="w-4 h-4" />
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-8 overflow-y-auto">
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={() => setShowPlanModal(false)} />
+          <div className="relative bg-white border border-slate-200 rounded-3xl w-full max-w-xl shadow-2xl mb-10 overflow-hidden">
+            
+            {/* Modal Header */}
+            <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/60 flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+                  <CircleDollarSign className="w-5 h-5 text-blue-600" />
+                  {editingPlanIdx !== null ? 'Edit Access Plan' : 'Add Duration Access Plan'}
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">Configure duration, pricing, live session links, and student features</p>
+              </div>
+              <button onClick={() => setShowPlanModal(false)} className="p-2 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-200/60 transition-colors">
+                <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-6 space-y-4">
-              {/* Label */}
-              <div>
-                <label className="label">Plan Name *</label>
-                <input value={planForm.label} onChange={e => setPlanForm({...planForm, label: e.target.value})} placeholder="e.g. Basic / Standard / Premium" className="input" />
-              </div>
-              {/* Duration */}
-              <div>
-                <label className="label">Duration *</label>
-                <input value={planForm.duration} onChange={e => setPlanForm({...planForm, duration: e.target.value})} placeholder="e.g. 1 Month / 3 Months / 6 Months" className="input" />
-              </div>
-              {/* Price */}
-              <div className="flex items-center gap-4">
-                <div className="flex-1">
-                  <label className="label">Price (₹)</label>
-                  <input type="number" value={planForm.price} onChange={e => setPlanForm({...planForm, price: e.target.value})} disabled={planForm.isFree} placeholder="4999" className="input disabled:opacity-40" />
-                </div>
-                <div className="flex items-center gap-2 mt-5">
-                  <button type="button" onClick={() => setPlanForm({...planForm, isFree: !planForm.isFree})}
-                    className={`w-10 h-5 rounded-full relative transition-all ${planForm.isFree ? 'bg-emerald-500' : 'bg-slate-200'}`}>
-                    <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${planForm.isFree ? 'left-5' : 'left-0.5'}`} />
-                  </button>
-                  <span className="text-sm text-slate-500">Free</span>
-                </div>
-              </div>
-              {/* Features */}
-              <div>
-                <label className="label">Features (one per line)</label>
-                <textarea value={planForm.features} onChange={e => setPlanForm({...planForm, features: e.target.value})} rows={5}
-                  placeholder="30 Recorded Videos&#10;Weekly Live Sessions&#10;1-on-1 Doubt Clearing&#10;Certificate on Completion&#10;WhatsApp Support Group"
-                  className="input resize-none font-mono text-xs" />
-              </div>
-              <div className="grid grid-cols-1 gap-4">
+
+            <div className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
+              
+              {/* Plan Name & Duration */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="label">Plan Meeting Link</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1.5">Plan Name *</label>
+                  <div className="flex gap-1.5 flex-wrap mb-1.5">
+                    {['Basic Access', 'Standard Plan', 'Pro Mentorship', 'Lifetime Access'].map(preset => (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => setPlanForm({ ...planForm, label: preset })}
+                        className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-blue-50 text-[10px] font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+                      >
+                        {preset}
+                      </button>
+                    ))}
+                  </div>
+                  <input 
+                    value={planForm.label} 
+                    onChange={e => setPlanForm({...planForm, label: e.target.value})} 
+                    placeholder="e.g. Standard 3-Months" 
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-bold focus:outline-none focus:border-blue-500" 
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1.5">Duration *</label>
+                  <div className="flex gap-1.5 flex-wrap mb-1.5">
+                    {['1 Month', '3 Months', '6 Months', 'Lifetime'].map(preset => (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => setPlanForm({ ...planForm, duration: preset })}
+                        className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-blue-50 text-[10px] font-semibold text-slate-600 hover:text-blue-600 transition-colors"
+                      >
+                        {preset}
+                      </button>
+                    ))}
+                  </div>
+                  <input 
+                    value={planForm.duration} 
+                    onChange={e => setPlanForm({...planForm, duration: e.target.value})} 
+                    placeholder="e.g. 3 Months Full Access" 
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 font-bold focus:outline-none focus:border-blue-500" 
+                  />
+                </div>
+              </div>
+
+              {/* Pricing & Free Plan Toggle */}
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-4">
+                <div className="flex-1">
+                  <label className="text-xs font-bold text-slate-700 block mb-1">Price (₹ INR)</label>
+                  <input 
+                    type="number" 
+                    value={planForm.price} 
+                    onChange={e => setPlanForm({...planForm, price: e.target.value})} 
+                    disabled={planForm.isFree} 
+                    placeholder="4999" 
+                    className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-sm font-black text-slate-900 focus:outline-none focus:border-blue-500 disabled:opacity-40" 
+                  />
+                </div>
+
+                <div className="flex items-center gap-3 shrink-0 pt-4">
+                  <span className="text-xs font-extrabold text-slate-700">Free Course Access</span>
+                  <button 
+                    type="button" 
+                    onClick={() => setPlanForm({...planForm, isFree: !planForm.isFree})}
+                    className={`w-12 h-6 rounded-full relative transition-all ${planForm.isFree ? 'bg-emerald-500' : 'bg-slate-300'}`}
+                  >
+                    <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${planForm.isFree ? 'left-7' : 'left-1'}`} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Highlight as Most Popular */}
+              <div className="flex items-center justify-between p-4 rounded-2xl bg-amber-50/50 border border-amber-200">
+                <div>
+                  <p className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
+                    <Star className="w-4 h-4 text-amber-500 fill-amber-500" /> Highlight as "Most Popular"
+                  </p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">Shows a golden recommended tag on the course sales card</p>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={() => setPlanForm({...planForm, highlighted: !planForm.highlighted})}
+                  className={`w-12 h-6 rounded-full relative transition-all ${planForm.highlighted ? 'bg-amber-500' : 'bg-slate-300'}`}
+                >
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${planForm.highlighted ? 'left-7' : 'left-1'}`} />
+                </button>
+              </div>
+
+              {/* Features (One per line + Quick Chips) */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold text-slate-700">Included Features (One per line)</label>
+                  <span className="text-[10px] text-slate-400">Click chips to quick add</span>
+                </div>
+
+                <div className="flex gap-1.5 flex-wrap mb-2">
+                  {[
+                    '30 Recorded Video Modules',
+                    'Weekly Live Session & Doubt Clearing',
+                    '1-on-1 Mentor Guidance',
+                    'Verified Certificate on Completion',
+                    'WhatsApp Premium Support Group'
+                  ].map(featureText => (
+                    <button
+                      key={featureText}
+                      type="button"
+                      onClick={() => {
+                        const current = planForm.features.trim()
+                        if (current.includes(featureText)) return
+                        setPlanForm({
+                          ...planForm,
+                          features: current ? `${current}\n${featureText}` : featureText
+                        })
+                      }}
+                      className="px-2 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[10px] font-semibold transition-colors"
+                    >
+                      + {featureText}
+                    </button>
+                  ))}
+                </div>
+
+                <textarea 
+                  value={planForm.features} 
+                  onChange={e => setPlanForm({...planForm, features: e.target.value})} 
+                  rows={4}
+                  placeholder="30 Recorded Videos&#10;Weekly Live Sessions&#10;1-on-1 Doubt Clearing&#10;Certificate on Completion"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:border-blue-500 resize-none font-mono" 
+                />
+              </div>
+
+              {/* Live Session Link & Weekly Schedule Controls */}
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                <h4 className="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Live Meeting & Weekly Schedule</h4>
+
+                <div>
+                  <label className="text-[11px] font-bold text-slate-700 block mb-1">Plan Live Meeting URL</label>
                   <input
                     value={planForm.meetingLink}
                     onChange={e => setPlanForm({ ...planForm, meetingLink: e.target.value })}
                     placeholder="https://meet.google.com/... or Zoom link"
-                    className="input"
+                    className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
                   />
-                  <p className="text-[10px] text-slate-400 mt-1">Students on this plan will join this link directly from their student panel.</p>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-[1.6fr,1fr] gap-3">
+
+                <div>
+                  <label className="text-[11px] font-bold text-slate-700 block mb-1">Weekly Live Session Schedule</label>
+                  <div className="flex gap-1.5 flex-wrap mb-2">
+                    {[
+                      'Sunday to Monday Live Session @ 7:00 PM',
+                      'Every Sunday @ 10:00 AM',
+                      'Every Monday @ 6:00 PM',
+                      'Every Mon, Wed, Fri @ 7:00 PM',
+                      'Weekend Special (Sat & Sun @ 11:00 AM)'
+                    ].map(preset => (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => setPlanForm({ ...planForm, weeklySchedule: preset })}
+                        className="px-2 py-0.5 rounded-md bg-white hover:bg-blue-50 hover:text-blue-600 border border-slate-200 text-[10px] font-medium transition-all"
+                      >
+                        + {preset}
+                      </button>
+                    ))}
+                  </div>
+                  <input
+                    value={planForm.weeklySchedule}
+                    onChange={e => setPlanForm({ ...planForm, weeklySchedule: e.target.value })}
+                    placeholder="e.g. Sunday to Monday Live Session @ 7:00 PM"
+                    className="w-full px-3.5 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-[1.6fr,1fr] gap-3 pt-1">
                   <div>
-                    <label className="label">Meeting Start Time</label>
+                    <label className="text-[11px] font-bold text-slate-700 block mb-1">Single Session Start Date/Time</label>
                     <input
                       type="datetime-local"
                       value={planForm.meetingDateTime}
                       onChange={e => setPlanForm({ ...planForm, meetingDateTime: e.target.value })}
-                      className="input"
+                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
                     />
-                    <p className="text-[10px] text-slate-400 mt-1">Reminder mail goes 60 minutes before, and another mail goes when the meeting starts.</p>
                   </div>
                   <div>
-                    <label className="label">Timezone</label>
+                    <label className="text-[11px] font-bold text-slate-700 block mb-1">Timezone</label>
                     <input
                       value={planForm.meetingTimezone}
                       onChange={e => setPlanForm({ ...planForm, meetingTimezone: e.target.value })}
                       placeholder="Asia/Kolkata"
-                      className="input"
+                      className="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
                     />
                   </div>
                 </div>
-                <div>
-                  <label className="label">Enrollment Deadline</label>
-                  <input
-                    type="date"
-                    value={planForm.enrollmentDeadline}
-                    onChange={e => setPlanForm({ ...planForm, enrollmentDeadline: e.target.value })}
-                    className="input"
-                  />
-                  <p className="text-[10px] text-slate-400 mt-1">Leave empty to use course deadline. Enrollment for this plan will close after this date.</p>
-                </div>
               </div>
-              {/* Highlighted */}
-              <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
-                <div>
-                  <p className="text-sm font-semibold text-slate-900">Mark as "Most Popular"</p>
-                  <p className="text-[10px] text-slate-400">Shows a highlighted badge on this plan</p>
-                </div>
-                <button type="button" onClick={() => setPlanForm({...planForm, highlighted: !planForm.highlighted})}
-                  className={`w-11 h-6 rounded-full relative transition-all ${planForm.highlighted ? 'bg-amber-500' : 'bg-slate-200'}`}>
-                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${planForm.highlighted ? 'left-6' : 'left-1'}`} />
-                </button>
+
+              {/* Enrollment Deadline */}
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Plan Enrollment Deadline</label>
+                <input
+                  type="date"
+                  value={planForm.enrollmentDeadline}
+                  onChange={e => setPlanForm({ ...planForm, enrollmentDeadline: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-blue-500"
+                />
+                <p className="text-[10px] text-slate-400 mt-1">Enrollment for this specific plan closes automatically after this date.</p>
               </div>
-              {/* Actions */}
-              <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowPlanModal(false)} className="flex-1 px-4 py-3 bg-slate-100 border border-slate-300 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-200 transition-all">Cancel</button>
-                <button onClick={savePlan} disabled={saving || !planForm.label || !planForm.duration}
-                  className="flex-[2] px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-sm font-bold text-slate-900 hover:shadow-lg disabled:opacity-50 transition-all">
-                  {saving ? 'Saving...' : editingPlanIdx !== null ? 'Update Plan' : 'Add Plan'}
-                </button>
-              </div>
+
+            </div>
+
+            {/* Modal Footer Actions */}
+            <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/60 flex items-center justify-end gap-3">
+              <button 
+                type="button" 
+                onClick={() => setShowPlanModal(false)} 
+                className="px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-extrabold text-slate-600 hover:bg-slate-100 transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={savePlan} 
+                disabled={saving || !planForm.label || !planForm.duration}
+                className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl text-xs font-black shadow-md shadow-blue-500/20 hover:opacity-90 disabled:opacity-50 transition-all"
+              >
+                {saving ? 'Saving...' : editingPlanIdx !== null ? 'Update Access Plan' : 'Save Access Plan'}
+              </button>
             </div>
           </div>
         </div>
       )}
+
 
       {showCourseModal && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-10 overflow-y-auto">

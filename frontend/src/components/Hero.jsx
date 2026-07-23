@@ -73,7 +73,7 @@ const TechIllustration = () => {
   const isDark = theme === 'dark'
 
   return (
-    <div className="relative w-full max-w-lg mx-auto aspect-square flex items-center justify-center select-none">
+    <div className="relative w-full max-w-lg mx-auto h-64 sm:h-80 lg:aspect-square flex items-center justify-center select-none">
       {/* Glow Orbs */}
       <motion.div 
         animate={{ scale: [1, 1.12, 1], opacity: [0.25, 0.4, 0.25] }}
@@ -460,14 +460,15 @@ const Hero = () => {
         )}
       </AnimatePresence>
 
-      {/* ── NEW: Floating WhatsApp / Contact button (pure UI, no assets) ── */}
+      {/* ── Floating Contact button ── */}
       <a
         href="/contact"
         aria-label="Contact us"
-        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 transition-all hover:scale-105 active:scale-95"
+        className="fixed bottom-24 right-6 sm:bottom-6 sm:left-6 z-40 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30 transition-all hover:scale-105 active:scale-95"
       >
-        <MessageSquare className="w-6 h-6" />
+        <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6" />
       </a>
+
 
       <div className={`w-full min-h-screen relative overflow-hidden transition-colors duration-300 ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
         
@@ -578,7 +579,7 @@ const Hero = () => {
               {statsList.map((stat) => {
                 const IconComp = stat.icon
                 return (
-                  <div key={stat.label} className="p-6 rounded-2xl border bg-white dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between aspect-video">
+                  <div key={stat.label} className="p-4 sm:p-6 rounded-2xl border bg-white dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between min-h-[130px]">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${stat.color} bg-current/10`}>
                       <IconComp className={`w-5 h-5 ${stat.color}`} />
                     </div>
@@ -868,7 +869,7 @@ const Hero = () => {
               viewport={{ once: true }}
               className="lg:col-span-6"
             >
-              <div className="p-8 sm:p-10 rounded-3xl border bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 shadow-xl relative overflow-hidden flex flex-col justify-between aspect-[1.4] text-center max-w-lg mx-auto">
+              <div className="p-5 sm:p-8 rounded-3xl border bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[280px] text-center max-w-lg mx-auto">
                 {/* Vintage Border styling */}
                 <div className="absolute inset-4 border border-indigo-500/20 pointer-events-none" />
                 

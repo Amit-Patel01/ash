@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { Search } from 'lucide-react'
+import { Search, Globe } from 'lucide-react'
+
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
 
@@ -525,14 +526,14 @@ export default function AdminLayout({ onLogout }) {
             {/* View Site */}
             <Link
               to="/"
-              className="flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-sm text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 bg-white text-slate-700 hover:text-blue-600 hover:bg-blue-50 transition-all shadow-xs"
+              title="View Main Website"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-              </svg>
-              <span className="hidden xs:inline">View Site</span>
+              <Globe className="w-4 h-4 text-blue-600" />
+              <span className="text-xs font-black hidden xs:inline">View Site</span>
             </Link>
           </div>
+
         </header>
 
         {/* Page content */}

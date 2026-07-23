@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
@@ -11,13 +11,19 @@ import {
   Play, 
   MessageSquare,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Code2,
+  FileText,
+  ShieldCheck,
+  MoreHorizontal,
+  Compass
 } from 'lucide-react'
 
 export default function UserOverview() {
   const { currentUser, userProfile } = useAuth()
   const { orders, getUserEnrollments, courses, certificates } = useStore()
   const { theme } = useTheme()
+  const navigate = useNavigate()
   const isDark = theme === 'dark'
 
   // Load lesson progress count
@@ -75,243 +81,229 @@ export default function UserOverview() {
     return orders.filter(o => o.customer_email === currentUser?.email || o.customer_uid === currentUser?.uid)
   }, [orders, currentUser])
 
-  const totalSpent = myOrders.filter(o => o.status === 'completed').reduce((sum, o) => sum + Number(o.amount || 0), 0)
-  const pendingOrders = myOrders.filter(o => o.status === 'pending').length
-  const recentOrders = myOrders.slice(0, 3)
-
-  const userName = userProfile?.displayName || currentUser?.displayName || 'Student'
+  const userName = userProfile?.displayName || currentUser?.displayName || 'Amit'
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-16">
       
-      {/* Premium Welcome Hero Card */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-650 p-8 sm:p-10 border border-white/10 shadow-xl">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -mr-20 -mt-20 blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* ── 1. Hero Banner (Lavendar / White Gradient Card) ─────────────── */}
+      <div className="relative overflow-hidden rounded-[32px] border border-indigo-100/90 dark:border-slate-800 bg-gradient-to-r from-[#eef2ff] via-[#f5f3ff] to-[#faf5ff] dark:from-slate-900 dark:to-indigo-950/40 p-8 sm:p-12 shadow-sm">
+        {/* Background decorative dots */}
+        <div className="absolute top-4 right-1/3 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none" />
         
-        <div className="relative z-10 max-w-xl space-y-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-blue-200 border border-white/10 uppercase tracking-wider backdrop-blur-md">
-            <Sparkles className="w-3.5 h-3.5" /> Student Portal
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+          <div className="lg:col-span-7 space-y-4">
+            {/* Pill Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] font-black bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 shadow-xs uppercase tracking-widest">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> SolutionHub Workspace
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+              Welcome back, <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">{userName}</span>
+            </h1>
+
+            {/* Paragraph */}
+            <p className="text-sm sm:text-base font-medium text-slate-500 dark:text-slate-400 max-w-lg leading-relaxed">
+              Manage your learning journey, access verified documentation, track live mentorship sessions, and request custom software build solutions.
+            </p>
+
+            {/* Actions */}
+            <div className="pt-2 flex items-center gap-3.5 flex-wrap">
+              <Link 
+                to="/user/my-courses" 
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-blue-500/25 hover:scale-105 active:scale-95 transition-all"
+              >
+                Continue Learning <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link 
+                to="/user/certificates" 
+                className="inline-flex items-center gap-2 px-5 py-3.5 rounded-2xl bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 font-extrabold text-xs sm:text-sm border border-slate-200/90 dark:border-slate-800 shadow-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+              >
+                <Award className="w-4.5 h-4.5 text-blue-600" /> Documents & Seals
+              </Link>
+            </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            Welcome back, <br className="xs:hidden" />
-            <span className="bg-gradient-to-r from-white via-blue-100 to-indigo-100 bg-clip-text text-transparent">{userName}</span>!
-          </h1>
-          <p className="text-sm sm:text-base text-blue-100/90 font-medium max-w-md leading-relaxed">
-            Ready to continue your tech journey? Access your enrolled tracks, download documents, or explore help desk tickets directly from here.
-          </p>
-          <div className="pt-2">
-            <Link 
-              to="/user/my-courses" 
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-blue-600 hover:bg-slate-100 font-bold text-xs shadow-md hover:scale-105 active:scale-95 transition-all"
-            >
-              Continue Learning <ArrowRight className="w-4 h-4" />
-            </Link>
+
+          {/* 3D Illustration Mockup Graphics */}
+          <div className="lg:col-span-5 hidden lg:flex justify-center relative">
+            <div className="relative w-full max-w-[340px] aspect-square flex items-center justify-center">
+              {/* Floating window mock */}
+              <div className="w-64 h-44 rounded-2xl bg-white dark:bg-slate-900 border-2 border-indigo-200 dark:border-slate-800 shadow-2xl p-4 flex flex-col justify-between transform -rotate-3 hover:rotate-0 transition-transform duration-500 relative">
+                {/* Header controls */}
+                <div className="flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800 pb-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-400" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                </div>
+                {/* Mock content lines */}
+                <div className="space-y-2 py-2">
+                  <div className="h-3 w-3/4 bg-indigo-100 dark:bg-indigo-950/60 rounded-full" />
+                  <div className="h-3 w-1/2 bg-slate-100 dark:bg-slate-800 rounded-full" />
+                </div>
+                {/* Graduation cap badge */}
+                <div className="absolute -top-7 -right-4 w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-xl shadow-indigo-500/30 flex items-center justify-center text-white transform rotate-12">
+                  <svg className="w-9 h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147L12 14.6l7.74-4.453a1 1 0 000-1.745L12 4 4.26 8.402a1 1 0 000 1.745zM4 14v4a2 2 0 002 2h12a2 2 0 002-2v-4" />
+                  </svg>
+                </div>
+                {/* Floating Badge Left */}
+                <div className="absolute -bottom-4 -left-6 p-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-purple-500 text-white flex items-center justify-center">
+                    <Play className="w-4 h-4 fill-white" />
+                  </div>
+                </div>
+                {/* Floating Badge Right */}
+                <div className="absolute top-12 -right-10 p-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center">
+                    <ShieldCheck className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
 
-      {/* Stats Summary Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ── 2. Quick Access Row ─────────────────────────────────────── */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">Quick Access</h3>
+          <Link to="/courses" className="text-xs font-black text-blue-600 hover:text-blue-700 dark:text-blue-400 flex items-center gap-1">
+            View all <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Item 1: My Courses */}
+          <Link 
+            to="/user/my-courses" 
+            className="p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-blue-300 dark:hover:border-blue-500/40 shadow-xs hover:shadow-md transition-all flex items-center justify-between group"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                <BookOpen className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-sm font-black text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">My Courses</p>
+                <p className="text-xs text-slate-400 font-medium">Continue learning</p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 group-hover:text-blue-600 transition-all" />
+          </Link>
+
+          {/* Item 2: Documents */}
+          <Link 
+            to="/user/certificates" 
+            className="p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-sky-300 dark:hover:border-sky-500/40 shadow-xs hover:shadow-md transition-all flex items-center justify-between group"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                <FileText className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-sm font-black text-slate-900 dark:text-white group-hover:text-sky-600 transition-colors">Documents</p>
+                <p className="text-xs text-slate-400 font-medium">View & download</p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 group-hover:text-sky-600 transition-all" />
+          </Link>
+
+          {/* Item 3: Build Project */}
+          <Link 
+            to="/user/custom-project" 
+            className="p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-emerald-300 dark:hover:border-emerald-500/40 shadow-xs hover:shadow-md transition-all flex items-center justify-between group"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                <Code2 className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-sm font-black text-slate-900 dark:text-white group-hover:text-emerald-600 transition-colors">Build Project</p>
+                <p className="text-xs text-slate-400 font-medium">Submit & track</p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 group-hover:text-emerald-600 transition-all" />
+          </Link>
+
+          {/* Item 4: Support Chat */}
+          <Link 
+            to="/user/support" 
+            className="p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-purple-300 dark:hover:border-purple-500/40 shadow-xs hover:shadow-md transition-all flex items-center justify-between group"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                <MessageSquare className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-sm font-black text-slate-900 dark:text-white group-hover:text-purple-600 transition-colors">Support Chat</p>
+                <p className="text-xs text-slate-400 font-medium">Get help instantly</p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 group-hover:text-purple-600 transition-all" />
+          </Link>
+        </div>
+      </div>
+
+      {/* ── 3. Stat Cards Row with Sparkline Waves ──────────────────── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {[
-          { label: 'Active Tracks', value: myCourses.length, icon: BookOpen, color: 'from-blue-500 to-indigo-650', glow: 'rgba(59,130,246,0.25)' },
-          { label: 'Lessons Completed', value: completedLessonsCount, icon: Play, color: 'from-purple-500 to-violet-650', glow: 'rgba(139,92,246,0.25)' },
-          { label: 'Verified Certificates', value: myCertificatesCount, icon: Award, color: 'from-emerald-500 to-green-650', glow: 'rgba(16,185,129,0.25)' },
-          { label: 'Enrolled Orders', value: myOrders.length, icon: ShoppingBag, color: 'from-pink-500 to-rose-650', glow: 'rgba(236,72,153,0.25)' },
+          { label: 'ACTIVE TRACKS', value: myCourses.length, icon: BookOpen, iconBg: 'bg-blue-600 text-white', badge: 'ENROLLED', badgeClass: 'bg-blue-50 text-blue-600 border-blue-100', stroke: '#2563eb' },
+          { label: 'LESSONS COMPLETED', value: completedLessonsCount, icon: Play, iconBg: 'bg-purple-600 text-white', badge: 'LMS PROGRESS', badgeClass: 'bg-purple-50 text-purple-600 border-purple-100', stroke: '#9333ea' },
+          { label: 'VERIFIED DOCUMENTS', value: myCertificatesCount, icon: ShieldCheck, iconBg: 'bg-emerald-600 text-white', badge: 'VERIFIED', badgeClass: 'bg-emerald-50 text-emerald-600 border-emerald-100', stroke: '#10b981' },
+          { label: 'ENROLLED ORDERS', value: myOrders.length, icon: ShoppingBag, iconBg: 'bg-rose-500 text-white', badge: 'TRANSACTIONS', badgeClass: 'bg-rose-50 text-rose-600 border-rose-100', stroke: '#f43f5e' },
         ].map((stat, i) => {
           const IconComp = stat.icon
           return (
             <div 
               key={i} 
-              className={`backdrop-blur-xl border rounded-3xl p-6 transition-all duration-300 shadow-glass hover:shadow-glass-hover group relative overflow-hidden ${
-                isDark 
-                  ? 'bg-slate-900/35 border-white/[0.06] hover:bg-slate-900/50 hover:border-white/[0.12] shadow-[0_8px_30px_rgb(0,0,0,0.15)]' 
-                  : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300 shadow-[0_8px_30px_rgba(148,163,184,0.25)]'
-              }`}
+              className="rounded-3xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden"
             >
-              <div 
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" 
-                style={{ background: `radial-gradient(circle at 50% 50%, ${stat.glow} 0%, transparent 60%)` }}
-              />
-              <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-md transform group-hover:scale-110 transition-transform duration-300 mb-4 text-white`}>
-                <IconComp className="w-5 h-5" />
+              <div>
+                {/* Header row inside card */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`w-11 h-11 rounded-2xl ${stat.iconBg} flex items-center justify-center shadow-md shrink-0`}>
+                    <IconComp className="w-5.5 h-5.5" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full border ${stat.badgeClass}`}>
+                      {stat.badge}
+                    </span>
+                    <button className="text-slate-400 hover:text-slate-600 p-1">
+                      <MoreHorizontal className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Number & label */}
+                <p className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">{stat.value}</p>
+                <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 mt-1">{stat.label}</p>
               </div>
-              <p className={`text-3xl font-extrabold tracking-tight relative z-10 ${isDark ? 'text-white' : 'text-slate-900'}`}>{stat.value}</p>
-              <p className={`text-xs font-semibold mt-1 uppercase tracking-wider relative z-10 ${isDark ? 'text-gray-400' : 'text-slate-500'}`}>{stat.label}</p>
+
+              {/* Sparkline wave SVG animation at bottom of card */}
+              <div className="mt-6 -mx-6 -mb-6">
+                <svg className="w-full h-12 overflow-visible" viewBox="0 0 200 40" fill="none">
+                  <path 
+                    d="M0 25 Q 35 10, 70 28 T 140 15 T 200 22 L 200 40 L 0 40 Z" 
+                    fill={`${stat.stroke}10`} 
+                  />
+                  <path 
+                    d="M0 25 Q 35 10, 70 28 T 140 15 T 200 22" 
+                    stroke={stat.stroke} 
+                    strokeWidth="2.5" 
+                    strokeLinecap="round" 
+                    fill="none" 
+                  />
+                  {/* Wave node dots */}
+                  <circle cx="70" cy="28" r="3" fill={stat.stroke} />
+                  <circle cx="140" cy="15" r="3" fill={stat.stroke} />
+                </svg>
+              </div>
             </div>
           )
         })}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Enrolled Courses / Progress Section */}
-        <div className={`backdrop-blur-xl border rounded-3xl p-6 sm:p-8 transition-all relative overflow-hidden flex flex-col justify-between min-h-[360px] lg:col-span-2 ${
-          isDark 
-            ? 'bg-slate-900/35 border-white/[0.06] hover:border-white/[0.12] hover:bg-slate-900/50 shadow-[0_8px_30px_rgb(0,0,0,0.15)]' 
-            : 'bg-white border-slate-200 hover:border-blue-200 hover:bg-slate-50 shadow-[0_8px_30px_rgba(148,163,184,0.25)]'
-        }`}>
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className={`text-xl font-bold flex items-center gap-2.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                <BookOpen className="w-5 h-5 text-blue-500" />
-                Active Learning Tracks
-              </h3>
-              {myCourses.length > 0 && (
-                <Link to="/user/my-courses" className="text-xs font-bold text-blue-500 hover:text-blue-600 flex items-center gap-1">
-                  View All <ChevronRight className="w-4 h-4" />
-                </Link>
-              )}
-            </div>
-
-            {myCourses.length === 0 ? (
-              <div className={`text-center py-12 rounded-2xl border border-dashed ${isDark ? 'bg-white/5 border-white/10' : 'bg-blue-50/60 border-blue-200'}`}>
-                <p className={`font-medium text-sm ${isDark ? 'text-gray-500' : 'text-slate-500'}`}>You haven't enrolled in any tracks yet</p>
-                <Link to="/courses" className="text-blue-600 text-xs hover:text-blue-700 mt-2 font-bold inline-block">Explore Internship Tracks</Link>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {myCourses.slice(0, 3).map(({ course, enrollment }) => (
-                  <div 
-                    key={enrollment.id} 
-                    className={`p-4 border rounded-2xl transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
-                      isDark 
-                        ? 'bg-white/[0.03] hover:bg-white/[0.07] border-white/[0.05]' 
-                        : 'bg-slate-50 hover:bg-white border-slate-200 shadow-[0_4px_20px_rgba(148,163,184,0.15)]'
-                    }`}
-                  >
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 px-2 py-0.5 rounded bg-blue-100">
-                        {course.category}
-                      </span>
-                      <h4 className={`text-sm font-bold ${isDark ? 'text-gray-100' : 'text-slate-900'}`}>{course.title}</h4>
-                      <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-slate-500'}`}>Mode: {course.deliveryType === 'course' ? 'Self-Paced Learning' : 'Internship & Training'}</p>
-                    </div>
-                    <div className="flex items-center gap-3 justify-between sm:justify-end">
-                      <Link 
-                        to="/user/my-courses"
-                        className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-90 active:scale-95 text-xs font-bold rounded-xl transition-all text-white text-center shadow-md"
-                      >
-                        Enter LMS
-                      </Link>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Quick Links & Shortcuts */}
-        <div className={`backdrop-blur-xl border rounded-3xl p-6 sm:p-8 transition-all relative overflow-hidden flex flex-col justify-between ${
-          isDark 
-            ? 'bg-slate-900/35 border-white/[0.06] hover:border-white/[0.12] hover:bg-slate-900/50 shadow-[0_8px_30px_rgb(0,0,0,0.15)]' 
-            : 'bg-white border-slate-200 hover:border-purple-200 hover:bg-slate-50 shadow-[0_8px_30px_rgba(148,163,184,0.25)]'
-        }`}>
-          <div>
-            <h3 className={`text-xl font-bold mb-6 flex items-center gap-2.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              <Sparkles className="w-5 h-5 text-purple-500" />
-              Quick Shortcuts
-            </h3>
-            <div className="space-y-3">
-              <Link 
-                to="/courses" 
-                className={`flex items-center gap-3 p-3.5 rounded-2xl border transition-all group ${
-                  isDark 
-                    ? 'bg-white/[0.03] border-white/[0.05] hover:bg-white/[0.08]' 
-                    : 'bg-blue-50/60 border-blue-100 hover:bg-blue-50 shadow-[0_4px_20px_rgba(148,163,184,0.1)]'
-                }`}
-              >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-650 flex items-center justify-center text-white shrink-0">
-                  <BookOpen className="w-5 h-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-bold group-hover:text-blue-600 transition-colors ${isDark ? 'text-white' : 'text-slate-900'}`}>Courses Directory</p>
-                  <p className={`text-[10px] ${isDark ? 'text-gray-400' : 'text-slate-500'}`}>Explore new technologies</p>
-                </div>
-              </Link>
-
-              <Link 
-                to="/user/certificates" 
-                className={`flex items-center gap-3 p-3.5 rounded-2xl border transition-all group ${
-                  isDark 
-                    ? 'bg-white/[0.03] border-white/[0.05] hover:bg-white/[0.08]' 
-                    : 'bg-emerald-50/60 border-emerald-100 hover:bg-emerald-50 shadow-[0_4px_20px_rgba(148,163,184,0.1)]'
-                }`}
-              >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-650 flex items-center justify-center text-white shrink-0">
-                  <Award className="w-5 h-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-bold group-hover:text-emerald-600 transition-colors ${isDark ? 'text-white' : 'text-slate-900'}`}>Documents & Certificates</p>
-                  <p className={`text-[10px] ${isDark ? 'text-gray-400' : 'text-slate-500'}`}>Download offer letters</p>
-                </div>
-              </Link>
-
-              <Link 
-                to="/user/support" 
-                className={`flex items-center gap-3 p-3.5 rounded-2xl border transition-all group ${
-                  isDark 
-                    ? 'bg-white/[0.03] border-white/[0.05] hover:bg-white/[0.08]' 
-                    : 'bg-purple-50/60 border-purple-100 hover:bg-purple-50 shadow-[0_4px_20px_rgba(148,163,184,0.1)]'
-                }`}
-              >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-violet-650 flex items-center justify-center text-white shrink-0">
-                  <MessageSquare className="w-5 h-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-bold group-hover:text-purple-600 transition-colors ${isDark ? 'text-white' : 'text-slate-900'}`}>Help Desk Chat</p>
-                  <p className={`text-[10px] ${isDark ? 'text-gray-400' : 'text-slate-500'}`}>Instant query support</p>
-                </div>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Recent Purchases Section */}
-      <div className={`backdrop-blur-xl border rounded-3xl p-6 sm:p-8 transition-colors ${
-        isDark 
-          ? 'bg-slate-900/35 border-white/[0.06] hover:bg-slate-900/50 shadow-[0_8px_30px_rgb(0,0,0,0.15)]' 
-          : 'bg-white border-slate-200 hover:border-pink-200 hover:bg-slate-50 shadow-[0_8px_30px_rgba(148,163,184,0.25)]'
-      }`}>
-        <h3 className={`text-xl font-bold mb-6 flex items-center gap-2.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-          <ShoppingBag className="w-5 h-5 text-pink-500" />
-          Recent Orders
-        </h3>
-        {recentOrders.length === 0 ? (
-          <div className={`text-center py-10 rounded-2xl border border-dashed ${isDark ? 'bg-white/5 border-white/10' : 'bg-pink-50/60 border-pink-200'}`}>
-            <p className={`font-medium text-sm ${isDark ? 'text-gray-500' : 'text-slate-500'}`}>No transaction records found</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {recentOrders.map(order => (
-              <div 
-                key={order.id} 
-                className={`p-5 border rounded-2xl transition-all space-y-4 ${
-                  isDark 
-                    ? 'bg-white/[0.03] hover:bg-white/[0.07] border-white/[0.05]' 
-                    : 'bg-slate-50 hover:bg-white border-slate-200 shadow-[0_4px_20px_rgba(148,163,184,0.15)]'
-                }`}
-              >
-                <div className="flex justify-between items-start">
-                  <div className="space-y-1">
-                    <h4 className={`text-sm font-bold truncate max-w-[150px] ${isDark ? 'text-gray-100' : 'text-slate-900'}`}>{order.project_title || 'Project Enrollment'}</h4>
-                    <p className={`text-[10px] ${isDark ? 'text-gray-500' : 'text-slate-500'}`}>{order.date || 'Recent purchase'}</p>
-                  </div>
-                  <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${order.status === 'completed' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'}`}>
-                    {order.status || 'pending'}
-                  </span>
-                </div>
-                <div className={`flex justify-between items-center border-t pt-3 ${isDark ? 'border-white/5' : 'border-slate-200'}`}>
-                  <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-slate-500'}`}>Amount Paid</span>
-                  <span className={`text-sm font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>₹{Number(order.amount || 0).toLocaleString('en-IN')}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
 
     </div>

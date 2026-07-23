@@ -21,7 +21,7 @@ const TECHS = [
   },
   {
     name: 'AWS',
-    logo: 'https://cdn.simpleicons.org/amazonwebservices/FF9900',
+    logo: 'https://cdn.simpleicons.org/amazonaws/FF9900',
   },
   {
     name: 'MongoDB',
@@ -33,8 +33,9 @@ const TECHS = [
   },
   {
     name: 'Cashfree',
-    logo: 'https://cdn.simpleicons.org/cashfree/00B4D8',
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg',
   },
+
   {
     name: 'Clerk',
     logo: 'https://cdn.simpleicons.org/clerk/6C47FF',
