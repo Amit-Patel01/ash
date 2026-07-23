@@ -291,7 +291,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
         if (!order) throw new Error("Could not create Razorpay order")
 
         const options = {
-          key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+          key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_live_SXgcywjUbXwb34',
           amount: order.amount,
           currency: order.currency,
           name: "Amit Solution Hub",

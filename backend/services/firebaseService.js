@@ -80,7 +80,7 @@ const getMongoQueryId = (id) => {
 
 const savePayment = async (paymentId, data) => {
   const db = getDb();
-  await db.collection("tradingPayments").updateOne(
+  await db.collection("payments").updateOne(
     { _id: getMongoQueryId(paymentId) },
     {
       $set: {
@@ -94,8 +94,10 @@ const savePayment = async (paymentId, data) => {
 
 const createEnrollment = async (data) => {
   const db = getDb();
-  const result = await db.collection("tradingEnrollments").insertOne({
+  const courseTitle = data.courseTitle || data.courseName || "Course Enrollment";
+  const result = await db.collection("enrollments").insertOne({
     ...data,
+    courseTitle,
     enrolledAt: new Date(),
     createdAt: new Date(),
   });
@@ -105,7 +107,7 @@ const createEnrollment = async (data) => {
 const getEnrollmentsByCourse = async (courseId) => {
   const db = getDb();
   const docs = await db
-    .collection("tradingEnrollments")
+    .collection("enrollments")
     .find({ courseId, status: "active" })
     .toArray();
   return docs.map((d) => ({ id: d._id.toString(), ...d }));
@@ -113,13 +115,13 @@ const getEnrollmentsByCourse = async (courseId) => {
 
 const getSession = async (sessionId) => {
   const db = getDb();
-  const doc = await db.collection("tradingSessions").findOne({ _id: getMongoQueryId(sessionId) });
+  const doc = await db.collection("sessions").findOne({ _id: getMongoQueryId(sessionId) });
   return doc ? { id: doc._id.toString(), ...doc } : null;
 };
 
 const updateSession = async (sessionId, data) => {
   const db = getDb();
-  await db.collection("tradingSessions").updateOne(
+  await db.collection("sessions").updateOne(
     { _id: getMongoQueryId(sessionId) },
     {
       $set: {
@@ -133,7 +135,7 @@ const updateSession = async (sessionId, data) => {
 const getSessionsForReminder = async (dateStr) => {
   const db = getDb();
   const docs = await db
-    .collection("tradingSessions")
+    .collection("sessions")
     .find({ date: dateStr, reminderSent: { $ne: true } })
     .toArray();
   return docs.map((d) => ({ id: d._id.toString(), ...d }));
@@ -141,7 +143,7 @@ const getSessionsForReminder = async (dateStr) => {
 
 const getActiveEnrolledEmails = async () => {
   const db = getDb();
-  const docs = await db.collection("tradingEnrollments").find({ status: "active" }).toArray();
+  const docs = await db.collection("enrollments").find({ status: "active" }).toArray();
   const emails = docs.map((d) => d.userEmail).filter(Boolean);
   return [...new Set(emails)];
 };

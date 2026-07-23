@@ -29,6 +29,7 @@ router.get("/:collection", optionalAuth, async (req, res) => {
       "courses",
       "courseCategories",
       "tradingCurriculum",
+      "sessions",
       "tradingSessions",
       "settings",
       "tradingSettings",
@@ -53,8 +54,7 @@ router.get("/:collection", optionalAuth, async (req, res) => {
     const privateCollections = {
       orders: "userId",
       enrollments: "userId",
-      tradingEnrollments: "userId",
-      tradingPayments: "userId",
+      payments: "userId",
       custom_requests: "userId",
       sellRequests: "userId"
     };
@@ -144,6 +144,7 @@ router.get("/:collection/:id", optionalAuth, async (req, res) => {
       "courses",
       "courseCategories",
       "tradingCurriculum",
+      "sessions",
       "tradingSessions",
       "settings",
       "tradingSettings",
@@ -166,8 +167,7 @@ router.get("/:collection/:id", optionalAuth, async (req, res) => {
     const privateCollections = {
       orders: "userId",
       enrollments: "userId",
-      tradingEnrollments: "userId",
-      tradingPayments: "userId",
+      payments: "userId",
       custom_requests: "userId",
       sellRequests: "userId"
     };
@@ -243,7 +243,7 @@ router.post("/:collection", optionalAuth, async (req, res) => {
     // If customer
     if (req.user) {
       if (!isEmployeeOrAdmin) {
-        const privateCollections = ["projects", "orders", "enrollments", "tradingEnrollments", "custom_requests", "sellRequests"];
+        const privateCollections = ["projects", "orders", "enrollments", "payments", "custom_requests", "sellRequests"];
         if (privateCollections.includes(collection)) {
           payload.userId = req.user.uid;
         }
@@ -302,8 +302,7 @@ router.patch("/:collection/:id", verifyFirebaseToken, async (req, res) => {
         projects: "userId",
         orders: "userId",
         enrollments: "userId",
-        tradingEnrollments: "userId",
-        tradingPayments: "userId",
+        payments: "userId",
         custom_requests: "userId",
         sellRequests: "userId"
       };

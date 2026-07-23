@@ -56,6 +56,7 @@ const processPaymentJob = async (job) => {
         userName,
         userEmail,
         courseId: planId,
+        courseTitle: planName,
         courseName: planName,
         status: "active",
         paymentId: razorpay_payment_id,

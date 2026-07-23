@@ -304,15 +304,15 @@ export function StoreProvider({ children }) {
     setTradingCourses(data);
   };
   const loadTradingSessions = async () => {
-    const data = await fetchCollection('tradingSessions');
+    const data = await fetchCollection('sessions');
     setTradingSessions(data);
   };
   const loadTradingEnrollments = async () => {
-    const data = await fetchCollection('tradingEnrollments');
+    const data = await fetchCollection('enrollments');
     setTradingEnrollments(data);
   };
   const loadTradingPayments = async () => {
-    const data = await fetchCollection('tradingPayments');
+    const data = await fetchCollection('payments');
     setTradingPayments(data);
   };
   const loadMentorProfile = async () => {

@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "backend/services/firebaseService.js": {
-    "mtime": 1784804483.9309428,
-    "ast_hash": "bf3123c873dcefc9b133f4e798e83f7a",
+    "mtime": 1783616369.154831,
+    "ast_hash": "9afa34d63faf8b460dbe6a07b81caf81",
     "semantic_hash": ""
   },
   "backend/services/notificationService.js": {
@@ -155,8 +155,8 @@
     "semantic_hash": ""
   },
   "backend/services/queueService.js": {
-    "mtime": 1784804507.2861533,
-    "ast_hash": "27d96c0d4dfd4c77dd685da4cd907f2d",
+    "mtime": 1783616369.1558309,
+    "ast_hash": "973c8ab2921c5df362a42c3626225529",
     "semantic_hash": ""
   },
   "backend/services/roleService.js": {
@@ -1405,8 +1405,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/CourseEnrollModal.jsx": {
-    "mtime": 1784804523.5392704,
-    "ast_hash": "55d2847d6854a0b754f069cdcbbcd46c",
+    "mtime": 1783616372.776777,
+    "ast_hash": "c983bee69bd7c7f8f14ae02f794783a1",
     "semantic_hash": ""
   },
   "frontend/src/components/Footer.jsx": {
@@ -1620,8 +1620,8 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/Checkout.jsx": {
-    "mtime": 1784804527.9921556,
-    "ast_hash": "219e0f45af0682543d3c173e2b6e2ffe",
+    "mtime": 1783616372.809522,
+    "ast_hash": "48b1a8f053c3b6f3aa2bc086dcbc90fe",
     "semantic_hash": ""
   },
   "frontend/src/pages/ComingSoon.jsx": {
@@ -1725,8 +1725,8 @@
     "semantic_hash": ""
   },
   "frontend/src/store/StoreContext.jsx": {
-    "mtime": 1784804518.7388525,
-    "ast_hash": "93f5f7ce76fa9d44cb84da2bc9104a0c",
+    "mtime": 1783616372.8256328,
+    "ast_hash": "ff763bf21114ab438928640c43090e31",
     "semantic_hash": ""
   },
   "frontend/src/technicalsupport/RepairService.jsx": {
@@ -2360,8 +2360,8 @@
     "semantic_hash": ""
   },
   "backend/routes/db.js": {
-    "mtime": 1784804499.4330733,
-    "ast_hash": "357e0f8de76599b400157600277ae03e",
+    "mtime": 1783866117.5135753,
+    "ast_hash": "fb0d37344fb27fcc1be65d52e11d4023",
     "semantic_hash": ""
   },
   "backend/scripts/seedAdmin.js": {
