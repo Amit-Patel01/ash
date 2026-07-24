@@ -142,6 +142,13 @@ const mapFirestoreUser = (doc, { includeSensitive = false } = {}) => {
     cvFileName: doc.cvFileName || "",
     cvFilePath: doc.cvFilePath || "",
     cvUploadedAt: doc.cvUploadedAt || null,
+    isTerminated: Boolean(doc.isTerminated || doc.status === "terminated"),
+    previousRole: doc.previousRole || "",
+    fireReason: doc.fireReason || "",
+    relievingDate: doc.relievingDate || "",
+    reinstatementRequested: Boolean(doc.reinstatementRequested),
+    reinstatementMessage: doc.reinstatementMessage || "",
+    reinstatementRequestedAt: doc.reinstatementRequestedAt || null,
     permissions: (doc.permissions && typeof doc.permissions === 'object' && !Array.isArray(doc.permissions)) ? doc.permissions : {},
     createdAt: doc.createdAt ? toIsoString(doc.createdAt) : null,
     updatedAt: doc.updatedAt ? toIsoString(doc.updatedAt) : null,
@@ -173,8 +180,12 @@ const normalizeBoolean = (value) => {
   return false;
 };
 
-const normalizeStatus = (value = "active") =>
-  String(value || "active").trim().toLowerCase() === "inactive" ? "inactive" : "active";
+const normalizeStatus = (value = "active") => {
+  const lowered = String(value || "active").trim().toLowerCase();
+  if (lowered === "terminated") return "terminated";
+  if (lowered === "inactive") return "inactive";
+  return "active";
+};
 
 const normalizeSystemRole = (value = "customer") => {
   const normalized = String(value || "customer").trim().toLowerCase();
@@ -341,6 +352,13 @@ const sanitizeManagedUserInput = (input = {}, { requirePhone = false, roleFallba
     isMentor: normalizeBoolean(input.isMentor),
     location: String(input.location || "").trim(),
     permissions: input.permissions || {},
+    isTerminated: Boolean(input.isTerminated || status === "terminated"),
+    previousRole: String(input.previousRole || "").trim(),
+    fireReason: String(input.fireReason || "").trim(),
+    relievingDate: String(input.relievingDate || "").trim(),
+    reinstatementRequested: Boolean(input.reinstatementRequested),
+    reinstatementMessage: String(input.reinstatementMessage || "").trim(),
+    reinstatementRequestedAt: input.reinstatementRequestedAt || null,
   };
 };
 
@@ -369,6 +387,13 @@ const buildFirestoreUserPayload = (user) => ({
   isMentor: Boolean(user.isMentor),
   location: user.location || "",
   permissions: user.permissions || {},
+  isTerminated: Boolean(user.isTerminated || user.status === "terminated"),
+  previousRole: user.previousRole || "",
+  fireReason: user.fireReason || "",
+  relievingDate: user.relievingDate || "",
+  reinstatementRequested: Boolean(user.reinstatementRequested),
+  reinstatementMessage: user.reinstatementMessage || "",
+  reinstatementRequestedAt: user.reinstatementRequestedAt || null,
   cvFileName: user.cvFileName || "",
   cvFilePath: user.cvFilePath || "",
   cvUploadedAt: user.cvUploadedAt || null,
@@ -1374,6 +1399,13 @@ const updateManagedUser = async (identifier, updates, { updatedBy = null } = {})
         isMentor: Boolean(merged.isMentor),
         location: merged.location || "",
         permissions: merged.permissions || {},
+        isTerminated: Boolean(merged.isTerminated || merged.status === "terminated"),
+        previousRole: merged.previousRole || updates.previousRole || existingUser.previousRole || "",
+        fireReason: merged.fireReason || updates.fireReason || existingUser.fireReason || "",
+        relievingDate: merged.relievingDate || updates.relievingDate || existingUser.relievingDate || "",
+        reinstatementRequested: Boolean(merged.reinstatementRequested ?? updates.reinstatementRequested ?? existingUser.reinstatementRequested),
+        reinstatementMessage: merged.reinstatementMessage || updates.reinstatementMessage || existingUser.reinstatementMessage || "",
+        reinstatementRequestedAt: merged.reinstatementRequestedAt || updates.reinstatementRequestedAt || existingUser.reinstatementRequestedAt || null,
         updatedAt: new Date().toISOString(),
       };
       if (existingUser.firebaseUid) mongoUpdate.firebaseUid = existingUser.firebaseUid;
