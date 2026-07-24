@@ -16,6 +16,7 @@ const {
   listEmployeeCvs,
   downloadEmployeeCv,
   sendReceiptEmail,
+  fireEmployee,
 } = require("../controllers/adminController");
 const { verifyFirebaseToken } = require("../middlewares/authMiddleware");
 const { adminOnly, employeeOrAdmin } = require("../middlewares/rbacMiddleware");
@@ -27,6 +28,7 @@ router.get("/users/lookup", verifyFirebaseToken, adminOnly, lookupUserByEmail);
 router.delete("/users/by-email", verifyFirebaseToken, adminOnly, deleteUserByEmail);
 router.post("/users", verifyFirebaseToken, adminOnly, createUser);
 router.patch("/users/:userId", verifyFirebaseToken, adminOnly, updateUser);
+router.post("/users/:userId/fire", verifyFirebaseToken, adminOnly, fireEmployee);
 router.delete("/users/:userId", verifyFirebaseToken, adminOnly, deleteUser);
 router.post("/users/merge", verifyFirebaseToken, adminOnly, mergeUsers);
 router.post("/account-requests/:requestId/approve", verifyFirebaseToken, adminOnly, approveRequest);

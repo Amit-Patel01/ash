@@ -758,6 +758,121 @@ const sendReceiptEmail = async (req, res) => {
   }
 };
 
+/**
+ * POST /api/admin/users/:userId/fire
+ * Terminate an employee, record fireReason & relievingDate, and send termination notice email
+ */
+const fireEmployee = async (req, res) => {
+  const { userId } = req.params;
+  const { fireReason, relievingDate, sendEmailNotice = true } = req.body;
+
+  if (!fireReason || !fireReason.trim()) {
+    return res.status(400).json({
+      success: false,
+      message: "Termination reason is required.",
+    });
+  }
+
+  try {
+    const existingUser = await getManagedUser(userId);
+    if (!existingUser) {
+      return res.status(404).json({
+        success: false,
+        message: "Employee user not found.",
+      });
+    }
+
+    const formattedRelievingDate = relievingDate || new Date().toISOString().split("T")[0];
+
+    const updatePayload = {
+      status: "terminated",
+      isTerminated: true,
+      fireReason: fireReason.trim(),
+      relievingDate: formattedRelievingDate,
+      terminatedAt: new Date().toISOString(),
+      showOnTeam: false,
+    };
+
+    const updatedUser = await updateManagedUser(userId, updatePayload, { updatedBy: req.user });
+
+    let emailSent = false;
+    let emailError = null;
+
+    if (sendEmailNotice && existingUser.email) {
+      const safeName = escapeHtml(existingUser.displayName || existingUser.name || "Employee");
+      const safeReason = escapeHtml(fireReason.trim())
+        .split(/\r?\n/)
+        .map((line) => `<p style="margin: 0 0 10px;">${line}</p>`)
+        .join("");
+
+      const terminationContent = `
+        <div style="background-color: #fef2f2; border: 1px solid #fca5a5; border-radius: 16px; padding: 28px; margin-bottom: 24px;">
+          <h2 style="color: #991b1b; margin-top: 0; font-size: 20px; border-bottom: 2px solid #fecaca; padding-bottom: 12px;">
+            📄 Official Notice of Employment Relieving & Termination
+          </h2>
+          <p style="color: #451a03; font-size: 15px; line-height: 1.6;">
+            Dear <strong>${safeName}</strong>,
+          </p>
+          <p style="color: #451a03; font-size: 15px; line-height: 1.6;">
+            This is an official notice to inform you that your employment with <strong>Amit Solution Hub</strong> has been terminated effective from <strong>${escapeHtml(formattedRelievingDate)}</strong>.
+          </p>
+
+          <div style="margin: 20px 0; padding: 18px; background: #ffffff; border-left: 4px solid #dc2626; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <p style="margin: 0 0 8px; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Employee Record Details</p>
+            <p style="margin: 4px 0; font-size: 14px; color: #1e293b;"><strong>Employee ID:</strong> ${escapeHtml(existingUser.employeeId || "N/A")}</p>
+            <p style="margin: 4px 0; font-size: 14px; color: #1e293b;"><strong>Designation:</strong> ${escapeHtml(existingUser.jobTitle || "Employee")}</p>
+            <p style="margin: 4px 0; font-size: 14px; color: #1e293b;"><strong>Department:</strong> ${escapeHtml(existingUser.department || "N/A")}</p>
+            <p style="margin: 4px 0; font-size: 14px; color: #1e293b;"><strong>Joining Date:</strong> ${escapeHtml(existingUser.joinDate || "N/A")}</p>
+            <p style="margin: 4px 0; font-size: 14px; color: #1e293b;"><strong>Relieving Date:</strong> ${escapeHtml(formattedRelievingDate)}</p>
+            <p style="margin: 4px 0; font-size: 14px; color: #dc2626;"><strong>Employment Status:</strong> Terminated / Relieved</p>
+          </div>
+
+          <div style="margin: 20px 0; padding: 18px; background: #fff1f2; border: 1px dashed #fda4af; border-radius: 8px;">
+            <p style="margin: 0 0 8px; color: #9f1239; font-size: 13px; font-weight: 700; text-transform: uppercase;">Stated Reason for Termination:</p>
+            <div style="color: #881337; font-size: 14px; line-height: 1.6;">
+              ${safeReason}
+            </div>
+          </div>
+
+          <p style="color: #475569; font-size: 14px; line-height: 1.6; margin-top: 20px;">
+            Please ensure all company assets, credentials, and access keys are handed over to HR / Management immediately. This document serves as your official Relieving & Termination Certificate Notice.
+          </p>
+        </div>
+      `;
+
+      try {
+        const mailRes = await sendEmail({
+          to: existingUser.email,
+          subject: "Official Notice: Employment Termination & Relieving Certificate - Amit Solution Hub",
+          html: emailTemplate(
+            "Official Relieving & Termination Notice",
+            terminationContent,
+            null,
+            null,
+            "#dc2626",
+            "OFFICIAL HR NOTICE"
+          ),
+        });
+        emailSent = mailRes.success;
+        if (!mailRes.success) emailError = mailRes.error;
+      } catch (err) {
+        logger.error(`Failed to send termination email to ${existingUser.email}: ${err.message}`);
+        emailError = err.message;
+      }
+    }
+
+    return res.json({
+      success: true,
+      message: `Employee ${existingUser.displayName || existingUser.email} has been terminated.${emailSent ? ' Relieving letter email sent successfully.' : emailError ? ` (Email error: ${emailError})` : ''}`,
+      user: updatedUser,
+      emailSent,
+      emailError,
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to process employee termination.");
+  }
+};
+
 module.exports = {
   broadcastEmail,
   notifyAccountApproval,
@@ -774,4 +889,5 @@ module.exports = {
   listEmployeeCvs,
   downloadEmployeeCv,
   sendReceiptEmail,
+  fireEmployee,
 };

@@ -776,6 +776,26 @@ export function StoreProvider({ children }) {
     }
   }
 
+  const fireEmployee = async (id, { fireReason, relievingDate, sendEmailNotice = true }) => {
+    try {
+      const headers = getAuthorizedHeaders()
+      const response = await fetch(`${api.adminUsers}/${id}/fire`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ fireReason, relievingDate, sendEmailNotice })
+      })
+      const data = await response.json()
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to fire/terminate employee.')
+      }
+      setUsers(prev => prev.map(u => (u.uid === id || u.id === id) ? data.user : u))
+      if (typeof window !== 'undefined' && data.user?.uid) {
+        window.dispatchEvent(new CustomEvent('solutionhub:user-updated', { detail: data.user }))
+      }
+      return data
+    } catch (err) { console.error('Error firing employee:', err); throw err }
+  }
+
   const addService = async (service) => {
     try {
       const headers = getAuthorizedHeaders();
@@ -1979,7 +1999,7 @@ export function StoreProvider({ children }) {
     addManualEmployee, addTeamMember: addManualEmployee,
     updateManualEmployee, updateTeamMember: updateManualEmployee,
     deleteManualEmployee, deleteTeamMember: deleteManualEmployee,
-    addUser, updateUser, deleteUser, mergeUsers,
+    addUser, updateUser, deleteUser, mergeUsers, fireEmployee,
     services, addService, updateService, deleteService,
     accountRequests, sellRequests, serviceRequests, messages,
     deleteAdminMessage, updateMessageStatus,
