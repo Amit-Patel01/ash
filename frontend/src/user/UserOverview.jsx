@@ -21,10 +21,30 @@ import {
 
 export default function UserOverview() {
   const { currentUser, userProfile } = useAuth()
-  const { orders, getUserEnrollments, courses, certificates } = useStore()
+  const { orders, getUserEnrollments, courses, certificates, submitReinstatementRequest } = useStore()
   const { theme } = useTheme()
   const navigate = useNavigate()
   const isDark = theme === 'dark'
+
+  const [showReinstatementModal, setShowReinstatementModal] = useState(false)
+  const [reinstatementMessage, setReinstatementMessage] = useState('')
+  const [submittingRequest, setSubmittingRequest] = useState(false)
+
+  const handleSendReinstatementRequest = async (e) => {
+    e.preventDefault()
+    if (!reinstatementMessage.trim()) return
+    setSubmittingRequest(true)
+    try {
+      const res = await submitReinstatementRequest(reinstatementMessage.trim())
+      alert(res.message || "Your reinstatement request has been submitted successfully!")
+      setShowReinstatementModal(false)
+      setReinstatementMessage('')
+    } catch (err) {
+      alert(err.message || "Failed to submit request.")
+    } finally {
+      setSubmittingRequest(false)
+    }
+  }
 
   // Load lesson progress count
   const [completedLessonsCount, setCompletedLessonsCount] = useState(0)
@@ -86,7 +106,37 @@ export default function UserOverview() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-16">
       
-      {/* ── 1. Hero Banner (Lavendar / White Gradient Card) ─────────────── */}
+      {/* ── 0. Former Staff Reinstatement Request Banner ──────────────── */}
+      {(currentUser?.status === 'terminated' || currentUser?.isTerminated || currentUser?.previousRole) && (
+        <div className="rounded-3xl border border-rose-200 dark:border-rose-900/50 bg-gradient-to-r from-rose-50 via-red-50 to-orange-50 dark:from-rose-950/30 dark:to-slate-900 p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center text-2xl flex-shrink-0 border border-rose-200 dark:border-rose-800">
+              📩
+            </div>
+            <div>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Former Staff Member Notice</h3>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl">
+                {currentUser?.reinstatementRequested ? (
+                  <span className="text-emerald-700 dark:text-emerald-400 font-semibold">
+                    ✅ Reinstatement request submitted. Founder, CEO & Admin team will review your application.
+                  </span>
+                ) : (
+                  "You were previously a staff member. If you wish to request re-employment or reinstatement, you can submit a direct request to the Founder, CEO, or Admin team."
+                )}
+              </p>
+            </div>
+          </div>
+
+          {!currentUser?.reinstatementRequested && (
+            <button
+              onClick={() => setShowReinstatementModal(true)}
+              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-rose-600/25 transition-all flex items-center gap-2 whitespace-nowrap self-stretch sm:self-auto justify-center"
+            >
+              <span>📩</span> Request Reinstatement
+            </button>
+          )}
+        </div>
+      )}
       <div className="relative overflow-hidden rounded-[32px] border border-indigo-100/90 dark:border-slate-800 bg-gradient-to-r from-[#eef2ff] via-[#f5f3ff] to-[#faf5ff] dark:from-slate-900 dark:to-indigo-950/40 p-8 sm:p-12 shadow-sm">
         {/* Background decorative dots */}
         <div className="absolute top-4 right-1/3 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none" />
@@ -305,6 +355,66 @@ export default function UserOverview() {
           )
         })}
       </div>
+
+      {/* Reinstatement Request Modal */}
+      {showReinstatementModal && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onClick={() => !submittingRequest && setShowReinstatementModal(false)} />
+          <div className="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-md p-6 shadow-2xl overflow-hidden">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl">
+                  📩
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">Reinstatement Request</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Send message to Founder, CEO & Admin</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowReinstatementModal(false)}
+                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSendReinstatementRequest} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
+                  Message for Founder, CEO & Admin <span className="text-rose-500">*</span>
+                </label>
+                <textarea
+                  rows={4}
+                  required
+                  value={reinstatementMessage}
+                  onChange={(e) => setReinstatementMessage(e.target.value)}
+                  placeholder="Explain your reason for requesting re-employment / reinstatement..."
+                  className="w-full p-3 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-2xl text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none"
+                />
+              </div>
+
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  disabled={submittingRequest}
+                  onClick={() => setShowReinstatementModal(false)}
+                  className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-2xl text-xs font-bold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submittingRequest}
+                  className="flex-[2] py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2"
+                >
+                  {submittingRequest ? 'Sending...' : 'Send Request'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   )

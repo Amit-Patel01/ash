@@ -787,6 +787,8 @@ const fireEmployee = async (req, res) => {
     const updatePayload = {
       status: "terminated",
       isTerminated: true,
+      previousRole: existingUser.role || "employee",
+      role: "customer",
       fireReason: fireReason.trim(),
       relievingDate: formattedRelievingDate,
       terminatedAt: new Date().toISOString(),
@@ -836,6 +838,10 @@ const fireEmployee = async (req, res) => {
 
           <p style="color: #475569; font-size: 14px; line-height: 1.6; margin-top: 20px;">
             Please ensure all company assets, credentials, and access keys are handed over to HR / Management immediately. This document serves as your official Relieving & Termination Certificate Notice.
+          </p>
+
+          <p style="color: #475569; font-size: 13px; line-height: 1.6; margin-top: 18px; background: #ffffff; padding: 14px; border-radius: 10px; border: 1px solid #e2e8f0;">
+            ℹ️ <strong>Note for Student/User Account:</strong> Your employee access has been revoked. However, you can still log in to your account as a regular user/student to access your enrolled courses and learning resources.
           </p>
         </div>
       `;
@@ -890,9 +896,12 @@ const reinstateEmployee = async (req, res) => {
       });
     }
 
+    const restoredRole = existingUser.previousRole || "employee";
+
     const updatePayload = {
       status: "active",
       isTerminated: false,
+      role: restoredRole,
       reinstatedAt: new Date().toISOString(),
     };
 
@@ -962,6 +971,88 @@ const reinstateEmployee = async (req, res) => {
   }
 };
 
+/**
+ * POST /api/admin/reinstatement-requests
+ * Former employee submits a request to the Founder/CEO for reinstatement
+ */
+const submitReinstatementRequest = async (req, res) => {
+  const { message } = req.body;
+  const user = req.user;
+
+  if (!user || !user.uid) {
+    return res.status(401).json({ success: false, message: "Unauthorized." });
+  }
+
+  if (!message || !message.trim()) {
+    return res.status(400).json({ success: false, message: "Request message is required." });
+  }
+
+  try {
+    const userId = user.uid;
+    const existingUser = await getManagedUser(userId);
+
+    const updatePayload = {
+      reinstatementRequested: true,
+      reinstatementMessage: message.trim(),
+      reinstatementRequestedAt: new Date().toISOString(),
+      reinstatementStatus: "pending",
+    };
+
+    const updatedUser = await updateManagedUser(userId, updatePayload, { updatedBy: user });
+
+    try {
+      await getDb().collection("reinstatementRequests").insertOne({
+        userId,
+        userEmail: user.email,
+        userName: existingUser?.displayName || user.email,
+        previousRole: existingUser?.previousRole || "employee",
+        message: message.trim(),
+        status: "pending",
+        createdAt: new Date(),
+      });
+    } catch (e) {
+      logger.warn("Mongo insert into reinstatementRequests warning:", e.message);
+    }
+
+    if (ADMIN_EMAIL) {
+      const safeName = escapeHtml(existingUser?.displayName || user.email);
+      const safeMessage = escapeHtml(message.trim())
+        .split(/\r?\n/)
+        .map((line) => `<p style="margin: 0 0 8px;">${line}</p>`)
+        .join("");
+
+      sendEmail({
+        to: ADMIN_EMAIL,
+        subject: `📩 Reinstatement Request: Former Employee ${safeName}`,
+        html: emailTemplate(
+          "Employee Reinstatement Request",
+          `
+            <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; margin-bottom: 20px;">
+              <h3 style="color: #1e293b; margin-top: 0; font-size: 18px;">Former Employee Reinstatement Request</h3>
+              <p style="color: #475569; font-size: 14px;"><strong>Employee:</strong> ${safeName} (${user.email})</p>
+              <p style="color: #475569; font-size: 14px;"><strong>Previous Role:</strong> ${escapeHtml(existingUser?.previousRole || "employee")}</p>
+              <div style="margin-top: 16px; padding: 16px; background: #ffffff; border-left: 4px solid #3b82f6; border-radius: 8px;">
+                <p style="margin: 0 0 6px; font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase;">Message to Founder & CEO:</p>
+                <div style="color: #1e293b; font-size: 14px; line-height: 1.6;">${safeMessage}</div>
+              </div>
+            </div>
+          `,
+          "Review Request in Admin Panel",
+          process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/admin/employees` : "https://www.amitsolutionhub.com/admin/employees"
+        ),
+      }).catch((err) => logger.warn("Founder reinstatement notification failed:", err.message));
+    }
+
+    return res.json({
+      success: true,
+      message: "Your reinstatement request has been submitted to the Founder & CEO successfully.",
+      user: updatedUser,
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to submit reinstatement request.");
+  }
+};
+
 module.exports = {
   broadcastEmail,
   notifyAccountApproval,
@@ -980,4 +1071,5 @@ module.exports = {
   sendReceiptEmail,
   fireEmployee,
   reinstateEmployee,
+  submitReinstatementRequest,
 };

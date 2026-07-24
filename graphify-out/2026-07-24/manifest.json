@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "backend/controllers/adminController.js": {
-    "mtime": 1783857536.5733986,
-    "ast_hash": "5dde399e7ed17234c5d9dde44463e892",
+    "mtime": 1784873443.0055988,
+    "ast_hash": "d7eb5ad193099634535e0dba48110015",
     "semantic_hash": ""
   },
   "backend/controllers/authController.js": {
@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "backend/routes/admin.js": {
-    "mtime": 1783856965.3219085,
-    "ast_hash": "c61d93cd0cfc58c1375d762841c1484f",
+    "mtime": 1784873325.0323157,
+    "ast_hash": "1bf6d3c1c6c437f4f72ec6fe837c2610",
     "semantic_hash": ""
   },
   "backend/routes/ai.js": {
@@ -95,8 +95,8 @@
     "semantic_hash": ""
   },
   "backend/routes/notify.js": {
-    "mtime": 1784822307.1857176,
-    "ast_hash": "7ff3b260ae38e1301c557304f65629c5",
+    "mtime": 1784822644.9075494,
+    "ast_hash": "e30e1a954aa8cdf3df4c14783432d364",
     "semantic_hash": ""
   },
   "backend/routes/projects.js": {
@@ -140,8 +140,8 @@
     "semantic_hash": ""
   },
   "backend/services/emailService.js": {
-    "mtime": 1784822498.5152843,
-    "ast_hash": "913495f5a7fc7e285ed70b670e25067c",
+    "mtime": 1784822659.447901,
+    "ast_hash": "a09702fc16b136cd158ba519cb94a92c",
     "semantic_hash": ""
   },
   "backend/services/firebaseService.js": {
@@ -1330,8 +1330,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminEmployees.jsx": {
-    "mtime": 1783616372.6163073,
-    "ast_hash": "3956116ea04bcd34eabf6d031d16986f",
+    "mtime": 1784873450.177035,
+    "ast_hash": "7f0a335d8e3469cf290edc1a77f69635",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminLayout.jsx": {
@@ -1725,8 +1725,8 @@
     "semantic_hash": ""
   },
   "frontend/src/store/StoreContext.jsx": {
-    "mtime": 1784818963.517079,
-    "ast_hash": "ebe87688e79f3f09d41298fe4faeb255",
+    "mtime": 1784873333.4666357,
+    "ast_hash": "6d1f5b71f2656e30e55a1940cfd36179",
     "semantic_hash": ""
   },
   "frontend/src/technicalsupport/RepairService.jsx": {

@@ -18,6 +18,7 @@ const {
   sendReceiptEmail,
   fireEmployee,
   reinstateEmployee,
+  submitReinstatementRequest,
 } = require("../controllers/adminController");
 const { verifyFirebaseToken } = require("../middlewares/authMiddleware");
 const { adminOnly, employeeOrAdmin } = require("../middlewares/rbacMiddleware");
@@ -31,6 +32,7 @@ router.post("/users", verifyFirebaseToken, adminOnly, createUser);
 router.patch("/users/:userId", verifyFirebaseToken, adminOnly, updateUser);
 router.post("/users/:userId/fire", verifyFirebaseToken, adminOnly, fireEmployee);
 router.post("/users/:userId/reinstate", verifyFirebaseToken, adminOnly, reinstateEmployee);
+router.post("/reinstatement-requests", verifyFirebaseToken, submitReinstatementRequest);
 router.delete("/users/:userId", verifyFirebaseToken, adminOnly, deleteUser);
 router.post("/users/merge", verifyFirebaseToken, adminOnly, mergeUsers);
 router.post("/account-requests/:requestId/approve", verifyFirebaseToken, adminOnly, approveRequest);

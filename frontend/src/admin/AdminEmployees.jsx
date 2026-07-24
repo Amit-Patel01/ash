@@ -98,7 +98,12 @@ export default function AdminEmployees() {
   const [reinstateEmailNotice, setReinstateEmailNotice] = useState(true)
   const [reinstateBusy, setReinstateBusy] = useState(false)
 
-  const employees = users.filter(u => (u.role || '').toLowerCase() === 'employee')
+  const employees = users.filter(u => 
+    (u.role || '').toLowerCase() === 'employee' || 
+    (u.previousRole || '').toLowerCase() === 'employee' || 
+    u.isTerminated || 
+    u.status === 'terminated'
+  )
 
   const normalizeAvatarSource = (value) => (value === 'linkedin' ? 'custom' : (value || 'github'))
 
@@ -502,6 +507,11 @@ export default function AdminEmployees() {
                         <p className="text-xs text-slate-400">Joined {employee.joinDate || 'N/A'}</p>
                         {employee.employeeId && (
                           <span className="mt-1 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-widest">{employee.employeeId}</span>
+                        )}
+                        {employee.reinstatementRequested && (
+                          <span className="mt-1 ml-1 inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-black bg-amber-100 text-amber-800 border border-amber-300 animate-pulse">
+                            📩 Reinstatement Requested
+                          </span>
                         )}
                       </div>
                     </div>
@@ -1231,9 +1241,16 @@ export default function AdminEmployees() {
             </p>
 
             {employeeToReinstate.fireReason && (
-              <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 mb-4 text-left">
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 mb-3 text-left">
                 <span className="font-bold text-slate-700 block mb-0.5">Recorded Termination Reason:</span>
                 "{employeeToReinstate.fireReason}"
+              </div>
+            )}
+
+            {employeeToReinstate.reinstatementMessage && (
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 mb-4 text-left">
+                <span className="font-bold text-amber-800 block mb-0.5">📩 Message to Founder/CEO & Admin:</span>
+                "{employeeToReinstate.reinstatementMessage}"
               </div>
             )}
 

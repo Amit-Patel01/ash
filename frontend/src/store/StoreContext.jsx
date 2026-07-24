@@ -816,6 +816,25 @@ export function StoreProvider({ children }) {
     } catch (err) { console.error('Error reinstating employee:', err); throw err }
   }
 
+  const submitReinstatementRequest = async (message) => {
+    try {
+      const headers = getAuthorizedHeaders()
+      const response = await fetch(`${api.base}/api/admin/reinstatement-requests`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ message })
+      })
+      const data = await response.json()
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to submit reinstatement request.')
+      }
+      if (data.user) {
+        setUsers(prev => prev.map(u => (u.uid === data.user.uid || u.id === data.user.id) ? data.user : u))
+      }
+      return data
+    } catch (err) { console.error('Error submitting reinstatement request:', err); throw err }
+  }
+
   const addService = async (service) => {
     try {
       const headers = getAuthorizedHeaders();
@@ -2019,7 +2038,7 @@ export function StoreProvider({ children }) {
     addManualEmployee, addTeamMember: addManualEmployee,
     updateManualEmployee, updateTeamMember: updateManualEmployee,
     deleteManualEmployee, deleteTeamMember: deleteManualEmployee,
-    addUser, updateUser, deleteUser, mergeUsers, fireEmployee, reinstateEmployee,
+    addUser, updateUser, deleteUser, mergeUsers, fireEmployee, reinstateEmployee, submitReinstatementRequest,
     services, addService, updateService, deleteService,
     accountRequests, sellRequests, serviceRequests, messages,
     deleteAdminMessage, updateMessageStatus,
