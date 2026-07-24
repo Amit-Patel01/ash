@@ -994,11 +994,12 @@ const reinstateEmployee = async (req, res) => {
  * Former employee submits a request to the Founder/CEO for reinstatement
  */
 const submitReinstatementRequest = async (req, res) => {
-  const { message } = req.body;
+  const { message, email: bodyEmail } = req.body;
   const user = req.user;
 
-  if (!user || !user.uid) {
-    return res.status(401).json({ success: false, message: "Unauthorized." });
+  const targetIdentifier = bodyEmail || user?.email || user?.uid;
+  if (!targetIdentifier) {
+    return res.status(400).json({ success: false, message: "Email address or login is required." });
   }
 
   if (!message || !message.trim()) {
@@ -1006,8 +1007,12 @@ const submitReinstatementRequest = async (req, res) => {
   }
 
   try {
-    const userId = user.uid;
-    const existingUser = await getManagedUser(userId);
+    const existingUser = await getManagedUser(targetIdentifier);
+    if (!existingUser) {
+      return res.status(404).json({ success: false, message: "Employee user account not found with this email." });
+    }
+
+    const userId = existingUser.id || existingUser.uid || targetIdentifier;
 
     const updatePayload = {
       reinstatementRequested: true,
@@ -1016,13 +1021,16 @@ const submitReinstatementRequest = async (req, res) => {
       reinstatementStatus: "pending",
     };
 
-    const updatedUser = await updateManagedUser(userId, updatePayload, { updatedBy: user });
+    const updatedUser = await updateManagedUser(userId, updatePayload, { updatedBy: user || { uid: userId } });
+
+    const targetEmail = existingUser?.email || targetIdentifier;
+    const targetName = existingUser?.displayName || targetEmail;
 
     try {
       await getDb().collection("reinstatementRequests").insertOne({
         userId,
-        userEmail: user.email,
-        userName: existingUser?.displayName || user.email,
+        userEmail: targetEmail,
+        userName: targetName,
         previousRole: existingUser?.previousRole || "employee",
         message: message.trim(),
         status: "pending",
@@ -1033,7 +1041,7 @@ const submitReinstatementRequest = async (req, res) => {
     }
 
     if (ADMIN_EMAIL) {
-      const safeName = escapeHtml(existingUser?.displayName || user.email);
+      const safeName = escapeHtml(targetName);
       const safeMessage = escapeHtml(message.trim())
         .split(/\r?\n/)
         .map((line) => `<p style="margin: 0 0 8px;">${line}</p>`)
@@ -1047,7 +1055,7 @@ const submitReinstatementRequest = async (req, res) => {
           `
             <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; margin-bottom: 20px;">
               <h3 style="color: #1e293b; margin-top: 0; font-size: 18px;">Former Employee Reinstatement Request</h3>
-              <p style="color: #475569; font-size: 14px;"><strong>Employee:</strong> ${safeName} (${user.email})</p>
+              <p style="color: #475569; font-size: 14px;"><strong>Employee:</strong> ${safeName} (${targetEmail})</p>
               <p style="color: #475569; font-size: 14px;"><strong>Previous Role:</strong> ${escapeHtml(existingUser?.previousRole || "employee")}</p>
               <div style="margin-top: 16px; padding: 16px; background: #ffffff; border-left: 4px solid #3b82f6; border-radius: 8px;">
                 <p style="margin: 0 0 6px; font-size: 12px; color: #64748b; font-weight: 700; text-transform: uppercase;">Message to Founder & CEO:</p>

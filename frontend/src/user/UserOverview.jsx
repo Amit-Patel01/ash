@@ -107,7 +107,7 @@ export default function UserOverview() {
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-16">
       
       {/* ── 0. Former Staff Reinstatement Request Banner ──────────────── */}
-      {(currentUser?.status === 'terminated' || currentUser?.isTerminated || currentUser?.previousRole) && (
+      {(userProfile?.status === 'terminated' || userProfile?.isTerminated || currentUser?.status === 'terminated' || currentUser?.isTerminated || Boolean(userProfile?.previousRole || currentUser?.previousRole)) && (
         <div className="rounded-3xl border border-rose-200 dark:border-rose-900/50 bg-gradient-to-r from-rose-50 via-red-50 to-orange-50 dark:from-rose-950/30 dark:to-slate-900 p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center text-2xl flex-shrink-0 border border-rose-200 dark:border-rose-800">
@@ -116,7 +116,7 @@ export default function UserOverview() {
             <div>
               <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Former Staff Member Notice</h3>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 max-w-xl">
-                {currentUser?.reinstatementRequested ? (
+                {(userProfile?.reinstatementRequested || currentUser?.reinstatementRequested) ? (
                   <span className="text-emerald-700 dark:text-emerald-400 font-semibold">
                     ✅ Reinstatement request submitted. Founder, CEO & Admin team will review your application.
                   </span>
@@ -127,7 +127,7 @@ export default function UserOverview() {
             </div>
           </div>
 
-          {!currentUser?.reinstatementRequested && (
+          {!(userProfile?.reinstatementRequested || currentUser?.reinstatementRequested) && (
             <button
               onClick={() => setShowReinstatementModal(true)}
               className="px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-rose-600/25 transition-all flex items-center gap-2 whitespace-nowrap self-stretch sm:self-auto justify-center"

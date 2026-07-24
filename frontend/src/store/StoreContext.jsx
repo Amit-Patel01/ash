@@ -853,23 +853,29 @@ export function StoreProvider({ children }) {
     } catch (err) { console.error('Error reinstating employee:', err); throw err }
   }
 
-  const submitReinstatementRequest = async (message) => {
+  const submitReinstatementRequest = async (message, userEmail = '') => {
     try {
-      const headers = getAuthorizedHeaders()
+      const token = localStorage.getItem('token')
+      const headers = { 'Content-Type': 'application/json' }
+      if (token) headers.Authorization = `Bearer ${token}`
+
       const response = await fetch(`${api.base}/api/admin/reinstatement-requests`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ message })
+        body: JSON.stringify({ message, email: userEmail })
       })
       const data = await response.json()
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to submit reinstatement request.')
       }
       if (data.user) {
-        setUsers(prev => prev.map(u => (u.uid === data.user.uid || u.id === data.user.id) ? data.user : u))
+        setUsers(prev => prev.map(u => (u.uid === data.user.uid || u.id === data.user.id || u.email?.toLowerCase() === data.user.email?.toLowerCase()) ? data.user : u))
       }
       return data
-    } catch (err) { console.error('Error submitting reinstatement request:', err); throw err }
+    } catch (err) {
+      console.error('Error submitting reinstatement request:', err)
+      throw err
+    }
   }
 
   const addService = async (service) => {

@@ -3,6 +3,8 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getHomePathForRole } from '../utils/roles'
 
+import { useStore } from '../store/StoreContext'
+
 const FAILED_KEY = 'solutionhub:login_fails'
 
 function getStoredFails() {
@@ -11,6 +13,7 @@ function getStoredFails() {
 
 export default function LoginPage() {
   const { login, loginWithGoogle, currentUser, loading: authLoading, authError, clearAuthError } = useAuth()
+  const { submitReinstatementRequest } = useStore()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const redirectPath = searchParams.get('redirect')
@@ -24,6 +27,34 @@ export default function LoginPage() {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [dashboardLoading, setDashboardLoading] = useState(false)
   const [failedAttempts, setFailedAttempts] = useState(getStoredFails)
+
+  // Reinstatement Modal on Login Page
+  const [showReinstatementModal, setShowReinstatementModal] = useState(false)
+  const [reinstatementEmailInput, setReinstatementEmailInput] = useState('')
+  const [reinstatementMsg, setReinstatementMsg] = useState('')
+  const [submittingReinstatement, setSubmittingReinstatement] = useState(false)
+
+  const openReinstatementFromLogin = () => {
+    setReinstatementEmailInput(email.trim())
+    setReinstatementMsg('')
+    setShowReinstatementModal(true)
+  }
+
+  const handleSendReinstatementFromLogin = async (e) => {
+    if (e) e.preventDefault()
+    if (!reinstatementEmailInput.trim() || !reinstatementMsg.trim()) return
+    setSubmittingReinstatement(true)
+    try {
+      const res = await submitReinstatementRequest(reinstatementMsg.trim(), reinstatementEmailInput.trim())
+      alert(res.message || "Your reinstatement request has been submitted to the Founder & CEO successfully!")
+      setShowReinstatementModal(false)
+      setReinstatementMsg('')
+    } catch (err) {
+      alert(err.message || "Failed to submit request. Please check the email entered.")
+    } finally {
+      setSubmittingReinstatement(false)
+    }
+  }
 
   useEffect(() => {
     if (!authLoading && currentUser && !dashboardLoading) {
@@ -280,6 +311,15 @@ export default function LoginPage() {
           </button>
 
           <div className="mt-6 pt-5 border-t border-slate-150">
+            <p className="text-center text-xs text-slate-400 font-medium mb-3">Former Staff Member?</p>
+            <button
+              type="button"
+              onClick={openReinstatementFromLogin}
+              className="w-full mb-4 py-3 px-4 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-xs"
+            >
+              <span>📩</span> Request Staff Reinstatement / Re-employment
+            </button>
+
             <p className="text-center text-xs text-slate-400 font-medium mb-4">Don't have an account?</p>
             <div className="grid grid-cols-2 gap-3">
               <Link to="/join-us" className="flex items-center justify-center px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all">
@@ -291,6 +331,82 @@ export default function LoginPage() {
             </div>
           </div>
         </div>
+
+        {/* Reinstatement Request Modal on Login Page */}
+        {showReinstatementModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onClick={() => !submittingReinstatement && setShowReinstatementModal(false)} />
+            <div className="relative bg-white border border-rose-200 rounded-3xl w-full max-w-lg shadow-2xl p-6 overflow-hidden">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-rose-500/10 text-rose-600 flex items-center justify-center text-xl">
+                    📩
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900">Staff Reinstatement Request</h3>
+                    <p className="text-xs text-slate-500">Send direct request to Founder, CEO & Admin Team</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowReinstatementModal(false)}
+                  disabled={submittingReinstatement}
+                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleSendReinstatementFromLogin} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                    Staff Email Address <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={reinstatementEmailInput}
+                    onChange={(e) => setReinstatementEmailInput(e.target.value)}
+                    placeholder="your-staff-email@example.com"
+                    className="w-full p-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wider">
+                    Message for Founder, CEO & Admin <span className="text-rose-500">*</span>
+                  </label>
+                  <textarea
+                    rows={4}
+                    required
+                    value={reinstatementMsg}
+                    onChange={(e) => setReinstatementMsg(e.target.value)}
+                    placeholder="Explain why you would like to request re-employment or reinstatement..."
+                    className="w-full p-3 bg-slate-50 border border-slate-300 rounded-2xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 resize-none"
+                  />
+                </div>
+
+                <div className="flex items-center gap-3 pt-2">
+                  <button
+                    type="button"
+                    disabled={submittingReinstatement}
+                    onClick={() => setShowReinstatementModal(false)}
+                    className="flex-1 py-3 bg-slate-100 text-slate-700 rounded-2xl text-xs font-bold hover:bg-slate-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submittingReinstatement}
+                    className="flex-[2] py-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-rose-500/25 flex items-center justify-center gap-2"
+                  >
+                    {submittingReinstatement ? 'Submitting...' : '📩 Submit Request'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         <p className="text-center mt-6 text-[10px] text-slate-400 font-bold uppercase tracking-[0.18em]">
           Secured by SolutionHub Security • © {new Date().getFullYear()}
