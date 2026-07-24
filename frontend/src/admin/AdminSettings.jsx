@@ -545,8 +545,8 @@ export default function AdminSettings() {
                 />
               </div>
 
-              <div className="rounded-xl border border-red-500/10 bg-red-500/[0.02] px-4 py-4 text-sm leading-6 text-slate-300">
-                ⚠️ <strong className="text-slate-900">Warning:</strong> When active, this blocks all users from accessing any public routes (home page, services, contact, etc.) and shows them a maintenance page with the support email <strong className="text-slate-900">support@amitsolutionhub.com</strong>. The admin portal (<code className="text-red-400">/admin</code>) and login page will remain fully accessible to you.
+              <div className="rounded-xl border border-amber-500/20 bg-amber-500/[0.04] px-4 py-4 text-sm leading-6 text-slate-700">
+                <strong className="text-slate-900 font-semibold">Warning:</strong> When active, this blocks all users from accessing any public routes (home page, services, contact, etc.) and shows them a maintenance page with the support email <strong className="text-slate-900">support@amitsolutionhub.com</strong>. The admin portal (<code className="text-red-500">/admin</code>) and login page will remain fully accessible to you.
               </div>
 
               <div className="flex justify-end pt-4">
