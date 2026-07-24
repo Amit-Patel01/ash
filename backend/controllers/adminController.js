@@ -797,6 +797,20 @@ const fireEmployee = async (req, res) => {
 
     const updatedUser = await updateManagedUser(userId, updatePayload, { updatedBy: req.user });
 
+    try {
+      const db = getDb();
+      await db.collection("team").deleteMany({
+        $or: [
+          { email: existingUser.email },
+          { _id: existingUser.id },
+          { _id: existingUser.uid },
+          { _id: existingUser.firebaseUid },
+        ].filter(Boolean),
+      });
+    } catch (e) {
+      logger.warn("Cleanup team collection warning on fire:", e.message);
+    }
+
     let emailSent = false;
     let emailError = null;
 
@@ -902,6 +916,10 @@ const reinstateEmployee = async (req, res) => {
       status: "active",
       isTerminated: false,
       role: restoredRole,
+      fireReason: "",
+      reinstatementRequested: false,
+      reinstatementMessage: "",
+      reinstatementStatus: "approved",
       reinstatedAt: new Date().toISOString(),
     };
 

@@ -98,12 +98,24 @@ export default function AdminEmployees() {
   const [reinstateEmailNotice, setReinstateEmailNotice] = useState(true)
   const [reinstateBusy, setReinstateBusy] = useState(false)
 
-  const employees = users.filter(u => 
-    (u.role || '').toLowerCase() === 'employee' || 
-    (u.previousRole || '').toLowerCase() === 'employee' || 
-    u.isTerminated || 
-    u.status === 'terminated'
-  )
+  const employees = users.filter(u => {
+    const roleLower = String(u.role || '').toLowerCase()
+    const prevRoleLower = String(u.previousRole || '').toLowerCase()
+    return (
+      roleLower === 'employee' ||
+      roleLower === 'staff' ||
+      roleLower === 'mentor' ||
+      roleLower === 'developer' ||
+      prevRoleLower === 'employee' ||
+      prevRoleLower === 'staff' ||
+      prevRoleLower === 'mentor' ||
+      prevRoleLower === 'developer' ||
+      u.isTerminated === true ||
+      u.status === 'terminated' ||
+      Boolean(u.fireReason) ||
+      Boolean(u.employeeId)
+    )
+  })
 
   const normalizeAvatarSource = (value) => (value === 'linkedin' ? 'custom' : (value || 'github'))
 
@@ -120,12 +132,13 @@ export default function AdminEmployees() {
   const filteredDepartments = ['All', ...new Set(employees.map(e => e.department).filter(Boolean))]
 
   const filteredEmployees = employees.filter(emp => {
-    const matchesDept = departmentFilter === 'All' || emp.department === departmentFilter
+    const isEmpTerminated = emp.status === 'terminated' || emp.isTerminated === true
+    const matchesDept = statusTab === 'terminated' || departmentFilter === 'All' || emp.department === departmentFilter
     const matchesStatus = statusTab === 'all'
       ? true
       : statusTab === 'terminated'
-      ? (emp.status === 'terminated' || emp.isTerminated)
-      : (emp.status === 'active' || !emp.status || emp.status === '')
+      ? isEmpTerminated
+      : !isEmpTerminated
 
     const nameStr = emp.displayName || ''
     const emailStr = emp.email || ''
@@ -142,6 +155,8 @@ export default function AdminEmployees() {
     if (!idB) return -1
     return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' })
   })
+
+  const getEmployeeId = (emp) => emp?.uid || emp?.id || emp?._id || emp?.firebaseUid || emp?.email || ''
 
   const openFireModal = (employee) => {
     setEmployeeToFire(employee)
@@ -160,7 +175,7 @@ export default function AdminEmployees() {
     }
     setFireBusy(true)
     try {
-      const id = employeeToFire.uid || employeeToFire.id
+      const id = getEmployeeId(employeeToFire)
       const res = await fireEmployee(id, {
         fireReason: fireReason.trim(),
         relievingDate,
@@ -169,6 +184,7 @@ export default function AdminEmployees() {
       alert(res.message || "Employee terminated successfully.")
       setShowFireModal(false)
       setEmployeeToFire(null)
+      setStatusTab('terminated')
     } catch (err) {
       alert(err.message || "Failed to terminate employee.")
     } finally {
@@ -187,11 +203,12 @@ export default function AdminEmployees() {
     if (!employeeToReinstate) return
     setReinstateBusy(true)
     try {
-      const id = employeeToReinstate.uid || employeeToReinstate.id
+      const id = getEmployeeId(employeeToReinstate)
       const res = await reinstateEmployee(id, { sendEmailNotice: reinstateEmailNotice })
       alert(res.message || "Employee reinstated successfully.")
       setShowReinstateModal(false)
       setEmployeeToReinstate(null)
+      setStatusTab('active')
     } catch (err) {
       alert(err.message || "Failed to reinstate employee.")
     } finally {
@@ -294,7 +311,7 @@ export default function AdminEmployees() {
       delete payload.customDepartment
 
       if (editingEmployee) {
-        await updateUser(editingEmployee.uid || editingEmployee.id, payload)
+        await updateUser(getEmployeeId(editingEmployee), payload)
       } else {
         await addUser(payload)
       }
@@ -312,7 +329,7 @@ export default function AdminEmployees() {
 
   const confirmDelete = async () => {
     if (!employeeToDelete) return
-    const id = employeeToDelete.uid || employeeToDelete.id
+    const id = getEmployeeId(employeeToDelete)
     setDeletingId(id)
     try {
       await deleteUser(id)
@@ -326,7 +343,7 @@ export default function AdminEmployees() {
   }
 
   const toggleStatus = async (employee) => {
-    const id = employee.uid || employee.id
+    const id = getEmployeeId(employee)
     try {
       await updateUser(id, { status: employee.status === 'active' ? 'inactive' : 'active' })
     } catch (err) {
@@ -336,7 +353,7 @@ export default function AdminEmployees() {
   }
 
   const promoteToAdmin = async (employee) => {
-    const id = employee.uid || employee.id
+    const id = getEmployeeId(employee)
     if (!window.confirm(`Promote ${employee.displayName || employee.email} to admin access?`)) {
       return
     }
@@ -408,7 +425,7 @@ export default function AdminEmployees() {
           }`}
         >
           <span className="w-2 h-2 rounded-full bg-emerald-300"></span>
-          Active Staff ({employees.filter(e => e.status === 'active' || !e.status || e.status === '').length})
+          Active Staff ({employees.filter(e => e.status !== 'terminated' && !e.isTerminated).length})
         </button>
 
         <button
@@ -492,7 +509,7 @@ export default function AdminEmployees() {
             </thead>
             <tbody className="divide-y divide-white/5">
               {filteredEmployees.map((employee, index) => (
-                <tr key={employee.uid || employee.id} className="hover:bg-slate-100 transition-colors group">
+                <tr key={getEmployeeId(employee) || index} className="hover:bg-slate-100 transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 flex-shrink-0 aspect-square rounded-full bg-gradient-to-br ${avatarColors[index % avatarColors.length]} flex items-center justify-center text-sm font-bold shadow-lg overflow-hidden`}>
@@ -625,6 +642,27 @@ export default function AdminEmployees() {
                   </td>
                 </tr>
               ))}
+              {filteredEmployees.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="px-6 py-12 text-center text-slate-400">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <span className="text-3xl">
+                        {statusTab === 'terminated' ? '🔥' : '👥'}
+                      </span>
+                      <p className="text-sm font-semibold text-slate-600">
+                        {statusTab === 'terminated'
+                          ? 'No Fired / Isolated employees found.'
+                          : 'No active employees found in this view.'}
+                      </p>
+                      <p className="text-xs text-slate-400">
+                        {statusTab === 'terminated'
+                          ? 'Fired employee records will be isolated here for reinstatement.'
+                          : 'Click "Add Employee" to create new staff accounts.'}
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

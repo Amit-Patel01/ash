@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "backend/controllers/adminController.js": {
-    "mtime": 1784873522.6931558,
-    "ast_hash": "8bc1a4c71a44df5094920a22b53e28d3",
+    "mtime": 1784874974.0589004,
+    "ast_hash": "1feb09679e7ef0355a8b380f4929ead9",
     "semantic_hash": ""
   },
   "backend/controllers/authController.js": {
@@ -1330,8 +1330,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminEmployees.jsx": {
-    "mtime": 1784873568.473099,
-    "ast_hash": "f170f3ad6ffacb0e7dadb2b39e400819",
+    "mtime": 1784874855.8291683,
+    "ast_hash": "2e982ec020281a660adf808d263392e4",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminLayout.jsx": {
@@ -1725,8 +1725,8 @@
     "semantic_hash": ""
   },
   "frontend/src/store/StoreContext.jsx": {
-    "mtime": 1784873543.4322414,
-    "ast_hash": "8edd1b2b00428a03c1dda331a23b3171",
+    "mtime": 1784874128.4835122,
+    "ast_hash": "b50b376a000be945db621e0681916fd2",
     "semantic_hash": ""
   },
   "frontend/src/technicalsupport/RepairService.jsx": {

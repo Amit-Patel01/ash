@@ -788,7 +788,12 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to fire/terminate employee.')
       }
-      setUsers(prev => prev.map(u => (u.uid === id || u.id === id) ? data.user : u))
+      setUsers(prev => prev.map(u => (
+        u.uid === id || 
+        u.id === id || 
+        u._id === id || 
+        (data.user?.email && u.email?.toLowerCase() === data.user.email?.toLowerCase())
+      ) ? { ...u, ...data.user } : u))
       if (typeof window !== 'undefined' && data.user?.uid) {
         window.dispatchEvent(new CustomEvent('solutionhub:user-updated', { detail: data.user }))
       }
@@ -808,7 +813,12 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to reinstate employee.')
       }
-      setUsers(prev => prev.map(u => (u.uid === id || u.id === id) ? data.user : u))
+      setUsers(prev => prev.map(u => (
+        u.uid === id || 
+        u.id === id || 
+        u._id === id || 
+        (data.user?.email && u.email?.toLowerCase() === data.user.email?.toLowerCase())
+      ) ? { ...u, ...data.user } : u))
       if (typeof window !== 'undefined' && data.user?.uid) {
         window.dispatchEvent(new CustomEvent('solutionhub:user-updated', { detail: data.user }))
       }
