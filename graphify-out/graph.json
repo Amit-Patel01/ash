@@ -5117,7 +5117,7 @@
       "label": "findUserByIdentifier()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L771",
+      "source_location": "L778",
       "_origin": "ast",
       "id": "backend_services_userservice_finduserbyidentifier",
       "community": 7,
@@ -5127,7 +5127,7 @@
       "label": "findUserConflict()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L820",
+      "source_location": "L827",
       "_origin": "ast",
       "id": "backend_services_userservice_finduserconflict",
       "community": 7,
@@ -5137,7 +5137,7 @@
       "label": "insertUserRow()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L923",
+      "source_location": "L930",
       "_origin": "ast",
       "id": "backend_services_userservice_insertuserrow",
       "community": 7,
@@ -5147,7 +5147,7 @@
       "label": "updateUserRow()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L965",
+      "source_location": "L972",
       "_origin": "ast",
       "id": "backend_services_userservice_updateuserrow",
       "community": 7,
@@ -5157,7 +5157,7 @@
       "label": "materializeLegacyUser()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1030",
+      "source_location": "L1037",
       "_origin": "ast",
       "id": "backend_services_userservice_materializelegacyuser",
       "community": 7,
@@ -5167,7 +5167,7 @@
       "label": "getManagedUser()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1089",
+      "source_location": "L1096",
       "_origin": "ast",
       "id": "backend_services_userservice_getmanageduser",
       "community": 27,
@@ -5177,7 +5177,7 @@
       "label": "createResetTokenRecord()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1097",
+      "source_location": "L1104",
       "_origin": "ast",
       "id": "backend_services_userservice_createresettokenrecord",
       "community": 7,
@@ -5187,7 +5187,7 @@
       "label": "buildResetEmailMarkup()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1136",
+      "source_location": "L1143",
       "_origin": "ast",
       "id": "backend_services_userservice_buildresetemailmarkup",
       "community": 7,
@@ -5197,7 +5197,7 @@
       "label": "sendResetEmail()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1153",
+      "source_location": "L1160",
       "_origin": "ast",
       "id": "backend_services_userservice_sendresetemail",
       "community": 7,
@@ -5207,7 +5207,7 @@
       "label": "createFirebaseAuthUser()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1197",
+      "source_location": "L1204",
       "_origin": "ast",
       "id": "backend_services_userservice_createfirebaseauthuser",
       "community": 7,
@@ -5217,7 +5217,7 @@
       "label": "createManagedUser()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1218",
+      "source_location": "L1225",
       "_origin": "ast",
       "id": "backend_services_userservice_createmanageduser",
       "community": 7,
@@ -5227,7 +5227,7 @@
       "label": "updateManagedUser()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1321",
+      "source_location": "L1328",
       "_origin": "ast",
       "id": "backend_services_userservice_updatemanageduser",
       "community": 7,
@@ -5237,7 +5237,7 @@
       "label": "deleteManagedUser()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1500",
+      "source_location": "L1514",
       "_origin": "ast",
       "id": "backend_services_userservice_deletemanageduser",
       "community": 27,
@@ -5247,7 +5247,7 @@
       "label": "mergeManagedUsers()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1530",
+      "source_location": "L1544",
       "_origin": "ast",
       "id": "backend_services_userservice_mergemanagedusers",
       "community": 7,
@@ -5257,7 +5257,7 @@
       "label": "createAccountRequest()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1680",
+      "source_location": "L1694",
       "_origin": "ast",
       "id": "backend_services_userservice_createaccountrequest",
       "community": 7,
@@ -5267,7 +5267,7 @@
       "label": "getAccountRequest()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1957",
+      "source_location": "L1971",
       "_origin": "ast",
       "id": "backend_services_userservice_getaccountrequest",
       "community": 7,
@@ -5277,7 +5277,7 @@
       "label": "approveAccountRequest()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1969",
+      "source_location": "L1983",
       "_origin": "ast",
       "id": "backend_services_userservice_approveaccountrequest",
       "community": 7,
@@ -5287,7 +5287,7 @@
       "label": "rejectAccountRequest()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2135",
+      "source_location": "L2149",
       "_origin": "ast",
       "id": "backend_services_userservice_rejectaccountrequest",
       "community": 7,
@@ -5297,7 +5297,7 @@
       "label": "deleteAccountRequest()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2183",
+      "source_location": "L2197",
       "_origin": "ast",
       "id": "backend_services_userservice_deleteaccountrequest",
       "community": 7,
@@ -5307,7 +5307,7 @@
       "label": "requestPasswordReset()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2206",
+      "source_location": "L2220",
       "_origin": "ast",
       "id": "backend_services_userservice_requestpasswordreset",
       "community": 7,
@@ -5317,7 +5317,7 @@
       "label": "verifyResetToken()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2256",
+      "source_location": "L2270",
       "_origin": "ast",
       "id": "backend_services_userservice_verifyresettoken",
       "community": 7,
@@ -5327,7 +5327,7 @@
       "label": "completePasswordReset()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2321",
+      "source_location": "L2335",
       "_origin": "ast",
       "id": "backend_services_userservice_completepasswordreset",
       "community": 7,
@@ -5337,7 +5337,7 @@
       "label": "getOwnProfile()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2429",
+      "source_location": "L2443",
       "_origin": "ast",
       "id": "backend_services_userservice_getownprofile",
       "community": 48,
@@ -5347,7 +5347,7 @@
       "label": "changeOwnEmail()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2437",
+      "source_location": "L2451",
       "_origin": "ast",
       "id": "backend_services_userservice_changeownemail",
       "community": 7,
@@ -5357,7 +5357,7 @@
       "label": "updateOwnProfile()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2448",
+      "source_location": "L2462",
       "_origin": "ast",
       "id": "backend_services_userservice_updateownprofile",
       "community": 48,
@@ -5367,7 +5367,7 @@
       "label": "uploadEmployeeCv()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2470",
+      "source_location": "L2484",
       "_origin": "ast",
       "id": "backend_services_userservice_uploademployeecv",
       "community": 7,
@@ -5377,7 +5377,7 @@
       "label": "listEmployeeCvRecords()",
       "file_type": "code",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2496",
+      "source_location": "L2510",
       "_origin": "ast",
       "id": "backend_services_userservice_listemployeecvrecords",
       "community": 27,
@@ -5880,7 +5880,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ha",
-      "community": 17,
+      "community": 45,
       "norm_label": "ha()"
     },
     {
@@ -6060,7 +6060,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_b_a",
-      "community": 2,
+      "community": 23,
       "norm_label": ".a()"
     },
     {
@@ -6120,7 +6120,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_b_catch",
-      "community": 17,
+      "community": 45,
       "norm_label": ".catch()"
     },
     {
@@ -6430,7 +6430,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_x",
-      "community": 17,
+      "community": 2,
       "norm_label": "x()"
     },
     {
@@ -6490,7 +6490,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sa",
-      "community": 45,
+      "community": 11,
       "norm_label": "sa()"
     },
     {
@@ -6510,7 +6510,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_bb",
-      "community": 45,
+      "community": 11,
       "norm_label": "bb()"
     },
     {
@@ -7010,7 +7010,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ed",
-      "community": 45,
+      "community": 11,
       "norm_label": "ed()"
     },
     {
@@ -7030,7 +7030,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_fd",
-      "community": 45,
+      "community": 11,
       "norm_label": "fd()"
     },
     {
@@ -7060,7 +7060,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ld",
-      "community": 45,
+      "community": 11,
       "norm_label": "ld()"
     },
     {
@@ -7130,7 +7130,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sd",
-      "community": 45,
+      "community": 11,
       "norm_label": "sd()"
     },
     {
@@ -7160,7 +7160,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_wd_za",
-      "community": 45,
+      "community": 11,
       "norm_label": ".za()"
     },
     {
@@ -7220,7 +7220,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_hd",
-      "community": 45,
+      "community": 11,
       "norm_label": "hd()"
     },
     {
@@ -7290,7 +7290,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_p",
-      "community": 2,
+      "community": 23,
       "norm_label": "p()"
     },
     {
@@ -7310,7 +7310,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ce",
-      "community": 2,
+      "community": 46,
       "norm_label": "ce()"
     },
     {
@@ -7350,7 +7350,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ge",
-      "community": 2,
+      "community": 23,
       "norm_label": "ge()"
     },
     {
@@ -7380,7 +7380,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_me",
-      "community": 2,
+      "community": 23,
       "norm_label": "me()"
     },
     {
@@ -7390,7 +7390,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ne",
-      "community": 2,
+      "community": 23,
       "norm_label": "ne()"
     },
     {
@@ -7500,7 +7500,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_xe",
-      "community": 2,
+      "community": 23,
       "norm_label": "xe()"
     },
     {
@@ -7550,7 +7550,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_fe",
-      "community": 2,
+      "community": 23,
       "norm_label": "fe()"
     },
     {
@@ -7560,7 +7560,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_je",
-      "community": 2,
+      "community": 23,
       "norm_label": "je()"
     },
     {
@@ -7590,7 +7590,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_he",
-      "community": 2,
+      "community": 23,
       "norm_label": "he()"
     },
     {
@@ -7600,7 +7600,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ie",
-      "community": 2,
+      "community": 23,
       "norm_label": "ie()"
     },
     {
@@ -7660,7 +7660,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_af",
-      "community": 2,
+      "community": 46,
       "norm_label": "af()"
     },
     {
@@ -7700,7 +7700,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ff",
-      "community": 17,
+      "community": 45,
       "norm_label": "ff()"
     },
     {
@@ -7880,7 +7880,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_if",
-      "community": 45,
+      "community": 52,
       "norm_label": "if()"
     },
     {
@@ -7890,7 +7890,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_w",
-      "community": 2,
+      "community": 45,
       "norm_label": "w()"
     },
     {
@@ -7900,7 +7900,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_w_dispose",
-      "community": 2,
+      "community": 45,
       "norm_label": ".dispose()"
     },
     {
@@ -7910,7 +7910,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_w_l",
-      "community": 2,
+      "community": 45,
       "norm_label": ".l()"
     },
     {
@@ -7930,7 +7930,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qf",
-      "community": 17,
+      "community": 2,
       "norm_label": "qf()"
     },
     {
@@ -7990,7 +7990,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ag",
-      "community": 17,
+      "community": 2,
       "norm_label": "ag()"
     },
     {
@@ -8000,7 +8000,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_cg",
-      "community": 17,
+      "community": 2,
       "norm_label": "cg()"
     },
     {
@@ -8010,7 +8010,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_cg_reset",
-      "community": 17,
+      "community": 2,
       "norm_label": ".reset()"
     },
     {
@@ -8070,7 +8070,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_kg",
-      "community": 2,
+      "community": 45,
       "norm_label": "kg()"
     },
     {
@@ -8080,7 +8080,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_x_then",
-      "community": 17,
+      "community": 2,
       "norm_label": ".then()"
     },
     {
@@ -8210,7 +8210,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_lg",
-      "community": 17,
+      "community": 2,
       "norm_label": "lg()"
     },
     {
@@ -8220,7 +8220,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yg",
-      "community": 17,
+      "community": 45,
       "norm_label": "yg()"
     },
     {
@@ -8230,7 +8230,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yg_cancel",
-      "community": 17,
+      "community": 45,
       "norm_label": ".cancel()"
     },
     {
@@ -8250,7 +8250,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yg_then",
-      "community": 17,
+      "community": 45,
       "norm_label": ".then()"
     },
     {
@@ -8290,7 +8290,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_lg_l",
-      "community": 17,
+      "community": 2,
       "norm_label": ".l()"
     },
     {
@@ -8390,7 +8390,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_bh",
-      "community": 2,
+      "community": 23,
       "norm_label": "bh()"
     },
     {
@@ -8460,7 +8460,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_kh",
-      "community": 2,
+      "community": 23,
       "norm_label": "kh()"
     },
     {
@@ -8930,7 +8930,7 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_wi",
-      "community": 17,
+      "community": 2,
       "norm_label": "wi()"
     },
     {
@@ -9090,7 +9090,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_jd",
-      "community": 45,
+      "community": 11,
       "norm_label": "jd()"
     },
     {
@@ -9140,7 +9140,7 @@
       "source_location": "L150",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_wi_z",
-      "community": 17,
+      "community": 2,
       "norm_label": ".z()"
     },
     {
@@ -9660,7 +9660,7 @@
       "source_location": "L188",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_uk",
-      "community": 17,
+      "community": 45,
       "norm_label": "uk()"
     },
     {
@@ -9810,7 +9810,7 @@
       "source_location": "L205",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_fk_l",
-      "community": 45,
+      "community": 52,
       "norm_label": ".l()"
     },
     {
@@ -9840,7 +9840,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_al",
-      "community": 17,
+      "community": 45,
       "norm_label": "al()"
     },
     {
@@ -9870,7 +9870,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_el",
-      "community": 17,
+      "community": 2,
       "norm_label": "el()"
     },
     {
@@ -9920,7 +9920,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_il",
-      "community": 17,
+      "community": 45,
       "norm_label": "il()"
     },
     {
@@ -9930,7 +9930,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_jl",
-      "community": 17,
+      "community": 45,
       "norm_label": "jl()"
     },
     {
@@ -9950,7 +9950,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ll",
-      "community": 17,
+      "community": 45,
       "norm_label": "ll()"
     },
     {
@@ -10000,7 +10000,7 @@
       "source_location": "L213",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_pl",
-      "community": 2,
+      "community": 45,
       "norm_label": "pl()"
     },
     {
@@ -10010,7 +10010,7 @@
       "source_location": "L213",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ql",
-      "community": 2,
+      "community": 45,
       "norm_label": "ql()"
     },
     {
@@ -10020,7 +10020,7 @@
       "source_location": "L213",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rl",
-      "community": 17,
+      "community": 45,
       "norm_label": "rl()"
     },
     {
@@ -10030,7 +10030,7 @@
       "source_location": "L214",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sl",
-      "community": 17,
+      "community": 45,
       "norm_label": "sl()"
     },
     {
@@ -10040,7 +10040,7 @@
       "source_location": "L214",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_tl",
-      "community": 17,
+      "community": 45,
       "norm_label": "tl()"
     },
     {
@@ -10050,7 +10050,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ul",
-      "community": 17,
+      "community": 45,
       "norm_label": "ul()"
     },
     {
@@ -10060,7 +10060,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_pl_l",
-      "community": 2,
+      "community": 45,
       "norm_label": ".l()"
     },
     {
@@ -10120,7 +10120,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_dl",
-      "community": 17,
+      "community": 45,
       "norm_label": "dl()"
     },
     {
@@ -10150,7 +10150,7 @@
       "source_location": "L217",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_il_s",
-      "community": 17,
+      "community": 45,
       "norm_label": ".s()"
     },
     {
@@ -10250,7 +10250,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_u",
-      "community": 4,
+      "community": 15,
       "norm_label": "u()"
     },
     {
@@ -10850,7 +10850,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ta",
-      "community": 51,
+      "community": 25,
       "norm_label": "ta()"
     },
     {
@@ -10890,7 +10890,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_gb",
-      "community": 25,
+      "community": 54,
       "norm_label": "gb()"
     },
     {
@@ -11790,7 +11790,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_de",
-      "community": 4,
+      "community": 15,
       "norm_label": "de()"
     },
     {
@@ -12060,7 +12060,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_mf",
-      "community": 25,
+      "community": 54,
       "norm_label": "mf()"
     },
     {
@@ -12120,7 +12120,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vf",
-      "community": 25,
+      "community": 54,
       "norm_label": "vf()"
     },
     {
@@ -12140,7 +12140,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wf",
-      "community": 25,
+      "community": 54,
       "norm_label": "wf()"
     },
     {
@@ -12180,7 +12180,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_w",
-      "community": 14,
+      "community": 24,
       "norm_label": "w()"
     },
     {
@@ -12190,7 +12190,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_w_dispose",
-      "community": 14,
+      "community": 24,
       "norm_label": ".dispose()"
     },
     {
@@ -12210,7 +12210,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_w_l",
-      "community": 14,
+      "community": 24,
       "norm_label": ".l()"
     },
     {
@@ -12320,7 +12320,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dg",
-      "community": 4,
+      "community": 15,
       "norm_label": "dg()"
     },
     {
@@ -12370,7 +12370,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lg",
-      "community": 14,
+      "community": 24,
       "norm_label": "lg()"
     },
     {
@@ -12400,7 +12400,7 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sg",
-      "community": 4,
+      "community": 15,
       "norm_label": "sg()"
     },
     {
@@ -12430,7 +12430,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hg",
-      "community": 4,
+      "community": 15,
       "norm_label": "hg()"
     },
     {
@@ -12450,7 +12450,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_tg",
-      "community": 4,
+      "community": 15,
       "norm_label": "tg()"
     },
     {
@@ -12820,7 +12820,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh",
-      "community": 51,
+      "community": 25,
       "norm_label": "sh()"
     },
     {
@@ -12840,7 +12840,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_na",
-      "community": 51,
+      "community": 25,
       "norm_label": ".na()"
     },
     {
@@ -12860,7 +12860,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_uh",
-      "community": 51,
+      "community": 25,
       "norm_label": "uh()"
     },
     {
@@ -12870,7 +12870,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vh",
-      "community": 25,
+      "community": 54,
       "norm_label": "vh()"
     },
     {
@@ -12960,7 +12960,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_g",
-      "community": 51,
+      "community": 25,
       "norm_label": ".g()"
     },
     {
@@ -12970,7 +12970,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_notify",
-      "community": 51,
+      "community": 25,
       "norm_label": ".notify()"
     },
     {
@@ -13000,7 +13000,7 @@
       "source_location": "L125",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vh_init",
-      "community": 25,
+      "community": 54,
       "norm_label": ".init()"
     },
     {
@@ -13010,7 +13010,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vh_stoppropagation",
-      "community": 25,
+      "community": 54,
       "norm_label": ".stoppropagation()"
     },
     {
@@ -13020,7 +13020,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vh_preventdefault",
-      "community": 25,
+      "community": 54,
       "norm_label": ".preventdefault()"
     },
     {
@@ -13040,7 +13040,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_h_remove",
-      "community": 51,
+      "community": 4,
       "norm_label": ".remove()"
     },
     {
@@ -13050,7 +13050,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bi",
-      "community": 51,
+      "community": 25,
       "norm_label": "bi()"
     },
     {
@@ -13070,7 +13070,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ai",
-      "community": 51,
+      "community": 4,
       "norm_label": "ai()"
     },
     {
@@ -13120,7 +13120,7 @@
       "source_location": "L131",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ni",
-      "community": 51,
+      "community": 4,
       "norm_label": "ni()"
     },
     {
@@ -13130,7 +13130,7 @@
       "source_location": "L132",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_oi",
-      "community": 51,
+      "community": 4,
       "norm_label": "oi()"
     },
     {
@@ -13140,7 +13140,7 @@
       "source_location": "L132",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_li",
-      "community": 51,
+      "community": 4,
       "norm_label": "li()"
     },
     {
@@ -13160,7 +13160,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ji",
-      "community": 51,
+      "community": 4,
       "norm_label": "ji()"
     },
     {
@@ -13270,7 +13270,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci",
-      "community": 51,
+      "community": 25,
       "norm_label": "ci()"
     },
     {
@@ -13280,7 +13280,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci_listen",
-      "community": 51,
+      "community": 25,
       "norm_label": ".listen()"
     },
     {
@@ -13290,7 +13290,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci_removeall",
-      "community": 51,
+      "community": 25,
       "norm_label": ".removeall()"
     },
     {
@@ -13300,7 +13300,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci_l",
-      "community": 51,
+      "community": 25,
       "norm_label": ".l()"
     },
     {
@@ -13310,7 +13310,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci_handleevent",
-      "community": 51,
+      "community": 25,
       "norm_label": ".handleevent()"
     },
     {
@@ -13330,7 +13330,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_li_enqueue",
-      "community": 51,
+      "community": 4,
       "norm_label": ".enqueue()"
     },
     {
@@ -13340,7 +13340,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_li_l",
-      "community": 51,
+      "community": 4,
       "norm_label": ".l()"
     },
     {
@@ -13800,7 +13800,7 @@
       "source_location": "L174",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dk",
-      "community": 51,
+      "community": 25,
       "norm_label": "dk()"
     },
     {
@@ -13950,7 +13950,7 @@
       "source_location": "L180",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_tk",
-      "community": 25,
+      "community": 54,
       "norm_label": "tk()"
     },
     {
@@ -13960,7 +13960,7 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_uk",
-      "community": 25,
+      "community": 54,
       "norm_label": "uk()"
     },
     {
@@ -13970,7 +13970,7 @@
       "source_location": "L182",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wk",
-      "community": 25,
+      "community": 54,
       "norm_label": "wk()"
     },
     {
@@ -13980,7 +13980,7 @@
       "source_location": "L182",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vk",
-      "community": 25,
+      "community": 54,
       "norm_label": "vk()"
     },
     {
@@ -14070,7 +14070,7 @@
       "source_location": "L193",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_nk",
-      "community": 25,
+      "community": 54,
       "norm_label": "nk()"
     },
     {
@@ -14080,7 +14080,7 @@
       "source_location": "L193",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ik_info",
-      "community": 25,
+      "community": 54,
       "norm_label": ".info()"
     },
     {
@@ -14090,7 +14090,7 @@
       "source_location": "L194",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ik_log",
-      "community": 25,
+      "community": 54,
       "norm_label": ".log()"
     },
     {
@@ -14100,7 +14100,7 @@
       "source_location": "L196",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sk",
-      "community": 25,
+      "community": 54,
       "norm_label": "sk()"
     },
     {
@@ -14110,7 +14110,7 @@
       "source_location": "L197",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_qk",
-      "community": 25,
+      "community": 54,
       "norm_label": "qk()"
     },
     {
@@ -14120,7 +14120,7 @@
       "source_location": "L198",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ik_x",
-      "community": 25,
+      "community": 54,
       "norm_label": ".x()"
     },
     {
@@ -14130,7 +14130,7 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ik_l",
-      "community": 51,
+      "community": 25,
       "norm_label": ".l()"
     },
     {
@@ -14140,7 +14140,7 @@
       "source_location": "L201",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_rk",
-      "community": 25,
+      "community": 54,
       "norm_label": "rk()"
     },
     {
@@ -14190,7 +14190,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cl",
-      "community": 14,
+      "community": 24,
       "norm_label": "cl()"
     },
     {
@@ -14200,7 +14200,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dl",
-      "community": 24,
+      "community": 4,
       "norm_label": "dl()"
     },
     {
@@ -14210,7 +14210,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dl_getmessage",
-      "community": 24,
+      "community": 4,
       "norm_label": ".getmessage()"
     },
     {
@@ -14490,7 +14490,7 @@
       "source_location": "L219",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cl_l",
-      "community": 14,
+      "community": 24,
       "norm_label": ".l()"
     },
     {
@@ -14510,7 +14510,7 @@
       "source_location": "L220",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_am",
-      "community": 25,
+      "community": 54,
       "norm_label": "am()"
     },
     {
@@ -16000,7 +16000,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_c_h",
-      "community": 54,
+      "community": 21,
       "norm_label": ".h()"
     },
     {
@@ -16030,7 +16030,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_c_j",
-      "community": 54,
+      "community": 21,
       "norm_label": ".j()"
     },
     {
@@ -16050,7 +16050,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_f",
-      "community": 54,
+      "community": 21,
       "norm_label": ".f()"
     },
     {
@@ -16060,7 +16060,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_d",
-      "community": 54,
+      "community": 21,
       "norm_label": ".d()"
     },
     {
@@ -16070,7 +16070,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_m",
-      "community": 54,
+      "community": 21,
       "norm_label": ".m()"
     },
     {
@@ -16080,7 +16080,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_v",
-      "community": 54,
+      "community": 21,
       "norm_label": ".v()"
     },
     {
@@ -16120,7 +16120,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_b",
-      "community": 18,
+      "community": 21,
       "norm_label": ".b()"
     },
     {
@@ -16710,7 +16710,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_hc",
-      "community": 40,
+      "community": 18,
       "norm_label": "hc()"
     },
     {
@@ -16890,7 +16890,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_l",
-      "community": 18,
+      "community": 9,
       "norm_label": "l()"
     },
     {
@@ -16900,7 +16900,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_l_tojson",
-      "community": 18,
+      "community": 9,
       "norm_label": ".tojson()"
     },
     {
@@ -16920,7 +16920,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_l_tostring",
-      "community": 18,
+      "community": 9,
       "norm_label": ".tostring()"
     },
     {
@@ -17170,7 +17170,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ld",
-      "community": 18,
+      "community": 21,
       "norm_label": "ld()"
     },
     {
@@ -17490,7 +17490,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_de",
-      "community": 54,
+      "community": 21,
       "norm_label": "de()"
     },
     {
@@ -17500,7 +17500,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_de_get",
-      "community": 54,
+      "community": 21,
       "norm_label": ".get()"
     },
     {
@@ -17510,7 +17510,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ee",
-      "community": 64,
+      "community": 21,
       "norm_label": "ee()"
     },
     {
@@ -17570,7 +17570,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_le",
-      "community": 18,
+      "community": 21,
       "norm_label": "le()"
     },
     {
@@ -17600,7 +17600,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_pe",
-      "community": 64,
+      "community": 21,
       "norm_label": "pe()"
     },
     {
@@ -17620,7 +17620,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_qe_h",
-      "community": 18,
+      "community": 21,
       "norm_label": ".h()"
     },
     {
@@ -17750,7 +17750,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_de_reset",
-      "community": 54,
+      "community": 21,
       "norm_label": ".reset()"
     },
     {
@@ -17930,7 +17930,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_v_a",
-      "community": 40,
+      "community": 21,
       "norm_label": ".a()"
     },
     {
@@ -18080,7 +18080,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_qf",
-      "community": 40,
+      "community": 9,
       "norm_label": "qf()"
     },
     {
@@ -18260,7 +18260,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_lf",
-      "community": 40,
+      "community": 9,
       "norm_label": "lf()"
     },
     {
@@ -18300,7 +18300,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_qf_removeall",
-      "community": 40,
+      "community": 21,
       "norm_label": ".removeall()"
     },
     {
@@ -18470,7 +18470,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_hg_s",
-      "community": 54,
+      "community": 21,
       "norm_label": ".s()"
     },
     {
@@ -19180,7 +19180,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ji",
-      "community": 54,
+      "community": 21,
       "norm_label": "ji()"
     },
     {
@@ -19190,7 +19190,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ji_set",
-      "community": 54,
+      "community": 21,
       "norm_label": ".set()"
     },
     {
@@ -19210,7 +19210,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ji_get",
-      "community": 54,
+      "community": 21,
       "norm_label": ".get()"
     },
     {
@@ -19230,7 +19230,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_mi",
-      "community": 54,
+      "community": 21,
       "norm_label": "mi()"
     },
     {
@@ -19250,7 +19250,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_oi",
-      "community": 54,
+      "community": 21,
       "norm_label": "oi()"
     },
     {
@@ -19270,7 +19270,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_pi_i",
-      "community": 54,
+      "community": 21,
       "norm_label": ".i()"
     },
     {
@@ -19280,7 +19280,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ri",
-      "community": 54,
+      "community": 21,
       "norm_label": "ri()"
     },
     {
@@ -27057,7 +27057,7 @@
       "label": "useStore()",
       "file_type": "code",
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L2088",
+      "source_location": "L2115",
       "_origin": "ast",
       "id": "frontend_src_store_storecontext_usestore",
       "community": 6,
@@ -39109,7 +39109,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L1137",
+      "source_location": "L1144",
       "weight": 1.0,
       "source": "backend_services_userservice_buildresetemailmarkup",
       "target": "backend_services_emailservice_emailtemplate"
@@ -39197,7 +39197,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L1173",
+      "source_location": "L1180",
       "weight": 1.0,
       "source": "backend_services_userservice_sendresetemail",
       "target": "backend_services_emailservice_sendemail"
@@ -39208,7 +39208,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L1483",
+      "source_location": "L1497",
       "weight": 1.0,
       "source": "backend_services_userservice_updatemanageduser",
       "target": "backend_services_emailservice_sendemail"
@@ -40461,7 +40461,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2527",
+      "source_location": "L2541",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40512,7 +40512,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1136",
+      "source_location": "L1143",
       "weight": 1.0,
       "source": "backend_services_userservice",
       "target": "backend_services_userservice_buildresetemailmarkup",
@@ -40542,7 +40542,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2534",
+      "source_location": "L2548",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40553,7 +40553,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2532",
+      "source_location": "L2546",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40564,7 +40564,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2525",
+      "source_location": "L2539",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40575,7 +40575,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1197",
+      "source_location": "L1204",
       "weight": 1.0,
       "source": "backend_services_userservice",
       "target": "backend_services_userservice_createfirebaseauthuser",
@@ -40585,7 +40585,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2513",
+      "source_location": "L2527",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40596,7 +40596,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2521",
+      "source_location": "L2535",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40607,7 +40607,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1097",
+      "source_location": "L1104",
       "weight": 1.0,
       "source": "backend_services_userservice",
       "target": "backend_services_userservice_createresettokenrecord",
@@ -40637,7 +40637,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2529",
+      "source_location": "L2543",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40658,7 +40658,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2523",
+      "source_location": "L2537",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40669,7 +40669,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L771",
+      "source_location": "L778",
       "weight": 1.0,
       "source": "backend_services_userservice",
       "target": "backend_services_userservice_finduserbyidentifier",
@@ -40679,7 +40679,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L820",
+      "source_location": "L827",
       "weight": 1.0,
       "source": "backend_services_userservice",
       "target": "backend_services_userservice_finduserconflict",
@@ -40709,7 +40709,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2526",
+      "source_location": "L2540",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40730,7 +40730,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2520",
+      "source_location": "L2534",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40741,7 +40741,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2533",
+      "source_location": "L2547",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40752,7 +40752,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L923",
+      "source_location": "L930",
       "weight": 1.0,
       "source": "backend_services_userservice",
       "target": "backend_services_userservice_insertuserrow",
@@ -40762,7 +40762,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2518",
+      "source_location": "L2532",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40773,7 +40773,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2537",
+      "source_location": "L2551",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40784,7 +40784,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2519",
+      "source_location": "L2533",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40805,7 +40805,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2517",
+      "source_location": "L2531",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40856,7 +40856,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1030",
+      "source_location": "L1037",
       "weight": 1.0,
       "source": "backend_services_userservice",
       "target": "backend_services_userservice_materializelegacyuser",
@@ -40866,7 +40866,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2524",
+      "source_location": "L2538",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40887,7 +40887,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2514",
+      "source_location": "L2528",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40898,7 +40898,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2515",
+      "source_location": "L2529",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40959,7 +40959,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2528",
+      "source_location": "L2542",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -40980,7 +40980,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2530",
+      "source_location": "L2544",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -41051,7 +41051,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1153",
+      "source_location": "L1160",
       "weight": 1.0,
       "source": "backend_services_userservice",
       "target": "backend_services_userservice_sendresetemail",
@@ -41111,7 +41111,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2522",
+      "source_location": "L2536",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -41122,7 +41122,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2535",
+      "source_location": "L2549",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -41133,7 +41133,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L965",
+      "source_location": "L972",
       "weight": 1.0,
       "source": "backend_services_userservice",
       "target": "backend_services_userservice_updateuserrow",
@@ -41143,7 +41143,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2536",
+      "source_location": "L2550",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -41174,7 +41174,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2516",
+      "source_location": "L2530",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -41195,7 +41195,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2531",
+      "source_location": "L2545",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_userservice",
@@ -41229,7 +41229,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1975",
+      "source_location": "L1989",
       "weight": 1.0,
       "source": "backend_services_userservice_approveaccountrequest",
       "target": "backend_services_userservice_createhttperror",
@@ -41240,7 +41240,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2440",
+      "source_location": "L2454",
       "weight": 1.0,
       "source": "backend_services_userservice_changeownemail",
       "target": "backend_services_userservice_createhttperror",
@@ -41251,7 +41251,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2328",
+      "source_location": "L2342",
       "weight": 1.0,
       "source": "backend_services_userservice_completepasswordreset",
       "target": "backend_services_userservice_createhttperror",
@@ -41262,7 +41262,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1690",
+      "source_location": "L1704",
       "weight": 1.0,
       "source": "backend_services_userservice_createaccountrequest",
       "target": "backend_services_userservice_createhttperror",
@@ -41273,7 +41273,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1226",
+      "source_location": "L1233",
       "weight": 1.0,
       "source": "backend_services_userservice_createmanageduser",
       "target": "backend_services_userservice_createhttperror",
@@ -41284,7 +41284,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2189",
+      "source_location": "L2203",
       "weight": 1.0,
       "source": "backend_services_userservice_deleteaccountrequest",
       "target": "backend_services_userservice_createhttperror",
@@ -41295,7 +41295,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1503",
+      "source_location": "L1517",
       "weight": 1.0,
       "source": "backend_services_userservice_deletemanageduser",
       "target": "backend_services_userservice_createhttperror",
@@ -41306,7 +41306,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2432",
+      "source_location": "L2446",
       "weight": 1.0,
       "source": "backend_services_userservice_getownprofile",
       "target": "backend_services_userservice_createhttperror",
@@ -41317,7 +41317,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1535",
+      "source_location": "L1549",
       "weight": 1.0,
       "source": "backend_services_userservice_mergemanagedusers",
       "target": "backend_services_userservice_createhttperror",
@@ -41328,7 +41328,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2141",
+      "source_location": "L2155",
       "weight": 1.0,
       "source": "backend_services_userservice_rejectaccountrequest",
       "target": "backend_services_userservice_createhttperror",
@@ -41339,7 +41339,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2209",
+      "source_location": "L2223",
       "weight": 1.0,
       "source": "backend_services_userservice_requestpasswordreset",
       "target": "backend_services_userservice_createhttperror",
@@ -41361,7 +41361,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1188",
+      "source_location": "L1195",
       "weight": 1.0,
       "source": "backend_services_userservice_sendresetemail",
       "target": "backend_services_userservice_createhttperror",
@@ -41372,7 +41372,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1324",
+      "source_location": "L1331",
       "weight": 1.0,
       "source": "backend_services_userservice_updatemanageduser",
       "target": "backend_services_userservice_createhttperror",
@@ -41383,7 +41383,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2472",
+      "source_location": "L2486",
       "weight": 1.0,
       "source": "backend_services_userservice_uploademployeecv",
       "target": "backend_services_userservice_createhttperror",
@@ -41405,7 +41405,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2260",
+      "source_location": "L2274",
       "weight": 1.0,
       "source": "backend_services_userservice_verifyresettoken",
       "target": "backend_services_userservice_createhttperror",
@@ -41416,7 +41416,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1970",
+      "source_location": "L1984",
       "weight": 1.0,
       "source": "backend_services_userservice_approveaccountrequest",
       "target": "backend_services_userservice_usemysql",
@@ -41427,7 +41427,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2326",
+      "source_location": "L2340",
       "weight": 1.0,
       "source": "backend_services_userservice_completepasswordreset",
       "target": "backend_services_userservice_usemysql",
@@ -41438,7 +41438,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1681",
+      "source_location": "L1695",
       "weight": 1.0,
       "source": "backend_services_userservice_createaccountrequest",
       "target": "backend_services_userservice_usemysql",
@@ -41449,7 +41449,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1238",
+      "source_location": "L1245",
       "weight": 1.0,
       "source": "backend_services_userservice_createmanageduser",
       "target": "backend_services_userservice_usemysql",
@@ -41460,7 +41460,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1102",
+      "source_location": "L1109",
       "weight": 1.0,
       "source": "backend_services_userservice_createresettokenrecord",
       "target": "backend_services_userservice_usemysql",
@@ -41471,7 +41471,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2184",
+      "source_location": "L2198",
       "weight": 1.0,
       "source": "backend_services_userservice_deleteaccountrequest",
       "target": "backend_services_userservice_usemysql",
@@ -41482,7 +41482,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1506",
+      "source_location": "L1520",
       "weight": 1.0,
       "source": "backend_services_userservice_deletemanageduser",
       "target": "backend_services_userservice_usemysql",
@@ -41493,7 +41493,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L772",
+      "source_location": "L779",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserbyidentifier",
       "target": "backend_services_userservice_usemysql",
@@ -41504,7 +41504,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L821",
+      "source_location": "L828",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserconflict",
       "target": "backend_services_userservice_usemysql",
@@ -41526,7 +41526,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1541",
+      "source_location": "L1555",
       "weight": 1.0,
       "source": "backend_services_userservice_mergemanagedusers",
       "target": "backend_services_userservice_usemysql",
@@ -41537,7 +41537,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2136",
+      "source_location": "L2150",
       "weight": 1.0,
       "source": "backend_services_userservice_rejectaccountrequest",
       "target": "backend_services_userservice_usemysql",
@@ -41548,7 +41548,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2213",
+      "source_location": "L2227",
       "weight": 1.0,
       "source": "backend_services_userservice_requestpasswordreset",
       "target": "backend_services_userservice_usemysql",
@@ -41559,7 +41559,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1362",
+      "source_location": "L1369",
       "weight": 1.0,
       "source": "backend_services_userservice_updatemanageduser",
       "target": "backend_services_userservice_usemysql",
@@ -41570,7 +41570,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2257",
+      "source_location": "L2271",
       "weight": 1.0,
       "source": "backend_services_userservice_verifyresettoken",
       "target": "backend_services_userservice_usemysql",
@@ -41581,7 +41581,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2035",
+      "source_location": "L2049",
       "weight": 1.0,
       "source": "backend_services_userservice_approveaccountrequest",
       "target": "backend_services_userservice_assertmysqlready",
@@ -41592,7 +41592,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2386",
+      "source_location": "L2400",
       "weight": 1.0,
       "source": "backend_services_userservice_completepasswordreset",
       "target": "backend_services_userservice_assertmysqlready",
@@ -41603,7 +41603,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1793",
+      "source_location": "L1807",
       "weight": 1.0,
       "source": "backend_services_userservice_createaccountrequest",
       "target": "backend_services_userservice_assertmysqlready",
@@ -41614,7 +41614,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2195",
+      "source_location": "L2209",
       "weight": 1.0,
       "source": "backend_services_userservice_deleteaccountrequest",
       "target": "backend_services_userservice_assertmysqlready",
@@ -41625,7 +41625,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L794",
+      "source_location": "L801",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserbyidentifier",
       "target": "backend_services_userservice_assertmysqlready",
@@ -41636,7 +41636,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L841",
+      "source_location": "L848",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserconflict",
       "target": "backend_services_userservice_assertmysqlready",
@@ -41647,7 +41647,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1958",
+      "source_location": "L1972",
       "weight": 1.0,
       "source": "backend_services_userservice_getaccountrequest",
       "target": "backend_services_userservice_assertmysqlready",
@@ -41658,7 +41658,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1031",
+      "source_location": "L1038",
       "weight": 1.0,
       "source": "backend_services_userservice_materializelegacyuser",
       "target": "backend_services_userservice_assertmysqlready",
@@ -41669,7 +41669,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1611",
+      "source_location": "L1625",
       "weight": 1.0,
       "source": "backend_services_userservice_mergemanagedusers",
       "target": "backend_services_userservice_assertmysqlready",
@@ -41680,7 +41680,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2158",
+      "source_location": "L2172",
       "weight": 1.0,
       "source": "backend_services_userservice_rejectaccountrequest",
       "target": "backend_services_userservice_assertmysqlready",
@@ -41691,7 +41691,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2289",
+      "source_location": "L2303",
       "weight": 1.0,
       "source": "backend_services_userservice_verifyresettoken",
       "target": "backend_services_userservice_assertmysqlready",
@@ -41702,7 +41702,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1283",
+      "source_location": "L1290",
       "weight": 1.0,
       "source": "backend_services_userservice_createmanageduser",
       "target": "backend_services_userservice_mapfirestoreuser",
@@ -41713,7 +41713,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L838",
+      "source_location": "L845",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserconflict",
       "target": "backend_services_userservice_mapfirestoreuser",
@@ -41812,7 +41812,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1601",
+      "source_location": "L1615",
       "weight": 1.0,
       "source": "backend_services_userservice_mergemanagedusers",
       "target": "backend_services_userservice_mapfirestoreuser",
@@ -41834,7 +41834,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1461",
+      "source_location": "L1475",
       "weight": 1.0,
       "source": "backend_services_userservice_updatemanageduser",
       "target": "backend_services_userservice_mapfirestoreuser",
@@ -41845,7 +41845,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2438",
+      "source_location": "L2452",
       "weight": 1.0,
       "source": "backend_services_userservice_changeownemail",
       "target": "backend_services_userservice_normalizeemail",
@@ -41856,7 +41856,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2352",
+      "source_location": "L2366",
       "weight": 1.0,
       "source": "backend_services_userservice_completepasswordreset",
       "target": "backend_services_userservice_normalizeemail",
@@ -41867,7 +41867,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1683",
+      "source_location": "L1697",
       "weight": 1.0,
       "source": "backend_services_userservice_createaccountrequest",
       "target": "backend_services_userservice_normalizeemail",
@@ -41878,7 +41878,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1109",
+      "source_location": "L1116",
       "weight": 1.0,
       "source": "backend_services_userservice_createresettokenrecord",
       "target": "backend_services_userservice_normalizeemail",
@@ -41889,7 +41889,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L807",
+      "source_location": "L814",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserbyidentifier",
       "target": "backend_services_userservice_normalizeemail",
@@ -41900,7 +41900,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L822",
+      "source_location": "L829",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserconflict",
       "target": "backend_services_userservice_normalizeemail",
@@ -41922,7 +41922,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1041",
+      "source_location": "L1048",
       "weight": 1.0,
       "source": "backend_services_userservice_materializelegacyuser",
       "target": "backend_services_userservice_normalizeemail",
@@ -41933,7 +41933,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2207",
+      "source_location": "L2221",
       "weight": 1.0,
       "source": "backend_services_userservice_requestpasswordreset",
       "target": "backend_services_userservice_normalizeemail",
@@ -41966,7 +41966,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2282",
+      "source_location": "L2296",
       "weight": 1.0,
       "source": "backend_services_userservice_verifyresettoken",
       "target": "backend_services_userservice_normalizeemail",
@@ -41977,7 +41977,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1684",
+      "source_location": "L1698",
       "weight": 1.0,
       "source": "backend_services_userservice_createaccountrequest",
       "target": "backend_services_userservice_normalizephone",
@@ -41988,7 +41988,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L785",
+      "source_location": "L792",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserbyidentifier",
       "target": "backend_services_userservice_normalizephone",
@@ -41999,7 +41999,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L823",
+      "source_location": "L830",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserconflict",
       "target": "backend_services_userservice_normalizephone",
@@ -42021,7 +42021,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1052",
+      "source_location": "L1059",
       "weight": 1.0,
       "source": "backend_services_userservice_materializelegacyuser",
       "target": "backend_services_userservice_normalizephone",
@@ -42054,7 +42054,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L907",
+      "source_location": "L914",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserconflict",
       "target": "backend_services_userservice_normalizeboolean",
@@ -42065,7 +42065,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L757",
+      "source_location": "L764",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserinmongo",
       "target": "backend_services_userservice_normalizeboolean",
@@ -42076,7 +42076,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1068",
+      "source_location": "L1075",
       "weight": 1.0,
       "source": "backend_services_userservice_materializelegacyuser",
       "target": "backend_services_userservice_normalizeboolean",
@@ -42098,7 +42098,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L893",
+      "source_location": "L900",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserconflict",
       "target": "backend_services_userservice_normalizestatus",
@@ -42109,7 +42109,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L743",
+      "source_location": "L750",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserinmongo",
       "target": "backend_services_userservice_normalizestatus",
@@ -42142,7 +42142,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1054",
+      "source_location": "L1061",
       "weight": 1.0,
       "source": "backend_services_userservice_materializelegacyuser",
       "target": "backend_services_userservice_normalizestatus",
@@ -42153,7 +42153,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2230",
+      "source_location": "L2244",
       "weight": 1.0,
       "source": "backend_services_userservice_requestpasswordreset",
       "target": "backend_services_userservice_normalizestatus",
@@ -42186,7 +42186,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L892",
+      "source_location": "L899",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserconflict",
       "target": "backend_services_userservice_normalizesystemrole",
@@ -42197,7 +42197,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L742",
+      "source_location": "L749",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserinmongo",
       "target": "backend_services_userservice_normalizesystemrole",
@@ -42241,7 +42241,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1053",
+      "source_location": "L1060",
       "weight": 1.0,
       "source": "backend_services_userservice_materializelegacyuser",
       "target": "backend_services_userservice_normalizesystemrole",
@@ -42252,7 +42252,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2229",
+      "source_location": "L2243",
       "weight": 1.0,
       "source": "backend_services_userservice_requestpasswordreset",
       "target": "backend_services_userservice_normalizesystemrole",
@@ -42285,7 +42285,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L764",
+      "source_location": "L771",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserinmongo",
       "target": "backend_services_userservice_toisostring",
@@ -42318,7 +42318,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2285",
+      "source_location": "L2299",
       "weight": 1.0,
       "source": "backend_services_userservice_verifyresettoken",
       "target": "backend_services_userservice_toisostring",
@@ -42340,7 +42340,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1058",
+      "source_location": "L1065",
       "weight": 1.0,
       "source": "backend_services_userservice_materializelegacyuser",
       "target": "backend_services_userservice_todatestring",
@@ -42362,7 +42362,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L906",
+      "source_location": "L913",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserconflict",
       "target": "backend_services_userservice_parseskills",
@@ -42373,7 +42373,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L756",
+      "source_location": "L763",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserinmongo",
       "target": "backend_services_userservice_parseskills",
@@ -42384,7 +42384,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1067",
+      "source_location": "L1074",
       "weight": 1.0,
       "source": "backend_services_userservice_materializelegacyuser",
       "target": "backend_services_userservice_parseskills",
@@ -42417,7 +42417,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L952",
+      "source_location": "L959",
       "weight": 1.0,
       "source": "backend_services_userservice_insertuserrow",
       "target": "backend_services_userservice_stringifyskills",
@@ -42428,7 +42428,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1016",
+      "source_location": "L1023",
       "weight": 1.0,
       "source": "backend_services_userservice_updateuserrow",
       "target": "backend_services_userservice_stringifyskills",
@@ -42439,7 +42439,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2439",
+      "source_location": "L2453",
       "weight": 1.0,
       "source": "backend_services_userservice_changeownemail",
       "target": "backend_services_userservice_validateemail",
@@ -42450,7 +42450,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1691",
+      "source_location": "L1705",
       "weight": 1.0,
       "source": "backend_services_userservice_createaccountrequest",
       "target": "backend_services_userservice_validateemail",
@@ -42461,7 +42461,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2208",
+      "source_location": "L2222",
       "weight": 1.0,
       "source": "backend_services_userservice_requestpasswordreset",
       "target": "backend_services_userservice_validateemail",
@@ -42483,7 +42483,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1692",
+      "source_location": "L1706",
       "weight": 1.0,
       "source": "backend_services_userservice_createaccountrequest",
       "target": "backend_services_userservice_validatephone",
@@ -42505,7 +42505,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2322",
+      "source_location": "L2336",
       "weight": 1.0,
       "source": "backend_services_userservice_completepasswordreset",
       "target": "backend_services_userservice_validatepassword",
@@ -42516,7 +42516,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2391",
+      "source_location": "L2405",
       "weight": 1.0,
       "source": "backend_services_userservice_completepasswordreset",
       "target": "backend_services_userservice_mapuserrow",
@@ -42527,7 +42527,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L863",
+      "source_location": "L870",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserconflict",
       "target": "backend_services_userservice_mapuserrow",
@@ -42560,7 +42560,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1853",
+      "source_location": "L1867",
       "weight": 1.0,
       "source": "backend_services_userservice_createaccountrequest",
       "target": "backend_services_userservice_mapaccountrequestrow",
@@ -42571,7 +42571,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1966",
+      "source_location": "L1980",
       "weight": 1.0,
       "source": "backend_services_userservice_getaccountrequest",
       "target": "backend_services_userservice_mapaccountrequestrow",
@@ -42582,7 +42582,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1219",
+      "source_location": "L1226",
       "weight": 1.0,
       "source": "backend_services_userservice_createmanageduser",
       "target": "backend_services_userservice_sanitizemanageduserinput",
@@ -42593,7 +42593,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1327",
+      "source_location": "L1334",
       "weight": 1.0,
       "source": "backend_services_userservice_updatemanageduser",
       "target": "backend_services_userservice_sanitizemanageduserinput",
@@ -42604,7 +42604,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1575",
+      "source_location": "L1589",
       "weight": 1.0,
       "source": "backend_services_userservice_mergemanagedusers",
       "target": "backend_services_userservice_buildfirestoreuserpayload",
@@ -42648,7 +42648,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1155",
+      "source_location": "L1162",
       "weight": 1.0,
       "source": "backend_services_userservice_sendresetemail",
       "target": "backend_services_userservice_buildreseturl",
@@ -42659,7 +42659,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2411",
+      "source_location": "L2425",
       "weight": 1.0,
       "source": "backend_services_userservice_completepasswordreset",
       "target": "backend_services_userservice_syncusertofirebase",
@@ -42670,7 +42670,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1286",
+      "source_location": "L1293",
       "weight": 1.0,
       "source": "backend_services_userservice_createmanageduser",
       "target": "backend_services_userservice_syncusertofirebase",
@@ -42681,7 +42681,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1602",
+      "source_location": "L1616",
       "weight": 1.0,
       "source": "backend_services_userservice_mergemanagedusers",
       "target": "backend_services_userservice_syncusertofirebase",
@@ -42703,7 +42703,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1466",
+      "source_location": "L1480",
       "weight": 1.0,
       "source": "backend_services_userservice_updatemanageduser",
       "target": "backend_services_userservice_syncusertofirebase",
@@ -42714,7 +42714,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1524",
+      "source_location": "L1538",
       "weight": 1.0,
       "source": "backend_services_userservice_deletemanageduser",
       "target": "backend_services_userservice_removeuserfromfirebase",
@@ -42725,7 +42725,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1598",
+      "source_location": "L1612",
       "weight": 1.0,
       "source": "backend_services_userservice_mergemanagedusers",
       "target": "backend_services_userservice_removeuserfromfirebase",
@@ -42747,7 +42747,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2066",
+      "source_location": "L2080",
       "weight": 1.0,
       "source": "backend_services_userservice_approveaccountrequest",
       "target": "backend_services_userservice_syncaccountrequesttofirebase",
@@ -42758,7 +42758,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1876",
+      "source_location": "L1890",
       "weight": 1.0,
       "source": "backend_services_userservice_createaccountrequest",
       "target": "backend_services_userservice_syncaccountrequesttofirebase",
@@ -42769,7 +42769,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2179",
+      "source_location": "L2193",
       "weight": 1.0,
       "source": "backend_services_userservice_rejectaccountrequest",
       "target": "backend_services_userservice_syncaccountrequesttofirebase",
@@ -42791,7 +42791,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2202",
+      "source_location": "L2216",
       "weight": 1.0,
       "source": "backend_services_userservice_deleteaccountrequest",
       "target": "backend_services_userservice_deleteaccountrequestfromfirebase",
@@ -42813,7 +42813,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L799",
+      "source_location": "L806",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserbyidentifier",
       "target": "backend_services_userservice_selectuserbywhere",
@@ -42824,7 +42824,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L782",
+      "source_location": "L789",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserbyidentifier",
       "target": "backend_services_userservice_selectfirestoreuserbywhere",
@@ -42879,7 +42879,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2497",
+      "source_location": "L2511",
       "weight": 1.0,
       "source": "backend_services_userservice_listemployeecvrecords",
       "target": "backend_services_userservice_listusersfromsql",
@@ -42934,7 +42934,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L774",
+      "source_location": "L781",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserbyidentifier",
       "target": "backend_services_userservice_finduserinmongo",
@@ -42956,7 +42956,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1090",
+      "source_location": "L1097",
       "weight": 1.0,
       "source": "backend_services_userservice_getmanageduser",
       "target": "backend_services_userservice_finduserbyidentifier",
@@ -42967,7 +42967,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L962",
+      "source_location": "L969",
       "weight": 1.0,
       "source": "backend_services_userservice_insertuserrow",
       "target": "backend_services_userservice_finduserbyidentifier",
@@ -42978,7 +42978,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2212",
+      "source_location": "L2226",
       "weight": 1.0,
       "source": "backend_services_userservice_requestpasswordreset",
       "target": "backend_services_userservice_finduserbyidentifier",
@@ -42989,7 +42989,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1027",
+      "source_location": "L1034",
       "weight": 1.0,
       "source": "backend_services_userservice_updateuserrow",
       "target": "backend_services_userservice_finduserbyidentifier",
@@ -43000,7 +43000,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1982",
+      "source_location": "L1996",
       "weight": 1.0,
       "source": "backend_services_userservice_approveaccountrequest",
       "target": "backend_services_userservice_finduserconflict",
@@ -43011,7 +43011,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1698",
+      "source_location": "L1712",
       "weight": 1.0,
       "source": "backend_services_userservice_createaccountrequest",
       "target": "backend_services_userservice_finduserconflict",
@@ -43022,7 +43022,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1224",
+      "source_location": "L1231",
       "weight": 1.0,
       "source": "backend_services_userservice_createmanageduser",
       "target": "backend_services_userservice_finduserconflict",
@@ -43034,7 +43034,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L825",
+      "source_location": "L832",
       "weight": 1.0,
       "source": "backend_services_userservice_finduserconflict",
       "target": "backend_utils_mongo_getdb"
@@ -43044,7 +43044,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1076",
+      "source_location": "L1083",
       "weight": 1.0,
       "source": "backend_services_userservice_materializelegacyuser",
       "target": "backend_services_userservice_finduserconflict",
@@ -43055,7 +43055,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1348",
+      "source_location": "L1355",
       "weight": 1.0,
       "source": "backend_services_userservice_updatemanageduser",
       "target": "backend_services_userservice_finduserconflict",
@@ -43066,7 +43066,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1240",
+      "source_location": "L1247",
       "weight": 1.0,
       "source": "backend_services_userservice_createmanageduser",
       "target": "backend_services_userservice_insertuserrow",
@@ -43077,7 +43077,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1086",
+      "source_location": "L1093",
       "weight": 1.0,
       "source": "backend_services_userservice_materializelegacyuser",
       "target": "backend_services_userservice_insertuserrow",
@@ -43088,7 +43088,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1637",
+      "source_location": "L1651",
       "weight": 1.0,
       "source": "backend_services_userservice_mergemanagedusers",
       "target": "backend_services_userservice_updateuserrow",
@@ -43099,7 +43099,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1364",
+      "source_location": "L1371",
       "weight": 1.0,
       "source": "backend_services_userservice_updatemanageduser",
       "target": "backend_services_userservice_updateuserrow",
@@ -43110,7 +43110,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1093",
+      "source_location": "L1100",
       "weight": 1.0,
       "source": "backend_services_userservice_getmanageduser",
       "target": "backend_services_userservice_materializelegacyuser",
@@ -43122,7 +43122,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L1035",
+      "source_location": "L1042",
       "weight": 1.0,
       "source": "backend_services_userservice_materializelegacyuser",
       "target": "backend_utils_mongo_getdb"
@@ -43132,7 +43132,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2214",
+      "source_location": "L2228",
       "weight": 1.0,
       "source": "backend_services_userservice_requestpasswordreset",
       "target": "backend_services_userservice_materializelegacyuser",
@@ -43143,7 +43143,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2410",
+      "source_location": "L2424",
       "weight": 1.0,
       "source": "backend_services_userservice_completepasswordreset",
       "target": "backend_services_userservice_getmanageduser",
@@ -43154,7 +43154,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1501",
+      "source_location": "L1515",
       "weight": 1.0,
       "source": "backend_services_userservice_deletemanageduser",
       "target": "backend_services_userservice_getmanageduser",
@@ -43165,7 +43165,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2430",
+      "source_location": "L2444",
       "weight": 1.0,
       "source": "backend_services_userservice_getownprofile",
       "target": "backend_services_userservice_getmanageduser",
@@ -43176,7 +43176,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1531",
+      "source_location": "L1545",
       "weight": 1.0,
       "source": "backend_services_userservice_mergemanagedusers",
       "target": "backend_services_userservice_getmanageduser",
@@ -43187,7 +43187,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1322",
+      "source_location": "L1329",
       "weight": 1.0,
       "source": "backend_services_userservice_updatemanageduser",
       "target": "backend_services_userservice_getmanageduser",
@@ -43198,7 +43198,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2475",
+      "source_location": "L2489",
       "weight": 1.0,
       "source": "backend_services_userservice_uploademployeecv",
       "target": "backend_services_userservice_getmanageduser",
@@ -43210,7 +43210,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L1104",
+      "source_location": "L1111",
       "weight": 1.0,
       "source": "backend_services_userservice_createresettokenrecord",
       "target": "backend_utils_mongo_getdb"
@@ -43220,7 +43220,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1154",
+      "source_location": "L1161",
       "weight": 1.0,
       "source": "backend_services_userservice_sendresetemail",
       "target": "backend_services_userservice_createresettokenrecord",
@@ -43231,7 +43231,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1176",
+      "source_location": "L1183",
       "weight": 1.0,
       "source": "backend_services_userservice_sendresetemail",
       "target": "backend_services_userservice_buildresetemailmarkup",
@@ -43242,7 +43242,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1996",
+      "source_location": "L2010",
       "weight": 1.0,
       "source": "backend_services_userservice_approveaccountrequest",
       "target": "backend_services_userservice_sendresetemail",
@@ -43253,7 +43253,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1722",
+      "source_location": "L1736",
       "weight": 1.0,
       "source": "backend_services_userservice_createaccountrequest",
       "target": "backend_services_userservice_sendresetemail",
@@ -43264,7 +43264,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1298",
+      "source_location": "L1305",
       "weight": 1.0,
       "source": "backend_services_userservice_createmanageduser",
       "target": "backend_services_userservice_sendresetemail",
@@ -43275,7 +43275,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2243",
+      "source_location": "L2257",
       "weight": 1.0,
       "source": "backend_services_userservice_requestpasswordreset",
       "target": "backend_services_userservice_sendresetemail",
@@ -43286,7 +43286,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L1235",
+      "source_location": "L1242",
       "weight": 1.0,
       "source": "backend_services_userservice_createmanageduser",
       "target": "backend_services_userservice_createfirebaseauthuser",
@@ -43297,7 +43297,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2000",
+      "source_location": "L2014",
       "weight": 1.0,
       "source": "backend_services_userservice_approveaccountrequest",
       "target": "backend_services_userservice_createmanageduser",
@@ -43309,7 +43309,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L1280",
+      "source_location": "L1287",
       "weight": 1.0,
       "source": "backend_services_userservice_createmanageduser",
       "target": "backend_utils_mongo_getdb"
@@ -43319,7 +43319,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2443",
+      "source_location": "L2457",
       "weight": 1.0,
       "source": "backend_services_userservice_changeownemail",
       "target": "backend_services_userservice_updatemanageduser",
@@ -43331,7 +43331,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L1378",
+      "source_location": "L1385",
       "weight": 1.0,
       "source": "backend_services_userservice_updatemanageduser",
       "target": "backend_utils_mongo_getdb"
@@ -43341,7 +43341,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2467",
+      "source_location": "L2481",
       "weight": 1.0,
       "source": "backend_services_userservice_updateownprofile",
       "target": "backend_services_userservice_updatemanageduser",
@@ -43352,7 +43352,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2489",
+      "source_location": "L2503",
       "weight": 1.0,
       "source": "backend_services_userservice_uploademployeecv",
       "target": "backend_services_userservice_updatemanageduser",
@@ -43364,7 +43364,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L1515",
+      "source_location": "L1529",
       "weight": 1.0,
       "source": "backend_services_userservice_deletemanageduser",
       "target": "backend_utils_mongo_getdb"
@@ -43375,7 +43375,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L1544",
+      "source_location": "L1558",
       "weight": 1.0,
       "source": "backend_services_userservice_mergemanagedusers",
       "target": "backend_utils_mongo_getdb"
@@ -43386,7 +43386,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L1696",
+      "source_location": "L1710",
       "weight": 1.0,
       "source": "backend_services_userservice_createaccountrequest",
       "target": "backend_utils_mongo_getdb"
@@ -43396,7 +43396,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2036",
+      "source_location": "L2050",
       "weight": 1.0,
       "source": "backend_services_userservice_approveaccountrequest",
       "target": "backend_services_userservice_getaccountrequest",
@@ -43407,7 +43407,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2196",
+      "source_location": "L2210",
       "weight": 1.0,
       "source": "backend_services_userservice_deleteaccountrequest",
       "target": "backend_services_userservice_getaccountrequest",
@@ -43418,7 +43418,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2159",
+      "source_location": "L2173",
       "weight": 1.0,
       "source": "backend_services_userservice_rejectaccountrequest",
       "target": "backend_services_userservice_getaccountrequest",
@@ -43430,7 +43430,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L1972",
+      "source_location": "L1986",
       "weight": 1.0,
       "source": "backend_services_userservice_approveaccountrequest",
       "target": "backend_utils_mongo_getdb"
@@ -43441,7 +43441,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L2138",
+      "source_location": "L2152",
       "weight": 1.0,
       "source": "backend_services_userservice_rejectaccountrequest",
       "target": "backend_utils_mongo_getdb"
@@ -43452,7 +43452,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L2186",
+      "source_location": "L2200",
       "weight": 1.0,
       "source": "backend_services_userservice_deleteaccountrequest",
       "target": "backend_utils_mongo_getdb"
@@ -43463,7 +43463,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L2220",
+      "source_location": "L2234",
       "weight": 1.0,
       "source": "backend_services_userservice_requestpasswordreset",
       "target": "backend_utils_mongo_getdb"
@@ -43473,7 +43473,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/userService.js",
-      "source_location": "L2388",
+      "source_location": "L2402",
       "weight": 1.0,
       "source": "backend_services_userservice_completepasswordreset",
       "target": "backend_services_userservice_verifyresettoken",
@@ -43485,7 +43485,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L2262",
+      "source_location": "L2276",
       "weight": 1.0,
       "source": "backend_services_userservice_verifyresettoken",
       "target": "backend_utils_mongo_getdb"
@@ -43496,7 +43496,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/userService.js",
-      "source_location": "L2330",
+      "source_location": "L2344",
       "weight": 1.0,
       "source": "backend_services_userservice_completepasswordreset",
       "target": "backend_utils_mongo_getdb"
@@ -98834,7 +98834,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L971",
+      "source_location": "L998",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_config_api_buildapiurl"
@@ -98922,7 +98922,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L1333",
+      "source_location": "L1360",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_config_api_readapijson"
@@ -106027,7 +106027,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L2088",
+      "source_location": "L2115",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext",
       "target": "frontend_src_store_storecontext_usestore",
@@ -106247,7 +106247,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L1571",
+      "source_location": "L1598",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_store_storecontext_normalizematchkey",
@@ -106291,7 +106291,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L1732",
+      "source_location": "L1759",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_store_storecontext_normalizecoursecategoryname",
@@ -106302,7 +106302,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L383",
+      "source_location": "L396",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_store_storecontext_dedupecoursecategories",
@@ -106324,7 +106324,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L1590",
+      "source_location": "L1617",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_store_storecontext_matchesenrollmentplan",
@@ -106335,7 +106335,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L1582",
+      "source_location": "L1609",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_store_storecontext_formatscheduledmeetingtime",
@@ -106346,7 +106346,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L1580",
+      "source_location": "L1607",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_store_storecontext_isupcomingscheduledmeeting",
@@ -106357,7 +106357,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L1577",
+      "source_location": "L1604",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_store_storecontext_resolveenrollmentmeetingplan",
@@ -106368,7 +106368,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L1584",
+      "source_location": "L1611",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_store_storecontext_resolvecourseplanmeetinglink",
@@ -106380,7 +106380,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L1249",
+      "source_location": "L1276",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_utils_certificatetemplate_mergecertificatetemplate"
@@ -106391,7 +106391,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L344",
+      "source_location": "L357",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_utils_certificatetemplate_normalizecertificatetemplate"
@@ -106402,7 +106402,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L1298",
+      "source_location": "L1325",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_utils_emailnotify_emailnotify"
@@ -106413,7 +106413,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L1574",
+      "source_location": "L1601",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_utils_enrollmentdeadline_isenrollmentclosed"
@@ -106424,7 +106424,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L373",
+      "source_location": "L386",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_utils_enrollmentdeadline_normalizeenrollmentdeadline"
@@ -106435,7 +106435,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/store/StoreContext.jsx",
-      "source_location": "L1504",
+      "source_location": "L1531",
       "weight": 1.0,
       "source": "frontend_src_store_storecontext_storeprovider",
       "target": "frontend_src_utils_learningtype_normalizelearningtype"
@@ -110123,5 +110123,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "c1b26fd324d1aabf19abc5fd4ffbea8983fd186c"
+  "built_at_commit": "6194878a87cca9b96c90994a3c5bda03e7fc44d4"
 }

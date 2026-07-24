@@ -98,9 +98,23 @@ export default function AdminEmployees() {
   const [reinstateEmailNotice, setReinstateEmailNotice] = useState(true)
   const [reinstateBusy, setReinstateBusy] = useState(false)
 
+  const isTerminatedUser = (u) => {
+    if (!u) return false
+    const statusLower = String(u.status || '').toLowerCase()
+    const isTerm = u.isTerminated
+    return (
+      statusLower === 'terminated' ||
+      isTerm === true ||
+      isTerm === 'true' ||
+      isTerm === 1 ||
+      Boolean(u.fireReason)
+    )
+  }
+
   const employees = users.filter(u => {
     const roleLower = String(u.role || '').toLowerCase()
     const prevRoleLower = String(u.previousRole || '').toLowerCase()
+    const isTerm = isTerminatedUser(u)
     return (
       roleLower === 'employee' ||
       roleLower === 'staff' ||
@@ -110,9 +124,7 @@ export default function AdminEmployees() {
       prevRoleLower === 'staff' ||
       prevRoleLower === 'mentor' ||
       prevRoleLower === 'developer' ||
-      u.isTerminated === true ||
-      u.status === 'terminated' ||
-      Boolean(u.fireReason) ||
+      isTerm ||
       Boolean(u.employeeId)
     )
   })
@@ -132,7 +144,7 @@ export default function AdminEmployees() {
   const filteredDepartments = ['All', ...new Set(employees.map(e => e.department).filter(Boolean))]
 
   const filteredEmployees = employees.filter(emp => {
-    const isEmpTerminated = emp.status === 'terminated' || emp.isTerminated === true
+    const isEmpTerminated = isTerminatedUser(emp)
     const matchesDept = statusTab === 'terminated' || departmentFilter === 'All' || emp.department === departmentFilter
     const matchesStatus = statusTab === 'all'
       ? true
@@ -140,9 +152,9 @@ export default function AdminEmployees() {
       ? isEmpTerminated
       : !isEmpTerminated
 
-    const nameStr = emp.displayName || ''
+    const nameStr = emp.displayName || emp.name || ''
     const emailStr = emp.email || ''
-    const roleStr = emp.jobTitle || ''
+    const roleStr = emp.jobTitle || emp.role || ''
     const matchesSearch = nameStr.toLowerCase().includes(searchQuery.toLowerCase()) ||
       emailStr.toLowerCase().includes(searchQuery.toLowerCase()) ||
       roleStr.toLowerCase().includes(searchQuery.toLowerCase())
@@ -160,7 +172,7 @@ export default function AdminEmployees() {
 
   const openFireModal = (employee) => {
     setEmployeeToFire(employee)
-    setFireReason('')
+    setFireReason('Terminated by Admin')
     setRelievingDate(new Date().toISOString().split('T')[0])
     setSendEmailNotice(true)
     setShowFireModal(true)
@@ -169,22 +181,19 @@ export default function AdminEmployees() {
   const handleConfirmFire = async (e) => {
     if (e) e.preventDefault()
     if (!employeeToFire) return
-    if (!fireReason.trim()) {
-      alert("Please enter the reason for terminating the employee.")
-      return
-    }
+    const reason = fireReason.trim() || 'Terminated by Admin'
     setFireBusy(true)
     try {
       const id = getEmployeeId(employeeToFire)
       const res = await fireEmployee(id, {
-        fireReason: fireReason.trim(),
+        fireReason: reason,
         relievingDate,
         sendEmailNotice
       })
-      alert(res.message || "Employee terminated successfully.")
+      setStatusTab('terminated')
       setShowFireModal(false)
       setEmployeeToFire(null)
-      setStatusTab('terminated')
+      alert(res.message || "Employee terminated successfully.")
     } catch (err) {
       alert(err.message || "Failed to terminate employee.")
     } finally {
@@ -205,10 +214,10 @@ export default function AdminEmployees() {
     try {
       const id = getEmployeeId(employeeToReinstate)
       const res = await reinstateEmployee(id, { sendEmailNotice: reinstateEmailNotice })
-      alert(res.message || "Employee reinstated successfully.")
+      setStatusTab('active')
       setShowReinstateModal(false)
       setEmployeeToReinstate(null)
-      setStatusTab('active')
+      alert(res.message || "Employee reinstated successfully.")
     } catch (err) {
       alert(err.message || "Failed to reinstate employee.")
     } finally {
@@ -425,7 +434,7 @@ export default function AdminEmployees() {
           }`}
         >
           <span className="w-2 h-2 rounded-full bg-emerald-300"></span>
-          Active Staff ({employees.filter(e => e.status !== 'terminated' && !e.isTerminated).length})
+          Active Staff ({employees.filter(e => !isTerminatedUser(e)).length})
         </button>
 
         <button
@@ -437,7 +446,7 @@ export default function AdminEmployees() {
           }`}
         >
           <span>🔥</span>
-          Isolated / Fired ({employees.filter(e => e.status === 'terminated' || e.isTerminated).length})
+          Isolated / Fired ({employees.filter(e => isTerminatedUser(e)).length})
         </button>
 
         <button
@@ -608,7 +617,7 @@ export default function AdminEmployees() {
                         </svg>
                       </button>
 
-                      {employee.status === 'terminated' || employee.isTerminated ? (
+                      {isTerminatedUser(employee) ? (
                         <button
                           onClick={() => openReinstateModal(employee)}
                           className="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white transition-all flex items-center gap-1 text-xs font-bold shadow-sm"

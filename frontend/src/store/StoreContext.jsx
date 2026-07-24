@@ -278,8 +278,21 @@ export function StoreProvider({ children }) {
     setManualEmployees(data);
   };
   const loadUsers = async () => {
-    const data = await fetchCollection('users');
-    setUsers(data);
+    try {
+      const headers = getAuthorizedHeaders()
+      const res = await fetch(`${api.adminUsers}`, { headers })
+      if (res.ok) {
+        const data = await res.json()
+        if (data.success && Array.isArray(data.users)) {
+          setUsers(data.users)
+          return
+        }
+      }
+    } catch (err) {
+      console.warn("loadUsers admin endpoint fallback:", err.message)
+    }
+    const data = await fetchCollection('users')
+    setUsers(data)
   };
   const loadServices = async () => {
     const data = await fetchCollection('services');
@@ -794,6 +807,13 @@ export function StoreProvider({ children }) {
         u._id === id || 
         (data.user?.email && u.email?.toLowerCase() === data.user.email?.toLowerCase())
       ) ? { ...u, ...data.user } : u))
+      setManualEmployees(prev => prev.map(u => (
+        u.uid === id || 
+        u.id === id || 
+        u._id === id || 
+        (data.user?.email && u.email?.toLowerCase() === data.user.email?.toLowerCase())
+      ) ? { ...u, ...data.user } : u))
+      await loadUsers()
       if (typeof window !== 'undefined' && data.user?.uid) {
         window.dispatchEvent(new CustomEvent('solutionhub:user-updated', { detail: data.user }))
       }
@@ -819,6 +839,13 @@ export function StoreProvider({ children }) {
         u._id === id || 
         (data.user?.email && u.email?.toLowerCase() === data.user.email?.toLowerCase())
       ) ? { ...u, ...data.user } : u))
+      setManualEmployees(prev => prev.map(u => (
+        u.uid === id || 
+        u.id === id || 
+        u._id === id || 
+        (data.user?.email && u.email?.toLowerCase() === data.user.email?.toLowerCase())
+      ) ? { ...u, ...data.user } : u))
+      await loadUsers()
       if (typeof window !== 'undefined' && data.user?.uid) {
         window.dispatchEvent(new CustomEvent('solutionhub:user-updated', { detail: data.user }))
       }

@@ -723,9 +723,16 @@ const findUserInMongo = async (identifier, { includeSensitive = false } = {}) =>
       doc = await users.findOne({ phone });
     }
     if (!doc) {
-      doc = await users.findOne({ $or: [{ uid: normalized }, { firebaseUid: normalized }] });
+      doc = await users.findOne({
+        $or: [
+          { uid: normalized },
+          { firebaseUid: normalized },
+          { _id: normalized },
+          { id: normalized },
+        ],
+      });
     }
-    if (!doc) {
+    if (!doc && /^[0-9a-fA-F]{24}$/.test(normalized)) {
       const { ObjectId } = require("mongodb");
       try { doc = await users.findOne({ _id: new ObjectId(normalized) }); } catch {}
     }
@@ -1409,7 +1416,14 @@ const updateManagedUser = async (identifier, updates, { updatedBy = null } = {})
         updatedAt: new Date().toISOString(),
       };
       if (existingUser.firebaseUid) mongoUpdate.firebaseUid = existingUser.firebaseUid;
-      const filter = uid ? { $or: [{ uid }, { email: merged.email }] } : { email: merged.email };
+      const filter = {
+        $or: [
+          { _id: uid },
+          { uid },
+          { firebaseUid: uid },
+          { email: merged.email },
+        ].filter(Boolean),
+      };
       await mongo.collection("users").updateOne(filter, { $set: mongoUpdate }, { upsert: true });
       const mongoUser = await mongo.collection("users").findOne(filter);
       if (mongoUser) {
