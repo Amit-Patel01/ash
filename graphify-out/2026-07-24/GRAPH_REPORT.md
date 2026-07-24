@@ -1,11 +1,11 @@
 # Graph Report - solutionhub  (2026-07-24)
 
 ## Corpus Check
-- 432 files · ~570,812 words
+- 432 files · ~570,821 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2984 nodes · 7516 edges · 171 communities (156 shown, 15 thin omitted)
+- 2984 nodes · 7517 edges · 171 communities (156 shown, 15 thin omitted)
 - Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 1038 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
@@ -162,7 +162,7 @@ Nodes (39): ae(), b(), Bf(), c(), ck(), d(), di(), dk() (+31 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.03
-Nodes (70): aa(), af(), ag(), ah(), be(), bh(), ce(), Cf() (+62 more)
+Nodes (63): aa(), af(), ah(), be(), bh(), ce(), Cf(), Cj() (+55 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.03
@@ -197,8 +197,8 @@ Cohesion: 0.07
 Nodes (26): 1️⃣ Backend Test (2 minutes), 2️⃣ Frontend Test (3 minutes), 3️⃣ Data Setup (If profiles not showing), 4️⃣ Browser Console Debugging, Backend Console:, Bonus Checks:, Check network requests:, Check React state: (+18 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.07
-Nodes (27): ed(), fd(), gd(), hd(), jd(), ke(), L(), ld() (+19 more)
+Cohesion: 0.09
+Nodes (19): gd(), ke(), L(), le(), lh(), M(), O(), qe() (+11 more)
 
 ### Community 12 - "Community 12"
 Cohesion: 0.11
@@ -233,11 +233,11 @@ Nodes (22): dg(), dh(), eh(), fh(), gh(), hg(), hh(), ih() (+14 more)
 
 ### Community 16 - "normalize"
 Cohesion: 0.11
-Nodes (41): getNotificationMergeKey(), mergeNotificationGroups(), NotificationBell(), EmployeeBroadcastRefined(), EmployeeCourseManageRefined(), EmployeeHomeDashboard(), formatTimeAgo(), getTimeValue() (+33 more)
+Nodes (42): getNotificationMergeKey(), mergeNotificationGroups(), NotificationBell(), EmployeeBroadcastRefined(), EmployeeCourseManageRefined(), EmployeeHomeDashboard(), formatTimeAgo(), getTimeValue() (+34 more)
 
 ### Community 17 - "oh"
-Cohesion: 0.08
-Nodes (12): Ai(), Ci(), n(), Nh(), oh(), ph(), qh(), rh() (+4 more)
+Cohesion: 0.10
+Nodes (12): Ai(), gi(), hi(), ii(), ji(), ki(), Mg(), mi() (+4 more)
 
 ### Community 18 - "Community 18"
 Cohesion: 0.09
@@ -362,11 +362,11 @@ Nodes (17): bcrypt, {
 
 ### Community 45 - "Community 45"
 Cohesion: 0.08
-Nodes (41): ac(), ad(), al(), Bc(), bd(), bl(), cd(), dc() (+33 more)
+Nodes (39): ac(), ad(), bb(), Bc(), bd(), bl(), cd(), dc() (+31 more)
 
 ### Community 46 - "Community 46"
-Cohesion: 0.15
-Nodes (12): bb(), gi(), hi(), If(), ii(), ji(), ki(), Mg() (+4 more)
+Cohesion: 0.10
+Nodes (20): ag(), al(), cg(), Dl(), el(), ff(), ha(), il() (+12 more)
 
 ### Community 47 - "Community 47"
 Cohesion: 0.14
@@ -398,8 +398,8 @@ Cohesion: 0.24
 Nodes (7): ai(), bi(), ji(), li(), ni(), oi(), Ta()
 
 ### Community 52 - "Community 52"
-Cohesion: 0.12
-Nodes (22): db(), eb(), ek(), fk(), Ga(), gk(), hk(), hl() (+14 more)
+Cohesion: 0.07
+Nodes (31): Ci(), db(), eb(), ek(), fk(), Ga(), gk(), hk() (+23 more)
 
 ### Community 53 - "Community 53"
 Cohesion: 0.09
@@ -415,7 +415,7 @@ Nodes (15): cg(), gg(), Je(), mf(), sg(), td(), tg(), U() (+7 more)
 
 ### Community 58 - "Services.jsx"
 Cohesion: 0.07
-Nodes (40): jspdf, AdminMessages(), ADMIN_PERMISSIONS, AdminPermissions(), getPermissionsArray(), ROLE_PRESETS, AdminReceipts(), getAbsoluteUrl() (+32 more)
+Nodes (39): jspdf, AdminMessages(), ADMIN_PERMISSIONS, AdminPermissions(), getPermissionsArray(), ROLE_PRESETS, AdminReceipts(), getAbsoluteUrl() (+31 more)
 
 ### Community 61 - "Community 61"
 Cohesion: 0.17

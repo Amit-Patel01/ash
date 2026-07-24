@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "backend/controllers/adminController.js": {
-    "mtime": 1784876193.854314,
-    "ast_hash": "d08bd95906761f918d4036c8e51973ec",
+    "mtime": 1784876295.85405,
+    "ast_hash": "7f5682ef8da4cf562ca597e16bb8a87b",
     "semantic_hash": ""
   },
   "backend/controllers/authController.js": {
@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "backend/routes/admin.js": {
-    "mtime": 1784873536.3819017,
-    "ast_hash": "b3b2dd45e86f55aa2b8c2a4b5668d86c",
+    "mtime": 1784876276.5430436,
+    "ast_hash": "275c4f3a14a56204ec3c0696e3f780e4",
     "semantic_hash": ""
   },
   "backend/routes/ai.js": {
