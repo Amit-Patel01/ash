@@ -37,7 +37,7 @@ const employeeRoles = [
 ]
 
 export default function AdminEmployees() {
-  const { users, addUser, updateUser, deleteUser, mergeUsers, fireEmployee } = useStore()
+  const { users, addUser, updateUser, deleteUser, mergeUsers, fireEmployee, reinstateEmployee } = useStore()
   const [showModal, setShowModal] = useState(false)
   const [editingEmployee, setEditingEmployee] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -89,6 +89,15 @@ export default function AdminEmployees() {
   const [sendEmailNotice, setSendEmailNotice] = useState(true)
   const [fireBusy, setFireBusy] = useState(false)
 
+  // Status / Isolation Tab Filter ('active' | 'terminated' | 'all')
+  const [statusTab, setStatusTab] = useState('active')
+
+  // Reinstate Modal State
+  const [showReinstateModal, setShowReinstateModal] = useState(false)
+  const [employeeToReinstate, setEmployeeToReinstate] = useState(null)
+  const [reinstateEmailNotice, setReinstateEmailNotice] = useState(true)
+  const [reinstateBusy, setReinstateBusy] = useState(false)
+
   const employees = users.filter(u => (u.role || '').toLowerCase() === 'employee')
 
   const normalizeAvatarSource = (value) => (value === 'linkedin' ? 'custom' : (value || 'github'))
@@ -107,13 +116,19 @@ export default function AdminEmployees() {
 
   const filteredEmployees = employees.filter(emp => {
     const matchesDept = departmentFilter === 'All' || emp.department === departmentFilter
+    const matchesStatus = statusTab === 'all'
+      ? true
+      : statusTab === 'terminated'
+      ? (emp.status === 'terminated' || emp.isTerminated)
+      : (emp.status === 'active' || !emp.status || emp.status === '')
+
     const nameStr = emp.displayName || ''
     const emailStr = emp.email || ''
     const roleStr = emp.jobTitle || ''
     const matchesSearch = nameStr.toLowerCase().includes(searchQuery.toLowerCase()) ||
       emailStr.toLowerCase().includes(searchQuery.toLowerCase()) ||
       roleStr.toLowerCase().includes(searchQuery.toLowerCase())
-    return matchesDept && matchesSearch
+    return matchesDept && matchesStatus && matchesSearch
   }).sort((a, b) => {
     const idA = a.employeeId || ''
     const idB = b.employeeId || ''
@@ -153,6 +168,29 @@ export default function AdminEmployees() {
       alert(err.message || "Failed to terminate employee.")
     } finally {
       setFireBusy(false)
+    }
+  }
+
+  const openReinstateModal = (employee) => {
+    setEmployeeToReinstate(employee)
+    setReinstateEmailNotice(true)
+    setShowReinstateModal(true)
+  }
+
+  const handleConfirmReinstate = async (e) => {
+    if (e) e.preventDefault()
+    if (!employeeToReinstate) return
+    setReinstateBusy(true)
+    try {
+      const id = employeeToReinstate.uid || employeeToReinstate.id
+      const res = await reinstateEmployee(id, { sendEmailNotice: reinstateEmailNotice })
+      alert(res.message || "Employee reinstated successfully.")
+      setShowReinstateModal(false)
+      setEmployeeToReinstate(null)
+    } catch (err) {
+      alert(err.message || "Failed to reinstate employee.")
+    } finally {
+      setReinstateBusy(false)
     }
   }
 
@@ -354,6 +392,44 @@ export default function AdminEmployees() {
         </div>
       </div>
 
+      {/* Status / Isolation Tab Bar */}
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-3 overflow-x-auto">
+        <button
+          onClick={() => setStatusTab('active')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            statusTab === 'active'
+              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }`}
+        >
+          <span className="w-2 h-2 rounded-full bg-emerald-300"></span>
+          Active Staff ({employees.filter(e => e.status === 'active' || !e.status || e.status === '').length})
+        </button>
+
+        <button
+          onClick={() => setStatusTab('terminated')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            statusTab === 'terminated'
+              ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20'
+              : 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200'
+          }`}
+        >
+          <span>🔥</span>
+          Isolated / Fired ({employees.filter(e => e.status === 'terminated' || e.isTerminated).length})
+        </button>
+
+        <button
+          onClick={() => setStatusTab('all')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+            statusTab === 'all'
+              ? 'bg-slate-900 text-white shadow-md'
+              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }`}
+        >
+          All Records ({employees.length})
+        </button>
+      </div>
+
       {/* Filters */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-2 overflow-x-auto pb-1 text-slate-300">
@@ -504,13 +580,28 @@ export default function AdminEmployees() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                         </svg>
                       </button>
-                      <button
-                        onClick={() => openFireModal(employee)}
-                        className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-colors"
-                        title="Fire / Terminate Employee & Send Relieving Certificate Email"
-                      >
-                        🔥
-                      </button>
+
+                      {employee.status === 'terminated' || employee.isTerminated ? (
+                        <button
+                          onClick={() => openReinstateModal(employee)}
+                          className="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white transition-all flex items-center gap-1 text-xs font-bold shadow-sm"
+                          title="Reinstate Employee (Wapas Active Karein)"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                          Reinstate
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => openFireModal(employee)}
+                          className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-colors"
+                          title="Fire / Terminate Employee & Send Relieving Certificate Email"
+                        >
+                          🔥
+                        </button>
+                      )}
+
                       <button
                         onClick={() => handleDeleteClick(employee)}
                         className="p-2 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
@@ -1123,6 +1214,60 @@ export default function AdminEmployees() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Reinstate Employee Modal */}
+      {showReinstateModal && employeeToReinstate && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onClick={() => !reinstateBusy && setShowReinstateModal(false)} />
+          <div className="relative bg-white border border-emerald-200 rounded-3xl w-full max-w-md p-6 shadow-2xl overflow-hidden text-center">
+            <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-3xl mx-auto mb-4 border border-emerald-200 shadow-inner">
+              🔄
+            </div>
+            <h3 className="text-xl font-bold text-slate-900">Reinstate Employee?</h3>
+            <p className="text-sm text-slate-600 mt-2 mb-4">
+              Are you sure you want to reinstate <strong className="text-slate-900">"{employeeToReinstate.displayName || employeeToReinstate.email}"</strong> back to Active status?
+            </p>
+
+            {employeeToReinstate.fireReason && (
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 mb-4 text-left">
+                <span className="font-bold text-slate-700 block mb-0.5">Recorded Termination Reason:</span>
+                "{employeeToReinstate.fireReason}"
+              </div>
+            )}
+
+            <div className="p-3 bg-emerald-50/80 border border-emerald-200 rounded-xl flex items-center justify-between text-left mb-6">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">📧</span>
+                <span className="text-xs font-bold text-slate-800">Send Reinstatement Email</span>
+              </div>
+              <input
+                type="checkbox"
+                checked={reinstateEmailNotice}
+                onChange={(e) => setReinstateEmailNotice(e.target.checked)}
+                className="w-5 h-5 text-emerald-600 accent-emerald-600 rounded"
+              />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                disabled={reinstateBusy}
+                onClick={() => setShowReinstateModal(false)}
+                className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={reinstateBusy}
+                onClick={handleConfirmReinstate}
+                className="flex-[2] py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2"
+              >
+                {reinstateBusy ? 'Reinstating...' : '🔄 Restore & Activate'}
+              </button>
+            </div>
           </div>
         </div>
       )}

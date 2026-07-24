@@ -873,6 +873,95 @@ const fireEmployee = async (req, res) => {
   }
 };
 
+/**
+ * POST /api/admin/users/:userId/reinstate
+ * Reinstate a previously fired/terminated employee back to active status
+ */
+const reinstateEmployee = async (req, res) => {
+  const { userId } = req.params;
+  const { sendEmailNotice = true } = req.body;
+
+  try {
+    const existingUser = await getManagedUser(userId);
+    if (!existingUser) {
+      return res.status(404).json({
+        success: false,
+        message: "Employee user not found.",
+      });
+    }
+
+    const updatePayload = {
+      status: "active",
+      isTerminated: false,
+      reinstatedAt: new Date().toISOString(),
+    };
+
+    const updatedUser = await updateManagedUser(userId, updatePayload, { updatedBy: req.user });
+
+    let emailSent = false;
+    let emailError = null;
+
+    if (sendEmailNotice && existingUser.email) {
+      const safeName = escapeHtml(existingUser.displayName || existingUser.name || "Employee");
+
+      const reinstatementContent = `
+        <div style="background-color: #f0fdf4; border: 1px solid #86efac; border-radius: 16px; padding: 28px; margin-bottom: 24px;">
+          <h2 style="color: #166534; margin-top: 0; font-size: 20px; border-bottom: 2px solid #bbf7d0; padding-bottom: 12px;">
+            🎉 Employment Reinstatement Notice
+          </h2>
+          <p style="color: #14532d; font-size: 15px; line-height: 1.6;">
+            Dear <strong>${safeName}</strong>,
+          </p>
+          <p style="color: #14532d; font-size: 15px; line-height: 1.6;">
+            We are pleased to inform you that your employment status at <strong>Amit Solution Hub</strong> has been <strong>REINSTATED</strong> and your account has been restored to <strong>Active</strong> status.
+          </p>
+
+          <div style="margin: 20px 0; padding: 18px; background: #ffffff; border-left: 4px solid #16a34a; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <p style="margin: 0 0 8px; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Account Details</p>
+            <p style="margin: 4px 0; font-size: 14px; color: #1e293b;"><strong>Employee ID:</strong> ${escapeHtml(existingUser.employeeId || "N/A")}</p>
+            <p style="margin: 4px 0; font-size: 14px; color: #1e293b;"><strong>Designation:</strong> ${escapeHtml(existingUser.jobTitle || "Employee")}</p>
+            <p style="margin: 4px 0; font-size: 14px; color: #16a34a; font-weight: 700;"><strong>Account Status:</strong> ACTIVE</p>
+          </div>
+
+          <p style="color: #334155; font-size: 14px; line-height: 1.6;">
+            You can now log in to the portal and resume your duties. Welcome back to the team!
+          </p>
+        </div>
+      `;
+
+      try {
+        const mailRes = await sendEmail({
+          to: existingUser.email,
+          subject: "Notice: Employment Reinstated - Welcome Back to Amit Solution Hub",
+          html: emailTemplate(
+            "Welcome Back! Account Reinstated",
+            reinstatementContent,
+            "Login to Portal",
+            "https://www.amitsolutionhub.com/login",
+            "#16a34a",
+            "OFFICIAL HR REINSTATEMENT"
+          ),
+        });
+        emailSent = mailRes.success;
+        if (!mailRes.success) emailError = mailRes.error;
+      } catch (err) {
+        logger.error(`Failed to send reinstatement email to ${existingUser.email}: ${err.message}`);
+        emailError = err.message;
+      }
+    }
+
+    return res.json({
+      success: true,
+      message: `Employee ${existingUser.displayName || existingUser.email} has been reinstated to active status.${emailSent ? ' Reinstatement email sent.' : emailError ? ` (Email error: ${emailError})` : ''}`,
+      user: updatedUser,
+      emailSent,
+      emailError,
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to process employee reinstatement.");
+  }
+};
+
 module.exports = {
   broadcastEmail,
   notifyAccountApproval,
@@ -890,4 +979,5 @@ module.exports = {
   downloadEmployeeCv,
   sendReceiptEmail,
   fireEmployee,
+  reinstateEmployee,
 };
