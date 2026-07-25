@@ -16,6 +16,7 @@ const {
   deleteAccountRequest,
   listEmployeeCvRecords,
   getManagedUser,
+  revokeUserSession,
 } = require("../services/userService");
 
 const dedupeEmails = (emails) => [...new Set(emails.filter(Boolean))];
@@ -1079,6 +1080,19 @@ const submitReinstatementRequest = async (req, res) => {
   }
 };
 
+const revokeUserSessionHandler = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    await revokeUserSession(userId);
+    return res.json({
+      success: true,
+      message: "User session revoked successfully. Account will be logged out on their next request.",
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to revoke user session.");
+  }
+};
+
 module.exports = {
   broadcastEmail,
   notifyAccountApproval,
@@ -1098,4 +1112,5 @@ module.exports = {
   fireEmployee,
   reinstateEmployee,
   submitReinstatementRequest,
+  revokeUserSessionHandler,
 };

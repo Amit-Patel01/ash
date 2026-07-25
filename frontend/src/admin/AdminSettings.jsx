@@ -135,7 +135,6 @@ export default function AdminSettings() {
     { id: 'announcement', label: 'Announcement' },
     { id: 'maintenance', label: 'Maintenance' },
     { id: 'stats', label: 'Homepage Stats' },
-    { id: 'certificate', label: 'Documents' },
     { id: 'notifications', label: 'Notifications' },
   ]
 
@@ -325,7 +324,7 @@ export default function AdminSettings() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">System & Platform Settings</h1>
-          <p className="text-sm text-slate-500 mt-1">Manage global announcements, maintenance mode, homepage stats, and certificate templates.</p>
+          <p className="text-sm text-slate-500 mt-1">Manage global announcements, maintenance mode, and homepage stats.</p>
         </div>
         <Link
           to="/admin/profile"
@@ -336,20 +335,28 @@ export default function AdminSettings() {
         </Link>
       </div>
 
-      <div className="flex items-center gap-1 border-b border-slate-200 pb-px overflow-x-auto">
+      {/* Tabs */}
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-3 overflow-x-auto">
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap ${activeTab === tab.id
-                ? 'text-blue-600 border-blue-600 font-bold'
-                : 'text-slate-500 border-transparent hover:text-slate-900 hover:border-slate-300'
-              }`}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+              activeTab === tab.id
+                ? 'bg-slate-900 text-white shadow-md'
+                : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+            }`}
           >
             {tab.label}
           </button>
         ))}
       </div>
+
+      {saveSuccess && activeTab !== 'certificate' && (
+        <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+          <p className="text-sm text-emerald-400 font-medium">{saveSuccess}</p>
+        </div>
+      )}
 
       {activeTab === 'profile' && (
         <div className="space-y-6">
@@ -639,284 +646,7 @@ export default function AdminSettings() {
         </div>
       )}
 
-      {activeTab === 'certificate' && (
-        <div className="space-y-6">
-          <div className="bg-white border border-slate-200 rounded-2xl p-6">
-            <div className="flex items-start justify-between gap-4 flex-wrap mb-6">
-              <div>
-                <h2 className="text-lg font-semibold text-slate-900">Document Customization</h2>
-                <p className="text-sm text-slate-500 mt-1">Course certificates, internship certificates, and offer letters each have their own branding, wording, and code base—all managed from this panel.</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <label className="text-xs font-medium text-slate-500">Accent Color</label>
-                <input
-                  type="color"
-                  value={activeCertificateForm.accentColor}
-                  onChange={e => updateDocumentField('accentColor', e.target.value)}
-                  className="h-10 w-12 rounded-lg border border-slate-300 bg-transparent"
-                />
-              </div>
-            </div>
 
-            {saveSuccess && (
-              <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
-                <p className="text-sm text-emerald-400">{saveSuccess}</p>
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div className="rounded-2xl border border-slate-300 bg-white/[0.03] p-4">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">Document Type</p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {DOCUMENT_TYPES.map(type => (
-                      <button
-                        key={type.id}
-                        onClick={() => setSelectedDocumentType(type.id)}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
-                          selectedDocumentType === type.id
-                            ? 'border-blue-500/30 bg-blue-500/15 text-blue-300'
-                            : 'border-slate-300 bg-slate-100 text-slate-500 hover:bg-slate-200'
-                        }`}
-                      >
-                        {type.label}
-                      </button>
-                    ))}
-                  </div>
-                  <p className="mt-3 text-xs text-slate-400">
-                    You are currently customizing the <span className="font-semibold text-slate-900">{selectedDocumentMeta.label}</span>.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">Document Prefix / Code Base</label>
-                    <input
-                      type="text"
-                      value={activeCertificateForm.certificatePrefix}
-                      onChange={e => updateDocumentField('certificatePrefix', e.target.value.toUpperCase())}
-                      placeholder="AP"
-                      className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                    <p className="mt-1.5 text-[11px] text-slate-400">This code base is used across the admin panel, employee issuance actions, student downloads, and the public verification link.</p>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">Seal Label</label>
-                    <input
-                      type="text"
-                      value={activeCertificateForm.sealLabel}
-                      onChange={e => updateDocumentField('sealLabel', e.target.value)}
-                      placeholder="Verified Certificate"
-                      className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-slate-500 mb-1.5">Main Title</label>
-                  <input
-                    type="text"
-                    value={activeCertificateForm.title}
-                    onChange={e => updateDocumentField('title', e.target.value)}
-                    placeholder="Certificate"
-                    className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-slate-500 mb-1.5">Subtitle</label>
-                  <textarea
-                    rows={3}
-                    value={activeCertificateForm.subtitle}
-                    onChange={e => updateDocumentField('subtitle', e.target.value)}
-                    placeholder="of Achievement"
-                    className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all resize-none"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">Overline</label>
-                    <input
-                      type="text"
-                      value={activeCertificateForm.overline}
-                      onChange={e => updateDocumentField('overline', e.target.value)}
-                      placeholder="Official Certification"
-                      className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">Reference Label</label>
-                    <input
-                      type="text"
-                      value={activeCertificateForm.referenceLabel}
-                      onChange={e => updateDocumentField('referenceLabel', e.target.value)}
-                      placeholder="Certificate ID"
-                      className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">Organization Name</label>
-                    <input
-                      type="text"
-                      value={activeCertificateForm.organizationName}
-                      onChange={e => updateDocumentField('organizationName', e.target.value)}
-                      placeholder="Amit Solution Hub"
-                      className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">Support Email</label>
-                    <input
-                      type="email"
-                      value={activeCertificateForm.supportEmail}
-                      onChange={e => updateDocumentField('supportEmail', e.target.value)}
-                      placeholder="support@amitsolutionhub.com"
-                      className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">Issuer Name</label>
-                    <input
-                      type="text"
-                      value={activeCertificateForm.issuerName}
-                      onChange={e => updateDocumentField('issuerName', e.target.value)}
-                      placeholder="Amit Patel"
-                      className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">Issuer Role</label>
-                    <input
-                      type="text"
-                      value={activeCertificateForm.issuerRole}
-                      onChange={e => updateDocumentField('issuerRole', e.target.value)}
-                      placeholder="Founder & Program Director"
-                      className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">Signature Name</label>
-                    <input
-                      type="text"
-                      value={activeCertificateForm.signatureName}
-                      onChange={e => updateDocumentField('signatureName', e.target.value)}
-                      placeholder="Amit Patel"
-                      className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">Signature Role</label>
-                    <input
-                      type="text"
-                      value={activeCertificateForm.signatureRole}
-                      onChange={e => updateDocumentField('signatureRole', e.target.value)}
-                      placeholder="Authorized Signatory"
-                      className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-slate-500 mb-1.5">Intro Line</label>
-                    <input
-                      type="text"
-                      value={activeCertificateForm.summaryLine}
-                      onChange={e => updateDocumentField('summaryLine', e.target.value)}
-                      placeholder="This document is proudly issued to"
-                      className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all"
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-medium text-slate-500 mb-1.5">Body Prefix</label>
-                      <textarea
-                        rows={3}
-                        value={activeCertificateForm.bodyPrefix}
-                        onChange={e => updateDocumentField('bodyPrefix', e.target.value)}
-                        className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all resize-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-slate-500 mb-1.5">Body Suffix</label>
-                      <textarea
-                        rows={3}
-                        value={activeCertificateForm.bodySuffix}
-                        onChange={e => updateDocumentField('bodySuffix', e.target.value)}
-                        className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all resize-none"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-slate-500 mb-1.5">Footer Note</label>
-                  <textarea
-                    rows={3}
-                    value={activeCertificateForm.footerNote}
-                    onChange={e => updateDocumentField('footerNote', e.target.value)}
-                    placeholder="This document can be verified online using the document ID."
-                    className="w-full px-4 py-2.5 bg-slate-100 border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-gray-500 focus:outline-none focus:border-blue-500/50 transition-all resize-none"
-                  />
-                </div>
-
-                <div className="flex justify-end pt-2">
-                  <button
-                    onClick={handleSaveCertificateTemplate}
-                    disabled={saving}
-                    className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-bold text-slate-900 hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50"
-                  >
-                    {saving ? 'Saving...' : 'Save Template'}
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="rounded-3xl border border-slate-300 p-5 shadow-2xl" style={{ background: `linear-gradient(135deg, ${hexToRgba(activeCertificateForm.accentColor, 0.2)}, rgba(15, 23, 42, 0.96))` }}>
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="text-[11px] font-bold uppercase tracking-[0.25em]" style={{ color: activeCertificateForm.accentColor }}>{activeCertificateForm.sealLabel}</p>
-                      <h3 className="text-2xl font-black text-slate-900 mt-2">Live {selectedDocumentMeta.shortLabel} Preview</h3>
-                    </div>
-                    <div className="px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-[0.25em]" style={{ borderColor: hexToRgba(activeCertificateForm.accentColor, 0.35), color: activeCertificateForm.accentColor, backgroundColor: hexToRgba(activeCertificateForm.accentColor, 0.12) }}>
-                      {certificatePreview.certificate_id}
-                    </div>
-                  </div>
-                  <p className="text-sm text-slate-600 mt-4 leading-relaxed">
-                    The selected {selectedDocumentMeta.shortLabel.toLowerCase()} design is used on employee issuance controls, the student documents area, and the verification page. The prefix and code base stay in sync with this preview.
-                  </p>
-                </div>
-
-                <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-slate-50 p-3">
-                  <div className="mx-auto w-full max-w-[860px]">
-                    <CertificateDocument certificate={certificatePreview} template={certificateForm} />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="rounded-2xl border border-slate-300 bg-white/[0.03] p-4">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">Issuer Block</p>
-                    <p className="mt-2 text-sm font-semibold text-slate-900">{activeCertificateForm.issuerName}</p>
-                    <p className="mt-1 text-xs text-slate-500">{activeCertificateForm.issuerRole}</p>
-                  </div>
-                  <div className="rounded-2xl border border-slate-300 bg-white/[0.03] p-4">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">Signature Block</p>
-                    <p className="mt-2 text-sm font-semibold text-slate-900">{activeCertificateForm.signatureName}</p>
-                    <p className="mt-1 text-xs text-slate-500">{activeCertificateForm.signatureRole}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {activeTab === 'notifications' && (
         <div className="space-y-6">

@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const { getDb } = require("../utils/mongo");
 const { logger } = require("../logger");
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
@@ -159,9 +160,21 @@ const login = async (req, res) => {
       return res.status(401).json({ success: false, message: "Incorrect password.", code: "invalid_password" });
     }
 
+    const clientIp = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.socket.remoteAddress || req.ip || "127.0.0.1";
+    const userAgent = req.headers["user-agent"] || "Unknown Device";
+    const sessionId = crypto.randomUUID();
+
     await db.collection("users").updateOne(
       { email: normalizedEmail },
-      { $set: { loginAttempts: 0, lastLoginAt: new Date() } }
+      {
+        $set: {
+          loginAttempts: 0,
+          lastLoginAt: new Date().toISOString(),
+          lastLoginIp: clientIp,
+          lastLoginDevice: userAgent,
+          currentSessionId: sessionId
+        }
+      }
     );
 
     const token = jwt.sign(
@@ -170,7 +183,8 @@ const login = async (req, res) => {
         email: user.email,
         role: user.role || "customer",
         employeeId: user.employeeId || null,
-        permissions: user.permissions || {}
+        permissions: user.permissions || {},
+        sessionId: sessionId
       },
       process.env.JWT_SECRET || "your_jwt_secret_here",
       { expiresIn: "7d" }

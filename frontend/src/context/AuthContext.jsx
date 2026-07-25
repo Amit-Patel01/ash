@@ -46,6 +46,10 @@ export function AuthProvider({ children }) {
       return userData
     }
 
+    if (data?.code === 'SESSION_EXPIRED_SINGLE_DEVICE') {
+      setAuthError('Your account was logged in from another device. For security, your previous session has been logged out.')
+    }
+
     localStorage.removeItem('token')
     setCurrentUser(null)
     setUserProfile(null)
