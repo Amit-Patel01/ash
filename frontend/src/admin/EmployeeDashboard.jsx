@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { api } from '../config/api'
 
@@ -24,7 +25,7 @@ const TABS = [
   { id: 'visibility', label: 'Visibility' },
 ]
 
-export default function EmployeeDashboard({ employee, onClose }) {
+export function EmployeeDashboard({ employee, onClose }) {
   const { updateUser } = useStore()
   const empId = employee.uid || employee.id || employee._id || ''
 
@@ -57,6 +58,8 @@ export default function EmployeeDashboard({ employee, onClose }) {
   const [devices, setDevices] = useState([])
   const [loadingDevices, setLoadingDevices] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [revokingSession, setRevokingSession] = useState(false)
+  const [sessionRevoked, setSessionRevoked] = useState(false)
   const [msg, setMsg] = useState({ type: '', text: '' })
   const [imageLoading, setImageLoading] = useState(false)
 
@@ -76,14 +79,14 @@ export default function EmployeeDashboard({ employee, onClose }) {
       } catch {
         setDevices(
           employee.lastLoginIp
-            ? [{ ip: employee.lastLoginIp, deviceName: 'Last known session', lastSeen: employee.lastLoginAt || 'Unknown', active: !!employee.currentSessionId }]
+            ? [{ ip: employee.lastLoginIp, deviceName: employee.lastLoginDevice || 'Last known session', lastSeen: employee.lastLoginAt || 'Unknown', active: !!employee.currentSessionId }]
             : []
         )
       } finally { setLoadingDevices(false) }
     }
     if (empId) load()
     else {
-      setDevices(employee.lastLoginIp ? [{ ip: employee.lastLoginIp, deviceName: 'Last known session', lastSeen: 'Unknown', active: !!employee.currentSessionId }] : [])
+      setDevices(employee.lastLoginIp ? [{ ip: employee.lastLoginIp, deviceName: employee.lastLoginDevice || 'Last known session', lastSeen: employee.lastLoginAt || 'Unknown', active: !!employee.currentSessionId }] : [])
       setLoadingDevices(false)
     }
   }, [empId])
@@ -97,6 +100,22 @@ export default function EmployeeDashboard({ employee, onClose }) {
     } catch (err) {
       setMsg({ type: 'error', text: (err.message || 'Failed to save.') })
     } finally { setSaving(false) }
+  }
+
+  const handleRevokeSession = async () => {
+    if (!empId || sessionRevoked) return
+    setRevokingSession(true)
+    setMsg({ type: '', text: '' })
+    try {
+      await api.post(`/api/admin/users/${encodeURIComponent(empId)}/revoke-session`)
+      setSessionRevoked(true)
+      setDevices((current) => current.map((device) => ({ ...device, active: false })))
+      setMsg({ type: 'success', text: 'Session revoked. The employee will be logged out on their next request.' })
+    } catch (err) {
+      setMsg({ type: 'error', text: err?.response?.data?.message || 'Unable to revoke the session.' })
+    } finally {
+      setRevokingSession(false)
+    }
   }
 
   const handleAvatarUpload = (e) => {
@@ -144,6 +163,13 @@ export default function EmployeeDashboard({ employee, onClose }) {
   }
 
   const initials = (form.displayName || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()
+  const formatDateTime = (value) => {
+    if (!value) return 'Not available'
+    const date = new Date(value)
+    return Number.isNaN(date.getTime())
+      ? String(value)
+      : date.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })
+  }
   const statusColor = form.status === 'active' ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
     : form.status === 'terminated' ? 'bg-rose-100 text-rose-700 border-rose-200'
     : 'bg-slate-100 text-slate-600 border-slate-200'
@@ -414,10 +440,18 @@ export default function EmployeeDashboard({ employee, onClose }) {
                   <span className="font-mono text-slate-700">{employee.lastLoginIp || '—'}</span>
                 </div>
                 <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                  <span className="text-xs font-bold text-slate-400 uppercase">Login Device</span>
+                  <span className="break-words text-xs text-slate-700">{employee.lastLoginDevice || 'Not available'}</span>
+                </div>
+                <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                  <span className="text-xs font-bold text-slate-400 uppercase">Login Time</span>
+                  <span className="text-xs font-semibold text-slate-700">{formatDateTime(employee.lastLoginAt)}</span>
+                </div>
+                <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
                   <span className="text-xs font-bold text-slate-400 uppercase">Status</span>
-                  <span className={`font-bold flex items-center gap-1.5 ${employee.currentSessionId ? 'text-emerald-600' : 'text-slate-400'}`}>
-                    <span className={`w-2 h-2 rounded-full ${employee.currentSessionId ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
-                    {employee.currentSessionId ? 'Online' : 'Offline'}
+                  <span className={`font-bold flex items-center gap-1.5 ${employee.currentSessionId && !sessionRevoked ? 'text-emerald-600' : 'text-slate-400'}`}>
+                    <span className={`w-2 h-2 rounded-full ${employee.currentSessionId && !sessionRevoked ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
+                    {employee.currentSessionId && !sessionRevoked ? 'Online' : 'Offline'}
                   </span>
                 </div>
                 <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
@@ -425,11 +459,22 @@ export default function EmployeeDashboard({ employee, onClose }) {
                   <span className="font-mono text-slate-700 break-all text-xs">{employee.uid || employee.id || '—'}</span>
                 </div>
               </div>
+              <div className="mt-5 flex justify-end border-t border-slate-100 pt-4">
+                <button
+                  type="button"
+                  onClick={handleRevokeSession}
+                  disabled={!employee.currentSessionId || sessionRevoked || revokingSession}
+                  className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm font-bold text-rose-700 transition-colors hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {revokingSession ? 'Logging out…' : sessionRevoked ? 'Session logged out' : 'Force logout employee'}
+                </button>
+              </div>
             </div>
 
             {/* Devices box */}
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-              <h2 className="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-4">Logged-in Devices / IPs</h2>
+              <h2 className="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-1">Current / Last Login Device</h2>
+              <p className="mb-4 text-xs text-slate-500">A new login replaces the previous active session, so this shows the currently active or most recent device.</p>
               {loadingDevices ? (
                 <p className="text-sm text-slate-400">Loading devices…</p>
               ) : devices.length === 0 ? (
@@ -502,4 +547,28 @@ export default function EmployeeDashboard({ employee, onClose }) {
       </div>
     </div>
   )
+}
+
+export default function EmployeeDashboardRoute() {
+  const { users } = useStore()
+  const { employeeId } = useParams()
+  const navigate = useNavigate()
+  const employee = users.find((user) =>
+    [user.uid, user.id, user._id, user.firebaseUid, user.email]
+      .filter(Boolean)
+      .map(String)
+      .includes(String(employeeId || ''))
+  )
+
+  if (!employee) {
+    return (
+      <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+        <h1 className="text-lg font-bold text-slate-900">Employee not found</h1>
+        <p className="mt-2 text-sm text-slate-500">This employee may have been removed or is still loading.</p>
+        <button onClick={() => navigate('/admin/employees')} className="mt-5 rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white">Back to staff</button>
+      </div>
+    )
+  }
+
+  return <EmployeeDashboard employee={employee} onClose={() => navigate('/admin/employees')} />
 }

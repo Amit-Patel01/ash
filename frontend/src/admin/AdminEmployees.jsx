@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 const avatarColors = [
   'from-blue-500 to-cyan-500',
@@ -38,6 +39,7 @@ const employeeRoles = [
 
 export default function AdminEmployees() {
   const { users, addUser, updateUser, deleteUser, mergeUsers, fireEmployee, reinstateEmployee } = useStore()
+  const navigate = useNavigate()
   const [showModal, setShowModal] = useState(false)
   const [editingEmployee, setEditingEmployee] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -554,18 +556,18 @@ export default function AdminEmployees() {
                       {employee.displayName || 'Unknown'}
                     </span>
                     {employee.isMentor && (
-                      <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-amber-500/10 text-amber-600 border border-amber-400/30 uppercase tracking-wide">
+                      <span className="hidden px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-amber-500/10 text-amber-600 border border-amber-400/30 uppercase tracking-wide">
                         Mentor
                       </span>
                     )}
                     {isTerminatedUser(employee) && (
-                      <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-rose-500/10 text-rose-600 border border-rose-400/30 uppercase tracking-wide">
+                      <span className="hidden px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-rose-500/10 text-rose-600 border border-rose-400/30 uppercase tracking-wide">
                         Terminated
                       </span>
                     )}
                   </div>
                   {employee.employeeId && (
-                    <span className="text-[11px] text-slate-400 font-mono">ID: {employee.employeeId}</span>
+                    <span className="hidden text-[11px] text-slate-400 font-mono">ID: {employee.employeeId}</span>
                   )}
                 </div>
 
@@ -574,10 +576,16 @@ export default function AdminEmployees() {
                   <span className="text-slate-700 font-medium">{employee.email || '—'}</span>
                   {employee.phone && <span className="text-slate-500 mt-0.5">{employee.phone}</span>}
                 </div>
+                <button
+                  onClick={() => navigate(`/admin/employees/${encodeURIComponent(getEmployeeId(employee))}`)}
+                  className="rounded-xl bg-slate-900 px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-slate-700"
+                >
+                  Open dashboard
+                </button>
               </div>
 
               {/* ── Bottom: Detail Boxes + Actions ── */}
-              <div className="px-5 py-4">
+              <div className="hidden px-5 py-4">
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
 
                   {/* Job Title */}

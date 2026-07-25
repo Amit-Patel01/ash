@@ -5,13 +5,13 @@
     "semantic_hash": ""
   },
   "backend/controllers/adminController.js": {
-    "mtime": 1784876295.85405,
-    "ast_hash": "7f5682ef8da4cf562ca597e16bb8a87b",
+    "mtime": 1784978108.8850179,
+    "ast_hash": "017172878de52a401e8ab7b1ccfca212",
     "semantic_hash": ""
   },
   "backend/controllers/authController.js": {
-    "mtime": 1783616369.1268637,
-    "ast_hash": "b837f49b34fb50f75c51686180bcb20c",
+    "mtime": 1784978062.854509,
+    "ast_hash": "df3bba457e9645093334758e8e187826",
     "semantic_hash": ""
   },
   "backend/controllers/certificateController.js": {
@@ -50,8 +50,8 @@
     "semantic_hash": ""
   },
   "backend/middlewares/authMiddleware.js": {
-    "mtime": 1783616369.133448,
-    "ast_hash": "d2cfdbdf77341b93b6b9d5ecf299b712",
+    "mtime": 1784978070.4913888,
+    "ast_hash": "9fd6abb5ee62a17ccd00979ed62729a6",
     "semantic_hash": ""
   },
   "backend/middlewares/rbacMiddleware.js": {
@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "backend/routes/admin.js": {
-    "mtime": 1784876276.5430436,
-    "ast_hash": "275c4f3a14a56204ec3c0696e3f780e4",
+    "mtime": 1784978113.8123746,
+    "ast_hash": "fb3ab1280c715dbeadc62a704d327a43",
     "semantic_hash": ""
   },
   "backend/routes/ai.js": {
@@ -125,8 +125,8 @@
     "semantic_hash": ""
   },
   "backend/server.js": {
-    "mtime": 1784714424.1836486,
-    "ast_hash": "255c9a5f961221a1788b36c5199de12f",
+    "mtime": 1784975369.9572978,
+    "ast_hash": "6c121c09a38519ba009329e02264d701",
     "semantic_hash": ""
   },
   "backend/services/aiService.js": {
@@ -170,8 +170,8 @@
     "semantic_hash": ""
   },
   "backend/services/userService.js": {
-    "mtime": 1784875324.292844,
-    "ast_hash": "3c9204287a8e4cc6c77eabdcc7581908",
+    "mtime": 1784978086.4532552,
+    "ast_hash": "661534e2ffad653a3447618f6b2e7b65",
     "semantic_hash": ""
   },
   "backend/utils/driveService.js": {
@@ -1295,8 +1295,8 @@
     "semantic_hash": ""
   },
   "frontend/src/App.jsx": {
-    "mtime": 1784962040.056198,
-    "ast_hash": "dc2c2594d4c9b986f9c876109e748bfc",
+    "mtime": 1784982303.0707183,
+    "ast_hash": "5cc890717959c2d238ab92c4756bceee",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminAccountRequests.jsx": {
@@ -1330,13 +1330,13 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminEmployees.jsx": {
-    "mtime": 1784875558.3687413,
-    "ast_hash": "99ea5c1b862b798eeed142d3fce12f05",
+    "mtime": 1784982594.526851,
+    "ast_hash": "f38a14cd1b882a7e5d8204207d66e069",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminLayout.jsx": {
-    "mtime": 1784962492.8088188,
-    "ast_hash": "7812da0f39c1df3f9133c13ad66f2bb9",
+    "mtime": 1784976837.56689,
+    "ast_hash": "25cc2763b59426c26a9f28ca1e9f73ff",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminMessages.jsx": {
@@ -1350,8 +1350,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminQrCertificates.jsx": {
-    "mtime": 1783616372.622121,
-    "ast_hash": "d8c054ca85a7172afe9f240722b7532c",
+    "mtime": 1784976708.222394,
+    "ast_hash": "a9922ff8dcfd5a2fc79bd89086e9d0e8",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminSales.jsx": {
@@ -1375,8 +1375,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminSettings.jsx": {
-    "mtime": 1784906416.3539255,
-    "ast_hash": "711cac5b3e72bd653ddccf38fdb4e286",
+    "mtime": 1784980314.618368,
+    "ast_hash": "376b8cc4c796c971ed16c341d176a548",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminTasks.jsx": {
@@ -1390,8 +1390,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/AIChatbot.jsx": {
-    "mtime": 1784818794.8943331,
-    "ast_hash": "85c947ecf4d6669a375ed44031528a77",
+    "mtime": 1784976431.4013562,
+    "ast_hash": "8010b08d9e3193c8250a72098888ec77",
     "semantic_hash": ""
   },
   "frontend/src/components/AnnouncementPopup.jsx": {
@@ -1410,8 +1410,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/Footer.jsx": {
-    "mtime": 1783616372.777776,
-    "ast_hash": "6d4bbe9e02bcd5f016c564aa59099d3d",
+    "mtime": 1784976222.460283,
+    "ast_hash": "c9fcd59cceef578d916b122890c12d55",
     "semantic_hash": ""
   },
   "frontend/src/components/GlowBackground.jsx": {
@@ -1420,8 +1420,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/Hero.jsx": {
-    "mtime": 1784818875.4307578,
-    "ast_hash": "d4e0e2f7aa44c69df6b9f25d4f557c18",
+    "mtime": 1784976158.7801826,
+    "ast_hash": "e9b52d09bd71ca6b1907c1df48fe2372",
     "semantic_hash": ""
   },
   "frontend/src/components/Layout.jsx": {
@@ -1430,13 +1430,13 @@
     "semantic_hash": ""
   },
   "frontend/src/components/Navbar.jsx": {
-    "mtime": 1784819021.792095,
-    "ast_hash": "6a04faf4171a8d4216d759200d8b8759",
+    "mtime": 1784976112.182636,
+    "ast_hash": "ce0775c31525984c44820edb94b3980f",
     "semantic_hash": ""
   },
   "frontend/src/components/NotificationBell.jsx": {
-    "mtime": 1783616372.7814095,
-    "ast_hash": "7283661ed1fb5c43dd3c3f62eecc8b63",
+    "mtime": 1784974823.9342966,
+    "ast_hash": "005ad0bf5404cde1d25c2c3edb065643",
     "semantic_hash": ""
   },
   "frontend/src/components/Popup.jsx": {
@@ -1465,8 +1465,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/TermsAndConditions.jsx": {
-    "mtime": 1783616372.7865136,
-    "ast_hash": "bde92bec7a76dece8714209b1e554a52",
+    "mtime": 1784975770.0941892,
+    "ast_hash": "21f3ac25cb7f8622e814c019725f83a2",
     "semantic_hash": ""
   },
   "frontend/src/components/public/PublicPageShell.jsx": {
@@ -1480,8 +1480,8 @@
     "semantic_hash": ""
   },
   "frontend/src/context/AuthContext.jsx": {
-    "mtime": 1783616372.7896242,
-    "ast_hash": "b29acc4f5ecc87f3e56f449566f63785",
+    "mtime": 1784978123.3784127,
+    "ast_hash": "8012953df0f3b84a3846d1a2c49b5d78",
     "semantic_hash": ""
   },
   "frontend/src/context/ChatContext.jsx": {
@@ -1530,13 +1530,13 @@
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeHomeDashboard.jsx": {
-    "mtime": 1783616372.7978225,
-    "ast_hash": "b7252ea49d4912f649b222fe6a435b96",
+    "mtime": 1784975557.709813,
+    "ast_hash": "59a7d995728bcad6bcea119b3a68ddd8",
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeLayout.jsx": {
-    "mtime": 1784961857.1804917,
-    "ast_hash": "d29d7aa47ce5f5a38fd47caabc920df6",
+    "mtime": 1784976095.9273252,
+    "ast_hash": "839847d63c6d6d48f8a32c075005a8d0",
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeOverview.jsx": {
@@ -1545,8 +1545,8 @@
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeePanelUI.jsx": {
-    "mtime": 1783616372.7998226,
-    "ast_hash": "fa9684badd05116c1a4480227ee250a4",
+    "mtime": 1784974603.6040864,
+    "ast_hash": "1a8838f16462a596797b13add072777f",
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeProfile.jsx": {
@@ -1555,8 +1555,8 @@
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeProfileRefined.jsx": {
-    "mtime": 1783616372.800822,
-    "ast_hash": "5d4ccde60f6ce18b85298be34cc692c3",
+    "mtime": 1784977861.650486,
+    "ast_hash": "63459ba7ef2765bb86ef57eebc739ada",
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeProjects.jsx": {
@@ -1565,8 +1565,8 @@
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeProjectsRefined.jsx": {
-    "mtime": 1783616372.8020492,
-    "ast_hash": "b451ae13576a164ad8a1949bda98ab32",
+    "mtime": 1784974643.2906563,
+    "ast_hash": "f8b81192340cb2815b0bea7b265b6666",
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeTasks.jsx": {
@@ -1655,8 +1655,8 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/LoginPage.jsx": {
-    "mtime": 1784962737.5576584,
-    "ast_hash": "796240d21994701923fdb1ec3729e7ba",
+    "mtime": 1784976461.471696,
+    "ast_hash": "2aa32099c2b651f513b6b505c12aea19",
     "semantic_hash": ""
   },
   "frontend/src/pages/ProjectDetails.jsx": {
@@ -1675,18 +1675,18 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/RequestAccount.jsx": {
-    "mtime": 1784962826.4534178,
-    "ast_hash": "94a2ece9198f5c8188576d099b632f79",
+    "mtime": 1784975774.7502196,
+    "ast_hash": "02508c75711daa528679710b304eb06a",
     "semantic_hash": ""
   },
   "frontend/src/pages/RoleSelect.jsx": {
-    "mtime": 1783616372.8187318,
-    "ast_hash": "6f40692796a07f3ac696979818705171",
+    "mtime": 1784977206.6915238,
+    "ast_hash": "8db687c87a04155230bfdf37de382f1c",
     "semantic_hash": ""
   },
   "frontend/src/pages/Services.jsx": {
-    "mtime": 1783616372.8187318,
-    "ast_hash": "4c0aed1518e29af71bdd1917f55672cd",
+    "mtime": 1784977240.3591301,
+    "ast_hash": "e360c4fb3ccbb9bf99954bbea2b47c70",
     "semantic_hash": ""
   },
   "frontend/src/pages/VerifyCertificate.jsx": {
@@ -2425,8 +2425,8 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/StudentSignup.jsx": {
-    "mtime": 1784962817.166062,
-    "ast_hash": "835b2822a3bb87f37601a133de22994d",
+    "mtime": 1784977164.8155167,
+    "ast_hash": "62423eaabdf97dedb8b0e43180864d81",
     "semantic_hash": ""
   },
   "replace_customer.ps1": {
@@ -2590,13 +2590,13 @@
     "semantic_hash": ""
   },
   "frontend/src/user/UserOverview.jsx": {
-    "mtime": 1784962361.1096442,
-    "ast_hash": "8813e0f84f5718dbf60489905dc9a4e4",
+    "mtime": 1784977215.3007505,
+    "ast_hash": "5adca37fb3c4359409fde804367eb541",
     "semantic_hash": ""
   },
   "frontend/src/user/UserProfile.jsx": {
-    "mtime": 1783616372.8311038,
-    "ast_hash": "d71229372e7e3086ae33c802efd3909e",
+    "mtime": 1784974930.247168,
+    "ast_hash": "87b4e2269eb45f0995ddbc2e7f054860",
     "semantic_hash": ""
   },
   "frontend/src/user/UserSupport.jsx": {
@@ -2722,6 +2722,21 @@
   "backend/scripts/set_maintenance_prod_on_dev_off.js": {
     "mtime": 1784974066.6735249,
     "ast_hash": "0da886ba2311f360b07a85daa9e249f2",
+    "semantic_hash": ""
+  },
+  "backend/scripts/turn_off_all_maintenance.js": {
+    "mtime": 1784974299.9512045,
+    "ast_hash": "dc6d13877546da4c5377046d182cd60c",
+    "semantic_hash": ""
+  },
+  "frontend/src/admin/AdminProfile.jsx": {
+    "mtime": 1784977866.58969,
+    "ast_hash": "f35babd68429871f637139102be80c1b",
+    "semantic_hash": ""
+  },
+  "frontend/src/admin/EmployeeDashboard.jsx": {
+    "mtime": 1784982303.0677116,
+    "ast_hash": "ab326d9661fcdd065a92d96c2a8ba583",
     "semantic_hash": ""
   }
 }
