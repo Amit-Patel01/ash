@@ -388,10 +388,19 @@ const PublicEmployeeProfile = () => {
               Back to Team
             </Link>
 
-            <div className="profile-card profile-animate profile-d1">
-              <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 32, alignItems: 'start' }}>
+            <div className="profile-card profile-animate profile-d1" style={{ padding: 0, overflow: 'hidden' }}>
+              {/* Cover Background Image Banner */}
+              <div style={{ position: 'relative', height: '180px', width: '100%', background: 'linear-gradient(135deg, #3b82f6, #6366f1, #a855f7)', overflow: 'hidden' }}>
+                {member.coverImage ? (
+                  <img src={member.coverImage} alt="Cover Background" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(59,130,246,0.8), rgba(99,102,241,0.8), rgba(168,85,247,0.8))' }} />
+                )}
+              </div>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 32, alignItems: 'start', padding: '0 32px 32px 32px', marginTop: '-50px', position: 'relative', zIndex: 2 }}>
                 {/* Avatar */}
-                <div className="profile-avatar">
+                <div className="profile-avatar" style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.3)', border: '4px solid white' }}>
                   {memberImage ? (
                     <img
                       src={memberImage}
@@ -409,7 +418,7 @@ const PublicEmployeeProfile = () => {
                 </div>
 
                 {/* Info */}
-                <div>
+                <div style={{ paddingTop: '58px' }}>
                   <div className="profile-badge">
                     {member.isMentor ? '⭐ Mentor Profile' : '👥 Team Profile'}
                   </div>

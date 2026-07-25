@@ -24,6 +24,7 @@ export default function AdminStudents() {
   const [broadcastSubject, setBroadcastSubject] = useState('')
   const [broadcastMessage, setBroadcastMessage] = useState('')
   const [sendingBroadcast, setSendingBroadcast] = useState(false)
+  const [selectedStudentProfile, setSelectedStudentProfile] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
 
   // Filter for users (includes legacy "customer" and "student" roles)
@@ -215,6 +216,16 @@ export default function AdminStudents() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      <button
+                        onClick={() => setSelectedStudentProfile(student)}
+                        className="p-2.5 rounded-xl bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 transition-all"
+                        title="View Full Profile & Cover Image"
+                      >
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      </button>
                       <button
                         onClick={() => handleToggleBan(student)}
                         disabled={isProcessing === student.uid}
@@ -473,6 +484,92 @@ export default function AdminStudents() {
                   className="px-6 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-slate-900 rounded-2xl text-xs font-black shadow-xl shadow-blue-600/20 hover:shadow-blue-600/40 disabled:opacity-50 transition-all uppercase tracking-widest"
                 >
                   {sendingBroadcast ? 'Sending...' : 'Send Broadcast'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      {/* Student Profile View Modal */}
+      {selectedStudentProfile && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedStudentProfile(null)} />
+          <div className="relative bg-white border border-slate-200 rounded-[28px] w-full max-w-xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
+            {/* Cover Image Banner */}
+            <div className="relative h-44 w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 overflow-hidden">
+              {selectedStudentProfile.coverImage ? (
+                <img src={selectedStudentProfile.coverImage} alt="Cover Background" className="w-full h-full object-cover" />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 via-purple-600/80 to-indigo-600/80 backdrop-blur-sm" />
+              )}
+              <button
+                onClick={() => setSelectedStudentProfile(null)}
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-slate-900/60 backdrop-blur-md text-white hover:bg-slate-900 transition-all shadow-md"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Profile Avatar & Details */}
+            <div className="p-6 sm:p-8 -mt-14 relative z-10">
+              <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-6">
+                <div className="flex items-end gap-4">
+                  <div className="w-24 h-24 rounded-2xl border-4 border-white shadow-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-3xl font-black text-white overflow-hidden shrink-0">
+                    {selectedStudentProfile.avatar || selectedStudentProfile.photoURL ? (
+                      <img src={selectedStudentProfile.avatar || selectedStudentProfile.photoURL} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      (selectedStudentProfile.displayName || 'S').charAt(0).toUpperCase()
+                    )}
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-slate-900 leading-tight">
+                      {selectedStudentProfile.displayName || 'Anonymous Student'}
+                    </h2>
+                    <p className="text-xs text-indigo-600 font-semibold mt-0.5">{selectedStudentProfile.email}</p>
+                  </div>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider ${
+                  isInactive(selectedStudentProfile) ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'
+                }`}>
+                  {isInactive(selectedStudentProfile) ? 'Inactive' : 'Active Account'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-100 pt-5">
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Phone Number</p>
+                  <p className="text-sm font-semibold text-slate-800 mt-1">{selectedStudentProfile.phone || 'Not provided'}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Location</p>
+                  <p className="text-sm font-semibold text-slate-800 mt-1">{selectedStudentProfile.location || 'Gujarat, India'}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Account ID</p>
+                  <p className="text-xs font-mono text-slate-600 mt-1">{selectedStudentProfile.uid}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Registration Date</p>
+                  <p className="text-sm font-semibold text-slate-800 mt-1">
+                    {selectedStudentProfile.createdAt ? new Date(selectedStudentProfile.createdAt).toLocaleDateString() : 'Standard'}
+                  </p>
+                </div>
+              </div>
+
+              {selectedStudentProfile.bio && (
+                <div className="mt-4 pt-4 border-t border-slate-100">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bio / Overview</p>
+                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">{selectedStudentProfile.bio}</p>
+                </div>
+              )}
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => setSelectedStudentProfile(null)}
+                  className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-all shadow-md"
+                >
+                  Close Profile
                 </button>
               </div>
             </div>

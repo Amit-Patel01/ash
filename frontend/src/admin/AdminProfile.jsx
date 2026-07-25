@@ -227,6 +227,8 @@ export default function AdminProfile() {
           const canvas = document.createElement('canvas')
           const MAX_WIDTH = 1200
           const MAX_HEIGHT = 450
+          const width = img.width || 1200
+          const height = img.height || 450
           const scale = Math.min(1200 / width, 450 / height, 1)
           const targetWidth = Math.round(width * scale)
           const targetHeight = Math.round(height * scale)

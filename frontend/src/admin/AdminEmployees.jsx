@@ -227,18 +227,59 @@ export default function AdminEmployees() {
     }
   }
 
+  const getNextEmployeeId = (employeesList = []) => {
+    let maxNum = 2; // Floor so next starts at ASH-03
+    const regex = /ASH-(\d+)/i;
+    (employeesList || []).forEach(emp => {
+      const id = emp?.employeeId || '';
+      const match = String(id).match(regex);
+      if (match) {
+        const num = parseInt(match[1], 10);
+        if (!isNaN(num) && num > maxNum) {
+          maxNum = num;
+        }
+      }
+    });
+    const nextNum = maxNum + 1;
+    return `ASH-${String(nextNum).padStart(2, '0')}`;
+  };
+
+  const handleCoverUpload = (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file || !file.type.startsWith('image/')) return
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        const width = img.width || 1200
+        const height = img.height || 450
+        const scale = Math.min(1200 / width, 450 / height, 1)
+        canvas.width = Math.round(width * scale)
+        canvas.height = Math.round(height * scale)
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height)
+        setFormData(prev => ({ ...prev, coverImage: canvas.toDataURL('image/jpeg', 0.85) }))
+      }
+      img.src = ev.target.result
+    }
+    reader.readAsDataURL(file)
+  }
+
   const openCreateModal = () => {
     setEditingEmployee(null)
+    const autoId = getNextEmployeeId(employees)
     setFormData({
       displayName: '',
       email: '',
       phone: '',
       avatar: '',
+      coverImage: '',
       jobTitle: '',
       department: 'Engineering',
       status: 'active',
       joinDate: new Date().toISOString().split('T')[0],
-      employeeId: '',
+      employeeId: autoId,
       customJobTitle: '',
       customDepartment: '',
       github: '',
@@ -271,6 +312,7 @@ export default function AdminEmployees() {
       email: employee.email || '',
       phone: employee.phone || '',
       avatar: employee.avatar && String(employee.avatar).startsWith('http') ? employee.avatar : '',
+      coverImage: employee.coverImage || '',
       jobTitle: isOtherRole ? 'Other' : (employee.jobTitle || ''),
       department: isOtherDept ? 'Other' : (employee.department || ''),
       status: employee.status || 'active',
@@ -293,44 +335,6 @@ export default function AdminEmployees() {
     
     setActiveTab('basic')
     setShowModal(true)
-  }
-
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    try {
-      const finalJobTitle = formData.jobTitle === 'Other' ? formData.customJobTitle : formData.jobTitle
-      const finalDepartment = formData.department === 'Other' ? formData.customDepartment : formData.department
-      
-      const skillsArray = typeof formData.skills === 'string' 
-        ? formData.skills.split(',').map(s => s.trim()).filter(Boolean)
-        : formData.skills
-
-      const payload = { 
-        ...formData, 
-        jobTitle: finalJobTitle,
-        department: finalDepartment,
-        skills: skillsArray,
-        role: editingEmployee ? (editingEmployee.role || 'employee') : 'employee',
-        avatar: (formData.avatar || '').trim(),
-        customImageUrl: (formData.customImageUrl || '').trim(),
-        avatarSource: normalizeAvatarSource(formData.avatarSource),
-      }
-      
-      // Clean up local temp fields
-      delete payload.customJobTitle
-      delete payload.customDepartment
-
-      if (editingEmployee) {
-        await updateUser(getEmployeeId(editingEmployee), payload)
-      } else {
-        await addUser(payload)
-      }
-      setShowModal(false)
-    } catch (err) {
-      console.error("Save error:", err)
-      alert(err.message || "Unable to save the employee record.")
-    }
   }
 
   const handleDeleteClick = (employee) => {
@@ -377,6 +381,47 @@ export default function AdminEmployees() {
     }
   }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const finalJobTitle = formData.jobTitle === 'Other' ? formData.customJobTitle : formData.jobTitle
+      const finalDepartment = formData.department === 'Other' ? formData.customDepartment : formData.department
+      
+      const skillsArray = typeof formData.skills === 'string' 
+        ? formData.skills.split(',').map(s => s.trim()).filter(Boolean)
+        : formData.skills
+
+      const payload = { 
+        ...formData, 
+        jobTitle: finalJobTitle,
+        department: finalDepartment,
+        skills: skillsArray,
+        role: editingEmployee ? (editingEmployee.role || 'employee') : 'employee',
+        avatar: (formData.avatar || '').trim(),
+        customImageUrl: (formData.customImageUrl || '').trim(),
+        avatarSource: normalizeAvatarSource(formData.avatarSource),
+      }
+
+      if (!editingEmployee && (!payload.employeeId || !payload.employeeId.trim())) {
+        payload.employeeId = getNextEmployeeId(employees)
+      }
+      
+      // Clean up local temp fields
+      delete payload.customJobTitle
+      delete payload.customDepartment
+
+      if (editingEmployee) {
+        await updateUser(getEmployeeId(editingEmployee), payload)
+      } else {
+        await addUser(payload)
+      }
+      setShowModal(false)
+    } catch (err) {
+      console.error("Save error:", err)
+      alert(err.message || "Unable to save the employee record.")
+    }
+  }
+
   const handleMergeAccounts = async (e) => {
     e.preventDefault()
     if (!mergePrimaryId.trim() || !mergeDupId.trim()) {
@@ -414,8 +459,7 @@ export default function AdminEmployees() {
         </div>
         <div className="flex items-center gap-3">
           <button
-            onClick={openCreateModal}
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-sm font-medium text-slate-900 hover:shadow-lg hover:shadow-blue-500/25 transition-all"
+            onClick={() => navigate('/admin/employees/new')}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -813,7 +857,7 @@ export default function AdminEmployees() {
                 <h2 className="text-lg font-semibold text-slate-900">
                   {editingEmployee ? 'Edit Employee' : 'Add New Employee'}
                 </h2>
-                <p className="text-[10px] text-slate-400 uppercase tracking-widest mt-0.5">Manage credentials and team visibility</p>
+                <p className="text-[10px] text-slate-400 uppercase tracking-widest mt-0.5">Manage credentials and team profile</p>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -832,6 +876,22 @@ export default function AdminEmployees() {
                   </svg>
                 </button>
               </div>
+            </div>
+
+            {/* Modal Cover Image Banner */}
+            <div className="relative h-28 w-full bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 overflow-hidden shrink-0 group/cover">
+              {formData.coverImage ? (
+                <img src={formData.coverImage} alt="Cover Banner" className="w-full h-full object-cover" />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 via-indigo-600/80 to-purple-600/80" />
+              )}
+              <label className="absolute bottom-2.5 right-3 z-10 flex items-center gap-1.5 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[11px] font-bold px-3 py-1 hover:bg-slate-900 transition-all cursor-pointer shadow-md">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                </svg>
+                <span>{formData.coverImage ? 'Change Cover' : 'Add Cover Photo'}</span>
+                <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
+              </label>
             </div>
 
             {/* Modal Tabs */}

@@ -66,13 +66,13 @@ export default function AdminAccountRequests() {
       </div>
 
       {/* Stats Summary */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 min-[420px]:grid-cols-3 gap-3 sm:gap-4">
         {[
           { label: 'Pending', value: requests.filter(r => r.status === 'pending').length, color: 'text-amber-400', bg: 'bg-amber-500/10' },
           { label: 'Approved', value: requests.filter(r => r.status === 'approved').length, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
           { label: 'Rejected', value: requests.filter(r => r.status === 'rejected').length, color: 'text-red-400', bg: 'bg-red-500/10' },
         ].map((s, i) => (
-          <div key={i} className={`bg-white border border-slate-200 rounded-2xl p-5 text-center shadow-lg transition-transform hover:scale-[1.02]`}>
+          <div key={i} className={`bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 text-center shadow-lg transition-transform hover:scale-[1.02]`}>
             <p className={`text-3xl font-bold ${s.color}`}>{s.value}</p>
             <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider mt-1">{s.label}</p>
           </div>

@@ -63,10 +63,10 @@ export default function CertificateDocument({ certificate, template, className =
 
   const nameFontSize =
     holderName.length > 28
-      ? 'clamp(20px, 3.2cqw, 42px)'
+      ? 'clamp(13px, 2.5cqw, 30px)'
       : holderName.length > 18
-      ? 'clamp(26px, 4cqw, 54px)'
-      : 'clamp(32px, 5cqw, 64px)'
+      ? 'clamp(15px, 3.2cqw, 36px)'
+      : 'clamp(17px, 3.8cqw, 42px)'
 
   const orgName = activeTemplate.organizationName || 'Amit Solution Hub'
 
@@ -100,23 +100,23 @@ export default function CertificateDocument({ certificate, template, className =
 
       {/* ── Main Content Container ── */}
       <div
-        className="relative flex h-full flex-col z-10"
-        style={{ padding: 'clamp(14px,2.8cqw,36px) clamp(18px,3.8cqw,50px) clamp(12px,2.5cqw,32px)' }}
+        className="relative flex h-full flex-col justify-between z-10"
+        style={{ padding: 'clamp(10px,2cqw,28px) clamp(14px,3cqw,40px) clamp(10px,2cqw,24px)' }}
       >
         {/* ══ HEADER ══ */}
         <header className="grid grid-cols-3 items-center shrink-0 w-full" style={{ gap: '1cqw' }}>
           {/* Left: MSME */}
           <div className="flex items-center">
-            <img src={msmeBadge} alt="MSME" crossOrigin="anonymous" style={{ height: 'clamp(32px,5cqw,70px)', width: 'auto', objectFit: 'contain' }} />
+            <img src={msmeBadge} alt="MSME" crossOrigin="anonymous" style={{ height: 'clamp(26px,4.2cqw,60px)', width: 'auto', objectFit: 'contain' }} />
           </div>
 
           {/* Center: ASH */}
           <div className="flex flex-col items-center text-center">
-            <img src={brandLogo} alt={orgName} crossOrigin="anonymous" style={{ height: 'clamp(28px,4.5cqw,64px)', width: 'auto', objectFit: 'contain' }} />
-            <p className="mt-[0.5cqw] font-black uppercase text-[#173F8A]" style={{ fontSize: 'clamp(9px,1.2cqw,16px)', letterSpacing: '0.12em', fontFamily: 'Georgia, serif' }}>
+            <img src={brandLogo} alt={orgName} crossOrigin="anonymous" style={{ height: 'clamp(24px,3.8cqw,54px)', width: 'auto', objectFit: 'contain' }} />
+            <p className="mt-[0.3cqw] font-black uppercase text-[#173F8A]" style={{ fontSize: 'clamp(8px,1.1cqw,14px)', letterSpacing: '0.12em', fontFamily: 'Georgia, serif' }}>
               {orgName}
             </p>
-            <p className="text-slate-400 uppercase font-semibold" style={{ fontSize: 'clamp(5px,0.6cqw,8.5px)', letterSpacing: '0.2em', marginTop: '0.2cqw' }}>
+            <p className="text-slate-400 uppercase font-semibold" style={{ fontSize: 'clamp(4.5px,0.55cqw,8px)', letterSpacing: '0.18em', marginTop: '0.1cqw' }}>
               Technology · Innovation · Excellence
             </p>
           </div>
@@ -128,15 +128,15 @@ export default function CertificateDocument({ certificate, template, className =
               style={{
                 backgroundColor: '#ffffff',
                 border: `1px solid ${hexToRgba(accentColor, 0.4)}`,
-                borderRadius: 'clamp(8px,1.2cqw,16px)',
-                padding: 'clamp(5px,0.7cqw,10px) clamp(10px,1.5cqw,20px)',
+                borderRadius: 'clamp(6px,1cqw,12px)',
+                padding: 'clamp(4px,0.5cqw,8px) clamp(8px,1.2cqw,16px)',
                 boxShadow: '0 2px 10px rgba(0,0,0,0.02)',
               }}
             >
-              <p className="font-bold uppercase text-slate-500" style={{ fontSize: 'clamp(5px,0.7cqw,9px)', letterSpacing: '0.1em' }}>
+              <p className="font-bold uppercase text-slate-500" style={{ fontSize: 'clamp(4.5px,0.6cqw,8px)', letterSpacing: '0.1em' }}>
                 {activeTemplate.referenceLabel || 'CERTIFICATE ID'}
               </p>
-              <p className="mt-[0.2cqw] font-bold text-[#173F8A]" style={{ fontSize: 'clamp(6px,0.85cqw,11px)', fontFamily: 'monospace', letterSpacing: '0.05em' }}>
+              <p className="mt-[0.1cqw] font-bold text-[#173F8A]" style={{ fontSize: 'clamp(5.5px,0.75cqw,10px)', fontFamily: 'monospace', letterSpacing: '0.05em' }}>
                 {certId}
               </p>
             </div>
@@ -144,11 +144,11 @@ export default function CertificateDocument({ certificate, template, className =
         </header>
 
         {/* ── Gold divider ── */}
-        <GoldDivider accentColor={accentColor} navyColor={navyColor} style={{ marginTop: 'clamp(10px, 1.5cqw, 20px)' }} />
+        <GoldDivider accentColor={accentColor} navyColor={navyColor} style={{ marginTop: 'clamp(6px, 1cqw, 14px)' }} />
 
         {/* ══ TITLE & SUBTITLE ══ */}
-        <div className="mt-[1.5cqw] text-center shrink-0 flex flex-col items-center">
-          <p className="font-bold uppercase tracking-[0.6em] text-slate-500 mb-[0.6cqw]" style={{ fontSize: 'clamp(8px,1.1cqw,14px)' }}>
+        <div className="mt-[0.6cqw] text-center shrink-0 flex flex-col items-center">
+          <p className="font-bold uppercase tracking-[0.5em] text-slate-400 mb-[0.2cqw]" style={{ fontSize: 'clamp(6.5px,0.9cqw,11px)' }}>
             OFFICIAL
           </p>
           <h1
@@ -156,21 +156,21 @@ export default function CertificateDocument({ certificate, template, className =
             style={{
               color: '#173F8A',
               fontFamily: '"Playfair Display", "Cinzel", serif',
-              fontSize: 'clamp(28px, 4.5cqw, 64px)',
-              letterSpacing: '0.06em',
+              fontSize: 'clamp(14px, 3.2cqw, 40px)',
+              letterSpacing: '0.05em',
             }}
           >
             {documentLabel}
           </h1>
-          <p className="italic font-medium mt-[1.2cqw]" style={{ color: '#64748B', fontSize: 'clamp(11px, 1.6cqw, 22px)' }}>
+          <p className="italic font-medium mt-[0.4cqw]" style={{ color: '#64748B', fontSize: 'clamp(8px, 1.15cqw, 15px)' }}>
             {narrative.intro || 'This verified certificate is proudly presented to'}
           </p>
         </div>
 
         {/* ══ HOLDER NAME & BODY ══ */}
-        <div className="flex flex-col items-center text-center flex-1 justify-center mt-[1cqw] min-h-0">
+        <div className="flex flex-col items-center text-center shrink-0 justify-center my-[0.4cqw]">
           <h2
-            className="font-bold leading-tight"
+            className="font-bold leading-tight my-[0.3cqw]"
             style={{
               color: '#173F8A',
               fontFamily: '"Playfair Display", "Cinzel", serif',
@@ -181,12 +181,12 @@ export default function CertificateDocument({ certificate, template, className =
           </h2>
           
           <p
-            className="text-[#64748B] mt-[1.2cqw]"
+            className="text-[#64748B] mt-[0.3cqw]"
             style={{
               fontWeight: 500,
-              fontSize: 'clamp(10px, 1.35cqw, 18px)',
-              lineHeight: '1.7',
-              maxWidth: '85%',
+              fontSize: 'clamp(7.5px, 1.1cqw, 14px)',
+              lineHeight: '1.45',
+              maxWidth: '88%',
               textAlign: 'center',
             }}
           >

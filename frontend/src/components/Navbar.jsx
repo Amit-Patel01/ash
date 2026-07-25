@@ -98,29 +98,29 @@ const Navbar = () => {
   return (
     <nav className={`fixed left-0 right-0 top-0 z-[140] border-b transition-all duration-300 ${
       isDark
-        ? `border-white/10 ${scrolled ? 'bg-slate-950/85 backdrop-blur-2xl shadow-xl shadow-black/50' : 'bg-slate-950/70 backdrop-blur-xl'}`
-        : `border-slate-200/80 ${scrolled ? 'bg-white/85 backdrop-blur-2xl shadow-md shadow-slate-900/5' : 'bg-white/70 backdrop-blur-2xl'}`
+        ? `border-white/10 ${scrolled ? 'bg-slate-950/85 backdrop-blur-xl shadow-xl shadow-black/50' : 'bg-slate-950/70 backdrop-blur-md'}`
+        : `border-slate-200/80 ${scrolled ? 'bg-white/85 backdrop-blur-xl shadow-md shadow-slate-900/5' : 'bg-white/70 backdrop-blur-md'}`
     }`}>
       {/* Animated Glow */}
-      <div className={`absolute -inset-x-0 bottom-[-20px] h-20 blur-3xl opacity-40 pointer-events-none animate-pulse ${isDark ? 'bg-gradient-to-r from-indigo-500/20 via-purple-500/15 to-pink-500/10' : 'bg-gradient-to-r from-blue-400/15 via-indigo-400/10 to-purple-400/10'}`} style={{ animationDuration: '4s' }} />
+      <div className={`absolute -inset-x-0 bottom-[-20px] h-20 blur-2xl opacity-25 pointer-events-none animate-pulse ${isDark ? 'bg-gradient-to-r from-indigo-500/20 via-purple-500/15 to-pink-500/10' : 'bg-gradient-to-r from-blue-400/15 via-indigo-400/10 to-purple-400/10'}`} style={{ animationDuration: '4s' }} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className={`
-          relative flex justify-between items-center transition-all duration-300
-          ${scrolled ? 'h-16 lg:h-20' : 'h-20 lg:h-24'}
+          relative flex min-w-0 justify-between items-center transition-all duration-300
+          ${scrolled ? 'h-14 sm:h-16 lg:h-20' : 'h-16 sm:h-20 lg:h-24'}
         `}>
 
           {/* Left: Logo + Nav Links */}
-          <div className="flex items-center gap-3 lg:gap-5 xl:gap-10 h-full">
-            <Link to="/" className="relative z-10 flex items-center group flex-shrink-0 outline-none">
-              <div className="relative overflow-hidden rounded-xl px-3 py-1.5 transform transition-all duration-500 group-hover:scale-105 group-hover:-rotate-1">
+          <div className="flex min-w-0 items-center gap-3 lg:gap-5 xl:gap-10 h-full">
+            <Link to="/" className="relative z-10 flex min-w-0 items-center group flex-shrink-0 outline-none">
+              <div className="relative overflow-hidden rounded-xl px-1.5 sm:px-3 py-1.5 transform transition-all duration-500 group-hover:scale-105 group-hover:-rotate-1">
                 {/* Radial Glow on Hover */}
                 <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 blur-lg transition-opacity duration-500 pointer-events-none ${isDark ? 'bg-gradient-to-br from-indigo-500/30 to-purple-500/20' : 'bg-gradient-to-br from-blue-500/20 to-purple-500/15'}`} />
 
                 <img
                   src={brandLogo}
                   alt="Brand Logo"
-                  className="relative z-10 h-10 max-h-10 lg:h-12 lg:max-h-12 w-auto max-w-[160px] sm:max-w-none object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.15)]"
+                  className="relative z-10 h-8 max-h-8 sm:h-10 sm:max-h-10 lg:h-12 lg:max-h-12 w-auto max-w-[118px] sm:max-w-none object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.15)]"
                 />
 
 
@@ -154,7 +154,7 @@ const Navbar = () => {
             `}} />
 
             {/* Desktop Links */}
-            <div className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 h-full py-2">
+            <div className="hidden 2xl:flex items-center gap-0.5 xl:gap-1.5 h-full py-2">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path
                 return (
@@ -484,7 +484,7 @@ const Navbar = () => {
           <div className="flex items-center gap-1.5 lg:gap-2 xl:gap-3 h-full">
 
             {/* Desktop */}
-            <div className="hidden lg:flex items-center gap-1.5 xl:gap-2">
+            <div className="hidden 2xl:flex items-center gap-1.5 xl:gap-2">
               {currentUser ? (
                 <div className={`flex items-center gap-2 p-1 rounded-full border ${isDark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/5'}`}>
                   <Link
@@ -548,12 +548,12 @@ const Navbar = () => {
             </div>
 
             {/* Mobile: theme toggle + hamburger */}
-            <div className="lg:hidden flex items-center gap-2">
+            <div className="2xl:hidden flex shrink-0 items-center gap-1.5 sm:gap-2">
               {currentUser && (
                 <Link
                   to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'student' ? '/user' : '/employee'}
                   title="Dashboard"
-                  className={`w-10 h-10 flex items-center justify-center rounded-full border overflow-hidden shadow-sm active:scale-95 transition-transform shrink-0 ${
+                  className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full border overflow-hidden shadow-sm active:scale-95 transition-transform shrink-0 ${
                     isDark ? 'border-slate-700 bg-slate-800 text-white' : 'border-slate-200 bg-white text-slate-800'
                   }`}
                 >
@@ -569,7 +569,9 @@ const Navbar = () => {
 
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`relative w-12 h-12 flex items-center justify-center rounded-2xl shadow-lg border transition-all duration-300 active:scale-95 outline-none ${
+                aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+                aria-expanded={isOpen}
+                className={`relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl sm:rounded-2xl shadow-lg border transition-all duration-300 active:scale-95 outline-none ${
                   isDark ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700' : 'bg-white border-slate-200 text-slate-900 hover:bg-slate-50'
                 }`}
               >
@@ -591,7 +593,7 @@ const Navbar = () => {
               animate={{ opacity: 1, scaleY: 1, y: 0 }}
               exit={{ opacity: 0, scaleY: 0.95, y: -10 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:hidden absolute top-full left-3 right-3 sm:left-4 sm:right-4 mt-2 max-h-[82vh] overflow-y-auto origin-top custom-scrollbar z-50 rounded-3xl"
+              className="2xl:hidden absolute top-full left-2 right-2 sm:left-4 sm:right-4 mt-2 max-h-[calc(100vh-4.5rem)] sm:max-h-[82vh] overflow-y-auto overscroll-contain origin-top custom-scrollbar z-50 rounded-3xl"
             >
               <div className={`border shadow-2xl rounded-3xl p-4 flex flex-col gap-2 relative overflow-hidden ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
 

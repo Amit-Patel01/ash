@@ -1234,11 +1234,45 @@ const createFirebaseAuthUser = async (payload) => {
   };
 };
 
+const generateNextEmployeeId = async () => {
+  let maxNum = 2; // Default floor so next starts at ASH-03
+  const regex = /ASH-(\d+)/i;
+
+  try {
+    const mongo = getDb();
+    if (mongo) {
+      const users = await mongo.collection(FIRESTORE_USER_COLLECTION).find({}).toArray();
+      const team = await mongo.collection("team").find({}).toArray();
+
+      [...users, ...team].forEach(u => {
+        const empId = u?.employeeId || u?.employee_id || u?.id || "";
+        const match = String(empId).match(regex);
+        if (match) {
+          const num = parseInt(match[1], 10);
+          if (!isNaN(num) && num > maxNum) {
+            maxNum = num;
+          }
+        }
+      });
+    }
+  } catch (err) {
+    // fallback
+  }
+
+  const nextNum = maxNum + 1;
+  const padded = String(nextNum).padStart(2, "0");
+  return `ASH-${padded}`;
+};
+
 const createManagedUser = async (input, { sendActivationEmail = true, activationFrom = "", requestIp = "", createdBy = null } = {}) => {
   const payload = sanitizeManagedUserInput(input, {
     requirePhone: true,
     roleFallback: input.role || "customer",
   });
+
+  if ((payload.role === "employee" || payload.role === "admin" || payload.showOnTeam) && (!payload.employeeId || !payload.employeeId.trim())) {
+    payload.employeeId = await generateNextEmployeeId();
+  }
 
   const conflict = await findUserConflict({ email: payload.email, phone: payload.phone });
   if (conflict) {
@@ -1277,6 +1311,7 @@ const createManagedUser = async (input, { sendActivationEmail = true, activation
         employeeId: payload.employeeId || "",
         joinDate: payload.joinDate || "",
         avatar: payload.avatar || "",
+        coverImage: payload.coverImage || "",
         customImageUrl: payload.customImageUrl || "",
         photoURL: payload.avatar || "",
         avatarSource: payload.avatarSource || "",

@@ -51,7 +51,7 @@ const verifyFirebaseToken = async (req, res, next) => {
     const user = await enrichDecodedUser(decoded);
 
     // Single-device active session enforcement
-    if (decoded.sessionId && user?.currentSessionId && decoded.sessionId !== user.currentSessionId) {
+    if (decoded.sessionId && (!user?.currentSessionId || decoded.sessionId !== user.currentSessionId)) {
       logger.warn(`[Auth] Single-device session mismatch for ${decoded.email}. Logging out old session.`);
       return res.status(401).json({
         success: false,

@@ -42,6 +42,20 @@ const PLAN_BLANK = {
   enrollmentDeadline: '',
 }
 
+const getPublicDetailsForm = (course = {}) => ({
+  description: course.description || '',
+  outcomes: Array.isArray(course.features) ? course.features.join('\n') : '',
+  curriculum: Array.isArray(course.curriculum) ? course.curriculum.map(item => item?.title || item).join('\n') : '',
+  projects: Array.isArray(course.projects) ? course.projects.join('\n') : '',
+  prerequisites: Array.isArray(course.prerequisites) ? course.prerequisites.join('\n') : '',
+  faq: Array.isArray(course.faq) ? course.faq.map(item => `${item?.q || ''} | ${item?.a || ''}`).join('\n') : '',
+  language: course.language || '',
+  supportText: course.supportText || '',
+  certificateIncluded: course.certificateIncluded === true,
+})
+
+const textLines = (value) => String(value || '').split('\n').map(item => item.trim()).filter(Boolean)
+
 
 const normalizeText = (value) => String(value || '').trim().toLowerCase()
 const compactText = (value) => normalizeText(value).replace(/[^a-z0-9]/g, '')
@@ -162,7 +176,8 @@ export default function EmployeeCourseManage() {
   )
   const [selectedCourse, setSelectedCourse] = useState(null)
   const [saving, setSaving] = useState(false)
-  const [activeTab, setActiveTab] = useState('plans') // plans | materials | meeting | students
+  const [activeTab, setActiveTab] = useState('plans') // details | plans | materials | meeting | students
+  const [publicDetailsForm, setPublicDetailsForm] = useState(getPublicDetailsForm())
   const [courseForm, setCourseForm] = useState(COURSE_BLANK)
   const [showCourseModal, setShowCourseModal] = useState(false)
   const [courseSaving, setCourseSaving] = useState(false)
@@ -222,11 +237,40 @@ export default function EmployeeCourseManage() {
 
   const openCourse = (course) => {
     setSelectedCourse(course)
+    setPublicDetailsForm(getPublicDetailsForm(course))
     setMeetingLink(course.meetingLink || '')
     setWeeklySchedule(course.weeklySchedule || '')
     setActiveTab('plans')
     setEditMeet(false)
     setEditingPlanMeetingIdx(null)
+  }
+
+  const savePublicDetails = async () => {
+    if (!selectedCourse) return
+    setSaving(true)
+    try {
+      const updates = {
+        description: publicDetailsForm.description.trim(),
+        features: textLines(publicDetailsForm.outcomes),
+        curriculum: textLines(publicDetailsForm.curriculum).map(title => ({ title })),
+        projects: textLines(publicDetailsForm.projects),
+        prerequisites: textLines(publicDetailsForm.prerequisites),
+        faq: textLines(publicDetailsForm.faq)
+          .map(line => {
+            const [question, ...answerParts] = line.split('|')
+            const answer = answerParts.join('|').trim()
+            return question?.trim() && answer ? { q: question.trim(), a: answer } : null
+          })
+          .filter(Boolean),
+        language: publicDetailsForm.language.trim(),
+        supportText: publicDetailsForm.supportText.trim(),
+        certificateIncluded: publicDetailsForm.certificateIncluded,
+      }
+      await updateCourse(selectedCourse.id, updates)
+      setSelectedCourse(current => ({ ...current, ...updates }))
+    } finally {
+      setSaving(false)
+    }
   }
 
 
@@ -540,6 +584,7 @@ export default function EmployeeCourseManage() {
   }
 
   const TABS = [
+    { id: 'details', label: 'Public details', title: 'Public Course Details', icon: BookOpen },
     { id: 'plans', label: 'Plans', title: 'Duration Plans & Pricing', icon: CircleDollarSign },
     { id: 'materials', label: 'Materials', title: 'Study Materials', icon: FileText },
     { id: 'meeting', label: 'Session Link', title: 'Meeting / Session Link', icon: Video },
@@ -673,10 +718,10 @@ export default function EmployeeCourseManage() {
               </div>
 
               {/* Tabs */}
-              <div className="flex gap-1 bg-white p-1 rounded-xl border border-slate-200">
+              <div className="flex gap-1 overflow-x-auto bg-white p-1 rounded-xl border border-slate-200">
                 {TABS.map(t => (
                   <button key={t.id} onClick={() => setActiveTab(t.id)}
-                    className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${activeTab === t.id ? 'bg-blue-600 text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}>
+                    className={`min-w-max flex-1 px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${activeTab === t.id ? 'bg-blue-600 text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}>
                     <t.icon className="w-4 h-4" />
                     {t.label}
                   </button>
@@ -684,6 +729,32 @@ export default function EmployeeCourseManage() {
               </div>
 
               {/* ─── PLANS TAB ─────────────────────────────────── */}
+              {activeTab === 'details' && (
+                <div className="space-y-4 rounded-2xl border border-slate-200 bg-white/60 p-5">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">Public course details</h3>
+                    <p className="mt-1 text-xs text-slate-500">This content appears on the public course page. Add one item per line; FAQ format is Question | Answer.</p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-slate-700">Overview</label>
+                    <textarea value={publicDetailsForm.description} onChange={event => setPublicDetailsForm({ ...publicDetailsForm, description: event.target.value })} rows={3} className="mt-1 w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="Short course overview" />
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div><label className="text-xs font-bold text-slate-700">What students will learn</label><textarea value={publicDetailsForm.outcomes} onChange={event => setPublicDetailsForm({ ...publicDetailsForm, outcomes: event.target.value })} rows={6} className="mt-1 w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="One outcome per line" /></div>
+                    <div><label className="text-xs font-bold text-slate-700">Syllabus modules</label><textarea value={publicDetailsForm.curriculum} onChange={event => setPublicDetailsForm({ ...publicDetailsForm, curriculum: event.target.value })} rows={6} className="mt-1 w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="One module per line" /></div>
+                    <div><label className="text-xs font-bold text-slate-700">Projects / assignments</label><textarea value={publicDetailsForm.projects} onChange={event => setPublicDetailsForm({ ...publicDetailsForm, projects: event.target.value })} rows={5} className="mt-1 w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="One project per line" /></div>
+                    <div><label className="text-xs font-bold text-slate-700">Prerequisites</label><textarea value={publicDetailsForm.prerequisites} onChange={event => setPublicDetailsForm({ ...publicDetailsForm, prerequisites: event.target.value })} rows={5} className="mt-1 w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="One prerequisite per line" /></div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div><label className="text-xs font-bold text-slate-700">Language</label><input value={publicDetailsForm.language} onChange={event => setPublicDetailsForm({ ...publicDetailsForm, language: event.target.value })} className="mt-1 w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="e.g. Hindi + English" /></div>
+                    <div><label className="text-xs font-bold text-slate-700">Student support</label><input value={publicDetailsForm.supportText} onChange={event => setPublicDetailsForm({ ...publicDetailsForm, supportText: event.target.value })} className="mt-1 w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="e.g. Community and doubt support" /></div>
+                  </div>
+                  <label className="flex items-center gap-2 text-sm font-semibold text-slate-700"><input type="checkbox" checked={publicDetailsForm.certificateIncluded} onChange={event => setPublicDetailsForm({ ...publicDetailsForm, certificateIncluded: event.target.checked })} className="h-4 w-4 accent-blue-600" /> Verifiable certificate included</label>
+                  <div><label className="text-xs font-bold text-slate-700">FAQs</label><textarea value={publicDetailsForm.faq} onChange={event => setPublicDetailsForm({ ...publicDetailsForm, faq: event.target.value })} rows={5} className="mt-1 w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="Who can join? | Beginners can join this course." /></div>
+                  <div className="flex justify-end"><button onClick={savePublicDetails} disabled={saving} className="rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-blue-500/20 hover:bg-blue-700 disabled:opacity-50">{saving ? 'Saving...' : 'Save Public Details'}</button></div>
+                </div>
+              )}
+
               {activeTab === 'plans' && (
                 <div className="bg-white/60 border border-slate-200 rounded-2xl p-5">
                   <div className="flex items-center justify-between mb-4">

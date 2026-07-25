@@ -15,11 +15,26 @@ export default function GuidanceModal() {
   const [error, setError] = useState('')
 
   useEffect(() => {
+    const submitted = localStorage.getItem('solutionhub:guidance_submitted') === 'true'
+    const dismissed = localStorage.getItem('solutionhub:guidance_dismissed') === 'true'
+    const seen = sessionStorage.getItem('solutionhub:guidance_seen') === 'true'
+
+    if (submitted || dismissed || seen) {
+      return
+    }
+
     const timer = setTimeout(() => {
       setIsOpen(true)
-    }, 500) // 500ms delay for immediate yet smooth trigger
+      sessionStorage.setItem('solutionhub:guidance_seen', 'true')
+    }, 1500)
     return () => clearTimeout(timer)
   }, [])
+
+  const handleClose = () => {
+    localStorage.setItem('solutionhub:guidance_dismissed', 'true')
+    sessionStorage.setItem('solutionhub:guidance_seen', 'true')
+    setIsOpen(false)
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -63,6 +78,7 @@ export default function GuidanceModal() {
       if (!response.ok) throw new Error('Failed to submit details')
 
       localStorage.setItem('solutionhub:guidance_submitted', 'true')
+      localStorage.setItem('solutionhub:guidance_dismissed', 'true')
       setSuccess(true)
       setTimeout(() => {
         setIsOpen(false)
@@ -83,7 +99,7 @@ export default function GuidanceModal() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setIsOpen(false)}
+            onClick={handleClose}
             className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
           />
 
@@ -105,7 +121,7 @@ export default function GuidanceModal() {
               <div className="w-10 h-1 rounded-full bg-slate-200 mx-auto sm:hidden" />
               <div className="hidden sm:block" />
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={handleClose}
                 className="ml-auto flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 active:scale-95 transition-all"
                 aria-label="Close modal"
               >

@@ -237,12 +237,12 @@ export default function AdminLayout({ onLogout }) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-['Outfit',sans-serif]">
+    <div className="min-h-screen min-w-0 overflow-x-hidden bg-slate-50 text-slate-900 flex flex-col font-['Outfit',sans-serif]">
       
       {/* ── TOP HORIZONTAL NAVBAR ── */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs" ref={navRef}>
-        <div className="max-w-7xl mx-auto px-4 lg:px-6">
-          <div className="flex items-center justify-between h-16 gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="flex items-center justify-between h-16 gap-2 sm:gap-4">
             
             {/* Left: Brand Logo & Mobile Trigger */}
             <div className="flex items-center gap-3">
@@ -370,11 +370,11 @@ export default function AdminLayout({ onLogout }) {
               {/* View Main Site */}
               <Link
                 to="/"
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:text-blue-600 hover:bg-blue-50 text-xs font-semibold transition-all shadow-2xs"
+                className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:text-blue-600 hover:bg-blue-50 text-xs font-semibold transition-all shadow-2xs"
                 title="View Main Website"
               >
-                <Globe className="w-3.5 h-3.5 text-blue-600" />
-                <span>View Site</span>
+                <Globe className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
+                <span className="text-[11px] sm:text-xs whitespace-nowrap">View Site</span>
               </Link>
 
               {/* Notifications */}
@@ -518,6 +518,14 @@ export default function AdminLayout({ onLogout }) {
           </div>
 
           <div className="p-4 border-t border-slate-200">
+            <Link
+              to="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="mb-2 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-50 text-blue-600 font-bold text-xs"
+            >
+              <Globe className="w-4 h-4" />
+              <span>View Site</span>
+            </Link>
             <button
               onClick={onLogout}
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-50 text-red-600 font-bold text-xs"
@@ -530,7 +538,7 @@ export default function AdminLayout({ onLogout }) {
       )}
 
       {/* ── MAIN CONTENT CONTAINER (FULL WIDTH) ── */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-6 overflow-y-auto">
+      <main className="flex-1 min-w-0 max-w-7xl w-full mx-auto overflow-x-hidden p-3 sm:p-4 lg:p-6">
         <Outlet />
       </main>
 

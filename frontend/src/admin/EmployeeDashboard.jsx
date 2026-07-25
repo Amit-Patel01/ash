@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
-import { api } from '../config/api'
+import { buildApiUrl, readApiJson } from '../config/api'
 
 const departments = [
   'Engineering', 'Design', 'Marketing', 'Management', 'Support',
@@ -25,8 +25,8 @@ const TABS = [
   { id: 'visibility', label: 'Visibility' },
 ]
 
-export function EmployeeDashboard({ employee, onClose }) {
-  const { updateUser } = useStore()
+export function EmployeeDashboard({ employee = {}, onClose, createMode = false }) {
+  const { updateUser, addUser } = useStore()
   const empId = employee.uid || employee.id || employee._id || ''
 
   const [tab, setTab] = useState('profile')
@@ -73,16 +73,12 @@ export function EmployeeDashboard({ employee, onClose }) {
   useEffect(() => {
     async function load() {
       setLoadingDevices(true)
-      try {
-        const { data } = await api.get(`/api/employees/${empId}/devices`)
-        setDevices(Array.isArray(data) ? data : [])
-      } catch {
-        setDevices(
-          employee.lastLoginIp
-            ? [{ ip: employee.lastLoginIp, deviceName: employee.lastLoginDevice || 'Last known session', lastSeen: employee.lastLoginAt || 'Unknown', active: !!employee.currentSessionId }]
-            : []
-        )
-      } finally { setLoadingDevices(false) }
+      setDevices(
+        employee.lastLoginIp
+          ? [{ ip: employee.lastLoginIp, deviceName: employee.lastLoginDevice || 'Last known session', lastSeen: employee.lastLoginAt || 'Unknown', active: !!employee.currentSessionId }]
+          : []
+      )
+      setLoadingDevices(false)
     }
     if (empId) load()
     else {
@@ -95,6 +91,15 @@ export function EmployeeDashboard({ employee, onClose }) {
     setSaving(true)
     setMsg({ type: '', text: '' })
     try {
+      if (createMode) {
+        await addUser({
+          ...form,
+          role: 'employee',
+          skills: typeof form.skills === 'string' ? form.skills.split(',').map((skill) => skill.trim()).filter(Boolean) : form.skills,
+        })
+        onClose()
+        return
+      }
       await updateUser(empId, form)
       setMsg({ type: 'success', text: 'Saved successfully!' })
     } catch (err) {
@@ -107,12 +112,20 @@ export function EmployeeDashboard({ employee, onClose }) {
     setRevokingSession(true)
     setMsg({ type: '', text: '' })
     try {
-      await api.post(`/api/admin/users/${encodeURIComponent(empId)}/revoke-session`)
+      const response = await fetch(buildApiUrl(`/api/admin/users/${encodeURIComponent(empId)}/revoke-session`), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+        },
+      })
+      const data = await readApiJson(response)
+      if (!response.ok) throw new Error(data.message || 'Unable to revoke the session.')
       setSessionRevoked(true)
       setDevices((current) => current.map((device) => ({ ...device, active: false })))
       setMsg({ type: 'success', text: 'Session revoked. The employee will be logged out on their next request.' })
     } catch (err) {
-      setMsg({ type: 'error', text: err?.response?.data?.message || 'Unable to revoke the session.' })
+      setMsg({ type: 'error', text: err.message || 'Unable to revoke the session.' })
     } finally {
       setRevokingSession(false)
     }
@@ -280,7 +293,7 @@ export function EmployeeDashboard({ employee, onClose }) {
 
         {/* ── Tabs ─────────────────────────────────────────── */}
         <div className="border-b border-slate-200 flex items-center gap-6 overflow-x-auto scrollbar-none">
-          {TABS.map(t => (
+          {TABS.filter((t) => !createMode || t.id !== 'session').map(t => (
             <button key={t.id} onClick={() => setTab(t.id)}
               className={`pb-3 text-sm font-semibold whitespace-nowrap transition-all relative ${tab === t.id ? 'text-slate-900 font-extrabold' : 'text-slate-500 hover:text-slate-800'}`}>
               {t.label}
@@ -553,6 +566,9 @@ export default function EmployeeDashboardRoute() {
   const { users } = useStore()
   const { employeeId } = useParams()
   const navigate = useNavigate()
+  if (employeeId === 'new') {
+    return <EmployeeDashboard createMode employee={{}} onClose={() => navigate('/admin/employees')} />
+  }
   const employee = users.find((user) =>
     [user.uid, user.id, user._id, user.firebaseUid, user.email]
       .filter(Boolean)

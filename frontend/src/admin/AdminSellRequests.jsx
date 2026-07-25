@@ -45,7 +45,7 @@ export default function AdminSellRequests() {
         <p className="text-sm text-slate-500 mt-1">{requests.filter(r => r.status === 'pending').length} pending project listings</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 min-[420px]:grid-cols-3 gap-3 sm:gap-4">
         {[
           { label: 'Pending', value: requests.filter(r => r.status === 'pending').length, color: 'text-amber-400' },
           { label: 'Approved', value: requests.filter(r => r.status === 'approved').length, color: 'text-emerald-400' },
@@ -58,7 +58,7 @@ export default function AdminSellRequests() {
         ))}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
         {['all', 'pending', 'approved', 'rejected'].map(f => (
           <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize whitespace-nowrap transition-all ${filter === f ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-transparent'}`}>
             {f} ({f === 'all' ? requests.length : requests.filter(r => r.status === f).length})
