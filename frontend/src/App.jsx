@@ -166,6 +166,7 @@ const AdminAccountRequests = lazyWithRetry(() => import('./admin/AdminAccountReq
 const AdminSellRequests = lazyWithRetry(() => import('./admin/AdminSellRequests'))
 const AdminServiceRequests = lazyWithRetry(() => import('./admin/AdminServiceRequests'))
 const AdminSettings = lazyWithRetry(() => import('./admin/AdminSettings'))
+const AdminProfile = lazyWithRetry(() => import('./admin/AdminProfile'))
 const AdminStudents = lazyWithRetry(() => import('./admin/AdminStudents'))
 const AdminQrCertificates = lazyWithRetry(() => import('./admin/AdminQrCertificates'))
 const AdminTestimonials = lazyWithRetry(() => import('./admin/AdminTestimonials'))
@@ -266,7 +267,7 @@ function AppContent() {
   const navigate = useNavigate()
   const location = useLocation()
   const isAdminRoute = location.pathname.startsWith('/admin') || location.pathname === '/login'
-  const isMaintenanceActive = maintenance ? maintenance.isActive !== false : true
+  const isMaintenanceActive = Boolean(maintenance?.isActive)
   const allowedChatbotPaths = ['/about', '/courses', '/services', '/projects', '/contact', '/infrastructure']
   const isHome = location.pathname === '/'
   const isAllowedPath = allowedChatbotPaths.some(path => location.pathname.startsWith(path))
@@ -329,7 +330,7 @@ function AppContent() {
             <Route path="auth/callback" element={<AuthCallback />} />
             <Route path="verify" element={<VerifyCertificate />} />
             <Route path="verify/:certificateId/*" element={<VerifyCertificate />} />
-            
+
             {/* Legal Pages */}
             <Route path="privacy-policy" element={<PrivacyPolicy />} />
             <Route path="terms-of-service" element={<TermsOfService />} />
@@ -363,6 +364,7 @@ function AppContent() {
             <Route path="testimonials" element={<AdminTestimonials />} />
             <Route path="internship-categories" element={<AdminInternshipCategories />} />
             <Route path="messages" element={<AdminMessages />} />
+            <Route path="profile" element={<AdminProfile />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
 
@@ -386,7 +388,7 @@ function AppContent() {
             <Route path="services" element={<AdminServices />} />
             <Route path="sales" element={<AdminSales />} />
             <Route path="testimonials" element={<AdminTestimonials />} />
-            <Route path="settings" element={<AdminSettings />} />
+            <Route path="settings" element={<EmployeeProfile />} />
             <Route path="certificates" element={<AdminQrCertificates />} />
             <Route path="broadcast" element={<EmployeeBroadcast />} />
             <Route path="chat" element={<EmployeeChat />} />

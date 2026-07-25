@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import TermsAndConditions from '../components/TermsAndConditions'
+import { ShieldCheck, Sparkles, ArrowRight, User, Mail, Phone, CheckCircle2, Award, Laptop, Users, Code, ShoppingBag } from 'lucide-react'
 
 export default function StudentSignup() {
   const { signup } = useAuth()
@@ -11,12 +12,8 @@ export default function StudentSignup() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
-    name: '', email: '', phone: ''
+    name: '', email: '', phone: '', interestTrack: 'Buying Projects / Source Code'
   })
-
-  // Animate blobs for that premium feel
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -41,7 +38,8 @@ export default function StudentSignup() {
       await signup({
         name: form.name,
         email: form.email,
-        phone: form.phone.replace(/\D/g, '')
+        phone: form.phone.replace(/\D/g, ''),
+        interestTrack: form.interestTrack
       })
       setSubmitted(true)
     } catch (err) {
@@ -50,156 +48,314 @@ export default function StudentSignup() {
       setLoading(false)
     }
   }
+
   if (submitted) {
     return (
-      <section className="relative w-full min-h-screen pt-24 md:pt-32 pb-20 px-4 overflow-hidden bg-slate-50">
-        {/* Background Blobs */}
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-emerald-500/5 rounded-full blur-[100px] animate-blob" />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-cyan-500/5 rounded-full blur-[100px] animate-blob delay-75" />
-
-        <div className="relative z-20 max-w-md mx-auto">
-          <div className="bg-white border border-slate-200 rounded-3xl p-10 shadow-[0_24px_60px_-12px_rgba(15,23,42,0.08)] text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20">
-              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-            </div>
-            <h2 className="text-3xl font-extrabold text-slate-800 mb-3 tracking-tight">Account Created</h2>
-            <p className="text-slate-500 mb-8 leading-relaxed">Your student account has been created. Please check your email and reset your password to access your dashboard.</p>
-
-            <div className="bg-slate-55 rounded-2xl p-5 mb-8 border border-slate-100 text-left space-y-3">
-              <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-                <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">User</span>
-                <span className="text-sm text-emerald-600 font-medium">{form.name}</span>
-              </div>
-              <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-                <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Email</span>
-                <span className="text-sm text-emerald-600 font-medium">{form.email}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Role</span>
-                <span className="text-sm text-emerald-600 font-medium uppercase tracking-tighter font-black">Student</span>
-              </div>
-            </div>
-
-            <Link to="/login" className="block w-full px-6 py-4 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white rounded-2xl font-bold hover:from-emerald-700 hover:to-cyan-700 shadow-xl shadow-emerald-500/20 transition-all duration-300 text-center transform hover:-translate-y-1">
-              Go to Sign In
-            </Link>
+      <div className="relative w-screen h-screen min-h-screen flex items-center justify-center p-6 bg-slate-900 text-white font-['Outfit',sans-serif]">
+        <div className="relative z-10 max-w-md w-full bg-white text-slate-900 rounded-[32px] p-8 sm:p-10 shadow-2xl text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg shadow-blue-500/30 text-white">
+            <CheckCircle2 className="w-10 h-10" />
           </div>
+          <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-2">Account Created</h2>
+          <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+            Your SolutionHub account has been created successfully. Please check your email to set your password and access your dashboard.
+          </p>
+
+          <div className="bg-slate-50 rounded-2xl p-4 mb-6 text-left space-y-2.5 border border-slate-200/80 text-xs">
+            <div className="flex justify-between items-center pb-2 border-b border-slate-200/60">
+              <span className="text-slate-400 font-bold uppercase">Name</span>
+              <span className="text-slate-800 font-bold">{form.name}</span>
+            </div>
+            <div className="flex justify-between items-center pb-2 border-b border-slate-200/60">
+              <span className="text-slate-400 font-bold uppercase">Email</span>
+              <span className="text-slate-800 font-bold">{form.email}</span>
+            </div>
+            <div className="flex justify-between items-center pb-2 border-b border-slate-200/60">
+              <span className="text-slate-400 font-bold uppercase">Primary Interest</span>
+              <span className="text-blue-600 font-bold">{form.interestTrack}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-slate-400 font-bold uppercase">Account Type</span>
+              <span className="text-emerald-600 font-black uppercase tracking-wider">User / Client</span>
+            </div>
+          </div>
+
+          <Link
+            to="/login"
+            className="block w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-500/25 hover:from-blue-700 hover:to-indigo-700 transition-all"
+          >
+            Go to Sign In
+          </Link>
         </div>
-      </section>
+      </div>
     )
   }
 
   return (
-    <section className="relative w-full min-h-screen pt-24 md:pt-32 pb-20 px-4 overflow-hidden flex flex-col items-center bg-slate-50">
-      {/* Immersive Background Elements */}
-      <div className={`transition-all duration-[2000ms] ease-out ${mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-        <div className="absolute top-[10%] -left-[10%] w-[500px] h-[500px] bg-emerald-600/5 rounded-full blur-[120px] animate-blob" />
-        <div className="absolute bottom-[20%] -right-[10%] w-[500px] h-[500px] bg-cyan-700/5 rounded-full blur-[120px] animate-blob delay-1000" />
-      </div>
+    <div className="relative w-screen h-screen min-h-screen overflow-hidden bg-white text-slate-800 font-['Outfit',sans-serif]">
+      
+      {/* FULL SCREEN DUAL COLUMN LAYOUT */}
+      <div className="w-full h-full grid grid-cols-1 lg:grid-cols-12 overflow-y-auto lg:overflow-hidden">
+        
+        {/* ── LEFT COLUMN: 3D Tech Showcase & Trust Badges ── */}
+        <div className="lg:col-span-6 relative h-72 lg:h-full w-full bg-slate-900 flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden group">
+          
+          {/* Background 3D Tech Illustration */}
+          <img
+            src="/login_hero_banner.png"
+            alt="Amit Solution Hub Technology"
+            className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.95] contrast-[1.05] transition-transform duration-700 group-hover:scale-105"
+          />
+          
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-slate-950/60" />
 
-      <div className="relative z-20 w-full max-w-lg mx-auto">
-        <div className="text-center mb-10 transition-all duration-700">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-500 to-cyan-600 mb-6 shadow-2xl shadow-emerald-500/20 ring-4 ring-emerald-500/10 animate-float">
-            <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
-            </svg>
+          {/* Top Brand Header */}
+          <div className="relative z-10 flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-3 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/60 shadow-lg">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-xs">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-sm font-black tracking-tight text-slate-900 leading-none">
+                  Amit Solution Hub
+                </h2>
+                <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Technology Pvt Ltd</span>
+              </div>
+            </Link>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black text-slate-800 tracking-tighter mb-3">
-            Start Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-cyan-500">Journey</span>
-          </h1>
-          <p className="text-slate-500 text-lg font-medium max-w-md mx-auto">Create a student account and explore our premium services.</p>
+
+          {/* Bottom Trust & Feature Stats */}
+          <div className="relative z-10 text-white mt-auto pt-8">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[11px] font-black uppercase tracking-wider mb-3 border border-white/30">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-300" /> User & Client Portal
+            </div>
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight drop-shadow-md">
+              Projects, Services & Courses
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-200 mt-2 font-medium max-w-md drop-shadow-xs leading-relaxed">
+              Create your account to buy readymade source codes, order custom tech projects, or access training courses.
+            </p>
+
+            {/* Trust Badges */}
+            <div className="mt-6 pt-6 border-t border-white/15 grid grid-cols-3 gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-300 shrink-0">
+                  <ShoppingBag className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-white">Source Code</p>
+                  <p className="text-[10px] text-slate-300 font-bold">Store</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-300 shrink-0">
+                  <Code className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-white">Custom Dev</p>
+                  <p className="text-[10px] text-slate-300 font-bold">Services</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-purple-300 shrink-0">
+                  <Laptop className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="text-xs font-black text-white">Interactive</p>
+                  <p className="text-[10px] text-slate-300 font-bold">Courses</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-[2.5rem] p-8 md:p-10 shadow-[0_24px_60px_-12px_rgba(16,23,42,0.08)] hover:border-emerald-500/20 transition-all duration-500 group">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-200 rounded-2xl animate-in zoom-in-95 duration-300 text-red-700">
-                <div className="w-8 h-8 rounded-full bg-red-500/15 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
-                </div>
-                <span className="text-sm font-semibold text-red-650">{error}</span>
-              </div>
-            )}
+        {/* ── RIGHT COLUMN: User Signup Form ── */}
+        <div className="lg:col-span-6 h-full w-full bg-white p-8 sm:p-12 lg:p-16 flex flex-col justify-between overflow-y-auto">
+          
+          {/* Top Header Link */}
+          <div className="hidden lg:block text-right">
+            <span className="text-xs text-slate-500 font-medium mr-2">Already registered?</span>
+            <Link to="/login" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+              Sign In →
+            </Link>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div className="space-y-2">
-                <label className="block text-xs font-black text-slate-550 uppercase tracking-widest ml-1">Full Name</label>
-                <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required placeholder="Enter full name" className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all duration-300" />
-              </div>
-              <div className="space-y-2">
-                <label className="block text-xs font-black text-slate-550 uppercase tracking-widest ml-1">Email Address</label>
-                <input type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required placeholder="your@email.com" className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all duration-300" />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-xs font-black text-slate-550 uppercase tracking-widest ml-1">
-                Mobile Number <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">+91</span>
-                <input
-                  type="tel"
-                  value={form.phone}
-                  onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
-                  required
-                  placeholder="10-digit mobile number"
-                  className="w-full pl-14 pr-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all duration-300"
-                />
-              </div>
-              <p className="text-[10px] text-slate-400 ml-1">📞 Required so our team can contact you about your courses</p>
-            </div>
-
-            <div className="rounded-2xl border border-emerald-500/10 bg-emerald-500/5 px-4 py-4 text-sm text-slate-600">
-              We will send a secure password reset link after your account is created. No default password is assigned.
-            </div>
-
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl">
-              <label className="flex items-center gap-4 cursor-pointer">
-                <div className="relative flex items-center">
-                  <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} className="peer appearance-none w-6 h-6 rounded-lg border-2 border-slate-300 bg-white checked:bg-emerald-500 checked:border-emerald-500 transition-all cursor-pointer" />
-                  <svg className="absolute w-4 h-4 text-white left-1 bottom-1 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}><path d="M5 13l4 4L19 7" /></svg>
-                </div>
-                <span className="text-sm text-slate-500 select-none">
-                  I accept the <button type="button" onClick={() => setShowTerms(true)} className="text-emerald-600 font-bold hover:underline">Terms & Conditions</button>
+          {/* Form Content Container */}
+          <div className="my-auto max-w-md w-full mx-auto py-6">
+            
+            <div className="mb-6">
+              <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Create User Account</h1>
+              <p className="text-xs sm:text-sm text-slate-500 mt-2 font-medium">Join thousands of developers, clients, and learners at Amit Solution Hub.</p>
+              
+              {/* Feature Pill Highlights */}
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-extrabold uppercase">
+                  📁 Readymade Source Code
                 </span>
-              </label>
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-extrabold uppercase">
+                  🛠️ Custom Tech Services
+                </span>
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-extrabold uppercase">
+                  🎓 Training Courses
+                </span>
+              </div>
             </div>
 
-            <button type="submit" disabled={!agreed || loading} className="group/btn relative w-full overflow-hidden px-6 py-5 bg-gradient-to-r from-emerald-600 to-cyan-600 text-white rounded-[1.25rem] font-black text-sm uppercase tracking-widest hover:from-emerald-700 hover:to-cyan-700 shadow-2xl shadow-emerald-500/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
-              <span className="relative flex items-center justify-center gap-3">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold leading-relaxed">
+                  {error}
+                </div>
+              )}
+
+              {/* Full Name */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">
+                  Full Name <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={form.name}
+                    onChange={e => setForm({ ...form, name: e.target.value })}
+                    required
+                    placeholder="Enter your full name"
+                    className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
+                  />
+                </div>
+              </div>
+
+              {/* Email Address */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">
+                  Email Address <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="email"
+                    value={form.email}
+                    onChange={e => setForm({ ...form, email: e.target.value })}
+                    required
+                    placeholder="name@domain.com"
+                    className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
+                  />
+                </div>
+              </div>
+
+              {/* Mobile Number */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">
+                  Mobile Number <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <Phone className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                  <span className="absolute left-10 top-1/2 -translate-y-1/2 text-slate-500 text-xs font-bold">+91</span>
+                  <input
+                    type="tel"
+                    value={form.phone}
+                    onChange={e => setForm({ ...form, phone: e.target.replace(/\D/g, '').slice(0, 10) })}
+                    required
+                    placeholder="10-digit mobile number"
+                    className="w-full pl-20 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
+                  />
+                </div>
+              </div>
+
+              {/* Primary Purpose / Interest */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">
+                  What are you primarily looking for?
+                </label>
+                <div className="relative">
+                  <ShoppingBag className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <select
+                    value={form.interestTrack}
+                    onChange={e => setForm({ ...form, interestTrack: e.target.value })}
+                    className="w-full pl-11 pr-8 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium appearance-none cursor-pointer"
+                  >
+                    <option value="Buying Projects / Source Code">Buying Readymade Projects & Source Code</option>
+                    <option value="Custom Project Development">Custom Software & App Development Service</option>
+                    <option value="Training Courses">Enrolling in Technical Training & Courses</option>
+                    <option value="College Internship & Projects">College Internship & Major Project</option>
+                    <option value="General User">General Inquiry / Browsing</option>
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">▼</div>
+                </div>
+              </div>
+
+              {/* Terms Checkbox */}
+              <div className="pt-2">
+                <label className="flex items-start gap-3 cursor-pointer text-xs text-slate-600">
+                  <input
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={e => setAgreed(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300"
+                  />
+                  <span>
+                    I agree to the{' '}
+                    <button
+                      type="button"
+                      onClick={() => setShowTerms(true)}
+                      className="font-bold text-indigo-600 hover:underline"
+                    >
+                      Terms & Conditions
+                    </button>{' '}
+                    and Privacy Policy.
+                  </span>
+                </label>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loading || !agreed}
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 mt-4"
+              >
                 {loading ? (
-                  <><div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>Processing...</>
+                  <span>Creating Account...</span>
                 ) : (
                   <>
-                    Create Account
-                    <svg className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                    <span>Create User Account</span>
+                    <ArrowRight className="w-4 h-4" />
                   </>
                 )}
-              </span>
-            </button>
-          </form>
+              </button>
+            </form>
 
-          <div className="mt-8 text-center">
-            <div className="relative mb-6">
-              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-150"></div></div>
-              <div className="relative flex justify-center text-[10px] uppercase font-black tracking-widest text-slate-400 bg-white"><span className="px-3">Social Auth (Coming Soon)</span></div>
+            <div className="mt-6 text-center lg:hidden">
+              <span className="text-xs text-slate-500">Already registered? </span>
+              <Link to="/login" className="text-xs font-bold text-indigo-600">
+                Sign In
+              </Link>
             </div>
 
-            <p className="text-sm text-slate-500 font-medium">Already part of our community?</p>
-            <Link to="/login" className="inline-block mt-2 text-emerald-600 font-black tracking-tighter hover:text-emerald-500 transition-colors border-b-2 border-emerald-500/20 hover:border-emerald-500">
-              SIGN IN
-            </Link>
-
-            <p className="mt-8 text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed">
-              * Dedicated support & real-time updates for all students
-            </p>
           </div>
+
+          {/* Bottom Footer */}
+          <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
+            <span>© {new Date().getFullYear()} Amit Solution Hub Technology Pvt Ltd</span>
+            <Link to="/contact" className="hover:text-indigo-600 transition-colors">Support</Link>
+          </div>
+
         </div>
 
-        {showTerms && <TermsAndConditions onAgree={() => { setAgreed(true); setShowTerms(false) }} onCancel={() => setShowTerms(false)} />}
       </div>
-    </section>
+
+      <TermsAndConditions
+        isOpen={showTerms}
+        onClose={() => setShowTerms(false)}
+        onAgree={() => {
+          setAgreed(true)
+          setShowTerms(false)
+        }}
+      />
+
+    </div>
   )
 }

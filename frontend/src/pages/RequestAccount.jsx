@@ -1,24 +1,36 @@
 import { useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import {
-  ArrowLeft,
   ArrowRight,
   BriefcaseBusiness,
   CheckCircle2,
-  CircleAlert,
-  Clock3,
-  LockKeyhole,
   Mail,
   Phone,
   ShieldCheck,
-  UserRound,
+  User,
+  Sparkles,
   Link2,
+  Building2,
+  UserCheck
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import TermsAndConditions from '../components/TermsAndConditions'
-import brandLogo from '../assets/brand-logo.png'
 
-const departments = ['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Sales', 'Editor', 'Technician', 'HR', 'Operations', 'Placement', 'Other']
+const departments = [
+  'Engineering',
+  'Design',
+  'Marketing',
+  'Management',
+  'Support',
+  'Sales',
+  'Editor',
+  'Technician',
+  'HR',
+  'Operations',
+  'Placement',
+  'Other'
+]
+
 const roles = [
   'HR & Recruitment Executive',
   'Student Support Executive',
@@ -54,13 +66,8 @@ const initialForm = {
   cvFilePath: '',
 }
 
-const fieldClass =
-  'w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:border-white/10 dark:bg-slate-900/70 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-cyan-400 dark:focus:ring-cyan-400/10'
-const labelClass = 'mb-2 block text-xs font-bold text-slate-600 dark:text-slate-300'
-
 export default function RequestAccount() {
   const { createAccountRequest } = useAuth()
-  const navigate = useNavigate()
   const [showTerms, setShowTerms] = useState(false)
   const [agreed, setAgreed] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -78,10 +85,6 @@ export default function RequestAccount() {
     [form.customRole, form.role]
   )
 
-  const updateField = (field, value) => {
-    setForm(prev => ({ ...prev, [field]: value }))
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -97,7 +100,7 @@ export default function RequestAccount() {
 
     const cleanPhone = form.phone.replace(/\D/g, '')
     if (cleanPhone.length < 10) {
-      setError('Please enter a valid phone number.')
+      setError('Please enter a valid 10-digit mobile number.')
       return
     }
 
@@ -115,7 +118,7 @@ export default function RequestAccount() {
         cvFilePath: form.cvFilePath.trim(),
         reason: form.reason.trim(),
       })
-      setSubmittedMessage(result.message || 'Your request has been submitted successfully.')
+      setSubmittedMessage(result.message || 'Your staff account request has been submitted successfully.')
       setSubmitted(true)
     } catch (err) {
       setError(err.message || 'Failed to submit request.')
@@ -124,308 +127,302 @@ export default function RequestAccount() {
     }
   }
 
-  return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-[linear-gradient(135deg,#f8fafc_0%,#eef6ff_46%,#f4fbf7_100%)] px-4 py-6 text-slate-900 dark:bg-[linear-gradient(135deg,#020617_0%,#0f172a_52%,#071b18_100%)] dark:text-white sm:px-6 lg:px-8">
-      <div className="pointer-events-none absolute inset-0 opacity-[0.05] dark:opacity-[0.08]">
-        <div className="h-full w-full bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:44px_44px]" />
-      </div>
+  if (submitted) {
+    return (
+      <div className="relative w-screen h-screen min-h-screen flex items-center justify-center p-6 bg-slate-900 text-white font-['Outfit',sans-serif]">
+        <div className="relative z-10 max-w-md w-full bg-white text-slate-900 rounded-[32px] p-8 sm:p-10 shadow-2xl text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg shadow-indigo-500/30 text-white">
+            <CheckCircle2 className="w-10 h-10" />
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black tracking-tight mb-2">Request Submitted</h2>
+          <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+            {submittedMessage || 'Your staff account application is under review by Founder, CEO & Admin.'}
+          </p>
 
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-48px)] w-full max-w-6xl flex-col">
-        <header className="flex items-center justify-between gap-4">
-          <Link to="/" className="inline-flex items-center gap-3 rounded-2xl bg-white/80 px-4 py-3 shadow-sm ring-1 ring-slate-200 transition hover:bg-white dark:bg-white/5 dark:ring-white/10 dark:hover:bg-white/10">
-            <img src={brandLogo} alt="SolutionHub" className="h-8 w-auto object-contain" />
-          </Link>
-
-          <Link to="/join-us" className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white/70 px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:border-blue-200 hover:text-blue-700 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:text-white">
-            <ArrowLeft className="h-4 w-4" />
-            Join Us
-          </Link>
-        </header>
-
-        <div className="grid flex-1 items-center gap-10 py-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:py-12">
-          <div className="max-w-xl">
-            <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-xl shadow-slate-300/50 dark:bg-white dark:text-slate-950 dark:shadow-black/30">
-              <BriefcaseBusiness className="h-7 w-7" />
+          <div className="bg-slate-50 rounded-2xl p-4 mb-6 text-left space-y-2.5 border border-slate-200/80 text-xs">
+            <div className="flex justify-between items-center pb-2 border-b border-slate-200/60">
+              <span className="text-slate-400 font-bold uppercase">Applicant</span>
+              <span className="text-slate-800 font-bold">{form.name}</span>
             </div>
-            <h1 className="max-w-lg text-4xl font-black leading-tight text-slate-950 dark:text-white sm:text-5xl">
-              Request your SolutionHub employee account.
-            </h1>
-            <p className="mt-5 max-w-lg text-base leading-7 text-slate-600 dark:text-slate-300">
-              Share your details once. The admin team reviews the request and sends a secure password reset link after approval.
-            </p>
-
-            <div className="mt-8 space-y-5">
-              {[
-                { icon: Clock3, title: 'Admin review', text: 'Your request stays pending until the team verifies it.' },
-                { icon: LockKeyhole, title: 'Secure invite', text: 'No default password is created for your account.' },
-                { icon: ShieldCheck, title: 'Role access', text: 'Department and role decide the workspace access.' },
-              ].map(item => {
-                const Icon = item.icon
-                return (
-                  <div key={item.title} className="flex gap-4">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-white text-blue-600 shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-cyan-300">
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h2 className="text-sm font-black text-slate-900 dark:text-white">{item.title}</h2>
-                      <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{item.text}</p>
-                    </div>
-                  </div>
-                )
-              })}
+            <div className="flex justify-between items-center pb-2 border-b border-slate-200/60">
+              <span className="text-slate-400 font-bold uppercase">Department</span>
+              <span className="text-slate-800 font-bold">{finalDepartment}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-slate-400 font-bold uppercase">Role</span>
+              <span className="text-indigo-600 font-black uppercase tracking-wider">{finalRole}</span>
             </div>
           </div>
 
-          <div className="mx-auto w-full max-w-2xl">
-            <div className="overflow-hidden rounded-[28px] border border-white/80 bg-white/90 shadow-2xl shadow-slate-300/50 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/70 dark:shadow-black/40">
-              {submitted ? (
-                <div className="p-6 sm:p-8">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-emerald-500 text-white shadow-xl shadow-emerald-200 dark:shadow-emerald-950/40">
-                    <CheckCircle2 className="h-9 w-9" />
-                  </div>
-                  <div className="mx-auto mt-6 max-w-md text-center">
-                    <h2 className="text-2xl font-black text-slate-950 dark:text-white">Request submitted</h2>
-                    <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                      {submittedMessage || 'Your account creation request has been sent to the administrator for review.'}
-                    </p>
-                  </div>
-
-                  <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10">
-                    {[
-                      ['Name', form.name],
-                      ['Email', form.email],
-                      ['Department', finalDepartment],
-                      ['Status', 'Awaiting Review'],
-                    ].map(([label, value]) => (
-                      <div key={label} className="grid grid-cols-[120px_1fr] gap-3 border-b border-slate-200 px-4 py-3 text-sm last:border-b-0 dark:border-white/10">
-                        <span className="font-bold text-slate-500 dark:text-slate-400">{label}</span>
-                        <span className="font-semibold text-slate-900 dark:text-white">{value}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => navigate('/')}
-                    className="mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 text-sm font-black text-white shadow-xl shadow-slate-300 transition hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:shadow-black/20 dark:hover:bg-slate-100"
-                  >
-                    Back to Home
-                    <ArrowRight className="h-4 w-4" />
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <div className="border-b border-slate-200 px-6 py-6 dark:border-white/10 sm:px-8">
-                    <h2 className="text-2xl font-black text-slate-950 dark:text-white">Employee account request</h2>
-                    <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                      Fill the required fields and accept the terms before submitting.
-                    </p>
-                  </div>
-
-                  <form onSubmit={handleSubmit} className="space-y-5 p-6 sm:p-8">
-                    {error && (
-                      <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
-                        <CircleAlert className="mt-0.5 h-5 w-5 shrink-0" />
-                        <span>{error}</span>
-                      </div>
-                    )}
-
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                      <label>
-                        <span className={labelClass}>Full Name *</span>
-                        <div className="relative">
-                          <UserRound className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                          <input
-                            type="text"
-                            value={form.name}
-                            onChange={e => updateField('name', e.target.value)}
-                            required
-                            autoComplete="name"
-                            placeholder="Your full name"
-                            className={`${fieldClass} pl-11`}
-                          />
-                        </div>
-                      </label>
-
-                      <label>
-                        <span className={labelClass}>Email *</span>
-                        <div className="relative">
-                          <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                          <input
-                            type="email"
-                            value={form.email}
-                            onChange={e => updateField('email', e.target.value)}
-                            required
-                            autoComplete="email"
-                            placeholder="name@example.com"
-                            className={`${fieldClass} pl-11`}
-                          />
-                        </div>
-                      </label>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                      <label>
-                        <span className={labelClass}>Phone *</span>
-                        <div className="relative">
-                          <Phone className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                          <input
-                            type="tel"
-                            inputMode="tel"
-                            value={form.phone}
-                            onChange={e => updateField('phone', e.target.value)}
-                            required
-                            autoComplete="tel"
-                            placeholder="+91 98765 43210"
-                            className={`${fieldClass} pl-11`}
-                          />
-                        </div>
-                      </label>
-
-                      <label>
-                        <span className={labelClass}>Department *</span>
-                        <select
-                          value={form.department}
-                          onChange={e => setForm(prev => ({ ...prev, department: e.target.value, customDepartment: '' }))}
-                          required
-                          className={fieldClass}
-                        >
-                          <option value="">Select department</option>
-                          {departments.map(department => <option key={department} value={department}>{department}</option>)}
-                        </select>
-                      </label>
-                    </div>
-
-                    {form.department === 'Other' && (
-                      <label>
-                        <span className={labelClass}>Custom Department *</span>
-                        <input
-                          type="text"
-                          value={form.customDepartment}
-                          onChange={e => updateField('customDepartment', e.target.value)}
-                          required
-                          placeholder="Enter department"
-                          className={fieldClass}
-                        />
-                      </label>
-                    )}
-
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                      <label>
-                        <span className={labelClass}>Role *</span>
-                        <select
-                          value={form.role}
-                          onChange={e => setForm(prev => ({ ...prev, role: e.target.value, customRole: '' }))}
-                          required
-                          className={fieldClass}
-                        >
-                          <option value="">Select role</option>
-                          {roles.map(role => <option key={role} value={role}>{role}</option>)}
-                        </select>
-                      </label>
-
-                      {form.role === 'Other' ? (
-                        <label>
-                          <span className={labelClass}>Custom Role *</span>
-                          <input
-                            type="text"
-                            value={form.customRole}
-                            onChange={e => updateField('customRole', e.target.value)}
-                            required
-                            placeholder="Enter role"
-                            className={fieldClass}
-                          />
-                        </label>
-                      ) : (
-                        <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm leading-6 text-slate-600 dark:border-cyan-400/20 dark:bg-cyan-400/10 dark:text-slate-300">
-                          <div className="flex gap-3">
-                            <LockKeyhole className="mt-0.5 h-5 w-5 shrink-0 text-blue-600 dark:text-cyan-300" />
-                            <p>Approved accounts receive a secure password reset link by email.</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    <label>
-                      <span className={labelClass}>Google Drive Resume Link *</span>
-                      <div className="relative">
-                        <Link2 className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                        <input
-                          type="url"
-                          value={form.cvFilePath}
-                          onChange={e => updateField('cvFilePath', e.target.value)}
-                          required
-                          placeholder="https://drive.google.com/file/d/..."
-                          className={`${fieldClass} pl-11`}
-                        />
-                      </div>
-                    </label>
-
-                    <label>
-                      <span className={labelClass}>Why do you want to join?</span>
-                      <textarea
-                        value={form.reason}
-                        onChange={e => updateField('reason', e.target.value)}
-                        rows={4}
-                        placeholder="Brief description"
-                        className={`${fieldClass} min-h-[118px] resize-none`}
-                      />
-                    </label>
-
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 dark:border-white/10 dark:bg-white/5">
-                      <label className="flex cursor-pointer items-start gap-3">
-                        <input
-                          type="checkbox"
-                          checked={agreed}
-                          onChange={e => setAgreed(e.target.checked)}
-                          className="mt-0.5 h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-white/20 dark:bg-slate-900"
-                        />
-                        <span className="text-sm leading-6 text-slate-600 dark:text-slate-300">
-                          I agree to the{' '}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              setShowTerms(true)
-                            }}
-                            className="font-bold text-blue-700 underline underline-offset-4 transition hover:text-blue-900 dark:text-cyan-300 dark:hover:text-cyan-200"
-                          >
-                            Terms & Conditions
-                          </button>
-                        </span>
-                      </label>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={!agreed || loading}
-                      className="inline-flex h-[52px] min-h-[52px] w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-6 py-3.5 text-sm font-black text-white shadow-xl shadow-slate-300 transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-slate-950 dark:shadow-black/30 dark:hover:bg-slate-100"
-                    >
-                      {loading ? (
-                        <span className="h-5 w-5 rounded-full border-2 border-white/30 border-t-white dark:border-slate-950/20 dark:border-t-slate-950 motion-safe:animate-spin" />
-                      ) : (
-                        <>
-                          Submit Request
-                          <ArrowRight className="h-4 w-4" />
-                        </>
-                      )}
-                    </button>
-
-                    <div className="border-t border-slate-200 pt-5 text-center dark:border-white/10">
-                      <Link to="/login" className="inline-flex items-center justify-center gap-2 text-sm font-bold text-slate-500 transition hover:text-blue-700 dark:text-slate-400 dark:hover:text-white">
-                        <ArrowLeft className="h-4 w-4" />
-                        Already have an account? Sign in
-                      </Link>
-                    </div>
-                  </form>
-                </>
-              )}
-            </div>
-          </div>
+          <Link
+            to="/login"
+            className="block w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-blue-500/25 hover:from-blue-700 hover:to-indigo-700 transition-all"
+          >
+            Return to Sign In
+          </Link>
         </div>
       </div>
+    )
+  }
 
-      {showTerms && <TermsAndConditions onAgree={() => { setAgreed(true); setShowTerms(false) }} onCancel={() => setShowTerms(false)} />}
-    </section>
+  return (
+    <div className="relative w-screen h-screen min-h-screen overflow-hidden bg-white text-slate-800 font-['Outfit',sans-serif]">
+      
+      {/* FULL SCREEN DUAL COLUMN LAYOUT (100vh Edge-to-Edge) */}
+      <div className="w-full h-full grid grid-cols-1 lg:grid-cols-12 overflow-y-auto lg:overflow-hidden">
+        
+        {/* ── LEFT COLUMN: Full Screen Height 3D Hero Image Showcase ── */}
+        <div className="lg:col-span-5 relative h-64 lg:h-full w-full bg-slate-900 flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden group">
+          
+          {/* Background 3D Tech Illustration */}
+          <img
+            src="/login_hero_banner.png"
+            alt="Amit Solution Hub Technology"
+            className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.95] contrast-[1.05] transition-transform duration-700 group-hover:scale-105"
+          />
+          
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-slate-950/50" />
+
+          {/* Top Brand Header */}
+          <div className="relative z-10 flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-3 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/60 shadow-lg">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-xs">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <h2 className="text-sm font-black tracking-tight text-slate-900 leading-none">
+                  Amit Solution Hub
+                </h2>
+                <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Technology Pvt Ltd</span>
+              </div>
+            </Link>
+          </div>
+
+          {/* Bottom Caption Overlay */}
+          <div className="relative z-10 text-white mt-auto pt-8">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[11px] font-black uppercase tracking-wider mb-3 border border-white/30">
+              <BriefcaseBusiness className="w-3.5 h-3.5 text-blue-300" /> Employee & Staff Onboarding
+            </div>
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight drop-shadow-md">
+              Join Our Engineering Team
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-200 mt-2 font-medium max-w-md drop-shadow-xs leading-relaxed">
+              Request an official staff account to access internal dashboards, projects, LMS tools, and enterprise workflows.
+            </p>
+          </div>
+
+        </div>
+
+        {/* ── RIGHT COLUMN: Full Screen Height Light Request Form ── */}
+        <div className="lg:col-span-7 h-full w-full bg-white p-6 sm:p-10 lg:p-14 flex flex-col justify-between overflow-y-auto">
+          
+          {/* Top Header Link */}
+          <div className="hidden lg:block text-right">
+            <span className="text-xs text-slate-500 font-medium mr-2">Already have credentials?</span>
+            <Link to="/login" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+              Sign In →
+            </Link>
+          </div>
+
+          {/* Form Content Container */}
+          <div className="my-auto max-w-xl w-full mx-auto py-4">
+            
+            <div className="mb-6">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Request Staff Account</h1>
+              <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">Submit your details and CV drive link for Admin approval.</p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold leading-relaxed">
+                  {error}
+                </div>
+              )}
+
+              {/* Name & Email */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                    Full Name <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={form.name}
+                      onChange={e => setForm({ ...form, name: e.target.value })}
+                      required
+                      placeholder="Enter full name"
+                      className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                    Work Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="email"
+                      value={form.email}
+                      onChange={e => setForm({ ...form, email: e.target.value })}
+                      required
+                      placeholder="you@domain.com"
+                      className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Phone & Department */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                    Mobile Phone <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <Phone className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="tel"
+                      value={form.phone}
+                      onChange={e => setForm({ ...form, phone: e.target.value })}
+                      required
+                      placeholder="+91 10-digit mobile"
+                      className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                    Department <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <Building2 className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <select
+                      value={form.department}
+                      onChange={e => setForm({ ...form, department: e.target.value })}
+                      required
+                      className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium appearance-none"
+                    >
+                      <option value="">Select Department</option>
+                      {departments.map(dept => (
+                        <option key={dept} value={dept}>{dept}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Role / Designation */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                  Applied Role / Designation <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <UserCheck className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <select
+                    value={form.role}
+                    onChange={e => setForm({ ...form, role: e.target.value })}
+                    required
+                    className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium appearance-none"
+                  >
+                    <option value="">Select Role</option>
+                    {roles.map(r => (
+                      <option key={r} value={r}>{r}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* CV / Resume Drive Link */}
+              <div>
+                <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                  Resume / CV Drive Link (PDF) <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <Link2 className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="url"
+                    value={form.cvFilePath}
+                    onChange={e => setForm({ ...form, cvFilePath: e.target.value })}
+                    required
+                    placeholder="https://drive.google.com/file/d/..."
+                    className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
+                  />
+                </div>
+              </div>
+
+              {/* Terms Checkbox */}
+              <div className="pt-1">
+                <label className="flex items-start gap-3 cursor-pointer text-xs text-slate-600">
+                  <input
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={e => setAgreed(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300"
+                  />
+                  <span>
+                    I confirm that the information provided is accurate and agree to the{' '}
+                    <button
+                      type="button"
+                      onClick={() => setShowTerms(true)}
+                      className="font-bold text-indigo-600 hover:underline"
+                    >
+                      Terms & Conditions
+                    </button>.
+                  </span>
+                </label>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={loading || !agreed}
+                className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 mt-3"
+              >
+                {loading ? (
+                  <span>Submitting Application...</span>
+                ) : (
+                  <>
+                    <span>Submit Staff Request</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </form>
+
+            <div className="mt-5 text-center lg:hidden">
+              <span className="text-xs text-slate-500">Already have credentials? </span>
+              <Link to="/login" className="text-xs font-bold text-indigo-600">
+                Sign In
+              </Link>
+            </div>
+
+          </div>
+
+          {/* Bottom Footer */}
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
+            <span>© {new Date().getFullYear()} Amit Solution Hub Technology Pvt Ltd</span>
+            <Link to="/contact" className="hover:text-indigo-600 transition-colors">Support</Link>
+          </div>
+
+        </div>
+
+      </div>
+
+      <TermsAndConditions
+        isOpen={showTerms}
+        onClose={() => setShowTerms(false)}
+        onAgree={() => {
+          setAgreed(true)
+          setShowTerms(false)
+        }}
+      />
+
+    </div>
   )
 }

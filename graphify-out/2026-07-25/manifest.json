@@ -2723,10 +2723,5 @@
     "mtime": 1784974066.6735249,
     "ast_hash": "0da886ba2311f360b07a85daa9e249f2",
     "semantic_hash": ""
-  },
-  "backend/scripts/turn_off_all_maintenance.js": {
-    "mtime": 1784974299.9512045,
-    "ast_hash": "dc6d13877546da4c5377046d182cd60c",
-    "semantic_hash": ""
   }
 }

@@ -98,8 +98,8 @@ const Navbar = () => {
   return (
     <nav className={`fixed left-0 right-0 top-0 z-[140] border-b transition-all duration-300 ${
       isDark
-        ? `border-white/10 ${scrolled ? 'bg-slate-900/80 backdrop-blur-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]' : 'bg-slate-900/60 backdrop-blur-xl'}`
-        : `border-slate-200/80 ${scrolled ? 'bg-white/80 backdrop-blur-2xl shadow-[0_10px_30px_-10px_rgba(0,0,0,0.08)]' : 'bg-white/50 backdrop-blur-xl'}`
+        ? `border-white/10 ${scrolled ? 'bg-slate-950/85 backdrop-blur-2xl shadow-xl shadow-black/50' : 'bg-slate-950/70 backdrop-blur-xl'}`
+        : `border-slate-200/80 ${scrolled ? 'bg-white/85 backdrop-blur-2xl shadow-md shadow-slate-900/5' : 'bg-white/70 backdrop-blur-2xl'}`
     }`}>
       {/* Animated Glow */}
       <div className={`absolute -inset-x-0 bottom-[-20px] h-20 blur-3xl opacity-40 pointer-events-none animate-pulse ${isDark ? 'bg-gradient-to-r from-indigo-500/20 via-purple-500/15 to-pink-500/10' : 'bg-gradient-to-r from-blue-400/15 via-indigo-400/10 to-purple-400/10'}`} style={{ animationDuration: '4s' }} />

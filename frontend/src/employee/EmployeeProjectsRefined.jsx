@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
 import { Folder } from 'lucide-react'
@@ -57,68 +56,72 @@ export default function EmployeeProjectsRefined() {
         pendingTasks: projectTasks.length - completedTasks - inProgressTasks,
         description:
           storeProject?.description ||
-          'Project summary is not available yet. Tasks and delivery progress are tracked below.',
+          'Project summary is currently tracked under your active tasks below.',
       }
     }).sort((a, b) => b.totalTasks - a.totalTasks)
   }, [myTasks, projects])
 
-  const activeProjects = myProjects.filter(project => project.progress < 100).length
-  const completedProjects = myProjects.filter(project => project.progress === 100).length
-  const totalProjectTasks = myProjects.reduce((sum, project) => sum + project.totalTasks, 0)
+  const totalAssignedTasks = myTasks.length
+  const completedAssignedTasks = myTasks.filter(task => isDone(task.status)).length
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
+    <div className="space-y-6 font-['Outfit',sans-serif]">
       <EmployeePageHeader
-        eyebrow="Project Map"
-        title="Assigned Projects"
-        description="All mapped projects are aggregated here so you can see workload, completion, and active delivery at a glance."
+        eyebrow="Employee Projects"
+        title="Assigned Projects & Code Repos"
+        description="Every project assigned to your identity with real-time delivery percentages and completion tracking."
         stats={[
-          { label: 'Projects', value: myProjects.length },
-          { label: 'Active', value: activeProjects },
-          { label: 'Completed', value: completedProjects },
-          { label: 'Project tasks', value: totalProjectTasks },
+          { label: 'Projects Mapped', value: myProjects.length },
+          { label: 'Total Tasks', value: totalAssignedTasks },
+          { label: 'Completed Tasks', value: completedAssignedTasks },
         ]}
-        actions={
-          <Link
-            to="/employee/tasks"
-            className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-400/15"
-          >
-            Open Task Board
-          </Link>
-        }
       />
 
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {[
-          { label: 'Active Delivery', value: activeProjects, tone: 'info', hint: 'Projects still moving' },
-          { label: 'Finished Work', value: completedProjects, tone: 'success', hint: 'Completed project buckets' },
-          { label: 'Task Load', value: totalProjectTasks, tone: 'neutral', hint: 'All mapped tasks across projects' },
-        ].map(card => (
-          <EmployeeSurface key={card.label} className="p-5">
-            <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-500">{card.label}</p>
-            <div className="mt-4 flex items-end justify-between gap-3">
-              <p className="text-4xl font-black text-slate-900">{card.value}</p>
+          {
+            value: myProjects.length,
+            tone: 'info',
+            label: 'Mapped Projects',
+            hint: 'Active project boards',
+          },
+          {
+            value: totalAssignedTasks,
+            tone: 'warning',
+            label: 'Total Tasks',
+            hint: 'Tasks across all assigned projects',
+          },
+          {
+            value: completedAssignedTasks,
+            tone: 'success',
+            label: 'Finished Items',
+            hint: 'Tasks verified & closed',
+          },
+        ].map((card, idx) => (
+          <EmployeeSurface key={idx}>
+            <div className="flex items-center justify-between">
+              <p className="text-3xl font-black text-slate-900">{card.value}</p>
               <EmployeeBadge tone={card.tone}>{card.label}</EmployeeBadge>
             </div>
-            <p className="mt-3 text-sm text-slate-400">{card.hint}</p>
+            <p className="mt-2 text-xs font-medium text-slate-500">{card.hint}</p>
           </EmployeeSurface>
         ))}
       </section>
 
       <EmployeeSurface
         title="Project Contribution Board"
-        description="Progress for each project is driven by the tasks assigned to you."
+        description="Progress for each project is automatically calculated based on your assigned tasks."
       >
         {myProjects.length === 0 ? (
           <EmployeeEmptyState
-            icon={<Folder className="w-12 h-12 text-slate-500" strokeWidth={1.5} />}
+            icon={<Folder className="w-10 h-10 text-blue-500" strokeWidth={1.5} />}
             title="No active project mapping yet"
-            description="When an administrator assigns tasks to your name or employee ID, projects will appear here automatically."
+            description="When tasks are assigned to your name or employee ID, project boards will appear here automatically."
           />
         ) : (
-          <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
             {myProjects.map((project, index) => (
-              <div key={project.id} className="rounded-[26px] border border-slate-300 bg-white/[0.03] p-5 transition hover:border-emerald-400/20 hover:bg-white/[0.05]">
+              <div key={project.id} className="rounded-[26px] border border-slate-200/90 bg-slate-50/50 p-6 transition hover:border-blue-300 hover:bg-white hover:shadow-md">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <div className="flex flex-wrap gap-2">
@@ -127,34 +130,34 @@ export default function EmployeeProjectsRefined() {
                       </EmployeeBadge>
                       <EmployeeBadge>Project #{index + 101}</EmployeeBadge>
                     </div>
-                    <h3 className="mt-4 text-xl font-black text-slate-900">{project.name}</h3>
-                    <p className="mt-2 text-sm leading-6 text-slate-400">{project.description}</p>
+                    <h3 className="mt-3.5 text-lg font-black text-slate-900 tracking-tight">{project.name}</h3>
+                    <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-slate-600 font-medium">{project.description}</p>
                   </div>
-                  <div className="rounded-2xl border border-slate-300 bg-black/20 px-4 py-3 text-center">
-                    <p className="text-[10px] font-black uppercase tracking-[0.28em] text-slate-500">Progress</p>
-                    <p className="mt-2 text-2xl font-black text-slate-900">{project.progress}%</p>
+                  <div className="rounded-2xl border border-blue-100 bg-white px-4 py-3 text-center shadow-2xs flex-shrink-0">
+                    <p className="text-[10px] font-black uppercase tracking-[0.25em] text-blue-600">Progress</p>
+                    <p className="mt-1 text-2xl font-black text-slate-900">{project.progress}%</p>
                   </div>
                 </div>
 
-                <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-slate-100">
+                <div className="mt-5 h-2.5 overflow-hidden rounded-full bg-slate-200/70">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-cyan-400 via-sky-400 to-emerald-400 transition-all"
+                    className="h-full rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-500 transition-all duration-500"
                     style={{ width: `${project.progress}%` }}
                   />
                 </div>
 
                 <div className="mt-5 grid grid-cols-3 gap-3 text-center">
-                  <div className="rounded-2xl border border-white/8 bg-black/20 px-3 py-3">
-                    <p className="text-xl font-black text-slate-900">{project.totalTasks}</p>
-                    <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-slate-500">Total</p>
+                  <div className="rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-2xs">
+                    <p className="text-lg font-black text-slate-900">{project.totalTasks}</p>
+                    <p className="mt-0.5 text-[10px] uppercase font-bold tracking-[0.2em] text-slate-400">Total</p>
                   </div>
-                  <div className="rounded-2xl border border-emerald-400/10 bg-emerald-400/[0.06] px-3 py-3">
-                    <p className="text-xl font-black text-emerald-300">{project.completedTasks}</p>
-                    <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-emerald-200/60">Done</p>
+                  <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 px-3 py-3">
+                    <p className="text-lg font-black text-emerald-700">{project.completedTasks}</p>
+                    <p className="mt-0.5 text-[10px] uppercase font-bold tracking-[0.2em] text-emerald-600">Done</p>
                   </div>
-                  <div className="rounded-2xl border border-amber-400/10 bg-amber-400/[0.06] px-3 py-3">
-                    <p className="text-xl font-black text-amber-300">{project.pendingTasks + project.inProgressTasks}</p>
-                    <p className="mt-1 text-[11px] uppercase tracking-[0.2em] text-amber-200/60">Open</p>
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50/60 px-3 py-3">
+                    <p className="text-lg font-black text-amber-800">{project.pendingTasks + project.inProgressTasks}</p>
+                    <p className="mt-0.5 text-[10px] uppercase font-bold tracking-[0.2em] text-amber-700">Open</p>
                   </div>
                 </div>
 

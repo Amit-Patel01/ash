@@ -759,62 +759,7 @@ const Hero = () => {
           </div>
         </section>
 
-        {/* ── LEARNING PROCESS (TIMELINE) ── */}
-        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">
-          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
-            <span className="px-3 py-1 rounded-full text-xs font-bold text-emerald-500 bg-emerald-500/10 uppercase tracking-wider">
-              Roadmap
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              Our Learning Process
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
-              A simple, step-by-step roadmap from initial enrollment to certificate delivery.
-            </p>
-          </div>
 
-          {/* Horizontal Timeline (Desktop) & Vertical (Mobile) */}
-          <div className="relative">
-            {/* Connector Line (Desktop) */}
-            <div className="hidden lg:block absolute top-[28px] left-[5%] right-[5%] h-[2px] bg-slate-200 dark:bg-slate-800 z-0" />
-            
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-4 relative z-10">
-              {STEPS.map((step, idx) => {
-                const IconComp = step.icon
-                return (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: idx * 0.1 }}
-                    key={step.title} 
-                    className="flex lg:flex-col items-center lg:items-center text-left lg:text-center gap-4 lg:gap-4"
-                  >
-                    {/* Circle Node */}
-                    <div className="w-14 h-14 rounded-full bg-white dark:bg-slate-900 border-2 border-slate-250 dark:border-slate-850 flex items-center justify-center text-blue-600 dark:text-indigo-400 shadow-sm flex-shrink-0 relative">
-                      <IconComp className="w-6 h-6" />
-                      {/* Step Number Tag */}
-                      <span className="absolute -top-2 -right-2 bg-slate-900 dark:bg-slate-800 text-[9px] font-black text-white px-1.5 py-0.5 rounded-full">
-                        {idx + 1}
-                      </span>
-                    </div>
-
-                    {/* Step details */}
-                    <div className="space-y-1">
-                      <span className="text-[10px] font-black uppercase text-indigo-500 tracking-wider">
-                        {step.step}
-                      </span>
-                      <h3 className="font-bold text-sm text-slate-800 dark:text-slate-100">{step.title}</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs leading-relaxed font-medium">
-                        {step.desc}
-                      </p>
-                    </div>
-                  </motion.div>
-                )
-              })}
-            </div>
-          </div>
-        </section>
 
         {/* ── CERTIFICATE SECTION ── */}
         <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/40 dark:border-slate-900/50">

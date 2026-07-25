@@ -19,32 +19,32 @@ import {
   Compass
 } from 'lucide-react'
 
+import FormerStaffModal from '../components/FormerStaffModal'
+
 export default function UserOverview() {
   const { currentUser, userProfile } = useAuth()
-  const { orders, getUserEnrollments, courses, certificates, submitReinstatementRequest } = useStore()
+  const { orders, getUserEnrollments, courses, certificates } = useStore()
   const { theme } = useTheme()
   const navigate = useNavigate()
   const isDark = theme === 'dark'
 
   const [showReinstatementModal, setShowReinstatementModal] = useState(false)
-  const [reinstatementMessage, setReinstatementMessage] = useState('')
-  const [submittingRequest, setSubmittingRequest] = useState(false)
 
-  const handleSendReinstatementRequest = async (e) => {
-    e.preventDefault()
-    if (!reinstatementMessage.trim()) return
-    setSubmittingRequest(true)
-    try {
-      const res = await submitReinstatementRequest(reinstatementMessage.trim())
-      alert(res.message || "Your reinstatement request has been submitted successfully!")
-      setShowReinstatementModal(false)
-      setReinstatementMessage('')
-    } catch (err) {
-      alert(err.message || "Failed to submit request.")
-    } finally {
-      setSubmittingRequest(false)
+  const isFormerStaff = Boolean(
+    userProfile?.status === 'terminated' ||
+    userProfile?.isTerminated ||
+    userProfile?.previousRole ||
+    currentUser?.status === 'terminated' ||
+    currentUser?.isTerminated ||
+    currentUser?.previousRole
+  )
+
+  // Auto-trigger full screen popup for former staff on login / dashboard load
+  useEffect(() => {
+    if (isFormerStaff) {
+      setShowReinstatementModal(true)
     }
-  }
+  }, [isFormerStaff])
 
   // Load lesson progress count
   const [completedLessonsCount, setCompletedLessonsCount] = useState(0)
@@ -146,7 +146,7 @@ export default function UserOverview() {
             {/* Pill Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] font-black bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 shadow-xs uppercase tracking-widest">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> SolutionHub Workspace
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Amit Solution Hub Workspace
             </div>
 
             {/* Headline */}
@@ -356,65 +356,11 @@ export default function UserOverview() {
         })}
       </div>
 
-      {/* Reinstatement Request Modal */}
-      {showReinstatementModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onClick={() => !submittingRequest && setShowReinstatementModal(false)} />
-          <div className="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-md p-6 shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl">
-                  📩
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">Reinstatement Request</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Send message to Founder, CEO & Admin</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowReinstatementModal(false)}
-                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center"
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleSendReinstatementRequest} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 uppercase tracking-wider">
-                  Message for Founder, CEO & Admin <span className="text-rose-500">*</span>
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  value={reinstatementMessage}
-                  onChange={(e) => setReinstatementMessage(e.target.value)}
-                  placeholder="Explain your reason for requesting re-employment / reinstatement..."
-                  className="w-full p-3 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-2xl text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none"
-                />
-              </div>
-
-              <div className="flex items-center gap-3 pt-2">
-                <button
-                  type="button"
-                  disabled={submittingRequest}
-                  onClick={() => setShowReinstatementModal(false)}
-                  className="flex-1 py-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-2xl text-xs font-bold"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submittingRequest}
-                  className="flex-[2] py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2"
-                >
-                  {submittingRequest ? 'Sending...' : 'Send Request'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Former Staff Reinstatement Full Screen Popup Modal */}
+      <FormerStaffModal
+        isOpen={showReinstatementModal}
+        onClose={() => setShowReinstatementModal(false)}
+      />
 
     </div>
   )

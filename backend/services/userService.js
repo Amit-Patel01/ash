@@ -2464,6 +2464,7 @@ const updateOwnProfile = async (firebaseUid, updates) => {
     displayName: updates.displayName,
     phone: updates.phone,
     avatar: updates.avatar || updates.photoURL,
+    coverImage: updates.coverImage,
     customImageUrl: updates.customImageUrl,
     avatarSource: updates.avatarSource,
     bio: updates.bio,

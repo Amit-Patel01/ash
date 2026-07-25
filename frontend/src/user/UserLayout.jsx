@@ -19,27 +19,44 @@ import {
   Menu,
   CheckCheck,
   ChevronRight,
-  Sparkles,
   Globe,
-  ExternalLink
+  ChevronDown,
+  X
 } from 'lucide-react'
+import FormerStaffModal from '../components/FormerStaffModal'
 
-
-const navItems = [
-  { path: '/user', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/user/my-courses', label: 'My Courses', icon: BookOpen },
-  { path: '/user/certificates', label: 'Documents', icon: Award },
-  { path: '/user/custom-project', label: 'Build Project', icon: Wrench },
-  { path: '/user/orders', label: 'My Orders', icon: ShoppingBag },
-  { path: '/user/receipts', label: 'My Receipts', icon: Receipt },
-  { path: '/user/support', label: 'Support Chat', icon: MessageSquare },
-  { path: '/user/profile', label: 'Profile', icon: User },
+const groupedUserNav = [
+  {
+    label: 'Learning & Docs',
+    items: [
+      { path: '/user/my-courses', label: 'My Courses', icon: BookOpen },
+      { path: '/user/certificates', label: 'Documents & Certs', icon: Award },
+    ]
+  },
+  {
+    label: 'Projects & Orders',
+    items: [
+      { path: '/user/custom-project', label: 'Build Custom Project', icon: Wrench },
+      { path: '/user/orders', label: 'My Orders', icon: ShoppingBag },
+      { path: '/user/receipts', label: 'My Receipts', icon: Receipt },
+    ]
+  },
+  {
+    label: 'Support & Profile',
+    items: [
+      { path: '/user/support', label: 'Support Chat', icon: MessageSquare },
+      { path: '/user/profile', label: 'Profile Settings', icon: User },
+    ]
+  }
 ]
 
 export default function UserLayout() {
+  const [openGroup, setOpenGroup] = useState(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
+  const [showProfileMenu, setShowProfileMenu] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  
   const [readNotificationIds, setReadNotificationIds] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('solutionhub:read-notifications') || '[]')
@@ -48,6 +65,7 @@ export default function UserLayout() {
     }
   })
 
+  const navRef = useRef(null)
   const notificationRef = useRef(null)
   const location = useLocation()
   const navigate = useNavigate()
@@ -55,6 +73,45 @@ export default function UserLayout() {
   const { getUserEnrollments, certificates, orders } = useStore()
   const { theme } = useTheme()
   const isDark = theme === 'dark'
+
+  const [showFormerStaffPopup, setShowFormerStaffPopup] = useState(false)
+
+  const isFormerStaff = Boolean(
+    userProfile?.status === 'terminated' ||
+    userProfile?.isTerminated ||
+    userProfile?.previousRole ||
+    currentUser?.status === 'terminated' ||
+    currentUser?.isTerminated ||
+    currentUser?.previousRole
+  )
+
+  useEffect(() => {
+    if (isFormerStaff) {
+      setShowFormerStaffPopup(true)
+    }
+  }, [isFormerStaff])
+
+  // Close dropdowns on outside click or route change
+  useEffect(() => {
+    setOpenGroup(null)
+    setShowNotifications(false)
+    setShowProfileMenu(false)
+    setMobileMenuOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (navRef.current && !navRef.current.contains(event.target)) {
+        setOpenGroup(null)
+        setShowProfileMenu(false)
+      }
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setShowNotifications(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // Fetch real enrollments, certificates & orders for this user
   const myEnrollments = useMemo(() => {
@@ -75,47 +132,39 @@ export default function UserLayout() {
     return orders.filter(o => o.customer_email === currentUser?.email || o.customer_uid === currentUser?.uid)
   }, [orders, currentUser])
 
-  // Generate dynamic real notification items
+  // Real notifications
   const realNotifications = useMemo(() => {
     const list = []
-
-    // 1. Enrollment notifications
     myEnrollments.forEach(en => {
       list.push({
         id: `en-${en.id || en.courseId}`,
         title: 'Active Program Enrollment',
         desc: `You are enrolled in ${en.courseTitle || en.courseName || 'Technology Track'}.`,
         time: 'Active',
-        link: '/user/my-courses',
-        type: 'course'
+        link: '/user/my-courses'
       })
     })
 
-    // 2. Certificate notifications
     myCertificates.forEach(cert => {
       list.push({
         id: `cert-${cert.id || cert.certificate_id}`,
         title: 'Verified Document Ready',
         desc: `Certificate #${cert.certificate_id || 'ID'} is verified and ready to download.`,
         time: 'Verified',
-        link: '/user/certificates',
-        type: 'certificate'
+        link: '/user/certificates'
       })
     })
 
-    // 3. Order notifications
     myOrders.forEach(ord => {
       list.push({
         id: `ord-${ord.id}`,
         title: `Order Status: ${ord.status?.toUpperCase() || 'COMPLETED'}`,
         desc: `Order for ${ord.project_title || 'Project'} (₹${ord.amount || 0}).`,
         time: ord.date || 'Recent',
-        link: '/user/orders',
-        type: 'order'
+        link: '/user/orders'
       })
     })
 
-    // Fallback welcoming notifications if no data
     if (list.length === 0) {
       list.push(
         {
@@ -123,24 +172,14 @@ export default function UserLayout() {
           title: 'Welcome to SolutionHub!',
           desc: 'Explore enrolled training tracks, verified offer letters, and custom project tools.',
           time: 'Just now',
-          link: '/user/my-courses',
-          type: 'info'
+          link: '/user/my-courses'
         },
         {
           id: 'welcome-2',
           title: 'Live Mentorship Desk',
           desc: 'Connect with technical instructors and submit queries in Support Chat.',
           time: '1h ago',
-          link: '/user/support',
-          type: 'info'
-        },
-        {
-          id: 'welcome-3',
-          title: 'Official Document Verification',
-          desc: 'All issued certificates come with QR security seals.',
-          time: '1d ago',
-          link: '/user/certificates',
-          type: 'info'
+          link: '/user/support'
         }
       )
     }
@@ -151,47 +190,38 @@ export default function UserLayout() {
     }))
   }, [myEnrollments, myCertificates, myOrders, readNotificationIds])
 
-  const unreadCount = realNotifications.filter(n => !n.read).length
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
-        setShowNotifications(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+  const unreadCount = useMemo(() => {
+    return realNotifications.filter(n => !n.read).length
+  }, [realNotifications])
 
   const markAllAsRead = () => {
     const allIds = realNotifications.map(n => n.id)
     setReadNotificationIds(allIds)
-    try {
-      localStorage.setItem('solutionhub:read-notifications', JSON.stringify(allIds))
-    } catch (e) {
-      console.error(e)
-    }
+    localStorage.setItem('solutionhub:read-notifications', JSON.stringify(allIds))
   }
 
-  const handleNotificationClick = (n) => {
-    if (!n.read) {
-      const updated = [...readNotificationIds, n.id]
-      setReadNotificationIds(updated)
-      try {
-        localStorage.setItem('solutionhub:read-notifications', JSON.stringify(updated))
-      } catch (e) {
-        console.error(e)
-      }
+  const handleNotificationClick = (notification) => {
+    if (!notification.read) {
+      const nextRead = [...readNotificationIds, notification.id]
+      setReadNotificationIds(nextRead)
+      localStorage.setItem('solutionhub:read-notifications', JSON.stringify(nextRead))
     }
     setShowNotifications(false)
-    navigate(n.link)
+    if (notification.link) navigate(notification.link)
   }
 
   const handleSearchSubmit = (e) => {
     e.preventDefault()
     if (!searchQuery.trim()) return
-    navigate(`/courses?search=${encodeURIComponent(searchQuery.trim())}`)
+    const q = searchQuery.toLowerCase()
+    if (q.includes('course') || q.includes('learn')) navigate('/user/my-courses')
+    else if (q.includes('cert') || q.includes('doc')) navigate('/user/certificates')
+    else if (q.includes('project') || q.includes('build')) navigate('/user/custom-project')
+    else if (q.includes('order')) navigate('/user/orders')
+    else if (q.includes('receipt')) navigate('/user/receipts')
+    else if (q.includes('support') || q.includes('chat')) navigate('/user/support')
+    else navigate('/user/profile')
+    setSearchQuery('')
   }
 
   const handleLogout = async () => {
@@ -204,262 +234,301 @@ export default function UserLayout() {
   const userAvatar = userProfile?.avatar || userProfile?.photoURL || currentUser?.avatar || currentUser?.photoURL || ''
 
   return (
-    <div className={`min-h-screen flex transition-colors duration-300 ${isDark ? 'bg-slate-950 text-white dark' : 'bg-[#f8fafc] text-slate-900'}`}>
+    <div className={`min-h-screen flex flex-col font-['Outfit',sans-serif] transition-colors duration-300 ${isDark ? 'bg-slate-950 text-white dark' : 'bg-[#f8fafc] text-slate-900'}`}>
       
-      {/* Mobile Drawer Overlay */}
-      {mobileMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm z-40 lg:hidden transition-opacity" 
-          onClick={() => setMobileMenuOpen(false)} 
-        />
-      )}
+      {/* ── TOP HORIZONTAL NAVIGATION BAR ── */}
+      <header className={`sticky top-0 z-50 border-b backdrop-blur-md transition-colors ${
+        isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white/95 border-slate-200 shadow-xs'
+      }`} ref={navRef}>
+        <div className="max-w-7xl mx-auto px-4 lg:px-6">
+          <div className="flex items-center justify-between h-16 gap-4">
+            
+            {/* Left: Logo & Mobile Trigger */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="lg:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
 
-      {/* ── 1. Left Sidebar ────────────────────────────────────────── */}
-      <aside className={`fixed lg:sticky top-0 inset-y-0 left-0 z-50 transform ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 ease-in-out w-72 h-screen flex flex-col justify-between border-r ${
-        isDark 
-          ? 'bg-slate-900 border-slate-800 shadow-2xl' 
-          : 'bg-white border-slate-200/80 shadow-[0_0_30px_rgba(0,0,0,0.02)]'
-      }`}>
-        
-        <div className="flex flex-col h-full justify-between p-5 overflow-y-auto">
-          <div>
-            {/* Logo */}
-            <div className="flex items-center gap-3 px-2 py-2 mb-6">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 flex items-center justify-center shadow-lg shadow-blue-500/25 shrink-0 text-white">
-                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                  <polyline points="7.5 4.21 12 6.81 16.5 4.21" />
-                  <polyline points="7.5 19.79 7.5 14.6 3 12" />
-                  <polyline points="21 12 16.5 14.6 16.5 19.79" />
-                  <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                  <line x1="12" y1="22.08" x2="12" y2="12" />
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-lg font-black tracking-tight text-slate-900 dark:text-white">SolutionHub</h1>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 -mt-0.5">Student Portal</p>
-              </div>
+              <Link to="/user" className="flex items-center gap-2.5 group">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+                  <LayoutDashboard className="w-5 h-5" />
+                </div>
+                <div>
+                  <h1 className="text-base font-bold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent leading-none">
+                    SolutionHub
+                  </h1>
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase">Student Portal</span>
+                </div>
+              </Link>
             </div>
 
-            {/* Navigation List */}
-            <nav className="space-y-1.5">
-              {navItems.map((item) => {
-                const IconComp = item.icon
-                const isActive = item.path === '/user' ? location.pathname === '/user' : location.pathname.startsWith(item.path)
+            {/* Middle: Dashboard Link & Grouped Dropdowns */}
+            <nav className="hidden lg:flex items-center gap-1">
+              <Link
+                to="/user"
+                className={`px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  location.pathname === '/user'
+                    ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                Dashboard
+              </Link>
+
+              {groupedUserNav.map((group) => {
+                const isOpen = openGroup === group.label
+                const isGroupActive = group.items.some(item => location.pathname.startsWith(item.path))
+
                 return (
-                  <Link 
-                    key={item.path} 
-                    to={item.path} 
-                    onClick={() => setMobileMenuOpen(false)} 
-                    className={`group flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-extrabold transition-all duration-200 ${
-                      isActive 
-                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30' 
-                        : isDark 
-                          ? 'text-slate-400 hover:text-white hover:bg-slate-800/60' 
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <IconComp className={`w-5 h-5 transition-colors ${
-                        isActive ? 'text-white' : isDark ? 'text-slate-500 group-hover:text-slate-300' : 'text-slate-400 group-hover:text-slate-700'
-                      }`} />
-                      <span>{item.label}</span>
-                    </div>
-                    {isActive && (
-                      <span className="w-2 h-2 rounded-full bg-white shadow-sm" />
+                  <div key={group.label} className="relative">
+                    <button
+                      onClick={() => setOpenGroup(isOpen ? null : group.label)}
+                      onMouseEnter={() => setOpenGroup(group.label)}
+                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                        isGroupActive
+                          ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <span>{group.label}</span>
+                      <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? 'rotate-180 text-blue-600' : 'text-slate-400'}`} />
+                    </button>
+
+                    {/* Floating Dropdown Panel */}
+                    {isOpen && (
+                      <div
+                        onMouseLeave={() => setOpenGroup(null)}
+                        className={`absolute left-0 mt-1 w-56 border rounded-2xl shadow-xl z-50 py-2 animate-in fade-in slide-in-from-top-2 duration-150 ${
+                          isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
+                        }`}
+                      >
+                        <div className="px-3 py-1.5 border-b border-slate-100 dark:border-slate-800 mb-1">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{group.label}</p>
+                        </div>
+                        <div className="space-y-0.5 px-1.5">
+                          {group.items.map((item) => {
+                            const IconComp = item.icon
+                            const isItemActive = location.pathname.startsWith(item.path)
+
+                            return (
+                              <Link
+                                key={item.path}
+                                to={item.path}
+                                onClick={() => setOpenGroup(null)}
+                                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-medium transition-all ${
+                                  isItemActive
+                                    ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold'
+                                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900'
+                                }`}
+                              >
+                                <IconComp className={`w-4 h-4 ${isItemActive ? 'text-blue-600' : 'text-slate-400'}`} />
+                                <span>{item.label}</span>
+                              </Link>
+                            )
+                          })}
+                        </div>
+                      </div>
                     )}
-                  </Link>
+                  </div>
                 )
               })}
             </nav>
-          </div>
 
-          {/* Bottom Area: User Profile Card */}
-          <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
-            <div className="p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center overflow-hidden text-sm font-black text-white shrink-0 border-2 border-white shadow-sm">
-                  {userAvatar ? (
-                    <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
-                  ) : (
-                    userName.charAt(0)
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xs font-black text-slate-900 dark:text-white truncate">{userName}</p>
-                  <p className="text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate">{userEmail}</p>
-                </div>
-              </div>
-              <button 
-                onClick={handleLogout}
-                title="Logout"
-                className="p-1.5 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+            {/* Right: Search, Notifications & Profile */}
+            <div className="flex items-center gap-3">
+              
+              {/* Search Bar */}
+              <form onSubmit={handleSearchSubmit} className="relative hidden md:block">
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search portal..."
+                  className={`w-40 lg:w-52 pl-8 pr-3 py-1.5 border rounded-xl text-xs font-medium focus:outline-none transition-all ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-white placeholder-slate-500 focus:border-blue-500'
+                      : 'bg-slate-100 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:bg-white'
+                  }`}
+                />
+              </form>
+
+              {/* View Site Link */}
+              <Link
+                to="/"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-800 text-xs font-semibold transition-all shadow-2xs"
               >
-                <LogOut className="w-4 h-4" />
-              </button>
+                <Globe className="w-3.5 h-3.5 text-blue-600" />
+                <span>View Site</span>
+              </Link>
+
+              {/* Notifications Dropdown */}
+              <div className="relative" ref={notificationRef}>
+                <button
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className={`p-2 rounded-xl transition-colors cursor-pointer ${
+                    showNotifications ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <Bell className="w-4 h-4" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+                  )}
+                </button>
+
+                {showNotifications && (
+                  <div className={`absolute right-0 mt-2 w-80 rounded-2xl border shadow-xl p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150 ${
+                    isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
+                  }`}>
+                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2 mb-2">
+                      <div className="flex items-center gap-1.5">
+                        <Bell className="w-3.5 h-3.5 text-blue-600" />
+                        <span className="text-xs font-bold text-slate-900 dark:text-white">Notifications</span>
+                      </div>
+                      {unreadCount > 0 && (
+                        <button onClick={markAllAsRead} className="text-[10px] font-bold text-blue-600 flex items-center gap-1">
+                          <CheckCheck className="w-3 h-3" /> Clear
+                        </button>
+                      )}
+                    </div>
+                    <div className="space-y-1.5 max-h-72 overflow-y-auto">
+                      {realNotifications.map((n) => (
+                        <div
+                          key={n.id}
+                          onClick={() => handleNotificationClick(n)}
+                          className={`p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
+                            n.read 
+                              ? 'bg-slate-50/50 dark:bg-slate-800/40 border-slate-100 dark:border-slate-800' 
+                              : 'bg-blue-50/70 dark:bg-blue-950/40 border-blue-200/80 dark:border-blue-500/30'
+                          }`}
+                        >
+                          <p className="text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                            <span>{n.title}</span>
+                            <span className="text-[9px] font-normal text-slate-400">{n.time}</span>
+                          </p>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">{n.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Profile Menu Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowProfileMenu(!showProfileMenu)}
+                  className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
+                    {userAvatar ? <img src={userAvatar} alt={userName} className="w-full h-full object-cover" /> : userName.charAt(0)}
+                  </div>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />
+                </button>
+
+                {showProfileMenu && (
+                  <div className={`absolute right-0 mt-2 w-52 border rounded-2xl shadow-xl z-50 py-2 ${
+                    isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
+                  }`}>
+                    <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800">
+                      <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{userName}</p>
+                      <p className="text-[10px] text-slate-400 truncate">{userEmail}</p>
+                    </div>
+                    <Link to="/user/profile" className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+                      <User className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Profile</span>
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-2 px-4 py-2 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 text-left cursor-pointer"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+
             </div>
           </div>
         </div>
+      </header>
 
-      </aside>
-
-      {/* ── 2. Right Main Layout ─────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col min-w-0">
-        
-        {/* Top Header Bar */}
-        <header className={`sticky top-0 z-30 h-20 border-b flex items-center justify-between px-4 sm:px-8 transition-colors ${
-          isDark 
-            ? 'bg-slate-950/90 backdrop-blur-xl border-slate-800' 
-            : 'bg-white/90 backdrop-blur-xl border-slate-200/80 shadow-xs'
+      {/* ── MOBILE MENU DRAWER ── */}
+      {mobileMenuOpen && (
+        <div className={`lg:hidden fixed inset-0 z-50 flex flex-col animate-in fade-in duration-200 ${
+          isDark ? 'bg-slate-950 text-white' : 'bg-white text-slate-900'
         }`}>
-          {/* Header Left: Welcome */}
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setMobileMenuOpen(true)} 
-              className="lg:hidden p-2.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300"
-            >
-              <Menu className="w-5 h-5" />
+          <div className="flex items-center justify-between px-4 h-16 border-b border-slate-200 dark:border-slate-800">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-xs">SH</div>
+              <span className="font-bold text-sm">Student Navigation</span>
+            </div>
+            <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-slate-600 dark:text-slate-300">
+              <X className="w-6 h-6" />
             </button>
-            <div>
-              <p className="text-xs font-semibold text-slate-400 dark:text-slate-500">Welcome back,</p>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                {userName}
-              </h2>
-            </div>
           </div>
 
-          {/* Header Center: Functional Search Bar */}
-          <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center flex-1 max-w-md mx-8 relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-4 pointer-events-none" />
-            <input 
-              type="text" 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search courses, documents..." 
-              className="w-full pl-11 pr-12 py-2.5 bg-slate-100/70 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-full text-xs font-semibold text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
-            />
-            {searchQuery && (
-              <button 
-                type="submit" 
-                className="absolute right-2 px-2.5 py-1 bg-blue-600 text-white rounded-full text-[10px] font-black hover:bg-blue-700 transition-colors"
-              >
-                Search
-              </button>
-            )}
-          </form>
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <Link
+              to="/user"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2.5 p-3 rounded-xl text-xs font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-600"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              <span>Dashboard Overview</span>
+            </Link>
 
-          {/* Header Right: Controls */}
-          <div className="flex items-center gap-3">
-            {/* Real Notifications Dropdown */}
-            <div className="relative" ref={notificationRef}>
-              <button 
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="relative p-2.5 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-50 transition-colors"
-                title="Notifications"
-              >
-                <Bell className="w-4 h-4" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-blue-600 text-[9px] font-black text-white flex items-center justify-center border-2 border-white dark:border-slate-900 animate-pulse">
-                    {unreadCount}
-                  </span>
-                )}
-              </button>
-
-              {/* Notification Popover Dropdown */}
-              {showNotifications && (
-                <div className="absolute right-0 mt-3 w-80 sm:w-96 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                  <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 mb-3">
-                    <div className="flex items-center gap-2">
-                      <Bell className="w-4 h-4 text-blue-600" />
-                      <h3 className="text-sm font-black text-slate-900 dark:text-white">Live Notifications</h3>
-                      {unreadCount > 0 && (
-                        <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-600 text-[10px] font-extrabold">
-                          {unreadCount} unread
-                        </span>
-                      )}
-                    </div>
-                    {unreadCount > 0 && (
-                      <button 
-                        onClick={markAllAsRead} 
-                        className="text-[11px] font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1"
-                      >
-                        <CheckCheck className="w-3.5 h-3.5" /> Clear unread
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="space-y-2 max-h-80 overflow-y-auto">
-                    {realNotifications.map((n) => (
-                      <div 
-                        key={n.id} 
-                        onClick={() => handleNotificationClick(n)}
-                        className={`p-3.5 rounded-2xl border transition-all cursor-pointer group ${
-                          n.read 
-                            ? 'bg-slate-50/50 dark:bg-slate-800/30 border-slate-100 dark:border-slate-800 hover:bg-slate-100' 
-                            : 'bg-blue-50/70 dark:bg-blue-950/40 border-blue-200/80 dark:border-blue-500/30 hover:bg-blue-100/60'
-                        }`}
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <h4 className="text-xs font-black text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors flex items-center gap-1.5">
-                            {!n.read && <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />}
-                            {n.title}
-                          </h4>
-                          <span className="text-[10px] text-slate-400 font-bold shrink-0">{n.time}</span>
-                        </div>
-                        <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{n.desc}</p>
-                        <div className="mt-2 flex items-center justify-end text-[10px] font-bold text-blue-600">
-                          <span>View Details</span>
-                          <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+            {groupedUserNav.map((group) => (
+              <div key={group.label} className="bg-slate-50 dark:bg-slate-900 rounded-2xl p-3 border border-slate-200/60 dark:border-slate-800">
+                <div className="font-bold text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+                  {group.label}
                 </div>
-              )}
-            </div>
-
-            {/* Profile Button */}
-            <Link 
-              to="/user/profile"
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 transition-all shadow-xs"
-            >
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-[10px] font-black text-white overflow-hidden">
-                {userAvatar ? (
-                  <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
-                ) : (
-                  userName.charAt(0)
-                )}
+                <div className="space-y-1">
+                  {group.items.map((item) => {
+                    const IconComp = item.icon
+                    return (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700"
+                      >
+                        <IconComp className="w-4 h-4 text-blue-600" />
+                        <span>{item.label}</span>
+                      </Link>
+                    )
+                  })}
+                </div>
               </div>
-              <span className="text-xs font-extrabold hidden sm:inline">Profile</span>
-            </Link>
-
-            {/* Settings Button */}
-            <Link 
-              to="/user/profile"
-              className="p-2.5 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-50 transition-colors"
-              title="Settings"
-            >
-              <Settings className="w-4 h-4" />
-            </Link>
-
-            {/* View Site Button */}
-            <Link 
-              to="/"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-slate-800 hover:text-blue-600 transition-all shadow-xs"
-              title="View Main Website"
-            >
-              <Globe className="w-4 h-4 text-blue-600" />
-              <span className="text-xs font-black hidden md:inline">View Site</span>
-            </Link>
+            ))}
           </div>
 
-        </header>
+          <div className="p-4 border-t border-slate-200 dark:border-slate-800">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-600 font-bold text-xs"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      )}
 
-        {/* Content Outlet */}
-        <main className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto overflow-y-auto">
-          <Outlet />
-        </main>
-      </div>
+      {/* ── MAIN DASHBOARD CONTENT (FULL WIDTH) ── */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-6 overflow-y-auto">
+        <Outlet />
+      </main>
+
+      {/* Former Staff Reinstatement Full Screen Popup Modal */}
+      <FormerStaffModal
+        isOpen={showFormerStaffPopup}
+        onClose={() => setShowFormerStaffPopup(false)}
+      />
 
     </div>
   )

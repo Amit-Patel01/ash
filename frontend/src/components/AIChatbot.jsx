@@ -6,13 +6,14 @@ import chatbotLogo from '../assets/chatbot-logo.png'
 
 const WELCOME_MESSAGE = {
   role: 'assistant',
-  content: "👋 Hi! I'm the **SolutionHub AI Assistant** — powered by **SolutionHub**.\n\nI can help you with:\n• 🛒 Finding the right source code project\n• 📈 Trading mentorship details & pricing\n• 🔧 Technical support guidance\n• 📋 Account & order questions\n\nHow can I help you today?"
+  content: "👋 Hello! Welcome to **SolutionHub**.\n\nHow can I help you today?\n\nHere are a few popular things I can assist you with:\n• 🚀 **Source Code & Projects** — Browse readymade apps & scripts\n• 🛠️ **Custom Tech Services** — Request custom software development\n• 🎓 **Courses & Certification** — Explore technical training & QR certificates\n• 💬 **Account & Support** — Instant help with orders, setup & questions\n\nFeel free to ask any question or choose an option below!"
 }
 
 const QUICK_PROMPTS = [
-  'What projects do you have?',
-  'Trading mentorship pricing?',
-  'How to get my source code?',
+  '🚀 What readymade projects do you have?',
+  '🛠️ How can I request custom project development?',
+  '🎓 Tell me about courses & verified certificates',
+  '💬 How to contact the support team?'
 ]
 
 const DEFAULT_STATUS = {

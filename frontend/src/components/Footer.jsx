@@ -24,6 +24,8 @@ const Footer = () => {
       <div className={`relative z-10 transition-colors duration-300 ${isDark ? 'bg-[#030712] text-slate-400' : 'bg-slate-50 text-slate-600'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 overflow-hidden">
 
+
+
           {/* Main Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-12">
 
@@ -184,19 +186,10 @@ const Footer = () => {
 
           {/* Divider */}
           <div className="border-t border-slate-200/50 dark:border-white/5 pt-10 mb-4">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-8">
               {/* Copyright */}
               <div className="text-slate-400 dark:text-gray-500 text-xs text-center md:text-left font-medium tracking-wide">
                 © {currentYear} <span className="text-slate-800 dark:text-gray-200 font-black">AMITSOLUTIONHUB</span> — All rights reserved
               </div>
-
-              {/* Made with love */}
-              <div className="flex items-center gap-3 text-slate-400 dark:text-gray-500 text-[10px] font-bold tracking-[0.2em] uppercase">
-                <span>Created by</span>
-                <span className="text-blue-600 dark:text-white bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/20">Amit Solution Hub</span>
-                <span className="text-red-500 animate-pulse">❤</span>
-              </div>
-            </div>
           </div>
 
         </div>

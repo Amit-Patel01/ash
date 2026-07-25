@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { User } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
 import { api } from '../config/api'
@@ -15,7 +17,7 @@ import CertificateDocument from '../components/Certificate'
 export default function AdminSettings() {
   const { currentUser, updateUserProfile, updateUserEmail, updateUserPassword } = useAuth()
   const { announcement, updateAnnouncement, maintenance, updateMaintenance, certificateTemplate, updateCertificateTemplate, homepageStats, updateHomepageStats } = useStore()
-  const [activeTab, setActiveTab] = useState('profile')
+  const [activeTab, setActiveTab] = useState('announcement')
   const [saving, setSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState('')
   const [profileError, setProfileError] = useState('')
@@ -130,13 +132,11 @@ export default function AdminSettings() {
   })
 
   const tabs = [
-    { id: 'profile', label: 'Profile' },
     { id: 'announcement', label: 'Announcement' },
     { id: 'maintenance', label: 'Maintenance' },
     { id: 'stats', label: 'Homepage Stats' },
     { id: 'certificate', label: 'Documents' },
     { id: 'notifications', label: 'Notifications' },
-    { id: 'security', label: 'Security' },
   ]
 
   const handleImageUpload = async (event) => {
@@ -255,7 +255,7 @@ export default function AdminSettings() {
     setSaveSuccess('')
     try {
       await updateAnnouncement(announcementForm)
-      setSaveSuccess('Announcement updated successfully!')
+      setSaveSuccess('Announcement banner updated successfully!')
       setTimeout(() => setSaveSuccess(''), 3000)
     } catch (err) {
       console.error('Failed to save announcement:', err)
@@ -274,7 +274,7 @@ export default function AdminSettings() {
       setTimeout(() => setSaveSuccess(''), 3000)
     } catch (err) {
       console.error('Failed to save maintenance settings:', err)
-      alert('Failed: ' + (err.message || 'Error updating maintenance settings'))
+      alert('Failed: ' + (err.message || 'Error updating maintenance'))
     } finally {
       setSaving(false)
     }
@@ -322,18 +322,27 @@ export default function AdminSettings() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
-        <p className="text-sm text-slate-500 mt-1">Manage your account and preferences</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">System & Platform Settings</h1>
+          <p className="text-sm text-slate-500 mt-1">Manage global announcements, maintenance mode, homepage stats, and certificate templates.</p>
+        </div>
+        <Link
+          to="/admin/profile"
+          className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-extrabold text-xs shadow-lg shadow-blue-500/20 hover:scale-105 transition-all"
+        >
+          <User size={15} />
+          <span>Open Admin Profile Settings</span>
+        </Link>
       </div>
 
-      <div className="flex items-center gap-1 border-b border-slate-200 pb-px">
+      <div className="flex items-center gap-1 border-b border-slate-200 pb-px overflow-x-auto">
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-all ${activeTab === tab.id
-                ? 'text-blue-400 border-blue-400'
+            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap ${activeTab === tab.id
+                ? 'text-blue-600 border-blue-600 font-bold'
                 : 'text-slate-500 border-transparent hover:text-slate-900 hover:border-slate-300'
               }`}
           >
