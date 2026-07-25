@@ -489,6 +489,8 @@ export default function AdminStudents() {
             </div>
           </div>
         </div>
+      )}
+
       {/* Student Profile View Modal */}
       {selectedStudentProfile && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
