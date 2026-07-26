@@ -131,7 +131,7 @@ router.get("/:collection/:id", optionalAuth, async (req, res) => {
     });
     
     if (!doc) {
-      return res.status(404).json({ success: false, message: "Document not found" });
+      return res.status(200).json({ success: true, document: null, message: "Document not found" });
     }
 
     const publicCollections = [

@@ -42,7 +42,14 @@ const resetModuleErrorAutoRefreshCount = () => {
 }
 
 const isRecoverableModuleLoadError = (error) => {
-  const message = `${error?.name || ''} ${error?.message || ''}`.toLowerCase()
+  let message = ''
+  try {
+    const nameStr = error && error.name ? String(error.name) : ''
+    const msgStr = error && error.message ? String(error.message) : (typeof error === 'string' ? error : '')
+    message = `${nameStr} ${msgStr}`.toLowerCase()
+  } catch (e) {
+    try { message = String(error || '').toLowerCase() } catch { message = '' }
+  }
   return MODULE_LOAD_ERROR_PATTERNS.some(pattern => message.includes(pattern))
 }
 
@@ -69,8 +76,11 @@ const lazyWithRetry = (componentImport) =>
         return { default: () => null }
       }
 
-      // If we already refreshed once and it still fails, bubble up to ErrorBoundary
-      throw error
+      // Ensure error is a standard Error object to avoid React stringification issues
+      const safeError = error instanceof Error
+        ? error
+        : new Error(typeof error === 'string' ? error : 'Module load failed')
+      throw safeError
     }
   })
 
@@ -426,8 +436,12 @@ export default function App() {
             <AuthProvider>
               <ChatProvider>
                 <AppContent />
-                <SpeedInsights />
-                <Analytics />
+                {import.meta.env.PROD && (
+                  <>
+                    <SpeedInsights />
+                    <Analytics />
+                  </>
+                )}
               </ChatProvider>
             </AuthProvider>
           </StoreProvider>

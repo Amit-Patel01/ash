@@ -268,7 +268,8 @@ const TechIllustration = () => {
 
             {/* Line 5: Typing line with cursor */}
             <motion.rect
-              x="40" y="88" width="190" height="9" rx="4.5" fill="#38bdf8"
+              x="40" y="88" height="9" rx="4.5" fill="#38bdf8"
+              initial={{ width: 30 }}
               animate={{ width: [30, 200, 200, 30] }}
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
             />

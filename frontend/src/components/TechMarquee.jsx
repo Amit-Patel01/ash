@@ -21,7 +21,7 @@ const TECHS = [
   },
   {
     name: 'AWS',
-    logo: 'https://cdn.simpleicons.org/amazonaws/FF9900',
+    logo: 'https://cdn.simpleicons.org/amazonwebservices/FF9900',
   },
   {
     name: 'MongoDB',

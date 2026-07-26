@@ -1295,8 +1295,8 @@
     "semantic_hash": ""
   },
   "frontend/src/App.jsx": {
-    "mtime": 1785076488.3128953,
-    "ast_hash": "c0a3372c022d9d30bf4b1ea957aa784a",
+    "mtime": 1784982303.0707183,
+    "ast_hash": "5cc890717959c2d238ab92c4756bceee",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminAccountRequests.jsx": {
@@ -1420,8 +1420,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/Hero.jsx": {
-    "mtime": 1785076340.5544739,
-    "ast_hash": "e63a93ccdbaf303214777ec55fb02163",
+    "mtime": 1785002869.7787116,
+    "ast_hash": "183dea1487e2d5af2bbfb90b0590a8f3",
     "semantic_hash": ""
   },
   "frontend/src/components/Layout.jsx": {
@@ -2360,8 +2360,8 @@
     "semantic_hash": ""
   },
   "backend/routes/db.js": {
-    "mtime": 1785076354.487016,
-    "ast_hash": "d55c966d94d3f685cef6d2d917924d09",
+    "mtime": 1784804499.4330733,
+    "ast_hash": "357e0f8de76599b400157600277ae03e",
     "semantic_hash": ""
   },
   "backend/scripts/seedAdmin.js": {
@@ -2545,8 +2545,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/TechMarquee.jsx": {
-    "mtime": 1785076344.5460343,
-    "ast_hash": "b1cffaee2c3ce8b6562f75e318786c27",
+    "mtime": 1784819082.5589435,
+    "ast_hash": "81e1284426ae88188e4e2773654b24ab",
     "semantic_hash": ""
   },
   "frontend/src/components/TrustedPartners.jsx": {
@@ -2575,8 +2575,8 @@
     "semantic_hash": ""
   },
   "frontend/src/user/UserLayout.jsx": {
-    "mtime": 1785076558.0264022,
-    "ast_hash": "7e40a4b51b5a1d07f05a15fc03e2e3bf",
+    "mtime": 1785000151.4026754,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
     "semantic_hash": ""
   },
   "frontend/src/user/UserMyCourses.jsx": {
