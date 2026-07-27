@@ -26,18 +26,18 @@ export const buildApiUrl = (path = '') => {
 export async function readApiJson(response) {
   const text = await response.text()
   const trimmed = text.trim()
-  if (!trimmed) return {}
+  if (!trimmed) return { success: false }
   try {
     return JSON.parse(text)
   } catch {
-    const isHtml = trimmed.startsWith('<') || /^<!DOCTYPE/i.test(trimmed)
-    throw new Error(
-      isHtml
-        ? 'The server returned a web page instead of API data. In development, either leave VITE_API_URL unset (to use the Vite proxy) or set it to your backend base URL. For production, set VITE_API_URL before building the frontend.'
-        : 'The server returned invalid JSON.'
-    )
+    return {
+      success: false,
+      message: 'Server endpoint is initializing or returned non-JSON output.',
+      isHtml: trimmed.startsWith('<') || /^<!DOCTYPE/i.test(trimmed)
+    }
   }
 }
+
 
 export const api = {
   base: API_BASE,
@@ -91,6 +91,17 @@ export const api = {
   aiChat: buildApiUrl('/api/ai/chat'),
   aiRecommend: buildApiUrl('/api/ai/recommend'),
   aiStatus: buildApiUrl('/api/ai/status'),
+  aiDepartmentConfig: buildApiUrl('/api/ai/department/config'),
+  aiDepartmentLogs: buildApiUrl('/api/ai/department/logs'),
+  aiDepartmentDispatch: buildApiUrl('/api/ai/department/dispatch'),
+  aiDepartmentProposals: buildApiUrl('/api/ai/department/proposals'),
+  aiDepartmentResolveProposal: buildApiUrl('/api/ai/department/proposals/resolve'),
+  aiDepartmentClearProposals: buildApiUrl('/api/ai/department/proposals/clear'),
+  aiDepartmentBroadcastEmail: buildApiUrl('/api/ai/department/email/broadcast'),
+
+
+
+
   supportChat: {
     create: buildApiUrl('/api/chat/create'),
     send: buildApiUrl('/api/chat/send'),

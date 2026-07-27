@@ -2,11 +2,54 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { api } from '../config/api'
 import { useStore } from '../store/StoreContext'
-import chatbotLogo from '../assets/chatbot-logo.png'
+
+const FuturisticBotIcon = ({ size = 28 }) => (
+  <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="botGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#38bdf8" />
+        <stop offset="50%" stopColor="#818cf8" />
+        <stop offset="100%" stopColor="#c084fc" />
+      </linearGradient>
+      <filter id="botGlow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="1.5" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+    {/* Antenna */}
+    <line x1="16" y1="3" x2="16" y2="7" stroke="url(#botGrad)" strokeWidth="2" strokeLinecap="round" />
+    <circle cx="16" cy="3" r="2" fill="#38bdf8" filter="url(#botGlow)" />
+    {/* Head Outline */}
+    <rect x="5" y="7" width="22" height="18" rx="7" fill="#090d16" stroke="url(#botGrad)" strokeWidth="2" />
+    {/* Side Ears */}
+    <rect x="2" y="13" width="3" height="6" rx="1.5" fill="url(#botGrad)" />
+    <rect x="27" y="13" width="3" height="6" rx="1.5" fill="url(#botGrad)" />
+    {/* Visor Screen */}
+    <rect x="8" y="11" width="16" height="7" rx="3.5" fill="#1e1b4b" stroke="rgba(129, 140, 248, 0.5)" strokeWidth="1" />
+    {/* Glowing Eyes */}
+    <circle cx="12" cy="14.5" r="2" fill="#38bdf8" filter="url(#botGlow)" />
+    <circle cx="20" cy="14.5" r="2" fill="#38bdf8" filter="url(#botGlow)" />
+    {/* Smile */}
+    <path d="M11 20.5C12.5 22 19.5 22 21 20.5" stroke="url(#botGrad)" strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
+)
+
+const SparklesIcon = ({ size = 16, color = "#38bdf8" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 3v3m0 12v3M3 12h3m12 0h3m-3.5-6.5l-2.1 2.1m-8.8 8.8l-2.1 2.1m0-13l2.1 2.1m8.8 8.8l2.1 2.1" />
+  </svg>
+)
+
+const SendIcon = ({ size = 18 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="22" y1="2" x2="11" y2="13"></line>
+    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+  </svg>
+)
 
 const WELCOME_MESSAGE = {
   role: 'assistant',
-  content: "👋 Hello! Welcome to **SolutionHub**.\n\nHow can I help you today?\n\nHere are a few popular things I can assist you with:\n• 🚀 **Source Code & Projects** — Browse readymade apps & scripts\n• 🛠️ **Custom Tech Services** — Request custom software development\n• 🎓 **Courses & Certification** — Explore technical training & QR certificates\n• 💬 **Account & Support** — Instant help with orders, setup & questions\n\nFeel free to ask any question or choose an option below!"
+  content: "👋 Hello! Welcome to **SolutionHub AI**.\n\nHow can I help you today?\n\nHere are a few popular things I can assist you with:\n• 🚀 **Source Code & Projects** — Browse readymade apps & scripts\n• 🛠️ **Custom Tech Services** — Request custom software development\n• 🎓 **Courses & Certification** — Explore technical training & QR certificates\n• 💬 **Account & Support** — Instant help with orders, setup & questions\n\nFeel free to ask any question or select an option below!"
 }
 
 const QUICK_PROMPTS = [
@@ -24,7 +67,7 @@ const DEFAULT_STATUS = {
 
 function MarkdownText({ text }) {
   const formatted = text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong style="color: #f8fafc;">$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     .replace(/\n/g, '<br/>')
     .replace(/•/g, '•')
@@ -42,11 +85,11 @@ function CertificateVerificationCard({ cert }) {
   return (
     <div style={{
       background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%)',
-      border: '1px solid rgba(16, 185, 129, 0.3)',
+      border: '1px solid rgba(16, 185, 129, 0.35)',
       borderRadius: '16px',
       padding: '16px',
       marginTop: '8px',
-      boxShadow: '0 8px 32px rgba(16, 185, 129, 0.15)',
+      boxShadow: '0 8px 32px rgba(16, 185, 129, 0.2)',
       fontFamily: 'Inter, system-ui, sans-serif',
       color: '#fff',
       display: 'flex',
@@ -58,7 +101,7 @@ function CertificateVerificationCard({ cert }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
         <span style={{
           background: 'rgba(16, 185, 129, 0.2)',
-          border: '1px solid rgba(16, 185, 129, 0.4)',
+          border: '1px solid rgba(16, 185, 129, 0.5)',
           borderRadius: '20px',
           color: '#34d399',
           fontSize: '10px',
@@ -142,21 +185,21 @@ function RecommendationCarousel({ recommendations }) {
           flexShrink: 0,
           width: '210px',
           background: 'rgba(255, 255, 255, 0.05)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          border: '1px solid rgba(139, 92, 246, 0.3)',
           borderRadius: '12px',
           padding: '12px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
           gap: '8px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
         }}>
           <div>
             <span style={{
-              background: 'rgba(124, 58, 237, 0.2)',
-              border: '1px solid rgba(124, 58, 237, 0.4)',
+              background: 'rgba(124, 58, 237, 0.25)',
+              border: '1px solid rgba(124, 58, 237, 0.5)',
               borderRadius: '20px',
-              color: '#a78bfa',
+              color: '#c084fc',
               fontSize: '9px',
               fontWeight: 'bold',
               padding: '2px 6px',
@@ -171,7 +214,7 @@ function RecommendationCarousel({ recommendations }) {
             </h5>
           </div>
           <div>
-            <div style={{ fontSize: '13px', fontWeight: 'extrabold', color: '#10b981', margin: '4px 0' }}>
+            <div style={{ fontSize: '13px', fontWeight: 'extrabold', color: '#34d399', margin: '4px 0' }}>
               {course.plans?.length > 0
                 ? `Starts at ₹${Math.min(...course.plans.map(p => Number(p.price) || 0))}`
                 : course.price
@@ -183,7 +226,7 @@ function RecommendationCarousel({ recommendations }) {
               style={{
                 display: 'block',
                 textAlign: 'center',
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.3), rgba(37, 99, 235, 0.3))',
                 color: '#fff',
                 textDecoration: 'none',
                 padding: '6px',
@@ -191,7 +234,7 @@ function RecommendationCarousel({ recommendations }) {
                 fontSize: '11px',
                 fontWeight: 'bold',
                 marginTop: '8px',
-                border: '1px solid rgba(255, 255, 255, 0.15)'
+                border: '1px solid rgba(168, 85, 247, 0.4)'
               }}
             >
               View Details
@@ -205,21 +248,21 @@ function RecommendationCarousel({ recommendations }) {
           flexShrink: 0,
           width: '210px',
           background: 'rgba(255, 255, 255, 0.05)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          border: '1px solid rgba(56, 189, 248, 0.3)',
           borderRadius: '12px',
           padding: '12px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
           gap: '8px',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
         }}>
           <div>
             <span style={{
-              background: 'rgba(37, 99, 235, 0.2)',
-              border: '1px solid rgba(37, 99, 235, 0.4)',
+              background: 'rgba(56, 189, 248, 0.2)',
+              border: '1px solid rgba(56, 189, 248, 0.4)',
               borderRadius: '20px',
-              color: '#60a5fa',
+              color: '#38bdf8',
               fontSize: '9px',
               fontWeight: 'bold',
               padding: '2px 6px',
@@ -234,7 +277,7 @@ function RecommendationCarousel({ recommendations }) {
             </h5>
           </div>
           <div>
-            <div style={{ fontSize: '13px', fontWeight: 'extrabold', color: '#10b981', margin: '4px 0' }}>
+            <div style={{ fontSize: '13px', fontWeight: 'extrabold', color: '#34d399', margin: '4px 0' }}>
               ₹{Number(project.price_project_only || 0).toLocaleString('en-IN')}
             </div>
             <a
@@ -242,7 +285,7 @@ function RecommendationCarousel({ recommendations }) {
               style={{
                 display: 'block',
                 textAlign: 'center',
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.3), rgba(37, 99, 235, 0.3))',
                 color: '#fff',
                 textDecoration: 'none',
                 padding: '6px',
@@ -250,7 +293,7 @@ function RecommendationCarousel({ recommendations }) {
                 fontSize: '11px',
                 fontWeight: 'bold',
                 marginTop: '8px',
-                border: '1px solid rgba(255, 255, 255, 0.15)'
+                border: '1px solid rgba(56, 189, 248, 0.4)'
               }}
             >
               View Details
@@ -268,19 +311,10 @@ export default function AIChatbot() {
   const [messages, setMessages] = useState([WELCOME_MESSAGE])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const [dots, setDots] = useState('')
   const [assistantStatus, setAssistantStatus] = useState(DEFAULT_STATUS)
+  const [showTooltip, setShowTooltip] = useState(false)
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
-
-  // Animate loading dots
-  useEffect(() => {
-    if (!loading) return
-    const interval = setInterval(() => {
-      setDots(d => (d.length >= 3 ? '' : d + '.'))
-    }, 400)
-    return () => clearInterval(interval)
-  }, [loading])
 
   // Auto-scroll
   useEffect(() => {
@@ -426,47 +460,100 @@ export default function AIChatbot() {
 
   return (
     <>
-      {/* Floating Button */}
-      <motion.button
-        id="ai-chatbot-toggle"
-        onClick={() => setOpen(o => !o)}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
+      {/* Floating Button Container */}
+      <div
         style={{
           position: 'fixed',
           bottom: '24px',
           right: '24px',
-          width: '60px',
-          height: '60px',
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, #1e40af 0%, #7c3aed 100%)',
-          border: 'none',
-          cursor: 'pointer',
+          zIndex: 9999,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: '0 8px 32px rgba(124, 58, 237, 0.4), 0 0 0 0 rgba(124, 58, 237, 0.4)',
-          zIndex: 9999,
-          color: 'white',
-          fontSize: '24px',
-          animation: open ? 'none' : 'chatPulse 2s infinite',
+          gap: '12px'
         }}
-        aria-label="Open AI Chat"
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
       >
-        <AnimatePresence mode="wait">
-          <motion.span
-            key={open ? 'close' : 'open'}
-            initial={{ rotate: -90, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            exit={{ rotate: 90, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {open ? '✕' : (
-              <img src={chatbotLogo} alt="AI Chatbot" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }} />
-            )}
-          </motion.span>
+        {/* Floating Tooltip Pill */}
+        <AnimatePresence>
+          {!open && showTooltip && (
+            <motion.div
+              initial={{ opacity: 0, x: 10, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 10, scale: 0.9 }}
+              style={{
+                background: 'rgba(15, 23, 42, 0.85)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(139, 92, 246, 0.4)',
+                color: '#e2e8f0',
+                padding: '8px 14px',
+                borderRadius: '20px',
+                fontSize: '13px',
+                fontWeight: 600,
+                boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+                whiteSpace: 'nowrap',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                pointerEvents: 'none'
+              }}
+            >
+              <SparklesIcon size={14} color="#38bdf8" />
+              <span>Ask SolutionHub AI</span>
+            </motion.div>
+          )}
         </AnimatePresence>
-      </motion.button>
+
+        {/* Floating Button */}
+        <motion.button
+          id="ai-chatbot-toggle"
+          onClick={() => setOpen(o => !o)}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
+          style={{
+            width: '62px',
+            height: '62px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #c084fc 100%)',
+            border: '2px solid rgba(255, 255, 255, 0.25)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 8px 32px rgba(124, 58, 237, 0.5), 0 0 20px rgba(56, 189, 248, 0.3)',
+            color: 'white',
+            position: 'relative',
+            animation: open ? 'none' : 'chatPulse 2.5s infinite',
+          }}
+          aria-label="Toggle AI Chat"
+        >
+          <AnimatePresence mode="wait">
+            {open ? (
+              <motion.span
+                key="close"
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                style={{ fontSize: '22px', fontWeight: 'bold' }}
+              >
+                ✕
+              </motion.span>
+            ) : (
+              <motion.div
+                key="bot"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <FuturisticBotIcon size={32} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.button>
+      </div>
 
       {/* Chat Window */}
       <AnimatePresence>
@@ -475,70 +562,98 @@ export default function AIChatbot() {
             initial={{ opacity: 0, y: 40, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            transition={{ type: 'spring', stiffness: 350, damping: 30 }}
             className="fixed z-[9998] rounded-2xl overflow-hidden flex flex-col shadow-2xl border border-violet-500/30"
             style={{
-              bottom: '95px',
+              bottom: '98px',
               right: window.innerWidth < 640 ? '12px' : '24px',
-              width: window.innerWidth < 640 ? 'calc(100vw - 24px)' : '380px',
-              height: window.innerWidth < 640 ? 'calc(100vh - 120px)' : '540px',
+              width: window.innerWidth < 640 ? 'calc(100vw - 24px)' : '390px',
+              height: window.innerWidth < 640 ? 'calc(100vh - 120px)' : '560px',
               maxHeight: 'calc(100vh - 110px)',
-              background: 'linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%)',
+              background: 'linear-gradient(180deg, #0b0f19 0%, #111827 50%, #1e1b4b 100%)',
+              backdropFilter: 'blur(16px)',
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(124, 58, 237, 0.2)',
             }}
           >
 
             {/* Header */}
             <div style={{
               padding: '16px 20px',
-              background: 'linear-gradient(135deg, #1e40af 0%, #7c3aed 100%)',
+              background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(109, 40, 217, 0.9) 100%)',
+              backdropFilter: 'blur(12px)',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'space-between',
               gap: '12px',
               flexShrink: 0,
             }}>
-              <div style={{
-                width: '40px', height: '40px', borderRadius: '50%',
-                background: 'rgba(255,255,255,0.15)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0,
-                boxShadow: '0 0 12px rgba(255,255,255,0.2)',
-                overflow: 'hidden'
-              }}>
-                <img src={chatbotLogo} alt="AI Chatbot" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ color: 'white', fontWeight: 700, fontSize: '15px', fontFamily: 'Inter, system-ui, sans-serif' }}>
-                  SolutionHub AI
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  width: '42px', height: '42px', borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+                  border: '1.5px solid rgba(56, 189, 248, 0.5)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0,
+                  boxShadow: '0 0 14px rgba(56, 189, 248, 0.3)',
+                }}>
+                  <FuturisticBotIcon size={24} />
                 </div>
-                <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{
-                    width: '7px',
-                    height: '7px',
-                    borderRadius: '50%',
-                    background: assistantStatus.checked && !assistantStatus.available ? '#f97316' : '#4ade80',
-                    display: 'inline-block',
-                    boxShadow: assistantStatus.checked && !assistantStatus.available ? '0 0 6px #f97316' : '0 0 6px #4ade80'
-                  }} />
-                  Powered by SolutionHub
+                <div>
+                  <div style={{ color: 'white', fontWeight: 700, fontSize: '15px', fontFamily: 'Inter, system-ui, sans-serif', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    SolutionHub AI
+                    <SparklesIcon size={14} color="#38bdf8" />
+                  </div>
+                  <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                    <span style={{
+                      width: '7px',
+                      height: '7px',
+                      borderRadius: '50%',
+                      background: assistantStatus.checked && !assistantStatus.available ? '#f97316' : '#4ade80',
+                      display: 'inline-block',
+                      boxShadow: assistantStatus.checked && !assistantStatus.available ? '0 0 8px #f97316' : '0 0 8px #4ade80'
+                    }} />
+                    {assistantStatus.checked && !assistantStatus.available ? 'Offline' : 'Online & Ready'}
+                  </div>
                 </div>
               </div>
-              <button
-                onClick={clearChat}
-                title="Clear chat"
-                style={{
-                  background: 'rgba(255,255,255,0.1)', border: 'none', color: 'rgba(255,255,255,0.7)',
-                  cursor: 'pointer', borderRadius: '8px', padding: '6px 8px', fontSize: '12px',
-                }}
-              >
-                Clear
-              </button>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button
+                  onClick={clearChat}
+                  title="Clear chat history"
+                  style={{
+                    background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.85)',
+                    cursor: 'pointer', borderRadius: '8px', padding: '5px 10px', fontSize: '11px', fontWeight: 600,
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.22)'}
+                  onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
+                >
+                  Clear
+                </button>
+                <button
+                  onClick={() => setOpen(false)}
+                  title="Close chat"
+                  style={{
+                    background: 'rgba(255,255,255,0.12)', border: 'none', color: 'white',
+                    cursor: 'pointer', borderRadius: '50%', width: '28px', height: '28px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseOver={e => e.currentTarget.style.background = 'rgba(255,255,255,0.25)'}
+                  onMouseOut={e => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
             {/* Messages */}
             <div style={{
               flex: 1, overflowY: 'auto', padding: '16px',
-              display: 'flex', flexDirection: 'column', gap: '12px',
-              scrollbarWidth: 'thin', scrollbarColor: 'rgba(124,58,237,0.3) transparent',
+              display: 'flex', flexDirection: 'column', gap: '14px',
+              scrollbarWidth: 'thin', scrollbarColor: 'rgba(139,92,246,0.3) transparent',
             }}>
               {messages.map((msg, idx) => (
                 <motion.div
@@ -549,21 +664,34 @@ export default function AIChatbot() {
                   style={{
                     display: 'flex',
                     justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
+                    gap: '8px'
                   }}
                 >
+                  {msg.role === 'assistant' && (
+                    <div style={{
+                      width: '28px', height: '28px', borderRadius: '50%',
+                      background: 'rgba(124, 58, 237, 0.2)',
+                      border: '1px solid rgba(139, 92, 246, 0.4)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexShrink: 0, marginTop: '2px'
+                    }}>
+                      <FuturisticBotIcon size={16} />
+                    </div>
+                  )}
+
                   <div style={{
-                    maxWidth: '85%',
-                    padding: '10px 14px',
-                    borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                    maxWidth: '82%',
+                    padding: '12px 16px',
+                    borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                     background: msg.role === 'user'
-                      ? 'linear-gradient(135deg, #2563eb, #7c3aed)'
-                      : 'rgba(255,255,255,0.07)',
-                    color: 'rgba(255,255,255,0.92)',
+                      ? 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)'
+                      : 'rgba(255, 255, 255, 0.06)',
+                    color: 'rgba(248, 250, 252, 0.95)',
                     fontSize: '13.5px',
                     lineHeight: 1.6,
-                    border: msg.role === 'assistant' ? '1px solid rgba(255,255,255,0.08)' : 'none',
+                    border: msg.role === 'assistant' ? '1px solid rgba(255, 255, 255, 0.09)' : 'none',
                     fontFamily: 'Inter, system-ui, sans-serif',
-                    boxShadow: msg.role === 'user' ? '0 4px 12px rgba(37,99,235,0.3)' : 'none',
+                    boxShadow: msg.role === 'user' ? '0 4px 14px rgba(37, 99, 235, 0.35)' : '0 4px 12px rgba(0,0,0,0.15)',
                   }}>
                     {msg.customType === 'certificate' ? (
                       <CertificateVerificationCard cert={msg.customData} />
@@ -579,23 +707,37 @@ export default function AIChatbot() {
                 </motion.div>
               ))}
 
-
               {loading && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  style={{ display: 'flex', justifyContent: 'flex-start' }}
+                  style={{ display: 'flex', justifyContent: 'flex-start', gap: '8px' }}
                 >
                   <div style={{
-                    padding: '10px 16px',
-                    borderRadius: '16px 16px 16px 4px',
-                    background: 'rgba(255,255,255,0.07)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    color: 'rgba(255,255,255,0.6)',
-                    fontSize: '13px',
-                    fontFamily: 'Inter, system-ui, sans-serif',
+                    width: '28px', height: '28px', borderRadius: '50%',
+                    background: 'rgba(124, 58, 237, 0.2)',
+                    border: '1px solid rgba(139, 92, 246, 0.4)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0
                   }}>
-                    Thinking{dots}
+                    <FuturisticBotIcon size={16} />
+                  </div>
+
+                  <div style={{
+                    padding: '12px 18px',
+                    borderRadius: '18px 18px 18px 4px',
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.09)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}>
+                    <span style={{ fontSize: '12px', color: '#94a3b8', fontFamily: 'Inter, system-ui, sans-serif' }}>SolutionHub AI is thinking</span>
+                    <div style={{ display: 'flex', gap: '4px', marginLeft: '4px' }}>
+                      <span className="animate-bounce" style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#38bdf8', animationDelay: '0ms' }} />
+                      <span className="animate-bounce" style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#818cf8', animationDelay: '150ms' }} />
+                      <span className="animate-bounce" style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#c084fc', animationDelay: '300ms' }} />
+                    </div>
                   </div>
                 </motion.div>
               )}
@@ -605,7 +747,7 @@ export default function AIChatbot() {
             {/* Quick Prompts */}
             {messages.length <= 1 && (
               <div style={{
-                padding: '0 16px 8px',
+                padding: '0 16px 10px',
                 display: 'flex', flexWrap: 'wrap', gap: '6px',
               }}>
                 {QUICK_PROMPTS.map((p, i) => (
@@ -613,18 +755,24 @@ export default function AIChatbot() {
                     key={i}
                     onClick={() => sendMessage(p)}
                     style={{
-                      background: 'rgba(124, 58, 237, 0.15)',
-                      border: '1px solid rgba(124, 58, 237, 0.35)',
-                      color: 'rgba(255,255,255,0.8)',
+                      background: 'rgba(124, 58, 237, 0.12)',
+                      border: '1px solid rgba(139, 92, 246, 0.3)',
+                      color: 'rgba(241, 245, 249, 0.88)',
                       borderRadius: '20px',
-                      padding: '5px 12px',
+                      padding: '6px 12px',
                       fontSize: '12px',
                       cursor: 'pointer',
                       transition: 'all 0.2s',
                       fontFamily: 'Inter, system-ui, sans-serif',
                     }}
-                    onMouseOver={e => { e.target.style.background = 'rgba(124, 58, 237, 0.3)' }}
-                    onMouseOut={e => { e.target.style.background = 'rgba(124, 58, 237, 0.15)' }}
+                    onMouseOver={e => {
+                      e.currentTarget.style.background = 'rgba(124, 58, 237, 0.3)'
+                      e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.6)'
+                    }}
+                    onMouseOut={e => {
+                      e.currentTarget.style.background = 'rgba(124, 58, 237, 0.12)'
+                      e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)'
+                    }}
                   >
                     {p}
                   </button>
@@ -635,9 +783,11 @@ export default function AIChatbot() {
             {/* Input */}
             <div style={{
               padding: '12px 16px',
-              borderTop: '1px solid rgba(255,255,255,0.06)',
-              display: 'flex', gap: '8px',
-              background: 'rgba(0,0,0,0.2)',
+              borderTop: '1px solid rgba(255,255,255,0.08)',
+              display: 'flex', gap: '10px',
+              alignItems: 'center',
+              background: 'rgba(9, 13, 22, 0.7)',
+              backdropFilter: 'blur(8px)',
               flexShrink: 0,
             }}>
               <textarea
@@ -646,16 +796,16 @@ export default function AIChatbot() {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask anything..."
+                placeholder="Ask SolutionHub AI anything..."
                 rows={1}
                 disabled={loading}
                 style={{
                   flex: 1,
-                  background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '12px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                  borderRadius: '14px',
                   padding: '10px 14px',
-                  color: 'rgba(255,255,255,0.9)',
+                  color: 'rgba(255, 255, 255, 0.95)',
                   fontSize: '13.5px',
                   outline: 'none',
                   resize: 'none',
@@ -663,10 +813,16 @@ export default function AIChatbot() {
                   lineHeight: 1.5,
                   maxHeight: '80px',
                   overflowY: 'auto',
-                  transition: 'border-color 0.2s',
+                  transition: 'all 0.2s',
                 }}
-                onFocus={e => { e.target.style.borderColor = 'rgba(124, 58, 237, 0.6)' }}
-                onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.1)' }}
+                onFocus={e => {
+                  e.target.style.borderColor = 'rgba(139, 92, 246, 0.7)'
+                  e.target.style.boxShadow = '0 0 12px rgba(124, 58, 237, 0.25)'
+                }}
+                onBlur={e => {
+                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.12)'
+                  e.target.style.boxShadow = 'none'
+                }}
               />
               <motion.button
                 id="ai-chat-send"
@@ -676,15 +832,18 @@ export default function AIChatbot() {
                 whileTap={{ scale: 0.95 }}
                 style={{
                   width: '42px', height: '42px', borderRadius: '12px',
-                  background: input.trim() ? 'linear-gradient(135deg, #2563eb, #7c3aed)' : 'rgba(255,255,255,0.07)',
+                  background: input.trim()
+                    ? 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)'
+                    : 'rgba(255,255,255,0.06)',
                   border: 'none', cursor: input.trim() ? 'pointer' : 'not-allowed',
-                  color: 'white', fontSize: '18px', display: 'flex',
+                  color: input.trim() ? 'white' : 'rgba(255,255,255,0.3)',
+                  display: 'flex',
                   alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                  transition: 'background 0.2s',
-                  boxShadow: input.trim() ? '0 4px 12px rgba(37,99,235,0.4)' : 'none',
+                  transition: 'all 0.2s',
+                  boxShadow: input.trim() ? '0 4px 14px rgba(37,99,235,0.4)' : 'none',
                 }}
               >
-                ➤
+                <SendIcon size={18} />
               </motion.button>
             </div>
           </motion.div>
@@ -693,11 +852,12 @@ export default function AIChatbot() {
 
       <style>{`
         @keyframes chatPulse {
-          0% { box-shadow: 0 8px 32px rgba(124, 58, 237, 0.4), 0 0 0 0 rgba(124, 58, 237, 0.4); }
-          70% { box-shadow: 0 8px 32px rgba(124, 58, 237, 0.4), 0 0 0 12px rgba(124, 58, 237, 0); }
-          100% { box-shadow: 0 8px 32px rgba(124, 58, 237, 0.4), 0 0 0 0 rgba(124, 58, 237, 0); }
+          0% { box-shadow: 0 8px 32px rgba(124, 58, 237, 0.5), 0 0 0 0 rgba(124, 58, 237, 0.4); }
+          70% { box-shadow: 0 8px 32px rgba(124, 58, 237, 0.5), 0 0 0 16px rgba(124, 58, 237, 0); }
+          100% { box-shadow: 0 8px 32px rgba(124, 58, 237, 0.5), 0 0 0 0 rgba(124, 58, 237, 0); }
         }
       `}</style>
     </>
   )
 }
+

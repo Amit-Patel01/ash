@@ -1,12 +1,12 @@
 # Graph Report - solutionhub  (2026-07-27)
 
 ## Corpus Check
-- 455 files · ~667,988 words
+- 454 files · ~666,637 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3109 nodes · 7746 edges · 185 communities (164 shown, 21 thin omitted)
-- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 1062 edges (avg confidence: 0.53)
+- 3097 nodes · 7708 edges · 190 communities (165 shown, 25 thin omitted)
+- Extraction: 86% EXTRACTED · 14% INFERRED · 0% AMBIGUOUS · INFERRED: 1051 edges (avg confidence: 0.53)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
@@ -119,12 +119,17 @@
 - AdminInternshipCategories.jsx
 - emailNotify
 - TechMarquee.jsx
+- roleService.js
 - lazyWithRetry
+- EmployeeLayout.jsx
+- AIChatbot.jsx
 - cl
 - roleService.js
 - AdminTasks.jsx
+- ProjectDetails.jsx
 - check_maintenance_db.js
 - fix_maintenance_setting.js
+- Sf
 - Community 186
 - Community 205
 - Community 215
@@ -152,51 +157,51 @@
 ## Surprising Connections (you probably didn't know these)
 - `sendReceiptEmail()` --indirect_call--> `p()`  [INFERRED]
   backend/controllers/adminController.js → frontend/.chrome-test-5/Default/Extensions/lmjegmlicamnimmfhcmpkclmigmmcbeh/3.10_0/offscreen_compiled.js
+- `R()` --indirect_call--> `be()`  [INFERRED]
+  frontend/.chrome-test-5/Default/Extensions/ghbmnnjooekpmoecnnnilnnbdlolhkhi/1.104.1_0/service_worker_bin_prod.js → frontend/.chrome-test-5/Default/Extensions/ghbmnnjooekpmoecnnnilnnbdlolhkhi/1.104.1_0/offscreendocument_main.js
 - `qc()` --indirect_call--> `Rc()`  [INFERRED]
   frontend/.chrome-test-5/Default/Extensions/lmjegmlicamnimmfhcmpkclmigmmcbeh/3.10_0/offscreen_compiled.js → frontend/.chrome-test-5/Default/Extensions/nmmhkkegccagdldgiimedpiccmgmieda/1.0.0.6_0/craw_background.js
 - `getUserRole()` --calls--> `getDb()`  [EXTRACTED]
   backend/services/roleService.js → backend/utils/mongo.js
 - `q()` --indirect_call--> `Zd()`  [INFERRED]
   frontend/.chrome-test-5/Default/Extensions/ghbmnnjooekpmoecnnnilnnbdlolhkhi/1.104.1_0/offscreendocument_main.js → frontend/.chrome-test-5/Default/Extensions/lmjegmlicamnimmfhcmpkclmigmmcbeh/3.10_0/offscreen_compiled.js
-- `e()` --indirect_call--> `Re()`  [INFERRED]
-  frontend/.chrome-test-5/Default/Extensions/ghbmnnjooekpmoecnnnilnnbdlolhkhi/1.104.1_0/offscreendocument_main.js → frontend/.chrome-test-5/Default/Extensions/lmjegmlicamnimmfhcmpkclmigmmcbeh/3.10_0/offscreen_compiled.js
 
 ## Import Cycles
 - 1-file cycle: `frontend/src/components/Certificate/index.js -> frontend/src/components/Certificate/index.js`
 
-## Communities (185 total, 21 thin omitted)
+## Communities (190 total, 25 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.06
-Nodes (76): AdminQrCertificates(), buildVerifyUrl(), CERTIFICATE_TYPES, createInitialForm(), formatDisplayDate(), getTypeMeta(), mapCertificateToForm(), resolveAssetSrc() (+68 more)
+Cohesion: 0.05
+Nodes (77): AdminQrCertificates(), buildVerifyUrl(), CERTIFICATE_TYPES, createInitialForm(), formatDisplayDate(), getTypeMeta(), mapCertificateToForm(), resolveAssetSrc() (+69 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.06
-Nodes (47): ae(), ah(), b(), c(), ck(), d(), di(), dk() (+39 more)
+Cohesion: 0.07
+Nodes (41): b(), Bf(), c(), ck(), d(), di(), dk(), e() (+33 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.03
-Nodes (55): aa(), ag(), Cf(), cg(), Cj(), df(), ef(), el() (+47 more)
+Nodes (49): aa(), ag(), ah(), be(), Cf(), cg(), Cj(), cl() (+41 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.03
-Nodes (66): be(), Ae(), al(), bc(), Be(), Bf(), ce(), ch() (+58 more)
+Nodes (63): Ae(), al(), bc(), Bf(), ch(), Cj(), df(), el() (+55 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.06
-Nodes (43): ai(), Ak(), b(), Bk(), Ci(), d(), e(), ef() (+35 more)
+Nodes (53): ag(), Ak(), b(), Bk(), c(), ck(), cm(), d() (+45 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.02
-Nodes (84): About, AboutTradingMentorship, AdminAccountRequests, AdminAIDepartments, AdminCoupons, AdminCourseCategories, AdminCourseEnrollments, AdminCourses (+76 more)
+Cohesion: 0.03
+Nodes (76): About, AboutTradingMentorship, AdminAccountRequests, AdminAIDepartments, AdminCoupons, AdminCourseCategories, AdminCourseEnrollments, AdminCourses (+68 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.04
-Nodes (60): AdminAccountRequests(), AdminCourseEnrollments(), AdminDashboard(), AdminLayout(), iconMap, navGroups, AdminProfile(), createProfileForm() (+52 more)
+Cohesion: 0.07
+Nodes (36): AdminAccountRequests(), AdminDashboard(), AdminLayout(), iconMap, navGroups, AdminProfile(), createProfileForm(), ProtectedAdmin() (+28 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.12
-Nodes (62): listUsers(), { admin }, approveAccountRequest(), assertMySqlReady(), bcrypt, buildFirestoreAccountRequestPayload(), buildResetEmailMarkup(), buildResetUrl() (+54 more)
+Cohesion: 0.13
+Nodes (54): { admin }, approveAccountRequest(), assertMySqlReady(), bcrypt, buildFirestoreAccountRequestPayload(), buildResetEmailMarkup(), buildResetUrl(), completePasswordReset() (+46 more)
 
 ### Community 8 - "Community 8"
 Cohesion: 0.06
@@ -204,7 +209,7 @@ Nodes (30): A(), b(), c(), D(), da(), e(), ea(), fa() (+22 more)
 
 ### Community 9 - "Community 9"
 Cohesion: 0.03
-Nodes (50): ad(), af(), cc(), cd(), ce(), cf(), dg(), Ea() (+42 more)
+Nodes (49): ad(), af(), ba(), cc(), cd(), cf(), dg(), Ea() (+41 more)
 
 ### Community 10 - "Community 10"
 Cohesion: 0.07
@@ -212,11 +217,11 @@ Nodes (26): 1️⃣ Backend Test (2 minutes), 2️⃣ Frontend Test (3 minutes),
 
 ### Community 11 - "Community 11"
 Cohesion: 0.08
-Nodes (42): ac(), al(), Bc(), bd(), bl(), cd(), cl(), dc() (+34 more)
+Nodes (40): ac(), al(), Bc(), bd(), bl(), cd(), dc(), dd() (+32 more)
 
 ### Community 12 - "Community 12"
-Cohesion: 0.15
-Nodes (30): ADMIN_EMAIL, buildVerifyResponseData(), buildVerifyUrl(), createQrCertificate(), generateCertificateId(), generateUniqueCertificateId(), {
+Cohesion: 0.10
+Nodes (41): ADMIN_EMAIL, buildVerifyResponseData(), buildVerifyUrl(), createQrCertificate(), generateCertificateId(), generateUniqueCertificateId(), {
   getCertificateByUserAndCourse,
   addCertificate,
   getCertificateById,
@@ -225,55 +230,55 @@ Nodes (30): ADMIN_EMAIL, buildVerifyResponseData(), buildVerifyUrl(), createQrCe
   findCertificateByPublicId,
   createCertificateRecord,
   deleteCertificate,
-}, getFrontendUrl() (+22 more)
+}, getFrontendUrl() (+33 more)
 
 ### Community 13 - "Community 13"
-Cohesion: 0.08
-Nodes (27): ad(), ed(), fd(), gd(), hd(), jd(), ke(), L() (+19 more)
+Cohesion: 0.07
+Nodes (29): ad(), ed(), fd(), gd(), hd(), jd(), ke(), L() (+21 more)
 
 ### Community 14 - "Community 14"
-Cohesion: 0.09
-Nodes (27): { chatWithAI, getRecommendations, getAIStatus, generateText }, { dispatchDepartmentTask }, dispatchRateLimiter, express, { getDepartmentConfig, updateDepartmentConfig, getExecutionLogs, getPendingProposals, generateRealtimeProposalsFromCodebase, resolveProposal, clearAllProposals }, { logger }, { optionalAuth }, router (+19 more)
+Cohesion: 0.06
+Nodes (52): { createLogger, format, transports }, fs, logger, logsDir, path, { chatWithAI, getRecommendations, getAIStatus, generateText }, { dispatchDepartmentTask }, dispatchRateLimiter (+44 more)
 
 ### Community 15 - "Community 15"
-Cohesion: 0.09
-Nodes (34): ag(), c(), Cj(), de(), dg(), dh(), eh(), fh() (+26 more)
+Cohesion: 0.12
+Nodes (20): dh(), eh(), fh(), gh(), hh(), ih(), Kd(), kh() (+12 more)
 
 ### Community 16 - "normalize"
-Cohesion: 0.11
-Nodes (41): getNotificationMergeKey(), mergeNotificationGroups(), NotificationBell(), EmployeeBroadcastRefined(), EmployeeCourseManageRefined(), EmployeeHomeDashboard(), formatTimeAgo(), getTimeValue() (+33 more)
+Cohesion: 0.12
+Nodes (40): getNotificationMergeKey(), mergeNotificationGroups(), NotificationBell(), EmployeeBroadcastRefined(), EmployeeCourseManageRefined(), EmployeeHomeDashboard(), formatTimeAgo(), getTimeValue() (+32 more)
 
 ### Community 17 - "sendEmail"
-Cohesion: 0.09
-Nodes (29): createUser(), notifyAccountApproval(), sendEnrollmentEmail(), passport, express, { logger }, router, { sendEmail, emailTemplate } (+21 more)
+Cohesion: 0.10
+Nodes (28): notifyAccountApproval(), sendEnrollmentEmail(), passport, express, { logger }, router, { sendEmail, emailTemplate }, templates (+20 more)
 
 ### Community 18 - "Community 18"
 Cohesion: 0.13
-Nodes (19): Bj(), ca(), dl(), el(), Gj(), gl(), Hj(), I() (+11 more)
+Nodes (14): af(), bb(), ce(), gi(), hi(), If(), ii(), ji() (+6 more)
 
 ### Community 19 - "Community 19"
-Cohesion: 0.07
-Nodes (38): AdminCoupons(), buildPlanKey(), createBlankForm(), formatDate(), formatDiscount(), toDateInputValue(), AdminEmployees(), avatarColors (+30 more)
+Cohesion: 0.15
+Nodes (25): AdminCoupons(), buildPlanKey(), createBlankForm(), formatDate(), formatDiscount(), toDateInputValue(), departments, EmployeeDashboard() (+17 more)
 
 ### Community 20 - "Community 20"
 Cohesion: 0.06
 Nodes (36): ALLOWED_MIME_TYPES, fs, imageFilter(), multer, path, uploadBroadcast, uploadChat, uploadPayment (+28 more)
 
 ### Community 21 - "Community 21"
-Cohesion: 0.12
-Nodes (12): $a(), ab(), Ae(), bb(), cb(), db(), eb(), qe() (+4 more)
+Cohesion: 0.06
+Nodes (21): $a(), ab(), Ae(), bb(), cb(), db(), de(), eb() (+13 more)
 
 ### Community 22 - "Community 22"
 Cohesion: 0.09
 Nodes (50): AdminCourseCategories(), AdminCourses(), compactPlanKey(), CourseEnrollModal(), getPlanIdentity(), loadRazorpayScript(), matchesPlanEnrollment(), normalizePlanKey() (+42 more)
 
 ### Community 23 - "Community 23"
-Cohesion: 0.10
-Nodes (28): bg(), ch(), dh(), eh(), fg(), fh(), gh(), hh() (+20 more)
+Cohesion: 0.12
+Nodes (24): bg(), ch(), dh(), eh(), fg(), fh(), gh(), hh() (+16 more)
 
 ### Community 24 - "Community 24"
-Cohesion: 0.10
-Nodes (24): ab(), aa(), Ab(), Ac(), cc(), db(), dc(), Ec() (+16 more)
+Cohesion: 0.07
+Nodes (41): ab(), aa(), Ab(), Ac(), ad(), bd(), cc(), cd() (+33 more)
 
 ### Community 25 - "Community 25"
 Cohesion: 0.13
@@ -286,24 +291,20 @@ Nodes (34): {
 }, createCouponRecord(), deleteCouponRecord(), listAllCoupons(), { logger }, updateCouponRecord(), validateCoupon(), { adminOnly } (+26 more)
 
 ### Community 26 - "Community 26"
-Cohesion: 0.10
-Nodes (33): Aa(), ac(), ah(), ai(), bc(), bg(), bi(), cg() (+25 more)
+Cohesion: 0.11
+Nodes (30): Aa(), ac(), ah(), ai(), bc(), bg(), bi(), cg() (+22 more)
 
 ### Community 27 - "Community 27"
-Cohesion: 0.08
-Nodes (52): ADMIN_EMAIL, approveRequest(), broadcastEmail(), buildBroadcastContent(), dedupeEmails(), deleteUser(), deleteUserByEmail(), downloadEmployeeCv() (+44 more)
+Cohesion: 0.10
+Nodes (46): ADMIN_EMAIL, approveRequest(), broadcastEmail(), buildBroadcastContent(), dedupeEmails(), deleteUser(), deleteUserByEmail(), downloadEmployeeCv() (+38 more)
 
 ### Community 28 - "Community 28"
-Cohesion: 0.09
-Nodes (15): Aj(), bi(), ck(), dk(), ik(), kj(), kk(), lj() (+7 more)
+Cohesion: 0.08
+Nodes (25): Aj(), bi(), Bj(), ca(), dk(), Gj(), Hj(), ij() (+17 more)
 
 ### Community 29 - "Community 29"
-Cohesion: 0.23
-Nodes (15): getEnrollmentsByCourse(), getSession(), updateSession(), compactText(), formatMeetingDateTime(), {
-  getSession,
-  getEnrollmentsByCourse,
-  updateSession,
-}, isEnrollmentForCoursePlan(), { logger } (+7 more)
+Cohesion: 0.14
+Nodes (24): admin, deleteCertificate(), getActiveCourseEnrollments(), getCoursesWithPlanMeetings(), { getDb }, getEnrollmentsByCourse(), getMongoQueryId(), getSession() (+16 more)
 
 ### Community 30 - "Community 30"
 Cohesion: 0.13
@@ -323,7 +324,7 @@ Nodes (23): A(), Aj(), Bj(), da(), Gj(), Hj(), ij(), jj() (+15 more)
 
 ### Community 34 - "Community 34"
 Cohesion: 0.09
-Nodes (18): Ef(), Ff(), Gf(), Hf(), ii(), md(), nd(), of() (+10 more)
+Nodes (18): Ef(), Ff(), Gf(), Hf(), ii(), Ja(), md(), nd() (+10 more)
 
 ### Community 35 - "Community 35"
 Cohesion: 0.06
@@ -334,20 +335,20 @@ Cohesion: 0.09
 Nodes (15): a(), c(), d(), Fa(), Ga(), ja(), ka(), na() (+7 more)
 
 ### Community 37 - "EmployeeLayout.jsx"
-Cohesion: 0.17
-Nodes (27): c(), dc(), ec(), ei(), fc(), fh(), G(), Gb() (+19 more)
+Cohesion: 0.10
+Nodes (35): c(), d(), dc(), e(), ec(), ei(), fc(), fh() (+27 more)
 
 ### Community 38 - "Community 38"
-Cohesion: 0.12
-Nodes (28): ad(), bd(), cd(), dd(), ed(), fc(), hc(), ic() (+20 more)
+Cohesion: 0.22
+Nodes (16): dd(), fc(), hc(), jb(), jc(), Kb(), kc(), lc() (+8 more)
 
 ### Community 39 - "Community 39"
 Cohesion: 0.06
 Nodes (33): Additional Notes, Code Reference, Prevention, Problem, Root Cause, Solution, Step 1: Check Current Team Data in MongoDB, Step 2: Enable Team Display for Existing Employees (+25 more)
 
 ### Community 40 - "Community 40"
-Cohesion: 0.15
-Nodes (24): ag(), Bh(), eg(), fg(), hg(), hh(), ig(), J() (+16 more)
+Cohesion: 0.17
+Nodes (23): ag(), Bh(), eg(), fg(), hg(), hh(), ig(), J() (+15 more)
 
 ### Community 41 - "Community 41"
 Cohesion: 0.07
@@ -358,8 +359,8 @@ Cohesion: 0.18
 Nodes (23): normalize(), PublicEmployeeProfile(), socialLinks(), buildTeamProfiles(), fetchApiTeamProfiles(), fetchFirestoreTeamProfiles(), fetchPublicTeamProfiles(), genericRoles (+15 more)
 
 ### Community 44 - "oh"
-Cohesion: 0.09
-Nodes (35): bg(), bl(), Cg(), eg(), fb(), fd(), fg(), fm() (+27 more)
+Cohesion: 0.15
+Nodes (23): bg(), bl(), Cg(), eg(), fb(), fg(), jl(), $k() (+15 more)
 
 ### Community 45 - ".then"
 Cohesion: 0.13
@@ -369,8 +370,8 @@ Nodes (22): { addPaymentJob }, compactPlanKey(), createCourseOrder(), createOrde
 }, { logger } (+14 more)
 
 ### Community 46 - "Community 46"
-Cohesion: 0.10
-Nodes (13): Ai(), gi(), hi(), ii(), ji(), ki(), li(), Mg() (+5 more)
+Cohesion: 0.09
+Nodes (12): Ai(), Ci(), n(), Nh(), oh(), ph(), qh(), rh() (+4 more)
 
 ### Community 47 - "Community 47"
 Cohesion: 0.14
@@ -378,7 +379,7 @@ Nodes (19): { connectDB, closeDB }, fixTypoInPlans(), cleanup(), { connectDB, cl
 
 ### Community 48 - "Community 48"
 Cohesion: 0.10
-Nodes (29): changeMyEmail(), CV_UPLOAD_DIR, cvStorage, cvUpload, fs, getChatContacts(), getMyProfile(), {
+Nodes (31): changeMyEmail(), CV_UPLOAD_DIR, cvStorage, cvUpload, fs, getChatContacts(), getMyProfile(), {
   getOwnProfile,
   changeOwnEmail,
   updateOwnProfile,
@@ -387,7 +388,7 @@ Nodes (29): changeMyEmail(), CV_UPLOAD_DIR, cvStorage, cvUpload, fs, getChatCont
   listChatContacts,
   requestPasswordReset,
   createHttpError,
-} (+21 more)
+} (+23 more)
 
 ### Community 49 - "Community 49"
 Cohesion: 0.09
@@ -409,50 +410,46 @@ Nodes (18): bcrypt, {
 }, crypto, forgotPassword(), { getDb }, handleControllerError(), jwt, { logger } (+10 more)
 
 ### Community 52 - "Community 52"
-Cohesion: 0.06
-Nodes (23): b(), ba(), be(), bf(), d(), de(), e(), ee() (+15 more)
+Cohesion: 0.15
+Nodes (13): b(), be(), bf(), ce(), lh(), qa(), ra(), Re() (+5 more)
 
 ### Community 53 - "Community 53"
-Cohesion: 0.16
-Nodes (10): bb(), db(), fk(), gk(), hk(), hl(), If(), Ok() (+2 more)
+Cohesion: 0.12
+Nodes (22): db(), eb(), fk(), Ga(), gk(), hk(), hl(), ik() (+14 more)
 
 ### Community 54 - ".m"
-Cohesion: 0.18
-Nodes (8): am(), gb(), Rk(), Sk(), tk(), vh(), vk(), wk()
+Cohesion: 0.09
+Nodes (22): am(), bh(), cf(), gb(), ik(), kk(), mf(), n() (+14 more)
 
 ### Community 55 - "razorpayController.js"
 Cohesion: 0.11
-Nodes (17): af(), bh(), ce(), Fe(), ge(), He(), Ie(), je() (+9 more)
+Nodes (17): ae(), bh(), Fe(), ge(), He(), Ie(), je(), kg() (+9 more)
 
 ### Community 58 - "tradingController.js"
-Cohesion: 0.12
-Nodes (17): { chatWithAI }, express, { getDb }, { logger }, router, AI_KEY_SOURCES, buildChatContents(), chatWithAI() (+9 more)
+Cohesion: 0.18
+Nodes (13): createUser(), mergeUsers(), buildFirestoreUserPayload(), buildTeamPayload(), createFirebaseAuthUser(), createManagedUser(), generateNextEmployeeId(), insertUserRow() (+5 more)
 
 ### Community 61 - "Community 61"
 Cohesion: 0.17
 Nodes (5): b(), ha(), Ib(), Kb(), La()
 
 ### Community 63 - "be"
-Cohesion: 0.13
-Nodes (19): { addPaymentJob }, crypto, { logger }, {
+Cohesion: 0.10
+Nodes (25): { addPaymentJob }, crypto, { logger }, {
   savePayment,
   createEnrollment,
   getEnrollmentsByCourse,
   getSession,
   updateSession,
-}, { sendEmail, emailTemplate }, toggleLive(), verifyPayment(), express (+11 more)
+}, { sendEmail, emailTemplate }, toggleLive(), verifyPayment(), express (+17 more)
 
 ### Community 64 - ".l"
-Cohesion: 0.11
-Nodes (13): Bf(), Ci(), ek(), Mh(), n(), Nh(), oh(), ph() (+5 more)
-
-### Community 65 - "App"
-Cohesion: 0.32
-Nodes (14): dispatchDepartmentTask(), addExecutionLog(), addPendingProposal(), { addPendingProposal, addExecutionLog }, cron, { dispatchDepartmentTask }, { logger }, runAbandonedCartRecovery() (+6 more)
+Cohesion: 0.40
+Nodes (5): getModuleErrorAutoRefreshCount(), getModuleErrorCacheBustCount(), isRecoverableModuleLoadError(), MODULE_LOAD_ERROR_PATTERNS, ModuleLoadErrorFallback()
 
 ### Community 66 - ".aa"
-Cohesion: 0.15
-Nodes (7): gg(), ji(), mf(), mi(), oi(), wg(), yg()
+Cohesion: 0.10
+Nodes (12): gg(), mf(), rg(), sg(), td(), tg(), ug(), vd() (+4 more)
 
 ### Community 68 - "Community 68"
 Cohesion: 0.25
@@ -468,7 +465,7 @@ Nodes (5): ac(), Fb(), Gb(), Hb(), zb()
 
 ### Community 71 - "ni"
 Cohesion: 0.10
-Nodes (17): bh(), cf(), cl(), cm(), dm(), Ei(), em(), If() (+9 more)
+Nodes (20): ai(), Ci(), fi(), fm(), gi(), gm(), H(), hi() (+12 more)
 
 ### Community 73 - "Community 73"
 Cohesion: 0.33
@@ -522,37 +519,21 @@ Nodes (3): Backend, Frontend, Tech Stack
 Cohesion: 0.50
 Nodes (3): `backend/`, `frontend/`, Project Structure
 
-### Community 148 - "couponController.js"
-Cohesion: 0.19
-Nodes (13): requestCertificate(), addCertificate(), admin, createCertificateRecord(), deleteCertificate(), getActiveCourseEnrollments(), getCertificateByUserAndCourse(), getCoursesWithPlanMeetings() (+5 more)
-
 ### Community 149 - "tradingController.js"
 Cohesion: 0.12
 Nodes (13): CATEGORIES, Counter(), FAQS, Hero(), HERO_PARTICLES, STATS, STEPS, TECH_STACK (+5 more)
 
 ### Community 150 - "notificationService.js"
-Cohesion: 0.12
-Nodes (26): ProtectedAdmin(), ProtectedEmployee(), ProtectedStudent(), RoleRedirect(), ChatPanel(), EMOJIS, formatMsgDateTime(), formatTime() (+18 more)
+Cohesion: 0.16
+Nodes (17): ChatPanel(), EMOJIS, formatMsgDateTime(), formatTime(), getContactName(), getDayLabel(), toMessageDate(), ChatContext (+9 more)
 
 ### Community 151 - ".Z"
-Cohesion: 0.26
-Nodes (14): cc(), hb(), hc(), Ib(), ic(), jc(), kc(), Nd() (+6 more)
-
-### Community 152 - "AdminTasks.jsx"
-Cohesion: 0.51
-Nodes (6): qa(), ra(), va(), wa(), xa(), ya()
+Cohesion: 0.18
+Nodes (19): cc(), hb(), hc(), Ib(), ic(), jc(), kc(), kd() (+11 more)
 
 ### Community 154 - ".m"
-Cohesion: 0.25
-Nodes (7): uploadCertificateAsset, { adminOnly }, express, {
-  requestCertificate,
-  updateCertificateStatus,
-  verifyCertificate,
-  createQrCertificate,
-  updateQrCertificate,
-  updateQrCertificateStatus,
-  removeQrCertificate,
-}, router, { uploadCertificateAsset }, { verifyFirebaseToken }
+Cohesion: 0.15
+Nodes (11): Be(), ce(), M(), ne(), O(), oe(), te(), xd() (+3 more)
 
 ### Community 155 - "authMiddleware.js"
 Cohesion: 0.17
@@ -564,27 +545,43 @@ Nodes (3): http, options, req
 
 ### Community 159 - "emailNotify"
 Cohesion: 0.06
-Nodes (30): jspdf, AdminMessages(), ADMIN_PERMISSIONS, AdminPermissions(), getPermissionsArray(), ROLE_PRESETS, AdminReceipts(), getAbsoluteUrl() (+22 more)
+Nodes (32): jspdf, AdminMessages(), ADMIN_PERMISSIONS, AdminPermissions(), getPermissionsArray(), ROLE_PRESETS, AdminReceipts(), getAbsoluteUrl() (+24 more)
 
 ### Community 160 - "TechMarquee.jsx"
 Cohesion: 0.22
 Nodes (5): mid, ROW1, ROW2, TechMarquee(), TECHS
 
+### Community 161 - "roleService.js"
+Cohesion: 0.40
+Nodes (3): fs, { logger }, path
+
 ### Community 162 - "lazyWithRetry"
 Cohesion: 0.14
 Nodes (15): AnnouncementPopup(), DarkModeBackgroundFix(), Footer(), GlowBackground(), Layout(), Navbar(), ThemeContext, ThemeProvider() (+7 more)
 
+### Community 163 - "EmployeeLayout.jsx"
+Cohesion: 0.38
+Nodes (6): EmployeeTasks(), getPriority(), getStatus(), priorityConfig, statusConfig, TaskCard()
+
+### Community 164 - "AIChatbot.jsx"
+Cohesion: 0.06
+Nodes (32): AdminCourseEnrollments(), AdminEmployees(), avatarColors, departments, employeeRoles, AdminInternshipCategories(), COLOR_OPTIONS, EMPTY_FORM (+24 more)
+
 ### Community 165 - "cl"
-Cohesion: 0.14
-Nodes (11): ff(), gf(), hf(), jf(), lf(), nf(), vf(), W() (+3 more)
+Cohesion: 0.33
+Nodes (3): cl(), lg(), W()
 
 ### Community 166 - "roleService.js"
-Cohesion: 0.10
-Nodes (19): { createLogger, format, transports }, fs, logger, logsDir, path, { addPaymentJob }, crypto, express (+11 more)
+Cohesion: 0.40
+Nodes (5): batchSetRoles(), { getDb }, getUserRole(), { logger }, setUserRole()
 
 ### Community 167 - "AdminTasks.jsx"
 Cohesion: 0.29
 Nodes (9): AdminTasks(), avatarColors, buildAssigneeRows(), columns, emptyAssignee, getAvatarInitials(), priorityColors, resolveAssigneeFromTask() (+1 more)
+
+### Community 168 - "ProjectDetails.jsx"
+Cohesion: 0.40
+Nodes (5): FEATURE_COLORS, parseList(), PARTICLES, ProjectDetails(), TECH_COLORS
 
 ### Community 186 - "Community 186"
 Cohesion: 0.05
@@ -619,24 +616,24 @@ Cohesion: 0.25
 Nodes (7): dependencies, @anthropic-ai/sdk, @aws-sdk/client-bedrock-runtime, tesseract.js, license, name, private
 
 ## Knowledge Gaps
-- **633 isolated node(s):** `@kilocode/plugin`, `fs`, `path`, `{ sendEmail, emailTemplate }`, `{ getActiveEnrolledEmails }` (+628 more)
+- **629 isolated node(s):** `@kilocode/plugin`, `fs`, `path`, `{ sendEmail, emailTemplate }`, `{ getActiveEnrolledEmails }` (+624 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **21 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **25 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `p()` connect `Community 34` to `EmployeeLayout.jsx`, `Community 8`, `Community 9`, `Community 52`, `Community 27`, `emailNotify`?**
-  _High betweenness centrality (0.324) - this node is a cross-community bridge._
+  _High betweenness centrality (0.311) - this node is a cross-community bridge._
 - **Why does `sendReceiptEmail()` connect `Community 27` to `sendEmail`, `Community 34`, `Community 7`?**
-  _High betweenness centrality (0.259) - this node is a cross-community bridge._
-- **Why does `useStore()` connect `Community 6` to `Community 0`, `lazyWithRetry`, `Community 5`, `EmployeeTasks.jsx`, `AdminTasks.jsx`, `Community 43`, `normalize`, `Community 19`, `tradingController.js`, `Community 22`, `emailNotify`?**
-  _High betweenness centrality (0.241) - this node is a cross-community bridge._
+  _High betweenness centrality (0.255) - this node is a cross-community bridge._
+- **Why does `useStore()` connect `AIChatbot.jsx` to `Community 0`, `lazyWithRetry`, `EmployeeLayout.jsx`, `Community 5`, `Community 6`, `AdminTasks.jsx`, `ProjectDetails.jsx`, `EmployeeTasks.jsx`, `Community 43`, `normalize`, `Community 19`, `tradingController.js`, `Community 22`, `emailNotify`?**
+  _High betweenness centrality (0.235) - this node is a cross-community bridge._
 - **Are the 33 inferred relationships involving `b()` (e.g. with `ad()` and `c()`) actually correct?**
   _`b()` has 33 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 30 inferred relationships involving `b()` (e.g. with `ad()` and `.removeAll()`) actually correct?**
   _`b()` has 30 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `@kilocode/plugin`, `fs`, `path` to the rest of the system?**
-  _634 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _630 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.05526512322628827 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0543956043956044 - nodes in this community are weakly interconnected._

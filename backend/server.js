@@ -428,6 +428,7 @@ app.use("/api/ai", require("./routes/ai"));
 app.use("/api/notify", require("./routes/notify"));
 app.use("/api/chat", require("./routes/chat"));
 app.use("/api/db", require("./routes/db"));
+app.use("/api/unsubscribe", require("./routes/unsubscribe").router);
 
 if (fs.existsSync(frontendDistDir)) {
   app.get("/{*path}", (req, res) => {
@@ -607,6 +608,10 @@ connectDB().then(() => {
   app.listen(PORT, () => {
     logger.info(`SolutionHub backend v2.0 listening on port ${PORT}`);
     logger.info("Modules: trading | admin | auth | users | certificates | razorpay | ai | webhook");
+
+    // ─── Start AI Workforce Scheduled Tasks ─────────────────────────────────────
+    const { startScheduledTasks } = require("./services/aiAgents/scheduledTasks");
+    startScheduledTasks();
   });
 }).catch(err => {
   logger.error("Failed to connect to database, server not started:", err);

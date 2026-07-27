@@ -260,7 +260,7 @@
       "source_location": "L308",
       "_origin": "ast",
       "id": "backend_controllers_admincontroller_listusers",
-      "community": 7,
+      "community": 27,
       "norm_label": "listusers()"
     },
     {
@@ -290,7 +290,7 @@
       "source_location": "L345",
       "_origin": "ast",
       "id": "backend_controllers_admincontroller_createuser",
-      "community": 17,
+      "community": 58,
       "norm_label": "createuser()"
     },
     {
@@ -330,7 +330,7 @@
       "source_location": "L455",
       "_origin": "ast",
       "id": "backend_controllers_admincontroller_mergeusers",
-      "community": 27,
+      "community": 58,
       "norm_label": "mergeusers()"
     },
     {
@@ -800,7 +800,7 @@
       "source_location": "L457",
       "_origin": "ast",
       "id": "backend_controllers_certificatecontroller_requestcertificate",
-      "community": 148,
+      "community": 12,
       "norm_label": "requestcertificate()"
     },
     {
@@ -1430,7 +1430,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_logger",
-      "community": 166,
+      "community": 14,
       "norm_label": "logger.js"
     },
     {
@@ -1440,7 +1440,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_logger_createlogger_format_transports",
-      "community": 166,
+      "community": 14,
       "norm_label": "{ createlogger, format, transports }"
     },
     {
@@ -1450,7 +1450,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_logger_path",
-      "community": 166,
+      "community": 14,
       "norm_label": "path"
     },
     {
@@ -1460,7 +1460,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "backend_logger_fs",
-      "community": 166,
+      "community": 14,
       "norm_label": "fs"
     },
     {
@@ -1470,7 +1470,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "backend_logger_logsdir",
-      "community": 166,
+      "community": 14,
       "norm_label": "logsdir"
     },
     {
@@ -1480,7 +1480,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "backend_logger_logger",
-      "community": 166,
+      "community": 14,
       "norm_label": "logger"
     },
     {
@@ -1730,7 +1730,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "backend_middlewares_uploadmiddleware_uploadcertificateasset",
-      "community": 154,
+      "community": 12,
       "norm_label": "uploadcertificateasset"
     },
     {
@@ -2330,7 +2330,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_routes_certificates",
-      "community": 154,
+      "community": 12,
       "norm_label": "certificates.js"
     },
     {
@@ -2340,7 +2340,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_routes_certificates_express",
-      "community": 154,
+      "community": 12,
       "norm_label": "express"
     },
     {
@@ -2350,7 +2350,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_routes_certificates_router",
-      "community": 154,
+      "community": 12,
       "norm_label": "router"
     },
     {
@@ -2360,7 +2360,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "backend_routes_certificates_requestcertificate_updatecertificatestatus_verifycertificate_createqrcertificate_updateqrcertificate_updateqrcertificatestatus_removeqrcertificate",
-      "community": 154,
+      "community": 12,
       "norm_label": "{\r\n  requestcertificate,\r\n  updatecertificatestatus,\r\n  verifycertificate,\r\n  createqrcertificate,\r\n  updateqrcertificate,\r\n  updateqrcertificatestatus,\r\n  removeqrcertificate,\r\n}"
     },
     {
@@ -2370,7 +2370,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "backend_routes_certificates_verifyfirebasetoken",
-      "community": 154,
+      "community": 12,
       "norm_label": "{ verifyfirebasetoken }"
     },
     {
@@ -2380,7 +2380,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "backend_routes_certificates_adminonly",
-      "community": 154,
+      "community": 12,
       "norm_label": "{ adminonly }"
     },
     {
@@ -2390,7 +2390,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "backend_routes_certificates_uploadcertificateasset",
-      "community": 154,
+      "community": 12,
       "norm_label": "{ uploadcertificateasset }"
     },
     {
@@ -2400,7 +2400,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_routes_chat",
-      "community": 58,
+      "community": 14,
       "norm_label": "chat.js"
     },
     {
@@ -2410,7 +2410,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_routes_chat_express",
-      "community": 58,
+      "community": 14,
       "norm_label": "express"
     },
     {
@@ -2420,7 +2420,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_routes_chat_router",
-      "community": 58,
+      "community": 14,
       "norm_label": "router"
     },
     {
@@ -2430,7 +2430,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "backend_routes_chat_chatwithai",
-      "community": 58,
+      "community": 14,
       "norm_label": "{ chatwithai }"
     },
     {
@@ -2440,7 +2440,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "backend_routes_chat_logger",
-      "community": 58,
+      "community": 14,
       "norm_label": "{ logger }"
     },
     {
@@ -2450,7 +2450,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "backend_routes_chat_getdb",
-      "community": 58,
+      "community": 14,
       "norm_label": "{ getdb }"
     },
     {
@@ -2460,7 +2460,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "backend_routes_chat_generatechatid",
-      "community": 58,
+      "community": 14,
       "norm_label": "generatechatid()"
     },
     {
@@ -2470,7 +2470,7 @@
       "source_location": "L295",
       "_origin": "ast",
       "id": "backend_routes_chat_normalizeparticipants",
-      "community": 58,
+      "community": 14,
       "norm_label": "normalizeparticipants()"
     },
     {
@@ -2480,7 +2480,7 @@
       "source_location": "L302",
       "_origin": "ast",
       "id": "backend_routes_chat_normalizeparticipantinfo",
-      "community": 58,
+      "community": 14,
       "norm_label": "normalizeparticipantinfo()"
     },
     {
@@ -2880,7 +2880,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_routes_webhook",
-      "community": 166,
+      "community": 63,
       "norm_label": "webhook.js"
     },
     {
@@ -2890,7 +2890,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_routes_webhook_express",
-      "community": 166,
+      "community": 63,
       "norm_label": "express"
     },
     {
@@ -2900,7 +2900,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_routes_webhook_router",
-      "community": 166,
+      "community": 63,
       "norm_label": "router"
     },
     {
@@ -2910,7 +2910,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "backend_routes_webhook_crypto",
-      "community": 166,
+      "community": 63,
       "norm_label": "crypto"
     },
     {
@@ -2920,7 +2920,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "backend_routes_webhook_addpaymentjob",
-      "community": 166,
+      "community": 63,
       "norm_label": "{ addpaymentjob }"
     },
     {
@@ -2930,7 +2930,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "backend_routes_webhook_logger",
-      "community": 166,
+      "community": 63,
       "norm_label": "{ logger }"
     },
     {
@@ -2940,7 +2940,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "backend_routes_webhook_rationale_13",
-      "community": 166,
+      "community": 63,
       "norm_label": "important: this route must be mounted before express.json() so we get the raw bo"
     },
     {
@@ -4180,7 +4180,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "backend_services_aiagents_agentdispatcher_dispatchdepartmenttask",
-      "community": 65,
+      "community": 14,
       "norm_label": "dispatchdepartmenttask()"
     },
     {
@@ -4270,7 +4270,7 @@
       "source_location": "L126",
       "_origin": "ast",
       "id": "backend_services_aiagents_departmentconfig_addexecutionlog",
-      "community": 65,
+      "community": 14,
       "norm_label": "addexecutionlog()"
     },
     {
@@ -4310,7 +4310,7 @@
       "source_location": "L156",
       "_origin": "ast",
       "id": "backend_services_aiagents_departmentconfig_addpendingproposal",
-      "community": 65,
+      "community": 14,
       "norm_label": "addpendingproposal()"
     },
     {
@@ -4327,131 +4327,11 @@
       "label": "clearAllProposals()",
       "file_type": "code",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L387",
+      "source_location": "L330",
       "_origin": "ast",
       "id": "backend_services_aiagents_departmentconfig_clearallproposals",
       "community": 14,
       "norm_label": "clearallproposals()"
-    },
-    {
-      "label": "scheduledTasks.js",
-      "file_type": "code",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "backend_services_aiagents_scheduledtasks",
-      "community": 65,
-      "norm_label": "scheduledtasks.js"
-    },
-    {
-      "label": "cron",
-      "file_type": "code",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L6",
-      "_origin": "ast",
-      "id": "backend_services_aiagents_scheduledtasks_cron",
-      "community": 65,
-      "norm_label": "cron"
-    },
-    {
-      "label": "{ dispatchDepartmentTask }",
-      "file_type": "code",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L7",
-      "_origin": "ast",
-      "id": "backend_services_aiagents_scheduledtasks_dispatchdepartmenttask",
-      "community": 65,
-      "norm_label": "{ dispatchdepartmenttask }"
-    },
-    {
-      "label": "{ addPendingProposal, addExecutionLog }",
-      "file_type": "code",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "backend_services_aiagents_scheduledtasks_addpendingproposal_addexecutionlog",
-      "community": 65,
-      "norm_label": "{ addpendingproposal, addexecutionlog }"
-    },
-    {
-      "label": "{ logger }",
-      "file_type": "code",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L9",
-      "_origin": "ast",
-      "id": "backend_services_aiagents_scheduledtasks_logger",
-      "community": 65,
-      "norm_label": "{ logger }"
-    },
-    {
-      "label": "safeGetDb()",
-      "file_type": "code",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L13",
-      "_origin": "ast",
-      "id": "backend_services_aiagents_scheduledtasks_safegetdb",
-      "community": 65,
-      "norm_label": "safegetdb()"
-    },
-    {
-      "label": "runFinanceDailyReport()",
-      "file_type": "code",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L25",
-      "_origin": "ast",
-      "id": "backend_services_aiagents_scheduledtasks_runfinancedailyreport",
-      "community": 65,
-      "norm_label": "runfinancedailyreport()"
-    },
-    {
-      "label": "runAutoCertificate()",
-      "file_type": "code",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L66",
-      "_origin": "ast",
-      "id": "backend_services_aiagents_scheduledtasks_runautocertificate",
-      "community": 65,
-      "norm_label": "runautocertificate()"
-    },
-    {
-      "label": "runSupportScan()",
-      "file_type": "code",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L111",
-      "_origin": "ast",
-      "id": "backend_services_aiagents_scheduledtasks_runsupportscan",
-      "community": 65,
-      "norm_label": "runsupportscan()"
-    },
-    {
-      "label": "runAbandonedCartRecovery()",
-      "file_type": "code",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L149",
-      "_origin": "ast",
-      "id": "backend_services_aiagents_scheduledtasks_runabandonedcartrecovery",
-      "community": 65,
-      "norm_label": "runabandonedcartrecovery()"
-    },
-    {
-      "label": "runMarketingAnalysis()",
-      "file_type": "code",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L190",
-      "_origin": "ast",
-      "id": "backend_services_aiagents_scheduledtasks_runmarketinganalysis",
-      "community": 65,
-      "norm_label": "runmarketinganalysis()"
-    },
-    {
-      "label": "startScheduledTasks()",
-      "file_type": "code",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L214",
-      "_origin": "ast",
-      "id": "backend_services_aiagents_scheduledtasks_startscheduledtasks",
-      "community": 65,
-      "norm_label": "startscheduledtasks()"
     },
     {
       "label": "aiService.js",
@@ -4460,7 +4340,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_services_aiservice",
-      "community": 58,
+      "community": 14,
       "norm_label": "aiservice.js"
     },
     {
@@ -4470,7 +4350,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_services_aiservice_https",
-      "community": 58,
+      "community": 14,
       "norm_label": "https"
     },
     {
@@ -4480,7 +4360,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_services_aiservice_logger",
-      "community": 58,
+      "community": 14,
       "norm_label": "{ logger }"
     },
     {
@@ -4490,7 +4370,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "backend_services_aiservice_ai_key_sources",
-      "community": 58,
+      "community": 14,
       "norm_label": "ai_key_sources"
     },
     {
@@ -4500,7 +4380,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "backend_services_aiservice_keysourceentry",
-      "community": 58,
+      "community": 14,
       "norm_label": "keysourceentry"
     },
     {
@@ -4510,7 +4390,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "backend_services_aiservice_getaistatus",
-      "community": 58,
+      "community": 14,
       "norm_label": "getaistatus()"
     },
     {
@@ -4520,7 +4400,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "backend_services_aiservice_normalizemessage",
-      "community": 58,
+      "community": 14,
       "norm_label": "normalizemessage()"
     },
     {
@@ -4530,7 +4410,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "backend_services_aiservice_buildchatcontents",
-      "community": 58,
+      "community": 14,
       "norm_label": "buildchatcontents()"
     },
     {
@@ -4540,7 +4420,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "backend_services_aiservice_extracttextfromresponse",
-      "community": 58,
+      "community": 14,
       "norm_label": "extracttextfromresponse()"
     },
     {
@@ -4550,7 +4430,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "backend_services_aiservice_postjson",
-      "community": 58,
+      "community": 14,
       "norm_label": "postjson()"
     },
     {
@@ -4560,7 +4440,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "backend_services_aiservice_generatetext",
-      "community": 58,
+      "community": 14,
       "norm_label": "generatetext()"
     },
     {
@@ -4570,7 +4450,7 @@
       "source_location": "L180",
       "_origin": "ast",
       "id": "backend_services_aiservice_chatwithai",
-      "community": 58,
+      "community": 14,
       "norm_label": "chatwithai()"
     },
     {
@@ -4580,7 +4460,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "backend_services_aiservice_getrecommendations",
-      "community": 58,
+      "community": 14,
       "norm_label": "getrecommendations()"
     },
     {
@@ -4870,7 +4750,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_services_firebaseservice",
-      "community": 148,
+      "community": 29,
       "norm_label": "firebaseservice.js"
     },
     {
@@ -4880,7 +4760,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_getdb",
-      "community": 148,
+      "community": 29,
       "norm_label": "{ getdb }"
     },
     {
@@ -4890,7 +4770,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_objectid",
-      "community": 148,
+      "community": 29,
       "norm_label": "{ objectid }"
     },
     {
@@ -4900,7 +4780,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_admin",
-      "community": 148,
+      "community": 29,
       "norm_label": "admin"
     },
     {
@@ -4910,7 +4790,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_getmongoqueryid",
-      "community": 148,
+      "community": 29,
       "norm_label": "getmongoqueryid()"
     },
     {
@@ -4970,7 +4850,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_getsessionsforreminder",
-      "community": 148,
+      "community": 29,
       "norm_label": "getsessionsforreminder()"
     },
     {
@@ -4990,7 +4870,7 @@
       "source_location": "L151",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_getactivecourseenrollments",
-      "community": 148,
+      "community": 29,
       "norm_label": "getactivecourseenrollments()"
     },
     {
@@ -5000,7 +4880,7 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_getcourseswithplanmeetings",
-      "community": 148,
+      "community": 29,
       "norm_label": "getcourseswithplanmeetings()"
     },
     {
@@ -5010,7 +4890,7 @@
       "source_location": "L169",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_updatecourseplans",
-      "community": 148,
+      "community": 29,
       "norm_label": "updatecourseplans()"
     },
     {
@@ -5020,7 +4900,7 @@
       "source_location": "L182",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_getcertificatebyuserandcourse",
-      "community": 148,
+      "community": 12,
       "norm_label": "getcertificatebyuserandcourse()"
     },
     {
@@ -5030,7 +4910,7 @@
       "source_location": "L188",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_addcertificate",
-      "community": 148,
+      "community": 12,
       "norm_label": "addcertificate()"
     },
     {
@@ -5080,7 +4960,7 @@
       "source_location": "L230",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_createcertificaterecord",
-      "community": 148,
+      "community": 12,
       "norm_label": "createcertificaterecord()"
     },
     {
@@ -5090,7 +4970,7 @@
       "source_location": "L234",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_deletecertificate",
-      "community": 148,
+      "community": 29,
       "norm_label": "deletecertificate()"
     },
     {
@@ -5440,7 +5320,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_services_storageservice",
-      "community": 166,
+      "community": 161,
       "norm_label": "storageservice.js"
     },
     {
@@ -5450,7 +5330,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_services_storageservice_path",
-      "community": 166,
+      "community": 161,
       "norm_label": "path"
     },
     {
@@ -5460,7 +5340,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_services_storageservice_fs",
-      "community": 166,
+      "community": 161,
       "norm_label": "fs"
     },
     {
@@ -5470,7 +5350,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "backend_services_storageservice_logger",
-      "community": 166,
+      "community": 161,
       "norm_label": "{ logger }"
     },
     {
@@ -5480,7 +5360,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "backend_services_storageservice_uploadtofirebase",
-      "community": 166,
+      "community": 161,
       "norm_label": "uploadtofirebase()"
     },
     {
@@ -5720,7 +5600,7 @@
       "source_location": "L229",
       "_origin": "ast",
       "id": "backend_services_userservice_stringifyskills",
-      "community": 7,
+      "community": 58,
       "norm_label": "stringifyskills()"
     },
     {
@@ -5790,7 +5670,7 @@
       "source_location": "L371",
       "_origin": "ast",
       "id": "backend_services_userservice_buildfirestoreuserpayload",
-      "community": 27,
+      "community": 58,
       "norm_label": "buildfirestoreuserpayload()"
     },
     {
@@ -5800,7 +5680,7 @@
       "source_location": "L415",
       "_origin": "ast",
       "id": "backend_services_userservice_buildteampayload",
-      "community": 27,
+      "community": 58,
       "norm_label": "buildteampayload()"
     },
     {
@@ -5830,7 +5710,7 @@
       "source_location": "L462",
       "_origin": "ast",
       "id": "backend_services_userservice_syncusertofirebase",
-      "community": 27,
+      "community": 58,
       "norm_label": "syncusertofirebase()"
     },
     {
@@ -5840,7 +5720,7 @@
       "source_location": "L489",
       "_origin": "ast",
       "id": "backend_services_userservice_removeuserfromfirebase",
-      "community": 27,
+      "community": 58,
       "norm_label": "removeuserfromfirebase()"
     },
     {
@@ -5980,7 +5860,7 @@
       "source_location": "L942",
       "_origin": "ast",
       "id": "backend_services_userservice_insertuserrow",
-      "community": 7,
+      "community": 58,
       "norm_label": "insertuserrow()"
     },
     {
@@ -5990,7 +5870,7 @@
       "source_location": "L984",
       "_origin": "ast",
       "id": "backend_services_userservice_updateuserrow",
-      "community": 7,
+      "community": 58,
       "norm_label": "updateuserrow()"
     },
     {
@@ -6050,7 +5930,7 @@
       "source_location": "L1216",
       "_origin": "ast",
       "id": "backend_services_userservice_createfirebaseauthuser",
-      "community": 7,
+      "community": 58,
       "norm_label": "createfirebaseauthuser()"
     },
     {
@@ -6060,7 +5940,7 @@
       "source_location": "L1237",
       "_origin": "ast",
       "id": "backend_services_userservice_generatenextemployeeid",
-      "community": 7,
+      "community": 58,
       "norm_label": "generatenextemployeeid()"
     },
     {
@@ -6070,7 +5950,7 @@
       "source_location": "L1267",
       "_origin": "ast",
       "id": "backend_services_userservice_createmanageduser",
-      "community": 7,
+      "community": 58,
       "norm_label": "createmanageduser()"
     },
     {
@@ -6100,7 +5980,7 @@
       "source_location": "L1593",
       "_origin": "ast",
       "id": "backend_services_userservice_mergemanagedusers",
-      "community": 27,
+      "community": 58,
       "norm_label": "mergemanagedusers()"
     },
     {
@@ -6200,7 +6080,7 @@
       "source_location": "L2500",
       "_origin": "ast",
       "id": "backend_services_userservice_changeownemail",
-      "community": 7,
+      "community": 48,
       "norm_label": "changeownemail()"
     },
     {
@@ -6220,7 +6100,7 @@
       "source_location": "L2534",
       "_origin": "ast",
       "id": "backend_services_userservice_uploademployeecv",
-      "community": 27,
+      "community": 48,
       "norm_label": "uploademployeecv()"
     },
     {
@@ -6690,7 +6570,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_n",
-      "community": 64,
+      "community": 46,
       "norm_label": "n()"
     },
     {
@@ -6760,7 +6640,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_oa",
-      "community": 11,
+      "community": 2,
       "norm_label": "oa()"
     },
     {
@@ -6870,7 +6750,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_b_m",
-      "community": 1,
+      "community": 11,
       "norm_label": ".m()"
     },
     {
@@ -6920,7 +6800,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_b_p",
-      "community": 1,
+      "community": 11,
       "norm_label": ".p()"
     },
     {
@@ -6970,7 +6850,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_b_catch",
-      "community": 1,
+      "community": 11,
       "norm_label": ".catch()"
     },
     {
@@ -6990,7 +6870,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_t",
-      "community": 1,
+      "community": 55,
       "norm_label": "t()"
     },
     {
@@ -7100,7 +6980,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_e_has",
-      "community": 64,
+      "community": 46,
       "norm_label": ".has()"
     },
     {
@@ -7250,7 +7130,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ya",
-      "community": 46,
+      "community": 18,
       "norm_label": "ya()"
     },
     {
@@ -7260,7 +7140,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_za",
-      "community": 46,
+      "community": 18,
       "norm_label": "za()"
     },
     {
@@ -7300,7 +7180,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ga",
-      "community": 1,
+      "community": 53,
       "norm_label": "ga()"
     },
     {
@@ -7340,7 +7220,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sa",
-      "community": 53,
+      "community": 18,
       "norm_label": "sa()"
     },
     {
@@ -7360,7 +7240,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_bb",
-      "community": 53,
+      "community": 18,
       "norm_label": "bb()"
     },
     {
@@ -7380,7 +7260,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_eb",
-      "community": 1,
+      "community": 53,
       "norm_label": "eb()"
     },
     {
@@ -7430,7 +7310,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_wb",
-      "community": 2,
+      "community": 151,
       "norm_label": "wb()"
     },
     {
@@ -7640,7 +7520,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_nc",
-      "community": 2,
+      "community": 151,
       "norm_label": "nc()"
     },
     {
@@ -7670,7 +7550,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qc",
-      "community": 11,
+      "community": 1,
       "norm_label": "qc()"
     },
     {
@@ -7680,7 +7560,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rc",
-      "community": 11,
+      "community": 1,
       "norm_label": "rc()"
     },
     {
@@ -7780,7 +7660,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_uc",
-      "community": 2,
+      "community": 151,
       "norm_label": "uc()"
     },
     {
@@ -7900,7 +7780,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_kd",
-      "community": 2,
+      "community": 151,
       "norm_label": "kd()"
     },
     {
@@ -7980,7 +7860,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sd",
-      "community": 2,
+      "community": 13,
       "norm_label": "sd()"
     },
     {
@@ -8010,7 +7890,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_wd_za",
-      "community": 53,
+      "community": 18,
       "norm_label": ".za()"
     },
     {
@@ -8060,7 +7940,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_k",
-      "community": 1,
+      "community": 11,
       "norm_label": "k()"
     },
     {
@@ -8080,7 +7960,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_nd",
-      "community": 151,
+      "community": 2,
       "norm_label": "nd()"
     },
     {
@@ -8160,7 +8040,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ce",
-      "community": 55,
+      "community": 18,
       "norm_label": "ce()"
     },
     {
@@ -8270,7 +8150,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_be",
-      "community": 3,
+      "community": 2,
       "norm_label": "be()"
     },
     {
@@ -8290,7 +8170,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ae",
-      "community": 1,
+      "community": 55,
       "norm_label": "ae()"
     },
     {
@@ -8490,7 +8370,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yd",
-      "community": 1,
+      "community": 2,
       "norm_label": "yd()"
     },
     {
@@ -8510,7 +8390,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_af",
-      "community": 55,
+      "community": 18,
       "norm_label": "af()"
     },
     {
@@ -8610,7 +8490,7 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_of",
-      "community": 1,
+      "community": 53,
       "norm_label": "of()"
     },
     {
@@ -8710,7 +8590,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_bf",
-      "community": 64,
+      "community": 1,
       "norm_label": "bf()"
     },
     {
@@ -8730,7 +8610,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_if",
-      "community": 53,
+      "community": 18,
       "norm_label": "if()"
     },
     {
@@ -8930,7 +8810,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_x_then",
-      "community": 1,
+      "community": 2,
       "norm_label": ".then()"
     },
     {
@@ -8940,7 +8820,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_pg",
-      "community": 23,
+      "community": 1,
       "norm_label": "pg()"
     },
     {
@@ -8950,7 +8830,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sg",
-      "community": 23,
+      "community": 1,
       "norm_label": "sg()"
     },
     {
@@ -9010,7 +8890,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qg",
-      "community": 23,
+      "community": 1,
       "norm_label": "qg()"
     },
     {
@@ -9020,7 +8900,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rg",
-      "community": 23,
+      "community": 1,
       "norm_label": "rg()"
     },
     {
@@ -9110,7 +8990,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_mg",
-      "community": 46,
+      "community": 18,
       "norm_label": "mg()"
     },
     {
@@ -9200,7 +9080,7 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ah",
-      "community": 1,
+      "community": 2,
       "norm_label": "ah()"
     },
     {
@@ -9330,7 +9210,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_y",
-      "community": 64,
+      "community": 46,
       "norm_label": "y()"
     },
     {
@@ -9340,7 +9220,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_oh",
-      "community": 64,
+      "community": 46,
       "norm_label": "oh()"
     },
     {
@@ -9350,7 +9230,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ph",
-      "community": 64,
+      "community": 46,
       "norm_label": "ph()"
     },
     {
@@ -9360,7 +9240,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qh",
-      "community": 64,
+      "community": 46,
       "norm_label": "qh()"
     },
     {
@@ -9380,7 +9260,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sh",
-      "community": 64,
+      "community": 46,
       "norm_label": "sh()"
     },
     {
@@ -9400,7 +9280,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rh_removeall",
-      "community": 64,
+      "community": 46,
       "norm_label": ".removeall()"
     },
     {
@@ -9420,7 +9300,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_uh",
-      "community": 1,
+      "community": 53,
       "norm_label": "uh()"
     },
     {
@@ -9430,7 +9310,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_wh",
-      "community": 1,
+      "community": 53,
       "norm_label": "wh()"
     },
     {
@@ -9500,7 +9380,7 @@
       "source_location": "L126",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_mh",
-      "community": 64,
+      "community": 1,
       "norm_label": "mh()"
     },
     {
@@ -9510,7 +9390,7 @@
       "source_location": "L129",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_nh",
-      "community": 64,
+      "community": 46,
       "norm_label": "nh()"
     },
     {
@@ -9520,7 +9400,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qh_g",
-      "community": 64,
+      "community": 46,
       "norm_label": ".g()"
     },
     {
@@ -9530,7 +9410,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qh_notify",
-      "community": 64,
+      "community": 46,
       "norm_label": ".notify()"
     },
     {
@@ -9630,7 +9510,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_gi",
-      "community": 46,
+      "community": 18,
       "norm_label": "gi()"
     },
     {
@@ -9640,7 +9520,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ii",
-      "community": 46,
+      "community": 18,
       "norm_label": "ii()"
     },
     {
@@ -9660,7 +9540,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_li",
-      "community": 46,
+      "community": 1,
       "norm_label": "li()"
     },
     {
@@ -9670,7 +9550,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_mi",
-      "community": 46,
+      "community": 18,
       "norm_label": "mi()"
     },
     {
@@ -9680,7 +9560,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ji",
-      "community": 46,
+      "community": 18,
       "norm_label": "ji()"
     },
     {
@@ -9690,7 +9570,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ki",
-      "community": 46,
+      "community": 18,
       "norm_label": "ki()"
     },
     {
@@ -9700,7 +9580,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_hi",
-      "community": 46,
+      "community": 18,
       "norm_label": "hi()"
     },
     {
@@ -9760,7 +9640,7 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ui",
-      "community": 11,
+      "community": 2,
       "norm_label": "ui()"
     },
     {
@@ -9770,7 +9650,7 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_vi",
-      "community": 11,
+      "community": 1,
       "norm_label": "vi()"
     },
     {
@@ -9790,7 +9670,7 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_xi",
-      "community": 64,
+      "community": 46,
       "norm_label": "xi()"
     },
     {
@@ -9870,7 +9750,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ci",
-      "community": 64,
+      "community": 46,
       "norm_label": "ci()"
     },
     {
@@ -9880,7 +9760,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ki_enqueue",
-      "community": 46,
+      "community": 18,
       "norm_label": ".enqueue()"
     },
     {
@@ -9890,7 +9770,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ki_l",
-      "community": 46,
+      "community": 18,
       "norm_label": ".l()"
     },
     {
@@ -9970,7 +9850,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qi",
-      "community": 2,
+      "community": 151,
       "norm_label": "qi()"
     },
     {
@@ -10300,7 +10180,7 @@
       "source_location": "L162",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_lj_j",
-      "community": 64,
+      "community": 1,
       "norm_label": ".j()"
     },
     {
@@ -10360,7 +10240,7 @@
       "source_location": "L179",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ek",
-      "community": 64,
+      "community": 1,
       "norm_label": "ek()"
     },
     {
@@ -10410,7 +10290,7 @@
       "source_location": "L180",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ik",
-      "community": 1,
+      "community": 53,
       "norm_label": "ik()"
     },
     {
@@ -10420,7 +10300,7 @@
       "source_location": "L180",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_kk",
-      "community": 1,
+      "community": 53,
       "norm_label": "kk()"
     },
     {
@@ -10430,7 +10310,7 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_lk",
-      "community": 1,
+      "community": 53,
       "norm_label": "lk()"
     },
     {
@@ -10440,7 +10320,7 @@
       "source_location": "L182",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ek_l",
-      "community": 64,
+      "community": 53,
       "norm_label": ".l()"
     },
     {
@@ -10450,7 +10330,7 @@
       "source_location": "L182",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_jk",
-      "community": 2,
+      "community": 53,
       "norm_label": "jk()"
     },
     {
@@ -10470,7 +10350,7 @@
       "source_location": "L185",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qk",
-      "community": 2,
+      "community": 53,
       "norm_label": "qk()"
     },
     {
@@ -10480,7 +10360,7 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rk",
-      "community": 2,
+      "community": 53,
       "norm_label": "rk()"
     },
     {
@@ -10490,7 +10370,7 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_tk",
-      "community": 2,
+      "community": 53,
       "norm_label": "tk()"
     },
     {
@@ -10500,7 +10380,7 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sk",
-      "community": 2,
+      "community": 53,
       "norm_label": "sk()"
     },
     {
@@ -10510,7 +10390,7 @@
       "source_location": "L188",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_uk",
-      "community": 1,
+      "community": 11,
       "norm_label": "uk()"
     },
     {
@@ -10550,7 +10430,7 @@
       "source_location": "L189",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yk",
-      "community": 64,
+      "community": 13,
       "norm_label": "yk()"
     },
     {
@@ -10560,7 +10440,7 @@
       "source_location": "L190",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_uk_l",
-      "community": 1,
+      "community": 53,
       "norm_label": ".l()"
     },
     {
@@ -10630,7 +10510,7 @@
       "source_location": "L201",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_pk",
-      "community": 1,
+      "community": 53,
       "norm_label": "pk()"
     },
     {
@@ -10640,7 +10520,7 @@
       "source_location": "L202",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_nk",
-      "community": 1,
+      "community": 53,
       "norm_label": "nk()"
     },
     {
@@ -10660,7 +10540,7 @@
       "source_location": "L205",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_fk_l",
-      "community": 53,
+      "community": 18,
       "norm_label": ".l()"
     },
     {
@@ -10680,7 +10560,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yk_getmessage",
-      "community": 64,
+      "community": 13,
       "norm_label": ".getmessage()"
     },
     {
@@ -10710,7 +10590,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_cl",
-      "community": 11,
+      "community": 2,
       "norm_label": "cl()"
     },
     {
@@ -10810,7 +10690,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_kl_qa",
-      "community": 1,
+      "community": 11,
       "norm_label": ".qa()"
     },
     {
@@ -10830,7 +10710,7 @@
       "source_location": "L213",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_nl",
-      "community": 1,
+      "community": 11,
       "norm_label": "nl()"
     },
     {
@@ -10920,7 +10800,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_vl",
-      "community": 2,
+      "community": 11,
       "norm_label": "vl()"
     },
     {
@@ -11040,7 +10920,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_n",
-      "community": 71,
+      "community": 54,
       "norm_label": "n()"
     },
     {
@@ -11060,7 +10940,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ca",
-      "community": 18,
+      "community": 28,
       "norm_label": "ca()"
     },
     {
@@ -11100,7 +10980,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_u",
-      "community": 15,
+      "community": 4,
       "norm_label": "u()"
     },
     {
@@ -11110,7 +10990,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_oa",
-      "community": 3,
+      "community": 15,
       "norm_label": "oa()"
     },
     {
@@ -11120,7 +11000,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_v",
-      "community": 3,
+      "community": 15,
       "norm_label": "v()"
     },
     {
@@ -11150,7 +11030,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_c",
-      "community": 15,
+      "community": 4,
       "norm_label": "c()"
     },
     {
@@ -11210,7 +11090,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_c_o",
-      "community": 15,
+      "community": 4,
       "norm_label": ".o()"
     },
     {
@@ -11230,7 +11110,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_m",
-      "community": 28,
+      "community": 154,
       "norm_label": ".m()"
     },
     {
@@ -11240,7 +11120,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_k",
-      "community": 28,
+      "community": 154,
       "norm_label": ".k()"
     },
     {
@@ -11310,7 +11190,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_n",
-      "community": 3,
+      "community": 154,
       "norm_label": ".n()"
     },
     {
@@ -11320,7 +11200,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_then",
-      "community": 4,
+      "community": 54,
       "norm_label": ".then()"
     },
     {
@@ -11340,7 +11220,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_ga",
-      "community": 4,
+      "community": 54,
       "norm_label": ".ga()"
     },
     {
@@ -11350,7 +11230,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_t",
-      "community": 4,
+      "community": 24,
       "norm_label": "t()"
     },
     {
@@ -11460,7 +11340,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_e_has",
-      "community": 71,
+      "community": 4,
       "norm_label": ".has()"
     },
     {
@@ -11560,7 +11440,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_foreach",
-      "community": 18,
+      "community": 28,
       "norm_label": ".foreach()"
     },
     {
@@ -11570,7 +11450,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ua",
-      "community": 18,
+      "community": 3,
       "norm_label": "ua()"
     },
     {
@@ -11590,7 +11470,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xa",
-      "community": 165,
+      "community": 3,
       "norm_label": "xa()"
     },
     {
@@ -11600,7 +11480,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ya",
-      "community": 165,
+      "community": 3,
       "norm_label": "ya()"
     },
     {
@@ -11790,7 +11670,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yb",
-      "community": 38,
+      "community": 24,
       "norm_label": "yb()"
     },
     {
@@ -11930,7 +11810,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ic",
-      "community": 38,
+      "community": 24,
       "norm_label": "ic()"
     },
     {
@@ -11980,7 +11860,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_nc",
-      "community": 38,
+      "community": 24,
       "norm_label": "nc()"
     },
     {
@@ -12000,7 +11880,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pc",
-      "community": 38,
+      "community": 24,
       "norm_label": "pc()"
     },
     {
@@ -12130,7 +12010,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_h",
-      "community": 4,
+      "community": 71,
       "norm_label": "h()"
     },
     {
@@ -12150,7 +12030,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_i",
-      "community": 18,
+      "community": 24,
       "norm_label": "i()"
     },
     {
@@ -12170,7 +12050,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ad",
-      "community": 38,
+      "community": 24,
       "norm_label": "ad()"
     },
     {
@@ -12180,7 +12060,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bd",
-      "community": 38,
+      "community": 24,
       "norm_label": "bd()"
     },
     {
@@ -12190,7 +12070,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cd",
-      "community": 38,
+      "community": 24,
       "norm_label": "cd()"
     },
     {
@@ -12210,7 +12090,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ed",
-      "community": 38,
+      "community": 24,
       "norm_label": "ed()"
     },
     {
@@ -12220,7 +12100,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_fd",
-      "community": 44,
+      "community": 4,
       "norm_label": "fd()"
     },
     {
@@ -12300,7 +12180,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_nd",
-      "community": 38,
+      "community": 24,
       "norm_label": "nd()"
     },
     {
@@ -12320,7 +12200,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pd",
-      "community": 38,
+      "community": 24,
       "norm_label": "pd()"
     },
     {
@@ -12330,7 +12210,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pd_gettypename",
-      "community": 38,
+      "community": 24,
       "norm_label": ".gettypename()"
     },
     {
@@ -12380,7 +12260,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vd",
-      "community": 38,
+      "community": 3,
       "norm_label": "vd()"
     },
     {
@@ -12390,7 +12270,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xd",
-      "community": 3,
+      "community": 154,
       "norm_label": "xd()"
     },
     {
@@ -12400,7 +12280,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_zd",
-      "community": 3,
+      "community": 24,
       "norm_label": "zd()"
     },
     {
@@ -12450,7 +12330,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_m",
-      "community": 3,
+      "community": 154,
       "norm_label": "m()"
     },
     {
@@ -12460,7 +12340,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_m_equals",
-      "community": 3,
+      "community": 154,
       "norm_label": ".equals()"
     },
     {
@@ -12470,7 +12350,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_m_ra",
-      "community": 3,
+      "community": 154,
       "norm_label": ".ra()"
     },
     {
@@ -12480,7 +12360,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_m_tostring",
-      "community": 3,
+      "community": 154,
       "norm_label": ".tostring()"
     },
     {
@@ -12500,7 +12380,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_zd_tostring",
-      "community": 3,
+      "community": 154,
       "norm_label": ".tostring()"
     },
     {
@@ -12510,7 +12390,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ce",
-      "community": 3,
+      "community": 154,
       "norm_label": "ce()"
     },
     {
@@ -12560,7 +12440,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ne",
-      "community": 3,
+      "community": 154,
       "norm_label": "ne()"
     },
     {
@@ -12570,7 +12450,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_oe",
-      "community": 3,
+      "community": 154,
       "norm_label": "oe()"
     },
     {
@@ -12630,7 +12510,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_te",
-      "community": 3,
+      "community": 154,
       "norm_label": "te()"
     },
     {
@@ -12640,7 +12520,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_de",
-      "community": 15,
+      "community": 4,
       "norm_label": "de()"
     },
     {
@@ -12670,7 +12550,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xe",
-      "community": 3,
+      "community": 154,
       "norm_label": "xe()"
     },
     {
@@ -12710,7 +12590,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_be",
-      "community": 3,
+      "community": 154,
       "norm_label": "be()"
     },
     {
@@ -12730,7 +12610,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yd",
-      "community": 3,
+      "community": 154,
       "norm_label": "yd()"
     },
     {
@@ -12770,7 +12650,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_v_tostring",
-      "community": 3,
+      "community": 15,
       "norm_label": ".tostring()"
     },
     {
@@ -12800,7 +12680,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_o",
-      "community": 3,
+      "community": 154,
       "norm_label": "o()"
     },
     {
@@ -12810,7 +12690,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ne_tostring",
-      "community": 3,
+      "community": 154,
       "norm_label": ".tostring()"
     },
     {
@@ -12840,7 +12720,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cf",
-      "community": 71,
+      "community": 54,
       "norm_label": "cf()"
     },
     {
@@ -12870,7 +12750,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ff",
-      "community": 165,
+      "community": 3,
       "norm_label": "ff()"
     },
     {
@@ -12880,7 +12760,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_gf",
-      "community": 165,
+      "community": 3,
       "norm_label": "gf()"
     },
     {
@@ -12890,7 +12770,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jf",
-      "community": 165,
+      "community": 3,
       "norm_label": "jf()"
     },
     {
@@ -12910,7 +12790,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_mf",
-      "community": 44,
+      "community": 54,
       "norm_label": "mf()"
     },
     {
@@ -12920,7 +12800,7 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lf",
-      "community": 165,
+      "community": 3,
       "norm_label": "lf()"
     },
     {
@@ -12930,7 +12810,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_nf",
-      "community": 165,
+      "community": 3,
       "norm_label": "nf()"
     },
     {
@@ -12940,7 +12820,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hf",
-      "community": 165,
+      "community": 3,
       "norm_label": "hf()"
     },
     {
@@ -12970,7 +12850,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vf",
-      "community": 165,
+      "community": 54,
       "norm_label": "vf()"
     },
     {
@@ -12990,7 +12870,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wf",
-      "community": 165,
+      "community": 54,
       "norm_label": "wf()"
     },
     {
@@ -13050,7 +12930,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_if",
-      "community": 71,
+      "community": 4,
       "norm_label": "if()"
     },
     {
@@ -13070,7 +12950,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_kf_get",
-      "community": 44,
+      "community": 4,
       "norm_label": ".get()"
     },
     {
@@ -13110,7 +12990,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sf",
-      "community": 2,
+      "community": 176,
       "norm_label": "sf()"
     },
     {
@@ -13120,7 +13000,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sf_set",
-      "community": 2,
+      "community": 176,
       "norm_label": ".set()"
     },
     {
@@ -13130,7 +13010,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sf_reset",
-      "community": 2,
+      "community": 176,
       "norm_label": ".reset()"
     },
     {
@@ -13170,7 +13050,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dg",
-      "community": 15,
+      "community": 4,
       "norm_label": "dg()"
     },
     {
@@ -13220,7 +13100,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lg",
-      "community": 71,
+      "community": 165,
       "norm_label": "lg()"
     },
     {
@@ -13240,7 +13120,7 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pg",
-      "community": 15,
+      "community": 4,
       "norm_label": "pg()"
     },
     {
@@ -13250,7 +13130,7 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sg",
-      "community": 15,
+      "community": 4,
       "norm_label": "sg()"
     },
     {
@@ -13270,7 +13150,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ag",
-      "community": 15,
+      "community": 4,
       "norm_label": "ag()"
     },
     {
@@ -13280,7 +13160,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hg",
-      "community": 15,
+      "community": 4,
       "norm_label": "hg()"
     },
     {
@@ -13300,7 +13180,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_tg",
-      "community": 15,
+      "community": 4,
       "norm_label": "tg()"
     },
     {
@@ -13310,7 +13190,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_qg",
-      "community": 15,
+      "community": 4,
       "norm_label": "qg()"
     },
     {
@@ -13320,7 +13200,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_rg",
-      "community": 15,
+      "community": 4,
       "norm_label": "rg()"
     },
     {
@@ -13330,7 +13210,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wg",
-      "community": 15,
+      "community": 4,
       "norm_label": "wg()"
     },
     {
@@ -13390,7 +13270,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yg_h",
-      "community": 38,
+      "community": 24,
       "norm_label": ".h()"
     },
     {
@@ -13430,7 +13310,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_zg",
-      "community": 3,
+      "community": 154,
       "norm_label": "zg()"
     },
     {
@@ -13510,7 +13390,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bh",
-      "community": 71,
+      "community": 54,
       "norm_label": "bh()"
     },
     {
@@ -13640,7 +13520,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ph",
-      "community": 71,
+      "community": 54,
       "norm_label": "ph()"
     },
     {
@@ -13650,7 +13530,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_qh",
-      "community": 71,
+      "community": 4,
       "norm_label": "qh()"
     },
     {
@@ -13660,7 +13540,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_rh",
-      "community": 71,
+      "community": 54,
       "norm_label": "rh()"
     },
     {
@@ -13670,7 +13550,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh",
-      "community": 71,
+      "community": 54,
       "norm_label": "sh()"
     },
     {
@@ -13680,7 +13560,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_th",
-      "community": 71,
+      "community": 4,
       "norm_label": "th()"
     },
     {
@@ -13700,7 +13580,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_removeall",
-      "community": 71,
+      "community": 54,
       "norm_label": ".removeall()"
     },
     {
@@ -13710,7 +13590,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_uh",
-      "community": 4,
+      "community": 71,
       "norm_label": "uh()"
     },
     {
@@ -13740,7 +13620,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yh",
-      "community": 44,
+      "community": 71,
       "norm_label": "yh()"
     },
     {
@@ -13750,7 +13630,7 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yh_tostring",
-      "community": 44,
+      "community": 71,
       "norm_label": ".tostring()"
     },
     {
@@ -13760,7 +13640,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yh_resolve",
-      "community": 44,
+      "community": 71,
       "norm_label": ".resolve()"
     },
     {
@@ -13770,7 +13650,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yh_clone",
-      "community": 44,
+      "community": 71,
       "norm_label": ".clone()"
     },
     {
@@ -13780,7 +13660,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_zh",
-      "community": 44,
+      "community": 71,
       "norm_label": "zh()"
     },
     {
@@ -13790,7 +13670,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_nh",
-      "community": 44,
+      "community": 71,
       "norm_label": "nh()"
     },
     {
@@ -13800,7 +13680,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_oh",
-      "community": 15,
+      "community": 4,
       "norm_label": "oh()"
     },
     {
@@ -13810,7 +13690,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_g",
-      "community": 71,
+      "community": 54,
       "norm_label": ".g()"
     },
     {
@@ -13820,7 +13700,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_notify",
-      "community": 71,
+      "community": 54,
       "norm_label": ".notify()"
     },
     {
@@ -13830,7 +13710,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_th_stoppropagation",
-      "community": 71,
+      "community": 4,
       "norm_label": ".stoppropagation()"
     },
     {
@@ -13840,7 +13720,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_th_preventdefault",
-      "community": 71,
+      "community": 4,
       "norm_label": ".preventdefault()"
     },
     {
@@ -13880,7 +13760,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_h_add",
-      "community": 4,
+      "community": 71,
       "norm_label": ".add()"
     },
     {
@@ -13890,7 +13770,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_h_remove",
-      "community": 44,
+      "community": 71,
       "norm_label": ".remove()"
     },
     {
@@ -13910,7 +13790,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_h_removeall",
-      "community": 4,
+      "community": 71,
       "norm_label": ".removeall()"
     },
     {
@@ -13920,7 +13800,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ai",
-      "community": 4,
+      "community": 71,
       "norm_label": "ai()"
     },
     {
@@ -13930,7 +13810,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_fi",
-      "community": 4,
+      "community": 71,
       "norm_label": "fi()"
     },
     {
@@ -13940,7 +13820,7 @@
       "source_location": "L129",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ii",
-      "community": 4,
+      "community": 71,
       "norm_label": "ii()"
     },
     {
@@ -13950,7 +13830,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ki",
-      "community": 4,
+      "community": 71,
       "norm_label": "ki()"
     },
     {
@@ -13960,7 +13840,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_gi",
-      "community": 4,
+      "community": 71,
       "norm_label": "gi()"
     },
     {
@@ -13970,7 +13850,7 @@
       "source_location": "L131",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ni",
-      "community": 4,
+      "community": 71,
       "norm_label": "ni()"
     },
     {
@@ -13980,7 +13860,7 @@
       "source_location": "L132",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_oi",
-      "community": 4,
+      "community": 71,
       "norm_label": "oi()"
     },
     {
@@ -13990,7 +13870,7 @@
       "source_location": "L132",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_li",
-      "community": 4,
+      "community": 71,
       "norm_label": "li()"
     },
     {
@@ -14000,7 +13880,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_mi",
-      "community": 38,
+      "community": 24,
       "norm_label": "mi()"
     },
     {
@@ -14010,7 +13890,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ji",
-      "community": 4,
+      "community": 71,
       "norm_label": "ji()"
     },
     {
@@ -14020,7 +13900,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hi",
-      "community": 4,
+      "community": 71,
       "norm_label": "hi()"
     },
     {
@@ -14040,7 +13920,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ti",
-      "community": 3,
+      "community": 151,
       "norm_label": "ti()"
     },
     {
@@ -14080,7 +13960,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wi",
-      "community": 71,
+      "community": 4,
       "norm_label": "wi()"
     },
     {
@@ -14090,7 +13970,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xi",
-      "community": 71,
+      "community": 4,
       "norm_label": "xi()"
     },
     {
@@ -14120,7 +14000,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci",
-      "community": 4,
+      "community": 71,
       "norm_label": "ci()"
     },
     {
@@ -14130,7 +14010,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci_listen",
-      "community": 4,
+      "community": 71,
       "norm_label": ".listen()"
     },
     {
@@ -14140,7 +14020,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci_removeall",
-      "community": 4,
+      "community": 71,
       "norm_label": ".removeall()"
     },
     {
@@ -14150,7 +14030,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci_l",
-      "community": 4,
+      "community": 71,
       "norm_label": ".l()"
     },
     {
@@ -14160,7 +14040,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci_handleevent",
-      "community": 4,
+      "community": 71,
       "norm_label": ".handleevent()"
     },
     {
@@ -14170,7 +14050,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ei",
-      "community": 71,
+      "community": 4,
       "norm_label": "ei()"
     },
     {
@@ -14180,7 +14060,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_li_enqueue",
-      "community": 4,
+      "community": 71,
       "norm_label": ".enqueue()"
     },
     {
@@ -14190,7 +14070,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_li_l",
-      "community": 4,
+      "community": 71,
       "norm_label": ".l()"
     },
     {
@@ -14200,7 +14080,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_mi_tostring",
-      "community": 38,
+      "community": 24,
       "norm_label": ".tostring()"
     },
     {
@@ -14220,7 +14100,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jd",
-      "community": 44,
+      "community": 71,
       "norm_label": "jd()"
     },
     {
@@ -14240,7 +14120,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jd_tostring",
-      "community": 44,
+      "community": 71,
       "norm_label": ".tostring()"
     },
     {
@@ -14290,7 +14170,7 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wi_aa",
-      "community": 71,
+      "community": 4,
       "norm_label": ".aa()"
     },
     {
@@ -14300,7 +14180,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ij",
-      "community": 18,
+      "community": 28,
       "norm_label": "ij()"
     },
     {
@@ -14310,7 +14190,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jj",
-      "community": 18,
+      "community": 28,
       "norm_label": "jj()"
     },
     {
@@ -14380,7 +14260,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pj",
-      "community": 18,
+      "community": 28,
       "norm_label": "pj()"
     },
     {
@@ -14390,7 +14270,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_qj",
-      "community": 18,
+      "community": 28,
       "norm_label": "qj()"
     },
     {
@@ -14400,7 +14280,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_rj",
-      "community": 18,
+      "community": 28,
       "norm_label": "rj()"
     },
     {
@@ -14410,7 +14290,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_tj",
-      "community": 18,
+      "community": 28,
       "norm_label": "tj()"
     },
     {
@@ -14420,7 +14300,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_uj",
-      "community": 18,
+      "community": 28,
       "norm_label": "uj()"
     },
     {
@@ -14430,7 +14310,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sj",
-      "community": 18,
+      "community": 28,
       "norm_label": "sj()"
     },
     {
@@ -14440,7 +14320,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vj",
-      "community": 18,
+      "community": 28,
       "norm_label": "vj()"
     },
     {
@@ -14530,7 +14410,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bj",
-      "community": 18,
+      "community": 28,
       "norm_label": "bj()"
     },
     {
@@ -14540,7 +14420,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cj",
-      "community": 15,
+      "community": 3,
       "norm_label": "cj()"
     },
     {
@@ -14550,7 +14430,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cj_g",
-      "community": 15,
+      "community": 3,
       "norm_label": ".g()"
     },
     {
@@ -14570,7 +14450,7 @@
       "source_location": "L154",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_gj",
-      "community": 18,
+      "community": 28,
       "norm_label": "gj()"
     },
     {
@@ -14580,7 +14460,7 @@
       "source_location": "L156",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hj",
-      "community": 18,
+      "community": 28,
       "norm_label": "hj()"
     },
     {
@@ -14630,7 +14510,7 @@
       "source_location": "L166",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pj_aa",
-      "community": 18,
+      "community": 28,
       "norm_label": ".aa()"
     },
     {
@@ -14640,7 +14520,7 @@
       "source_location": "L173",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ck",
-      "community": 28,
+      "community": 4,
       "norm_label": "ck()"
     },
     {
@@ -14710,7 +14590,7 @@
       "source_location": "L175",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ik",
-      "community": 28,
+      "community": 54,
       "norm_label": "ik()"
     },
     {
@@ -14720,7 +14600,7 @@
       "source_location": "L175",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_kk",
-      "community": 28,
+      "community": 54,
       "norm_label": "kk()"
     },
     {
@@ -14810,7 +14690,7 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_uk",
-      "community": 4,
+      "community": 54,
       "norm_label": "uk()"
     },
     {
@@ -14840,7 +14720,7 @@
       "source_location": "L183",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xk",
-      "community": 3,
+      "community": 4,
       "norm_label": "xk()"
     },
     {
@@ -14900,7 +14780,7 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ck_set",
-      "community": 28,
+      "community": 4,
       "norm_label": ".set()"
     },
     {
@@ -14910,7 +14790,7 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ck_reset",
-      "community": 28,
+      "community": 4,
       "norm_label": ".reset()"
     },
     {
@@ -14920,7 +14800,7 @@
       "source_location": "L193",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_nk",
-      "community": 4,
+      "community": 54,
       "norm_label": "nk()"
     },
     {
@@ -14960,7 +14840,7 @@
       "source_location": "L197",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_qk",
-      "community": 4,
+      "community": 54,
       "norm_label": "qk()"
     },
     {
@@ -14970,7 +14850,7 @@
       "source_location": "L198",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ik_x",
-      "community": 165,
+      "community": 54,
       "norm_label": ".x()"
     },
     {
@@ -15000,7 +14880,7 @@
       "source_location": "L201",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wk_j",
-      "community": 4,
+      "community": 54,
       "norm_label": ".j()"
     },
     {
@@ -15040,7 +14920,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cl",
-      "community": 71,
+      "community": 165,
       "norm_label": "cl()"
     },
     {
@@ -15050,7 +14930,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dl",
-      "community": 18,
+      "community": 24,
       "norm_label": "dl()"
     },
     {
@@ -15060,7 +14940,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dl_getmessage",
-      "community": 18,
+      "community": 24,
       "norm_label": ".getmessage()"
     },
     {
@@ -15070,7 +14950,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_el",
-      "community": 18,
+      "community": 3,
       "norm_label": "el()"
     },
     {
@@ -15090,7 +14970,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_gl",
-      "community": 18,
+      "community": 24,
       "norm_label": "gl()"
     },
     {
@@ -15110,7 +14990,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_gl_aa",
-      "community": 18,
+      "community": 24,
       "norm_label": ".aa()"
     },
     {
@@ -15120,7 +15000,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_gl_pa",
-      "community": 18,
+      "community": 24,
       "norm_label": ".pa()"
     },
     {
@@ -15130,7 +15010,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_il",
-      "community": 18,
+      "community": 3,
       "norm_label": "il()"
     },
     {
@@ -15150,7 +15030,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_il_pa",
-      "community": 18,
+      "community": 28,
       "norm_label": ".pa()"
     },
     {
@@ -15160,7 +15040,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_il_aa",
-      "community": 18,
+      "community": 3,
       "norm_label": ".aa()"
     },
     {
@@ -15180,7 +15060,7 @@
       "source_location": "L208",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ll",
-      "community": 44,
+      "community": 24,
       "norm_label": "ll()"
     },
     {
@@ -15230,7 +15110,7 @@
       "source_location": "L209",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jg",
-      "community": 44,
+      "community": 4,
       "norm_label": "jg()"
     },
     {
@@ -15370,7 +15250,7 @@
       "source_location": "L221",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cm",
-      "community": 71,
+      "community": 4,
       "norm_label": "cm()"
     },
     {
@@ -15380,7 +15260,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hm",
-      "community": 44,
+      "community": 71,
       "norm_label": "hm()"
     },
     {
@@ -15390,7 +15270,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_im",
-      "community": 15,
+      "community": 3,
       "norm_label": "im()"
     },
     {
@@ -15420,7 +15300,7 @@
       "source_location": "L226",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dm",
-      "community": 71,
+      "community": 4,
       "norm_label": "dm()"
     },
     {
@@ -15430,7 +15310,7 @@
       "source_location": "L228",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_mm",
-      "community": 44,
+      "community": 4,
       "norm_label": "mm()"
     },
     {
@@ -15480,7 +15360,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_fm",
-      "community": 44,
+      "community": 71,
       "norm_label": "fm()"
     },
     {
@@ -15490,7 +15370,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_gm",
-      "community": 44,
+      "community": 71,
       "norm_label": "gm()"
     },
     {
@@ -15500,7 +15380,7 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_em",
-      "community": 71,
+      "community": 4,
       "norm_label": "em()"
     },
     {
@@ -16560,7 +16440,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ba",
-      "community": 52,
+      "community": 9,
       "norm_label": "ba()"
     },
     {
@@ -16640,7 +16520,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ia",
-      "community": 52,
+      "community": 9,
       "norm_label": "ia()"
     },
     {
@@ -16650,7 +16530,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_q",
-      "community": 9,
+      "community": 37,
       "norm_label": "q()"
     },
     {
@@ -16670,7 +16550,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_qa",
-      "community": 152,
+      "community": 52,
       "norm_label": "qa()"
     },
     {
@@ -16690,7 +16570,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ra",
-      "community": 152,
+      "community": 52,
       "norm_label": "ra()"
     },
     {
@@ -16750,7 +16630,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_va",
-      "community": 152,
+      "community": 52,
       "norm_label": "va()"
     },
     {
@@ -16760,7 +16640,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_wa",
-      "community": 152,
+      "community": 52,
       "norm_label": "wa()"
     },
     {
@@ -16770,7 +16650,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_xa",
-      "community": 152,
+      "community": 52,
       "norm_label": "xa()"
     },
     {
@@ -16780,7 +16660,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ya",
-      "community": 152,
+      "community": 52,
       "norm_label": "ya()"
     },
     {
@@ -16790,7 +16670,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ya_next",
-      "community": 152,
+      "community": 52,
       "norm_label": ".next()"
     },
     {
@@ -16800,7 +16680,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ya_throw",
-      "community": 152,
+      "community": 52,
       "norm_label": ".throw()"
     },
     {
@@ -16840,7 +16720,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_d",
-      "community": 52,
+      "community": 37,
       "norm_label": "d()"
     },
     {
@@ -16850,7 +16730,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_c_h",
-      "community": 52,
+      "community": 21,
       "norm_label": ".h()"
     },
     {
@@ -16860,7 +16740,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_c_i",
-      "community": 52,
+      "community": 37,
       "norm_label": ".i()"
     },
     {
@@ -16870,7 +16750,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_c_m",
-      "community": 152,
+      "community": 52,
       "norm_label": ".m()"
     },
     {
@@ -16880,7 +16760,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_c_j",
-      "community": 52,
+      "community": 21,
       "norm_label": ".j()"
     },
     {
@@ -16900,7 +16780,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_f",
-      "community": 52,
+      "community": 21,
       "norm_label": ".f()"
     },
     {
@@ -16910,7 +16790,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_d",
-      "community": 52,
+      "community": 21,
       "norm_label": ".d()"
     },
     {
@@ -16920,7 +16800,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_m",
-      "community": 52,
+      "community": 21,
       "norm_label": ".m()"
     },
     {
@@ -16930,7 +16810,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_v",
-      "community": 52,
+      "community": 21,
       "norm_label": ".v()"
     },
     {
@@ -16950,7 +16830,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_g",
-      "community": 52,
+      "community": 37,
       "norm_label": ".g()"
     },
     {
@@ -16970,7 +16850,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_b",
-      "community": 52,
+      "community": 21,
       "norm_label": ".b()"
     },
     {
@@ -17020,7 +16900,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_x",
-      "community": 34,
+      "community": 9,
       "norm_label": "x()"
     },
     {
@@ -17030,7 +16910,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_t",
-      "community": 52,
+      "community": 37,
       "norm_label": "t()"
     },
     {
@@ -17040,7 +16920,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e",
-      "community": 52,
+      "community": 37,
       "norm_label": "e()"
     },
     {
@@ -17060,7 +16940,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_set",
-      "community": 52,
+      "community": 37,
       "norm_label": ".set()"
     },
     {
@@ -17070,7 +16950,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_get",
-      "community": 52,
+      "community": 37,
       "norm_label": ".get()"
     },
     {
@@ -17080,7 +16960,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_has",
-      "community": 52,
+      "community": 37,
       "norm_label": ".has()"
     },
     {
@@ -17090,7 +16970,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_delete",
-      "community": 52,
+      "community": 37,
       "norm_label": ".delete()"
     },
     {
@@ -17100,7 +16980,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_set",
-      "community": 52,
+      "community": 37,
       "norm_label": ".set()"
     },
     {
@@ -17110,7 +16990,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_delete",
-      "community": 52,
+      "community": 37,
       "norm_label": ".delete()"
     },
     {
@@ -17120,7 +17000,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_clear",
-      "community": 52,
+      "community": 37,
       "norm_label": ".clear()"
     },
     {
@@ -17130,7 +17010,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_has",
-      "community": 52,
+      "community": 37,
       "norm_label": ".has()"
     },
     {
@@ -17140,7 +17020,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_get",
-      "community": 52,
+      "community": 37,
       "norm_label": ".get()"
     },
     {
@@ -17150,7 +17030,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_entries",
-      "community": 34,
+      "community": 9,
       "norm_label": ".entries()"
     },
     {
@@ -17160,7 +17040,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_keys",
-      "community": 52,
+      "community": 37,
       "norm_label": ".keys()"
     },
     {
@@ -17170,7 +17050,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_values",
-      "community": 52,
+      "community": 37,
       "norm_label": ".values()"
     },
     {
@@ -17180,7 +17060,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_foreach",
-      "community": 34,
+      "community": 9,
       "norm_label": ".foreach()"
     },
     {
@@ -17210,7 +17090,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ja",
-      "community": 9,
+      "community": 34,
       "norm_label": "ja()"
     },
     {
@@ -17220,7 +17100,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ka",
-      "community": 9,
+      "community": 37,
       "norm_label": "ka()"
     },
     {
@@ -17230,7 +17110,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_la",
-      "community": 52,
+      "community": 37,
       "norm_label": "la()"
     },
     {
@@ -17330,7 +17210,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_hb",
-      "community": 52,
+      "community": 9,
       "norm_label": "hb()"
     },
     {
@@ -17460,7 +17340,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_wb",
-      "community": 52,
+      "community": 37,
       "norm_label": "wb()"
     },
     {
@@ -17850,7 +17730,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_m_l",
-      "community": 152,
+      "community": 52,
       "norm_label": ".l()"
     },
     {
@@ -18020,7 +17900,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ld",
-      "community": 52,
+      "community": 21,
       "norm_label": "ld()"
     },
     {
@@ -18100,7 +17980,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_od",
-      "community": 9,
+      "community": 37,
       "norm_label": "od()"
     },
     {
@@ -18120,7 +18000,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_pd",
-      "community": 9,
+      "community": 34,
       "norm_label": "pd()"
     },
     {
@@ -18130,7 +18010,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_qd",
-      "community": 9,
+      "community": 34,
       "norm_label": "qd()"
     },
     {
@@ -18140,7 +18020,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_rd",
-      "community": 9,
+      "community": 34,
       "norm_label": "rd()"
     },
     {
@@ -18150,7 +18030,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_pd_a",
-      "community": 9,
+      "community": 34,
       "norm_label": ".a()"
     },
     {
@@ -18180,7 +18060,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_td",
-      "community": 26,
+      "community": 66,
       "norm_label": "td()"
     },
     {
@@ -18190,7 +18070,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_vd",
-      "community": 26,
+      "community": 66,
       "norm_label": "vd()"
     },
     {
@@ -18270,7 +18150,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_zd",
-      "community": 52,
+      "community": 9,
       "norm_label": "zd()"
     },
     {
@@ -18290,7 +18170,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_r_removeeventlistener",
-      "community": 52,
+      "community": 9,
       "norm_label": ".removeeventlistener()"
     },
     {
@@ -18330,7 +18210,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ce",
-      "community": 9,
+      "community": 52,
       "norm_label": "ce()"
     },
     {
@@ -18340,7 +18220,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_de",
-      "community": 52,
+      "community": 21,
       "norm_label": "de()"
     },
     {
@@ -18350,7 +18230,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_de_get",
-      "community": 52,
+      "community": 21,
       "norm_label": ".get()"
     },
     {
@@ -18360,7 +18240,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ee",
-      "community": 52,
+      "community": 21,
       "norm_label": "ee()"
     },
     {
@@ -18420,7 +18300,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_le",
-      "community": 52,
+      "community": 21,
       "norm_label": "le()"
     },
     {
@@ -18440,7 +18320,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_oe",
-      "community": 52,
+      "community": 9,
       "norm_label": "oe()"
     },
     {
@@ -18450,7 +18330,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_pe",
-      "community": 52,
+      "community": 21,
       "norm_label": "pe()"
     },
     {
@@ -18470,7 +18350,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_qe_h",
-      "community": 52,
+      "community": 21,
       "norm_label": ".h()"
     },
     {
@@ -18510,7 +18390,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_te",
-      "community": 52,
+      "community": 9,
       "norm_label": "te()"
     },
     {
@@ -18520,7 +18400,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_te_add",
-      "community": 21,
+      "community": 9,
       "norm_label": ".add()"
     },
     {
@@ -18530,7 +18410,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_te_remove",
-      "community": 52,
+      "community": 9,
       "norm_label": ".remove()"
     },
     {
@@ -18540,7 +18420,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ve",
-      "community": 9,
+      "community": 34,
       "norm_label": "ve()"
     },
     {
@@ -18550,7 +18430,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ve_set",
-      "community": 9,
+      "community": 34,
       "norm_label": ".set()"
     },
     {
@@ -18560,7 +18440,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ve_reset",
-      "community": 9,
+      "community": 34,
       "norm_label": ".reset()"
     },
     {
@@ -18600,7 +18480,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_de_reset",
-      "community": 52,
+      "community": 21,
       "norm_label": ".reset()"
     },
     {
@@ -18680,7 +18560,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_re",
-      "community": 9,
+      "community": 52,
       "norm_label": "re()"
     },
     {
@@ -18710,7 +18590,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_we",
-      "community": 9,
+      "community": 34,
       "norm_label": "we()"
     },
     {
@@ -18720,7 +18600,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_xe",
-      "community": 15,
+      "community": 34,
       "norm_label": "xe()"
     },
     {
@@ -18730,7 +18610,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ye",
-      "community": 9,
+      "community": 34,
       "norm_label": "ye()"
     },
     {
@@ -18780,7 +18660,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_v_a",
-      "community": 40,
+      "community": 21,
       "norm_label": ".a()"
     },
     {
@@ -18790,7 +18670,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_v_handleevent",
-      "community": 26,
+      "community": 66,
       "norm_label": ".handleevent()"
     },
     {
@@ -18910,7 +18790,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_of",
-      "community": 34,
+      "community": 9,
       "norm_label": "of()"
     },
     {
@@ -18920,7 +18800,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_pf",
-      "community": 34,
+      "community": 9,
       "norm_label": "pf()"
     },
     {
@@ -18930,7 +18810,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_qf",
-      "community": 40,
+      "community": 9,
       "norm_label": "qf()"
     },
     {
@@ -18940,7 +18820,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_sf",
-      "community": 34,
+      "community": 9,
       "norm_label": "sf()"
     },
     {
@@ -18950,7 +18830,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_tf",
-      "community": 34,
+      "community": 9,
       "norm_label": "tf()"
     },
     {
@@ -18960,7 +18840,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_uf",
-      "community": 34,
+      "community": 9,
       "norm_label": "uf()"
     },
     {
@@ -18970,7 +18850,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_vf",
-      "community": 34,
+      "community": 9,
       "norm_label": "vf()"
     },
     {
@@ -19110,7 +18990,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_lf",
-      "community": 40,
+      "community": 9,
       "norm_label": "lf()"
     },
     {
@@ -19130,7 +19010,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_rf",
-      "community": 34,
+      "community": 9,
       "norm_label": "rf()"
     },
     {
@@ -19150,7 +19030,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_qf_removeall",
-      "community": 40,
+      "community": 21,
       "norm_label": ".removeall()"
     },
     {
@@ -19310,7 +19190,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_hg_listen",
-      "community": 9,
+      "community": 40,
       "norm_label": ".listen()"
     },
     {
@@ -19320,7 +19200,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_hg_s",
-      "community": 52,
+      "community": 21,
       "norm_label": ".s()"
     },
     {
@@ -19390,7 +19270,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_rg",
-      "community": 34,
+      "community": 66,
       "norm_label": "rg()"
     },
     {
@@ -19400,7 +19280,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_sg",
-      "community": 9,
+      "community": 66,
       "norm_label": "sg()"
     },
     {
@@ -19410,7 +19290,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_tg",
-      "community": 9,
+      "community": 66,
       "norm_label": "tg()"
     },
     {
@@ -19450,7 +19330,7 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ug",
-      "community": 9,
+      "community": 66,
       "norm_label": "ug()"
     },
     {
@@ -19490,7 +19370,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_vg",
-      "community": 9,
+      "community": 66,
       "norm_label": "vg()"
     },
     {
@@ -19500,7 +19380,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_xg",
-      "community": 26,
+      "community": 66,
       "norm_label": "xg()"
     },
     {
@@ -19510,7 +19390,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_rg_stop",
-      "community": 34,
+      "community": 66,
       "norm_label": ".stop()"
     },
     {
@@ -19520,7 +19400,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_rg_pause",
-      "community": 34,
+      "community": 66,
       "norm_label": ".pause()"
     },
     {
@@ -19530,7 +19410,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_rg_resume",
-      "community": 34,
+      "community": 66,
       "norm_label": ".resume()"
     },
     {
@@ -19540,7 +19420,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_rg_a",
-      "community": 34,
+      "community": 66,
       "norm_label": ".a()"
     },
     {
@@ -19550,7 +19430,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_tg_next",
-      "community": 9,
+      "community": 66,
       "norm_label": ".next()"
     },
     {
@@ -19560,7 +19440,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_tg_aa",
-      "community": 9,
+      "community": 66,
       "norm_label": ".aa()"
     },
     {
@@ -19570,7 +19450,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_zg",
-      "community": 9,
+      "community": 40,
       "norm_label": "zg()"
     },
     {
@@ -19660,7 +19540,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ih",
-      "community": 52,
+      "community": 9,
       "norm_label": "ih()"
     },
     {
@@ -19930,7 +19810,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_wh_ga",
-      "community": 9,
+      "community": 66,
       "norm_label": ".ga()"
     },
     {
@@ -20030,7 +19910,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ji",
-      "community": 66,
+      "community": 21,
       "norm_label": "ji()"
     },
     {
@@ -20040,7 +19920,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ji_set",
-      "community": 66,
+      "community": 21,
       "norm_label": ".set()"
     },
     {
@@ -20060,7 +19940,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ji_get",
-      "community": 66,
+      "community": 21,
       "norm_label": ".get()"
     },
     {
@@ -20080,7 +19960,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_mi",
-      "community": 66,
+      "community": 21,
       "norm_label": "mi()"
     },
     {
@@ -20100,7 +19980,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_oi",
-      "community": 66,
+      "community": 21,
       "norm_label": "oi()"
     },
     {
@@ -20110,7 +19990,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_pi",
-      "community": 9,
+      "community": 34,
       "norm_label": "pi()"
     },
     {
@@ -20120,7 +20000,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_pi_i",
-      "community": 52,
+      "community": 21,
       "norm_label": ".i()"
     },
     {
@@ -20130,7 +20010,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ri",
-      "community": 52,
+      "community": 21,
       "norm_label": "ri()"
     },
     {
@@ -22560,7 +22440,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_src_app_module_load_error_patterns",
-      "community": 5,
+      "community": 64,
       "norm_label": "module_load_error_patterns"
     },
     {
@@ -22570,7 +22450,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "frontend_src_app_getmoduleerrorautorefreshcount",
-      "community": 5,
+      "community": 64,
       "norm_label": "getmoduleerrorautorefreshcount()"
     },
     {
@@ -22580,7 +22460,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_src_app_getmoduleerrorcachebustcount",
-      "community": 5,
+      "community": 64,
       "norm_label": "getmoduleerrorcachebustcount()"
     },
     {
@@ -22590,7 +22470,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "frontend_src_app_resetmoduleerrorautorefreshcount",
-      "community": 5,
+      "community": 148,
       "norm_label": "resetmoduleerrorautorefreshcount()"
     },
     {
@@ -22600,7 +22480,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "frontend_src_app_isrecoverablemoduleloaderror",
-      "community": 5,
+      "community": 64,
       "norm_label": "isrecoverablemoduleloaderror()"
     },
     {
@@ -22610,7 +22490,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "frontend_src_app_lazywithretry",
-      "community": 5,
+      "community": 148,
       "norm_label": "lazywithretry()"
     },
     {
@@ -22620,7 +22500,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "frontend_src_app_moduleloaderrorfallback",
-      "community": 5,
+      "community": 64,
       "norm_label": "moduleloaderrorfallback()"
     },
     {
@@ -23390,7 +23270,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "frontend_src_app_protectedadmin",
-      "community": 150,
+      "community": 6,
       "norm_label": "protectedadmin()"
     },
     {
@@ -23400,7 +23280,7 @@
       "source_location": "L246",
       "_origin": "ast",
       "id": "frontend_src_app_protectedemployee",
-      "community": 150,
+      "community": 6,
       "norm_label": "protectedemployee()"
     },
     {
@@ -23410,7 +23290,7 @@
       "source_location": "L258",
       "_origin": "ast",
       "id": "frontend_src_app_protectedstudent",
-      "community": 150,
+      "community": 6,
       "norm_label": "protectedstudent()"
     },
     {
@@ -23420,7 +23300,7 @@
       "source_location": "L270",
       "_origin": "ast",
       "id": "frontend_src_app_roleredirect",
-      "community": 150,
+      "community": 6,
       "norm_label": "roleredirect()"
     },
     {
@@ -23430,7 +23310,7 @@
       "source_location": "L277",
       "_origin": "ast",
       "id": "frontend_src_app_appcontent",
-      "community": 6,
+      "community": 5,
       "norm_label": "appcontent()"
     },
     {
@@ -23440,7 +23320,7 @@
       "source_location": "L434",
       "_origin": "ast",
       "id": "frontend_src_app_app",
-      "community": 5,
+      "community": 65,
       "norm_label": "app()"
     },
     {
@@ -23720,7 +23600,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_admincourseenrollments",
-      "community": 6,
+      "community": 164,
       "norm_label": "admincourseenrollments.jsx"
     },
     {
@@ -23730,7 +23610,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_admin_admincourseenrollments_admincourseenrollments",
-      "community": 6,
+      "community": 164,
       "norm_label": "admincourseenrollments()"
     },
     {
@@ -23780,7 +23660,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminemployees",
-      "community": 19,
+      "community": 164,
       "norm_label": "adminemployees.jsx"
     },
     {
@@ -23790,7 +23670,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_src_admin_adminemployees_avatarcolors",
-      "community": 19,
+      "community": 164,
       "norm_label": "avatarcolors"
     },
     {
@@ -23800,7 +23680,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_src_admin_adminemployees_departments",
-      "community": 19,
+      "community": 164,
       "norm_label": "departments"
     },
     {
@@ -23810,7 +23690,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "frontend_src_admin_adminemployees_employeeroles",
-      "community": 19,
+      "community": 164,
       "norm_label": "employeeroles"
     },
     {
@@ -23820,7 +23700,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_src_admin_adminemployees_adminemployees",
-      "community": 19,
+      "community": 164,
       "norm_label": "adminemployees()"
     },
     {
@@ -23830,7 +23710,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_admininternshipcategories",
-      "community": 19,
+      "community": 164,
       "norm_label": "admininternshipcategories.jsx"
     },
     {
@@ -23840,7 +23720,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "frontend_src_admin_admininternshipcategories_color_options",
-      "community": 19,
+      "community": 164,
       "norm_label": "color_options"
     },
     {
@@ -23850,7 +23730,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "frontend_src_admin_admininternshipcategories_icon_options",
-      "community": 19,
+      "community": 164,
       "norm_label": "icon_options"
     },
     {
@@ -23860,7 +23740,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_src_admin_admininternshipcategories_icon_map",
-      "community": 19,
+      "community": 164,
       "norm_label": "icon_map"
     },
     {
@@ -23870,7 +23750,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_src_admin_admininternshipcategories_level_options",
-      "community": 19,
+      "community": 164,
       "norm_label": "level_options"
     },
     {
@@ -23880,7 +23760,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "frontend_src_admin_admininternshipcategories_empty_form",
-      "community": 19,
+      "community": 164,
       "norm_label": "empty_form"
     },
     {
@@ -23890,7 +23770,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_src_admin_admininternshipcategories_admininternshipcategories",
-      "community": 19,
+      "community": 164,
       "norm_label": "admininternshipcategories()"
     },
     {
@@ -24070,7 +23950,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminprojects",
-      "community": 6,
+      "community": 164,
       "norm_label": "adminprojects.jsx"
     },
     {
@@ -24080,7 +23960,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_admin_adminprojects_adminprojects",
-      "community": 6,
+      "community": 164,
       "norm_label": "adminprojects()"
     },
     {
@@ -24230,7 +24110,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminsales",
-      "community": 6,
+      "community": 164,
       "norm_label": "adminsales.jsx"
     },
     {
@@ -24240,7 +24120,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_admin_adminsales_adminsales",
-      "community": 6,
+      "community": 164,
       "norm_label": "adminsales()"
     },
     {
@@ -24250,7 +24130,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminsellrequests",
-      "community": 6,
+      "community": 164,
       "norm_label": "adminsellrequests.jsx"
     },
     {
@@ -24260,7 +24140,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_src_admin_adminsellrequests_adminsellrequests",
-      "community": 6,
+      "community": 164,
       "norm_label": "adminsellrequests()"
     },
     {
@@ -24270,7 +24150,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminservicerequests",
-      "community": 6,
+      "community": 164,
       "norm_label": "adminservicerequests.jsx"
     },
     {
@@ -24280,7 +24160,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_src_admin_adminservicerequests_adminservicerequests",
-      "community": 6,
+      "community": 164,
       "norm_label": "adminservicerequests()"
     },
     {
@@ -24290,7 +24170,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminservices",
-      "community": 19,
+      "community": 164,
       "norm_label": "adminservices.jsx"
     },
     {
@@ -24300,7 +24180,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_src_admin_adminservices_gradient_map",
-      "community": 19,
+      "community": 164,
       "norm_label": "gradient_map"
     },
     {
@@ -24310,7 +24190,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_src_admin_adminservices_serviceicon",
-      "community": 19,
+      "community": 164,
       "norm_label": "serviceicon()"
     },
     {
@@ -24320,7 +24200,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "frontend_src_admin_adminservices_serviceform",
-      "community": 19,
+      "community": 164,
       "norm_label": "serviceform()"
     },
     {
@@ -24330,7 +24210,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "frontend_src_admin_adminservices_adminservices",
-      "community": 19,
+      "community": 164,
       "norm_label": "adminservices()"
     },
     {
@@ -24490,7 +24370,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminteam",
-      "community": 6,
+      "community": 164,
       "norm_label": "adminteam.jsx"
     },
     {
@@ -24500,7 +24380,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_admin_adminteam_avatarcolors",
-      "community": 6,
+      "community": 164,
       "norm_label": "avatarcolors"
     },
     {
@@ -24510,7 +24390,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "frontend_src_admin_adminteam_adminteam",
-      "community": 6,
+      "community": 164,
       "norm_label": "adminteam()"
     },
     {
@@ -24520,7 +24400,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_admintestimonials",
-      "community": 6,
+      "community": 164,
       "norm_label": "admintestimonials.jsx"
     },
     {
@@ -24530,7 +24410,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_src_admin_admintestimonials_emoji_options",
-      "community": 6,
+      "community": 164,
       "norm_label": "emoji_options"
     },
     {
@@ -24540,7 +24420,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "frontend_src_admin_admintestimonials_admintestimonials",
-      "community": 6,
+      "community": 164,
       "norm_label": "admintestimonials()"
     },
     {
@@ -25330,7 +25210,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_components_formerstaffmodal",
-      "community": 6,
+      "community": 164,
       "norm_label": "formerstaffmodal.jsx"
     },
     {
@@ -25340,7 +25220,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "frontend_src_components_formerstaffmodal_formerstaffmodal",
-      "community": 6,
+      "community": 164,
       "norm_label": "formerstaffmodal()"
     },
     {
@@ -25550,7 +25430,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_components_maintenancepage",
-      "community": 5,
+      "community": 152,
       "norm_label": "maintenancepage.jsx"
     },
     {
@@ -25560,7 +25440,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "frontend_src_components_maintenancepage_maintenancepage",
-      "community": 5,
+      "community": 152,
       "norm_label": "maintenancepage()"
     },
     {
@@ -26040,7 +25920,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "frontend_src_context_authcontext_authprovider",
-      "community": 150,
+      "community": 6,
       "norm_label": "authprovider()"
     },
     {
@@ -26220,7 +26100,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_employee_employeebroadcast",
-      "community": 6,
+      "community": 159,
       "norm_label": "employeebroadcast.jsx"
     },
     {
@@ -26230,7 +26110,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "frontend_src_employee_employeebroadcast_employeebroadcast",
-      "community": 6,
+      "community": 159,
       "norm_label": "employeebroadcast()"
     },
     {
@@ -26540,7 +26420,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout",
-      "community": 6,
+      "community": 164,
       "norm_label": "employeelayout.jsx"
     },
     {
@@ -26550,7 +26430,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout_navitems",
-      "community": 6,
+      "community": 164,
       "norm_label": "navitems"
     },
     {
@@ -26560,7 +26440,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout_iconmap",
-      "community": 6,
+      "community": 164,
       "norm_label": "iconmap"
     },
     {
@@ -26570,7 +26450,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout_permission_map",
-      "community": 6,
+      "community": 164,
       "norm_label": "permission_map"
     },
     {
@@ -26580,7 +26460,7 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout_haspermissionforpath",
-      "community": 6,
+      "community": 164,
       "norm_label": "haspermissionforpath()"
     },
     {
@@ -26590,7 +26470,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout_getfilterednavitems",
-      "community": 6,
+      "community": 164,
       "norm_label": "getfilterednavitems()"
     },
     {
@@ -26600,7 +26480,7 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout_employeelayout",
-      "community": 6,
+      "community": 164,
       "norm_label": "employeelayout()"
     },
     {
@@ -26840,7 +26720,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks",
-      "community": 6,
+      "community": 163,
       "norm_label": "employeetasks.jsx"
     },
     {
@@ -26850,7 +26730,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_statusconfig",
-      "community": 6,
+      "community": 163,
       "norm_label": "statusconfig"
     },
     {
@@ -26860,7 +26740,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_priorityconfig",
-      "community": 6,
+      "community": 163,
       "norm_label": "priorityconfig"
     },
     {
@@ -26870,7 +26750,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_getstatus",
-      "community": 6,
+      "community": 163,
       "norm_label": "getstatus()"
     },
     {
@@ -26880,7 +26760,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_getpriority",
-      "community": 6,
+      "community": 163,
       "norm_label": "getpriority()"
     },
     {
@@ -26890,7 +26770,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_taskcard",
-      "community": 6,
+      "community": 163,
       "norm_label": "taskcard()"
     },
     {
@@ -26900,7 +26780,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_employeetasks",
-      "community": 6,
+      "community": 163,
       "norm_label": "employeetasks()"
     },
     {
@@ -27010,7 +26890,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_src_employee_sellprojectrequestrefined_sellprojectrequestrefined",
-      "community": 16,
+      "community": 159,
       "norm_label": "sellprojectrequestrefined()"
     },
     {
@@ -27200,7 +27080,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_main",
-      "community": 5,
+      "community": 65,
       "norm_label": "main.jsx"
     },
     {
@@ -27290,7 +27170,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_pages_chatpage",
-      "community": 150,
+      "community": 6,
       "norm_label": "chatpage.jsx"
     },
     {
@@ -27300,7 +27180,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "frontend_src_pages_chatpage_chatpage",
-      "community": 150,
+      "community": 6,
       "norm_label": "chatpage()"
     },
     {
@@ -27770,7 +27650,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_pages_projectdetails",
-      "community": 6,
+      "community": 168,
       "norm_label": "projectdetails.jsx"
     },
     {
@@ -27780,7 +27660,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "frontend_src_pages_projectdetails_parselist",
-      "community": 6,
+      "community": 168,
       "norm_label": "parselist()"
     },
     {
@@ -27790,7 +27670,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "frontend_src_pages_projectdetails_feature_colors",
-      "community": 6,
+      "community": 168,
       "norm_label": "feature_colors"
     },
     {
@@ -27800,7 +27680,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "frontend_src_pages_projectdetails_tech_colors",
-      "community": 6,
+      "community": 168,
       "norm_label": "tech_colors"
     },
     {
@@ -27810,7 +27690,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "frontend_src_pages_projectdetails_particles",
-      "community": 6,
+      "community": 168,
       "norm_label": "particles"
     },
     {
@@ -27820,7 +27700,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "frontend_src_pages_projectdetails_projectdetails",
-      "community": 6,
+      "community": 168,
       "norm_label": "projectdetails()"
     },
     {
@@ -28340,7 +28220,7 @@
       "source_location": "L2121",
       "_origin": "ast",
       "id": "frontend_src_store_storecontext_usestore",
-      "community": 6,
+      "community": 164,
       "norm_label": "usestore()"
     },
     {
@@ -28440,7 +28320,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_user_userlayout",
-      "community": 6,
+      "community": 164,
       "norm_label": "userlayout.jsx"
     },
     {
@@ -28450,7 +28330,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "frontend_src_user_userlayout_groupedusernav",
-      "community": 6,
+      "community": 164,
       "norm_label": "groupedusernav"
     },
     {
@@ -28460,7 +28340,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_src_user_userlayout_userlayout",
-      "community": 6,
+      "community": 164,
       "norm_label": "userlayout()"
     },
     {
@@ -28570,7 +28450,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_user_useroverview",
-      "community": 6,
+      "community": 164,
       "norm_label": "useroverview.jsx"
     },
     {
@@ -28580,7 +28460,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "frontend_src_user_useroverview_useroverview",
-      "community": 6,
+      "community": 164,
       "norm_label": "useroverview()"
     },
     {
@@ -29080,7 +28960,7 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "frontend_src_utils_certificatetemplate_default_certificate_template",
-      "community": 19,
+      "community": 0,
       "norm_label": "default_certificate_template"
     },
     {
@@ -29250,7 +29130,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_utils_roles",
-      "community": 150,
+      "community": 6,
       "norm_label": "roles.js"
     },
     {
@@ -29260,7 +29140,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_utils_roles_normalizeuserrole",
-      "community": 150,
+      "community": 6,
       "norm_label": "normalizeuserrole()"
     },
     {
@@ -29270,7 +29150,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_src_utils_roles_isemployeerole",
-      "community": 150,
+      "community": 6,
       "norm_label": "isemployeerole()"
     },
     {
@@ -29280,7 +29160,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "frontend_src_utils_roles_gethomepathforrole",
-      "community": 150,
+      "community": 6,
       "norm_label": "gethomepathforrole()"
     },
     {
@@ -29290,7 +29170,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "frontend_src_utils_roles_getroledisplaylabel",
-      "community": 150,
+      "community": 6,
       "norm_label": "getroledisplaylabel()"
     },
     {
@@ -36228,17 +36108,6 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L9",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_logger",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "backend/services/aiService.js",
       "source_location": "L2",
       "weight": 1.0,
@@ -36430,17 +36299,6 @@
       "source_location": "L1",
       "weight": 1.0,
       "source": "backend_services_aiagents_departmentconfig",
-      "target": "backend_logger_logger",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L9",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks",
       "target": "backend_logger_logger",
       "confidence_score": 1.0
     },
@@ -40027,28 +39885,6 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/server.js",
-      "source_location": "L612",
-      "weight": 1.0,
-      "source": "backend_server",
-      "target": "backend_services_aiagents_scheduledtasks",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/server.js",
-      "source_location": "L612",
-      "weight": 1.0,
-      "source": "backend_server",
-      "target": "backend_services_aiagents_scheduledtasks_startscheduledtasks",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/server.js",
       "source_location": "L443",
       "weight": 1.0,
       "source": "backend_server",
@@ -40315,17 +40151,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_agentdispatcher",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -40392,43 +40217,10 @@
       "target": "backend_services_aiservice_generatetext"
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_agentdispatcher_dispatchdepartmenttask",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L200",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_runmarketinganalysis",
-      "target": "backend_services_aiagents_agentdispatcher_dispatchdepartmenttask"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L124",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_runsupportscan",
-      "target": "backend_services_aiagents_agentdispatcher_dispatchdepartmenttask"
-    },
-    {
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L395",
+      "source_location": "L338",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -40439,7 +40231,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L399",
+      "source_location": "L342",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -40450,7 +40242,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L401",
+      "source_location": "L344",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -40491,7 +40283,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L398",
+      "source_location": "L341",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -40502,7 +40294,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L393",
+      "source_location": "L336",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -40513,7 +40305,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L396",
+      "source_location": "L339",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -40524,7 +40316,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L397",
+      "source_location": "L340",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -40555,7 +40347,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L400",
+      "source_location": "L343",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -40566,7 +40358,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L394",
+      "source_location": "L337",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -40574,340 +40366,15 @@
       "confidence_score": 0.5
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_departmentconfig",
-      "confidence_score": 1.0
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L335",
+      "source_location": "L278",
       "weight": 1.0,
       "source": "backend_services_aiagents_departmentconfig_resolveproposal",
       "target": "backend_services_aiagents_departmentconfig_addexecutionlog",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_departmentconfig_addexecutionlog",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L179",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_runabandonedcartrecovery",
-      "target": "backend_services_aiagents_departmentconfig_addexecutionlog"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L100",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_runautocertificate",
-      "target": "backend_services_aiagents_departmentconfig_addexecutionlog"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L56",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_runfinancedailyreport",
-      "target": "backend_services_aiagents_departmentconfig_addexecutionlog"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_departmentconfig_addpendingproposal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L166",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_runabandonedcartrecovery",
-      "target": "backend_services_aiagents_departmentconfig_addpendingproposal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L83",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_runautocertificate",
-      "target": "backend_services_aiagents_departmentconfig_addpendingproposal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L41",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_runfinancedailyreport",
-      "target": "backend_services_aiagents_departmentconfig_addpendingproposal"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_addpendingproposal_addexecutionlog",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L6",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_cron",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_dispatchdepartmenttask",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L9",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_logger",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L240",
-      "weight": 1.0,
-      "context": "collection",
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_runabandonedcartrecovery",
-      "confidence_score": 0.5
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L239",
-      "weight": 1.0,
-      "context": "collection",
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_runautocertificate",
-      "confidence_score": 0.5
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L238",
-      "weight": 1.0,
-      "context": "collection",
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_runfinancedailyreport",
-      "confidence_score": 0.5
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L242",
-      "weight": 1.0,
-      "context": "collection",
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_runmarketinganalysis",
-      "confidence_score": 0.5
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L241",
-      "weight": 1.0,
-      "context": "collection",
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_runsupportscan",
-      "confidence_score": 0.5
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L13",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_safegetdb",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "indirect_call",
-      "confidence": "INFERRED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L237",
-      "weight": 1.0,
-      "context": "collection",
-      "source": "backend_services_aiagents_scheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_startscheduledtasks",
-      "confidence_score": 0.5
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L151",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_runabandonedcartrecovery",
-      "target": "backend_services_aiagents_scheduledtasks_safegetdb",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L68",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_runautocertificate",
-      "target": "backend_services_aiagents_scheduledtasks_safegetdb",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L27",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_runfinancedailyreport",
-      "target": "backend_services_aiagents_scheduledtasks_safegetdb",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L192",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_runmarketinganalysis",
-      "target": "backend_services_aiagents_scheduledtasks_safegetdb",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L113",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_runsupportscan",
-      "target": "backend_services_aiagents_scheduledtasks_safegetdb",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "indirect_call",
-      "context": "argument",
-      "confidence": "INFERRED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L219",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_startscheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_runfinancedailyreport",
-      "confidence_score": 0.5
-    },
-    {
-      "relation": "indirect_call",
-      "context": "argument",
-      "confidence": "INFERRED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L222",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_startscheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_runautocertificate",
-      "confidence_score": 0.5
-    },
-    {
-      "relation": "indirect_call",
-      "context": "argument",
-      "confidence": "INFERRED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L228",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_startscheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_runsupportscan",
-      "confidence_score": 0.5
-    },
-    {
-      "relation": "indirect_call",
-      "context": "argument",
-      "confidence": "INFERRED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L225",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_startscheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_runabandonedcartrecovery",
-      "confidence_score": 0.5
-    },
-    {
-      "relation": "indirect_call",
-      "context": "argument",
-      "confidence": "INFERRED",
-      "source_file": "backend/services/aiAgents/scheduledTasks.js",
-      "source_location": "L231",
-      "weight": 1.0,
-      "source": "backend_services_aiagents_scheduledtasks_startscheduledtasks",
-      "target": "backend_services_aiagents_scheduledtasks_runmarketinganalysis",
-      "confidence_score": 0.5
     },
     {
       "relation": "contains",
@@ -95039,7 +94506,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/admin/AdminAIDepartments.jsx",
-      "source_location": "L429",
+      "source_location": "L420",
       "weight": 1.0,
       "source": "frontend_src_admin_adminaidepartments_adminaidepartments",
       "target": "frontend_src_admin_adminaidepartments_getdepartmenticon",

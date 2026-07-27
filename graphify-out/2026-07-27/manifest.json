@@ -125,8 +125,8 @@
     "semantic_hash": ""
   },
   "backend/server.js": {
-    "mtime": 1785172940.6700141,
-    "ast_hash": "27ff4de4c854bb2c35148cd2f15db46e",
+    "mtime": 1784975369.9572978,
+    "ast_hash": "6c121c09a38519ba009329e02264d701",
     "semantic_hash": ""
   },
   "backend/services/aiService.js": {
@@ -2750,13 +2750,13 @@
     "semantic_hash": ""
   },
   "backend/services/aiAgents/departmentConfig.js": {
-    "mtime": 1785172909.2312703,
-    "ast_hash": "129bc8df332ee00e2b4ea8bae220a7ec",
+    "mtime": 1785172530.9753582,
+    "ast_hash": "25ed4a74809f9fede987b92fca855ba7",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminAIDepartments.jsx": {
-    "mtime": 1785172832.083441,
-    "ast_hash": "ef991ed989bb65e5c4632795ddad0377",
+    "mtime": 1785172563.72941,
+    "ast_hash": "e43afd6ee4a35bc92a26b48bbc442f2f",
     "semantic_hash": ""
   },
   "backend/scripts/verify_ai_workforce.js": {
@@ -2767,11 +2767,6 @@
   "backend/scripts/test_approval.js": {
     "mtime": 1785171337.3336556,
     "ast_hash": "2c74ae98bb83479a3716d18b4e7ea6e8",
-    "semantic_hash": ""
-  },
-  "backend/services/aiAgents/scheduledTasks.js": {
-    "mtime": 1785172878.622119,
-    "ast_hash": "99dff9b378315f6c00927fa6e0fa3d2c",
     "semantic_hash": ""
   }
 }

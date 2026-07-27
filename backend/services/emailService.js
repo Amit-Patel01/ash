@@ -10,7 +10,7 @@ const resend = new Resend(RESEND_API_KEY || "re_dummy_key_to_prevent_crash");
 /**
  * Samsung / Apple Grade Premium Animated Email Template Wrapper
  */
-const emailTemplate = (subject, content, ctaText = null, ctaUrl = null, headerColor = '#2563eb', categoryBadge = null) => `
+const emailTemplate = (subject, content, ctaText = null, ctaUrl = null, headerColor = '#2563eb', categoryBadge = null, unsubscribeUrl = null) => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,6 +95,13 @@ const emailTemplate = (subject, content, ctaText = null, ctaUrl = null, headerCo
             <p style="margin: 8px 0 0; font-size: 11px; color: #64748b;">
               Need instant support? Reply to this email or visit <a href="https://www.amitsolutionhub.com" style="color: #3b82f6; text-decoration: none; font-weight: 700;">amitsolutionhub.com</a>
             </p>
+            ${unsubscribeUrl ? `
+            <p style="margin: 14px 0 0; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.07); font-size: 11px; color: #475569;">
+              Don't want promotional emails? 
+              <a href="${unsubscribeUrl}" style="color: #ef4444; text-decoration: underline; font-weight: 700;">Unsubscribe from newsletters</a>
+              &nbsp;—&nbsp; Only marketing emails will stop. Password resets &amp; order emails are unaffected.
+            </p>
+            ` : ''}
           </div>
 
         </div>
