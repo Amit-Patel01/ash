@@ -1466,13 +1466,15 @@ const updateManagedUser = async (identifier, updates, { updatedBy = null } = {})
       if (existingUser.firebaseUid) mongoUpdate.firebaseUid = existingUser.firebaseUid;
       const filter = {
         $or: [
-          { _id: uid },
+          ...(ObjectId.isValid(uid) ? [{ _id: new ObjectId(uid) }] : []),
+          ...(ObjectId.isValid(identifier) ? [{ _id: new ObjectId(identifier) }] : []),
+          ...(existingUser.id && ObjectId.isValid(existingUser.id) ? [{ _id: new ObjectId(existingUser.id) }] : []),
           { uid },
           { firebaseUid: uid },
           { email: merged.email },
         ].filter(Boolean),
       };
-      await mongo.collection("users").updateOne(filter, { $set: mongoUpdate }, { upsert: true });
+      await mongo.collection("users").updateOne(filter, { $set: mongoUpdate });
       const mongoUser = await mongo.collection("users").findOne(filter);
       if (mongoUser) {
         updatedUser = {
@@ -1573,18 +1575,38 @@ const deleteManagedUser = async (identifier, { deletedBy = null } = {}) => {
       await query("DELETE FROM users WHERE id = ?", [user.numericId], connection);
     });
   } else {
-    const uid = user.firebaseUid || user.uid;
-    if (uid) {
-      const mongo = getDb();
-      // best-effort cleanup
-      await mongo.collection(FIRESTORE_PASSWORD_RESET_COLLECTION).deleteMany({ userUid: uid }).catch(() => {});
-      await mongo.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).updateMany({ linkedUserId: uid }, { $set: { linkedUserId: "" } }).catch(() => {});
-      const filter = ObjectId.isValid(uid) ? { _id: new ObjectId(uid) } : { $or: [{ uid }, { firebaseUid: uid }] };
-      await mongo.collection(FIRESTORE_USER_COLLECTION).deleteOne(filter).catch(() => {});
-    }
+    const mongo = getDb();
+    const targetEmail = user.email ? normalizeEmail(user.email) : "";
+    const targetUid = user.firebaseUid || user.uid || user.id || identifier;
+
+    const mongoFilter = {
+      $or: [
+        ...(ObjectId.isValid(targetUid) ? [{ _id: new ObjectId(targetUid) }] : []),
+        ...(ObjectId.isValid(identifier) ? [{ _id: new ObjectId(identifier) }] : []),
+        ...(user.id && ObjectId.isValid(user.id) ? [{ _id: new ObjectId(user.id) }] : []),
+        { uid: targetUid },
+        { firebaseUid: targetUid },
+        ...(targetEmail ? [{ email: targetEmail }] : []),
+      ].filter(Boolean),
+    };
+
+    // best-effort cleanup
+    await mongo.collection(FIRESTORE_PASSWORD_RESET_COLLECTION).deleteMany({
+      $or: [{ userUid: targetUid }, { email: targetEmail }].filter(Boolean)
+    }).catch(() => {});
+
+    await mongo.collection(FIRESTORE_ACCOUNT_REQUEST_COLLECTION).updateMany(
+      { $or: [{ linkedUserId: targetUid }, { email: targetEmail }].filter(Boolean) },
+      { $set: { linkedUserId: "" } }
+    ).catch(() => {});
+
+    // Delete from MongoDB users collection
+    await mongo.collection(FIRESTORE_USER_COLLECTION).deleteMany(mongoFilter).catch((err) => {
+      logger.error(`[deleteManagedUser] MongoDB delete error: ${err.message}`);
+    });
   }
 
-  await removeUserFromFirebase(user);
+  await removeUserFromFirebase(user).catch(() => {});
 
   logger.info(`[UserManagement] Deleted ${user.email}${deletedBy?.email ? ` by ${deletedBy.email}` : ""}`);
   return user;

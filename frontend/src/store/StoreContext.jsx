@@ -745,11 +745,20 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to update the user.')
       }
-      setUsers(prev => prev.map(u => u.uid === id || u.id === id ? data.user : u))
-      if (typeof window !== 'undefined' && data.user?.uid) {
-        window.dispatchEvent(new CustomEvent('solutionhub:user-updated', { detail: data.user }))
+      const targetId = String(id || '').toLowerCase()
+      const updatedRecord = data.user || {}
+      setUsers(prev => prev.map(u => {
+        const isMatch = [u.uid, u.id, u._id, u.firebaseUid, u.email]
+          .filter(Boolean)
+          .map(String)
+          .map(s => s.toLowerCase())
+          .includes(targetId)
+        return isMatch ? { ...u, ...updatedRecord } : u
+      }))
+      if (typeof window !== 'undefined' && updatedRecord?.uid) {
+        window.dispatchEvent(new CustomEvent('solutionhub:user-updated', { detail: updatedRecord }))
       }
-      return data.user
+      return updatedRecord
     } catch (err) { console.error('Error updating user:', err); throw err }
   }
 
@@ -764,7 +773,15 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete the user.')
       }
-      setUsers(prev => prev.filter(u => u.uid !== id && u.id !== id));
+      const targetId = String(id || '').toLowerCase()
+      setUsers(prev => prev.filter(u => {
+        const isMatch = [u.uid, u.id, u._id, u.firebaseUid, u.email]
+          .filter(Boolean)
+          .map(String)
+          .map(s => s.toLowerCase())
+          .includes(targetId)
+        return !isMatch
+      }))
       return data.user
     } catch (err) { console.error("Error deleting user:", err); throw err }
   }

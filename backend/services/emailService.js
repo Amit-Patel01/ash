@@ -1,11 +1,31 @@
-const { Resend } = require("resend");
+const nodemailer = require("nodemailer");
+const { logger } = require("../logger");
 
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-if (!RESEND_API_KEY) {
-  console.warn("⚠️  WARNING: RESEND_API_KEY is not set. Emailing will fail.");
+// ── Nodemailer Transporter Configuration ─────────────────────────────────────
+const SMTP_HOST = process.env.SMTP_HOST || process.env.MAIL_HOST || "smtp.gmail.com";
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || process.env.MAIL_PORT || "465", 10);
+const SMTP_SECURE = process.env.SMTP_SECURE !== undefined ? process.env.SMTP_SECURE === "true" : (SMTP_PORT === 465);
+const SMTP_USER = process.env.SMTP_USER || process.env.MAIL_USER || process.env.EMAIL_USER || process.env.GMAIL_USER || "";
+const SMTP_PASS = process.env.SMTP_PASS || process.env.MAIL_PASS || process.env.EMAIL_PASS || process.env.GMAIL_PASS || process.env.SMTP_PASSWORD || "";
+
+const transporter = nodemailer.createTransport({
+  host: SMTP_HOST,
+  port: SMTP_PORT,
+  secure: SMTP_SECURE, // true for 465, false for other ports
+  auth: (SMTP_USER && SMTP_PASS) ? {
+    user: SMTP_USER,
+    pass: SMTP_PASS,
+  } : undefined,
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
+if (SMTP_USER && SMTP_PASS) {
+  logger.info(`[Email] Nodemailer configured using SMTP host: ${SMTP_HOST}:${SMTP_PORT} (${SMTP_USER})`);
+} else {
+  logger.warn("⚠️ [Email] Nodemailer SMTP credentials not fully set. Configure SMTP_USER and SMTP_PASS in .env for production mail dispatch.");
 }
-
-const resend = new Resend(RESEND_API_KEY || "re_dummy_key_to_prevent_crash");
 
 /**
  * Samsung / Apple Grade Premium Animated Email Template Wrapper
@@ -112,8 +132,6 @@ const emailTemplate = (subject, content, ctaText = null, ctaUrl = null, headerCo
 </html>
 `;
 
-
-
 /**
  * Validate email format
  */
@@ -123,7 +141,7 @@ const isValidEmail = (email) => {
 };
 
 /**
- * Send a transactional email via Resend
+ * Send a transactional email via Nodemailer ONLY
  * @param {Object} opts - { to, subject, html, text?, attachments? }
  * @returns {Promise<{success: boolean, id?: string, error?: string}>}
  */
@@ -143,29 +161,31 @@ const sendEmail = async ({ to, subject, html, text, attachments }) => {
       return { success: false, error: "Email content (html or text) is required" };
     }
 
-    const result = await resend.emails.send({
-      from: process.env.FROM_EMAIL || "Amit Solution Hub <support@amitsolutionhub.com>",
+    const defaultFrom = process.env.FROM_EMAIL || process.env.SMTP_FROM || `Amit Solution Hub <${SMTP_USER || "support@amitsolutionhub.com"}>`;
+
+    const mailOptions = {
+      from: defaultFrom,
       to,
       subject,
       html: html || undefined,
       text: text || undefined,
-      attachments: attachments || undefined,
-    });
+      attachments: attachments ? attachments.map(att => ({
+        filename: att.filename || att.name,
+        path: att.path,
+        content: att.content,
+        contentType: att.contentType
+      })) : undefined,
+    };
 
-
-
-    // Check if Resend returned an error
-    if (result.error) {
-      return { success: false, error: result.error.message || String(result.error) };
-    }
-
-    // Return success with email ID
-    return { success: true, id: result.id };
+    // Pure Nodemailer Mail Dispatch
+    const info = await transporter.sendMail(mailOptions);
+    logger.info(`[Email] Sent email via Nodemailer to ${to}. MessageId: ${info.messageId || info.response}`);
+    return { success: true, id: info.messageId || info.response, messageId: info.messageId };
   } catch (error) {
     const errorMessage = error?.message || String(error);
-    console.error("Email send error:", errorMessage);
+    logger.error(`[Email] Nodemailer send error for ${to}: ${errorMessage}`);
     return { success: false, error: errorMessage };
   }
 };
 
-module.exports = { resend, emailTemplate, sendEmail };
+module.exports = { transporter, nodemailer, emailTemplate, sendEmail };

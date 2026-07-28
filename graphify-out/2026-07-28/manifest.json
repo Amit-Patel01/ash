@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "backend/controllers/adminController.js": {
-    "mtime": 1785223862.3007815,
-    "ast_hash": "3dc66cc97ee3494d2a90e4034aabea30",
+    "mtime": 1785246713.0900846,
+    "ast_hash": "5e02993b0be6a4c85323f143631a1b61",
     "semantic_hash": ""
   },
   "backend/controllers/authController.js": {
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "backend/package.json": {
-    "mtime": 1783616369.1364055,
-    "ast_hash": "fc7b4193437a8d0d4789e798be119619",
+    "mtime": 1785256057.727092,
+    "ast_hash": "50193efe89391570b55b864efa68726c",
     "semantic_hash": ""
   },
   "backend/routes/admin.js": {
@@ -140,8 +140,8 @@
     "semantic_hash": ""
   },
   "backend/services/emailService.js": {
-    "mtime": 1785173430.3558733,
-    "ast_hash": "007fb5e59e63fbdccf028dd292aafa42",
+    "mtime": 1785256043.89836,
+    "ast_hash": "b4b16d68e5bc45039b067af34d9887d0",
     "semantic_hash": ""
   },
   "backend/services/firebaseService.js": {
@@ -170,8 +170,8 @@
     "semantic_hash": ""
   },
   "backend/services/userService.js": {
-    "mtime": 1785002678.3566968,
-    "ast_hash": "85a373253fafcfa69cbc269769e13281",
+    "mtime": 1785246945.6306837,
+    "ast_hash": "4e397b4a0322075b471dffeaf9da0ca0",
     "semantic_hash": ""
   },
   "backend/utils/driveService.js": {
@@ -1725,8 +1725,8 @@
     "semantic_hash": ""
   },
   "frontend/src/store/StoreContext.jsx": {
-    "mtime": 1784876212.6715262,
-    "ast_hash": "5db239192a7008aaea0ef60a261b850a",
+    "mtime": 1785246954.5758333,
+    "ast_hash": "737c275ddaad9f3bfbcc387d289f1081",
     "semantic_hash": ""
   },
   "frontend/src/technicalsupport/RepairService.jsx": {
@@ -2797,6 +2797,11 @@
   "frontend/src/utils/deviceParser.js": {
     "mtime": 1785223246.9424777,
     "ast_hash": "1f0772bcf78798acc70bf9cecf4efd27",
+    "semantic_hash": ""
+  },
+  "backend/scripts/test_nodemailer_email.js": {
+    "mtime": 1785255994.1260085,
+    "ast_hash": "b429ecd251cd1fa6a8ece44003d11387",
     "semantic_hash": ""
   }
 }
