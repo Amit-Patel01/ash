@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
 import { parseDeviceName } from '../utils/deviceParser'
+
 const avatarColors = [
   'from-blue-500 to-cyan-500',
   'from-purple-500 to-pink-500',
@@ -46,6 +47,12 @@ export default function AdminEmployees() {
   const [searchQuery, setSearchQuery] = useState('')
   const [departmentFilter, setDepartmentFilter] = useState('All')
   
+  // Card expansion state
+  const [expandedIds, setExpandedIds] = useState({})
+  const toggleExpand = (id) => {
+    setExpandedIds(prev => ({ ...prev, [id]: !prev[id] }))
+  }
+
   // Tab/Section control in modal
   const [activeTab, setActiveTab] = useState('basic')
 
@@ -61,7 +68,6 @@ export default function AdminEmployees() {
     employeeId: '',
     customJobTitle: '',
     customDepartment: '',
-    // Unified Team Fields
     github: '',
     linkedin: '',
     portfolio: '',
@@ -582,60 +588,115 @@ export default function AdminEmployees() {
                 isTerminatedUser(employee) ? 'border-rose-200 bg-rose-50/30' : 'border-slate-200'
               }`}
             >
-              {/* ── Top: Employee + Contact (always visible) ── */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4 px-5 py-4 border-b border-slate-100">
-                {/* Avatar */}
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${avatarColors[index % avatarColors.length]} flex items-center justify-center text-sm font-bold overflow-hidden shadow-sm flex-shrink-0`}>
-                  {getPreviewImage(employee) ? (
-                    <img src={getPreviewImage(employee)} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-white font-bold text-base">
-                      {employee.displayName ? employee.displayName.charAt(0).toUpperCase() : '?'}
-                    </span>
-                  )}
-                </div>
-
-                {/* Name + ID */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-slate-900 text-base leading-tight">
-                      {employee.displayName || 'Unknown'}
-                    </span>
-                    {(employee.isMentor || String(employee.role).toLowerCase() === 'mentor') && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/10 text-amber-600 border border-amber-400/30 uppercase tracking-wide">
-                        🎓 Mentor
-                      </span>
-                    )}
-                    {isTerminatedUser(employee) && (
-                      <span className="hidden px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-rose-500/10 text-rose-600 border border-rose-400/30 uppercase tracking-wide">
-                        Terminated
+              {/* ── Top: Employee + Contact + Quick Actions (always visible) ── */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-5 py-4 border-b border-slate-100">
+                {/* Avatar + Info */}
+                <div className="flex items-center gap-4.5 min-w-0">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${avatarColors[index % avatarColors.length]} flex items-center justify-center text-sm font-bold overflow-hidden shadow-sm flex-shrink-0`}>
+                    {getPreviewImage(employee) ? (
+                      <img src={getPreviewImage(employee)} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-white font-bold text-base">
+                        {employee.displayName ? employee.displayName.charAt(0).toUpperCase() : '?'}
                       </span>
                     )}
                   </div>
-                  {employee.employeeId && (
-                    <span className="hidden text-[11px] text-slate-400 font-mono">ID: {employee.employeeId}</span>
-                  )}
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-bold text-slate-900 text-base leading-tight">
+                        {employee.displayName || 'Unknown'}
+                      </span>
+                      {(employee.isMentor || String(employee.role).toLowerCase() === 'mentor') && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/10 text-amber-600 border border-amber-400/30 uppercase tracking-wide">
+                          🎓 Mentor
+                        </span>
+                      )}
+                      {isTerminatedUser(employee) && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-500/10 text-rose-600 border border-rose-400/30 uppercase tracking-wide">
+                          Terminated
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500">
+                      <span className="font-medium text-slate-700">{employee.email || '—'}</span>
+                      {employee.phone && <span>• {employee.phone}</span>}
+                      {employee.employeeId && <span className="font-mono text-slate-400">({employee.employeeId})</span>}
+                    </div>
+                  </div>
                 </div>
 
-                {/* Contact */}
-                <div className="flex flex-col text-xs text-right">
-                  <span className="text-slate-700 font-medium">{employee.email || '—'}</span>
-                  {employee.phone && <span className="text-slate-500 mt-0.5">{employee.phone}</span>}
+                {/* Quick Action Buttons */}
+                <div className="flex items-center gap-2 flex-wrap justify-end">
+                  {/* Status / Deactivate toggle */}
+                  <button
+                    onClick={() => toggleStatus(employee)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border shadow-sm ${
+                      employee.status === 'active'
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                        : employee.status === 'terminated'
+                        ? 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
+                        : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+                    }`}
+                    title="Click to toggle status (Deactivate / Activate)"
+                  >
+                    <span className={`w-2 h-2 rounded-full ${
+                      employee.status === 'active' ? 'bg-emerald-500' : employee.status === 'terminated' ? 'bg-rose-600 animate-pulse' : 'bg-amber-500'
+                    }`} />
+                    {employee.status === 'active' ? 'Deactivate' : 'Activate Account'}
+                  </button>
+
+                  {/* Edit button */}
+                  <button
+                    onClick={() => openEditModal(employee)}
+                    className="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 text-xs font-bold transition-all flex items-center gap-1"
+                    title="Edit Employee"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                    Edit
+                  </button>
+
+                  {/* Delete Account button */}
+                  <button
+                    onClick={() => handleDeleteClick(employee)}
+                    className="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 text-xs font-bold transition-all flex items-center gap-1"
+                    title="Delete Employee Account permanently"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                    </svg>
+                    Delete Account
+                  </button>
+
+                  {/* Open dashboard */}
+                  <button
+                    onClick={() => navigate(`/admin/employees/${encodeURIComponent(getEmployeeId(employee))}`)}
+                    className="rounded-xl bg-slate-900 px-3 py-1.5 text-xs font-bold text-white transition-colors hover:bg-slate-700 shadow-sm"
+                  >
+                    Dashboard
+                  </button>
+
+                  {/* Expand / Collapse Toggle */}
+                  <button
+                    onClick={() => toggleExpand(getEmployeeId(employee))}
+                    className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+                    title={expandedIds[getEmployeeId(employee)] === false ? "Show details" : "Hide details"}
+                  >
+                    <svg className={`w-4 h-4 transition-transform ${expandedIds[getEmployeeId(employee)] === false ? '' : 'rotate-180'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </button>
                 </div>
-                <button
-                  onClick={() => navigate(`/admin/employees/${encodeURIComponent(getEmployeeId(employee))}`)}
-                  className="rounded-xl bg-slate-900 px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-slate-700"
-                >
-                  Open dashboard
-                </button>
               </div>
 
-              {/* ── Bottom: Detail Boxes + Actions ── */}
-              <div className="hidden px-5 py-4">
+              {/* ── Bottom: Detail Boxes + Full Actions ── */}
+              <div className={`${expandedIds[getEmployeeId(employee)] === false ? 'hidden' : 'block'} px-5 py-4 bg-slate-50/40 border-t border-slate-100`}>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
 
                   {/* Job Title */}
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl px-3 py-2.5">
+                  <div className="bg-white border border-slate-200 rounded-xl px-3 py-2.5 shadow-sm">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Job Title</p>
                     <p className="text-xs font-semibold text-slate-800 leading-tight truncate" title={employee.jobTitle || 'N/A'}>
                       {employee.jobTitle || 'N/A'}
@@ -643,16 +704,16 @@ export default function AdminEmployees() {
                   </div>
 
                   {/* Department */}
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl px-3 py-2.5">
+                  <div className="bg-white border border-slate-200 rounded-xl px-3 py-2.5 shadow-sm">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Department</p>
                     <p className="text-xs font-semibold text-slate-800 leading-tight truncate" title={employee.department || 'General'}>
                       {employee.department || 'General'}
                     </p>
                   </div>
 
-                  {/* Status */}
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl px-3 py-2.5">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Status</p>
+                  {/* Status Toggle */}
+                  <div className="bg-white border border-slate-200 rounded-xl px-3 py-2.5 shadow-sm">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Account Status</p>
                     <button
                       onClick={() => toggleStatus(employee)}
                       className={`inline-flex items-center gap-1.5 text-xs font-bold rounded-full px-2 py-0.5 transition-colors ${
@@ -671,7 +732,7 @@ export default function AdminEmployees() {
                   </div>
 
                   {/* Session Security */}
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl px-3 py-2.5">
+                  <div className="bg-white border border-slate-200 rounded-xl px-3 py-2.5 shadow-sm">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Session</p>
                     <div className="flex items-center gap-1.5">
                       <span className={`w-2 h-2 rounded-full flex-shrink-0 ${employee.currentSessionId ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`}></span>
@@ -687,8 +748,8 @@ export default function AdminEmployees() {
                   </div>
 
                   {/* Team Visibility */}
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl px-3 py-2.5">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Team</p>
+                  <div className="bg-white border border-slate-200 rounded-xl px-3 py-2.5 shadow-sm">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Team Visibility</p>
                     {employee.showOnTeam ? (
                       <span className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-600">
                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -703,8 +764,8 @@ export default function AdminEmployees() {
                   </div>
 
                   {/* CV */}
-                  <div className="bg-slate-50 border border-slate-100 rounded-xl px-3 py-2.5">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">CV</p>
+                  <div className="bg-white border border-slate-200 rounded-xl px-3 py-2.5 shadow-sm">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">CV / Resume</p>
                     {employee.cvFilePath ? (
                       <a
                         href={employee.cvFilePath}
@@ -724,16 +785,29 @@ export default function AdminEmployees() {
                 </div>
 
                 {/* Actions Bar */}
-                <div className="flex items-center flex-wrap gap-2 pt-3 border-t border-slate-100">
+                <div className="flex items-center flex-wrap gap-2 pt-3 border-t border-slate-200">
                   <button
                     onClick={() => openEditModal(employee)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold transition-colors shadow-sm"
-                    title="Edit Employee"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors shadow-sm"
+                    title="Edit Employee Profile"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                     </svg>
-                    Edit
+                    Edit Profile
+                  </button>
+
+                  <button
+                    onClick={() => toggleStatus(employee)}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border shadow-sm ${
+                      employee.status === 'active'
+                        ? 'bg-amber-50 hover:bg-amber-100 text-amber-700 border-amber-200'
+                        : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200'
+                    }`}
+                    title="Deactivate or Reactivate Account"
+                  >
+                    <span className={`w-2 h-2 rounded-full ${employee.status === 'active' ? 'bg-amber-500' : 'bg-emerald-500'}`} />
+                    {employee.status === 'active' ? 'Deactivate Account' : 'Activate Account'}
                   </button>
 
                   <button
@@ -761,7 +835,7 @@ export default function AdminEmployees() {
                   {isTerminatedUser(employee) ? (
                     <button
                       onClick={() => openReinstateModal(employee)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-colors shadow-sm"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors shadow-sm"
                       title="Reinstate Employee"
                     >
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -772,7 +846,7 @@ export default function AdminEmployees() {
                   ) : (
                     <button
                       onClick={() => openFireModal(employee)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-700 text-xs font-bold transition-colors border border-slate-200 hover:border-rose-200"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition-colors border border-rose-200"
                       title="Fire / Terminate Employee"
                     >
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -784,13 +858,13 @@ export default function AdminEmployees() {
 
                   <button
                     onClick={() => handleDeleteClick(employee)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-red-50 text-slate-500 hover:text-red-600 text-xs font-bold transition-colors border border-slate-200 hover:border-red-200 ml-auto"
-                    title="Delete Employee"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-colors shadow-sm ml-auto"
+                    title="Delete Employee Account Permanently"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                     </svg>
-                    Delete
+                    Delete Account
                   </button>
                 </div>
               </div>

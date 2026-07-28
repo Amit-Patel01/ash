@@ -317,29 +317,6 @@ const listUsers = async (req, res) => {
   }
 };
 
-const lookupUserByEmail = async (req, res) => {
-  const email = String(req.query.email || "").trim().toLowerCase();
-  if (!email) {
-    return res.status(400).json({
-      success: false,
-      message: "Email query is required.",
-      code: "email_required",
-    });
-  }
-
-  try {
-    const user = await getManagedUser(email);
-    return res.json({
-      success: true,
-      exists: Boolean(user),
-      email,
-      user: user || null,
-    });
-  } catch (error) {
-    return handleAdminError(res, error, "Unable to look up the user.");
-  }
-};
-
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
 
 const createUser = async (req, res) => {
