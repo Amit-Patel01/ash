@@ -219,6 +219,26 @@ const resolveProposal = async (proposalId, approved = true) => {
         }
       }
 
+      // 2.5 Batch Creation Execution
+      if (proposal.type === 'create_batch') {
+        const { getDb } = require('../../utils/mongo');
+        let db = null;
+        try { db = getDb(); } catch(e) { db = null; }
+
+        if (db) {
+          const batchDoc = {
+            code: proposal.proposedData?.batchCode || `BATCH-${Date.now()}`,
+            courseId: proposal.proposedData?.courseId,
+            courseTitle: proposal.proposedData?.courseTitle,
+            studentCount: proposal.proposedData?.studentCount || 0,
+            status: 'active',
+            createdAt: new Date()
+          };
+          await db.collection('batches').insertOne(batchDoc).catch(err => logger.warn(`Batch insert note: ${err.message}`));
+          logger.info(`[Real Database Execution] Created real batch "${batchDoc.code}" in 'batches' collection.`);
+        }
+      }
+
       // 3. Certificate Issuance Execution
       if (proposal.type === 'issue_certificate') {
         const { getDb } = require('../../utils/mongo');

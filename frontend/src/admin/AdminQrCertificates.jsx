@@ -949,7 +949,7 @@ export default function AdminQrCertificates() {
               <p className="text-[11px] font-black uppercase tracking-[0.28em] text-slate-600">Live Preview</p>
               <h3 className="mt-2 text-2xl font-black text-slate-900">Certificate image preview</h3>
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                Form me jo details bharoge, wahi yahan certificate image ke roop me dikhega. Save ke baad real `QR-` ID ke saath same preview download bhi ho jayega.
+                Whatever details you fill in the form will appear here as the certificate image. After saving, the same preview can also be downloaded with the real <code>QR-</code> ID.
               </p>
             </div>
             <div className="rounded-2xl border border-cyan-200 bg-cyan-50 px-3 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-cyan-700">

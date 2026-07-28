@@ -13,6 +13,47 @@ const getQueryId = (id) => {
   }
 };
 
+// Dynamic XML Sitemap for Google Search Console & SEO
+router.get("/sitemap.xml", async (req, res) => {
+  try {
+    const db = getDb();
+    const [projects, courses] = await Promise.all([
+      db.collection("projects").find({}, { projection: { slug: 1, updatedAt: 1 } }).toArray().catch(() => []),
+      db.collection("courses").find({}, { projection: { slug: 1, id: 1, updatedAt: 1 } }).toArray().catch(() => [])
+    ]);
+
+    const baseUrl = "https://amitsolutionhub.com";
+    const staticPages = ["", "/about", "/projects", "/courses", "/services", "/contact", "/custom-project", "/infrastructure", "/help", "/verify"];
+
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+
+    staticPages.forEach(page => {
+      xml += `  <url>\n    <loc>${baseUrl}${page}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+    });
+
+    projects.forEach(p => {
+      if (p.slug) {
+        xml += `  <url>\n    <loc>${baseUrl}/projects/${p.slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
+      }
+    });
+
+    courses.forEach(c => {
+      const slug = c.slug || c.id;
+      if (slug) {
+        xml += `  <url>\n    <loc>${baseUrl}/courses/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
+      }
+    });
+
+    xml += `</urlset>`;
+
+    res.header("Content-Type", "application/xml");
+    res.status(200).send(xml);
+  } catch (err) {
+    logger.error("Sitemap generation error: " + err.message);
+    res.status(500).send("Error generating sitemap");
+  }
+});
+
 // Dynamic CRUD route - GET list
 router.get("/:collection", optionalAuth, async (req, res) => {
   try {

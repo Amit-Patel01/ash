@@ -347,6 +347,33 @@ export default function CourseDetailPage() {
       <Helmet>
         <title>{course.title} — Amit Solution Hub</title>
         <meta name="description" content={course.description} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Course",
+            "name": course.title,
+            "description": course.description,
+            "provider": {
+              "@type": "Organization",
+              "name": "AmitSolutionHub",
+              "sameAs": "https://amitsolutionhub.com"
+            },
+            "hasCourseInstance": {
+              "@type": "CourseInstance",
+              "courseMode": learningType,
+              "instructor": {
+                "@type": "Person",
+                "name": instructorName
+              }
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": course.price || 0,
+              "priceCurrency": "INR",
+              "availability": "https://schema.org/InStock"
+            }
+          })}
+        </script>
       </Helmet>
 
       {/* Admin/Employee tabs */}

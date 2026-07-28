@@ -290,7 +290,7 @@
       "source_location": "L345",
       "_origin": "ast",
       "id": "backend_controllers_admincontroller_createuser",
-      "community": 17,
+      "community": 7,
       "norm_label": "createuser()"
     },
     {
@@ -330,7 +330,7 @@
       "source_location": "L455",
       "_origin": "ast",
       "id": "backend_controllers_admincontroller_mergeusers",
-      "community": 27,
+      "community": 7,
       "norm_label": "mergeusers()"
     },
     {
@@ -540,7 +540,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "backend_controllers_authcontroller_forgotpassword",
-      "community": 51,
+      "community": 7,
       "norm_label": "forgotpassword()"
     },
     {
@@ -550,7 +550,7 @@
       "source_location": "L86",
       "_origin": "ast",
       "id": "backend_controllers_authcontroller_verifypasswordresettoken",
-      "community": 51,
+      "community": 7,
       "norm_label": "verifypasswordresettoken()"
     },
     {
@@ -560,7 +560,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "backend_controllers_authcontroller_resetpassword",
-      "community": 51,
+      "community": 7,
       "norm_label": "resetpassword()"
     },
     {
@@ -5790,7 +5790,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "backend_services_userservice_createhttperror",
-      "community": 51,
+      "community": 7,
       "norm_label": "createhttperror()"
     },
     {
@@ -5940,7 +5940,7 @@
       "source_location": "L235",
       "_origin": "ast",
       "id": "backend_services_userservice_validatepassword",
-      "community": 51,
+      "community": 7,
       "norm_label": "validatepassword()"
     },
     {
@@ -5980,7 +5980,7 @@
       "source_location": "L371",
       "_origin": "ast",
       "id": "backend_services_userservice_buildfirestoreuserpayload",
-      "community": 27,
+      "community": 7,
       "norm_label": "buildfirestoreuserpayload()"
     },
     {
@@ -5990,7 +5990,7 @@
       "source_location": "L415",
       "_origin": "ast",
       "id": "backend_services_userservice_buildteampayload",
-      "community": 27,
+      "community": 7,
       "norm_label": "buildteampayload()"
     },
     {
@@ -6020,7 +6020,7 @@
       "source_location": "L462",
       "_origin": "ast",
       "id": "backend_services_userservice_syncusertofirebase",
-      "community": 27,
+      "community": 7,
       "norm_label": "syncusertofirebase()"
     },
     {
@@ -6290,7 +6290,7 @@
       "source_location": "L1593",
       "_origin": "ast",
       "id": "backend_services_userservice_mergemanagedusers",
-      "community": 27,
+      "community": 7,
       "norm_label": "mergemanagedusers()"
     },
     {
@@ -6360,7 +6360,7 @@
       "source_location": "L2319",
       "_origin": "ast",
       "id": "backend_services_userservice_verifyresettoken",
-      "community": 51,
+      "community": 7,
       "norm_label": "verifyresettoken()"
     },
     {
@@ -6370,7 +6370,7 @@
       "source_location": "L2384",
       "_origin": "ast",
       "id": "backend_services_userservice_completepasswordreset",
-      "community": 51,
+      "community": 7,
       "norm_label": "completepasswordreset()"
     },
     {
@@ -6380,7 +6380,7 @@
       "source_location": "L2492",
       "_origin": "ast",
       "id": "backend_services_userservice_getownprofile",
-      "community": 48,
+      "community": 7,
       "norm_label": "getownprofile()"
     },
     {
@@ -6420,7 +6420,7 @@
       "source_location": "L2560",
       "_origin": "ast",
       "id": "backend_services_userservice_listemployeecvrecords",
-      "community": 7,
+      "community": 27,
       "norm_label": "listemployeecvrecords()"
     },
     {
@@ -7540,7 +7540,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ab",
-      "community": 38,
+      "community": 24,
       "norm_label": "ab()"
     },
     {
@@ -11230,7 +11230,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_n",
-      "community": 54,
+      "community": 71,
       "norm_label": "n()"
     },
     {
@@ -11290,7 +11290,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_u",
-      "community": 15,
+      "community": 4,
       "norm_label": "u()"
     },
     {
@@ -11320,7 +11320,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pa",
-      "community": 24,
+      "community": 18,
       "norm_label": "pa()"
     },
     {
@@ -11370,7 +11370,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_c_j",
-      "community": 38,
+      "community": 18,
       "norm_label": ".j()"
     },
     {
@@ -11420,7 +11420,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_m",
-      "community": 24,
+      "community": 18,
       "norm_label": ".m()"
     },
     {
@@ -11430,7 +11430,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_k",
-      "community": 24,
+      "community": 18,
       "norm_label": ".k()"
     },
     {
@@ -11440,7 +11440,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_d",
-      "community": 38,
+      "community": 18,
       "norm_label": ".d()"
     },
     {
@@ -11450,7 +11450,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_v",
-      "community": 24,
+      "community": 18,
       "norm_label": ".v()"
     },
     {
@@ -11490,7 +11490,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_f",
-      "community": 24,
+      "community": 38,
       "norm_label": ".f()"
     },
     {
@@ -11520,7 +11520,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_catch",
-      "community": 44,
+      "community": 28,
       "norm_label": ".catch()"
     },
     {
@@ -11540,7 +11540,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_t",
-      "community": 38,
+      "community": 24,
       "norm_label": "t()"
     },
     {
@@ -11650,7 +11650,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_e_has",
-      "community": 54,
+      "community": 71,
       "norm_label": ".has()"
     },
     {
@@ -11760,7 +11760,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ua",
-      "community": 3,
+      "community": 38,
       "norm_label": "ua()"
     },
     {
@@ -11830,7 +11830,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_x",
-      "community": 3,
+      "community": 71,
       "norm_label": "x()"
     },
     {
@@ -11850,7 +11850,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ia",
-      "community": 38,
+      "community": 24,
       "norm_label": "ia()"
     },
     {
@@ -11890,7 +11890,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ta",
-      "community": 63,
+      "community": 3,
       "norm_label": "ta()"
     },
     {
@@ -11910,7 +11910,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_db",
-      "community": 38,
+      "community": 24,
       "norm_label": "db()"
     },
     {
@@ -11950,7 +11950,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jb",
-      "community": 24,
+      "community": 38,
       "norm_label": "jb()"
     },
     {
@@ -11970,7 +11970,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xb",
-      "community": 24,
+      "community": 38,
       "norm_label": "xb()"
     },
     {
@@ -11990,7 +11990,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ab",
-      "community": 38,
+      "community": 24,
       "norm_label": "ab()"
     },
     {
@@ -12000,7 +12000,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_kb",
-      "community": 24,
+      "community": 38,
       "norm_label": "kb()"
     },
     {
@@ -12020,7 +12020,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sb",
-      "community": 24,
+      "community": 38,
       "norm_label": "sb()"
     },
     {
@@ -12030,7 +12030,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_tb",
-      "community": 24,
+      "community": 38,
       "norm_label": "tb()"
     },
     {
@@ -12040,7 +12040,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vb",
-      "community": 24,
+      "community": 38,
       "norm_label": "vb()"
     },
     {
@@ -12050,7 +12050,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wb",
-      "community": 24,
+      "community": 38,
       "norm_label": "wb()"
     },
     {
@@ -12060,7 +12060,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ub",
-      "community": 24,
+      "community": 38,
       "norm_label": "ub()"
     },
     {
@@ -12080,7 +12080,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cc",
-      "community": 38,
+      "community": 24,
       "norm_label": "cc()"
     },
     {
@@ -12100,7 +12100,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_fc",
-      "community": 24,
+      "community": 38,
       "norm_label": "fc()"
     },
     {
@@ -12110,7 +12110,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hc",
-      "community": 24,
+      "community": 38,
       "norm_label": "hc()"
     },
     {
@@ -12130,7 +12130,7 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jc",
-      "community": 24,
+      "community": 38,
       "norm_label": "jc()"
     },
     {
@@ -12140,7 +12140,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_kc",
-      "community": 24,
+      "community": 38,
       "norm_label": "kc()"
     },
     {
@@ -12150,7 +12150,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lc",
-      "community": 24,
+      "community": 38,
       "norm_label": "lc()"
     },
     {
@@ -12160,7 +12160,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_mc",
-      "community": 24,
+      "community": 38,
       "norm_label": "mc()"
     },
     {
@@ -12220,7 +12220,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sc",
-      "community": 38,
+      "community": 24,
       "norm_label": "sc()"
     },
     {
@@ -12230,7 +12230,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_tc",
-      "community": 38,
+      "community": 24,
       "norm_label": "tc()"
     },
     {
@@ -12250,7 +12250,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vc",
-      "community": 38,
+      "community": 24,
       "norm_label": "vc()"
     },
     {
@@ -12260,7 +12260,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xc",
-      "community": 38,
+      "community": 24,
       "norm_label": "xc()"
     },
     {
@@ -12270,7 +12270,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yc",
-      "community": 38,
+      "community": 24,
       "norm_label": "yc()"
     },
     {
@@ -12280,7 +12280,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_g",
-      "community": 3,
+      "community": 38,
       "norm_label": "g()"
     },
     {
@@ -12290,7 +12290,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ac",
-      "community": 38,
+      "community": 18,
       "norm_label": "ac()"
     },
     {
@@ -12300,7 +12300,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_gc",
-      "community": 38,
+      "community": 24,
       "norm_label": "gc()"
     },
     {
@@ -12310,7 +12310,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ec",
-      "community": 38,
+      "community": 24,
       "norm_label": "ec()"
     },
     {
@@ -12350,7 +12350,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_zc",
-      "community": 38,
+      "community": 24,
       "norm_label": "zc()"
     },
     {
@@ -12390,7 +12390,7 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dd",
-      "community": 24,
+      "community": 38,
       "norm_label": "dd()"
     },
     {
@@ -12430,7 +12430,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_j",
-      "community": 38,
+      "community": 24,
       "norm_label": "j()"
     },
     {
@@ -12440,7 +12440,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_j_tojson",
-      "community": 38,
+      "community": 24,
       "norm_label": ".tojson()"
     },
     {
@@ -12460,7 +12460,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_j_clone",
-      "community": 38,
+      "community": 24,
       "norm_label": ".clone()"
     },
     {
@@ -12470,7 +12470,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_id",
-      "community": 38,
+      "community": 24,
       "norm_label": "id()"
     },
     {
@@ -12480,7 +12480,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_j_tostring",
-      "community": 38,
+      "community": 24,
       "norm_label": ".tostring()"
     },
     {
@@ -12610,7 +12610,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ud",
-      "community": 3,
+      "community": 38,
       "norm_label": "ud()"
     },
     {
@@ -12680,7 +12680,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_r",
-      "community": 15,
+      "community": 3,
       "norm_label": "r()"
     },
     {
@@ -12710,7 +12710,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_fe",
-      "community": 15,
+      "community": 3,
       "norm_label": "fe()"
     },
     {
@@ -12740,7 +12740,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_je",
-      "community": 15,
+      "community": 3,
       "norm_label": "je()"
     },
     {
@@ -12770,7 +12770,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pe",
-      "community": 15,
+      "community": 3,
       "norm_label": "pe()"
     },
     {
@@ -12780,7 +12780,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_qe",
-      "community": 15,
+      "community": 3,
       "norm_label": "qe()"
     },
     {
@@ -12830,7 +12830,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_de",
-      "community": 15,
+      "community": 4,
       "norm_label": "de()"
     },
     {
@@ -12880,7 +12880,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ze",
-      "community": 3,
+      "community": 38,
       "norm_label": "ze()"
     },
     {
@@ -12890,7 +12890,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ae",
-      "community": 15,
+      "community": 3,
       "norm_label": "ae()"
     },
     {
@@ -12930,7 +12930,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ie",
-      "community": 15,
+      "community": 3,
       "norm_label": "ie()"
     },
     {
@@ -12940,7 +12940,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_me",
-      "community": 15,
+      "community": 3,
       "norm_label": "me()"
     },
     {
@@ -13030,7 +13030,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cf",
-      "community": 54,
+      "community": 3,
       "norm_label": "cf()"
     },
     {
@@ -13040,7 +13040,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_df",
-      "community": 15,
+      "community": 3,
       "norm_label": "df()"
     },
     {
@@ -13140,7 +13140,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pf",
-      "community": 3,
+      "community": 71,
       "norm_label": "pf()"
     },
     {
@@ -13210,7 +13210,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bf",
-      "community": 15,
+      "community": 3,
       "norm_label": "bf()"
     },
     {
@@ -13220,7 +13220,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_w",
-      "community": 3,
+      "community": 44,
       "norm_label": "w()"
     },
     {
@@ -13230,7 +13230,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_w_dispose",
-      "community": 3,
+      "community": 44,
       "norm_label": ".dispose()"
     },
     {
@@ -13240,7 +13240,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_if",
-      "community": 4,
+      "community": 71,
       "norm_label": "if()"
     },
     {
@@ -13250,7 +13250,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_w_l",
-      "community": 3,
+      "community": 44,
       "norm_label": ".l()"
     },
     {
@@ -13340,7 +13340,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bg",
-      "community": 44,
+      "community": 28,
       "norm_label": "bg()"
     },
     {
@@ -13350,7 +13350,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bg_reset",
-      "community": 44,
+      "community": 28,
       "norm_label": ".reset()"
     },
     {
@@ -13360,7 +13360,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dg",
-      "community": 44,
+      "community": 28,
       "norm_label": "dg()"
     },
     {
@@ -13380,7 +13380,7 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_fg",
-      "community": 44,
+      "community": 28,
       "norm_label": "fg()"
     },
     {
@@ -13410,7 +13410,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lg",
-      "community": 3,
+      "community": 44,
       "norm_label": "lg()"
     },
     {
@@ -13420,7 +13420,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_x_then",
-      "community": 3,
+      "community": 71,
       "norm_label": ".then()"
     },
     {
@@ -13470,7 +13470,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hg",
-      "community": 44,
+      "community": 28,
       "norm_label": "hg()"
     },
     {
@@ -13550,7 +13550,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_mg",
-      "community": 3,
+      "community": 71,
       "norm_label": "mg()"
     },
     {
@@ -13570,7 +13570,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yg_cancel",
-      "community": 44,
+      "community": 28,
       "norm_label": ".cancel()"
     },
     {
@@ -13590,7 +13590,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yg_then",
-      "community": 44,
+      "community": 28,
       "norm_label": ".then()"
     },
     {
@@ -13600,7 +13600,7 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_kg",
-      "community": 44,
+      "community": 28,
       "norm_label": "kg()"
     },
     {
@@ -13610,7 +13610,7 @@
       "source_location": "L106",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cg",
-      "community": 44,
+      "community": 28,
       "norm_label": "cg()"
     },
     {
@@ -13630,7 +13630,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_mg_l",
-      "community": 3,
+      "community": 71,
       "norm_label": ".l()"
     },
     {
@@ -13700,7 +13700,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bh",
-      "community": 54,
+      "community": 3,
       "norm_label": "bh()"
     },
     {
@@ -13740,7 +13740,7 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ch",
-      "community": 15,
+      "community": 3,
       "norm_label": "ch()"
     },
     {
@@ -13810,7 +13810,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lh",
-      "community": 15,
+      "community": 3,
       "norm_label": "lh()"
     },
     {
@@ -13830,7 +13830,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ph",
-      "community": 54,
+      "community": 71,
       "norm_label": "ph()"
     },
     {
@@ -13840,7 +13840,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_qh",
-      "community": 54,
+      "community": 71,
       "norm_label": "qh()"
     },
     {
@@ -13850,7 +13850,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_rh",
-      "community": 54,
+      "community": 71,
       "norm_label": "rh()"
     },
     {
@@ -13860,7 +13860,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh",
-      "community": 54,
+      "community": 63,
       "norm_label": "sh()"
     },
     {
@@ -13870,7 +13870,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_th",
-      "community": 54,
+      "community": 71,
       "norm_label": "th()"
     },
     {
@@ -13890,7 +13890,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_removeall",
-      "community": 54,
+      "community": 71,
       "norm_label": ".removeall()"
     },
     {
@@ -14000,7 +14000,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_g",
-      "community": 54,
+      "community": 63,
       "norm_label": ".g()"
     },
     {
@@ -14010,7 +14010,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_notify",
-      "community": 54,
+      "community": 63,
       "norm_label": ".notify()"
     },
     {
@@ -14020,7 +14020,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_th_stoppropagation",
-      "community": 54,
+      "community": 71,
       "norm_label": ".stoppropagation()"
     },
     {
@@ -14030,7 +14030,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_th_preventdefault",
-      "community": 54,
+      "community": 71,
       "norm_label": ".preventdefault()"
     },
     {
@@ -14090,7 +14090,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bi",
-      "community": 63,
+      "community": 3,
       "norm_label": "bi()"
     },
     {
@@ -14170,7 +14170,7 @@
       "source_location": "L132",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_oi",
-      "community": 63,
+      "community": 44,
       "norm_label": "oi()"
     },
     {
@@ -14180,7 +14180,7 @@
       "source_location": "L132",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_li",
-      "community": 63,
+      "community": 44,
       "norm_label": "li()"
     },
     {
@@ -14200,7 +14200,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ji",
-      "community": 63,
+      "community": 44,
       "norm_label": "ji()"
     },
     {
@@ -14220,7 +14220,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_qi",
-      "community": 3,
+      "community": 38,
       "norm_label": "qi()"
     },
     {
@@ -14270,7 +14270,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wi",
-      "community": 4,
+      "community": 71,
       "norm_label": "wi()"
     },
     {
@@ -14280,7 +14280,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xi",
-      "community": 4,
+      "community": 71,
       "norm_label": "xi()"
     },
     {
@@ -14290,7 +14290,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yi",
-      "community": 3,
+      "community": 71,
       "norm_label": "yi()"
     },
     {
@@ -14360,7 +14360,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ei",
-      "community": 4,
+      "community": 71,
       "norm_label": "ei()"
     },
     {
@@ -14370,7 +14370,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_li_enqueue",
-      "community": 63,
+      "community": 44,
       "norm_label": ".enqueue()"
     },
     {
@@ -14380,7 +14380,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_li_l",
-      "community": 63,
+      "community": 44,
       "norm_label": ".l()"
     },
     {
@@ -14420,7 +14420,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_md",
-      "community": 38,
+      "community": 24,
       "norm_label": "md()"
     },
     {
@@ -14440,7 +14440,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pi",
-      "community": 3,
+      "community": 38,
       "norm_label": "pi()"
     },
     {
@@ -14450,7 +14450,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ri",
-      "community": 3,
+      "community": 38,
       "norm_label": "ri()"
     },
     {
@@ -14460,7 +14460,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ld",
-      "community": 3,
+      "community": 38,
       "norm_label": "ld()"
     },
     {
@@ -14470,7 +14470,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ui_aa",
-      "community": 24,
+      "community": 38,
       "norm_label": ".aa()"
     },
     {
@@ -14480,7 +14480,7 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wi_aa",
-      "community": 4,
+      "community": 71,
       "norm_label": ".aa()"
     },
     {
@@ -14510,7 +14510,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_kj",
-      "community": 24,
+      "community": 18,
       "norm_label": "kj()"
     },
     {
@@ -14520,7 +14520,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_kj_g",
-      "community": 24,
+      "community": 18,
       "norm_label": ".g()"
     },
     {
@@ -14540,7 +14540,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_nj",
-      "community": 24,
+      "community": 3,
       "norm_label": "nj()"
     },
     {
@@ -14550,7 +14550,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lj",
-      "community": 24,
+      "community": 18,
       "norm_label": "lj()"
     },
     {
@@ -14640,7 +14640,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wj",
-      "community": 24,
+      "community": 18,
       "norm_label": "wj()"
     },
     {
@@ -14650,7 +14650,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wj_g",
-      "community": 24,
+      "community": 18,
       "norm_label": ".g()"
     },
     {
@@ -14660,7 +14660,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xj",
-      "community": 24,
+      "community": 3,
       "norm_label": "xj()"
     },
     {
@@ -14670,7 +14670,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xj_g",
-      "community": 24,
+      "community": 3,
       "norm_label": ".g()"
     },
     {
@@ -14680,7 +14680,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yj",
-      "community": 24,
+      "community": 3,
       "norm_label": "yj()"
     },
     {
@@ -14690,7 +14690,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_zj",
-      "community": 24,
+      "community": 18,
       "norm_label": "zj()"
     },
     {
@@ -14700,7 +14700,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_zj_g",
-      "community": 24,
+      "community": 18,
       "norm_label": ".g()"
     },
     {
@@ -14710,7 +14710,7 @@
       "source_location": "L149",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_aj",
-      "community": 24,
+      "community": 18,
       "norm_label": "aj()"
     },
     {
@@ -14780,7 +14780,7 @@
       "source_location": "L156",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lj_aa",
-      "community": 24,
+      "community": 18,
       "norm_label": ".aa()"
     },
     {
@@ -14790,7 +14790,7 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lj_j",
-      "community": 24,
+      "community": 18,
       "norm_label": ".j()"
     },
     {
@@ -14800,7 +14800,7 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lj_g",
-      "community": 24,
+      "community": 18,
       "norm_label": ".g()"
     },
     {
@@ -14840,7 +14840,7 @@
       "source_location": "L174",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dk",
-      "community": 63,
+      "community": 3,
       "norm_label": "dk()"
     },
     {
@@ -15170,7 +15170,7 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ik_l",
-      "community": 63,
+      "community": 3,
       "norm_label": ".l()"
     },
     {
@@ -15200,7 +15200,7 @@
       "source_location": "L205",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_k",
-      "community": 44,
+      "community": 28,
       "norm_label": "$k()"
     },
     {
@@ -15220,7 +15220,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bl",
-      "community": 44,
+      "community": 28,
       "norm_label": "bl()"
     },
     {
@@ -15230,7 +15230,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cl",
-      "community": 3,
+      "community": 44,
       "norm_label": "cl()"
     },
     {
@@ -15260,7 +15260,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_el",
-      "community": 3,
+      "community": 38,
       "norm_label": "el()"
     },
     {
@@ -15270,7 +15270,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_fl",
-      "community": 3,
+      "community": 38,
       "norm_label": "fl()"
     },
     {
@@ -15320,7 +15320,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_il",
-      "community": 3,
+      "community": 38,
       "norm_label": "il()"
     },
     {
@@ -15350,7 +15350,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_il_aa",
-      "community": 3,
+      "community": 38,
       "norm_label": ".aa()"
     },
     {
@@ -15380,7 +15380,7 @@
       "source_location": "L208",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ml",
-      "community": 44,
+      "community": 28,
       "norm_label": "ml()"
     },
     {
@@ -15390,7 +15390,7 @@
       "source_location": "L208",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ol",
-      "community": 44,
+      "community": 28,
       "norm_label": "ol()"
     },
     {
@@ -15400,7 +15400,7 @@
       "source_location": "L208",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ql",
-      "community": 44,
+      "community": 28,
       "norm_label": "ql()"
     },
     {
@@ -15410,7 +15410,7 @@
       "source_location": "L209",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sl",
-      "community": 44,
+      "community": 28,
       "norm_label": "sl()"
     },
     {
@@ -15420,7 +15420,7 @@
       "source_location": "L209",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jg",
-      "community": 44,
+      "community": 28,
       "norm_label": "jg()"
     },
     {
@@ -15430,7 +15430,7 @@
       "source_location": "L210",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_nl",
-      "community": 44,
+      "community": 28,
       "norm_label": "nl()"
     },
     {
@@ -15440,7 +15440,7 @@
       "source_location": "L210",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pl",
-      "community": 44,
+      "community": 28,
       "norm_label": "pl()"
     },
     {
@@ -15460,7 +15460,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_tl",
-      "community": 44,
+      "community": 28,
       "norm_label": "tl()"
     },
     {
@@ -15480,7 +15480,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vl",
-      "community": 3,
+      "community": 38,
       "norm_label": "vl()"
     },
     {
@@ -15490,7 +15490,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wl",
-      "community": 3,
+      "community": 24,
       "norm_label": "wl()"
     },
     {
@@ -15500,7 +15500,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xl",
-      "community": 3,
+      "community": 38,
       "norm_label": "xl()"
     },
     {
@@ -15510,7 +15510,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yl",
-      "community": 3,
+      "community": 71,
       "norm_label": "yl()"
     },
     {
@@ -15520,7 +15520,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_zl",
-      "community": 3,
+      "community": 38,
       "norm_label": "zl()"
     },
     {
@@ -15530,7 +15530,7 @@
       "source_location": "L219",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cl_l",
-      "community": 3,
+      "community": 44,
       "norm_label": ".l()"
     },
     {
@@ -15560,7 +15560,7 @@
       "source_location": "L221",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cm",
-      "community": 4,
+      "community": 71,
       "norm_label": "cm()"
     },
     {
@@ -15580,7 +15580,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_im",
-      "community": 3,
+      "community": 24,
       "norm_label": "im()"
     },
     {
@@ -15590,7 +15590,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_km",
-      "community": 44,
+      "community": 28,
       "norm_label": "km()"
     },
     {
@@ -15640,7 +15640,7 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_nm",
-      "community": 44,
+      "community": 28,
       "norm_label": "nm()"
     },
     {
@@ -15650,7 +15650,7 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_om",
-      "community": 44,
+      "community": 28,
       "norm_label": "om()"
     },
     {
@@ -15660,7 +15660,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jm",
-      "community": 3,
+      "community": 24,
       "norm_label": "jm()"
     },
     {
@@ -15690,7 +15690,7 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_em",
-      "community": 4,
+      "community": 71,
       "norm_label": "em()"
     },
     {
@@ -38336,7 +38336,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/routes/ai.js",
-      "source_location": "L362",
+      "source_location": "L237",
       "weight": 1.0,
       "source": "backend_routes_ai",
       "target": "backend_utils_mongo",
@@ -38347,7 +38347,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/routes/ai.js",
-      "source_location": "L362",
+      "source_location": "L237",
       "weight": 1.0,
       "source": "backend_routes_ai",
       "target": "backend_utils_mongo_getdb",
@@ -95920,7 +95920,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/admin/AdminAIDepartments.jsx",
-      "source_location": "L630",
+      "source_location": "L603",
       "weight": 1.0,
       "source": "frontend_src_admin_adminaidepartments_adminaidepartments",
       "target": "frontend_src_admin_adminaidepartments_getdepartmenticon",
@@ -95931,7 +95931,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/admin/AdminAIDepartments.jsx",
-      "source_location": "L616",
+      "source_location": "L589",
       "weight": 1.0,
       "source": "frontend_src_admin_adminaidepartments_adminaidepartments",
       "target": "frontend_src_admin_adminaidepartments_getaccent",
@@ -95942,7 +95942,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/admin/AdminAIDepartments.jsx",
-      "source_location": "L625",
+      "source_location": "L598",
       "weight": 1.0,
       "source": "frontend_src_admin_adminaidepartments_adminaidepartments",
       "target": "frontend_src_admin_adminaidepartments_callsign",
@@ -95954,7 +95954,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "frontend/src/admin/AdminAIDepartments.jsx",
-      "source_location": "L175",
+      "source_location": "L170",
       "weight": 1.0,
       "source": "frontend_src_admin_adminaidepartments_adminaidepartments",
       "target": "frontend_src_config_api_readapijson"

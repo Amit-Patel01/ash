@@ -208,7 +208,7 @@ export default function SellProjectRequestRefined() {
           </form>
         </EmployeeSurface>
 
-        <EmployeeSurface title="Listing Preview" description="Admin ko exactly kya dikhega uska quick summary.">
+        <EmployeeSurface title="Listing Preview" description="A quick summary of exactly what the Admin will see.">
           <div className="space-y-4 rounded-[24px] border border-slate-300 bg-white/[0.03] p-5">
             <div className="flex flex-wrap gap-2">
               <EmployeeBadge tone="info">{form.category}</EmployeeBadge>
@@ -218,7 +218,7 @@ export default function SellProjectRequestRefined() {
             </div>
             <h3 className="text-xl font-black text-slate-900">{form.projectTitle || 'Untitled project'}</h3>
             <p className="text-sm leading-6 text-slate-400">
-              {form.description || 'Short project summary yahan preview hogi.'}
+              {form.description || 'Short project summary will appear here as a preview.'}
             </p>
             <div className="rounded-2xl border border-cyan-400/15 bg-cyan-400/[0.07] px-4 py-4">
               <p className="text-[11px] font-black uppercase tracking-[0.24em] text-cyan-300">Proposed Price</p>

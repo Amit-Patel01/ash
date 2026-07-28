@@ -1,9 +1,9 @@
 /**
  * Migration: role "customer" → "user" in MongoDB Atlas
  * 
- * - Sirf "customer" role wale users update honge
- * - "employee", "admin", "mentor", "student" unchanged rahenge
- * - Dono collections update honge: users + accountRequests (agar koi ho)
+ * - Only users with the "customer" role will be updated
+ * - "employee", "admin", "mentor", "student" will remain unchanged
+ * - Both collections will be updated: users + accountRequests (if any exist)
  * 
  * Run: node scripts/migrate-role-customer-to-user.js
  */
@@ -27,12 +27,12 @@ async function migrate(uri, label) {
     // ── 1. users collection ──────────────────────────────────────────────────
     const usersCol = db.collection('users')
 
-    // Pehle count karo kitne update honge
+    // First, count how many documents will be updated
     const toUpdateCount = await usersCol.countDocuments({ role: 'customer' })
     console.log(`\n📊 [users] Found ${toUpdateCount} documents with role "customer"`)
 
     if (toUpdateCount > 0) {
-      // Preview: kaun kaun update hoga
+      // Preview: which users will be updated
       const preview = await usersCol
         .find({ role: 'customer' }, { projection: { _id: 1, email: 1, displayName: 1, role: 1 } })
         .limit(20)
@@ -43,7 +43,7 @@ async function migrate(uri, label) {
         console.log(`   ${i + 1}. ${u.email} | ${u.displayName || 'N/A'} | role: ${u.role}`)
       })
 
-      // Update karo
+      // Perform the update
       const result = await usersCol.updateMany(
         { role: 'customer' },
         {
@@ -59,7 +59,7 @@ async function migrate(uri, label) {
       console.log('   ℹ️  No "customer" role users found — nothing to update.')
     }
 
-    // ── 2. accountRequests collection (agar koi pending requests hain) ────────
+    // ── 2. accountRequests collection (if any pending requests exist) ────────
     const arCol = db.collection('accountRequests')
     const arCount = await arCol.countDocuments({ role: 'customer' })
 
@@ -112,7 +112,7 @@ async function main() {
     console.warn('⚠️  MONGODB_URI_ATLAS not set in .env — skipping Atlas.')
   }
 
-  // Local (agar local DB bhi use ho raha ho)
+  // Local (if local DB is also being used)
   const localUri = process.env.MONGODB_URI
   if (localUri) {
     await migrate(localUri, 'MongoDB LOCAL')

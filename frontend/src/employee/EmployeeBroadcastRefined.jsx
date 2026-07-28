@@ -430,7 +430,7 @@ export default function EmployeeBroadcastRefined() {
                 </svg>
               }
               title="No students selected"
-              description="Course choose karo ya plan filter reset karo. Audience yahan live update hoti rahegi."
+              description="Select a course or reset the plan filter. The audience list will update live here."
               className="py-10"
             />
           ) : (

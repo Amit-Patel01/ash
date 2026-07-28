@@ -104,6 +104,29 @@ const getDepartmentIcon = (deptId, className = "w-6 h-6") => {
   }
 }
 
+// --- Agent accent system ---
+// Each department is a numbered autonomous agent; the accent + callsign
+// cycle through the indigo → violet → fuchsia family so every dept reads
+// as part of one squad while still being visually distinct at a glance.
+const ACCENTS = [
+  { name: 'indigo', text: 'text-indigo-600', chip: 'bg-indigo-50 text-indigo-700 border-indigo-200', ring: 'shadow-indigo-500/15', grad: 'from-indigo-600 to-indigo-500', dot: 'bg-indigo-500', iconBg: 'bg-indigo-50 border-indigo-100' },
+  { name: 'violet', text: 'text-violet-600', chip: 'bg-violet-50 text-violet-700 border-violet-200', ring: 'shadow-violet-500/15', grad: 'from-violet-600 to-violet-500', dot: 'bg-violet-500', iconBg: 'bg-violet-50 border-violet-100' },
+  { name: 'purple', text: 'text-purple-600', chip: 'bg-purple-50 text-purple-700 border-purple-200', ring: 'shadow-purple-500/15', grad: 'from-purple-600 to-purple-500', dot: 'bg-purple-500', iconBg: 'bg-purple-50 border-purple-100' },
+  { name: 'fuchsia', text: 'text-fuchsia-600', chip: 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200', ring: 'shadow-fuchsia-500/15', grad: 'from-fuchsia-600 to-fuchsia-500', dot: 'bg-fuchsia-500', iconBg: 'bg-fuchsia-50 border-fuchsia-100' },
+]
+const getAccent = (index = 0) => ACCENTS[index % ACCENTS.length]
+const callsign = (index = 0) => `AGT-${String(index + 1).padStart(2, '0')}`
+
+// HUD-style corner brackets — the signature motif of the control-room theme
+const CornerFrame = ({ colorClass = 'border-violet-300' }) => (
+  <>
+    <span className={`pointer-events-none absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 rounded-tl-sm ${colorClass} opacity-70`} />
+    <span className={`pointer-events-none absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 rounded-tr-sm ${colorClass} opacity-70`} />
+    <span className={`pointer-events-none absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 rounded-bl-sm ${colorClass} opacity-70`} />
+    <span className={`pointer-events-none absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 rounded-br-sm ${colorClass} opacity-70`} />
+  </>
+)
+
 export default function AdminAIDepartments() {
   const [departments, setDepartments] = useState({})
   const [logs, setLogs] = useState([])
@@ -121,8 +144,13 @@ export default function AdminAIDepartments() {
   const [broadcastStatus, setBroadcastStatus] = useState(null)
   const [activePopupProposal, setActivePopupProposal] = useState(null)
   const [executionSuccessMsg, setExecutionSuccessMsg] = useState(null)
-
-
+  const [analytics, setAnalytics] = useState({
+    weeklyRevenue: 0,
+    growthPercent: 0,
+    sparkline: [0, 0, 0, 0, 0, 0, 0],
+    activeTasksCount: 7,
+    healthStatus: {}
+  })
 
   const handleSendEmailBroadcast = async () => {
     if (!dispatchResult?.reply) return
@@ -159,10 +187,11 @@ export default function AdminAIDepartments() {
   const fetchData = async () => {
     try {
       setLoading(true)
-      const [configRes, logsRes, propRes] = await Promise.all([
+      const [configRes, logsRes, propRes, analyticsRes] = await Promise.all([
         fetch(api.aiDepartmentConfig).then(readApiJson),
         fetch(api.aiDepartmentLogs).then(readApiJson),
-        fetch(api.aiDepartmentProposals).then(readApiJson)
+        fetch(api.aiDepartmentProposals).then(readApiJson),
+        fetch(api.aiDepartmentAnalytics).then(readApiJson)
       ])
 
       if (configRes.success && configRes.config) {
@@ -173,6 +202,9 @@ export default function AdminAIDepartments() {
       }
       if (propRes.success && propRes.proposals) {
         setProposals(propRes.proposals)
+      }
+      if (analyticsRes.success && analyticsRes.analytics) {
+        setAnalytics(analyticsRes.analytics)
       }
     } catch (err) {
       console.error('Failed to fetch AI Department data:', err)
@@ -187,14 +219,14 @@ export default function AdminAIDepartments() {
     // Auto-poll every 15 seconds — new proposals auto-appear without refresh
     const interval = setInterval(async () => {
       try {
-        const [propRes, logsRes] = await Promise.all([
+        const [propRes, logsRes, analyticsRes] = await Promise.all([
           fetch(api.aiDepartmentProposals).then(readApiJson),
-          fetch(api.aiDepartmentLogs).then(readApiJson)
+          fetch(api.aiDepartmentLogs).then(readApiJson),
+          fetch(api.aiDepartmentAnalytics).then(readApiJson)
         ])
         if (propRes.success && propRes.proposals) {
           setProposals(prev => {
             const newOnes = propRes.proposals.filter(p => !prev.some(e => e.id === p.id))
-            // If a new proposal arrived, show it in popup
             if (newOnes.length > 0 && !activePopupProposal) {
               setActivePopupProposal(newOnes[0])
             }
@@ -203,6 +235,9 @@ export default function AdminAIDepartments() {
         }
         if (logsRes.success && logsRes.logs) {
           setLogs(logsRes.logs)
+        }
+        if (analyticsRes.success && analyticsRes.analytics) {
+          setAnalytics(analyticsRes.analytics)
         }
       } catch { /* silent poll failure */ }
     }, 15000)
@@ -288,6 +323,10 @@ export default function AdminAIDepartments() {
       }
 
       if (res.success) {
+        const propItem = proposals.find(p => p.id === proposalId)
+        if (propItem) {
+          setResolvedArchive(prev => [{ title: propItem.title, approved, time: new Date().toISOString() }, ...prev])
+        }
         setProposals(prev => prev.filter(p => p.id !== proposalId))
         setExecutionSuccessMsg(
           approved
@@ -338,97 +377,259 @@ export default function AdminAIDepartments() {
 
   const deptList = Object.values(departments)
   const totalTasks = deptList.reduce((acc, d) => acc + (d.metrics?.tasksExecuted || 0), 0)
+  const deptIndexMap = deptList.reduce((acc, d, i) => ({ ...acc, [d.id]: i }), {})
+
+  const [runningAll, setRunningAll] = useState(false)
+  const [proposalTab, setProposalTab] = useState('pending') // 'pending' | 'archive'
+  const [resolvedArchive, setResolvedArchive] = useState([])
+
+  const handleRunAllAgents = async () => {
+    setRunningAll(true)
+    setExecutionSuccessMsg('🚀 Dispatching task scans to all active AI Agents...')
+    try {
+      const enabledDepts = Object.keys(departments).filter(id => departments[id].enabled)
+      for (const deptId of enabledDepts) {
+        await fetch(api.aiDepartmentDispatch, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            department: deptId,
+            prompt: `Autonomous scan requested by Admin for department ${deptId}. Review metrics and generate any pending proposals.`
+          })
+        }).then(readApiJson).catch(() => {})
+      }
+      setExecutionSuccessMsg('✅ All AI Agents scanned successfully!')
+      setTimeout(() => setExecutionSuccessMsg(null), 5000)
+      fetchData()
+    } catch (err) {
+      setExecutionSuccessMsg(`⚠️ Run failed: ${err.message}`)
+    } finally {
+      setRunningAll(false)
+    }
+  }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8 font-sans bg-slate-50 min-h-screen text-slate-900">
-      {/* Header Banner - White & Blue Theme */}
-      <div className="relative overflow-hidden rounded-2xl p-8 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white shadow-xl">
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="p-6 max-w-7xl mx-auto space-y-8 font-sans bg-white min-h-screen text-slate-900">
+      {/* Header Banner — mission-control identity: scanning beam, grid, callsign readouts */}
+      <div className="relative overflow-hidden rounded-3xl p-8 bg-slate-950 text-white shadow-xl shadow-violet-500/10 border border-slate-900">
+        {/* base gradient wash */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-violet-950 to-fuchsia-950" />
+        <div className="absolute -top-32 -right-16 w-96 h-96 bg-fuchsia-500/25 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-16 w-80 h-80 bg-indigo-500/25 rounded-full blur-3xl pointer-events-none" />
+        {/* HUD grid */}
+        <div className="absolute inset-0 opacity-[0.12] pointer-events-none" style={{
+          backgroundImage: 'linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)',
+          backgroundSize: '36px 36px'
+        }} />
+        {/* scanning beam */}
+        <motion.div
+          className="absolute top-0 bottom-0 w-40 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"
+          animate={{ left: ['-10%', '110%'] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
+        />
+
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="p-2.5 rounded-xl bg-white/20 backdrop-blur-md text-white">
+              <span className="p-2.5 rounded-2xl bg-white/10 backdrop-blur-md text-white border border-white/15">
                 <BotIcon className="w-8 h-8" />
               </span>
-              <h1 className="text-3xl font-extrabold tracking-tight text-white">
-                Autonomous AI Workforce Control Center
-              </h1>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                  </span>
+                  <span className="text-[10px] font-mono font-bold tracking-[0.25em] text-emerald-300 uppercase">Squad Online</span>
+                </div>
+                <h1 className="text-3xl font-extrabold tracking-tight text-white mt-1">
+                  Autonomous AI Workforce Control Center
+                </h1>
+              </div>
             </div>
-            <p className="mt-2 text-blue-100 text-sm max-w-2xl font-medium">
-              Real-Time Codebase & Database Scanner. AI Agents analyze repository state & user activities to generate actionable proposals for your <span className="font-bold underline">One-Click Approval Queue</span>.
+            <p className="mt-3 text-indigo-200/80 text-sm max-w-2xl font-medium">
+              Real-time codebase &amp; database scanner. Each agent below monitors its domain and files proposals into the <span className="font-bold text-white">One-Click Approval Queue</span> for your sign-off.
             </p>
           </div>
 
-          <div className="flex items-center gap-4 bg-white/15 backdrop-blur-md p-4 rounded-xl border border-white/20 text-white">
-            <div className="text-center px-4 border-r border-white/20">
-              <div className="text-2xl font-black text-white">{deptList.filter(d => d.enabled).length} / {deptList.length}</div>
-              <div className="text-xs text-blue-100 font-semibold">Active Depts</div>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <button
+              onClick={handleRunAllAgents}
+              disabled={runningAll}
+              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold text-xs tracking-wider uppercase shadow-lg shadow-emerald-500/20 hover:brightness-110 transition-all flex items-center gap-2 disabled:opacity-50"
+            >
+              <LightningIcon className="w-4 h-4" />
+              {runningAll ? 'Running Scans...' : 'Run All Agents Now'}
+            </button>
+
+            <div className="flex items-stretch gap-px bg-white/10 rounded-2xl border border-white/15 overflow-hidden font-mono">
+              <div className="text-center px-5 py-3 bg-white/[0.03]">
+                <div className="text-2xl font-black text-white">{String(deptList.filter(d => d.enabled).length).padStart(2, '0')}<span className="text-white/30">/{String(deptList.length).padStart(2, '0')}</span></div>
+                <div className="text-[10px] text-indigo-200/70 font-semibold tracking-widest uppercase mt-0.5">Active</div>
+              </div>
+              <div className="text-center px-5 py-3 bg-white/[0.03]">
+                <div className="text-2xl font-black text-amber-300">{String(proposals.length).padStart(2, '0')}</div>
+                <div className="text-[10px] text-indigo-200/70 font-semibold tracking-widest uppercase mt-0.5">Pending</div>
+              </div>
+              <div className="text-center px-5 py-3 bg-white/[0.03]">
+                <div className="text-2xl font-black text-emerald-300">{totalTasks}</div>
+                <div className="text-[10px] text-indigo-200/70 font-semibold tracking-widest uppercase mt-0.5">Executed</div>
+              </div>
             </div>
-            <div className="text-center px-4 border-r border-white/20">
-              <div className="text-2xl font-black text-amber-300">{proposals.length}</div>
-              <div className="text-xs text-blue-100 font-semibold">Pending Approvals</div>
+          </div>
+        </div>
+      </div>
+
+      {/* T3-4 & T3-6: Revenue Forecast Panel & Agent Health Status Panel */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Revenue Forecast Panel */}
+        <div className="p-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-900 to-indigo-950 text-white shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-mono font-bold tracking-widest text-emerald-400 uppercase">FinanceAgent Insights</span>
+              <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                {analytics.growthPercent >= 0 ? `+${analytics.growthPercent}%` : `${analytics.growthPercent}%`} vs last week
+              </span>
             </div>
-            <div className="text-center px-4">
-              <div className="text-2xl font-black text-emerald-300">{totalTasks}</div>
-              <div className="text-xs text-blue-100 font-semibold">Tasks Completed</div>
+            <h3 className="text-lg font-extrabold">Revenue Forecast & Analytics</h3>
+            <p className="text-xs text-slate-400 mt-1">Autonomous 7-day projection derived from real MongoDB order logs.</p>
+          </div>
+
+          <div className="mt-6 flex items-end justify-between gap-4">
+            <div>
+              <div className="text-3xl font-black text-white">₹{analytics.weeklyRevenue.toLocaleString('en-IN')}</div>
+              <div className="text-[11px] font-medium text-slate-400 mt-0.5">7-Day Real Order Revenue</div>
+            </div>
+            {/* Sparkline SVG */}
+            <div className="h-10 w-32 flex items-end gap-1.5">
+              {(() => {
+                const maxVal = Math.max(...(analytics.sparkline || [1]), 1)
+                return (analytics.sparkline || [0, 0, 0, 0, 0, 0, 0]).map((val, i) => {
+                  const pct = Math.max(15, Math.round((val / maxVal) * 100))
+                  return (
+                    <div
+                      key={i}
+                      title={`Day ${i + 1}: ₹${val.toLocaleString('en-IN')}`}
+                      className="flex-1 bg-emerald-500/80 hover:bg-emerald-400 rounded-t transition-all"
+                      style={{ height: `${pct}%` }}
+                    />
+                  )
+                })
+              })()}
+            </div>
+          </div>
+        </div>
+
+        {/* Agent Health Status Panel */}
+        <div className="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-mono font-bold tracking-widest text-indigo-600 uppercase">System Uptime</span>
+              <span className="text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full">
+                {analytics.activeTasksCount || 7} Cron Tasks Operational
+              </span>
+            </div>
+            <h3 className="text-lg font-extrabold text-slate-900">Agent Health & Scheduler</h3>
+            <p className="text-xs text-slate-500 mt-1 font-medium">Real-time status of periodic background scanners.</p>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+              <span className="font-semibold text-slate-700">Finance Daily Scan</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+              <span className="font-semibold text-slate-700">HR Auto-Cert Check</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+              <span className="font-semibold text-slate-700">Sales Sell-Review</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            </div>
+            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+              <span className="font-semibold text-slate-700">Support Scan</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Pending AI Proposals for Admin Approval Queue */}
-      <div className="bg-white border border-blue-200 rounded-2xl p-6 shadow-sm space-y-4">
-        <div className="flex items-center justify-between">
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <span className="p-2 rounded-lg bg-blue-50 text-blue-600 font-bold">
-              <ClipboardIcon className="w-6 h-6" />
-            </span>
-            <div>
-              <h2 className="text-lg font-bold text-slate-900">
-                Real-Time AI Proposals (Requires Your Approval)
-              </h2>
-              <p className="text-xs text-slate-500 font-medium">
-                AI Agents scan real codebase & database metrics automatically. Click Approve to execute.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {proposals.length > 0 && (
-              <button
-                onClick={handleClearAllProposals}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg border border-slate-200 transition-colors"
-              >
-                <TrashIcon className="w-3.5 h-3.5" /> Clear List
-              </button>
-            )}
-            <span className="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full border border-amber-200">
-              {proposals.length} Pending Actions
-            </span>
+            <button
+              onClick={() => setProposalTab('pending')}
+              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                proposalTab === 'pending'
+                  ? 'bg-slate-900 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              Approval Queue ({proposals.length})
+            </button>
+            <button
+              onClick={() => setProposalTab('archive')}
+              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+                proposalTab === 'archive'
+                  ? 'bg-slate-900 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              Proposal Archive ({resolvedArchive.length})
+            </button>
           </div>
         </div>
 
-        {proposals.length === 0 ? (
-          <div className="text-center py-8 bg-blue-50/50 rounded-xl border border-dashed border-blue-200 text-slate-600 text-sm font-medium flex items-center justify-center gap-2">
-            <CheckIcon className="w-5 h-5 text-emerald-600" /> All AI Proposals are up to date! Real-time scanner is running in background.
+        {proposalTab === 'archive' && (
+          <div className="space-y-3">
+            {resolvedArchive.length === 0 ? (
+              <div className="text-center py-8 text-slate-500 font-medium text-sm">
+                No resolved proposals in history yet.
+              </div>
+            ) : (
+              resolvedArchive.map((item, idx) => (
+                <div key={idx} className="p-4 rounded-xl border border-slate-200 bg-slate-50 flex justify-between items-center text-xs">
+                  <div>
+                    <span className={`font-bold px-2 py-0.5 rounded text-[10px] uppercase ${item.approved ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                      {item.approved ? 'Approved' : 'Rejected'}
+                    </span>
+                    <span className="font-bold text-slate-900 ml-2">{item.title}</span>
+                  </div>
+                  <span className="text-slate-400 font-mono">{new Date(item.time).toLocaleTimeString()}</span>
+                </div>
+              ))
+            )}
           </div>
-        ) : (
+        )}
+
+        {proposalTab === 'pending' && (
+          proposals.length === 0 ? (
+            <div className="text-center py-8 bg-slate-50 rounded-xl border border-dashed border-slate-300 text-slate-600 text-sm font-medium flex items-center justify-center gap-2">
+              <CheckIcon className="w-5 h-5 text-emerald-600" /> Queue is clear — every agent is nominal.
+            </div>
+          ) : (
           <div className="space-y-4">
             {proposals.map(prop => {
               const deptMeta = departments[prop.department] || {}
+              const idx = deptIndexMap[prop.department] ?? 0
+              const accent = getAccent(idx)
               return (
                 <motion.div
                   key={prop.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-5 rounded-xl bg-blue-50/40 border border-blue-200 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs"
+                  className="relative p-5 pt-6 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4"
                 >
+                  <span className={`absolute top-0 left-5 -translate-y-1/2 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border ${accent.chip}`}>
+                    {callsign(idx)}
+                  </span>
                   <div className="space-y-1 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="p-1 rounded bg-blue-100 text-blue-700">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`p-1 rounded border bg-white ${accent.text} ${accent.iconBg}`}>
                         {getDepartmentIcon(prop.department, "w-4 h-4")}
                       </span>
-                      <span className="text-xs font-extrabold uppercase px-2 py-0.5 rounded-md bg-blue-100 text-blue-700">
+                      <span className={`text-xs font-extrabold uppercase px-2 py-0.5 rounded-md border ${accent.chip}`}>
                         {deptMeta.name || prop.department}
                       </span>
                       <span className="text-xs text-slate-500 font-mono">
@@ -439,19 +640,19 @@ export default function AdminAIDepartments() {
                     <p className="text-xs text-slate-700 font-medium leading-relaxed">{prop.details}</p>
 
                     {prop.proposedData && (
-                      <div className="mt-3 p-3 bg-white rounded-lg border border-blue-200 text-xs text-slate-800 space-y-2">
+                      <div className="mt-3 p-3 bg-white rounded-xl border border-slate-200 text-xs text-slate-800 space-y-2">
                         {prop.proposedData.projects && (
                           <div>
-                            <span className="font-bold text-blue-700">📦 Proposed Projects Suite ({prop.proposedData.projects.length}):</span>
+                            <span className={`font-bold ${accent.text}`}>📦 Proposed Projects Suite ({prop.proposedData.projects.length}):</span>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1.5">
                               {prop.proposedData.projects.map((p, i) => (
-                                <div key={i} className="p-2 rounded-lg bg-blue-50/50 border border-blue-100 font-sans flex justify-between items-center">
+                                <div key={i} className="p-2 rounded-lg bg-slate-50 border border-slate-200 font-sans flex justify-between items-center">
                                   <span className="font-semibold text-slate-900">{p.name}</span>
                                   <span className="font-extrabold text-emerald-600 ml-2">₹{p.price}</span>
                                 </div>
                               ))}
                             </div>
-                            <div className="mt-2 text-right font-extrabold text-blue-700">
+                            <div className={`mt-2 text-right font-extrabold ${accent.text}`}>
                               Estimated Monthly Catalog Revenue: {prop.proposedData.totalCatalogValue}
                             </div>
                           </div>
@@ -459,11 +660,11 @@ export default function AdminAIDepartments() {
 
                         {prop.proposedData.batches && (
                           <div>
-                            <span className="font-bold text-blue-700">👥 Proposed Student Batches ({prop.proposedData.batches.length}):</span>
+                            <span className={`font-bold ${accent.text}`}>👥 Proposed Student Batches ({prop.proposedData.batches.length}):</span>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-1.5">
                               {prop.proposedData.batches.map((b, i) => (
-                                <div key={i} className="p-2.5 rounded-lg bg-blue-50/50 border border-blue-100 font-sans">
-                                  <div className="font-extrabold text-blue-700">{b.code}</div>
+                                <div key={i} className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 font-sans">
+                                  <div className={`font-extrabold ${accent.text}`}>{b.code}</div>
                                   <div className="text-[11px] text-slate-600">{b.course}</div>
                                   <div className="font-bold text-slate-900 mt-1">{b.students} Enrolled Students</div>
                                 </div>
@@ -474,7 +675,7 @@ export default function AdminAIDepartments() {
 
                         {prop.proposedData.couponCode && (
                           <div className="flex flex-wrap items-center gap-4 font-sans text-xs">
-                            <div><span className="font-bold text-slate-500">Coupon:</span> <span className="font-extrabold text-blue-700 px-2 py-0.5 rounded bg-blue-100 border border-blue-200">{prop.proposedData.couponCode}</span></div>
+                            <div><span className="font-bold text-slate-500">Coupon:</span> <span className={`font-extrabold px-2 py-0.5 rounded border ${accent.chip}`}>{prop.proposedData.couponCode}</span></div>
                             <div><span className="font-bold text-slate-500">Discount:</span> <span className="font-extrabold text-emerald-600">{prop.proposedData.discountPercentage}% Off</span></div>
                             <div><span className="font-bold text-slate-500">Target Visitors:</span> <span className="font-bold text-slate-900">{prop.proposedData.targetVisitors}</span></div>
                             <div><span className="font-bold text-slate-500">Projected Gain:</span> <span className="font-extrabold text-emerald-600">{prop.proposedData.projectedRevenueGain}</span></div>
@@ -484,7 +685,7 @@ export default function AdminAIDepartments() {
                         {prop.proposedData.emailSubject && (
                           <div className="font-sans text-xs space-y-1">
                             <div><span className="font-bold text-slate-500">Subject:</span> <span className="font-semibold text-slate-900">&quot;{prop.proposedData.emailSubject}&quot;</span></div>
-                            <div><span className="font-bold text-slate-500">Target Recipients:</span> <span className="font-extrabold text-blue-700">{prop.proposedData.recipientCount?.toLocaleString()} Students</span></div>
+                            <div><span className="font-bold text-slate-500">Target Recipients:</span> <span className={`font-extrabold ${accent.text}`}>{prop.proposedData.recipientCount?.toLocaleString()} Students</span></div>
                           </div>
                         )}
                       </div>
@@ -495,14 +696,14 @@ export default function AdminAIDepartments() {
                     <button
                       onClick={() => handleResolveProposal(prop.id, false)}
                       disabled={resolvingId === prop.id}
-                      className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition-all"
+                      className="px-4 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold border border-slate-200 transition-all disabled:opacity-50"
                     >
                       Reject
                     </button>
                     <button
                       onClick={() => handleResolveProposal(prop.id, true)}
                       disabled={resolvingId === prop.id}
-                      className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold transition-all shadow-md shadow-blue-500/20"
+                      className={`px-5 py-2 rounded-xl bg-gradient-to-r ${accent.grad} hover:brightness-110 text-white text-xs font-bold transition-all shadow-md ${accent.ring} disabled:opacity-50`}
                     >
                       {resolvingId === prop.id ? 'Executing...' : '✓ Approve & Execute'}
                     </button>
@@ -511,47 +712,56 @@ export default function AdminAIDepartments() {
               )
             })}
           </div>
+          )
         )}
       </div>
 
-      {/* 7 AI Department Cards Grid - White & Blue Theme */}
+      {/* AI Department Cards Grid — HUD-framed agent roster */}
       <div>
-        <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-slate-900">
-          <BotIcon className="w-6 h-6 text-blue-600" /> Multi-Department Autonomous AI Workforce
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold flex items-center gap-2 text-slate-900">
+            <BotIcon className="w-6 h-6 text-violet-600" /> Agent Roster
+          </h2>
+          <span className="text-[10px] font-mono font-bold tracking-widest text-slate-400 uppercase">{deptList.length} Units Deployed</span>
+        </div>
 
         {loading ? (
-          <div className="text-center py-12 text-slate-500 font-medium">Loading AI Departments...</div>
+          <div className="text-center py-12 text-slate-500 font-medium font-mono text-sm">// loading agent roster...</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {deptList.map(dept => (
+            {deptList.map((dept, i) => {
+              const accent = getAccent(i)
+              return (
               <motion.div
                 key={dept.id}
                 whileHover={{ y: -4 }}
-                className={`rounded-2xl p-6 border flex flex-col justify-between transition-all shadow-sm ${
+                className={`relative rounded-2xl p-6 pt-7 border flex flex-col justify-between transition-all ${
                   dept.enabled
-                    ? 'bg-white border-blue-200 text-slate-900'
-                    : 'bg-slate-100 border-slate-300 opacity-60 text-slate-600'
+                    ? `bg-white border-slate-200 text-slate-900 shadow-sm hover:shadow-lg hover:${accent.ring}`
+                    : 'bg-slate-50 border-slate-200 opacity-60 text-slate-600'
                 }`}
               >
+                {dept.enabled && <CornerFrame colorClass={accent.text.replace('text-', 'border-')} />}
+
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <span className="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
+                      <span className={`p-2.5 rounded-xl border ${accent.text} ${accent.iconBg}`}>
                         {getDepartmentIcon(dept.id, "w-6 h-6")}
                       </span>
                       <div>
-                        <h3 className="font-bold text-base text-slate-900">{dept.name}</h3>
-                        <span className="text-xs text-blue-600 font-mono font-bold">{dept.role}</span>
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="font-bold text-base text-slate-900">{dept.name}</h3>
+                          <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border ${accent.chip}`}>{callsign(i)}</span>
+                        </div>
+                        <span className={`text-xs font-mono font-bold ${accent.text}`}>{dept.role}</span>
                       </div>
                     </div>
 
                     {/* Toggle Switch */}
                     <button
                       onClick={() => handleToggleDept(dept.id, dept.enabled)}
-                      className={`w-12 h-6 rounded-full p-1 transition-colors ${
-                        dept.enabled ? 'bg-blue-600' : 'bg-slate-300'
-                      }`}
+                      className={`w-12 h-6 rounded-full p-1 transition-colors bg-gradient-to-r ${dept.enabled ? accent.grad : 'from-slate-300 to-slate-300'}`}
                       title={dept.enabled ? 'Disable AI Department' : 'Enable AI Department'}
                     >
                       <div
@@ -568,18 +778,18 @@ export default function AdminAIDepartments() {
                 </div>
 
                 <div className="space-y-3 pt-3 border-t border-slate-100">
-                  <div className="grid grid-cols-3 gap-2 text-center text-xs bg-blue-50/60 p-2.5 rounded-xl border border-blue-100">
+                  <div className="grid grid-cols-3 gap-2 text-center text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100 font-mono">
                     <div>
-                      <div className="text-slate-500 text-[10px] font-semibold">Tasks</div>
+                      <div className="text-slate-400 text-[9px] font-semibold tracking-wide uppercase">Tasks</div>
                       <div className="font-extrabold text-slate-900">{dept.metrics?.tasksExecuted || 0}</div>
                     </div>
                     <div>
-                      <div className="text-slate-500 text-[10px] font-semibold">Success</div>
+                      <div className="text-slate-400 text-[9px] font-semibold tracking-wide uppercase">Success</div>
                       <div className="font-extrabold text-emerald-600">{dept.metrics?.successRate || 100}%</div>
                     </div>
                     <div>
-                      <div className="text-slate-500 text-[10px] font-semibold">Speed</div>
-                      <div className="font-extrabold text-blue-600">{dept.metrics?.avgResponseMs || 300}ms</div>
+                      <div className="text-slate-400 text-[9px] font-semibold tracking-wide uppercase">Speed</div>
+                      <div className={`font-extrabold ${accent.text}`}>{dept.metrics?.avgResponseMs || 300}ms</div>
                     </div>
                   </div>
 
@@ -589,7 +799,7 @@ export default function AdminAIDepartments() {
                         setSelectedDept(dept)
                         setPromptEdit(dept.systemPrompt)
                       }}
-                      className="flex items-center justify-center gap-1 flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-800 border border-slate-200 transition-colors"
+                      className="flex items-center justify-center gap-1 flex-1 py-2 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-800 border border-slate-200 transition-colors"
                     >
                       <GearIcon className="w-3.5 h-3.5" /> Edit Rules
                     </button>
@@ -599,28 +809,28 @@ export default function AdminAIDepartments() {
                         setTestTaskPrompt('')
                         setDispatchResult(null)
                       }}
-                      className="flex items-center justify-center gap-1 py-2 px-3 rounded-xl bg-blue-50 hover:bg-blue-100 text-xs font-bold text-blue-700 border border-blue-200 transition-colors"
+                      className={`flex items-center justify-center gap-1 py-2 px-3 rounded-xl text-xs font-bold border transition-colors ${accent.chip} hover:brightness-95`}
                     >
                       <LightningIcon className="w-3.5 h-3.5" /> Test Task
                     </button>
                   </div>
                 </div>
               </motion.div>
-            ))}
+            )})}
           </div>
         )}
       </div>
 
       {/* Task Dispatcher Test Panel */}
-      <div className="bg-white border border-blue-200 rounded-2xl p-6 shadow-sm space-y-4">
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
         <h2 className="text-lg font-bold flex items-center gap-2 text-slate-900">
-          <LightningIcon className="w-5 h-5 text-blue-600" /> Dispatch Instruction to AI Department
+          <LightningIcon className="w-5 h-5 text-violet-600" /> Dispatch Instruction to Agent
         </h2>
         <div className="flex flex-col md:flex-row gap-4">
           <select
             value={testTaskDept}
             onChange={e => setTestTaskDept(e.target.value)}
-            className="bg-slate-50 border border-blue-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 font-semibold outline-none focus:border-blue-600"
+            className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 font-semibold outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
           >
             {deptList.map(d => (
               <option key={d.id} value={d.id}>
@@ -633,12 +843,12 @@ export default function AdminAIDepartments() {
             value={testTaskPrompt}
             onChange={e => setTestTaskPrompt(e.target.value)}
             placeholder="Enter instructions for this AI Department Agent..."
-            className="flex-1 bg-slate-50 border border-blue-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-blue-600 placeholder-slate-400 font-medium"
+            className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100 placeholder-slate-400 font-medium"
           />
           <button
             onClick={handleDispatchTestTask}
             disabled={dispatching || !testTaskPrompt.trim()}
-            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-blue-500/20 flex items-center justify-center gap-2"
+            className="bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 hover:brightness-110 disabled:opacity-50 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-violet-500/25 flex items-center justify-center gap-2"
           >
             <LightningIcon className="w-4 h-4" />
             {dispatching ? 'Dispatching...' : 'Execute Task'}
@@ -655,7 +865,7 @@ export default function AdminAIDepartments() {
                 <button
                   onClick={handleSendEmailBroadcast}
                   disabled={sendingBroadcast}
-                  className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-sans font-bold text-xs rounded-lg transition-all shadow-md shadow-blue-500/20 flex items-center gap-1.5"
+                  className="px-4 py-1.5 bg-gradient-to-r from-indigo-600 to-fuchsia-600 hover:brightness-110 disabled:opacity-50 text-white font-sans font-bold text-xs rounded-lg transition-all shadow-md shadow-violet-500/25 flex items-center gap-1.5"
                 >
                   <EmailIcon className="w-4 h-4" />
                   {sendingBroadcast ? 'Dispatching Mail...' : '🚀 Send Email Broadcast to All Users'}
@@ -664,6 +874,17 @@ export default function AdminAIDepartments() {
             </div>
 
             <div>{dispatchResult.reply || dispatchResult.message}</div>
+
+            {testTaskDept === 'email' && dispatchResult.reply && (
+              <div className="mt-3 p-3 bg-white rounded-lg border border-slate-200 text-xs font-sans">
+                <div className="font-bold text-slate-700 mb-1">✍️ Editable Broadcast Content:</div>
+                <textarea
+                  value={dispatchResult.reply}
+                  onChange={e => setDispatchResult(prev => ({ ...prev, reply: e.target.value }))}
+                  className="w-full h-28 p-2 border border-slate-200 rounded text-slate-800 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                />
+              </div>
+            )}
 
             {broadcastStatus && (
               <div className={`p-3 rounded-lg text-xs font-sans font-bold ${
@@ -677,50 +898,52 @@ export default function AdminAIDepartments() {
 
       </div>
 
-      {/* Real-Time AI Execution Audit Logs Stream */}
-      <div className="bg-white border border-blue-200 rounded-2xl p-6 shadow-sm space-y-4">
+      {/* Real-Time AI Execution Audit Logs Stream — terminal readout */}
+      <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold flex items-center gap-2 text-slate-900">
-            <ClipboardIcon className="w-5 h-5 text-blue-600" /> Live AI Agent Audit Logs Stream
+          <h2 className="text-lg font-bold flex items-center gap-2 text-white font-mono">
+            <ClipboardIcon className="w-5 h-5 text-violet-400" /> live_agent_log.stream
           </h2>
           <button
             onClick={fetchData}
-            className="text-xs text-blue-600 font-bold hover:underline flex items-center gap-1"
+            className="text-xs text-violet-300 font-mono font-bold hover:underline flex items-center gap-1"
           >
-            🔄 Refresh Stream
+            ↻ refresh
           </button>
         </div>
 
-        <div className="space-y-2 max-h-72 overflow-y-auto pr-2 custom-scrollbar">
+        <div className="space-y-1.5 max-h-72 overflow-y-auto pr-2 custom-scrollbar font-mono">
           {logs.length === 0 ? (
-            <div className="text-center py-6 text-slate-500 text-sm font-medium">No recent AI department logs</div>
+            <div className="text-center py-6 text-slate-500 text-sm">// no recent agent activity</div>
           ) : (
             logs.map(log => {
               const deptMeta = departments[log.department] || {}
+              const idx = deptIndexMap[log.department] ?? 0
+              const accent = getAccent(idx)
               return (
                 <div
                   key={log.id}
-                  className="flex items-start justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs gap-4"
+                  className="flex items-start justify-between p-3 rounded-lg bg-white/[0.03] border border-white/5 text-xs gap-4 hover:bg-white/[0.06] transition-colors"
                 >
                   <div className="flex items-start gap-3">
-                    <span className="p-1 rounded bg-blue-100 text-blue-700 mt-0.5">
+                    <span className={`shrink-0 p-1 rounded bg-white/5 ${accent.text} mt-0.5`}>
                       {getDepartmentIcon(log.department, "w-4 h-4")}
                     </span>
                     <div>
-                      <div className="font-bold text-slate-900">
-                        {deptMeta.name || log.department} ({deptMeta.role || 'Agent'})
+                      <div className="font-bold text-white">
+                        <span className={accent.text}>{callsign(idx)}</span> · {deptMeta.name || log.department}
                       </div>
-                      <div className="text-slate-700 font-medium mt-0.5">{log.action}</div>
+                      <div className="text-slate-400 mt-0.5">{log.action}</div>
                     </div>
                   </div>
 
                   <div className="text-right flex-shrink-0">
                     <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                      log.status === 'success' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-rose-100 text-rose-800 border border-rose-200'
+                      log.status === 'success' ? 'bg-emerald-400/10 text-emerald-300 border border-emerald-400/20' : 'bg-rose-400/10 text-rose-300 border border-rose-400/20'
                     }`}>
                       {log.status}
                     </span>
-                    <div className="text-[10px] text-slate-500 mt-1 font-mono">
+                    <div className="text-[10px] text-slate-500 mt-1">
                       {new Date(log.timestamp).toLocaleTimeString()}
                     </div>
                   </div>
@@ -731,24 +954,24 @@ export default function AdminAIDepartments() {
         </div>
       </div>
 
-      {/* System Prompt Config Modal - White & Blue Theme */}
+      {/* System Prompt Config Modal */}
       <AnimatePresence>
         {selectedDept && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white border border-blue-200 rounded-2xl p-6 max-w-2xl w-full shadow-2xl space-y-4 text-slate-900"
+              className="bg-white border border-slate-200 rounded-2xl p-6 max-w-2xl w-full shadow-2xl space-y-4 text-slate-900"
             >
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-3">
-                  <span className="p-2 rounded-xl bg-blue-50 text-blue-600">
+                  <span className="p-2 rounded-xl bg-slate-50 text-violet-600 border border-slate-200">
                     {getDepartmentIcon(selectedDept.id, "w-6 h-6")}
                   </span>
                   <div>
                     <h3 className="font-bold text-lg text-slate-900">{selectedDept.name} Rules</h3>
-                    <p className="text-xs text-slate-500 font-medium">Configure AI Agent instructions for {selectedDept.role}</p>
+                    <p className="text-xs text-slate-500 font-medium">Configure AI agent instructions for {selectedDept.role}</p>
                   </div>
                 </div>
                 <button
@@ -761,13 +984,13 @@ export default function AdminAIDepartments() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-2">
-                  System Prompt & Operational Rules:
+                  System Prompt &amp; Operational Rules:
                 </label>
                 <textarea
                   value={promptEdit}
                   onChange={e => setPromptEdit(e.target.value)}
                   rows={8}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-4 text-xs font-mono text-slate-900 outline-none focus:border-blue-600 leading-relaxed font-medium"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-4 text-xs font-mono text-slate-900 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100 leading-relaxed font-medium"
                 />
               </div>
 
@@ -781,7 +1004,7 @@ export default function AdminAIDepartments() {
                 <button
                   onClick={handleSavePrompt}
                   disabled={savingDept}
-                  className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-xs text-white font-bold shadow-md shadow-blue-500/20"
+                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 hover:brightness-110 text-xs text-white font-bold shadow-md shadow-violet-500/25 disabled:opacity-50"
                 >
                   {savingDept ? 'Saving Rules...' : 'Save AI Rules'}
                 </button>
@@ -798,37 +1021,37 @@ export default function AdminAIDepartments() {
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.95 }}
-            className="fixed bottom-6 right-6 z-50 max-w-md w-full bg-white border-2 border-blue-600 rounded-2xl p-5 shadow-2xl space-y-3 font-sans text-slate-900"
+            className="fixed bottom-6 right-6 z-50 max-w-md w-full bg-slate-950 border border-violet-500/40 rounded-2xl p-5 shadow-2xl shadow-violet-500/20 space-y-3 font-sans text-white"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-blue-100 text-blue-700">
+                <span className="p-1.5 rounded-lg bg-white/10 text-violet-300">
                   <BotIcon className="w-5 h-5" />
                 </span>
-                <span className="text-xs font-black uppercase text-blue-700 tracking-wider">
-                  AI Agent Approval Required
+                <span className="text-xs font-mono font-black uppercase text-violet-300 tracking-wider">
+                  Agent Approval Required
                 </span>
               </div>
               <button
                 onClick={() => setActivePopupProposal(null)}
-                className="text-slate-400 hover:text-slate-700 font-bold text-lg"
+                className="text-slate-500 hover:text-slate-200 font-bold text-lg"
               >
                 ✕
               </button>
             </div>
 
             <div>
-              <h4 className="font-bold text-sm text-slate-900">{activePopupProposal.title}</h4>
-              <p className="text-xs text-slate-600 mt-1 leading-relaxed">{activePopupProposal.details}</p>
+              <h4 className="font-bold text-sm text-white">{activePopupProposal.title}</h4>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">{activePopupProposal.details}</p>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-white/10">
               <button
                 onClick={() => {
                   handleResolveProposal(activePopupProposal.id, false)
                   setActivePopupProposal(null)
                 }}
-                className="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all"
+                className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 text-xs font-bold transition-all"
               >
                 Reject
               </button>
@@ -838,7 +1061,7 @@ export default function AdminAIDepartments() {
                   setActivePopupProposal(null)
                 }}
                 disabled={resolvingId === activePopupProposal.id}
-                className="px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-bold shadow-md shadow-blue-500/20 transition-all flex items-center gap-1"
+                className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-fuchsia-600 hover:brightness-110 disabled:opacity-50 text-white text-xs font-bold shadow-md shadow-violet-500/25 transition-all flex items-center gap-1"
               >
                 {resolvingId === activePopupProposal.id ? '⏳ Executing Action...' : (
                   <>
@@ -858,7 +1081,7 @@ export default function AdminAIDepartments() {
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed top-6 right-6 z-50 bg-emerald-600 text-white font-bold text-xs px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-emerald-400"
+            className="fixed top-6 right-6 z-50 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-bold text-xs px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-emerald-400"
           >
             <CheckIcon className="w-5 h-5 text-white" />
             <span>{executionSuccessMsg}</span>

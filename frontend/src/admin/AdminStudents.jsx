@@ -100,6 +100,27 @@ export default function AdminStudents() {
     }
   }
 
+  const handleExportCSV = () => {
+    if (filteredStudents.length === 0) return alert('No students to export.')
+    const headers = ['Name', 'Email', 'Role', 'Status', 'Phone', 'Location']
+    const rows = filteredStudents.map(s => [
+      `"${s.displayName || ''}"`,
+      `"${s.email || ''}"`,
+      `"${s.role || 'student'}"`,
+      `"${s.status || 'active'}"`,
+      `"${s.phone || ''}"`,
+      `"${s.location || ''}"`
+    ])
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n')
+    const encodedUri = encodeURI(csvContent)
+    const link = document.createElement('a')
+    link.setAttribute('href', encodedUri)
+    link.setAttribute('download', `students_export_${new Date().toISOString().split('T')[0]}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <div className="space-y-6 animate-in fade-in duration-700">
       {/* Header */}
@@ -111,6 +132,13 @@ export default function AdminStudents() {
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap justify-end">
+          <button
+            type="button"
+            onClick={handleExportCSV}
+            className="px-4 py-2.5 rounded-2xl text-xs font-bold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 shadow-sm uppercase tracking-wider flex items-center gap-1.5"
+          >
+            📥 Export CSV
+          </button>
           <button
             type="button"
             onClick={() => setShowAddModal(true)}

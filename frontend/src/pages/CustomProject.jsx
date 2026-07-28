@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { emailNotify } from "../utils/emailNotify";
 import { api } from "../config/api";
+import { useAuth } from "../context/AuthContext";
 
 const CustomProject = () => {
+  const { currentUser, userProfile } = useAuth();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -20,7 +22,15 @@ const CustomProject = () => {
 
   useEffect(() => {
     setLoaded(true);
-  }, []);
+    if (currentUser || userProfile) {
+      setFormData(prev => ({
+        ...prev,
+        fullName: prev.fullName || userProfile?.displayName || currentUser?.displayName || "",
+        email: prev.email || userProfile?.email || currentUser?.email || "",
+        mobile: prev.mobile || userProfile?.phone || currentUser?.phone || "",
+      }));
+    }
+  }, [currentUser, userProfile]);
 
   const handleChange = (e) => {
     setFormData({

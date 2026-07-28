@@ -6,7 +6,8 @@ export default function SEO({
   keywords = 'Tech Agency, Web Development, Software Services, Mentorship, Repair, India, MSME, SolutionHub',
   name = 'AmitSolutionHub',
   type = 'website',
-  url = 'https://amitsolutionhub.com', // Adjust to real domain later
+  url = 'https://amitsolutionhub.com',
+  image = 'https://amitsolutionhub.com/og-banner.png',
   schema = null
 }) {
   const defaultSchema = {
@@ -51,12 +52,14 @@ export default function SEO({
       <meta property="og:description" content={description} />
       <meta property="og:site_name" content={name} />
       <meta property="og:url" content={url} />
+      {image && <meta property="og:image" content={image} />}
       
       {/* Twitter tags */}
       <meta name="twitter:creator" content={name} />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
+      {image && <meta name="twitter:image" content={image} />}
 
       {/* JSON-LD Structured Data Schema */}
       <script type="application/ld+json">

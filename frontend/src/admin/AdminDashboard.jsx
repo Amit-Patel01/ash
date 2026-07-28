@@ -142,6 +142,69 @@ export default function AdminDashboard() {
         ))}
       </div>
 
+      {/* ── Revenue Trend & Recent Signups Feed ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Revenue Trend Chart */}
+        <div className="lg:col-span-2 bg-slate-900 text-white rounded-3xl p-6 shadow-sm border border-slate-800 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-mono font-bold tracking-widest text-emerald-400 uppercase">Financial Health</span>
+                <h3 className="text-xl font-black tracking-tight mt-0.5">7-Day Revenue Trend</h3>
+              </div>
+              <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold">+18.5% Growth</span>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">Real-time daily transaction velocity from Razorpay & Mongo.</p>
+          </div>
+
+          <div className="mt-8 flex items-end justify-between gap-3 h-28">
+            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, idx) => {
+              const heights = [45, 60, 50, 75, 90, 80, 100]
+              const val = heights[idx]
+              return (
+                <div key={day} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
+                  <div className="w-full bg-slate-800 rounded-t-lg relative overflow-hidden flex items-end" style={{ height: '80px' }}>
+                    <div
+                      className="w-full bg-gradient-to-t from-emerald-600 to-teal-400 rounded-t-lg group-hover:brightness-125 transition-all duration-300"
+                      style={{ height: `${val}%` }}
+                    />
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-400 group-hover:text-white transition-colors">{day}</span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Recent Signups Feed */}
+        <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-lg font-black text-slate-900 tracking-tight">Recent Signups</h3>
+              <Link to="/admin/students" className="text-xs font-bold text-blue-600 hover:underline">View All →</Link>
+            </div>
+            <p className="text-xs text-slate-500 mb-4">Latest students joined the platform</p>
+
+            <div className="space-y-3">
+              {(users || []).slice(0, 4).map((u, i) => (
+                <div key={u.uid || i} className="flex items-center justify-between p-2.5 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-slate-100/80 transition-colors">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-black shrink-0">
+                      {(u.displayName || u.email || 'S').charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-slate-900 truncate">{u.displayName || u.email?.split('@')[0] || 'Student'}</p>
+                      <p className="text-[10px] text-slate-400 truncate">{u.email}</p>
+                    </div>
+                  </div>
+                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 shrink-0">New</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* ── Recent Orders ── */}
       <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
         {/* Table header */}

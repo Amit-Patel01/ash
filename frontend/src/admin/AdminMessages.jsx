@@ -246,10 +246,10 @@ export default function AdminMessages() {
       )}
 
       {/* Filters */}
-      <div className="flex items-center gap-2">
-        {['all', 'unread', 'starred'].map(f => (
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        {['all', 'unread', 'starred', 'contact'].map(f => (
           <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize whitespace-nowrap transition-all ${filter === f ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-transparent'}`}>
-            {f} {f === 'all' ? `(${messages.length})` : f === 'unread' ? `(${unreadCount})` : `(${messages.filter(m => m.starred).length})`}
+            {f === 'contact' ? 'Contact Form Inquiries' : f} {f === 'all' ? `(${messages.length})` : f === 'unread' ? `(${unreadCount})` : f === 'contact' ? `(${messages.filter(m => m.type === 'contact' || m.source === 'contact_form').length})` : `(${messages.filter(m => m.starred).length})`}
           </button>
         ))}
       </div>

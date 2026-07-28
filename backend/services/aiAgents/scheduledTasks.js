@@ -317,6 +317,83 @@ Format ONLY with HTML <p> tags. NO markdown. Professional yet warm.`
 };
 
 /**
+ * TASK 8 — SalesAgent: Sell-Project Request Auto-Reviewer (runs every 4 hours)
+ */
+const runSellProjectAutoReviewer = async () => {
+  logger.info('[Scheduler] SalesAgent: Scanning pending sell-project requests...');
+  const db = safeGetDb();
+  if (!db) return;
+
+  try {
+    const pendingRequests = await db.collection('sell_requests').find({
+      status: 'pending',
+      aiReviewed: { $ne: true }
+    }).limit(5).toArray().catch(() => []);
+
+    for (const req of pendingRequests) {
+      const suggestedPrice = Math.round((Number(req.askingPrice) || 2000) * 0.9);
+      addPendingProposal(
+        'sales',
+        `🏷️ Review Sell-Project Request: "${req.projectTitle || 'Untitled Project'}"`,
+        'sitewide_sales_campaign',
+        `SalesAgent auto-reviewed employee project submission "${req.projectTitle}". Seller Asking: ₹${req.askingPrice}. Suggested Listed Price: ₹${suggestedPrice}. Click Approve to publish project to marketplace.`,
+        {
+          projectTitle: req.projectTitle,
+          requestId: req._id?.toString(),
+          suggestedPrice,
+          sellerEmail: req.email || req.employeeEmail
+        }
+      );
+
+      await db.collection('sell_requests').updateOne(
+        { _id: req._id },
+        { $set: { aiReviewed: true } }
+      ).catch(() => {});
+    }
+
+    if (pendingRequests.length > 0) {
+      logger.info(`[Scheduler] SalesAgent: Created ${pendingRequests.length} sell-project review proposals.`);
+    }
+  } catch (err) {
+    logger.error(`[Scheduler] SalesAgent sell-project reviewer error: ${err.message}`);
+  }
+};
+
+/**
+ * TASK 9 — SupportAgent: Student Inactivity Alert (runs Sunday 10 AM)
+ */
+const runStudentInactivityAlert = async () => {
+  logger.info('[Scheduler] SupportAgent: Checking inactive student accounts...');
+  const db = safeGetDb();
+  if (!db) return;
+
+  try {
+    const fourteenDaysAgo = new Date(Date.now() - 14 * 86400000);
+    const inactiveStudents = await db.collection('users').find({
+      role: { $in: ['student', 'user', null] },
+      lastLogin: { $lt: fourteenDaysAgo }
+    }).limit(20).toArray().catch(() => []);
+
+    if (inactiveStudents.length > 0) {
+      addPendingProposal(
+        'support',
+        `🔔 Student Re-engagement: ${inactiveStudents.length} Inactive Students (14+ Days)`,
+        'marketing_email_broadcast',
+        `SupportAgent detected ${inactiveStudents.length} enrolled students who haven't logged in for 14+ days. Proposing a friendly check-in & progress reminder broadcast.`,
+        {
+          emailSubject: '👋 We miss you on AmitSolutionHub — Resume your learning today!',
+          recipientCount: inactiveStudents.length,
+          aiResponse: `Hi Student,\n\nWe noticed you haven't logged in for a while. Your learning progress is waiting for you!\n\nLog in today to continue your courses and work towards your verified certificate.\n\nHappy Learning,\nAmitSolutionHub Mentorship Team`
+        }
+      );
+      logger.info(`[Scheduler] SupportAgent: Proposed re-engagement for ${inactiveStudents.length} inactive students.`);
+    }
+  } catch (err) {
+    logger.error(`[Scheduler] SupportAgent inactivity alert error: ${err.message}`);
+  }
+};
+
+/**
  * TASK 6 — MarketingAgent: Weekly Marketing Analysis (runs Monday 9 AM)
  */
 const runMarketingAnalysis = async () => {
@@ -341,6 +418,47 @@ const runMarketingAnalysis = async () => {
 };
 
 /**
+ * TASK 7 — HRAgent: Auto Student Batch Creator (runs 10:30 AM every day)
+ */
+const runBatchAutoCreator = async () => {
+  logger.info('[Scheduler] HRAgent: Checking enrollment counts for student batch proposals...');
+  const db = safeGetDb();
+  if (!db) return;
+
+  try {
+    const courses = await db.collection('courses').find({}).toArray().catch(() => []);
+    for (const course of courses) {
+      const studentCount = await db.collection('users').countDocuments({
+        'enrollments.courseId': course._id?.toString()
+      }).catch(() => 0);
+
+      // If student count >= 5, check if a batch already exists for this course
+      if (studentCount >= 5) {
+        const existingBatch = await db.collection('batches').findOne({ courseId: course._id?.toString() }).catch(() => null);
+        if (!existingBatch) {
+          const batchCode = `BATCH-${new Date().getFullYear()}-${(course.title || 'COURSE').substring(0, 4).toUpperCase()}-${Math.floor(Math.random() * 90 + 10)}`;
+          addPendingProposal(
+            'hr',
+            `👥 Auto-Create Student Batch: ${batchCode} (${studentCount} enrolled)`,
+            'create_batch',
+            `HRAgent detected ${studentCount} students enrolled in "${course.title}". Proposing automatic batch creation for code ${batchCode}.`,
+            {
+              courseId: course._id?.toString(),
+              courseTitle: course.title,
+              batchCode,
+              studentCount,
+              proposedData: { code: batchCode, course: course.title, students: studentCount }
+            }
+          );
+        }
+      }
+    }
+  } catch (err) {
+    logger.error(`[Scheduler] HRAgent batch auto creator error: ${err.message}`);
+  }
+};
+
+/**
  * Start all scheduled tasks
  */
 const startScheduledTasks = () => {
@@ -352,6 +470,9 @@ const startScheduledTasks = () => {
 
   // Auto-certificate check — 10:00 AM every day
   cron.schedule('0 10 * * *', runAutoCertificate, { timezone: 'Asia/Kolkata' });
+
+  // Batch auto-creator check — 10:30 AM every day
+  cron.schedule('30 10 * * *', runBatchAutoCreator, { timezone: 'Asia/Kolkata' });
 
   // Abandoned cart recovery — 11:00 AM every day
   cron.schedule('0 11 * * *', runAbandonedCartRecovery, { timezone: 'Asia/Kolkata' });
@@ -368,7 +489,13 @@ const startScheduledTasks = () => {
   // Weekly marketing analysis — Monday 9 AM
   cron.schedule('0 9 * * 1', runMarketingAnalysis, { timezone: 'Asia/Kolkata' });
 
-  logger.info('[Scheduler] ✅ AI Workforce started | Newsletter: 7AM 🌅 + 8PM 🌙 | Finance: 9AM | HR: 10AM | CartRecovery: 11AM | Support: every 2h | Marketing: Mon 9AM');
+  // Sell-project request auto-reviewer — every 4 hours
+  cron.schedule('0 */4 * * *', runSellProjectAutoReviewer, { timezone: 'Asia/Kolkata' });
+
+  // Student inactivity check — Sunday 10 AM
+  cron.schedule('0 10 * * 0', runStudentInactivityAlert, { timezone: 'Asia/Kolkata' });
+
+  logger.info('[Scheduler] ✅ AI Workforce started | Newsletter: 7AM 🌅 + 8PM 🌙 | Finance: 9AM | HR: 10AM & 10:30AM | CartRecovery: 11AM | Support: every 2h | Sales: every 4h | Marketing: Mon 9AM');
 };
 
 module.exports = {
@@ -378,5 +505,7 @@ module.exports = {
   runAbandonedCartRecovery,
   runSupportScan,
   runDailyNewsletter,
-  runMarketingAnalysis
+  runMarketingAnalysis,
+  runSellProjectAutoReviewer,
+  runStudentInactivityAlert
 };

@@ -460,6 +460,7 @@ export default function AdminEmployees() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => navigate('/admin/employees/new')}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-all"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -599,9 +600,9 @@ export default function AdminEmployees() {
                     <span className="font-bold text-slate-900 text-base leading-tight">
                       {employee.displayName || 'Unknown'}
                     </span>
-                    {employee.isMentor && (
-                      <span className="hidden px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-amber-500/10 text-amber-600 border border-amber-400/30 uppercase tracking-wide">
-                        Mentor
+                    {(employee.isMentor || String(employee.role).toLowerCase() === 'mentor') && (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/10 text-amber-600 border border-amber-400/30 uppercase tracking-wide">
+                        🎓 Mentor
                       </span>
                     )}
                     {isTerminatedUser(employee) && (

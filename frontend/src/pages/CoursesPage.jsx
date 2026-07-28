@@ -293,6 +293,11 @@ export default function CoursesPage() {
                             {actionLabel} Closed
                           </span>
                         )}
+                        {!isEnrolled && !isAvailableSoon && !enrollmentClosed && deadlineText && deadlineText !== 'Open' && (
+                          <span className="rounded-full bg-amber-500/90 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-950 flex items-center gap-1 shadow-md">
+                            ⏳ Closes: {deadlineText}
+                          </span>
+                        )}
                       </div>
 
                       {Array.isArray(course.plans) && course.plans.length > 0 && (

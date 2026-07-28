@@ -44,11 +44,41 @@ export default function AdminSales() {
     }
   }
 
+  const handleExportSalesCSV = () => {
+    if (filteredOrders.length === 0) return alert('No sales orders to export.')
+    const headers = ['Order ID', 'Project Title', 'Customer Name', 'Customer Email', 'Amount', 'Status', 'Date']
+    const rows = filteredOrders.map(o => [
+      `"${o.id || ''}"`,
+      `"${o.project_title || ''}"`,
+      `"${o.customer_name || ''}"`,
+      `"${o.customer_email || ''}"`,
+      `"${o.amount || 0}"`,
+      `"${o.status || 'pending'}"`,
+      `"${o.date || ''}"`
+    ])
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n')
+    const encodedUri = encodeURI(csvContent)
+    const link = document.createElement('a')
+    link.setAttribute('href', encodedUri)
+    link.setAttribute('download', `sales_orders_export_${new Date().toISOString().split('T')[0]}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Sales & Orders</h1>
-        <p className="text-sm text-slate-500 mt-1">{orders.length} total orders | ₹{totalRevenue.toLocaleString('en-IN')} revenue</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Sales & Orders</h1>
+          <p className="text-sm text-slate-500 mt-1">{orders.length} total orders | ₹{totalRevenue.toLocaleString('en-IN')} revenue</p>
+        </div>
+        <button
+          onClick={handleExportSalesCSV}
+          className="px-4 py-2 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-sm uppercase tracking-wider flex items-center gap-1.5"
+        >
+          📥 Export Sales CSV
+        </button>
       </div>
 
       {/* Stats */}

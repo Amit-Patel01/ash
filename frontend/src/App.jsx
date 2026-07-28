@@ -150,6 +150,7 @@ const ForgotPassword = lazyWithRetry(() => import('./pages/ForgotPassword'))
 const RoleSelect = lazyWithRetry(() => import('./pages/RoleSelect'))
 const ComingSoon = lazyWithRetry(() => import('./pages/ComingSoon'))
 const VerifyCertificate = lazyWithRetry(() => import('./pages/VerifyCertificateRefined'))
+const NotFound = lazyWithRetry(() => import('./pages/NotFound'))
 
 const PrivacyPolicy = lazyWithRetry(() => import('./pages/legal/PrivacyPolicy'))
 const TermsOfService = lazyWithRetry(() => import('./pages/legal/TermsOfService'))
@@ -190,6 +191,7 @@ const RequestAccount = lazyWithRetry(() => import('./pages/RequestAccount'))
 const EmployeeLayout = lazyWithRetry(() => import('./employee/EmployeeLayout'))
 const EmployeeOverview = lazyWithRetry(() => import('./employee/EmployeeOverview'))
 const EmployeeTasks = lazyWithRetry(() => import('./employee/EmployeeTasksRefined'))
+const MentorDashboard = lazyWithRetry(() => import('./employee/MentorDashboard'))
 const EmployeeProjects = lazyWithRetry(() => import('./employee/EmployeeProjectsRefined'))
 const EmployeeProfile = lazyWithRetry(() => import('./employee/EmployeeProfileRefined'))
 const SellProjectRequest = lazyWithRetry(() => import('./employee/SellProjectRequestRefined'))
@@ -409,6 +411,7 @@ function AppContent() {
             <Route path="broadcast" element={<EmployeeBroadcast />} />
             <Route path="chat" element={<EmployeeChat />} />
             <Route path="profile" element={<EmployeeProfile />} />
+            <Route path="mentor" element={<MentorDashboard />} />
           </Route>
 
           {/* User Panel */}
@@ -423,6 +426,9 @@ function AppContent() {
             <Route path="profile" element={<UserProfile />} />
             <Route path="custom-project" element={<UserCustomProject />} />
           </Route>
+
+          {/* 404 Catch-All */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
       {/* Global AI Chatbot Widget */}
