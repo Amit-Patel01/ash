@@ -10,8 +10,8 @@
     "semantic_hash": ""
   },
   "backend/controllers/authController.js": {
-    "mtime": 1784978062.854509,
-    "ast_hash": "df3bba457e9645093334758e8e187826",
+    "mtime": 1785223484.968943,
+    "ast_hash": "0e864852f7a52d647d9d435ab6d5c3e7",
     "semantic_hash": ""
   },
   "backend/controllers/certificateController.js": {
@@ -1330,8 +1330,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminEmployees.jsx": {
-    "mtime": 1785217470.2288408,
-    "ast_hash": "3ec18b734f9932bb6fbb1e40453e9fd3",
+    "mtime": 1785223338.96987,
+    "ast_hash": "ea7086a67cb9ff46b95cc1a194d1d6c3",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminLayout.jsx": {
@@ -1555,8 +1555,8 @@
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeProfileRefined.jsx": {
-    "mtime": 1784977861.650486,
-    "ast_hash": "63459ba7ef2765bb86ef57eebc739ada",
+    "mtime": 1785223718.594212,
+    "ast_hash": "fd4942c379342932a60c6d1c5fec046c",
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeProjects.jsx": {
@@ -2735,8 +2735,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/EmployeeDashboard.jsx": {
-    "mtime": 1784997193.3527954,
-    "ast_hash": "f0713dd3e1f41cc3fcbecf2dbb309639",
+    "mtime": 1785223728.359606,
+    "ast_hash": "3faf56519b3ff6e604afd674b76a15a3",
     "semantic_hash": ""
   },
   "frontend/src/components/VerifiedCertificateSection.jsx": {
@@ -2792,6 +2792,11 @@
   "frontend/src/pages/NotFound.jsx": {
     "mtime": 1785215582.4072814,
     "ast_hash": "6ded776e86fe9c9b3d65136856fd4b46",
+    "semantic_hash": ""
+  },
+  "frontend/src/utils/deviceParser.js": {
+    "mtime": 1785223246.9424777,
+    "ast_hash": "1f0772bcf78798acc70bf9cecf4efd27",
     "semantic_hash": ""
   }
 }

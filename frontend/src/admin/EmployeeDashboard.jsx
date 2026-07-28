@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
-import { buildApiUrl, readApiJson } from '../config/api'
+import { api, buildApiUrl, readApiJson } from '../config/api'
+import { parseDeviceName, formatISTDateTime } from '../utils/deviceParser'
 
 const departments = [
   'Engineering', 'Design', 'Marketing', 'Management', 'Support',
@@ -63,29 +64,68 @@ export function EmployeeDashboard({ employee = {}, onClose, createMode = false }
   const [msg, setMsg] = useState({ type: '', text: '' })
   const [imageLoading, setImageLoading] = useState(false)
 
+  const [liveSession, setLiveSession] = useState({
+    currentSessionId: employee.currentSessionId || null,
+    lastLoginIp: employee.lastLoginIp || '',
+    lastLoginDevice: employee.lastLoginDevice || '',
+    lastLoginAt: employee.lastLoginAt || null,
+  })
+
   const set = (key, value) => setForm(prev => ({ ...prev, [key]: value }))
   const handleChange = e => {
     const { name, value, type, checked } = e.target
     set(name, type === 'checkbox' ? checked : value)
   }
 
-  // Fetch devices / session info
+  // Real-time 2-second Session & Device Auto-Poller (No Manual Refresh Needed)
   useEffect(() => {
-    async function load() {
-      setLoadingDevices(true)
-      setDevices(
-        employee.lastLoginIp
-          ? [{ ip: employee.lastLoginIp, deviceName: employee.lastLoginDevice || 'Last known session', lastSeen: employee.lastLoginAt || 'Unknown', active: !!employee.currentSessionId }]
-          : []
-      )
-      setLoadingDevices(false)
+    let timer = null
+    const target = form.email || employee.email || empId || employee.uid || employee.id
+
+    const pollRealtimeSession = async () => {
+      if (!target) return
+      try {
+        const lookupUrl = buildApiUrl(`/api/admin/users/lookup?email=${encodeURIComponent(target)}`)
+
+        const res = await fetch(lookupUrl, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token') || ''}` }
+        }).then(readApiJson)
+
+        if (res.success && res.user) {
+          const u = res.user
+          setLiveSession({
+            currentSessionId: u.currentSessionId || null,
+            lastLoginIp: u.lastLoginIp || '',
+            lastLoginDevice: u.lastLoginDevice || '',
+            lastLoginAt: u.lastLoginAt || null,
+          })
+          if (u.currentSessionId && sessionRevoked) {
+            setSessionRevoked(false)
+          }
+          setDevices([
+            {
+              ip: u.lastLoginIp || 'Unknown IP',
+              rawDevice: u.lastLoginDevice || 'Not available',
+              deviceName: parseDeviceName(u.lastLoginDevice),
+              lastSeen: formatISTDateTime(u.lastLoginAt),
+              active: Boolean(u.currentSessionId)
+            }
+          ])
+        }
+      } catch {
+        /* silent poll catch */
+      } finally {
+        setLoadingDevices(false)
+      }
     }
-    if (empId) load()
-    else {
-      setDevices(employee.lastLoginIp ? [{ ip: employee.lastLoginIp, deviceName: employee.lastLoginDevice || 'Last known session', lastSeen: employee.lastLoginAt || 'Unknown', active: !!employee.currentSessionId }] : [])
-      setLoadingDevices(false)
+
+    pollRealtimeSession()
+    timer = setInterval(pollRealtimeSession, 2000)
+
+    return () => {
+      if (timer) clearInterval(timer)
     }
-  }, [empId])
+  }, [form.email, employee.email, empId, employee.uid, employee.id, sessionRevoked])
 
   const handleSave = async () => {
     setSaving(true)
@@ -214,17 +254,40 @@ export function EmployeeDashboard({ employee = {}, onClose, createMode = false }
         {/* ── Hero Banner ──────────────────────────────────── */}
         <div className="relative rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
           {/* Cover */}
-          <div className="relative h-40 bg-gradient-to-r from-blue-100 via-indigo-100 to-purple-100 overflow-hidden group/cover">
-            {form.coverImage
-              ? <img src={form.coverImage} alt="cover" className="w-full h-full object-cover" />
-              : <><div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-blue-300/20 blur-2xl" /><div className="absolute left-1/3 -bottom-10 h-32 w-32 rounded-full bg-purple-300/20 blur-xl" /></>}
-            <label className="absolute bottom-3 left-4 flex items-center gap-1.5 rounded-full bg-slate-900/70 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 cursor-pointer hover:bg-slate-900/90 transition-all">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-              </svg>
-              <span>{form.coverImage ? 'Change Cover' : 'Add Cover'}</span>
-              <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
-            </label>
+          <div className="relative h-48 sm:h-56 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 overflow-hidden group/cover">
+            {form.coverImage ? (
+              form.coverImage.startsWith('linear-gradient') ? (
+                <div className="w-full h-full" style={{ background: form.coverImage }} />
+              ) : (
+                <img src={form.coverImage} alt="cover" className="w-full h-full object-cover" />
+              )
+            ) : (
+              <>
+                <div className="absolute -right-8 -top-8 h-56 w-56 rounded-full bg-blue-500/20 blur-3xl" />
+                <div className="absolute left-1/3 -bottom-10 h-48 w-48 rounded-full bg-purple-500/20 blur-2xl" />
+                <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px] opacity-10" />
+              </>
+            )}
+
+            <div className="absolute bottom-3 left-4 flex items-center gap-2">
+              <label className="flex items-center gap-1.5 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-xs font-bold px-3.5 py-2 cursor-pointer hover:bg-slate-900 transition-all shadow-lg border border-white/10">
+                <svg className="w-3.5 h-3.5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                </svg>
+                <span>{form.coverImage ? 'Change Cover' : 'Upload Cover'}</span>
+                <input type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
+              </label>
+
+              {form.coverImage && (
+                <button
+                  type="button"
+                  onClick={() => set('coverImage', '')}
+                  className="rounded-full bg-rose-950/80 backdrop-blur-md text-rose-300 text-xs font-bold px-3 py-2 hover:bg-rose-900 transition-all border border-rose-500/20"
+                >
+                  Reset Cover
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Avatar + info */}
@@ -442,42 +505,69 @@ export function EmployeeDashboard({ employee = {}, onClose, createMode = false }
           <div className="space-y-5">
             {/* Session Info box */}
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-              <h2 className="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-4">Session Security</h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xs font-extrabold uppercase tracking-wider text-slate-400">Session Security</h2>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-blue-50 text-blue-600 border border-blue-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping" /> Realtime 3s Sync
+                </span>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
                   <span className="text-xs font-bold text-slate-400 uppercase">Session ID</span>
-                  <span className="font-mono text-slate-700 break-all text-xs">{employee.currentSessionId || '—'}</span>
-                </div>
-                <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
-                  <span className="text-xs font-bold text-slate-400 uppercase">Last Login IP</span>
-                  <span className="font-mono text-slate-700">{employee.lastLoginIp || '—'}</span>
-                </div>
-                <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
-                  <span className="text-xs font-bold text-slate-400 uppercase">Login Device</span>
-                  <span className="break-words text-xs text-slate-700">{employee.lastLoginDevice || 'Not available'}</span>
-                </div>
-                <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
-                  <span className="text-xs font-bold text-slate-400 uppercase">Login Time</span>
-                  <span className="text-xs font-semibold text-slate-700">{formatDateTime(employee.lastLoginAt)}</span>
-                </div>
-                <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
-                  <span className="text-xs font-bold text-slate-400 uppercase">Status</span>
-                  <span className={`font-bold flex items-center gap-1.5 ${employee.currentSessionId && !sessionRevoked ? 'text-emerald-600' : 'text-slate-400'}`}>
-                    <span className={`w-2 h-2 rounded-full ${employee.currentSessionId && !sessionRevoked ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
-                    {employee.currentSessionId && !sessionRevoked ? 'Online' : 'Offline'}
+                  <span className="font-mono text-slate-700 break-all text-xs">
+                    {(liveSession.currentSessionId || employee.currentSessionId) && !sessionRevoked
+                      ? (liveSession.currentSessionId || employee.currentSessionId)
+                      : '— (No Active Session)'}
                   </span>
                 </div>
+
+                <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                  <span className="text-xs font-bold text-slate-400 uppercase">Last Login IP</span>
+                  <span className="font-mono text-slate-700 font-bold">{liveSession.lastLoginIp || employee.lastLoginIp || '—'}</span>
+                </div>
+
+                <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                  <span className="text-xs font-bold text-slate-400 uppercase">Login Device</span>
+                  <span className="text-sm font-extrabold text-slate-900 flex items-center gap-1.5">
+                    {parseDeviceName(liveSession.lastLoginDevice || employee.lastLoginDevice)}
+                  </span>
+                  {(liveSession.lastLoginDevice || employee.lastLoginDevice) && (
+                    <span className="font-mono text-[10px] text-slate-400 break-all truncate" title={liveSession.lastLoginDevice || employee.lastLoginDevice}>
+                      {liveSession.lastLoginDevice || employee.lastLoginDevice}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                  <span className="text-xs font-bold text-slate-400 uppercase">Login Time (IST)</span>
+                  <span className="text-xs font-bold text-slate-800">{formatISTDateTime(liveSession.lastLoginAt || employee.lastLoginAt)}</span>
+                </div>
+
+                <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                  <span className="text-xs font-bold text-slate-400 uppercase">Realtime Status</span>
+                  <span className={`font-bold text-xs flex items-center gap-1.5 ${(liveSession.currentSessionId || employee.currentSessionId) && !sessionRevoked ? 'text-emerald-600' : 'text-slate-400'}`}>
+                    <span className={`w-2 h-2 rounded-full ${(liveSession.currentSessionId || employee.currentSessionId) && !sessionRevoked ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
+                    {(liveSession.currentSessionId || employee.currentSessionId) && !sessionRevoked ? 'Online (Active Now)' : 'Offline (Logged Out)'}
+                  </span>
+                </div>
+
                 <div className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
                   <span className="text-xs font-bold text-slate-400 uppercase">Firebase UID</span>
                   <span className="font-mono text-slate-700 break-all text-xs">{employee.uid || employee.id || '—'}</span>
                 </div>
               </div>
-              <div className="mt-5 flex justify-end border-t border-slate-100 pt-4">
+
+              <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+                <span className="text-xs text-slate-400 font-medium">Revoking force logs out active session immediately</span>
                 <button
                   type="button"
-                  onClick={handleRevokeSession}
-                  disabled={!employee.currentSessionId || sessionRevoked || revokingSession}
-                  className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm font-bold text-rose-700 transition-colors hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-50"
+                  onClick={async () => {
+                    await handleRevokeSession()
+                    setLiveSession(prev => ({ ...prev, currentSessionId: null }))
+                  }}
+                  disabled={!(liveSession.currentSessionId || employee.currentSessionId) || sessionRevoked || revokingSession}
+                  className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-xs font-extrabold text-rose-700 transition-colors hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {revokingSession ? 'Logging out…' : sessionRevoked ? 'Session logged out' : 'Force logout employee'}
                 </button>
@@ -487,25 +577,31 @@ export function EmployeeDashboard({ employee = {}, onClose, createMode = false }
             {/* Devices box */}
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
               <h2 className="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-1">Current / Last Login Device</h2>
-              <p className="mb-4 text-xs text-slate-500">A new login replaces the previous active session, so this shows the currently active or most recent device.</p>
+              <p className="mb-4 text-xs text-slate-500 font-medium">A new login replaces the previous active session, so this shows the currently active or most recent device.</p>
               {loadingDevices ? (
-                <p className="text-sm text-slate-400">Loading devices…</p>
+                <p className="text-sm text-slate-400 font-mono">// Loading devices…</p>
               ) : devices.length === 0 ? (
                 <p className="text-sm text-slate-400">No active device sessions found.</p>
               ) : (
                 <ul className="space-y-3">
                   {devices.map((dev, i) => (
-                    <li key={i} className="flex flex-col gap-1 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                    <li key={i} className="flex flex-col gap-1.5 p-4 rounded-xl bg-slate-50 border border-slate-200">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold text-slate-800">{dev.deviceName || `Device ${i + 1}`}</span>
-                        {dev.active && (
-                          <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                        <span className="text-sm font-extrabold text-slate-900">{dev.deviceName || parseDeviceName(dev.rawDevice)}</span>
+                        {dev.active && !sessionRevoked ? (
+                          <span className="text-xs font-bold text-emerald-600 flex items-center gap-1 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Active now
+                          </span>
+                        ) : (
+                          <span className="text-xs font-bold text-slate-400 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full">
+                            Offline
                           </span>
                         )}
                       </div>
-                      <span className="text-xs font-mono text-slate-500">IP: {dev.ip}</span>
-                      <span className="text-xs text-slate-400">Last seen: {dev.lastSeen || '—'}</span>
+                      <div className="flex flex-wrap items-center justify-between text-xs font-mono text-slate-500 pt-1">
+                        <span>IP: <strong className="text-slate-800">{dev.ip}</strong></span>
+                        <span className="text-slate-400 font-sans">Last seen: <strong className="text-slate-700">{dev.lastSeen || '—'}</strong></span>
+                      </div>
                     </li>
                   ))}
                 </ul>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/StoreContext'
+import { parseDeviceName } from '../utils/deviceParser'
 const avatarColors = [
   'from-blue-500 to-cyan-500',
   'from-purple-500 to-pink-500',

@@ -120,22 +120,39 @@ const resetPassword = async (req, res) => {
 
 const MAX_LOGIN_ATTEMPTS = 3;
 
+const getClientIp = (req) => {
+  const forwarded = req.headers["x-forwarded-for"];
+  if (forwarded) {
+    const ip = forwarded.split(",")[0].trim();
+    if (ip) return ip;
+  }
+  const realIp = req.headers["x-real-ip"];
+  if (realIp) return realIp.trim();
+  const cfIp = req.headers["cf-connecting-ip"];
+  if (cfIp) return cfIp.trim();
+  let ip = req.socket?.remoteAddress || req.ip || "127.0.0.1";
+  if (ip.startsWith("::ffff:")) ip = ip.replace("::ffff:", "");
+  if (ip === "::1") ip = "127.0.0.1";
+  return ip;
+};
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({ success: false, message: "Email and password are required.", code: "missing_fields" });
+      return res.status(400).json({ success: false, message: "Email and password are required.", code: "credentials_required" });
     }
 
     const db = getDb();
-    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedEmail = String(email).trim().toLowerCase();
     const user = await db.collection("users").findOne({ email: normalizedEmail });
+
     if (!user) {
-      return res.status(401).json({ success: false, message: "No account found with this email.", code: "invalid_email" });
+      return res.status(401).json({ success: false, message: "Invalid email or password.", code: "user_not_found" });
     }
 
-    if (user.status !== "active") {
-      return res.status(403).json({ success: false, message: "Your account is inactive. Please contact support.", code: "inactive" });
+    if (user.status === "terminated" || user.isTerminated) {
+      return res.status(403).json({ success: false, message: "Your account has been deactivated. Please contact support.", code: "account_terminated" });
     }
 
     if (!user.passwordHash) {
@@ -143,8 +160,11 @@ const login = async (req, res) => {
     }
 
     const attempts = user.loginAttempts || 0;
-    if (attempts >= MAX_LOGIN_ATTEMPTS) {
-      return res.status(401).json({ success: false, message: "Too many failed attempts. Please reset your password.", code: "forgot_password_required" });
+    const lastAttempt = user.lastLoginAttempt ? new Date(user.lastLoginAttempt) : null;
+    const cooldownMs = 15 * 60 * 1000;
+    if (attempts >= MAX_LOGIN_ATTEMPTS && lastAttempt && (Date.now() - lastAttempt.getTime() < cooldownMs)) {
+      const remainingSec = Math.ceil((cooldownMs - (Date.now() - lastAttempt.getTime())) / 1000);
+      return res.status(429).json({ success: false, message: `Account temporarily locked due to failed attempts. Try again in ${remainingSec}s.`, code: "account_locked" });
     }
 
     const isMatch = await bcrypt.compare(password, user.passwordHash);
@@ -160,7 +180,7 @@ const login = async (req, res) => {
       return res.status(401).json({ success: false, message: "Incorrect password.", code: "invalid_password" });
     }
 
-    const clientIp = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.socket.remoteAddress || req.ip || "127.0.0.1";
+    const clientIp = getClientIp(req);
     const userAgent = req.headers["user-agent"] || "Unknown Device";
     const sessionId = crypto.randomUUID();
 
@@ -192,6 +212,10 @@ const login = async (req, res) => {
 
     const { passwordHash, ...userResponse } = user;
     userResponse.uid = user.uid || user._id.toString();
+    userResponse.lastLoginIp = clientIp;
+    userResponse.lastLoginDevice = userAgent;
+    userResponse.lastLoginAt = new Date().toISOString();
+    userResponse.currentSessionId = sessionId;
 
     return res.json({
       success: true,
@@ -206,7 +230,7 @@ const login = async (req, res) => {
 
 // ─── Google OAuth with Passport ───────────────────────────────────────────────
 
-const passportGoogleCallback = (req, res) => {
+const passportGoogleCallback = async (req, res) => {
   const user = req.user;
   if (!user) {
     return res.redirect(`${FRONTEND_URL}/login?error=google_auth_failed`);
@@ -216,7 +240,28 @@ const passportGoogleCallback = (req, res) => {
     return res.redirect(`${FRONTEND_URL}/login?error=account_inactive`);
   }
 
+  const clientIp = getClientIp(req);
+  const userAgent = req.headers["user-agent"] || "Unknown Device";
+  const sessionId = crypto.randomUUID();
   const uid = user.uid || user._id?.toString();
+
+  try {
+    const db = getDb();
+    await db.collection("users").updateOne(
+      { $or: [{ uid }, { email: user.email }] },
+      {
+        $set: {
+          lastLoginAt: new Date().toISOString(),
+          lastLoginIp: clientIp,
+          lastLoginDevice: userAgent,
+          currentSessionId: sessionId
+        }
+      }
+    );
+  } catch (err) {
+    logger.warn(`Failed to update session info on Google callback: ${err.message}`);
+  }
+
   const token = jwt.sign(
     {
       uid,
@@ -224,6 +269,7 @@ const passportGoogleCallback = (req, res) => {
       role: user.role || "customer",
       employeeId: user.employeeId || null,
       permissions: user.permissions || {},
+      sessionId: sessionId
     },
     process.env.JWT_SECRET || "your_jwt_secret_here",
     { expiresIn: "7d" }

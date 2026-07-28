@@ -1093,6 +1093,43 @@ const revokeUserSessionHandler = async (req, res) => {
   }
 };
 
+const lookupUserByEmail = async (req, res) => {
+  try {
+    const { email, uid, id } = req.query;
+    const queryTarget = email || uid || id;
+    if (!queryTarget) {
+      return res.status(400).json({ success: false, message: "Email or ID is required for lookup." });
+    }
+
+    const db = getDb();
+    const cleanTarget = String(queryTarget).trim();
+
+    const userDoc = await db.collection("users").findOne({
+      $or: [
+        { email: cleanTarget.toLowerCase() },
+        { uid: cleanTarget },
+        { firebaseUid: cleanTarget },
+        ...(ObjectId.isValid(cleanTarget) ? [{ _id: new ObjectId(cleanTarget) }] : [])
+      ]
+    });
+
+    if (!userDoc) {
+      return res.status(404).json({ success: false, message: "User not found." });
+    }
+
+    const { passwordHash, ...user } = userDoc;
+    user.id = user._id ? user._id.toString() : user.id;
+    user.uid = user.uid || user.firebaseUid || user.id;
+
+    return res.json({
+      success: true,
+      user
+    });
+  } catch (error) {
+    return handleAdminError(res, error, "Unable to lookup user.");
+  }
+};
+
 module.exports = {
   broadcastEmail,
   notifyAccountApproval,

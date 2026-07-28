@@ -10,8 +10,8 @@
     "semantic_hash": ""
   },
   "backend/controllers/authController.js": {
-    "mtime": 1784978062.854509,
-    "ast_hash": "df3bba457e9645093334758e8e187826",
+    "mtime": 1785223484.968943,
+    "ast_hash": "0e864852f7a52d647d9d435ab6d5c3e7",
     "semantic_hash": ""
   },
   "backend/controllers/certificateController.js": {
@@ -75,8 +75,8 @@
     "semantic_hash": ""
   },
   "backend/routes/ai.js": {
-    "mtime": 1785172545.9548855,
-    "ast_hash": "53d072e35d1dfca3d2365a8741662901",
+    "mtime": 1785217821.4522693,
+    "ast_hash": "7a69d7bf88f014d2dd4145f3bd09e1be",
     "semantic_hash": ""
   },
   "backend/routes/auth.js": {
@@ -1330,8 +1330,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminEmployees.jsx": {
-    "mtime": 1785217470.2288408,
-    "ast_hash": "3ec18b734f9932bb6fbb1e40453e9fd3",
+    "mtime": 1785223338.96987,
+    "ast_hash": "ea7086a67cb9ff46b95cc1a194d1d6c3",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminLayout.jsx": {
@@ -1475,8 +1475,8 @@
     "semantic_hash": ""
   },
   "frontend/src/config/api.js": {
-    "mtime": 1785170964.5729477,
-    "ast_hash": "1713925e20e563ca025feb640f5ba5df",
+    "mtime": 1785217828.8415332,
+    "ast_hash": "9e964d9e38d9be994b2088abc9d6556d",
     "semantic_hash": ""
   },
   "frontend/src/context/AuthContext.jsx": {
@@ -1555,8 +1555,8 @@
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeProfileRefined.jsx": {
-    "mtime": 1784977861.650486,
-    "ast_hash": "63459ba7ef2765bb86ef57eebc739ada",
+    "mtime": 1785223718.594212,
+    "ast_hash": "fd4942c379342932a60c6d1c5fec046c",
     "semantic_hash": ""
   },
   "frontend/src/employee/EmployeeProjects.jsx": {
@@ -2735,8 +2735,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/EmployeeDashboard.jsx": {
-    "mtime": 1784997193.3527954,
-    "ast_hash": "f0713dd3e1f41cc3fcbecf2dbb309639",
+    "mtime": 1785223319.9022646,
+    "ast_hash": "7d3f38a254dc80c26cf1e38f809800fb",
     "semantic_hash": ""
   },
   "frontend/src/components/VerifiedCertificateSection.jsx": {
@@ -2755,8 +2755,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminAIDepartments.jsx": {
-    "mtime": 1785217632.1787355,
-    "ast_hash": "24071c3d842db9fb1ad93b00148a87ba",
+    "mtime": 1785217852.6762886,
+    "ast_hash": "708f7addbaa20fc6693607b98e98595b",
     "semantic_hash": ""
   },
   "backend/scripts/verify_ai_workforce.js": {
@@ -2792,6 +2792,11 @@
   "frontend/src/pages/NotFound.jsx": {
     "mtime": 1785215582.4072814,
     "ast_hash": "6ded776e86fe9c9b3d65136856fd4b46",
+    "semantic_hash": ""
+  },
+  "frontend/src/utils/deviceParser.js": {
+    "mtime": 1785223246.9424777,
+    "ast_hash": "1f0772bcf78798acc70bf9cecf4efd27",
     "semantic_hash": ""
   }
 }
