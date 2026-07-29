@@ -75,8 +75,8 @@
     "semantic_hash": ""
   },
   "backend/routes/ai.js": {
-    "mtime": 1785299254.0890267,
-    "ast_hash": "4bae139d1d2c5800864834a25d703a7a",
+    "mtime": 1785297710.4644692,
+    "ast_hash": "7897a0e0ac6b99d0eabad348e58614f2",
     "semantic_hash": ""
   },
   "backend/routes/auth.js": {
@@ -2745,18 +2745,18 @@
     "semantic_hash": ""
   },
   "backend/services/aiAgents/agentDispatcher.js": {
-    "mtime": 1785299647.4327307,
-    "ast_hash": "0a2fae530c3c2f7b8f422a57c5f48b6a",
+    "mtime": 1785172501.774429,
+    "ast_hash": "802f4e410d97e6ef96048b3a094c4cbc",
     "semantic_hash": ""
   },
   "backend/services/aiAgents/departmentConfig.js": {
-    "mtime": 1785299639.3076918,
-    "ast_hash": "43722cabcf06fbbfd7f9920f298881a0",
+    "mtime": 1785297702.7315555,
+    "ast_hash": "0a1f89f197a6a50e3d7a136d695a0e5d",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminAIDepartments.jsx": {
-    "mtime": 1785299657.1037385,
-    "ast_hash": "a7686b23e3304f20b6d36f2e50b95450",
+    "mtime": 1785297717.8235128,
+    "ast_hash": "1fc9019150dac8e4ad40a14231aee515",
     "semantic_hash": ""
   },
   "backend/scripts/verify_ai_workforce.js": {

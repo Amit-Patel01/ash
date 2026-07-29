@@ -226,9 +226,25 @@ router.post("/department/proposals/clear", optionalAuth, (req, res) => {
 /**
  * POST /api/ai/department/email/broadcast
  * Broadcast generated AI email to all registered users / students
+ * Responds immediately — actual sending happens in background (parallel batches)
  */
+
+// Convert markdown-style text to clean HTML for email
+const markdownToHtml = (text) => {
+  return String(text)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^#{1,3}\s+(.+)$/gm, '<h3 style="color:#1e293b;margin:16px 0 8px">$1</h3>')
+    .replace(/^\d+\.\s+(.+)$/gm, '<li style="margin:6px 0;color:#475569">$1</li>')
+    .replace(/^[-*]\s+(.+)$/gm, '<li style="margin:6px 0;color:#475569">$1</li>')
+    .replace(/((<li[^>]*>[\s\S]*?<\/li>\n?)+)/g, '<ol style="padding-left:20px">$1</ol>')
+    .replace(/\n{2,}/g, '</p><p style="margin:12px 0;color:#475569;line-height:1.8">')
+    .replace(/\n/g, '<br/>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" style="color:#2563eb">$1</a>');
+};
+
 router.post("/department/email/broadcast", optionalAuth, async (req, res) => {
-  const { subject, body } = req.body;
+  const { subject, body, targetEmail, recipients: customRecipients } = req.body;
   if (!subject || !body) {
     return res.status(400).json({ success: false, message: "subject and body are required" });
   }
@@ -239,39 +255,86 @@ router.post("/department/email/broadcast", optionalAuth, async (req, res) => {
     try { db = getDb(); } catch (e) { db = null; }
 
     let recipients = [];
-
-    if (db) {
-      const users = await db.collection("users").find({ email: { $exists: true } }, { projection: { email: 1 } }).toArray().catch(() => []);
-      recipients = users.map(u => u.email).filter(Boolean);
+    if (Array.isArray(customRecipients) && customRecipients.length > 0) {
+      recipients = customRecipients;
+    } else if (targetEmail) {
+      recipients = [targetEmail];
+    } else if (db) {
+      // Fetch all users + filter unsubscribed
+      const [userDocs, blacklist] = await Promise.all([
+        db.collection("users").find(
+          { email: { $exists: true }, emailUnsubscribed: { $ne: true } },
+          { projection: { email: 1 } }
+        ).toArray().catch(() => []),
+        db.collection("email_unsubscribes").distinct("email").catch(() => [])
+      ]);
+      const blackSet = new Set(blacklist.map(e => e.toLowerCase()));
+      recipients = userDocs.map(u => u.email).filter(e => e && !blackSet.has(e.toLowerCase()));
     }
 
     if (recipients.length === 0) {
       recipients = [process.env.ADMIN_EMAIL || "admin@amitsolutionhub.com"];
     }
 
-    const { sendEmail, emailTemplate } = require("../services/emailService");
-    const formattedHtml = emailTemplate(subject, body.replace(/\n/g, '<br/>'), "Visit Amit Solution Hub", "https://www.amitsolutionhub.com");
+    const validRecipients = recipients.filter(e => e && typeof e === 'string' && e.includes('@'));
+    const totalCount = validRecipients.length;
 
-    let sentCount = 0;
-    for (const email of recipients) {
-      await sendEmail({
-        to: email,
-        subject,
-        html: formattedHtml
-      }).catch(err => logger.warn(`Broadcast fail for ${email}: ${err.message}`));
-      sentCount++;
-    }
-
-    const { addExecutionLog } = require("../services/aiAgents/departmentConfig");
-    addExecutionLog('email', `Dispatched Email Broadcast "${subject}" to ${sentCount} recipient(s)`, 'success');
-
+    // ✅ Respond IMMEDIATELY — no timeout
     res.json({
       success: true,
-      message: `Email Broadcast successfully dispatched to ${sentCount} recipient(s)!`,
-      sentCount
+      message: `Email Broadcast queued for ${totalCount} recipient(s)! Sending in background...`,
+      sentCount: totalCount,
+      failCount: 0
     });
+
+    // Background: parallel batches of 10
+    const { sendEmail, emailTemplate } = require("../services/emailService");
+    const { generateUnsubscribeToken } = require("../routes/unsubscribe");
+    const { addExecutionLog } = require("../services/aiAgents/departmentConfig");
+    const baseUrl = process.env.BACKEND_URL || process.env.PUBLIC_URL || 'https://api.amitsolutionhub.com';
+
+    const rawContent = typeof body === 'string' ? body : JSON.stringify(body, null, 2);
+    const htmlContent = `<p style="margin:12px 0;color:#475569;line-height:1.8">${markdownToHtml(rawContent)}</p>`;
+
+    let sentCount = 0;
+    let failCount = 0;
+    const BATCH_SIZE = 10;
+
+    (async () => {
+      for (let i = 0; i < validRecipients.length; i += BATCH_SIZE) {
+        const batch = validRecipients.slice(i, i + BATCH_SIZE);
+        await Promise.all(batch.map(async (email) => {
+          try {
+            const token = generateUnsubscribeToken(email);
+            const unsubUrl = `${baseUrl}/api/unsubscribe?email=${encodeURIComponent(email)}&token=${token}`;
+            const formattedHtml = emailTemplate(
+              subject,
+              htmlContent,
+              'Visit Amit Solution Hub',
+              'https://www.amitsolutionhub.com',
+              '#2563eb',
+              null,
+              unsubUrl
+            );
+            const result = await sendEmail({ to: email, subject, html: formattedHtml });
+            if (result.success) { sentCount++; }
+            else { failCount++; logger.warn(`[AI Broadcast] Fail ${email}: ${result.error}`); }
+          } catch (err) {
+            failCount++;
+            logger.warn(`[AI Broadcast] Exception ${email}: ${err.message}`);
+          }
+        }));
+      }
+      const status = failCount === 0 ? 'success' : (sentCount > 0 ? 'partial' : 'failed');
+      addExecutionLog('email', `Email Broadcast "${subject}" → ${sentCount} sent, ${failCount} failed`, status);
+      logger.info(`[AI Broadcast] "${subject}" → ${sentCount}/${totalCount} delivered`);
+    })().catch(err => logger.error(`[AI Broadcast] Background error: ${err.message}`));
+
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    logger.error(`[AI Broadcast] Setup error: ${error.message}`);
+    if (!res.headersSent) {
+      res.status(500).json({ success: false, message: error.message });
+    }
   }
 });
 

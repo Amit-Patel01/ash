@@ -144,6 +144,11 @@ export default function AdminAIDepartments() {
   const [broadcastStatus, setBroadcastStatus] = useState(null)
   const [activePopupProposal, setActivePopupProposal] = useState(null)
   const [executionSuccessMsg, setExecutionSuccessMsg] = useState(null)
+  // Direct broadcast state — user can paste any email content directly
+  const [directBroadcastBody, setDirectBroadcastBody] = useState('')
+  const [directBroadcastSubject, setDirectBroadcastSubject] = useState('')
+  const [sendingDirectBroadcast, setSendingDirectBroadcast] = useState(false)
+  const [directBroadcastStatus, setDirectBroadcastStatus] = useState(null)
   const [analytics, setAnalytics] = useState({
     weeklyRevenue: 0,
     growthPercent: 0,
@@ -152,28 +157,31 @@ export default function AdminAIDepartments() {
     healthStatus: {}
   })
 
+  // Send broadcast from AI dispatch result
   const handleSendEmailBroadcast = async () => {
-    if (!dispatchResult?.reply) return
+    const replyText = dispatchResult?.reply
+    if (!replyText) return
     setSendingBroadcast(true)
     setBroadcastStatus(null)
 
-    const replyText = dispatchResult.reply
-    let subject = "Announcement from Amit Solution Hub"
-    const subjectMatch = replyText.match(/Subject:\s*(.+)/i)
+    // Auto-detect subject from 'Subject: ...' line OR first non-empty line
+    let subject = 'Announcement from Amit Solution Hub'
+    const subjectMatch = replyText.match(/Subject:\s*([^\n]+)/i)
     if (subjectMatch && subjectMatch[1]) {
       subject = subjectMatch[1].trim()
+    } else {
+      const firstLine = replyText.split('\n').find(l => l.trim())
+      if (firstLine && firstLine.trim().length < 120) {
+        subject = firstLine.trim().replace(/^[#*]+\s*/, '')
+      }
     }
 
     try {
       const res = await fetch(api.aiDepartmentBroadcastEmail, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          subject,
-          body: replyText
-        })
+        body: JSON.stringify({ subject, body: replyText })
       }).then(readApiJson)
-
       setBroadcastStatus(res)
       fetchData()
     } catch (err) {
@@ -183,6 +191,31 @@ export default function AdminAIDepartments() {
     }
   }
 
+  // Direct Broadcast — user pastes any email content, no AI dispatch needed
+  const handleDirectBroadcast = async () => {
+    const body = directBroadcastBody.trim()
+    const subject = directBroadcastSubject.trim() || 'Announcement from Amit Solution Hub'
+    if (!body) return
+    setSendingDirectBroadcast(true)
+    setDirectBroadcastStatus(null)
+    try {
+      const res = await fetch(api.aiDepartmentBroadcastEmail, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, body })
+      }).then(readApiJson)
+      setDirectBroadcastStatus(res)
+      if (res.success) {
+        setDirectBroadcastBody('')
+        setDirectBroadcastSubject('')
+      }
+      fetchData()
+    } catch (err) {
+      setDirectBroadcastStatus({ success: false, message: err.message })
+    } finally {
+      setSendingDirectBroadcast(false)
+    }
+  }
 
   const fetchData = async () => {
     try {
@@ -861,7 +894,7 @@ export default function AdminAIDepartments() {
           }`}>
             <div className="font-bold text-xs uppercase mb-1 text-slate-700 flex flex-wrap justify-between items-center gap-2">
               <span>{dispatchResult.role || 'System'} Execution Output ({dispatchResult.executionMs || 0}ms):</span>
-              {testTaskDept === 'email' && dispatchResult.reply && (
+              {dispatchResult.reply && (
                 <button
                   onClick={handleSendEmailBroadcast}
                   disabled={sendingBroadcast}
@@ -875,7 +908,7 @@ export default function AdminAIDepartments() {
 
             <div>{dispatchResult.reply || dispatchResult.message}</div>
 
-            {testTaskDept === 'email' && dispatchResult.reply && (
+            {dispatchResult.reply && (
               <div className="mt-3 p-3 bg-white rounded-lg border border-slate-200 text-xs font-sans">
                 <div className="font-bold text-slate-700 mb-1">✍️ Editable Broadcast Content:</div>
                 <textarea
@@ -895,7 +928,52 @@ export default function AdminAIDepartments() {
             )}
           </div>
         )}
+      </div>
 
+      {/* Direct Custom Email Broadcast Box */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <h2 className="text-lg font-bold flex items-center gap-2 text-slate-900">
+          <EmailIcon className="w-5 h-5 text-indigo-600" /> Direct Email Broadcast & Newsletter (No AI needed)
+        </h2>
+        <div className="space-y-3">
+          <div>
+            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email Subject:</label>
+            <input
+              type="text"
+              value={directBroadcastSubject}
+              onChange={e => setDirectBroadcastSubject(e.target.value)}
+              placeholder="e.g. 🎉 Celebrate with Us! 50% OFF All Courses for Amit Sir's Birthday!"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 font-medium outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email Body Content:</label>
+            <textarea
+              value={directBroadcastBody}
+              onChange={e => setDirectBroadcastBody(e.target.value)}
+              placeholder="Paste your email draft here... Markdown formatting (**bold**, links) is supported."
+              className="w-full h-40 p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm font-sans outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-slate-500">Target: All registered & subscribed users in database</span>
+            <button
+              onClick={handleDirectBroadcast}
+              disabled={sendingDirectBroadcast || !directBroadcastBody.trim()}
+              className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:brightness-110 disabled:opacity-50 text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-indigo-500/25 flex items-center gap-2"
+            >
+              <EmailIcon className="w-4 h-4" />
+              {sendingDirectBroadcast ? 'Sending Broadcast...' : '🚀 Send Instant Email Broadcast'}
+            </button>
+          </div>
+          {directBroadcastStatus && (
+            <div className={`p-4 rounded-xl text-sm font-bold ${
+              directBroadcastStatus.success ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-rose-100 text-rose-900 border border-rose-300'
+            }`}>
+              {directBroadcastStatus.message}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Real-Time AI Execution Audit Logs Stream — terminal readout */}

@@ -10,8 +10,29 @@ const { logger } = require('../../logger');
 const classifyIntent = (prompt, department, aiResponse) => {
   const lowerPrompt = prompt.toLowerCase();
 
-  // 1. Coupon / Discount Intent
-  if (lowerPrompt.includes('coupon') || lowerPrompt.includes('offer') || lowerPrompt.includes('discount')) {
+  // 1. Email / Broadcast Intent (Highest priority if prompt is an email draft or explicitly email-related)
+  if (
+    lowerPrompt.startsWith('subject:') ||
+    lowerPrompt.includes('subject:') ||
+    lowerPrompt.includes('mail') ||
+    lowerPrompt.includes('email') ||
+    lowerPrompt.includes('broadcast') ||
+    lowerPrompt.includes('newsletter') ||
+    lowerPrompt.includes('dear ') ||
+    department === 'email'
+  ) {
+    const subjectMatch = (prompt + '\n' + aiResponse).match(/Subject:\s*([^\n]+)/i);
+    const emailSubject = subjectMatch ? subjectMatch[1].trim() : `Announcement: ${prompt.slice(0, 40)}`;
+    return {
+      proposalType: 'marketing_email_broadcast',
+      proposalTitle: `📢 Email Broadcast: "${emailSubject}"`,
+      proposalDetails: `Prepared HTML email campaign. Click Approve to send to all registered users in database.`,
+      proposedData: { emailSubject, aiResponse: aiResponse || prompt }
+    };
+  }
+
+  // 2. Coupon / Discount Intent
+  if (lowerPrompt.includes('coupon') || lowerPrompt.includes('discount') || lowerPrompt.includes('create code')) {
     const codeMatch = prompt.match(/(?:code|coupon|offer)\s+([A-Za-z0-9]+)/i);
     const discountMatch = prompt.match(/(\d+)\s*%/);
     const couponCode = codeMatch ? codeMatch[1].toUpperCase() : `OFFER${Math.floor(Math.random() * 900 + 100)}`;

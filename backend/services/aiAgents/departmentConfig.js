@@ -260,15 +260,20 @@ const resolveProposal = async (proposalId, approved = true) => {
         }
       }
 
-      // 4. Email Broadcast Execution (with unsubscribe filtering)
+      // 4. Email Broadcast Execution (with unsubscribe filtering & background batching)
       if (proposal.type === 'marketing_email_broadcast') {
         const { getDb } = require('../../utils/mongo');
         let db = null;
         try { db = getDb(); } catch(e) { db = null; }
 
         let recipients = [];
-        if (db) {
-          // Filter out unsubscribed users
+        // Priority 1: Check if targeted emails are provided in proposedData
+        if (Array.isArray(proposal.proposedData?.targetEmails) && proposal.proposedData.targetEmails.length > 0) {
+          recipients = proposal.proposedData.targetEmails;
+        } else if (proposal.proposedData?.targetEmail) {
+          recipients = [proposal.proposedData.targetEmail];
+        } else if (db) {
+          // Priority 2: Fetch subscribed users from DB
           const [userDocs, blacklist] = await Promise.all([
             db.collection('users').find(
               { email: { $exists: true }, emailUnsubscribed: { $ne: true } },
@@ -287,28 +292,57 @@ const resolveProposal = async (proposalId, approved = true) => {
         const { sendEmail, emailTemplate } = require('../emailService');
         const { generateUnsubscribeToken } = require('../../routes/unsubscribe');
         const subject = proposal.proposedData?.emailSubject || proposal.title || 'Announcement from Amit Solution Hub';
-        const emailContent = proposal.proposedData?.aiResponse || proposal.details || 'Official Announcement';
+        const rawContent = proposal.proposedData?.aiResponse || proposal.details || 'Official Announcement';
+        const emailContent = typeof rawContent === 'string' ? rawContent : JSON.stringify(rawContent, null, 2);
         const baseUrl = process.env.BACKEND_URL || process.env.PUBLIC_URL || 'https://api.amitsolutionhub.com';
 
-        let sentCount = 0;
-        for (const email of recipients) {
-          // Personalized unsubscribe link per recipient
-          const token = generateUnsubscribeToken(email);
-          const unsubUrl = `${baseUrl}/api/unsubscribe?email=${encodeURIComponent(email)}&token=${token}`;
-          const formattedHtml = emailTemplate(
-            subject,
-            emailContent.replace(/\n/g, '<br/>'),
-            'Visit Amit Solution Hub',
-            'https://www.amitsolutionhub.com',
-            '#2563eb',
-            null,
-            unsubUrl
-          );
-          await sendEmail({ to: email, subject, html: formattedHtml }).catch(err => logger.warn(`Broadcast error for ${email}: ${err.message}`));
-          sentCount++;
-        }
+        // Markdown to HTML helper
+        const markdownToHtml = (text) => {
+          return String(text)
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.+?)\*/g, '<em>$1</em>')
+            .replace(/^#{1,3}\s+(.+)$/gm, '<h3 style="color:#1e293b;margin:16px 0 8px">$1</h3>')
+            .replace(/^\d+\.\s+(.+)$/gm, '<li style="margin:6px 0;color:#475569">$1</li>')
+            .replace(/^[-*]\s+(.+)$/gm, '<li style="margin:6px 0;color:#475569">$1</li>')
+            .replace(/((<li[^>]*>[\s\S]*?<\/li>\n?)+)/g, '<ol style="padding-left:20px">$1</ol>')
+            .replace(/\n{2,}/g, '</p><p style="margin:12px 0;color:#475569;line-height:1.8">')
+            .replace(/\n/g, '<br/>')
+            .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" style="color:#2563eb">$1</a>');
+        };
 
-        logger.info(`[Real Email Execution] Dispatched email broadcast "${subject}" to ${sentCount} subscribed user(s).`);
+        const htmlBody = `<p style="margin:12px 0;color:#475569;line-height:1.8">${markdownToHtml(emailContent)}</p>`;
+        const validRecipients = recipients.filter(e => e && typeof e === 'string' && e.includes('@'));
+        const BATCH_SIZE = 10;
+
+        // Background parallel sending
+        (async () => {
+          let sentCount = 0;
+          let failCount = 0;
+          for (let i = 0; i < validRecipients.length; i += BATCH_SIZE) {
+            const batch = validRecipients.slice(i, i + BATCH_SIZE);
+            await Promise.all(batch.map(async (email) => {
+              try {
+                const token = generateUnsubscribeToken(email);
+                const unsubUrl = `${baseUrl}/api/unsubscribe?email=${encodeURIComponent(email)}&token=${token}`;
+                const formattedHtml = emailTemplate(
+                  subject,
+                  htmlBody,
+                  'Visit Amit Solution Hub',
+                  'https://www.amitsolutionhub.com',
+                  '#2563eb',
+                  null,
+                  unsubUrl
+                );
+                const result = await sendEmail({ to: email, subject, html: formattedHtml });
+                if (result.success) sentCount++;
+                else failCount++;
+              } catch (err) {
+                failCount++;
+              }
+            }));
+          }
+          logger.info(`[Proposal Execution] Dispatched broadcast "${subject}" to ${sentCount}/${validRecipients.length} recipients (${failCount} failed).`);
+        })().catch(err => logger.error(`[Proposal Execution] Broadcast error: ${err.message}`));
       }
 
 
