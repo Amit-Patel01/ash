@@ -8,10 +8,14 @@ const SMTP_SECURE = process.env.SMTP_SECURE !== undefined ? process.env.SMTP_SEC
 const SMTP_USER = process.env.SMTP_USER || process.env.MAIL_USER || process.env.EMAIL_USER || process.env.GMAIL_USER || "";
 const SMTP_PASS = process.env.SMTP_PASS || process.env.MAIL_PASS || process.env.EMAIL_PASS || process.env.GMAIL_PASS || process.env.SMTP_PASSWORD || "";
 
-const transporter = nodemailer.createTransport({
+const createTransporterConfig = (port, secure) => ({
   host: SMTP_HOST,
-  port: SMTP_PORT,
-  secure: SMTP_SECURE, // true for 465, false for other ports
+  port,
+  secure,
+  family: 4, // 👈 CRITICAL FIX: Force IPv4 (Fixes ENETUNREACH 2607:f8b0:... IPv6 errors on Render/cloud)
+  connectionTimeout: 12000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
   auth: (SMTP_USER && SMTP_PASS) ? {
     user: SMTP_USER,
     pass: SMTP_PASS,
@@ -21,8 +25,11 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+const transporter = nodemailer.createTransport(createTransporterConfig(SMTP_PORT, SMTP_SECURE));
+const fallbackTransporter = SMTP_PORT === 465 ? nodemailer.createTransport(createTransporterConfig(587, false)) : null;
+
 if (SMTP_USER && SMTP_PASS) {
-  logger.info(`[Email] Nodemailer configured using SMTP host: ${SMTP_HOST}:${SMTP_PORT} (${SMTP_USER})`);
+  logger.info(`[Email] Nodemailer configured using SMTP host: ${SMTP_HOST}:${SMTP_PORT} (${SMTP_USER}) [IPv4 Forced]`);
 } else {
   logger.warn("⚠️ [Email] Nodemailer SMTP credentials not fully set. Configure SMTP_USER and SMTP_PASS in .env for production mail dispatch.");
 }
@@ -177,10 +184,28 @@ const sendEmail = async ({ to, subject, html, text, attachments }) => {
       })) : undefined,
     };
 
-    // Pure Nodemailer Mail Dispatch
-    const info = await transporter.sendMail(mailOptions);
-    logger.info(`[Email] Sent email via Nodemailer to ${to}. MessageId: ${info.messageId || info.response}`);
-    return { success: true, id: info.messageId || info.response, messageId: info.messageId };
+    // Pure Nodemailer Mail Dispatch (with IPv4 forcing & automatic fallback)
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      logger.info(`[Email] Sent email via Nodemailer to ${to}. MessageId: ${info.messageId || info.response}`);
+      return { success: true, id: info.messageId || info.response, messageId: info.messageId };
+    } catch (primaryError) {
+      if (fallbackTransporter) {
+        logger.warn(`[Email] Primary transport error for ${to} (${primaryError.message}). Retrying via fallback (port 587)...`);
+        try {
+          const info = await fallbackTransporter.sendMail(mailOptions);
+          logger.info(`[Email] Sent email via fallback Nodemailer to ${to}. MessageId: ${info.messageId || info.response}`);
+          return { success: true, id: info.messageId || info.response, messageId: info.messageId };
+        } catch (fallbackError) {
+          const errorMessage = fallbackError?.message || String(fallbackError);
+          logger.error(`[Email] Nodemailer fallback error for ${to}: ${errorMessage}`);
+          return { success: false, error: errorMessage };
+        }
+      }
+      const errorMessage = primaryError?.message || String(primaryError);
+      logger.error(`[Email] Nodemailer send error for ${to}: ${errorMessage}`);
+      return { success: false, error: errorMessage };
+    }
   } catch (error) {
     const errorMessage = error?.message || String(error);
     logger.error(`[Email] Nodemailer send error for ${to}: ${errorMessage}`);

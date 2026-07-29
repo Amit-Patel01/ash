@@ -260,7 +260,7 @@
       "source_location": "L308",
       "_origin": "ast",
       "id": "backend_controllers_admincontroller_listusers",
-      "community": 27,
+      "community": 55,
       "norm_label": "listusers()"
     },
     {
@@ -280,7 +280,7 @@
       "source_location": "L322",
       "_origin": "ast",
       "id": "backend_controllers_admincontroller_createuser",
-      "community": 17,
+      "community": 65,
       "norm_label": "createuser()"
     },
     {
@@ -320,7 +320,7 @@
       "source_location": "L432",
       "_origin": "ast",
       "id": "backend_controllers_admincontroller_mergeusers",
-      "community": 27,
+      "community": 66,
       "norm_label": "mergeusers()"
     },
     {
@@ -810,7 +810,7 @@
       "source_location": "L457",
       "_origin": "ast",
       "id": "backend_controllers_certificatecontroller_requestcertificate",
-      "community": 66,
+      "community": 12,
       "norm_label": "requestcertificate()"
     },
     {
@@ -870,7 +870,7 @@
       "source_location": "L730",
       "_origin": "ast",
       "id": "backend_controllers_certificatecontroller_removeqrcertificate",
-      "community": 66,
+      "community": 12,
       "norm_label": "removeqrcertificate()"
     },
     {
@@ -960,7 +960,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller",
-      "community": 25,
+      "community": 19,
       "norm_label": "razorpaycontroller.js"
     },
     {
@@ -970,7 +970,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_objectid",
-      "community": 25,
+      "community": 19,
       "norm_label": "{ objectid }"
     },
     {
@@ -980,7 +980,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_crypto",
-      "community": 25,
+      "community": 19,
       "norm_label": "crypto"
     },
     {
@@ -990,7 +990,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_razorpay",
-      "community": 25,
+      "community": 19,
       "norm_label": "razorpay"
     },
     {
@@ -1000,7 +1000,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_sendemail_emailtemplate",
-      "community": 25,
+      "community": 19,
       "norm_label": "{ sendemail, emailtemplate }"
     },
     {
@@ -1010,7 +1010,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_addpaymentjob",
-      "community": 25,
+      "community": 19,
       "norm_label": "{ addpaymentjob }"
     },
     {
@@ -1020,7 +1020,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_getdb",
-      "community": 25,
+      "community": 19,
       "norm_label": "{ getdb }"
     },
     {
@@ -1030,7 +1030,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_incrementcouponusage_validatecouponforpurchase",
-      "community": 25,
+      "community": 19,
       "norm_label": "{\r\n  incrementcouponusage,\r\n  validatecouponforpurchase,\r\n}"
     },
     {
@@ -1040,7 +1040,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_logger",
-      "community": 25,
+      "community": 19,
       "norm_label": "{ logger }"
     },
     {
@@ -1050,7 +1050,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_roundcurrency",
-      "community": 25,
+      "community": 19,
       "norm_label": "roundcurrency()"
     },
     {
@@ -1060,7 +1060,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_normalizeplankey",
-      "community": 25,
+      "community": 19,
       "norm_label": "normalizeplankey()"
     },
     {
@@ -1070,7 +1070,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_compactplankey",
-      "community": 25,
+      "community": 19,
       "norm_label": "compactplankey()"
     },
     {
@@ -1080,7 +1080,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_resolvestoredcoursepricing",
-      "community": 25,
+      "community": 19,
       "norm_label": "resolvestoredcoursepricing()"
     },
     {
@@ -1090,7 +1090,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_resolvecoursepricing",
-      "community": 25,
+      "community": 19,
       "norm_label": "resolvecoursepricing()"
     },
     {
@@ -1100,7 +1100,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_createorder",
-      "community": 25,
+      "community": 19,
       "norm_label": "createorder()"
     },
     {
@@ -1110,7 +1110,7 @@
       "source_location": "L153",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_createcourseorder",
-      "community": 25,
+      "community": 19,
       "norm_label": "createcourseorder()"
     },
     {
@@ -1120,7 +1120,7 @@
       "source_location": "L203",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_verifyprojectpayment",
-      "community": 37,
+      "community": 19,
       "norm_label": "verifyprojectpayment()"
     },
     {
@@ -1130,7 +1130,7 @@
       "source_location": "L282",
       "_origin": "ast",
       "id": "backend_controllers_razorpaycontroller_verifycoursepayment",
-      "community": 25,
+      "community": 19,
       "norm_label": "verifycoursepayment()"
     },
     {
@@ -1500,7 +1500,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_middlewares_authmiddleware",
-      "community": 148,
+      "community": 155,
       "norm_label": "authmiddleware.js"
     },
     {
@@ -1510,7 +1510,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_middlewares_authmiddleware_jwt",
-      "community": 148,
+      "community": 155,
       "norm_label": "jwt"
     },
     {
@@ -1520,7 +1520,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_middlewares_authmiddleware_getdb",
-      "community": 148,
+      "community": 155,
       "norm_label": "{ getdb }"
     },
     {
@@ -1530,7 +1530,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "backend_middlewares_authmiddleware_logger",
-      "community": 148,
+      "community": 155,
       "norm_label": "{ logger }"
     },
     {
@@ -1540,7 +1540,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "backend_middlewares_authmiddleware_enrichdecodeduser",
-      "community": 148,
+      "community": 155,
       "norm_label": "enrichdecodeduser()"
     },
     {
@@ -1550,7 +1550,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "backend_middlewares_authmiddleware_verifyfirebasetoken",
-      "community": 148,
+      "community": 155,
       "norm_label": "verifyfirebasetoken()"
     },
     {
@@ -1560,7 +1560,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "backend_middlewares_authmiddleware_optionalauth",
-      "community": 148,
+      "community": 155,
       "norm_label": "optionalauth()"
     },
     {
@@ -1570,7 +1570,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_middlewares_rbacmiddleware",
-      "community": 27,
+      "community": 25,
       "norm_label": "rbacmiddleware.js"
     },
     {
@@ -1580,7 +1580,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_middlewares_rbacmiddleware_logger",
-      "community": 27,
+      "community": 25,
       "norm_label": "{ logger }"
     },
     {
@@ -1590,7 +1590,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "backend_middlewares_rbacmiddleware_requirerole",
-      "community": 48,
+      "community": 25,
       "norm_label": "requirerole()"
     },
     {
@@ -1600,7 +1600,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "backend_middlewares_rbacmiddleware_adminonly",
-      "community": 27,
+      "community": 25,
       "norm_label": "adminonly"
     },
     {
@@ -1610,7 +1610,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "backend_middlewares_rbacmiddleware_employeeoradmin",
-      "community": 27,
+      "community": 25,
       "norm_label": "employeeoradmin"
     },
     {
@@ -1740,7 +1740,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "backend_middlewares_uploadmiddleware_uploadcertificateasset",
-      "community": 166,
+      "community": 12,
       "norm_label": "uploadcertificateasset"
     },
     {
@@ -2100,7 +2100,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "backend_package_dependencies_razorpay",
-      "community": 25,
+      "community": 19,
       "norm_label": "razorpay"
     },
     {
@@ -2264,10 +2264,20 @@
       "norm_label": "{ dispatchdepartmenttask }"
     },
     {
+      "label": "markdownToHtml()",
+      "file_type": "code",
+      "source_file": "backend/routes/ai.js",
+      "source_location": "L233",
+      "_origin": "ast",
+      "id": "backend_routes_ai_markdowntohtml",
+      "community": 14,
+      "norm_label": "markdowntohtml()"
+    },
+    {
       "label": "dispatchRateLimiter",
       "file_type": "code",
       "source_file": "backend/routes/ai.js",
-      "source_location": "L354",
+      "source_location": "L393",
       "_origin": "ast",
       "id": "backend_routes_ai_dispatchratelimiter",
       "community": 14,
@@ -2330,7 +2340,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_routes_certificates",
-      "community": 166,
+      "community": 12,
       "norm_label": "certificates.js"
     },
     {
@@ -2340,7 +2350,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_routes_certificates_express",
-      "community": 166,
+      "community": 12,
       "norm_label": "express"
     },
     {
@@ -2350,7 +2360,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_routes_certificates_router",
-      "community": 166,
+      "community": 12,
       "norm_label": "router"
     },
     {
@@ -2360,7 +2370,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "backend_routes_certificates_requestcertificate_updatecertificatestatus_verifycertificate_createqrcertificate_updateqrcertificate_updateqrcertificatestatus_removeqrcertificate",
-      "community": 166,
+      "community": 12,
       "norm_label": "{\r\n  requestcertificate,\r\n  updatecertificatestatus,\r\n  verifycertificate,\r\n  createqrcertificate,\r\n  updateqrcertificate,\r\n  updateqrcertificatestatus,\r\n  removeqrcertificate,\r\n}"
     },
     {
@@ -2370,7 +2380,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "backend_routes_certificates_verifyfirebasetoken",
-      "community": 166,
+      "community": 12,
       "norm_label": "{ verifyfirebasetoken }"
     },
     {
@@ -2380,7 +2390,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "backend_routes_certificates_adminonly",
-      "community": 166,
+      "community": 12,
       "norm_label": "{ adminonly }"
     },
     {
@@ -2390,7 +2400,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "backend_routes_certificates_uploadcertificateasset",
-      "community": 166,
+      "community": 12,
       "norm_label": "{ uploadcertificateasset }"
     },
     {
@@ -2550,7 +2560,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_routes_db",
-      "community": 148,
+      "community": 155,
       "norm_label": "db.js"
     },
     {
@@ -2560,7 +2570,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_routes_db_express",
-      "community": 148,
+      "community": 155,
       "norm_label": "express"
     },
     {
@@ -2570,7 +2580,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_routes_db_router",
-      "community": 148,
+      "community": 155,
       "norm_label": "router"
     },
     {
@@ -2580,7 +2590,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "backend_routes_db_getdb",
-      "community": 148,
+      "community": 155,
       "norm_label": "{ getdb }"
     },
     {
@@ -2590,7 +2600,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "backend_routes_db_verifyfirebasetoken_optionalauth",
-      "community": 148,
+      "community": 155,
       "norm_label": "{ verifyfirebasetoken, optionalauth }"
     },
     {
@@ -2600,7 +2610,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "backend_routes_db_objectid",
-      "community": 148,
+      "community": 155,
       "norm_label": "{ objectid }"
     },
     {
@@ -2610,7 +2620,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "backend_routes_db_logger",
-      "community": 148,
+      "community": 155,
       "norm_label": "{ logger }"
     },
     {
@@ -2620,7 +2630,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "backend_routes_db_getqueryid",
-      "community": 148,
+      "community": 155,
       "norm_label": "getqueryid()"
     },
     {
@@ -2730,7 +2740,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_routes_razorpay",
-      "community": 25,
+      "community": 19,
       "norm_label": "razorpay.js"
     },
     {
@@ -2740,7 +2750,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_routes_razorpay_express",
-      "community": 25,
+      "community": 19,
       "norm_label": "express"
     },
     {
@@ -2750,7 +2760,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_routes_razorpay_router",
-      "community": 25,
+      "community": 19,
       "norm_label": "router"
     },
     {
@@ -2760,7 +2770,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "backend_routes_razorpay_createorder_createcourseorder_verifyprojectpayment_verifycoursepayment",
-      "community": 25,
+      "community": 19,
       "norm_label": "{\r\n  createorder,\r\n  createcourseorder,\r\n  verifyprojectpayment,\r\n  verifycoursepayment,\r\n}"
     },
     {
@@ -2770,7 +2780,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "backend_routes_razorpay_verifyfirebasetoken",
-      "community": 25,
+      "community": 19,
       "norm_label": "{ verifyfirebasetoken }"
     },
     {
@@ -2880,7 +2890,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "backend_routes_unsubscribe_generateunsubscribetoken",
-      "community": 19,
+      "community": 14,
       "norm_label": "generateunsubscribetoken()"
     },
     {
@@ -4260,7 +4270,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_services_aiagents_agentdispatcher",
-      "community": 171,
+      "community": 14,
       "norm_label": "agentdispatcher.js"
     },
     {
@@ -4270,7 +4280,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_services_aiagents_agentdispatcher_generatetext",
-      "community": 171,
+      "community": 14,
       "norm_label": "{ generatetext }"
     },
     {
@@ -4280,7 +4290,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_services_aiagents_agentdispatcher_getdepartmentconfig_addexecutionlog",
-      "community": 171,
+      "community": 14,
       "norm_label": "{ getdepartmentconfig, addexecutionlog }"
     },
     {
@@ -4290,7 +4300,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "backend_services_aiagents_agentdispatcher_logger",
-      "community": 171,
+      "community": 14,
       "norm_label": "{ logger }"
     },
     {
@@ -4300,27 +4310,27 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "backend_services_aiagents_agentdispatcher_classifyintent",
-      "community": 171,
+      "community": 14,
       "norm_label": "classifyintent()"
     },
     {
       "label": "getDeptRole()",
       "file_type": "code",
       "source_file": "backend/services/aiAgents/agentDispatcher.js",
-      "source_location": "L81",
+      "source_location": "L102",
       "_origin": "ast",
       "id": "backend_services_aiagents_agentdispatcher_getdeptrole",
-      "community": 171,
+      "community": 14,
       "norm_label": "getdeptrole()"
     },
     {
       "label": "dispatchDepartmentTask()",
       "file_type": "code",
       "source_file": "backend/services/aiAgents/agentDispatcher.js",
-      "source_location": "L89",
+      "source_location": "L110",
       "_origin": "ast",
       "id": "backend_services_aiagents_agentdispatcher_dispatchdepartmenttask",
-      "community": 19,
+      "community": 14,
       "norm_label": "dispatchdepartmenttask()"
     },
     {
@@ -4390,7 +4400,7 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "backend_services_aiagents_departmentconfig_getdepartmentconfig",
-      "community": 171,
+      "community": 14,
       "norm_label": "getdepartmentconfig()"
     },
     {
@@ -4410,7 +4420,7 @@
       "source_location": "L126",
       "_origin": "ast",
       "id": "backend_services_aiagents_departmentconfig_addexecutionlog",
-      "community": 19,
+      "community": 14,
       "norm_label": "addexecutionlog()"
     },
     {
@@ -4450,7 +4460,7 @@
       "source_location": "L156",
       "_origin": "ast",
       "id": "backend_services_aiagents_departmentconfig_addpendingproposal",
-      "community": 19,
+      "community": 14,
       "norm_label": "addpendingproposal()"
     },
     {
@@ -4467,7 +4477,7 @@
       "label": "clearAllProposals()",
       "file_type": "code",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L446",
+      "source_location": "L460",
       "_origin": "ast",
       "id": "backend_services_aiagents_departmentconfig_clearallproposals",
       "community": 14,
@@ -4480,7 +4490,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks",
-      "community": 19,
+      "community": 14,
       "norm_label": "scheduledtasks.js"
     },
     {
@@ -4490,7 +4500,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_cron",
-      "community": 19,
+      "community": 14,
       "norm_label": "cron"
     },
     {
@@ -4500,7 +4510,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_dispatchdepartmenttask",
-      "community": 19,
+      "community": 14,
       "norm_label": "{ dispatchdepartmenttask }"
     },
     {
@@ -4510,7 +4520,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_addpendingproposal_addexecutionlog",
-      "community": 19,
+      "community": 14,
       "norm_label": "{ addpendingproposal, addexecutionlog }"
     },
     {
@@ -4520,7 +4530,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_logger",
-      "community": 19,
+      "community": 14,
       "norm_label": "{ logger }"
     },
     {
@@ -4530,7 +4540,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_generateunsubscribetoken",
-      "community": 19,
+      "community": 14,
       "norm_label": "{ generateunsubscribetoken }"
     },
     {
@@ -4540,7 +4550,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_sendemail_emailtemplate",
-      "community": 19,
+      "community": 14,
       "norm_label": "{ sendemail, emailtemplate }"
     },
     {
@@ -4550,7 +4560,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_safegetdb",
-      "community": 19,
+      "community": 14,
       "norm_label": "safegetdb()"
     },
     {
@@ -4560,7 +4570,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_getsubscribedemails",
-      "community": 19,
+      "community": 14,
       "norm_label": "getsubscribedemails()"
     },
     {
@@ -4570,7 +4580,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_buildunsubscribeurl",
-      "community": 19,
+      "community": 14,
       "norm_label": "buildunsubscribeurl()"
     },
     {
@@ -4580,7 +4590,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_runfinancedailyreport",
-      "community": 19,
+      "community": 14,
       "norm_label": "runfinancedailyreport()"
     },
     {
@@ -4590,7 +4600,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_runautocertificate",
-      "community": 19,
+      "community": 14,
       "norm_label": "runautocertificate()"
     },
     {
@@ -4600,7 +4610,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_runsupportscan",
-      "community": 19,
+      "community": 14,
       "norm_label": "runsupportscan()"
     },
     {
@@ -4610,7 +4620,7 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_runabandonedcartrecovery",
-      "community": 19,
+      "community": 14,
       "norm_label": "runabandonedcartrecovery()"
     },
     {
@@ -4620,7 +4630,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_rundailynewsletter",
-      "community": 19,
+      "community": 14,
       "norm_label": "rundailynewsletter()"
     },
     {
@@ -4630,7 +4640,7 @@
       "source_location": "L322",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_runsellprojectautoreviewer",
-      "community": 19,
+      "community": 14,
       "norm_label": "runsellprojectautoreviewer()"
     },
     {
@@ -4640,7 +4650,7 @@
       "source_location": "L365",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_runstudentinactivityalert",
-      "community": 19,
+      "community": 14,
       "norm_label": "runstudentinactivityalert()"
     },
     {
@@ -4650,7 +4660,7 @@
       "source_location": "L399",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_runmarketinganalysis",
-      "community": 19,
+      "community": 14,
       "norm_label": "runmarketinganalysis()"
     },
     {
@@ -4660,7 +4670,7 @@
       "source_location": "L423",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_runbatchautocreator",
-      "community": 19,
+      "community": 14,
       "norm_label": "runbatchautocreator()"
     },
     {
@@ -4670,7 +4680,7 @@
       "source_location": "L464",
       "_origin": "ast",
       "id": "backend_services_aiagents_scheduledtasks_startscheduledtasks",
-      "community": 19,
+      "community": 14,
       "norm_label": "startscheduledtasks()"
     },
     {
@@ -5120,7 +5130,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_services_firebaseservice",
-      "community": 66,
+      "community": 12,
       "norm_label": "firebaseservice.js"
     },
     {
@@ -5130,7 +5140,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_getdb",
-      "community": 66,
+      "community": 12,
       "norm_label": "{ getdb }"
     },
     {
@@ -5140,7 +5150,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_objectid",
-      "community": 66,
+      "community": 12,
       "norm_label": "{ objectid }"
     },
     {
@@ -5150,7 +5160,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_admin",
-      "community": 66,
+      "community": 12,
       "norm_label": "admin"
     },
     {
@@ -5160,7 +5170,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_getmongoqueryid",
-      "community": 66,
+      "community": 12,
       "norm_label": "getmongoqueryid()"
     },
     {
@@ -5220,7 +5230,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_getsessionsforreminder",
-      "community": 66,
+      "community": 12,
       "norm_label": "getsessionsforreminder()"
     },
     {
@@ -5240,7 +5250,7 @@
       "source_location": "L151",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_getactivecourseenrollments",
-      "community": 66,
+      "community": 12,
       "norm_label": "getactivecourseenrollments()"
     },
     {
@@ -5250,7 +5260,7 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_getcourseswithplanmeetings",
-      "community": 66,
+      "community": 12,
       "norm_label": "getcourseswithplanmeetings()"
     },
     {
@@ -5260,7 +5270,7 @@
       "source_location": "L169",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_updatecourseplans",
-      "community": 66,
+      "community": 12,
       "norm_label": "updatecourseplans()"
     },
     {
@@ -5270,7 +5280,7 @@
       "source_location": "L182",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_getcertificatebyuserandcourse",
-      "community": 66,
+      "community": 12,
       "norm_label": "getcertificatebyuserandcourse()"
     },
     {
@@ -5280,7 +5290,7 @@
       "source_location": "L188",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_addcertificate",
-      "community": 66,
+      "community": 12,
       "norm_label": "addcertificate()"
     },
     {
@@ -5330,7 +5340,7 @@
       "source_location": "L230",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_createcertificaterecord",
-      "community": 66,
+      "community": 12,
       "norm_label": "createcertificaterecord()"
     },
     {
@@ -5340,7 +5350,7 @@
       "source_location": "L234",
       "_origin": "ast",
       "id": "backend_services_firebaseservice_deletecertificate",
-      "community": 66,
+      "community": 12,
       "norm_label": "deletecertificate()"
     },
     {
@@ -5860,7 +5870,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "backend_services_userservice_usemysql",
-      "community": 55,
+      "community": 51,
       "norm_label": "usemysql()"
     },
     {
@@ -5870,7 +5880,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "backend_services_userservice_assertmysqlready",
-      "community": 55,
+      "community": 51,
       "norm_label": "assertmysqlready()"
     },
     {
@@ -6020,7 +6030,7 @@
       "source_location": "L289",
       "_origin": "ast",
       "id": "backend_services_userservice_mapaccountrequestrow",
-      "community": 55,
+      "community": 51,
       "norm_label": "mapaccountrequestrow()"
     },
     {
@@ -6040,7 +6050,7 @@
       "source_location": "L371",
       "_origin": "ast",
       "id": "backend_services_userservice_buildfirestoreuserpayload",
-      "community": 27,
+      "community": 66,
       "norm_label": "buildfirestoreuserpayload()"
     },
     {
@@ -6050,7 +6060,7 @@
       "source_location": "L415",
       "_origin": "ast",
       "id": "backend_services_userservice_buildteampayload",
-      "community": 27,
+      "community": 66,
       "norm_label": "buildteampayload()"
     },
     {
@@ -6070,7 +6080,7 @@
       "source_location": "L453",
       "_origin": "ast",
       "id": "backend_services_userservice_buildreseturl",
-      "community": 55,
+      "community": 65,
       "norm_label": "buildreseturl()"
     },
     {
@@ -6080,7 +6090,7 @@
       "source_location": "L462",
       "_origin": "ast",
       "id": "backend_services_userservice_syncusertofirebase",
-      "community": 27,
+      "community": 66,
       "norm_label": "syncusertofirebase()"
     },
     {
@@ -6090,7 +6100,7 @@
       "source_location": "L489",
       "_origin": "ast",
       "id": "backend_services_userservice_removeuserfromfirebase",
-      "community": 27,
+      "community": 66,
       "norm_label": "removeuserfromfirebase()"
     },
     {
@@ -6100,7 +6110,7 @@
       "source_location": "L510",
       "_origin": "ast",
       "id": "backend_services_userservice_syncaccountrequesttofirebase",
-      "community": 55,
+      "community": 51,
       "norm_label": "syncaccountrequesttofirebase()"
     },
     {
@@ -6270,7 +6280,7 @@
       "source_location": "L1116",
       "_origin": "ast",
       "id": "backend_services_userservice_createresettokenrecord",
-      "community": 55,
+      "community": 65,
       "norm_label": "createresettokenrecord()"
     },
     {
@@ -6280,7 +6290,7 @@
       "source_location": "L1155",
       "_origin": "ast",
       "id": "backend_services_userservice_buildresetemailmarkup",
-      "community": 55,
+      "community": 65,
       "norm_label": "buildresetemailmarkup()"
     },
     {
@@ -6290,7 +6300,7 @@
       "source_location": "L1172",
       "_origin": "ast",
       "id": "backend_services_userservice_sendresetemail",
-      "community": 55,
+      "community": 65,
       "norm_label": "sendresetemail()"
     },
     {
@@ -6300,7 +6310,7 @@
       "source_location": "L1216",
       "_origin": "ast",
       "id": "backend_services_userservice_createfirebaseauthuser",
-      "community": 55,
+      "community": 65,
       "norm_label": "createfirebaseauthuser()"
     },
     {
@@ -6310,7 +6320,7 @@
       "source_location": "L1237",
       "_origin": "ast",
       "id": "backend_services_userservice_generatenextemployeeid",
-      "community": 55,
+      "community": 65,
       "norm_label": "generatenextemployeeid()"
     },
     {
@@ -6320,7 +6330,7 @@
       "source_location": "L1267",
       "_origin": "ast",
       "id": "backend_services_userservice_createmanageduser",
-      "community": 55,
+      "community": 65,
       "norm_label": "createmanageduser()"
     },
     {
@@ -6350,7 +6360,7 @@
       "source_location": "L1615",
       "_origin": "ast",
       "id": "backend_services_userservice_mergemanagedusers",
-      "community": 27,
+      "community": 66,
       "norm_label": "mergemanagedusers()"
     },
     {
@@ -6360,7 +6370,7 @@
       "source_location": "L1765",
       "_origin": "ast",
       "id": "backend_services_userservice_createaccountrequest",
-      "community": 55,
+      "community": 51,
       "norm_label": "createaccountrequest()"
     },
     {
@@ -6370,7 +6380,7 @@
       "source_location": "L2042",
       "_origin": "ast",
       "id": "backend_services_userservice_getaccountrequest",
-      "community": 55,
+      "community": 51,
       "norm_label": "getaccountrequest()"
     },
     {
@@ -6380,7 +6390,7 @@
       "source_location": "L2054",
       "_origin": "ast",
       "id": "backend_services_userservice_approveaccountrequest",
-      "community": 55,
+      "community": 51,
       "norm_label": "approveaccountrequest()"
     },
     {
@@ -6390,7 +6400,7 @@
       "source_location": "L2220",
       "_origin": "ast",
       "id": "backend_services_userservice_rejectaccountrequest",
-      "community": 55,
+      "community": 51,
       "norm_label": "rejectaccountrequest()"
     },
     {
@@ -6400,7 +6410,7 @@
       "source_location": "L2268",
       "_origin": "ast",
       "id": "backend_services_userservice_deleteaccountrequest",
-      "community": 27,
+      "community": 51,
       "norm_label": "deleteaccountrequest()"
     },
     {
@@ -6420,7 +6430,7 @@
       "source_location": "L2341",
       "_origin": "ast",
       "id": "backend_services_userservice_verifyresettoken",
-      "community": 55,
+      "community": 51,
       "norm_label": "verifyresettoken()"
     },
     {
@@ -6940,7 +6950,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_n",
-      "community": 46,
+      "community": 2,
       "norm_label": "n()"
     },
     {
@@ -6980,7 +6990,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ha",
-      "community": 2,
+      "community": 160,
       "norm_label": "ha()"
     },
     {
@@ -7220,7 +7230,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_b_catch",
-      "community": 1,
+      "community": 160,
       "norm_label": ".catch()"
     },
     {
@@ -7350,7 +7360,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_e_has",
-      "community": 46,
+      "community": 2,
       "norm_label": ".has()"
     },
     {
@@ -7500,7 +7510,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ya",
-      "community": 28,
+      "community": 2,
       "norm_label": "ya()"
     },
     {
@@ -7510,7 +7520,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_za",
-      "community": 28,
+      "community": 2,
       "norm_label": "za()"
     },
     {
@@ -7550,7 +7560,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ga",
-      "community": 2,
+      "community": 53,
       "norm_label": "ga()"
     },
     {
@@ -7580,7 +7590,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ia",
-      "community": 2,
+      "community": 53,
       "norm_label": "ia()"
     },
     {
@@ -7620,7 +7630,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_db",
-      "community": 11,
+      "community": 53,
       "norm_label": "db()"
     },
     {
@@ -7640,7 +7650,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_gb",
-      "community": 2,
+      "community": 53,
       "norm_label": "gb()"
     },
     {
@@ -7680,7 +7690,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_wb",
-      "community": 2,
+      "community": 151,
       "norm_label": "wb()"
     },
     {
@@ -7890,7 +7900,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_nc",
-      "community": 2,
+      "community": 151,
       "norm_label": "nc()"
     },
     {
@@ -7940,7 +7950,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sc",
-      "community": 2,
+      "community": 53,
       "norm_label": "sc()"
     },
     {
@@ -7980,7 +7990,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_g",
-      "community": 2,
+      "community": 11,
       "norm_label": "g()"
     },
     {
@@ -7990,7 +8000,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yc",
-      "community": 2,
+      "community": 53,
       "norm_label": "yc()"
     },
     {
@@ -8030,7 +8040,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_uc",
-      "community": 2,
+      "community": 151,
       "norm_label": "uc()"
     },
     {
@@ -8080,7 +8090,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_dd",
-      "community": 1,
+      "community": 160,
       "norm_label": "dd()"
     },
     {
@@ -8150,7 +8160,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_kd",
-      "community": 2,
+      "community": 151,
       "norm_label": "kd()"
     },
     {
@@ -8270,7 +8280,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_xd",
-      "community": 2,
+      "community": 11,
       "norm_label": "xd()"
     },
     {
@@ -8280,7 +8290,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rd",
-      "community": 2,
+      "community": 11,
       "norm_label": "rd()"
     },
     {
@@ -8310,7 +8320,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_k",
-      "community": 1,
+      "community": 160,
       "norm_label": "k()"
     },
     {
@@ -8330,7 +8340,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_nd",
-      "community": 151,
+      "community": 11,
       "norm_label": "nd()"
     },
     {
@@ -8340,7 +8350,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qd",
-      "community": 2,
+      "community": 11,
       "norm_label": "qd()"
     },
     {
@@ -8800,7 +8810,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ff",
-      "community": 2,
+      "community": 160,
       "norm_label": "ff()"
     },
     {
@@ -8950,7 +8960,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_zf",
-      "community": 2,
+      "community": 53,
       "norm_label": "zf()"
     },
     {
@@ -8960,7 +8970,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_bf",
-      "community": 46,
+      "community": 1,
       "norm_label": "bf()"
     },
     {
@@ -8980,7 +8990,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_if",
-      "community": 11,
+      "community": 53,
       "norm_label": "if()"
     },
     {
@@ -8990,7 +9000,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_w",
-      "community": 2,
+      "community": 160,
       "norm_label": "w()"
     },
     {
@@ -9000,7 +9010,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_w_dispose",
-      "community": 2,
+      "community": 160,
       "norm_label": ".dispose()"
     },
     {
@@ -9010,7 +9020,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_w_l",
-      "community": 2,
+      "community": 160,
       "norm_label": ".l()"
     },
     {
@@ -9170,7 +9180,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_kg",
-      "community": 2,
+      "community": 160,
       "norm_label": "kg()"
     },
     {
@@ -9190,7 +9200,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_pg",
-      "community": 23,
+      "community": 1,
       "norm_label": "pg()"
     },
     {
@@ -9200,7 +9210,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sg",
-      "community": 23,
+      "community": 1,
       "norm_label": "sg()"
     },
     {
@@ -9260,7 +9270,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qg",
-      "community": 23,
+      "community": 1,
       "norm_label": "qg()"
     },
     {
@@ -9270,7 +9280,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rg",
-      "community": 23,
+      "community": 1,
       "norm_label": "rg()"
     },
     {
@@ -9320,7 +9330,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yg",
-      "community": 23,
+      "community": 160,
       "norm_label": "yg()"
     },
     {
@@ -9330,7 +9340,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yg_cancel",
-      "community": 23,
+      "community": 160,
       "norm_label": ".cancel()"
     },
     {
@@ -9350,7 +9360,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_yg_then",
-      "community": 1,
+      "community": 160,
       "norm_label": ".then()"
     },
     {
@@ -9360,7 +9370,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_mg",
-      "community": 28,
+      "community": 2,
       "norm_label": "mg()"
     },
     {
@@ -9580,7 +9590,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_y",
-      "community": 46,
+      "community": 2,
       "norm_label": "y()"
     },
     {
@@ -9590,7 +9600,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_oh",
-      "community": 46,
+      "community": 2,
       "norm_label": "oh()"
     },
     {
@@ -9600,7 +9610,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ph",
-      "community": 46,
+      "community": 2,
       "norm_label": "ph()"
     },
     {
@@ -9610,7 +9620,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qh",
-      "community": 46,
+      "community": 53,
       "norm_label": "qh()"
     },
     {
@@ -9620,7 +9630,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rh",
-      "community": 46,
+      "community": 28,
       "norm_label": "rh()"
     },
     {
@@ -9630,7 +9640,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sh",
-      "community": 46,
+      "community": 2,
       "norm_label": "sh()"
     },
     {
@@ -9640,7 +9650,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rh_na",
-      "community": 46,
+      "community": 28,
       "norm_label": ".na()"
     },
     {
@@ -9650,7 +9660,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rh_removeall",
-      "community": 46,
+      "community": 53,
       "norm_label": ".removeall()"
     },
     {
@@ -9750,7 +9760,7 @@
       "source_location": "L126",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_mh",
-      "community": 46,
+      "community": 1,
       "norm_label": "mh()"
     },
     {
@@ -9760,7 +9770,7 @@
       "source_location": "L129",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_nh",
-      "community": 46,
+      "community": 2,
       "norm_label": "nh()"
     },
     {
@@ -9770,7 +9780,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qh_g",
-      "community": 46,
+      "community": 53,
       "norm_label": ".g()"
     },
     {
@@ -9780,7 +9790,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qh_notify",
-      "community": 46,
+      "community": 53,
       "norm_label": ".notify()"
     },
     {
@@ -9790,7 +9800,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rh_stoppropagation",
-      "community": 46,
+      "community": 28,
       "norm_label": ".stoppropagation()"
     },
     {
@@ -9800,7 +9810,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rh_preventdefault",
-      "community": 46,
+      "community": 28,
       "norm_label": ".preventdefault()"
     },
     {
@@ -9880,7 +9890,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_gi",
-      "community": 28,
+      "community": 2,
       "norm_label": "gi()"
     },
     {
@@ -9890,7 +9900,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ii",
-      "community": 28,
+      "community": 2,
       "norm_label": "ii()"
     },
     {
@@ -9920,7 +9930,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_mi",
-      "community": 28,
+      "community": 2,
       "norm_label": "mi()"
     },
     {
@@ -9930,7 +9940,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ji",
-      "community": 28,
+      "community": 2,
       "norm_label": "ji()"
     },
     {
@@ -9940,7 +9950,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ki",
-      "community": 28,
+      "community": 2,
       "norm_label": "ki()"
     },
     {
@@ -9950,7 +9960,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_hi",
-      "community": 28,
+      "community": 2,
       "norm_label": "hi()"
     },
     {
@@ -9970,7 +9980,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_oi",
-      "community": 2,
+      "community": 11,
       "norm_label": "oi()"
     },
     {
@@ -9980,7 +9990,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ri",
-      "community": 2,
+      "community": 151,
       "norm_label": "ri()"
     },
     {
@@ -9990,7 +10000,7 @@
       "source_location": "L139",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_si",
-      "community": 2,
+      "community": 151,
       "norm_label": "si()"
     },
     {
@@ -10040,7 +10050,7 @@
       "source_location": "L141",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_xi",
-      "community": 46,
+      "community": 2,
       "norm_label": "xi()"
     },
     {
@@ -10120,7 +10130,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ci",
-      "community": 46,
+      "community": 2,
       "norm_label": "ci()"
     },
     {
@@ -10130,7 +10140,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ki_enqueue",
-      "community": 28,
+      "community": 2,
       "norm_label": ".enqueue()"
     },
     {
@@ -10140,7 +10150,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ki_l",
-      "community": 28,
+      "community": 2,
       "norm_label": ".l()"
     },
     {
@@ -10210,7 +10220,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_pi",
-      "community": 2,
+      "community": 151,
       "norm_label": "pi()"
     },
     {
@@ -10220,7 +10230,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_qi",
-      "community": 45,
+      "community": 151,
       "norm_label": "qi()"
     },
     {
@@ -10550,7 +10560,7 @@
       "source_location": "L162",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_lj_j",
-      "community": 1,
+      "community": 53,
       "norm_label": ".j()"
     },
     {
@@ -10610,7 +10620,7 @@
       "source_location": "L179",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ek",
-      "community": 1,
+      "community": 53,
       "norm_label": "ek()"
     },
     {
@@ -10680,7 +10690,7 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_lk",
-      "community": 1,
+      "community": 53,
       "norm_label": "lk()"
     },
     {
@@ -10700,7 +10710,7 @@
       "source_location": "L182",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_jk",
-      "community": 2,
+      "community": 53,
       "norm_label": "jk()"
     },
     {
@@ -10760,7 +10770,7 @@
       "source_location": "L188",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_uk",
-      "community": 1,
+      "community": 160,
       "norm_label": "uk()"
     },
     {
@@ -10820,7 +10830,7 @@
       "source_location": "L191",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_zk",
-      "community": 2,
+      "community": 11,
       "norm_label": "zk()"
     },
     {
@@ -10830,7 +10840,7 @@
       "source_location": "L191",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_zk_set",
-      "community": 2,
+      "community": 11,
       "norm_label": ".set()"
     },
     {
@@ -10840,7 +10850,7 @@
       "source_location": "L191",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_zk_reset",
-      "community": 2,
+      "community": 11,
       "norm_label": ".reset()"
     },
     {
@@ -10910,7 +10920,7 @@
       "source_location": "L205",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_fk_l",
-      "community": 11,
+      "community": 53,
       "norm_label": ".l()"
     },
     {
@@ -10940,7 +10950,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_al",
-      "community": 11,
+      "community": 160,
       "norm_label": "al()"
     },
     {
@@ -10980,7 +10990,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_fl",
-      "community": 2,
+      "community": 11,
       "norm_label": "fl()"
     },
     {
@@ -11000,7 +11010,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_fl_qa",
-      "community": 2,
+      "community": 11,
       "norm_label": ".qa()"
     },
     {
@@ -11020,7 +11030,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_il",
-      "community": 1,
+      "community": 160,
       "norm_label": "il()"
     },
     {
@@ -11030,7 +11040,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_jl",
-      "community": 1,
+      "community": 160,
       "norm_label": "jl()"
     },
     {
@@ -11050,7 +11060,7 @@
       "source_location": "L212",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ll",
-      "community": 11,
+      "community": 160,
       "norm_label": "ll()"
     },
     {
@@ -11100,7 +11110,7 @@
       "source_location": "L213",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_pl",
-      "community": 2,
+      "community": 160,
       "norm_label": "pl()"
     },
     {
@@ -11110,7 +11120,7 @@
       "source_location": "L213",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ql",
-      "community": 2,
+      "community": 160,
       "norm_label": "ql()"
     },
     {
@@ -11120,7 +11130,7 @@
       "source_location": "L213",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_rl",
-      "community": 11,
+      "community": 160,
       "norm_label": "rl()"
     },
     {
@@ -11130,7 +11140,7 @@
       "source_location": "L214",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_sl",
-      "community": 2,
+      "community": 160,
       "norm_label": "sl()"
     },
     {
@@ -11140,7 +11150,7 @@
       "source_location": "L214",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_tl",
-      "community": 2,
+      "community": 160,
       "norm_label": "tl()"
     },
     {
@@ -11150,7 +11160,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_ul",
-      "community": 11,
+      "community": 160,
       "norm_label": "ul()"
     },
     {
@@ -11160,7 +11170,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_pl_l",
-      "community": 2,
+      "community": 160,
       "norm_label": ".l()"
     },
     {
@@ -11170,7 +11180,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_vl",
-      "community": 2,
+      "community": 11,
       "norm_label": "vl()"
     },
     {
@@ -11180,7 +11190,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_wl",
-      "community": 2,
+      "community": 11,
       "norm_label": "wl()"
     },
     {
@@ -11220,7 +11230,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_dl",
-      "community": 11,
+      "community": 160,
       "norm_label": "dl()"
     },
     {
@@ -11250,7 +11260,7 @@
       "source_location": "L217",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_offscreendocument_main_il_s",
-      "community": 1,
+      "community": 160,
       "norm_label": ".s()"
     },
     {
@@ -11290,7 +11300,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_n",
-      "community": 54,
+      "community": 3,
       "norm_label": "n()"
     },
     {
@@ -11350,7 +11360,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_u",
-      "community": 4,
+      "community": 3,
       "norm_label": "u()"
     },
     {
@@ -11560,7 +11570,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_n",
-      "community": 15,
+      "community": 38,
       "norm_label": ".n()"
     },
     {
@@ -11570,7 +11580,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_then",
-      "community": 54,
+      "community": 46,
       "norm_label": ".then()"
     },
     {
@@ -11590,7 +11600,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_b_ga",
-      "community": 54,
+      "community": 46,
       "norm_label": ".ga()"
     },
     {
@@ -11710,7 +11720,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_e_has",
-      "community": 54,
+      "community": 46,
       "norm_label": ".has()"
     },
     {
@@ -11820,7 +11830,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ua",
-      "community": 3,
+      "community": 44,
       "norm_label": "ua()"
     },
     {
@@ -11890,7 +11900,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_x",
-      "community": 3,
+      "community": 4,
       "norm_label": "x()"
     },
     {
@@ -11950,7 +11960,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ta",
-      "community": 3,
+      "community": 7,
       "norm_label": "ta()"
     },
     {
@@ -12040,7 +12050,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yb",
-      "community": 45,
+      "community": 38,
       "norm_label": "yb()"
     },
     {
@@ -12170,7 +12180,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hc",
-      "community": 44,
+      "community": 45,
       "norm_label": "hc()"
     },
     {
@@ -12340,7 +12350,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_g",
-      "community": 3,
+      "community": 38,
       "norm_label": "g()"
     },
     {
@@ -12380,7 +12390,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_h",
-      "community": 7,
+      "community": 4,
       "norm_label": "h()"
     },
     {
@@ -12470,7 +12480,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_fd",
-      "community": 44,
+      "community": 4,
       "norm_label": "fd()"
     },
     {
@@ -12480,7 +12490,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_gd",
-      "community": 44,
+      "community": 3,
       "norm_label": "gd()"
     },
     {
@@ -12630,7 +12640,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vd",
-      "community": 3,
+      "community": 38,
       "norm_label": "vd()"
     },
     {
@@ -12640,7 +12650,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xd",
-      "community": 15,
+      "community": 38,
       "norm_label": "xd()"
     },
     {
@@ -12650,7 +12660,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_zd",
-      "community": 15,
+      "community": 38,
       "norm_label": "zd()"
     },
     {
@@ -12670,7 +12680,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ud",
-      "community": 3,
+      "community": 38,
       "norm_label": "ud()"
     },
     {
@@ -12700,7 +12710,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_m",
-      "community": 15,
+      "community": 3,
       "norm_label": "m()"
     },
     {
@@ -12710,7 +12720,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_m_equals",
-      "community": 15,
+      "community": 3,
       "norm_label": ".equals()"
     },
     {
@@ -12720,7 +12730,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_m_ra",
-      "community": 15,
+      "community": 3,
       "norm_label": ".ra()"
     },
     {
@@ -12730,7 +12740,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_m_tostring",
-      "community": 15,
+      "community": 3,
       "norm_label": ".tostring()"
     },
     {
@@ -12740,7 +12750,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_r",
-      "community": 15,
+      "community": 3,
       "norm_label": "r()"
     },
     {
@@ -12750,7 +12760,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_zd_tostring",
-      "community": 15,
+      "community": 3,
       "norm_label": ".tostring()"
     },
     {
@@ -12760,7 +12770,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ce",
-      "community": 15,
+      "community": 3,
       "norm_label": "ce()"
     },
     {
@@ -12770,7 +12780,7 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_fe",
-      "community": 15,
+      "community": 3,
       "norm_label": "fe()"
     },
     {
@@ -12800,7 +12810,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_je",
-      "community": 15,
+      "community": 3,
       "norm_label": "je()"
     },
     {
@@ -12810,7 +12820,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ne",
-      "community": 15,
+      "community": 38,
       "norm_label": "ne()"
     },
     {
@@ -12820,7 +12830,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_oe",
-      "community": 15,
+      "community": 38,
       "norm_label": "oe()"
     },
     {
@@ -12830,7 +12840,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pe",
-      "community": 15,
+      "community": 3,
       "norm_label": "pe()"
     },
     {
@@ -12840,7 +12850,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_qe",
-      "community": 15,
+      "community": 3,
       "norm_label": "qe()"
     },
     {
@@ -12880,7 +12890,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_te",
-      "community": 15,
+      "community": 38,
       "norm_label": "te()"
     },
     {
@@ -12890,7 +12900,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_de",
-      "community": 4,
+      "community": 3,
       "norm_label": "de()"
     },
     {
@@ -12920,7 +12930,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xe",
-      "community": 15,
+      "community": 3,
       "norm_label": "xe()"
     },
     {
@@ -12930,7 +12940,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ye",
-      "community": 3,
+      "community": 38,
       "norm_label": "ye()"
     },
     {
@@ -12940,7 +12950,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ze",
-      "community": 3,
+      "community": 38,
       "norm_label": "ze()"
     },
     {
@@ -12950,7 +12960,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ae",
-      "community": 15,
+      "community": 3,
       "norm_label": "ae()"
     },
     {
@@ -12960,7 +12970,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_be",
-      "community": 15,
+      "community": 3,
       "norm_label": "be()"
     },
     {
@@ -12980,7 +12990,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yd",
-      "community": 15,
+      "community": 3,
       "norm_label": "yd()"
     },
     {
@@ -12990,7 +13000,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ie",
-      "community": 15,
+      "community": 3,
       "norm_label": "ie()"
     },
     {
@@ -13000,7 +13010,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_me",
-      "community": 15,
+      "community": 3,
       "norm_label": "me()"
     },
     {
@@ -13030,7 +13040,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ke",
-      "community": 15,
+      "community": 3,
       "norm_label": "ke()"
     },
     {
@@ -13040,7 +13050,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_le",
-      "community": 15,
+      "community": 3,
       "norm_label": "le()"
     },
     {
@@ -13050,7 +13060,7 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_o",
-      "community": 15,
+      "community": 3,
       "norm_label": "o()"
     },
     {
@@ -13060,7 +13070,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ne_tostring",
-      "community": 15,
+      "community": 38,
       "norm_label": ".tostring()"
     },
     {
@@ -13090,7 +13100,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cf",
-      "community": 54,
+      "community": 3,
       "norm_label": "cf()"
     },
     {
@@ -13100,7 +13110,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_df",
-      "community": 15,
+      "community": 3,
       "norm_label": "df()"
     },
     {
@@ -13200,7 +13210,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pf",
-      "community": 3,
+      "community": 4,
       "norm_label": "pf()"
     },
     {
@@ -13270,7 +13280,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bf",
-      "community": 15,
+      "community": 3,
       "norm_label": "bf()"
     },
     {
@@ -13280,7 +13290,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_w",
-      "community": 3,
+      "community": 148,
       "norm_label": "w()"
     },
     {
@@ -13290,7 +13300,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_w_dispose",
-      "community": 3,
+      "community": 148,
       "norm_label": ".dispose()"
     },
     {
@@ -13300,7 +13310,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_if",
-      "community": 54,
+      "community": 4,
       "norm_label": "if()"
     },
     {
@@ -13310,7 +13320,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_w_l",
-      "community": 3,
+      "community": 148,
       "norm_label": ".l()"
     },
     {
@@ -13360,7 +13370,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sf",
-      "community": 2,
+      "community": 53,
       "norm_label": "sf()"
     },
     {
@@ -13370,7 +13380,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sf_set",
-      "community": 2,
+      "community": 53,
       "norm_label": ".set()"
     },
     {
@@ -13380,7 +13390,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sf_reset",
-      "community": 2,
+      "community": 53,
       "norm_label": ".reset()"
     },
     {
@@ -13420,7 +13430,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dg",
-      "community": 4,
+      "community": 15,
       "norm_label": "dg()"
     },
     {
@@ -13470,7 +13480,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lg",
-      "community": 44,
+      "community": 148,
       "norm_label": "lg()"
     },
     {
@@ -13480,7 +13490,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_x_then",
-      "community": 3,
+      "community": 4,
       "norm_label": ".then()"
     },
     {
@@ -13500,7 +13510,7 @@
       "source_location": "L93",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sg",
-      "community": 4,
+      "community": 15,
       "norm_label": "sg()"
     },
     {
@@ -13530,7 +13540,7 @@
       "source_location": "L95",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hg",
-      "community": 4,
+      "community": 15,
       "norm_label": "hg()"
     },
     {
@@ -13550,7 +13560,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_tg",
-      "community": 4,
+      "community": 15,
       "norm_label": "tg()"
     },
     {
@@ -13620,7 +13630,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yg",
-      "community": 44,
+      "community": 15,
       "norm_label": "yg()"
     },
     {
@@ -13630,7 +13640,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yg_cancel",
-      "community": 44,
+      "community": 15,
       "norm_label": ".cancel()"
     },
     {
@@ -13680,7 +13690,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_zg",
-      "community": 15,
+      "community": 3,
       "norm_label": "zg()"
     },
     {
@@ -13760,7 +13770,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bh",
-      "community": 54,
+      "community": 3,
       "norm_label": "bh()"
     },
     {
@@ -13800,7 +13810,7 @@
       "source_location": "L111",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ch",
-      "community": 15,
+      "community": 3,
       "norm_label": "ch()"
     },
     {
@@ -13850,7 +13860,7 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jh",
-      "community": 3,
+      "community": 38,
       "norm_label": "jh()"
     },
     {
@@ -13870,7 +13880,7 @@
       "source_location": "L113",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_lh",
-      "community": 15,
+      "community": 3,
       "norm_label": "lh()"
     },
     {
@@ -13890,7 +13900,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ph",
-      "community": 54,
+      "community": 3,
       "norm_label": "ph()"
     },
     {
@@ -13900,7 +13910,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_qh",
-      "community": 54,
+      "community": 46,
       "norm_label": "qh()"
     },
     {
@@ -13910,7 +13920,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_rh",
-      "community": 54,
+      "community": 46,
       "norm_label": "rh()"
     },
     {
@@ -13920,7 +13930,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh",
-      "community": 54,
+      "community": 46,
       "norm_label": "sh()"
     },
     {
@@ -13930,7 +13940,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_th",
-      "community": 54,
+      "community": 46,
       "norm_label": "th()"
     },
     {
@@ -13940,7 +13950,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_na",
-      "community": 54,
+      "community": 46,
       "norm_label": ".na()"
     },
     {
@@ -13950,7 +13960,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_removeall",
-      "community": 54,
+      "community": 46,
       "norm_label": ".removeall()"
     },
     {
@@ -13960,7 +13970,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_uh",
-      "community": 7,
+      "community": 46,
       "norm_label": "uh()"
     },
     {
@@ -13990,7 +14000,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yh",
-      "community": 7,
+      "community": 44,
       "norm_label": "yh()"
     },
     {
@@ -14000,7 +14010,7 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yh_tostring",
-      "community": 7,
+      "community": 44,
       "norm_label": ".tostring()"
     },
     {
@@ -14010,7 +14020,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yh_resolve",
-      "community": 7,
+      "community": 44,
       "norm_label": ".resolve()"
     },
     {
@@ -14020,7 +14030,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yh_clone",
-      "community": 7,
+      "community": 44,
       "norm_label": ".clone()"
     },
     {
@@ -14030,7 +14040,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_zh",
-      "community": 7,
+      "community": 44,
       "norm_label": "zh()"
     },
     {
@@ -14040,7 +14050,7 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_nh",
-      "community": 7,
+      "community": 44,
       "norm_label": "nh()"
     },
     {
@@ -14060,7 +14070,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_g",
-      "community": 54,
+      "community": 46,
       "norm_label": ".g()"
     },
     {
@@ -14070,7 +14080,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_sh_notify",
-      "community": 54,
+      "community": 46,
       "norm_label": ".notify()"
     },
     {
@@ -14080,7 +14090,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_th_stoppropagation",
-      "community": 54,
+      "community": 46,
       "norm_label": ".stoppropagation()"
     },
     {
@@ -14090,7 +14100,7 @@
       "source_location": "L124",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_th_preventdefault",
-      "community": 54,
+      "community": 46,
       "norm_label": ".preventdefault()"
     },
     {
@@ -14130,7 +14140,7 @@
       "source_location": "L127",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_h_add",
-      "community": 7,
+      "community": 4,
       "norm_label": ".add()"
     },
     {
@@ -14150,7 +14160,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_bi",
-      "community": 3,
+      "community": 7,
       "norm_label": "bi()"
     },
     {
@@ -14160,7 +14170,7 @@
       "source_location": "L128",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_h_removeall",
-      "community": 7,
+      "community": 44,
       "norm_label": ".removeall()"
     },
     {
@@ -14280,7 +14290,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_qi",
-      "community": 3,
+      "community": 38,
       "norm_label": "qi()"
     },
     {
@@ -14290,7 +14300,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ti",
-      "community": 45,
+      "community": 151,
       "norm_label": "ti()"
     },
     {
@@ -14300,7 +14310,7 @@
       "source_location": "L133",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ui",
-      "community": 45,
+      "community": 3,
       "norm_label": "ui()"
     },
     {
@@ -14350,7 +14360,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yi",
-      "community": 3,
+      "community": 4,
       "norm_label": "yi()"
     },
     {
@@ -14370,7 +14380,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci",
-      "community": 7,
+      "community": 46,
       "norm_label": "ci()"
     },
     {
@@ -14380,7 +14390,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci_listen",
-      "community": 7,
+      "community": 46,
       "norm_label": ".listen()"
     },
     {
@@ -14390,7 +14400,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci_removeall",
-      "community": 7,
+      "community": 46,
       "norm_label": ".removeall()"
     },
     {
@@ -14400,7 +14410,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci_l",
-      "community": 7,
+      "community": 46,
       "norm_label": ".l()"
     },
     {
@@ -14410,7 +14420,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ci_handleevent",
-      "community": 7,
+      "community": 46,
       "norm_label": ".handleevent()"
     },
     {
@@ -14420,7 +14430,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ei",
-      "community": 54,
+      "community": 4,
       "norm_label": "ei()"
     },
     {
@@ -14470,7 +14480,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jd",
-      "community": 7,
+      "community": 44,
       "norm_label": "jd()"
     },
     {
@@ -14490,7 +14500,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jd_tostring",
-      "community": 7,
+      "community": 44,
       "norm_label": ".tostring()"
     },
     {
@@ -14500,7 +14510,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_pi",
-      "community": 45,
+      "community": 38,
       "norm_label": "pi()"
     },
     {
@@ -14510,7 +14520,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ri",
-      "community": 45,
+      "community": 38,
       "norm_label": "ri()"
     },
     {
@@ -14520,7 +14530,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ld",
-      "community": 3,
+      "community": 38,
       "norm_label": "ld()"
     },
     {
@@ -14890,7 +14900,7 @@
       "source_location": "L173",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ck",
-      "community": 4,
+      "community": 54,
       "norm_label": "ck()"
     },
     {
@@ -14900,7 +14910,7 @@
       "source_location": "L174",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dk",
-      "community": 3,
+      "community": 54,
       "norm_label": "dk()"
     },
     {
@@ -15090,7 +15100,7 @@
       "source_location": "L183",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xk",
-      "community": 3,
+      "community": 4,
       "norm_label": "xk()"
     },
     {
@@ -15150,7 +15160,7 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ck_set",
-      "community": 4,
+      "community": 54,
       "norm_label": ".set()"
     },
     {
@@ -15160,7 +15170,7 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ck_reset",
-      "community": 4,
+      "community": 54,
       "norm_label": ".reset()"
     },
     {
@@ -15230,7 +15240,7 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ik_l",
-      "community": 3,
+      "community": 54,
       "norm_label": ".l()"
     },
     {
@@ -15250,7 +15260,7 @@
       "source_location": "L201",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wk_j",
-      "community": 54,
+      "community": 46,
       "norm_label": ".j()"
     },
     {
@@ -15270,7 +15280,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_al",
-      "community": 44,
+      "community": 3,
       "norm_label": "al()"
     },
     {
@@ -15290,7 +15300,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cl",
-      "community": 44,
+      "community": 148,
       "norm_label": "cl()"
     },
     {
@@ -15320,7 +15330,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_el",
-      "community": 3,
+      "community": 44,
       "norm_label": "el()"
     },
     {
@@ -15330,7 +15340,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_fl",
-      "community": 44,
+      "community": 38,
       "norm_label": "fl()"
     },
     {
@@ -15350,7 +15360,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hl",
-      "community": 44,
+      "community": 3,
       "norm_label": "hl()"
     },
     {
@@ -15380,7 +15390,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_il",
-      "community": 3,
+      "community": 44,
       "norm_label": "il()"
     },
     {
@@ -15410,7 +15420,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_il_aa",
-      "community": 3,
+      "community": 44,
       "norm_label": ".aa()"
     },
     {
@@ -15430,7 +15440,7 @@
       "source_location": "L208",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_ll",
-      "community": 7,
+      "community": 44,
       "norm_label": "ll()"
     },
     {
@@ -15540,7 +15550,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_vl",
-      "community": 3,
+      "community": 38,
       "norm_label": "vl()"
     },
     {
@@ -15550,7 +15560,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_wl",
-      "community": 44,
+      "community": 3,
       "norm_label": "wl()"
     },
     {
@@ -15560,7 +15570,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_xl",
-      "community": 44,
+      "community": 38,
       "norm_label": "xl()"
     },
     {
@@ -15570,7 +15580,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_yl",
-      "community": 3,
+      "community": 4,
       "norm_label": "yl()"
     },
     {
@@ -15580,7 +15590,7 @@
       "source_location": "L211",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_zl",
-      "community": 3,
+      "community": 38,
       "norm_label": "zl()"
     },
     {
@@ -15590,7 +15600,7 @@
       "source_location": "L219",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cl_l",
-      "community": 3,
+      "community": 148,
       "norm_label": ".l()"
     },
     {
@@ -15620,7 +15630,7 @@
       "source_location": "L221",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_cm",
-      "community": 44,
+      "community": 4,
       "norm_label": "cm()"
     },
     {
@@ -15630,7 +15640,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_hm",
-      "community": 7,
+      "community": 44,
       "norm_label": "hm()"
     },
     {
@@ -15640,7 +15650,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_im",
-      "community": 44,
+      "community": 3,
       "norm_label": "im()"
     },
     {
@@ -15650,7 +15660,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_km",
-      "community": 44,
+      "community": 15,
       "norm_label": "km()"
     },
     {
@@ -15670,7 +15680,7 @@
       "source_location": "L226",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_dm",
-      "community": 44,
+      "community": 4,
       "norm_label": "dm()"
     },
     {
@@ -15680,7 +15690,7 @@
       "source_location": "L228",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_mm",
-      "community": 44,
+      "community": 4,
       "norm_label": "mm()"
     },
     {
@@ -15720,7 +15730,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_jm",
-      "community": 44,
+      "community": 3,
       "norm_label": "jm()"
     },
     {
@@ -15730,7 +15740,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_fm",
-      "community": 7,
+      "community": 44,
       "norm_label": "fm()"
     },
     {
@@ -15740,7 +15750,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_gm",
-      "community": 7,
+      "community": 44,
       "norm_label": "gm()"
     },
     {
@@ -15750,7 +15760,7 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_ghbmnnjooekpmoecnnnilnnbdlolhkhi_1_104_1_0_service_worker_bin_prod_em",
-      "community": 44,
+      "community": 4,
       "norm_label": "em()"
     },
     {
@@ -15850,7 +15860,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_background_compiled_w",
-      "community": 8,
+      "community": 167,
       "norm_label": "w()"
     },
     {
@@ -15870,7 +15880,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_background_compiled_w_l",
-      "community": 8,
+      "community": 167,
       "norm_label": ".l()"
     },
     {
@@ -15890,7 +15900,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_background_compiled_w_return",
-      "community": 8,
+      "community": 167,
       "norm_label": ".return()"
     },
     {
@@ -16180,7 +16190,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_background_compiled_m",
-      "community": 34,
+      "community": 8,
       "norm_label": "m()"
     },
     {
@@ -16810,7 +16820,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ba",
-      "community": 52,
+      "community": 9,
       "norm_label": "ba()"
     },
     {
@@ -16820,7 +16830,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_da",
-      "community": 52,
+      "community": 26,
       "norm_label": "da()"
     },
     {
@@ -16840,7 +16850,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b",
-      "community": 52,
+      "community": 152,
       "norm_label": "b()"
     },
     {
@@ -16890,7 +16900,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ia",
-      "community": 52,
+      "community": 9,
       "norm_label": "ia()"
     },
     {
@@ -16900,7 +16910,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_q",
-      "community": 52,
+      "community": 18,
       "norm_label": "q()"
     },
     {
@@ -17070,7 +17080,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_za",
-      "community": 18,
+      "community": 26,
       "norm_label": "za()"
     },
     {
@@ -17090,7 +17100,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_d",
-      "community": 52,
+      "community": 18,
       "norm_label": "d()"
     },
     {
@@ -17110,7 +17120,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_c_i",
-      "community": 52,
+      "community": 18,
       "norm_label": ".i()"
     },
     {
@@ -17190,7 +17200,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_s",
-      "community": 52,
+      "community": 152,
       "norm_label": ".s()"
     },
     {
@@ -17200,7 +17210,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_g",
-      "community": 52,
+      "community": 18,
       "norm_label": ".g()"
     },
     {
@@ -17210,7 +17220,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_c",
-      "community": 52,
+      "community": 152,
       "norm_label": ".c()"
     },
     {
@@ -17220,7 +17230,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_b",
-      "community": 21,
+      "community": 18,
       "norm_label": ".b()"
     },
     {
@@ -17250,7 +17260,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_then",
-      "community": 52,
+      "community": 152,
       "norm_label": ".then()"
     },
     {
@@ -17260,7 +17270,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_catch",
-      "community": 52,
+      "community": 152,
       "norm_label": ".catch()"
     },
     {
@@ -17270,7 +17280,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_x",
-      "community": 34,
+      "community": 9,
       "norm_label": "x()"
     },
     {
@@ -17280,7 +17290,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_t",
-      "community": 52,
+      "community": 18,
       "norm_label": "t()"
     },
     {
@@ -17290,7 +17300,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e",
-      "community": 52,
+      "community": 18,
       "norm_label": "e()"
     },
     {
@@ -17300,7 +17310,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_f",
-      "community": 18,
+      "community": 26,
       "norm_label": "f()"
     },
     {
@@ -17310,7 +17320,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_set",
-      "community": 52,
+      "community": 18,
       "norm_label": ".set()"
     },
     {
@@ -17320,7 +17330,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_get",
-      "community": 52,
+      "community": 18,
       "norm_label": ".get()"
     },
     {
@@ -17330,7 +17340,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_has",
-      "community": 52,
+      "community": 18,
       "norm_label": ".has()"
     },
     {
@@ -17340,7 +17350,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_b_delete",
-      "community": 52,
+      "community": 18,
       "norm_label": ".delete()"
     },
     {
@@ -17350,7 +17360,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_set",
-      "community": 52,
+      "community": 18,
       "norm_label": ".set()"
     },
     {
@@ -17360,7 +17370,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_delete",
-      "community": 52,
+      "community": 18,
       "norm_label": ".delete()"
     },
     {
@@ -17370,7 +17380,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_clear",
-      "community": 52,
+      "community": 18,
       "norm_label": ".clear()"
     },
     {
@@ -17380,7 +17390,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_has",
-      "community": 52,
+      "community": 18,
       "norm_label": ".has()"
     },
     {
@@ -17390,7 +17400,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_get",
-      "community": 52,
+      "community": 18,
       "norm_label": ".get()"
     },
     {
@@ -17400,7 +17410,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_entries",
-      "community": 34,
+      "community": 9,
       "norm_label": ".entries()"
     },
     {
@@ -17410,7 +17420,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_keys",
-      "community": 52,
+      "community": 18,
       "norm_label": ".keys()"
     },
     {
@@ -17420,7 +17430,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_values",
-      "community": 52,
+      "community": 18,
       "norm_label": ".values()"
     },
     {
@@ -17430,7 +17440,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_e_foreach",
-      "community": 34,
+      "community": 9,
       "norm_label": ".foreach()"
     },
     {
@@ -17460,7 +17470,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ja",
-      "community": 9,
+      "community": 34,
       "norm_label": "ja()"
     },
     {
@@ -17470,7 +17480,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ka",
-      "community": 52,
+      "community": 18,
       "norm_label": "ka()"
     },
     {
@@ -17480,7 +17490,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_la",
-      "community": 52,
+      "community": 18,
       "norm_label": "la()"
     },
     {
@@ -17580,7 +17590,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_hb",
-      "community": 52,
+      "community": 9,
       "norm_label": "hb()"
     },
     {
@@ -17590,7 +17600,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ib",
-      "community": 9,
+      "community": 18,
       "norm_label": "ib()"
     },
     {
@@ -17630,7 +17640,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_kb",
-      "community": 18,
+      "community": 9,
       "norm_label": "kb()"
     },
     {
@@ -17640,7 +17650,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_lb",
-      "community": 18,
+      "community": 9,
       "norm_label": "lb()"
     },
     {
@@ -17660,7 +17670,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ob",
-      "community": 52,
+      "community": 18,
       "norm_label": "ob()"
     },
     {
@@ -17690,7 +17700,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_tb",
-      "community": 18,
+      "community": 26,
       "norm_label": "tb()"
     },
     {
@@ -17710,7 +17720,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_wb",
-      "community": 52,
+      "community": 18,
       "norm_label": "wb()"
     },
     {
@@ -17740,7 +17750,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_zb",
-      "community": 52,
+      "community": 18,
       "norm_label": "zb()"
     },
     {
@@ -17750,7 +17760,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ac",
-      "community": 30,
+      "community": 26,
       "norm_label": "ac()"
     },
     {
@@ -18010,7 +18020,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_bc",
-      "community": 18,
+      "community": 26,
       "norm_label": "bc()"
     },
     {
@@ -18080,7 +18090,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ac_setenabled",
-      "community": 30,
+      "community": 26,
       "norm_label": ".setenabled()"
     },
     {
@@ -18270,7 +18280,7 @@
       "source_location": "L52",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ld",
-      "community": 21,
+      "community": 18,
       "norm_label": "ld()"
     },
     {
@@ -18350,7 +18360,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_od",
-      "community": 52,
+      "community": 18,
       "norm_label": "od()"
     },
     {
@@ -18370,7 +18380,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_pd",
-      "community": 9,
+      "community": 34,
       "norm_label": "pd()"
     },
     {
@@ -18390,7 +18400,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_rd",
-      "community": 9,
+      "community": 34,
       "norm_label": "rd()"
     },
     {
@@ -18400,7 +18410,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_pd_a",
-      "community": 9,
+      "community": 34,
       "norm_label": ".a()"
     },
     {
@@ -18520,7 +18530,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_zd",
-      "community": 52,
+      "community": 9,
       "norm_label": "zd()"
     },
     {
@@ -18540,7 +18550,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_r_removeeventlistener",
-      "community": 52,
+      "community": 9,
       "norm_label": ".removeeventlistener()"
     },
     {
@@ -18550,7 +18560,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_be",
-      "community": 52,
+      "community": 152,
       "norm_label": "be()"
     },
     {
@@ -18580,7 +18590,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ce",
-      "community": 9,
+      "community": 152,
       "norm_label": "ce()"
     },
     {
@@ -18610,7 +18620,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ee",
-      "community": 21,
+      "community": 152,
       "norm_label": "ee()"
     },
     {
@@ -18620,7 +18630,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_fe",
-      "community": 26,
+      "community": 9,
       "norm_label": "fe()"
     },
     {
@@ -18670,7 +18680,7 @@
       "source_location": "L66",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_le",
-      "community": 21,
+      "community": 18,
       "norm_label": "le()"
     },
     {
@@ -18690,7 +18700,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_oe",
-      "community": 52,
+      "community": 9,
       "norm_label": "oe()"
     },
     {
@@ -18700,7 +18710,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_pe",
-      "community": 21,
+      "community": 152,
       "norm_label": "pe()"
     },
     {
@@ -18720,7 +18730,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_qe_h",
-      "community": 21,
+      "community": 18,
       "norm_label": ".h()"
     },
     {
@@ -18780,7 +18790,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_te_remove",
-      "community": 52,
+      "community": 9,
       "norm_label": ".remove()"
     },
     {
@@ -18790,7 +18800,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ve",
-      "community": 9,
+      "community": 34,
       "norm_label": "ve()"
     },
     {
@@ -18800,7 +18810,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ve_set",
-      "community": 9,
+      "community": 34,
       "norm_label": ".set()"
     },
     {
@@ -18810,7 +18820,7 @@
       "source_location": "L72",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ve_reset",
-      "community": 9,
+      "community": 34,
       "norm_label": ".reset()"
     },
     {
@@ -18860,7 +18870,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ge",
-      "community": 26,
+      "community": 9,
       "norm_label": "ge()"
     },
     {
@@ -18880,7 +18890,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_u",
-      "community": 71,
+      "community": 26,
       "norm_label": "u()"
     },
     {
@@ -18900,7 +18910,7 @@
       "source_location": "L75",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_je",
-      "community": 71,
+      "community": 26,
       "norm_label": "je()"
     },
     {
@@ -18930,7 +18940,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_re",
-      "community": 9,
+      "community": 152,
       "norm_label": "re()"
     },
     {
@@ -18960,7 +18970,7 @@
       "source_location": "L79",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_we",
-      "community": 71,
+      "community": 34,
       "norm_label": "we()"
     },
     {
@@ -18970,7 +18980,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_xe",
-      "community": 71,
+      "community": 34,
       "norm_label": "xe()"
     },
     {
@@ -18980,7 +18990,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ye",
-      "community": 9,
+      "community": 34,
       "norm_label": "ye()"
     },
     {
@@ -19030,7 +19040,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_v_a",
-      "community": 21,
+      "community": 40,
       "norm_label": ".a()"
     },
     {
@@ -19050,7 +19060,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_bf",
-      "community": 52,
+      "community": 152,
       "norm_label": "bf()"
     },
     {
@@ -19060,7 +19070,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_bf_i",
-      "community": 52,
+      "community": 152,
       "norm_label": ".i()"
     },
     {
@@ -19070,7 +19080,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_bf_a",
-      "community": 52,
+      "community": 152,
       "norm_label": ".a()"
     },
     {
@@ -19160,7 +19170,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_of",
-      "community": 34,
+      "community": 9,
       "norm_label": "of()"
     },
     {
@@ -19170,7 +19180,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_pf",
-      "community": 34,
+      "community": 9,
       "norm_label": "pf()"
     },
     {
@@ -19180,7 +19190,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_qf",
-      "community": 9,
+      "community": 40,
       "norm_label": "qf()"
     },
     {
@@ -19190,7 +19200,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_sf",
-      "community": 34,
+      "community": 9,
       "norm_label": "sf()"
     },
     {
@@ -19200,7 +19210,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_tf",
-      "community": 34,
+      "community": 9,
       "norm_label": "tf()"
     },
     {
@@ -19210,7 +19220,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_uf",
-      "community": 34,
+      "community": 9,
       "norm_label": "uf()"
     },
     {
@@ -19220,7 +19230,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_vf",
-      "community": 34,
+      "community": 9,
       "norm_label": "vf()"
     },
     {
@@ -19250,7 +19260,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_yf",
-      "community": 52,
+      "community": 152,
       "norm_label": "yf()"
     },
     {
@@ -19360,7 +19370,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_lf",
-      "community": 9,
+      "community": 40,
       "norm_label": "lf()"
     },
     {
@@ -19380,7 +19390,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_rf",
-      "community": 34,
+      "community": 9,
       "norm_label": "rf()"
     },
     {
@@ -19400,7 +19410,7 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_qf_removeall",
-      "community": 21,
+      "community": 40,
       "norm_label": ".removeall()"
     },
     {
@@ -19430,7 +19440,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_f_settitle",
-      "community": 18,
+      "community": 26,
       "norm_label": ".settitle()"
     },
     {
@@ -19460,7 +19470,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_cg",
-      "community": 71,
+      "community": 26,
       "norm_label": "cg()"
     },
     {
@@ -19470,7 +19480,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_dg",
-      "community": 26,
+      "community": 9,
       "norm_label": "dg()"
     },
     {
@@ -19540,7 +19550,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_gg_a",
-      "community": 71,
+      "community": 26,
       "norm_label": ".a()"
     },
     {
@@ -19560,7 +19570,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_hg_listen",
-      "community": 71,
+      "community": 40,
       "norm_label": ".listen()"
     },
     {
@@ -19590,7 +19600,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_jg",
-      "community": 26,
+      "community": 9,
       "norm_label": "jg()"
     },
     {
@@ -19820,7 +19830,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_zg",
-      "community": 71,
+      "community": 40,
       "norm_label": "zg()"
     },
     {
@@ -19840,7 +19850,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_g_b",
-      "community": 18,
+      "community": 26,
       "norm_label": ".b()"
     },
     {
@@ -19910,7 +19920,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ih",
-      "community": 52,
+      "community": 9,
       "norm_label": "ih()"
     },
     {
@@ -19940,7 +19950,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_lh",
-      "community": 52,
+      "community": 152,
       "norm_label": "lh()"
     },
     {
@@ -20280,7 +20290,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ji",
-      "community": 71,
+      "community": 52,
       "norm_label": "ji()"
     },
     {
@@ -20290,7 +20300,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ji_set",
-      "community": 71,
+      "community": 52,
       "norm_label": ".set()"
     },
     {
@@ -20310,7 +20320,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_ji_get",
-      "community": 9,
+      "community": 52,
       "norm_label": ".get()"
     },
     {
@@ -20330,7 +20340,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_mi",
-      "community": 9,
+      "community": 52,
       "norm_label": "mi()"
     },
     {
@@ -20350,7 +20360,7 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_oi",
-      "community": 9,
+      "community": 52,
       "norm_label": "oi()"
     },
     {
@@ -20360,7 +20370,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "frontend_chrome_test_5_default_extensions_lmjegmlicamnimmfhcmpkclmigmmcbeh_3_10_0_offscreen_compiled_pi",
-      "community": 9,
+      "community": 34,
       "norm_label": "pi()"
     },
     {
@@ -22550,7 +22560,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_package_dependencies_jspdf",
-      "community": 176,
+      "community": 63,
       "norm_label": "jspdf"
     },
     {
@@ -22810,7 +22820,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_src_app_module_load_error_patterns",
-      "community": 165,
+      "community": 5,
       "norm_label": "module_load_error_patterns"
     },
     {
@@ -22820,7 +22830,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "frontend_src_app_getmoduleerrorautorefreshcount",
-      "community": 165,
+      "community": 5,
       "norm_label": "getmoduleerrorautorefreshcount()"
     },
     {
@@ -22830,7 +22840,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_src_app_getmoduleerrorcachebustcount",
-      "community": 165,
+      "community": 5,
       "norm_label": "getmoduleerrorcachebustcount()"
     },
     {
@@ -22850,7 +22860,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "frontend_src_app_isrecoverablemoduleloaderror",
-      "community": 165,
+      "community": 5,
       "norm_label": "isrecoverablemoduleloaderror()"
     },
     {
@@ -22870,7 +22880,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "frontend_src_app_moduleloaderrorfallback",
-      "community": 165,
+      "community": 5,
       "norm_label": "moduleloaderrorfallback()"
     },
     {
@@ -23660,7 +23670,7 @@
       "source_location": "L234",
       "_origin": "ast",
       "id": "frontend_src_app_protectedadmin",
-      "community": 163,
+      "community": 162,
       "norm_label": "protectedadmin()"
     },
     {
@@ -23670,7 +23680,7 @@
       "source_location": "L248",
       "_origin": "ast",
       "id": "frontend_src_app_protectedemployee",
-      "community": 163,
+      "community": 162,
       "norm_label": "protectedemployee()"
     },
     {
@@ -23680,7 +23690,7 @@
       "source_location": "L260",
       "_origin": "ast",
       "id": "frontend_src_app_protectedstudent",
-      "community": 163,
+      "community": 162,
       "norm_label": "protectedstudent()"
     },
     {
@@ -23690,7 +23700,7 @@
       "source_location": "L272",
       "_origin": "ast",
       "id": "frontend_src_app_roleredirect",
-      "community": 163,
+      "community": 150,
       "norm_label": "roleredirect()"
     },
     {
@@ -23920,7 +23930,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminaccountrequests",
-      "community": 150,
+      "community": 159,
       "norm_label": "adminaccountrequests.jsx"
     },
     {
@@ -23930,7 +23940,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_admin_adminaccountrequests_adminaccountrequests",
-      "community": 150,
+      "community": 159,
       "norm_label": "adminaccountrequests()"
     },
     {
@@ -23940,7 +23950,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_admincoupons",
-      "community": 65,
+      "community": 164,
       "norm_label": "admincoupons.jsx"
     },
     {
@@ -23950,7 +23960,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_admin_admincoupons_buildplankey",
-      "community": 65,
+      "community": 164,
       "norm_label": "buildplankey()"
     },
     {
@@ -23960,7 +23970,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "frontend_src_admin_admincoupons_todateinputvalue",
-      "community": 65,
+      "community": 164,
       "norm_label": "todateinputvalue()"
     },
     {
@@ -23970,7 +23980,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "frontend_src_admin_admincoupons_createblankform",
-      "community": 65,
+      "community": 164,
       "norm_label": "createblankform()"
     },
     {
@@ -23980,7 +23990,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "frontend_src_admin_admincoupons_formatdiscount",
-      "community": 65,
+      "community": 164,
       "norm_label": "formatdiscount()"
     },
     {
@@ -23990,7 +24000,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "frontend_src_admin_admincoupons_formatdate",
-      "community": 65,
+      "community": 164,
       "norm_label": "formatdate()"
     },
     {
@@ -24000,7 +24010,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_src_admin_admincoupons_admincoupons",
-      "community": 65,
+      "community": 164,
       "norm_label": "admincoupons()"
     },
     {
@@ -24280,7 +24290,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminpermissions",
-      "community": 150,
+      "community": 63,
       "norm_label": "adminpermissions.jsx"
     },
     {
@@ -24290,7 +24300,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "frontend_src_admin_adminpermissions_admin_permissions",
-      "community": 150,
+      "community": 63,
       "norm_label": "admin_permissions"
     },
     {
@@ -24300,7 +24310,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "frontend_src_admin_adminpermissions_role_presets",
-      "community": 150,
+      "community": 63,
       "norm_label": "role_presets"
     },
     {
@@ -24310,7 +24320,7 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "frontend_src_admin_adminpermissions_getpermissionsarray",
-      "community": 150,
+      "community": 63,
       "norm_label": "getpermissionsarray()"
     },
     {
@@ -24320,7 +24330,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "frontend_src_admin_adminpermissions_adminpermissions",
-      "community": 150,
+      "community": 63,
       "norm_label": "adminpermissions()"
     },
     {
@@ -24330,7 +24340,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminprofile",
-      "community": 159,
+      "community": 150,
       "norm_label": "adminprofile.jsx"
     },
     {
@@ -24340,7 +24350,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "frontend_src_admin_adminprofile_githubicon",
-      "community": 159,
+      "community": 150,
       "norm_label": "githubicon()"
     },
     {
@@ -24350,7 +24360,7 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "frontend_src_admin_adminprofile_linkedinicon",
-      "community": 159,
+      "community": 150,
       "norm_label": "linkedinicon()"
     },
     {
@@ -24360,7 +24370,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "frontend_src_admin_adminprofile_createprofileform",
-      "community": 159,
+      "community": 150,
       "norm_label": "createprofileform()"
     },
     {
@@ -24370,7 +24380,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "frontend_src_admin_adminprofile_adminprofile",
-      "community": 159,
+      "community": 150,
       "norm_label": "adminprofile()"
     },
     {
@@ -24400,7 +24410,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminqrcertificates",
-      "community": 0,
+      "community": 164,
       "norm_label": "adminqrcertificates.jsx"
     },
     {
@@ -24410,7 +24420,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "frontend_src_admin_adminqrcertificates_resolveassetsrc",
-      "community": 0,
+      "community": 164,
       "norm_label": "resolveassetsrc()"
     },
     {
@@ -24420,7 +24430,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "frontend_src_admin_adminqrcertificates_certificate_types",
-      "community": 0,
+      "community": 164,
       "norm_label": "certificate_types"
     },
     {
@@ -24430,7 +24440,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "frontend_src_admin_adminqrcertificates_gettypemeta",
-      "community": 0,
+      "community": 164,
       "norm_label": "gettypemeta()"
     },
     {
@@ -24440,7 +24450,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "frontend_src_admin_adminqrcertificates_createinitialform",
-      "community": 0,
+      "community": 164,
       "norm_label": "createinitialform()"
     },
     {
@@ -24450,7 +24460,7 @@
       "source_location": "L84",
       "_origin": "ast",
       "id": "frontend_src_admin_adminqrcertificates_mapcertificatetoform",
-      "community": 0,
+      "community": 164,
       "norm_label": "mapcertificatetoform()"
     },
     {
@@ -24460,7 +24470,7 @@
       "source_location": "L109",
       "_origin": "ast",
       "id": "frontend_src_admin_adminqrcertificates_formatdisplaydate",
-      "community": 0,
+      "community": 164,
       "norm_label": "formatdisplaydate()"
     },
     {
@@ -24470,7 +24480,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "frontend_src_admin_adminqrcertificates_buildverifyurl",
-      "community": 0,
+      "community": 164,
       "norm_label": "buildverifyurl()"
     },
     {
@@ -24480,7 +24490,7 @@
       "source_location": "L126",
       "_origin": "ast",
       "id": "frontend_src_admin_adminqrcertificates_statcard",
-      "community": 0,
+      "community": 164,
       "norm_label": "statcard()"
     },
     {
@@ -24490,7 +24500,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "frontend_src_admin_adminqrcertificates_adminqrcertificates",
-      "community": 0,
+      "community": 164,
       "norm_label": "adminqrcertificates()"
     },
     {
@@ -24500,7 +24510,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_admin_adminreceipts",
-      "community": 176,
+      "community": 63,
       "norm_label": "adminreceipts.jsx"
     },
     {
@@ -24510,7 +24520,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_src_admin_adminreceipts_numbertowords",
-      "community": 176,
+      "community": 63,
       "norm_label": "numbertowords()"
     },
     {
@@ -24520,7 +24530,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "frontend_src_admin_adminreceipts_getabsoluteurl",
-      "community": 176,
+      "community": 63,
       "norm_label": "getabsoluteurl()"
     },
     {
@@ -24530,7 +24540,7 @@
       "source_location": "L73",
       "_origin": "ast",
       "id": "frontend_src_admin_adminreceipts_adminreceipts",
-      "community": 176,
+      "community": 63,
       "norm_label": "adminreceipts()"
     },
     {
@@ -25020,7 +25030,7 @@
       "source_location": "L308",
       "_origin": "ast",
       "id": "frontend_src_components_aichatbot_aichatbot",
-      "community": 34,
+      "community": 63,
       "norm_label": "aichatbot()"
     },
     {
@@ -25430,7 +25440,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_components_chatpanel",
-      "community": 154,
+      "community": 162,
       "norm_label": "chatpanel.jsx"
     },
     {
@@ -25440,7 +25450,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "frontend_src_components_chatpanel_tomessagedate",
-      "community": 154,
+      "community": 162,
       "norm_label": "tomessagedate()"
     },
     {
@@ -25450,7 +25460,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "frontend_src_components_chatpanel_formattime",
-      "community": 154,
+      "community": 162,
       "norm_label": "formattime()"
     },
     {
@@ -25460,7 +25470,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "frontend_src_components_chatpanel_formatmsgdatetime",
-      "community": 154,
+      "community": 162,
       "norm_label": "formatmsgdatetime()"
     },
     {
@@ -25470,7 +25480,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "frontend_src_components_chatpanel_getdaylabel",
-      "community": 154,
+      "community": 162,
       "norm_label": "getdaylabel()"
     },
     {
@@ -25480,7 +25490,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "frontend_src_components_chatpanel_getcontactname",
-      "community": 154,
+      "community": 162,
       "norm_label": "getcontactname()"
     },
     {
@@ -25490,7 +25500,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "frontend_src_components_chatpanel_emojis",
-      "community": 154,
+      "community": 162,
       "norm_label": "emojis"
     },
     {
@@ -25500,7 +25510,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "frontend_src_components_chatpanel_avatar",
-      "community": 154,
+      "community": 162,
       "norm_label": "avatar()"
     },
     {
@@ -25510,7 +25520,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_src_components_chatpanel_chatpanel",
-      "community": 154,
+      "community": 162,
       "norm_label": "chatpanel()"
     },
     {
@@ -25520,7 +25530,7 @@
       "source_location": "L991",
       "_origin": "ast",
       "id": "frontend_src_components_chatpanel_headerbtn",
-      "community": 154,
+      "community": 162,
       "norm_label": "headerbtn()"
     },
     {
@@ -25530,7 +25540,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal",
-      "community": 65,
+      "community": 22,
       "norm_label": "courseenrollmodal.jsx"
     },
     {
@@ -25540,7 +25550,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal_loadrazorpayscript",
-      "community": 65,
+      "community": 22,
       "norm_label": "loadrazorpayscript()"
     },
     {
@@ -25550,7 +25560,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal_normalizeplankey",
-      "community": 65,
+      "community": 22,
       "norm_label": "normalizeplankey()"
     },
     {
@@ -25560,7 +25570,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal_compactplankey",
-      "community": 65,
+      "community": 22,
       "norm_label": "compactplankey()"
     },
     {
@@ -25570,7 +25580,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal_getplanidentity",
-      "community": 65,
+      "community": 22,
       "norm_label": "getplanidentity()"
     },
     {
@@ -25580,7 +25590,7 @@
       "source_location": "L60",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal_matchesplanenrollment",
-      "community": 65,
+      "community": 22,
       "norm_label": "matchesplanenrollment()"
     },
     {
@@ -25590,7 +25600,7 @@
       "source_location": "L82",
       "_origin": "ast",
       "id": "frontend_src_components_courseenrollmodal_courseenrollmodal",
-      "community": 65,
+      "community": 22,
       "norm_label": "courseenrollmodal()"
     },
     {
@@ -25860,7 +25870,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_components_maintenancepage",
-      "community": 174,
+      "community": 5,
       "norm_label": "maintenancepage.jsx"
     },
     {
@@ -25870,7 +25880,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "frontend_src_components_maintenancepage_maintenancepage",
-      "community": 174,
+      "community": 5,
       "norm_label": "maintenancepage()"
     },
     {
@@ -26050,7 +26060,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee",
-      "community": 149,
+      "community": 64,
       "norm_label": "techmarquee.jsx"
     },
     {
@@ -26060,7 +26070,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_techs",
-      "community": 149,
+      "community": 64,
       "norm_label": "techs"
     },
     {
@@ -26070,7 +26080,7 @@
       "source_location": "L102",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_mid",
-      "community": 149,
+      "community": 64,
       "norm_label": "mid"
     },
     {
@@ -26080,7 +26090,7 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_row1",
-      "community": 149,
+      "community": 64,
       "norm_label": "row1"
     },
     {
@@ -26090,7 +26100,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_row2",
-      "community": 149,
+      "community": 64,
       "norm_label": "row2"
     },
     {
@@ -26100,7 +26110,7 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_logocard",
-      "community": 149,
+      "community": 64,
       "norm_label": "logocard()"
     },
     {
@@ -26110,7 +26120,7 @@
       "source_location": "L135",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_marqueerow",
-      "community": 149,
+      "community": 64,
       "norm_label": "marqueerow()"
     },
     {
@@ -26120,7 +26130,7 @@
       "source_location": "L150",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_animatedheading",
-      "community": 149,
+      "community": 64,
       "norm_label": "animatedheading()"
     },
     {
@@ -26130,7 +26140,7 @@
       "source_location": "L172",
       "_origin": "ast",
       "id": "frontend_src_components_techmarquee_techmarquee",
-      "community": 149,
+      "community": 64,
       "norm_label": "techmarquee()"
     },
     {
@@ -26270,7 +26280,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_config_api",
-      "community": 150,
+      "community": 63,
       "norm_label": "api.js"
     },
     {
@@ -26280,7 +26290,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_config_api_envapibase",
-      "community": 150,
+      "community": 63,
       "norm_label": "envapibase"
     },
     {
@@ -26290,7 +26300,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "frontend_src_config_api_api_base",
-      "community": 0,
+      "community": 164,
       "norm_label": "api_base"
     },
     {
@@ -26300,7 +26310,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "frontend_src_config_api_buildapiurl",
-      "community": 167,
+      "community": 159,
       "norm_label": "buildapiurl()"
     },
     {
@@ -26310,7 +26320,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "frontend_src_config_api_readapijson",
-      "community": 65,
+      "community": 164,
       "norm_label": "readapijson()"
     },
     {
@@ -26320,7 +26330,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "frontend_src_config_api_api",
-      "community": 150,
+      "community": 63,
       "norm_label": "api"
     },
     {
@@ -26330,7 +26340,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_context_authcontext",
-      "community": 150,
+      "community": 162,
       "norm_label": "authcontext.jsx"
     },
     {
@@ -26340,7 +26350,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_context_authcontext_authcontext",
-      "community": 150,
+      "community": 162,
       "norm_label": "authcontext"
     },
     {
@@ -26350,7 +26360,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "frontend_src_context_authcontext_authprovider",
-      "community": 163,
+      "community": 162,
       "norm_label": "authprovider()"
     },
     {
@@ -26460,7 +26470,7 @@
       "source_location": "L562",
       "_origin": "ast",
       "id": "frontend_src_context_chatcontext_usechat",
-      "community": 154,
+      "community": 162,
       "norm_label": "usechat()"
     },
     {
@@ -26530,7 +26540,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_employee_employeebroadcast",
-      "community": 150,
+      "community": 63,
       "norm_label": "employeebroadcast.jsx"
     },
     {
@@ -26540,7 +26550,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "frontend_src_employee_employeebroadcast_employeebroadcast",
-      "community": 150,
+      "community": 63,
       "norm_label": "employeebroadcast()"
     },
     {
@@ -26570,7 +26580,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_employee_employeechat",
-      "community": 154,
+      "community": 162,
       "norm_label": "employeechat.jsx"
     },
     {
@@ -26580,7 +26590,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "frontend_src_employee_employeechat_employeechat",
-      "community": 154,
+      "community": 162,
       "norm_label": "employeechat()"
     },
     {
@@ -26850,7 +26860,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout",
-      "community": 173,
+      "community": 162,
       "norm_label": "employeelayout.jsx"
     },
     {
@@ -26860,7 +26870,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout_navitems",
-      "community": 173,
+      "community": 162,
       "norm_label": "navitems"
     },
     {
@@ -26870,7 +26880,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout_iconmap",
-      "community": 173,
+      "community": 162,
       "norm_label": "iconmap"
     },
     {
@@ -26880,7 +26890,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout_permission_map",
-      "community": 173,
+      "community": 162,
       "norm_label": "permission_map"
     },
     {
@@ -26890,7 +26900,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout_haspermissionforpath",
-      "community": 173,
+      "community": 162,
       "norm_label": "haspermissionforpath()"
     },
     {
@@ -26900,7 +26910,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout_getfilterednavitems",
-      "community": 173,
+      "community": 162,
       "norm_label": "getfilterednavitems()"
     },
     {
@@ -26910,7 +26920,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "frontend_src_employee_employeelayout_employeelayout",
-      "community": 173,
+      "community": 162,
       "norm_label": "employeelayout()"
     },
     {
@@ -27040,7 +27050,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_employee_employeeprofilerefined",
-      "community": 150,
+      "community": 16,
       "norm_label": "employeeprofilerefined.jsx"
     },
     {
@@ -27050,7 +27060,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "frontend_src_employee_employeeprofilerefined_createprofileform",
-      "community": 150,
+      "community": 16,
       "norm_label": "createprofileform()"
     },
     {
@@ -27060,7 +27070,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "frontend_src_employee_employeeprofilerefined_employeeprofilerefined",
-      "community": 150,
+      "community": 16,
       "norm_label": "employeeprofilerefined()"
     },
     {
@@ -27070,7 +27080,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_employee_employeeprojects",
-      "community": 150,
+      "community": 159,
       "norm_label": "employeeprojects.jsx"
     },
     {
@@ -27080,7 +27090,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_employee_employeeprojects_gradients",
-      "community": 150,
+      "community": 159,
       "norm_label": "gradients"
     },
     {
@@ -27090,7 +27100,7 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "frontend_src_employee_employeeprojects_projectcard",
-      "community": 150,
+      "community": 159,
       "norm_label": "projectcard()"
     },
     {
@@ -27100,7 +27110,7 @@
       "source_location": "L123",
       "_origin": "ast",
       "id": "frontend_src_employee_employeeprojects_employeeprojects",
-      "community": 150,
+      "community": 159,
       "norm_label": "employeeprojects()"
     },
     {
@@ -27150,7 +27160,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks",
-      "community": 161,
+      "community": 150,
       "norm_label": "employeetasks.jsx"
     },
     {
@@ -27160,7 +27170,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_statusconfig",
-      "community": 161,
+      "community": 150,
       "norm_label": "statusconfig"
     },
     {
@@ -27170,7 +27180,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_priorityconfig",
-      "community": 161,
+      "community": 150,
       "norm_label": "priorityconfig"
     },
     {
@@ -27180,7 +27190,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_getstatus",
-      "community": 161,
+      "community": 150,
       "norm_label": "getstatus()"
     },
     {
@@ -27190,7 +27200,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_getpriority",
-      "community": 161,
+      "community": 150,
       "norm_label": "getpriority()"
     },
     {
@@ -27200,7 +27210,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_taskcard",
-      "community": 161,
+      "community": 150,
       "norm_label": "taskcard()"
     },
     {
@@ -27210,7 +27220,7 @@
       "source_location": "L118",
       "_origin": "ast",
       "id": "frontend_src_employee_employeetasks_employeetasks",
-      "community": 161,
+      "community": 150,
       "norm_label": "employeetasks()"
     },
     {
@@ -27340,7 +27350,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_employee_sellprojectrequest",
-      "community": 150,
+      "community": 63,
       "norm_label": "sellprojectrequest.jsx"
     },
     {
@@ -27350,7 +27360,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_employee_sellprojectrequest_categories",
-      "community": 150,
+      "community": 63,
       "norm_label": "categories"
     },
     {
@@ -27360,7 +27370,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "frontend_src_employee_sellprojectrequest_sellprojectrequest",
-      "community": 150,
+      "community": 63,
       "norm_label": "sellprojectrequest()"
     },
     {
@@ -27390,7 +27400,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_src_employee_sellprojectrequestrefined_sellprojectrequestrefined",
-      "community": 150,
+      "community": 16,
       "norm_label": "sellprojectrequestrefined()"
     },
     {
@@ -27520,7 +27530,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "frontend_src_employee_employeeutils_getemployeeinitials",
-      "community": 150,
+      "community": 16,
       "norm_label": "getemployeeinitials()"
     },
     {
@@ -27650,7 +27660,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_pages_authcallback",
-      "community": 75,
+      "community": 162,
       "norm_label": "authcallback.jsx"
     },
     {
@@ -27660,7 +27670,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_src_pages_authcallback_authcallback",
-      "community": 75,
+      "community": 162,
       "norm_label": "authcallback()"
     },
     {
@@ -27670,7 +27680,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_pages_chatpage",
-      "community": 163,
+      "community": 162,
       "norm_label": "chatpage.jsx"
     },
     {
@@ -27680,7 +27690,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "frontend_src_pages_chatpage_chatpage",
-      "community": 163,
+      "community": 162,
       "norm_label": "chatpage()"
     },
     {
@@ -27980,7 +27990,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_pages_customproject",
-      "community": 150,
+      "community": 63,
       "norm_label": "customproject.jsx"
     },
     {
@@ -27990,7 +28000,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "frontend_src_pages_customproject_customproject",
-      "community": 150,
+      "community": 63,
       "norm_label": "customproject()"
     },
     {
@@ -28110,7 +28120,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_pages_notfound",
-      "community": 75,
+      "community": 162,
       "norm_label": "notfound.jsx"
     },
     {
@@ -28120,7 +28130,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "frontend_src_pages_notfound_notfound",
-      "community": 75,
+      "community": 162,
       "norm_label": "notfound()"
     },
     {
@@ -28830,7 +28840,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_user_usercustomproject",
-      "community": 150,
+      "community": 63,
       "norm_label": "usercustomproject.jsx"
     },
     {
@@ -28840,7 +28850,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "frontend_src_user_usercustomproject_usercustomproject",
-      "community": 150,
+      "community": 63,
       "norm_label": "usercustomproject()"
     },
     {
@@ -28880,7 +28890,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_user_usermycourses",
-      "community": 150,
+      "community": 159,
       "norm_label": "usermycourses.jsx"
     },
     {
@@ -28890,7 +28900,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "frontend_src_user_usermycourses_usermycourses",
-      "community": 150,
+      "community": 159,
       "norm_label": "usermycourses()"
     },
     {
@@ -28900,7 +28910,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_user_userorders",
-      "community": 64,
+      "community": 63,
       "norm_label": "userorders.jsx"
     },
     {
@@ -28910,7 +28920,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_src_user_userorders_numbertowords",
-      "community": 64,
+      "community": 63,
       "norm_label": "numbertowords()"
     },
     {
@@ -28920,7 +28930,7 @@
       "source_location": "L61",
       "_origin": "ast",
       "id": "frontend_src_user_userorders_getabsoluteurl",
-      "community": 64,
+      "community": 63,
       "norm_label": "getabsoluteurl()"
     },
     {
@@ -28930,7 +28940,7 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "frontend_src_user_userorders_steps",
-      "community": 64,
+      "community": 63,
       "norm_label": "steps"
     },
     {
@@ -28940,7 +28950,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "frontend_src_user_userorders_getstatusstep",
-      "community": 64,
+      "community": 63,
       "norm_label": "getstatusstep()"
     },
     {
@@ -28950,7 +28960,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "frontend_src_user_userorders_getstatuscolor",
-      "community": 64,
+      "community": 63,
       "norm_label": "getstatuscolor()"
     },
     {
@@ -28960,7 +28970,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "frontend_src_user_userorders_formatdate",
-      "community": 64,
+      "community": 63,
       "norm_label": "formatdate()"
     },
     {
@@ -28970,7 +28980,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "frontend_src_user_userorders_userorders",
-      "community": 64,
+      "community": 63,
       "norm_label": "userorders()"
     },
     {
@@ -29040,7 +29050,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_user_usersupport",
-      "community": 154,
+      "community": 162,
       "norm_label": "usersupport.jsx"
     },
     {
@@ -29050,7 +29060,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "frontend_src_user_usersupport_usersupport",
-      "community": 154,
+      "community": 162,
       "norm_label": "usersupport()"
     },
     {
@@ -29490,7 +29500,7 @@
       "source_location": "L112",
       "_origin": "ast",
       "id": "frontend_src_utils_certificatetemplate_default_certificate_template",
-      "community": 0,
+      "community": 159,
       "norm_label": "default_certificate_template"
     },
     {
@@ -29570,7 +29580,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_utils_emailnotify",
-      "community": 150,
+      "community": 63,
       "norm_label": "emailnotify.js"
     },
     {
@@ -29580,7 +29590,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "frontend_src_utils_emailnotify_emailnotify",
-      "community": 150,
+      "community": 63,
       "norm_label": "emailnotify()"
     },
     {
@@ -29690,7 +29700,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_utils_roles",
-      "community": 163,
+      "community": 162,
       "norm_label": "roles.js"
     },
     {
@@ -29700,7 +29710,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_utils_roles_normalizeuserrole",
-      "community": 163,
+      "community": 162,
       "norm_label": "normalizeuserrole()"
     },
     {
@@ -29710,7 +29720,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_src_utils_roles_isemployeerole",
-      "community": 163,
+      "community": 162,
       "norm_label": "isemployeerole()"
     },
     {
@@ -29720,7 +29730,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "frontend_src_utils_roles_gethomepathforrole",
-      "community": 163,
+      "community": 162,
       "norm_label": "gethomepathforrole()"
     },
     {
@@ -29730,7 +29740,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "frontend_src_utils_roles_getroledisplaylabel",
-      "community": 163,
+      "community": 162,
       "norm_label": "getroledisplaylabel()"
     },
     {
@@ -38211,7 +38221,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/routes/ai.js",
-      "source_location": "L354",
+      "source_location": "L393",
       "weight": 1.0,
       "source": "backend_routes_ai",
       "target": "backend_routes_ai_dispatchratelimiter",
@@ -38251,6 +38261,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/routes/ai.js",
+      "source_location": "L233",
+      "weight": 1.0,
+      "source": "backend_routes_ai",
+      "target": "backend_routes_ai_markdowntohtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routes/ai.js",
       "source_location": "L4",
       "weight": 1.0,
       "source": "backend_routes_ai",
@@ -38265,6 +38285,28 @@
       "weight": 1.0,
       "source": "backend_routes_ai",
       "target": "backend_routes_ai_router",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routes/ai.js",
+      "source_location": "L292",
+      "weight": 1.0,
+      "source": "backend_routes_ai",
+      "target": "backend_routes_unsubscribe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routes/ai.js",
+      "source_location": "L292",
+      "weight": 1.0,
+      "source": "backend_routes_ai",
+      "target": "backend_routes_unsubscribe_generateunsubscribetoken",
       "confidence_score": 1.0
     },
     {
@@ -38294,7 +38336,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/routes/ai.js",
-      "source_location": "L279",
+      "source_location": "L293",
       "weight": 1.0,
       "source": "backend_routes_ai",
       "target": "backend_services_aiagents_departmentconfig",
@@ -38305,7 +38347,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/routes/ai.js",
-      "source_location": "L279",
+      "source_location": "L293",
       "weight": 1.0,
       "source": "backend_routes_ai",
       "target": "backend_services_aiagents_departmentconfig_addexecutionlog",
@@ -38448,7 +38490,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/routes/ai.js",
-      "source_location": "L255",
+      "source_location": "L291",
       "weight": 1.0,
       "source": "backend_routes_ai",
       "target": "backend_services_emailservice",
@@ -38459,7 +38501,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/routes/ai.js",
-      "source_location": "L255",
+      "source_location": "L291",
       "weight": 1.0,
       "source": "backend_routes_ai",
       "target": "backend_services_emailservice_emailtemplate",
@@ -38470,7 +38512,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/routes/ai.js",
-      "source_location": "L255",
+      "source_location": "L291",
       "weight": 1.0,
       "source": "backend_routes_ai",
       "target": "backend_services_emailservice_sendemail",
@@ -38481,7 +38523,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/routes/ai.js",
-      "source_location": "L386",
+      "source_location": "L425",
       "weight": 1.0,
       "source": "backend_routes_ai",
       "target": "backend_utils_mongo",
@@ -38492,7 +38534,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/routes/ai.js",
-      "source_location": "L386",
+      "source_location": "L425",
       "weight": 1.0,
       "source": "backend_routes_ai",
       "target": "backend_utils_mongo_getdb",
@@ -40950,7 +40992,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/agentDispatcher.js",
-      "source_location": "L161",
+      "source_location": "L182",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_agentdispatcher",
@@ -40981,7 +41023,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/aiAgents/agentDispatcher.js",
-      "source_location": "L81",
+      "source_location": "L102",
       "weight": 1.0,
       "source": "backend_services_aiagents_agentdispatcher",
       "target": "backend_services_aiagents_agentdispatcher_getdeptrole",
@@ -41068,7 +41110,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/aiAgents/agentDispatcher.js",
-      "source_location": "L23",
+      "source_location": "L44",
       "weight": 1.0,
       "source": "backend_services_aiagents_agentdispatcher_classifyintent",
       "target": "backend_services_aiagents_agentdispatcher_getdeptrole",
@@ -41079,7 +41121,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/aiAgents/agentDispatcher.js",
-      "source_location": "L121",
+      "source_location": "L142",
       "weight": 1.0,
       "source": "backend_services_aiagents_agentdispatcher_dispatchdepartmenttask",
       "target": "backend_services_aiagents_agentdispatcher_classifyintent",
@@ -41091,7 +41133,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/aiAgents/agentDispatcher.js",
-      "source_location": "L98",
+      "source_location": "L119",
       "weight": 1.0,
       "source": "backend_services_aiagents_agentdispatcher_dispatchdepartmenttask",
       "target": "backend_services_aiagents_departmentconfig_addexecutionlog"
@@ -41102,7 +41144,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/aiAgents/agentDispatcher.js",
-      "source_location": "L123",
+      "source_location": "L144",
       "weight": 1.0,
       "source": "backend_services_aiagents_agentdispatcher_dispatchdepartmenttask",
       "target": "backend_services_aiagents_departmentconfig_addpendingproposal"
@@ -41113,7 +41155,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/aiAgents/agentDispatcher.js",
-      "source_location": "L90",
+      "source_location": "L111",
       "weight": 1.0,
       "source": "backend_services_aiagents_agentdispatcher_dispatchdepartmenttask",
       "target": "backend_services_aiagents_departmentconfig_getdepartmentconfig"
@@ -41124,7 +41166,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/services/aiAgents/agentDispatcher.js",
-      "source_location": "L111",
+      "source_location": "L132",
       "weight": 1.0,
       "source": "backend_services_aiagents_agentdispatcher_dispatchdepartmenttask",
       "target": "backend_services_aiservice_generatetext"
@@ -41166,7 +41208,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L454",
+      "source_location": "L468",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -41177,7 +41219,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L458",
+      "source_location": "L472",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -41188,7 +41230,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L460",
+      "source_location": "L474",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -41229,7 +41271,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L457",
+      "source_location": "L471",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -41240,7 +41282,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L452",
+      "source_location": "L466",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -41251,7 +41293,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L455",
+      "source_location": "L469",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -41262,7 +41304,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L456",
+      "source_location": "L470",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -41293,7 +41335,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L459",
+      "source_location": "L473",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -41304,7 +41346,7 @@
       "relation": "indirect_call",
       "confidence": "INFERRED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L453",
+      "source_location": "L467",
       "weight": 1.0,
       "context": "collection",
       "source": "backend_services_aiagents_departmentconfig",
@@ -41327,7 +41369,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/services/aiAgents/departmentConfig.js",
-      "source_location": "L394",
+      "source_location": "L408",
       "weight": 1.0,
       "source": "backend_services_aiagents_departmentconfig_resolveproposal",
       "target": "backend_services_aiagents_departmentconfig_addexecutionlog",
@@ -96181,7 +96223,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/admin/AdminAIDepartments.jsx",
-      "source_location": "L630",
+      "source_location": "L663",
       "weight": 1.0,
       "source": "frontend_src_admin_adminaidepartments_adminaidepartments",
       "target": "frontend_src_admin_adminaidepartments_getdepartmenticon",
@@ -96192,7 +96234,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/admin/AdminAIDepartments.jsx",
-      "source_location": "L616",
+      "source_location": "L649",
       "weight": 1.0,
       "source": "frontend_src_admin_adminaidepartments_adminaidepartments",
       "target": "frontend_src_admin_adminaidepartments_getaccent",
@@ -96203,7 +96245,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/admin/AdminAIDepartments.jsx",
-      "source_location": "L625",
+      "source_location": "L658",
       "weight": 1.0,
       "source": "frontend_src_admin_adminaidepartments_adminaidepartments",
       "target": "frontend_src_admin_adminaidepartments_callsign",
@@ -96215,7 +96257,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "frontend/src/admin/AdminAIDepartments.jsx",
-      "source_location": "L175",
+      "source_location": "L184",
       "weight": 1.0,
       "source": "frontend_src_admin_adminaidepartments_adminaidepartments",
       "target": "frontend_src_config_api_readapijson"

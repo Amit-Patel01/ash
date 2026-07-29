@@ -287,25 +287,34 @@ Format ONLY with HTML <p> tags. NO markdown. Professional yet warm.`
       ? `🌅 Good Morning! Your Daily Learning Boost — ${dateStr}`
       : `🚀 AmitSolutionHub Evening Update — ${dateStr}`;
 
-    // 5. Send to every subscribed user with personalized unsubscribe link
+    // 5. Send to every subscribed user with personalized unsubscribe link (parallel batches of 10)
     let sentCount = 0, failCount = 0;
-    for (const email of recipients) {
-      const unsubUrl = buildUnsubscribeUrl(email);
-      const contentWithOffer = offerLine
-        ? `${aiContent}<div style="margin:20px 0;padding:16px;background:#eff6ff;border-left:4px solid #2563eb;border-radius:8px;"><strong>🏷️ Exclusive Offer:</strong> ${offerLine}</div>`
-        : aiContent;
+    const BATCH_SIZE = 10;
 
-      const html = emailTemplate(
-        subject,
-        contentWithOffer.replace(/\n/g, '<br/>'),
-        session === 'morning' ? 'Start Learning Today →' : 'Explore All Courses →',
-        'https://www.amitsolutionhub.com/courses',
-        session === 'morning' ? '#f59e0b' : '#2563eb',
-        session === 'morning' ? '🌅 Morning Edition' : '🌙 Evening Edition',
-        unsubUrl
-      );
-      const result = await sendEmail({ to: email, subject, html });
-      if (result.success) { sentCount++; } else { failCount++; }
+    for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
+      const batch = recipients.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map(async (email) => {
+        try {
+          const unsubUrl = buildUnsubscribeUrl(email);
+          const contentWithOffer = offerLine
+            ? `${aiContent}<div style="margin:20px 0;padding:16px;background:#eff6ff;border-left:4px solid #2563eb;border-radius:8px;"><strong>🏷️ Exclusive Offer:</strong> ${offerLine}</div>`
+            : aiContent;
+
+          const html = emailTemplate(
+            subject,
+            contentWithOffer.replace(/\n/g, '<br/>'),
+            session === 'morning' ? 'Start Learning Today →' : 'Explore All Courses →',
+            'https://www.amitsolutionhub.com/courses',
+            session === 'morning' ? '#f59e0b' : '#2563eb',
+            session === 'morning' ? '🌅 Morning Edition' : '🌙 Evening Edition',
+            unsubUrl
+          );
+          const result = await sendEmail({ to: email, subject, html });
+          if (result.success) { sentCount++; } else { failCount++; }
+        } catch {
+          failCount++;
+        }
+      }));
     }
 
     addExecutionLog('email', `${label} sent to ${sentCount}/${recipients.length} subscribers (${failCount} failed)`, 'success');

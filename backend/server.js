@@ -14,7 +14,7 @@ const multer = require("multer");
 const { logger } = require("./logger");
 
 // ─── ENV Validation ──────────────────────────────────────────────────────────
-const REQUIRED_ENV = ["RESEND_API_KEY", "RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET"];
+const REQUIRED_ENV = ["RAZORPAY_KEY_ID", "RAZORPAY_KEY_SECRET"];
 const missingEnv = REQUIRED_ENV.filter((k) => !process.env[k]);
 if (missingEnv.length > 0) {
   logger.warn(`Missing environment variables: ${missingEnv.join(", ")}. Some features may not work.`);
