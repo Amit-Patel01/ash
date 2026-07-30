@@ -80,7 +80,7 @@ export default function VerifiedCertificateSection({ courseTitle = "Web Developm
               {/* Outer Glow & Decoration */}
               <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 via-indigo-500 to-emerald-500 rounded-2xl blur-lg opacity-25 group-hover:opacity-45 transition duration-500" />
 
-              <div className="relative rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 sm:p-3 shadow-2xl overflow-hidden transition-transform duration-500 group-hover:scale-[1.01]">
+              <div className="relative rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-transparent dark:bg-slate-900 p-2 sm:p-3 shadow-2xl overflow-hidden transition-transform duration-500 group-hover:scale-[1.01]">
                 {/* Top Badge Overlay */}
                 <div className="flex items-center justify-between px-3 py-2 bg-slate-900 text-white rounded-t-xl text-[11px] font-bold">
                   <div className="flex items-center gap-2">

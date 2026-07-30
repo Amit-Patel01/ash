@@ -11,7 +11,7 @@ const navGroups = [
     items: [
       { path: '/admin', label: 'Dashboard', icon: 'dashboard' },
       { path: '/admin/ai-departments', label: 'AI Workforce', icon: 'robot' },
-      { path: '/admin/projects', label: 'Source Codes', icon: 'folder', permission: 'can_manage_projects' },
+      { path: '/admin/projects', label: 'Projects', icon: 'folder', permission: 'can_manage_projects' },
       { path: '/admin/tasks', label: 'Tasks', icon: 'task', permission: 'can_manage_tasks' },
       { path: '/admin/sales', label: 'Sales', icon: 'cart', permission: 'can_manage_sales' },
       { path: '/admin/receipts', label: 'Receipts', icon: 'receipt', permission: 'can_manage_sales' },
@@ -247,13 +247,13 @@ export default function AdminLayout({ onLogout }) {
   return (
     <div className="min-h-screen min-w-0 overflow-x-hidden bg-slate-50 text-slate-900 flex flex-col font-['Outfit',sans-serif]">
       
-      {/* ── TOP HORIZONTAL NAVBAR ── */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs" ref={navRef}>
+      {/* ── TOP HORIZONTAL NAVBAR (Ultra-Modern White Theme) ── */}
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-slate-200/80 shadow-xs" ref={navRef}>
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center justify-between h-16 gap-2 sm:gap-4">
+          <div className="flex items-center justify-between h-16 gap-3 sm:gap-4">
             
             {/* Left: Brand Logo & Mobile Trigger */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors"
@@ -262,19 +262,29 @@ export default function AdminLayout({ onLogout }) {
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
 
-              <Link to="/admin" className="flex items-center gap-2.5 group">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <Link to="/admin" className="flex items-center gap-2.5 shrink-0 group">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300 shrink-0">
+                  <svg className="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
                   </svg>
                 </div>
-                <div>
-                  <h1 className="text-base font-bold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-none">
-                    SolutionHub
+                <div className="flex flex-col justify-center">
+                  <h1 className="text-sm sm:text-base font-black tracking-tight text-slate-900 leading-tight whitespace-nowrap flex items-center gap-1">
+                    <span>SolutionHub</span>
+                    <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">AI</span>
                   </h1>
-                  <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Admin Portal</span>
+                  <span className="text-[9px] sm:text-[10px] font-mono font-bold text-slate-400 tracking-wider uppercase whitespace-nowrap block leading-none mt-0.5">Admin Workspace</span>
                 </div>
               </Link>
+
+              {/* Live Status Pill */}
+              <span className="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-mono font-bold shrink-0">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                LIVE
+              </span>
             </div>
 
             {/* Desktop Navigation Dropdowns */}
@@ -290,33 +300,37 @@ export default function AdminLayout({ onLogout }) {
                 const groupBadgeTotal = visibleItems.reduce((acc, item) => acc + getBadgeCount(item.path), 0)
 
                 return (
-                  <div key={group.label} className="relative">
+                  <div 
+                    key={group.label} 
+                    className="relative"
+                    onMouseEnter={() => setOpenGroup(group.label)}
+                    onMouseLeave={() => setOpenGroup(null)}
+                  >
                     <button
                       onClick={() => setOpenGroup(isOpen ? null : group.label)}
-                      onMouseEnter={() => setOpenGroup(group.label)}
-                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer ${
+                      className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer whitespace-nowrap ${
                         active 
-                          ? 'bg-blue-50 text-blue-600 font-bold' 
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                          ? 'bg-indigo-50 text-indigo-700 border border-indigo-200/60 shadow-2xs' 
+                          : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/80'
                       }`}
                     >
-                      <span>{group.label}</span>
+                      <span className="whitespace-nowrap">{group.label}</span>
                       {groupBadgeTotal > 0 && (
-                        <span className="px-1.5 py-0.2 bg-red-500 text-white text-[9px] font-bold rounded-full">
+                        <span className="px-1.5 py-0.2 bg-rose-500 text-white text-[9px] font-black rounded-full">
                           {groupBadgeTotal}
                         </span>
                       )}
-                      <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? 'rotate-180 text-blue-600' : 'text-slate-400'}`} />
+                      <ChevronDown className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 text-indigo-600' : 'text-slate-400'}`} />
                     </button>
 
                     {/* Dropdown Menu Panel */}
                     {isOpen && (
                       <div 
-                        onMouseLeave={() => setOpenGroup(null)}
-                        className="absolute left-0 mt-1 w-60 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 py-2 animate-in fade-in slide-in-from-top-2 duration-150"
+                        className="absolute left-0 top-full mt-1 w-64 bg-white border border-slate-200/90 rounded-2xl shadow-2xl z-50 py-2.5 animate-in fade-in slide-in-from-top-2 duration-150"
                       >
-                        <div className="px-3 py-1.5 border-b border-slate-100 mb-1">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{group.label}</p>
+                        <div className="px-3.5 py-1 border-b border-slate-100 mb-1 flex items-center justify-between">
+                          <p className="text-[10px] font-mono font-bold uppercase tracking-widest text-slate-400">{group.label}</p>
+                          <span className="text-[10px] text-slate-300">Section</span>
                         </div>
                         <div className="space-y-0.5 px-1.5">
                           {visibleItems.map((item) => {
@@ -330,20 +344,20 @@ export default function AdminLayout({ onLogout }) {
                                 key={item.path}
                                 to={item.path}
                                 onClick={() => setOpenGroup(null)}
-                                className={`flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium transition-all ${
+                                className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all ${
                                   isItemActive
-                                    ? 'bg-blue-50 text-blue-600 font-bold'
-                                    : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                                    ? 'bg-indigo-50 text-indigo-700 shadow-2xs font-extrabold'
+                                    : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
                                 }`}
                               >
                                 <div className="flex items-center gap-2.5">
-                                  <span className={isItemActive ? 'text-blue-600' : 'text-slate-400'}>
+                                  <span className={isItemActive ? 'text-indigo-600' : 'text-slate-400'}>
                                     {iconMap[item.icon]}
                                   </span>
-                                  <span>{item.label}</span>
+                                  <span className="whitespace-nowrap">{item.label}</span>
                                 </div>
                                 {badge > 0 && (
-                                  <span className="px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold">
+                                  <span className="px-1.5 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-black">
                                     {badge}
                                   </span>
                                 )}
@@ -359,34 +373,20 @@ export default function AdminLayout({ onLogout }) {
             </nav>
 
             {/* Right Header Controls */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               
-              {/* Search Bar */}
-              <form onSubmit={handleSearch} className="relative hidden md:block">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                  <Search className="w-3.5 h-3.5" />
-                </div>
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search admin..."
-                  className="w-44 lg:w-56 pl-9 pr-3 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/10 transition-all"
-                />
-              </form>
-
               {/* View Main Site */}
               <Link
                 to="/"
-                className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:text-blue-600 hover:bg-blue-50 text-xs font-semibold transition-all shadow-2xs"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200/80 bg-white text-slate-700 hover:text-indigo-600 hover:bg-indigo-50/60 text-xs font-bold transition-all shadow-2xs shrink-0"
                 title="View Main Website"
               >
-                <Globe className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
-                <span className="text-[11px] sm:text-xs whitespace-nowrap">View Site</span>
+                <Globe className="w-3.5 h-3.5 text-indigo-600 flex-shrink-0" />
+                <span className="text-xs whitespace-nowrap hidden sm:inline">View Site</span>
               </Link>
 
               {/* Notifications */}
-              <div className="relative">
+              <div className="relative shrink-0">
                 <button
                   onClick={() => setShowNotifications(!showNotifications)}
                   className={`p-2 rounded-xl transition-colors cursor-pointer ${showNotifications ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-100'}`}
@@ -396,21 +396,21 @@ export default function AdminLayout({ onLogout }) {
                     sellRequests.filter(r => r.status === 'pending').length +
                     serviceRequests.filter(r => r.status === 'pending').length +
                     messages.filter(m => m.status === 'unread').length) > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500" />
                   )}
                 </button>
 
                 {showNotifications && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setShowNotifications(false)} />
-                    <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden">
+                    <div className="absolute right-0 mt-2 w-80 bg-white/95 backdrop-blur-xl border border-slate-200/80 rounded-2xl shadow-xl z-50 overflow-hidden">
                       <div className="p-3 border-b border-slate-100 bg-slate-50">
                         <h3 className="text-xs font-bold text-slate-900">Notifications</h3>
                       </div>
                       <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
                         {accountRequests.filter(r => r.status === 'pending').length > 0 && (
                           <Link to="/admin/account-requests" onClick={() => setShowNotifications(false)} className="flex items-center gap-3 p-3 hover:bg-slate-50">
-                            <div className="p-2 rounded-lg bg-blue-50 text-blue-600">{iconMap.userPlus}</div>
+                            <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600">{iconMap.userPlus}</div>
                             <div>
                               <p className="text-xs font-bold text-slate-900">Account Requests</p>
                               <p className="text-[10px] text-slate-500">{accountRequests.filter(r => r.status === 'pending').length} pending approval</p>
@@ -436,37 +436,37 @@ export default function AdminLayout({ onLogout }) {
               </div>
 
               {/* User Profile Menu */}
-              <div className="relative">
+              <div className="relative shrink-0">
                 <button
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
                   className="flex items-center gap-2 p-1 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white font-bold text-xs overflow-hidden shrink-0">
                     {avatarUrl ? <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" /> : avatar}
                   </div>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block shrink-0" />
                 </button>
 
                 {showProfileMenu && (
-                  <div className="absolute right-0 mt-2 w-52 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 py-2">
+                  <div className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-xl border border-slate-200/80 rounded-2xl shadow-xl z-50 py-2">
                     <div className="px-4 py-2 border-b border-slate-100">
                       <p className="text-xs font-bold text-slate-900 truncate">{displayName}</p>
                       <p className="text-[10px] text-slate-400 truncate">{displayEmail}</p>
                     </div>
-                    <Link to="/admin/profile" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50">
+                    <Link to="/admin/profile" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50">
                       {iconMap.user}
                       <span>Admin Profile</span>
                     </Link>
-                    <Link to="/admin/settings" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50">
+                    <Link to="/admin/settings" onClick={() => setShowProfileMenu(false)} className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50">
                       {iconMap.settings}
                       <span>System Settings</span>
                     </Link>
                     <button
                       onClick={onLogout}
-                      className="w-full flex items-center gap-2 px-4 py-2 text-xs font-medium text-red-600 hover:bg-red-50 text-left cursor-pointer"
+                      className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 text-left cursor-pointer border-t border-slate-100 mt-1 pt-2"
                     >
                       <LogOut className="w-3.5 h-3.5" />
-                      <span>Logout</span>
+                      <span>Logout Admin Session</span>
                     </button>
                   </div>
                 )}
@@ -477,69 +477,92 @@ export default function AdminLayout({ onLogout }) {
         </div>
       </header>
 
-      {/* ── MOBILE MENU DRAWER ── */}
+      {/* ── MOBILE MENU DRAWER (Ultra-Responsive & Modern) ── */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-white flex flex-col animate-in fade-in duration-200">
-          <div className="flex items-center justify-between px-4 h-16 border-b border-slate-200">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-xs">SH</div>
-              <span className="font-bold text-sm">Admin Navigation</span>
+        <div className="lg:hidden fixed inset-0 z-50 bg-white/95 backdrop-blur-2xl flex flex-col animate-in fade-in duration-200">
+          <div className="flex items-center justify-between px-4 sm:px-6 h-16 border-b border-slate-200/80">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white font-black text-xs shadow-md shadow-indigo-500/20">
+                SH
+              </div>
+              <div>
+                <span className="font-black text-sm text-slate-900 block leading-tight">SolutionHub AI</span>
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Admin Workspace</span>
+              </div>
             </div>
-            <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-slate-600">
+            <button 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors"
+            >
               <X className="w-6 h-6" />
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
             {navGroups.map((group) => {
               const visibleItems = group.items.filter(item => !item.permission || hasPermission(item.permission))
               if (visibleItems.length === 0) return null
 
               return (
-                <div key={group.label} className="bg-slate-50 rounded-2xl p-3 border border-slate-200/60">
-                  <div className="font-bold text-xs text-slate-500 uppercase tracking-wider mb-2">
+                <div key={group.label} className="bg-slate-50/80 rounded-3xl p-4 border border-slate-200/80 space-y-2">
+                  <div className="font-mono text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">
                     {group.label}
                   </div>
                   <div className="space-y-1">
-                    {visibleItems.map((item) => (
-                      <Link
-                        key={item.path}
-                        to={item.path}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center justify-between p-2.5 rounded-xl text-xs font-medium text-slate-700 bg-white border border-slate-200/60"
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <span className="text-blue-600">{iconMap[item.icon]}</span>
-                          <span>{item.label}</span>
-                        </div>
-                        {getBadgeCount(item.path) > 0 && (
-                          <span className="px-2 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold">
-                            {getBadgeCount(item.path)}
-                          </span>
-                        )}
-                      </Link>
-                    ))}
+                    {visibleItems.map((item) => {
+                      const isItemActive = item.path === '/admin'
+                        ? location.pathname === '/admin'
+                        : location.pathname.startsWith(item.path)
+                      const badge = getBadgeCount(item.path)
+
+                      return (
+                        <Link
+                          key={item.path}
+                          to={item.path}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={`flex items-center justify-between p-3 rounded-2xl text-xs font-bold transition-all ${
+                            isItemActive 
+                              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' 
+                              : 'bg-white text-slate-700 hover:bg-slate-100/80 border border-slate-200/60'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className={isItemActive ? 'text-white' : 'text-indigo-600'}>
+                              {iconMap[item.icon]}
+                            </span>
+                            <span>{item.label}</span>
+                          </div>
+                          {badge > 0 && (
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                              isItemActive ? 'bg-white text-rose-600' : 'bg-rose-500 text-white'
+                            }`}>
+                              {badge}
+                            </span>
+                          )}
+                        </Link>
+                      )
+                    })}
                   </div>
                 </div>
               )
             })}
           </div>
 
-          <div className="p-4 border-t border-slate-200">
+          <div className="p-4 sm:p-6 border-t border-slate-200/80 space-y-2 bg-slate-50/50">
             <Link
               to="/"
               onClick={() => setMobileMenuOpen(false)}
-              className="mb-2 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-50 text-blue-600 font-bold text-xs"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-indigo-50 text-indigo-700 font-bold text-xs border border-indigo-200/60"
             >
               <Globe className="w-4 h-4" />
-              <span>View Site</span>
+              <span>View Main Website</span>
             </Link>
             <button
               onClick={onLogout}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-50 text-red-600 font-bold text-xs"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-rose-50 text-rose-600 font-bold text-xs border border-rose-200/60"
             >
               <LogOut className="w-4 h-4" />
-              <span>Logout</span>
+              <span>Logout Admin Session</span>
             </button>
           </div>
         </div>

@@ -300,10 +300,10 @@ export default function UserOverview() {
       {/* ── 3. Stat Cards Row with Sparkline Waves ──────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {[
-          { label: 'ACTIVE TRACKS', value: myCourses.length, icon: BookOpen, iconBg: 'bg-blue-600 text-white', badge: 'ENROLLED', badgeClass: 'bg-blue-50 text-blue-600 border-blue-100', stroke: '#2563eb' },
-          { label: 'LESSONS COMPLETED', value: completedLessonsCount, icon: Play, iconBg: 'bg-purple-600 text-white', badge: 'LMS PROGRESS', badgeClass: 'bg-purple-50 text-purple-600 border-purple-100', stroke: '#9333ea' },
-          { label: 'VERIFIED DOCUMENTS', value: myCertificatesCount, icon: ShieldCheck, iconBg: 'bg-emerald-600 text-white', badge: 'VERIFIED', badgeClass: 'bg-emerald-50 text-emerald-600 border-emerald-100', stroke: '#10b981' },
-          { label: 'ENROLLED ORDERS', value: myOrders.length, icon: ShoppingBag, iconBg: 'bg-rose-500 text-white', badge: 'TRANSACTIONS', badgeClass: 'bg-rose-50 text-rose-600 border-rose-100', stroke: '#f43f5e' },
+          { label: 'ACTIVE TRACKS', value: myCourses.length, icon: BookOpen, iconBg: 'bg-blue-600 text-white', badge: 'ENROLLED', badgeClass: 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20', stroke: '#2563eb' },
+          { label: 'LESSONS COMPLETED', value: completedLessonsCount, icon: Play, iconBg: 'bg-purple-600 text-white', badge: 'LMS PROGRESS', badgeClass: 'bg-purple-50 text-purple-600 border-purple-100 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20', stroke: '#9333ea' },
+          { label: 'VERIFIED DOCUMENTS', value: myCertificatesCount, icon: ShieldCheck, iconBg: 'bg-emerald-600 text-white', badge: 'VERIFIED', badgeClass: 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20', stroke: '#10b981' },
+          { label: 'ENROLLED ORDERS', value: myOrders.length, icon: ShoppingBag, iconBg: 'bg-rose-500 text-white', badge: 'TRANSACTIONS', badgeClass: 'bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20', stroke: '#f43f5e' },
         ].map((stat, i) => {
           const IconComp = stat.icon
           return (

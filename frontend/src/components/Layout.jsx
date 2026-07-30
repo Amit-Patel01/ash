@@ -39,7 +39,7 @@ const Layout = () => {
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col relative text-slate-900">
+    <div className="min-h-screen w-full flex flex-col relative text-slate-900 ash-canvas">
       <DarkModeBackgroundFix />
       {!hideGlowBackground && <GlowBackground />}
       {!hideAnnouncement && <AnnouncementPopup />}

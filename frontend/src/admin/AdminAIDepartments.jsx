@@ -127,6 +127,19 @@ const CornerFrame = ({ colorClass = 'border-violet-300' }) => (
   </>
 )
 
+const formatAiText = (rawText) => {
+  if (!rawText) return ''
+  const str = typeof rawText === 'string' ? rawText : JSON.stringify(rawText, null, 2)
+  return str
+    .replace(/^#{1,6}\s*/gm, '') // Strip ####, ###, ##, # headers
+    .replace(/\*\*(.+?)\*\*/g, '$1') // Strip **bold**
+    .replace(/__(.+?)__/g, '$1') // Strip __bold__
+    .replace(/`(.+?)`/g, '$1') // Strip `backticks`
+    .replace(/^\s*[-*]\s+/gm, '• ') // Normalize bullet points
+    .replace(/\(\s*[-*]\s*/g, '(') // Clean (- text)
+    .trim()
+}
+
 export default function AdminAIDepartments() {
   const [departments, setDepartments] = useState({})
   const [logs, setLogs] = useState([])
@@ -442,108 +455,103 @@ export default function AdminAIDepartments() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-8 font-sans bg-white min-h-screen text-slate-900">
-      {/* Header Banner — mission-control identity: scanning beam, grid, callsign readouts */}
-      <div className="relative overflow-hidden rounded-3xl p-8 bg-slate-950 text-white shadow-xl shadow-violet-500/10 border border-slate-900">
-        {/* base gradient wash */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-violet-950 to-fuchsia-950" />
-        <div className="absolute -top-32 -right-16 w-96 h-96 bg-fuchsia-500/25 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-16 w-80 h-80 bg-indigo-500/25 rounded-full blur-3xl pointer-events-none" />
-        {/* HUD grid */}
-        <div className="absolute inset-0 opacity-[0.12] pointer-events-none" style={{
-          backgroundImage: 'linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)',
-          backgroundSize: '36px 36px'
-        }} />
-        {/* scanning beam */}
-        <motion.div
-          className="absolute top-0 bottom-0 w-40 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none"
-          animate={{ left: ['-10%', '110%'] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
-        />
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-8 font-sans bg-slate-50/50 min-h-screen text-slate-900 rounded-3xl">
+      {/* Header Banner — Ultra-Modern White Theme Control Center */}
+      <div className="relative overflow-hidden rounded-3xl p-6 sm:p-8 bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 text-slate-900">
+        {/* Subtle Ambient Mesh Gradient */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-100/40 via-purple-100/30 to-blue-100/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-gradient-to-tr from-emerald-100/30 via-teal-100/20 to-transparent rounded-full blur-2xl pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <span className="p-2.5 rounded-2xl bg-white/10 backdrop-blur-md text-white border border-white/15">
-                <BotIcon className="w-8 h-8" />
+              <span className="p-3 rounded-2xl bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-600 text-white shadow-md shadow-indigo-500/20">
+                <BotIcon className="w-7 h-7" />
               </span>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="relative flex h-2 w-2">
+                  <span className="relative flex h-2.5 w-2.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                   </span>
-                  <span className="text-[10px] font-mono font-bold tracking-[0.25em] text-emerald-300 uppercase">Squad Online</span>
+                  <span className="text-[11px] font-mono font-bold tracking-widest text-emerald-700 uppercase bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Autonomous Squad Online</span>
                 </div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-white mt-1">
-                  Autonomous AI Workforce Control Center
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-slate-900 mt-1">
+                  AI Workforce Control Center
                 </h1>
               </div>
             </div>
-            <p className="mt-3 text-indigo-200/80 text-sm max-w-2xl font-medium">
-              Real-time codebase &amp; database scanner. Each agent below monitors its domain and files proposals into the <span className="font-bold text-white">One-Click Approval Queue</span> for your sign-off.
+            <p className="text-slate-600 text-sm max-w-2xl font-medium leading-relaxed">
+              Real-time codebase &amp; database scanner. Each AI agent monitors its department autonomously and files proposals into the <span className="font-bold text-indigo-700">One-Click Approval Queue</span> for instant execution.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
             <button
               onClick={handleRunAllAgents}
               disabled={runningAll}
-              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold text-xs tracking-wider uppercase shadow-lg shadow-emerald-500/20 hover:brightness-110 transition-all flex items-center gap-2 disabled:opacity-50"
+              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-600 text-white font-black text-xs tracking-wider uppercase shadow-md shadow-emerald-500/20 hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               <LightningIcon className="w-4 h-4" />
               {runningAll ? 'Running Scans...' : 'Run All Agents Now'}
             </button>
 
-            <div className="flex items-stretch gap-px bg-white/10 rounded-2xl border border-white/15 overflow-hidden font-mono">
-              <div className="text-center px-5 py-3 bg-white/[0.03]">
-                <div className="text-2xl font-black text-white">{String(deptList.filter(d => d.enabled).length).padStart(2, '0')}<span className="text-white/30">/{String(deptList.length).padStart(2, '0')}</span></div>
-                <div className="text-[10px] text-indigo-200/70 font-semibold tracking-widest uppercase mt-0.5">Active</div>
+            <div className="flex items-stretch gap-px bg-slate-100 rounded-2xl border border-slate-200/80 overflow-hidden font-mono text-slate-800">
+              <div className="text-center px-4 py-2.5 bg-white">
+                <div className="text-xl font-black text-slate-900">{String(deptList.filter(d => d.enabled).length).padStart(2, '0')}<span className="text-slate-300">/{String(deptList.length).padStart(2, '0')}</span></div>
+                <div className="text-[10px] text-slate-500 font-bold tracking-wider uppercase mt-0.5">Active</div>
               </div>
-              <div className="text-center px-5 py-3 bg-white/[0.03]">
-                <div className="text-2xl font-black text-amber-300">{String(proposals.length).padStart(2, '0')}</div>
-                <div className="text-[10px] text-indigo-200/70 font-semibold tracking-widest uppercase mt-0.5">Pending</div>
+              <div className="text-center px-4 py-2.5 bg-white">
+                <div className="text-xl font-black text-amber-600">{String(proposals.length).padStart(2, '0')}</div>
+                <div className="text-[10px] text-slate-500 font-bold tracking-wider uppercase mt-0.5">Pending</div>
               </div>
-              <div className="text-center px-5 py-3 bg-white/[0.03]">
-                <div className="text-2xl font-black text-emerald-300">{totalTasks}</div>
-                <div className="text-[10px] text-indigo-200/70 font-semibold tracking-widest uppercase mt-0.5">Executed</div>
+              <div className="text-center px-4 py-2.5 bg-white">
+                <div className="text-xl font-black text-emerald-600">{totalTasks}</div>
+                <div className="text-[10px] text-slate-500 font-bold tracking-wider uppercase mt-0.5">Executed</div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* T3-4 & T3-6: Revenue Forecast Panel & Agent Health Status Panel */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Analytics & Agent Health Panels (White Modern Styling) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Revenue Forecast Panel */}
-        <div className="p-6 rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-900 to-indigo-950 text-white shadow-sm flex flex-col justify-between">
+        <div className="p-6 rounded-3xl border border-slate-200/80 bg-white text-slate-900 shadow-sm flex flex-col justify-between relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-50/50 rounded-full blur-2xl pointer-events-none" />
+          
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-mono font-bold tracking-widest text-emerald-400 uppercase">FinanceAgent Insights</span>
-              <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 rounded-lg bg-emerald-100 text-emerald-700">
+                  <FinanceIcon className="w-4 h-4" />
+                </span>
+                <span className="text-[11px] font-mono font-bold tracking-wider text-emerald-700 uppercase">FinanceAgent Insights</span>
+              </div>
+              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
                 {analytics.growthPercent >= 0 ? `+${analytics.growthPercent}%` : `${analytics.growthPercent}%`} vs last week
               </span>
             </div>
-            <h3 className="text-lg font-extrabold">Revenue Forecast & Analytics</h3>
-            <p className="text-xs text-slate-400 mt-1">Autonomous 7-day projection derived from real MongoDB order logs.</p>
+            <h3 className="text-xl font-black text-slate-900 tracking-tight">Revenue Forecast & Analytics</h3>
+            <p className="text-xs text-slate-500 mt-1 font-medium">Autonomous 7-day projection derived from real MongoDB order logs.</p>
           </div>
 
-          <div className="mt-6 flex items-end justify-between gap-4">
+          <div className="mt-6 flex items-end justify-between gap-4 pt-4 border-t border-slate-100">
             <div>
-              <div className="text-3xl font-black text-white">₹{analytics.weeklyRevenue.toLocaleString('en-IN')}</div>
-              <div className="text-[11px] font-medium text-slate-400 mt-0.5">7-Day Real Order Revenue</div>
+              <div className="text-3xl font-black text-slate-900">₹{analytics.weeklyRevenue.toLocaleString('en-IN')}</div>
+              <div className="text-xs font-semibold text-slate-500 mt-0.5">7-Day Real Order Revenue</div>
             </div>
-            {/* Sparkline SVG */}
-            <div className="h-10 w-32 flex items-end gap-1.5">
+            {/* Sparkline */}
+            <div className="h-12 w-36 flex items-end gap-1.5 bg-slate-50 p-1.5 rounded-xl border border-slate-100">
               {(() => {
                 const maxVal = Math.max(...(analytics.sparkline || [1]), 1)
                 return (analytics.sparkline || [0, 0, 0, 0, 0, 0, 0]).map((val, i) => {
-                  const pct = Math.max(15, Math.round((val / maxVal) * 100))
+                  const pct = Math.max(18, Math.round((val / maxVal) * 100))
                   return (
                     <div
                       key={i}
                       title={`Day ${i + 1}: ₹${val.toLocaleString('en-IN')}`}
-                      className="flex-1 bg-emerald-500/80 hover:bg-emerald-400 rounded-t transition-all"
+                      className="flex-1 bg-gradient-to-t from-emerald-500 to-teal-400 hover:brightness-110 rounded-t transition-all"
                       style={{ height: `${pct}%` }}
                     />
                   )
@@ -554,59 +562,73 @@ export default function AdminAIDepartments() {
         </div>
 
         {/* Agent Health Status Panel */}
-        <div className="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between">
+        <div className="p-6 rounded-3xl border border-slate-200/80 bg-white text-slate-900 shadow-sm flex flex-col justify-between relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-50/50 rounded-full blur-2xl pointer-events-none" />
+
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-mono font-bold tracking-widest text-indigo-600 uppercase">System Uptime</span>
-              <span className="text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 rounded-full">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 rounded-lg bg-indigo-100 text-indigo-700">
+                  <SupportIcon className="w-4 h-4" />
+                </span>
+                <span className="text-[11px] font-mono font-bold tracking-wider text-indigo-700 uppercase">System Uptime</span>
+              </div>
+              <span className="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1 rounded-full">
                 {analytics.activeTasksCount || 7} Cron Tasks Operational
               </span>
             </div>
-            <h3 className="text-lg font-extrabold text-slate-900">Agent Health & Scheduler</h3>
+            <h3 className="text-xl font-black text-slate-900 tracking-tight">Agent Health & Scheduler</h3>
             <p className="text-xs text-slate-500 mt-1 font-medium">Real-time status of periodic background scanners.</p>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-              <span className="font-semibold text-slate-700">Finance Daily Scan</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <div className="mt-4 grid grid-cols-2 gap-2.5 text-xs">
+            <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/60 flex items-center justify-between">
+              <span className="font-bold text-slate-800">Finance Daily Scan</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
             </div>
-            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-              <span className="font-semibold text-slate-700">HR Auto-Cert Check</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/60 flex items-center justify-between">
+              <span className="font-bold text-slate-800">HR Auto-Cert Check</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
             </div>
-            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-              <span className="font-semibold text-slate-700">Sales Sell-Review</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/60 flex items-center justify-between">
+              <span className="font-bold text-slate-800">Sales Sell-Review</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
             </div>
-            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-              <span className="font-semibold text-slate-700">Support Scan</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/60 flex items-center justify-between">
+              <span className="font-bold text-slate-800">Support Scan</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Pending AI Proposals for Admin Approval Queue */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
-        <div className="flex items-center justify-between flex-wrap gap-3">
-          <div className="flex items-center gap-3">
+      <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5">
+        <div className="flex items-center justify-between flex-wrap gap-4 pb-2 border-b border-slate-100">
+          <div className="flex items-center gap-2">
+            <span className="p-1.5 rounded-lg bg-indigo-100 text-indigo-700">
+              <ClipboardIcon className="w-4 h-4" />
+            </span>
+            <h2 className="text-xl font-black text-slate-900 tracking-tight">One-Click Approval Queue</h2>
+          </div>
+
+          <div className="flex items-center gap-2 bg-slate-100/80 p-1 rounded-2xl border border-slate-200/60">
             <button
               onClick={() => setProposalTab('pending')}
-              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+              className={`px-4 py-2 rounded-xl text-xs font-black transition-all outline-none cursor-pointer ${
                 proposalTab === 'pending'
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-white text-indigo-600 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Approval Queue ({proposals.length})
             </button>
             <button
               onClick={() => setProposalTab('archive')}
-              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+              className={`px-4 py-2 rounded-xl text-xs font-black transition-all outline-none cursor-pointer ${
                 proposalTab === 'archive'
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-white text-indigo-600 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Proposal Archive ({resolvedArchive.length})
@@ -669,17 +691,58 @@ export default function AdminAIDepartments() {
                         {new Date(prop.timestamp).toLocaleTimeString()}
                       </span>
                     </div>
-                    <h3 className="font-bold text-base text-slate-900">{prop.title}</h3>
-                    <p className="text-xs text-slate-700 font-medium leading-relaxed">{prop.details}</p>
+                    <h3 className="font-bold text-base text-slate-900">{formatAiText(prop.title)}</h3>
+                    <p className="text-xs text-slate-700 font-medium leading-relaxed">{formatAiText(prop.details)}</p>
 
-                    {prop.proposedData && (
-                      <div className="mt-3 p-3 bg-white rounded-xl border border-slate-200 text-xs text-slate-800 space-y-2">
+                    {/* Detailed AI Output / Structured Action Data Box */}
+                    {Boolean(
+                      prop.proposedData && (
+                        prop.proposedData.aiResponse ||
+                        prop.proposedData.title ||
+                        prop.proposedData.certificateId ||
+                        prop.proposedData.projects ||
+                        prop.proposedData.batches ||
+                        prop.proposedData.couponCode ||
+                        prop.proposedData.emailSubject
+                      )
+                    ) && (
+                      <div className="mt-3 p-3 bg-slate-100/80 rounded-xl border border-slate-200/80 text-xs text-slate-800 space-y-2 font-sans">
+                        
+                        {/* 1. Full AI Explanation / Response */}
+                        {prop.proposedData.aiResponse && (
+                          <div className="space-y-1">
+                            <span className={`font-bold uppercase tracking-wider text-[10px] ${accent.text}`}>🤖 Agent Output & Analysis:</span>
+                            <div className="p-2.5 rounded-lg bg-white border border-slate-200/90 text-slate-800 text-xs font-mono whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed">
+                              {formatAiText(prop.proposedData.aiResponse)}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 2. Structured Course Creation */}
+                        {prop.proposedData.title && (
+                          <div className="flex flex-wrap items-center gap-3 text-xs pt-1">
+                            <div><span className="font-bold text-slate-500">Course Title:</span> <span className="font-extrabold text-slate-900">&quot;{prop.proposedData.title}&quot;</span></div>
+                            <div><span className="font-bold text-slate-500">Price:</span> <span className="font-extrabold text-emerald-600">₹{prop.proposedData.price}</span></div>
+                            <div><span className="font-bold text-slate-500">Category:</span> <span className="font-bold text-slate-800">{prop.proposedData.category}</span></div>
+                          </div>
+                        )}
+
+                        {/* 3. Structured Certificate Issuance */}
+                        {prop.proposedData.certificateId && (
+                          <div className="flex flex-wrap items-center gap-3 text-xs pt-1">
+                            <div><span className="font-bold text-slate-500">Cert ID:</span> <span className={`font-mono font-extrabold px-2 py-0.5 rounded border ${accent.chip}`}>{prop.proposedData.certificateId}</span></div>
+                            <div><span className="font-bold text-slate-500">Student:</span> <span className="font-extrabold text-slate-900">{prop.proposedData.studentName}</span></div>
+                            <div><span className="font-bold text-slate-500">Course:</span> <span className="font-semibold text-slate-800">{prop.proposedData.courseName}</span></div>
+                          </div>
+                        )}
+
+                        {/* 4. Structured Projects Suite */}
                         {prop.proposedData.projects && (
                           <div>
                             <span className={`font-bold ${accent.text}`}>📦 Proposed Projects Suite ({prop.proposedData.projects.length}):</span>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1.5">
                               {prop.proposedData.projects.map((p, i) => (
-                                <div key={i} className="p-2 rounded-lg bg-slate-50 border border-slate-200 font-sans flex justify-between items-center">
+                                <div key={i} className="p-2 rounded-lg bg-white border border-slate-200 flex justify-between items-center">
                                   <span className="font-semibold text-slate-900">{p.name}</span>
                                   <span className="font-extrabold text-emerald-600 ml-2">₹{p.price}</span>
                                 </div>
@@ -691,12 +754,13 @@ export default function AdminAIDepartments() {
                           </div>
                         )}
 
+                        {/* 5. Student Batches */}
                         {prop.proposedData.batches && (
                           <div>
                             <span className={`font-bold ${accent.text}`}>👥 Proposed Student Batches ({prop.proposedData.batches.length}):</span>
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-1.5">
                               {prop.proposedData.batches.map((b, i) => (
-                                <div key={i} className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 font-sans">
+                                <div key={i} className="p-2.5 rounded-lg bg-white border border-slate-200">
                                   <div className={`font-extrabold ${accent.text}`}>{b.code}</div>
                                   <div className="text-[11px] text-slate-600">{b.course}</div>
                                   <div className="font-bold text-slate-900 mt-1">{b.students} Enrolled Students</div>
@@ -706,19 +770,20 @@ export default function AdminAIDepartments() {
                           </div>
                         )}
 
+                        {/* 6. Discount Coupons */}
                         {prop.proposedData.couponCode && (
-                          <div className="flex flex-wrap items-center gap-4 font-sans text-xs">
+                          <div className="flex flex-wrap items-center gap-4 text-xs pt-1">
                             <div><span className="font-bold text-slate-500">Coupon:</span> <span className={`font-extrabold px-2 py-0.5 rounded border ${accent.chip}`}>{prop.proposedData.couponCode}</span></div>
                             <div><span className="font-bold text-slate-500">Discount:</span> <span className="font-extrabold text-emerald-600">{prop.proposedData.discountPercentage}% Off</span></div>
-                            <div><span className="font-bold text-slate-500">Target Visitors:</span> <span className="font-bold text-slate-900">{prop.proposedData.targetVisitors}</span></div>
-                            <div><span className="font-bold text-slate-500">Projected Gain:</span> <span className="font-extrabold text-emerald-600">{prop.proposedData.projectedRevenueGain}</span></div>
+                            {prop.proposedData.targetVisitors && <div><span className="font-bold text-slate-500">Target:</span> <span className="font-bold text-slate-900">{prop.proposedData.targetVisitors}</span></div>}
                           </div>
                         )}
 
+                        {/* 7. Email Subject */}
                         {prop.proposedData.emailSubject && (
-                          <div className="font-sans text-xs space-y-1">
+                          <div className="text-xs space-y-1 pt-1">
                             <div><span className="font-bold text-slate-500">Subject:</span> <span className="font-semibold text-slate-900">&quot;{prop.proposedData.emailSubject}&quot;</span></div>
-                            <div><span className="font-bold text-slate-500">Target Recipients:</span> <span className={`font-extrabold ${accent.text}`}>{prop.proposedData.recipientCount?.toLocaleString()} Students</span></div>
+                            {prop.proposedData.recipientCount && <div><span className="font-bold text-slate-500">Recipients:</span> <span className={`font-extrabold ${accent.text}`}>{prop.proposedData.recipientCount?.toLocaleString()} Students</span></div>}
                           </div>
                         )}
                       </div>
@@ -1118,9 +1183,14 @@ export default function AdminAIDepartments() {
               </button>
             </div>
 
-            <div>
-              <h4 className="font-bold text-sm text-white">{activePopupProposal.title}</h4>
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed">{activePopupProposal.details}</p>
+            <div className="space-y-2">
+              <h4 className="font-bold text-sm text-white">{formatAiText(activePopupProposal.title)}</h4>
+              <p className="text-xs text-slate-400 leading-relaxed">{formatAiText(activePopupProposal.details)}</p>
+              {activePopupProposal.proposedData?.aiResponse && (
+                <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-[11px] font-mono text-slate-300 max-h-32 overflow-y-auto whitespace-pre-wrap leading-relaxed">
+                  {formatAiText(activePopupProposal.proposedData.aiResponse)}
+                </div>
+              )}
             </div>
 
             <div className="flex items-center justify-end gap-2 pt-2 border-t border-white/10">

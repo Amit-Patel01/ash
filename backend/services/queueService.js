@@ -80,7 +80,7 @@ const processPaymentJob = async (job) => {
           </ul>
           `,
           "Access Dashboard",
-          "https://www.amitsolutionhub.com/customer"
+          "https://www.amitsolutionhub.com/user"
         ),
       });
 
@@ -128,8 +128,8 @@ const processPaymentJob = async (job) => {
             </tr>
           </table>
           `,
-          "View Orders",
-          "https://www.amitsolutionhub.com/customer/orders"
+          "View My Orders",
+          "https://www.amitsolutionhub.com/user/orders"
         ),
       });
 

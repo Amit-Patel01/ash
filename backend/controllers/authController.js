@@ -206,7 +206,7 @@ const login = async (req, res) => {
         permissions: user.permissions || {},
         sessionId: sessionId
       },
-      process.env.JWT_SECRET || "your_jwt_secret_here",
+      process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
@@ -271,7 +271,7 @@ const passportGoogleCallback = async (req, res) => {
       permissions: user.permissions || {},
       sessionId: sessionId
     },
-    process.env.JWT_SECRET || "your_jwt_secret_here",
+    process.env.JWT_SECRET,
     { expiresIn: "7d" }
   );
 

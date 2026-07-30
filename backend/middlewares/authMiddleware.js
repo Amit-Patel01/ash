@@ -47,7 +47,7 @@ const verifyFirebaseToken = async (req, res, next) => {
   const token = authHeader.split("Bearer ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret_here");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await enrichDecodedUser(decoded);
 
     // Single-device active session enforcement
@@ -83,7 +83,7 @@ const optionalAuth = async (req, res, next) => {
 
   const token = authHeader.split("Bearer ")[1];
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret_here");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = await enrichDecodedUser(decoded);
   } catch {
     req.user = null;

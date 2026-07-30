@@ -90,11 +90,25 @@ const classifyIntent = (prompt, department, aiResponse) => {
     };
   }
 
-  // 5. General AI Task — no specific DB action
+  // 5. Tech QA & Package / Dependency Audit Intent
+  if (lowerPrompt.includes('zip') || lowerPrompt.includes('package') || lowerPrompt.includes('dependency') || lowerPrompt.includes('lint') || (department === 'tech' && lowerPrompt.includes('scan'))) {
+    const cleanTitlePrompt = prompt.replace(/[*_#"`']/g, '').replace(/Autonomous scan requested by Admin for department/i, 'Scan:').trim();
+    return {
+      proposalType: 'tech_qa_audit',
+      proposalTitle: `💻 Tech QA & Package Audit: "${cleanTitlePrompt.slice(0, 50)}${cleanTitlePrompt.length > 50 ? '...' : ''}"`,
+      proposalDetails: `TechAgent completed ZIP package structure & package.json dependency validation. Review findings below.`,
+      proposedData: { prompt, aiResponse }
+    };
+  }
+
+  // 6. Clean fallback title (strip raw markdown symbols like ** from title)
+  const cleanPrompt = prompt.replace(/[*_#"`']/g, '').replace(/Autonomous scan requested by Admin for department/i, 'Department Scan:').trim();
+  const displayTitle = cleanPrompt.length > 55 ? `${cleanPrompt.slice(0, 55)}...` : cleanPrompt;
+
   return {
     proposalType: 'general_ai_task',
-    proposalTitle: `🤖 ${getDeptRole(department)} Task: "${prompt.slice(0, 50)}${prompt.length > 50 ? '...' : ''}"`,
-    proposalDetails: `AI Agent completed task analysis. Review the output and approve to acknowledge.`,
+    proposalTitle: `🤖 ${getDeptRole(department)} Task: "${displayTitle}"`,
+    proposalDetails: `AI Agent completed task analysis. Review output and approve to acknowledge.`,
     proposedData: { prompt, aiResponse }
   };
 };

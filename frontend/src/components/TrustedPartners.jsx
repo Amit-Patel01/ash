@@ -62,7 +62,7 @@ export default function TrustedPartners() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.6 }}
               whileHover={{ y: -5, scale: 1.02 }}
-              className="w-full p-6 rounded-3xl border bg-white/60 dark:bg-slate-955/40 border-slate-200/60 dark:border-slate-900/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] backdrop-blur-xl flex flex-col items-center justify-center text-center space-y-4 hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300 group"
+              className="w-full p-6 rounded-3xl border bg-transparent dark:bg-slate-955/40 border-slate-200/60 dark:border-slate-900/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] backdrop-blur-xl flex flex-col items-center justify-center text-center space-y-4 hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300 group"
             >
               <div className="h-12 flex items-center justify-center">
                 {partner.type === 'image' ? (

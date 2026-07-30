@@ -21,7 +21,7 @@ const ProjectCard = ({ project }) => {
   }
 
   return (
-    <div className="group relative overflow-hidden rounded-[28px] border border-white/80 bg-white/85 backdrop-blur-xl shadow-[0_16px_50px_-24px_rgba(15,23,42,0.35)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_28px_60px_-20px_rgba(99,102,241,0.3)] dark:border-white/8 dark:bg-slate-900/75 dark:shadow-[0_16px_50px_-24px_rgba(0,0,0,0.6)] dark:hover:shadow-[0_28px_60px_-20px_rgba(99,102,241,0.2)]">
+    <div className="group relative overflow-hidden rounded-[28px] border border-white/80 bg-transparent backdrop-blur-xl shadow-[0_16px_50px_-24px_rgba(15,23,42,0.35)] transition-all duration-400 hover:-translate-y-2 hover:shadow-[0_28px_60px_-20px_rgba(99,102,241,0.3)] dark:border-white/8 dark:bg-slate-900/75 dark:shadow-[0_16px_50px_-24px_rgba(0,0,0,0.6)] dark:hover:shadow-[0_28px_60px_-20px_rgba(99,102,241,0.2)]">
       {/* Gradient glow on hover */}
       <div className="pointer-events-none absolute -inset-1 rounded-[28px] bg-gradient-to-br from-blue-500/10 via-indigo-500/10 to-violet-500/10 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100" />
 

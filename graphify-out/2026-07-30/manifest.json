@@ -1325,8 +1325,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminDashboard.jsx": {
-    "mtime": 1785392065.5161064,
-    "ast_hash": "73587eea387152a01d02dcf248e54a58",
+    "mtime": 1785391568.7129457,
+    "ast_hash": "2a93d9a1b10b15b3467efc0ef6cdf32b",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminEmployees.jsx": {
@@ -1335,8 +1335,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminLayout.jsx": {
-    "mtime": 1785392129.843582,
-    "ast_hash": "04bc9284e3257bfa561f6d18395300dc",
+    "mtime": 1785389008.0068934,
+    "ast_hash": "c080222fff38d71672d722f0d25a8547",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminMessages.jsx": {
@@ -1380,8 +1380,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminTasks.jsx": {
-    "mtime": 1785391768.5454936,
-    "ast_hash": "996843d402f23135b8d7e9fbabb327ee",
+    "mtime": 1783616372.6281726,
+    "ast_hash": "e5f4016d724baecc7af90a5cb36ce838",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminTeam.jsx": {

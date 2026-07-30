@@ -13,6 +13,39 @@ const getQueryId = (id) => {
   }
 };
 
+// ── Shared ACL constants ──
+const PUBLIC_COLLECTIONS = [
+  "projects",
+  "categories",
+  "services",
+  "employees",
+  "team",
+  "tradingCourses",
+  "courses",
+  "courseCategories",
+  "tradingCurriculum",
+  "sessions",
+  "tradingSessions",
+  "settings",
+  "tradingSettings",
+  "certificates",
+  "testimonials",
+  "internshipCategories"
+];
+
+const PRIVATE_COLLECTION_OWNER_FIELD = {
+  orders: "userId",
+  enrollments: "userId",
+  payments: "userId",
+  custom_requests: "userId",
+  sellRequests: "userId"
+};
+
+const ADMIN_ONLY_WRITE_COLLECTIONS = [
+  "categories", "services", "tradingCourses", "courses", "courseCategories",
+  "tradingSettings", "settings", "testimonials", "internshipCategories", "receipts"
+];
+
 // Dynamic XML Sitemap for Google Search Console & SEO
 router.get("/sitemap.xml", async (req, res) => {
   try {
@@ -79,7 +112,7 @@ router.get("/:collection", optionalAuth, async (req, res) => {
       "internshipCategories"
     ];
 
-    const isPublic = publicCollections.includes(collection);
+    const isPublic = PUBLIC_COLLECTIONS.includes(collection);
     
     if (!isPublic && !req.user) {
       return res.status(401).json({
@@ -92,13 +125,7 @@ router.get("/:collection", optionalAuth, async (req, res) => {
     let filter = {};
     
     // Define private collections and their owner fields
-    const privateCollections = {
-      orders: "userId",
-      enrollments: "userId",
-      payments: "userId",
-      custom_requests: "userId",
-      sellRequests: "userId"
-    };
+    const privateCollections = PRIVATE_COLLECTION_OWNER_FIELD;
 
     if (req.user && !isEmployeeOrAdmin) {
       if (privateCollections[collection]) {
@@ -194,7 +221,7 @@ router.get("/:collection/:id", optionalAuth, async (req, res) => {
       "internshipCategories"
     ];
 
-    const isPublic = publicCollections.includes(collection);
+    const isPublic = PUBLIC_COLLECTIONS.includes(collection);
     
     if (!isPublic && !req.user) {
       return res.status(401).json({
@@ -205,13 +232,7 @@ router.get("/:collection/:id", optionalAuth, async (req, res) => {
 
     // Security check
     const isEmployeeOrAdmin = req.user && ["admin", "employee"].includes(req.user.role);
-    const privateCollections = {
-      orders: "userId",
-      enrollments: "userId",
-      payments: "userId",
-      custom_requests: "userId",
-      sellRequests: "userId"
-    };
+    const privateCollections = PRIVATE_COLLECTION_OWNER_FIELD;
 
     if (req.user && !isEmployeeOrAdmin) {
       if (privateCollections[collection]) {
@@ -269,7 +290,7 @@ router.post("/:collection", optionalAuth, async (req, res) => {
 
     // Security check for writing
     const isEmployeeOrAdmin = req.user && ["admin", "employee"].includes(req.user.role);
-    const adminOnlyCollections = ["categories", "services", "tradingCourses", "courses", "courseCategories", "tradingSettings", "settings", "testimonials", "internshipCategories", "receipts"];
+    const adminOnlyCollections = ADMIN_ONLY_WRITE_COLLECTIONS;
     
     if (adminOnlyCollections.includes(collection) && !isEmployeeOrAdmin) {
       return res.status(403).json({ success: false, message: "Forbidden: Admin only" });
@@ -320,7 +341,7 @@ router.patch("/:collection/:id", verifyFirebaseToken, async (req, res) => {
 
     // Security check
     const isEmployeeOrAdmin = ["admin", "employee"].includes(req.user.role);
-    const adminOnlyCollections = ["categories", "services", "tradingCourses", "courses", "courseCategories", "tradingSettings", "settings", "testimonials", "internshipCategories", "receipts"];
+    const adminOnlyCollections = ADMIN_ONLY_WRITE_COLLECTIONS;
 
     if (adminOnlyCollections.includes(collection) && !isEmployeeOrAdmin) {
       return res.status(403).json({ success: false, message: "Forbidden: Admin only" });

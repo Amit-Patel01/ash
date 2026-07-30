@@ -109,7 +109,7 @@ app.use(async (req, res, next) => {
     const token = authHeader.split("Bearer ")[1];
     try {
       const jwt = require("jsonwebtoken");
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret_here");
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       if (decoded && ["admin", "employee"].includes(decoded.role)) {
         return next();
       }
@@ -303,6 +303,15 @@ const apiLimiter = rateLimit({
 });
 app.use("/api/", apiLimiter);
 
+// ─── Strict Auth Rate Limiter (login / forgot-password) ──────────────────────
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 15, // 15 attempts per 15 minutes per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: "Too many login attempts. Please try again in 15 minutes.", code: "rate_limit_exceeded" },
+});
+
 // ─── Static File Serving (Uploads) ───────────────────────────────────────────
 const uploadsDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
@@ -442,27 +451,56 @@ if (fs.existsSync(frontendDistDir)) {
 
 // ─── Legacy Contact & Reply Routes (kept at root for backward compat) ─────────
 const { sendEmail, emailTemplate } = require("./services/emailService");
+const { verifyFirebaseToken } = require("./middlewares/authMiddleware");
 
-app.post("/contact", async (req, res) => {
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5, // 5 contact form submissions per 15 minutes per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: "Too many messages sent. Please try again later." },
+});
+
+app.post("/contact", contactLimiter, async (req, res) => {
   const { firstName, lastName, email, mobile, github, message } = req.body;
+
+  // ── Input Validation ──
+  if (!firstName || String(firstName).trim().length < 1) {
+    return res.status(400).json({ success: false, message: "First name is required." });
+  }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim())) {
+    return res.status(400).json({ success: false, message: "A valid email address is required." });
+  }
+  if (!message || String(message).trim().length < 10) {
+    return res.status(400).json({ success: false, message: "Message must be at least 10 characters." });
+  }
+  if (String(message).length > 3000) {
+    return res.status(400).json({ success: false, message: "Message must not exceed 3000 characters." });
+  }
+
+  const safeFirst = String(firstName).trim().substring(0, 100);
+  const safeLast = String(lastName || "").trim().substring(0, 100);
+  const safeEmail = String(email).trim().toLowerCase();
+  const safeMessage = String(message).trim();
+
   try {
     await sendEmail({
       to: "amitpatel07029@gmail.com",
-      subject: `New Contact from ${firstName}`,
-      text: `Name: ${firstName} ${lastName}\nEmail: ${email}\nMobile: ${mobile || "N/A"}\nGitHub: ${github || "N/A"}\nMessage: ${message}`,
+      subject: `New Contact from ${safeFirst}`,
+      text: `Name: ${safeFirst} ${safeLast}\nEmail: ${safeEmail}\nMobile: ${mobile || "N/A"}\nGitHub: ${github || "N/A"}\nMessage: ${safeMessage}`,
     });
 
     await sendEmail({
-      to: email,
+      to: safeEmail,
       subject: "Message Received – Amit Solution Hub",
       html: emailTemplate(
         "We've Received Your Message",
         `
-        <p>Hello ${firstName},</p>
+        <p>Hello ${safeFirst},</p>
         <p>Thank you for reaching out. Our team has received your inquiry and will respond within 24 business hours.</p>
         <div style="margin: 30px 0; padding: 24px; background-color: #f8fafc; border-radius: 12px; border: 1px solid #f1f5f9;">
           <p style="margin: 0; font-size: 12px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Your Inquiry:</p>
-          <p style="margin-top: 10px; color: #475569; font-style: italic;">"${message}"</p>
+          <p style="margin-top: 10px; color: #475569; font-style: italic;">&quot;${safeMessage.substring(0, 500)}${safeMessage.length > 500 ? '...' : ''}&quot;</p>
         </div>
         `,
         "Explore Projects",
@@ -470,7 +508,7 @@ app.post("/contact", async (req, res) => {
       ),
     });
 
-    logger.info(`Contact form submitted by ${email}`);
+    logger.info(`Contact form submitted by ${safeEmail}`);
     res.json({ success: true });
   } catch (error) {
     logger.error("Contact form error:", error);
@@ -478,22 +516,36 @@ app.post("/contact", async (req, res) => {
   }
 });
 
-app.post("/reply", async (req, res) => {
+// Protected: Only authenticated admin/employee users can send reply emails
+app.post("/reply", verifyFirebaseToken, async (req, res) => {
+  // Only admin or employee can use this endpoint
+  if (!req.user || !["admin", "employee"].includes(req.user.role)) {
+    return res.status(403).json({ success: false, message: "Forbidden: Admin only." });
+  }
+
   const { email, firstName, message, subject } = req.body;
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim())) {
+    return res.status(400).json({ success: false, message: "Valid recipient email is required." });
+  }
+  if (!message || String(message).trim().length < 1) {
+    return res.status(400).json({ success: false, message: "Message is required." });
+  }
+
   try {
     await sendEmail({
-      to: email,
+      to: String(email).trim(),
       subject: subject || "Reply from Amit Solution Hub",
       html: emailTemplate(
         subject || "Official Update",
         `
-        <p>Hello ${firstName},</p>
-        <div style="color: #4b5563; line-height: 1.8; white-space: pre-wrap; font-size: 15px; margin: 25px 0;">${message}</div>
+        <p>Hello ${firstName || "there"},</p>
+        <div style="color: #4b5563; line-height: 1.8; white-space: pre-wrap; font-size: 15px; margin: 25px 0;">${String(message).trim()}</div>
         <p>If you have further questions, please reply to this email thread.</p>
         `
       ),
     });
-    logger.info(`Admin reply sent to ${email}`);
+    logger.info(`Admin reply sent to ${email} by ${req.user.email}`);
     res.json({ success: true });
   } catch (error) {
     logger.error("Reply error:", error);

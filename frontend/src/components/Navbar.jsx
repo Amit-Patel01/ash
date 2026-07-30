@@ -98,8 +98,8 @@ const Navbar = () => {
   return (
     <nav className={`fixed left-0 right-0 top-0 z-[140] border-b transition-all duration-300 ${
       isDark
-        ? `border-white/10 ${scrolled ? 'bg-slate-950/85 backdrop-blur-xl shadow-xl shadow-black/50' : 'bg-slate-950/70 backdrop-blur-md'}`
-        : `border-slate-200/80 ${scrolled ? 'bg-white/85 backdrop-blur-xl shadow-md shadow-slate-900/5' : 'bg-white/70 backdrop-blur-md'}`
+        ? `border-white/10 ${scrolled ? 'bg-slate-950/60 backdrop-blur-xl shadow-xl shadow-black/50' : 'bg-transparent backdrop-blur-md'}`
+        : `border-slate-200/50 ${scrolled ? 'bg-white/30 backdrop-blur-xl shadow-md shadow-slate-900/5' : 'bg-transparent backdrop-blur-sm'}`
     }`}>
       {/* Animated Glow */}
       <div className={`absolute -inset-x-0 bottom-[-20px] h-20 blur-2xl opacity-25 pointer-events-none animate-pulse ${isDark ? 'bg-gradient-to-r from-indigo-500/20 via-purple-500/15 to-pink-500/10' : 'bg-gradient-to-r from-blue-400/15 via-indigo-400/10 to-purple-400/10'}`} style={{ animationDuration: '4s' }} />
@@ -154,23 +154,20 @@ const Navbar = () => {
             `}} />
 
             {/* Desktop Links */}
-            <div className="hidden 2xl:flex items-center gap-0.5 xl:gap-1.5 h-full py-2">
+            <div className="hidden 2xl:flex items-center gap-1.5 py-2">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path
                 return (
                   <Link
                     key={link.name}
                     to={link.path}
-                    className={`relative px-2.5 lg:px-3 xl:px-5 h-full flex items-center rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 group outline-none overflow-hidden ${
+                    className={`relative px-4 py-2 flex items-center rounded-xl text-sm xl:text-[15px] font-bold transition-all duration-300 group outline-none ${
                       isActive
-                        ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-500/30 via-purple-500/25 to-indigo-500/30 shadow-md' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md'
-                        : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
+                        ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 shadow-md shadow-indigo-500/20' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md shadow-blue-500/20'
+                        : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
                     }`}
                   >
                     <span className="relative z-10">{link.name}</span>
-                    {isActive && (
-                      <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-300' : 'bg-white'}`} />
-                    )}
                   </Link>
                 )
               })}
@@ -178,29 +175,26 @@ const Navbar = () => {
               {/* Projects Link */}
               <Link
                 to="/projects"
-                className={`relative px-2.5 lg:px-3 xl:px-5 h-full flex items-center rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 group outline-none overflow-hidden ${
+                className={`relative px-4 py-2 flex items-center rounded-xl text-sm xl:text-[15px] font-bold transition-all duration-300 group outline-none ${
                   location.pathname === '/projects'
-                    ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-500/30 via-purple-500/25 to-indigo-500/30 shadow-md' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md'
-                    : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
+                    ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 shadow-md shadow-indigo-500/20' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md shadow-blue-500/20'
+                    : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
                 }`}
               >
                 <span className="relative z-10">Project</span>
-                {location.pathname === '/projects' && (
-                  <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-300' : 'bg-white'}`} />
-                )}
               </Link>
 
               {/* Programs Dropdown */}
               <div
-                className="relative h-full flex items-center"
+                className="relative flex items-center"
                 onMouseEnter={() => setProgramsDropdownOpen(true)}
                 onMouseLeave={() => setProgramsDropdownOpen(false)}
               >
                 <button
-                  className={`relative px-2.5 lg:px-3 xl:px-5 h-12 flex items-center gap-1.5 rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
+                  className={`relative px-4 py-2 flex items-center gap-1.5 rounded-xl text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
                     isProgramsActive
-                      ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-500/30 via-purple-500/25 to-indigo-500/30' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md'
-                      : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
+                      ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 shadow-md shadow-indigo-500/20' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md shadow-blue-500/20'
+                      : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
                   }`}
                 >
                   <span className="relative z-10">Programs</span>
@@ -213,9 +207,6 @@ const Navbar = () => {
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
-                  {isProgramsActive && (
-                    <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-300' : 'bg-white'}`} />
-                  )}
                 </button>
 
                 {/* Programs Dropdown Panel */}
@@ -226,7 +217,7 @@ const Navbar = () => {
                       initial="hidden"
                       animate="visible"
                       exit="exit"
-                      className={`absolute left-0 top-[85%] mt-1 w-64 rounded-2xl border shadow-2xl origin-top-left ${
+                      className={`absolute left-0 top-[100%] mt-1 w-64 rounded-2xl border shadow-2xl origin-top-left ${
                         isDark
                           ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
                           : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
@@ -282,13 +273,13 @@ const Navbar = () => {
 
               {/* Offerings Dropdown */}
               <div
-                className="relative h-full flex items-center"
+                className="relative flex items-center"
                 onMouseEnter={() => setOfferingsDropdownOpen(true)}
                 onMouseLeave={() => setOfferingsDropdownOpen(false)}
               >
                 <button
-                  className={`relative px-2.5 lg:px-3 xl:px-5 h-12 flex items-center gap-1.5 rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
-                    isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
+                  className={`relative px-4 py-2 flex items-center gap-1.5 rounded-xl text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
+                    isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
                   }`}
                 >
                   <span className="relative z-10">Offerings</span>
@@ -311,7 +302,7 @@ const Navbar = () => {
                       initial="hidden"
                       animate="visible"
                       exit="exit"
-                      className={`absolute left-0 top-[85%] mt-1 w-64 rounded-2xl border shadow-2xl origin-top-left ${
+                      className={`absolute left-0 top-[100%] mt-1 w-64 rounded-2xl border shadow-2xl origin-top-left ${
                         isDark
                           ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
                           : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
@@ -332,15 +323,15 @@ const Navbar = () => {
 
               {/* Why Us Dropdown */}
               <div
-                className="relative h-full flex items-center"
+                className="relative flex items-center"
                 onMouseEnter={() => setWhyUsDropdownOpen(true)}
                 onMouseLeave={() => setWhyUsDropdownOpen(false)}
               >
                 <button
-                  className={`relative px-2.5 lg:px-3 xl:px-5 h-12 flex items-center gap-1.5 rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
+                  className={`relative px-4 py-2 flex items-center gap-1.5 rounded-xl text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
                     isWhyUsActive
-                      ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-500/30 via-purple-500/25 to-indigo-500/30' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md'
-                      : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
+                      ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 shadow-md shadow-indigo-500/20' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md shadow-blue-500/20'
+                      : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
                   }`}
                 >
                   <span className="relative z-10">Why Us</span>
@@ -353,9 +344,6 @@ const Navbar = () => {
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
-                  {isWhyUsActive && (
-                    <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-300' : 'bg-white'}`} />
-                  )}
                 </button>
 
                 {/* Floating Dropdown Card */}
@@ -366,7 +354,7 @@ const Navbar = () => {
                       initial="hidden"
                       animate="visible"
                       exit="exit"
-                      className={`absolute left-0 top-[85%] mt-1 w-52 rounded-2xl border shadow-2xl origin-top-left ${
+                      className={`absolute left-0 top-[100%] mt-1 w-52 rounded-2xl border shadow-2xl origin-top-left ${
                         isDark
                           ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
                           : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
@@ -401,15 +389,15 @@ const Navbar = () => {
 
               {/* Company Dropdown */}
               <div
-                className="relative h-full flex items-center"
+                className="relative flex items-center"
                 onMouseEnter={() => setCompanyDropdownOpen(true)}
                 onMouseLeave={() => setCompanyDropdownOpen(false)}
               >
                 <button
-                  className={`relative px-2.5 lg:px-3 xl:px-5 h-12 flex items-center gap-1.5 rounded-full text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
+                  className={`relative px-4 py-2 flex items-center gap-1.5 rounded-xl text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
                     isCompanyActive
-                      ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-500/30 via-purple-500/25 to-indigo-500/30' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md'
-                      : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-white/20'
+                      ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 shadow-md shadow-indigo-500/20' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md shadow-blue-500/20'
+                      : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
                   }`}
                 >
                   <span className="relative z-10">Company</span>
@@ -422,9 +410,6 @@ const Navbar = () => {
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
-                  {isCompanyActive && (
-                    <span className={`absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.8)] ${isDark ? 'bg-indigo-300' : 'bg-white'}`} />
-                  )}
                 </button>
 
                 {/* Floating Dropdown Card */}
@@ -435,7 +420,7 @@ const Navbar = () => {
                       initial="hidden"
                       animate="visible"
                       exit="exit"
-                      className={`absolute left-0 top-[85%] mt-1 w-52 rounded-2xl border shadow-2xl origin-top-left ${
+                      className={`absolute left-0 top-[100%] mt-1 w-52 rounded-2xl border shadow-2xl origin-top-left ${
                         isDark
                           ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
                           : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'

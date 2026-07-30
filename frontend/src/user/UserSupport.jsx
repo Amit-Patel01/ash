@@ -14,11 +14,12 @@ export default function UserSupport() {
     const initChat = async () => {
       initializingRef.current = true
 
-      // Check if there's already a chat with admin
+      // Check if there's already a chat with an admin or staff member
       const existingChat = chats.find(c => {
-        const partner = c.participantInfo && Object.keys(c.participantInfo).find(id => id !== currentUser.uid)
-        return partner && c.participantInfo[partner]?.email === 'amitp@solutionhub.com'
-      })
+        const partnerId = c.participantInfo && Object.keys(c.participantInfo).find(id => id !== currentUser.uid)
+        const partnerInfo = partnerId ? c.participantInfo[partnerId] : null
+        return partnerInfo && (partnerInfo.role === 'admin' || partnerInfo.role === 'employee' || partnerInfo.email?.includes('solutionhub'))
+      }) || chats[0]
 
       if (existingChat) {
         setActiveChatId(existingChat.id)
@@ -27,12 +28,17 @@ export default function UserSupport() {
         return
       }
 
-      // Try to find admin user
+      // Try to find support admin/employee
       try {
         const users = await getAllUsers()
-        const admin = users.find(u => u.email === 'amitp@solutionhub.com' || u.role === 'admin' || u.role === 'employee')
-        if (admin) {
-          const chatId = await getOrCreateChat(admin.uid, admin.displayName || admin.name || 'Support Team', admin.email, admin.role)
+        const supportAgent = users.find(u => u.role === 'admin') || users.find(u => u.role === 'employee') || users[0]
+        if (supportAgent) {
+          const chatId = await getOrCreateChat(
+            supportAgent.uid || supportAgent.id,
+            supportAgent.displayName || supportAgent.name || 'Support Team',
+            supportAgent.email || 'support@amitsolutionhub.com',
+            supportAgent.role || 'admin'
+          )
           if (chatId) {
             setActiveChatId(chatId)
           }

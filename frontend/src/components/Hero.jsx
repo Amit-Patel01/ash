@@ -39,7 +39,6 @@ import VerifiedCertificateSection from './VerifiedCertificateSection'
 /* ── Signature background styles (shared visual language with the rest of the site) ── */
 const HeroBackgroundStyles = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&display=swap');
 
     .ash-display { font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif; }
 
@@ -48,9 +47,8 @@ const HeroBackgroundStyles = () => (
         radial-gradient(60rem 40rem at 12% -10%, #E0E7FF 0%, transparent 60%),
         radial-gradient(50rem 35rem at 110% 5%, #DBEAFE 0%, transparent 55%),
         radial-gradient(45rem 32rem at 50% 105%, #FCE7F3 0%, transparent 55%),
-        #FAFAFF;
+        transparent;
       background-size: 140% 140%, 140% 140%, 140% 140%, auto;
-      animation: ashMesh 24s ease-in-out infinite;
     }
     @keyframes ashMesh {
       0%, 100% { background-position: 0% 0%, 100% 0%, 50% 100%, 0 0; }
@@ -310,7 +308,7 @@ const TechIllustration = () => {
           animate={{ y: [0, -10, 0], rotate: [-2, 2, -2] }}
           transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <rect x="35" y="80" width="60" height="60" rx="16" className="fill-white stroke-blue-500/30 shadow-xl" strokeWidth="1.5" />
+          <rect x="35" y="80" width="60" height="60" rx="16" className="fill-transparent stroke-blue-500/50 shadow-xl" strokeWidth="1.5" />
           <g transform="translate(50, 95)">
             <svg className="w-7 h-7 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
@@ -323,7 +321,7 @@ const TechIllustration = () => {
           animate={{ y: [0, -12, 0] }}
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
         >
-          <rect x="40" y="285" width="70" height="70" rx="18" className="fill-white stroke-indigo-500/30 shadow-2xl" strokeWidth="1.5" />
+          <rect x="40" y="285" width="70" height="70" rx="18" className="fill-transparent stroke-indigo-500/50 shadow-2xl" strokeWidth="1.5" />
           <Database className="w-8 h-8 text-indigo-500" x="61" y="306" />
         </motion.g>
 
@@ -332,7 +330,7 @@ const TechIllustration = () => {
           animate={{ y: [0, 12, 0], scale: [1, 1.05, 1] }}
           transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
         >
-          <rect x="385" y="55" width="72" height="72" rx="18" className="fill-white stroke-pink-500/30 shadow-2xl" strokeWidth="1.5" />
+          <rect x="385" y="55" width="72" height="72" rx="18" className="fill-transparent stroke-pink-500/50 shadow-2xl" strokeWidth="1.5" />
           <Cpu className="w-8 h-8 text-pink-500" x="405" y="75" />
         </motion.g>
 
@@ -341,7 +339,7 @@ const TechIllustration = () => {
           animate={{ y: [0, -8, 0], scale: [1, 1.06, 1] }}
           transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
         >
-          <rect x="370" y="295" width="78" height="78" rx="20" className="fill-white stroke-emerald-500/30 shadow-2xl" strokeWidth="1.5" />
+          <rect x="370" y="295" width="78" height="78" rx="20" className="fill-transparent stroke-emerald-500/50 shadow-2xl" strokeWidth="1.5" />
           <Award className="w-9 h-9 text-emerald-500" x="390" y="315" />
         </motion.g>
       </svg>
@@ -674,25 +672,6 @@ const Hero = () => {
 
       <div className="ash-canvas w-full min-h-screen relative overflow-hidden text-slate-800">
 
-        {/* Signature motif: rising code-block particles */}
-        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-          {HERO_PARTICLES.map((p, i) => (
-            <span
-              key={i}
-              className="ash-particle"
-              style={{
-                left: p.left,
-                fontSize: p.size,
-                color: p.color,
-                animationDuration: `${p.duration}s`,
-                animationDelay: `${p.delay}s`,
-              }}
-            >
-              {p.glyph}
-            </span>
-          ))}
-        </div>
-
         {/* ── HERO SECTION ── */}
         <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24 md:pt-16 md:pb-32">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
@@ -705,7 +684,7 @@ const Hero = () => {
               className="lg:col-span-7 space-y-8 text-center lg:text-left"
             >
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-white border-emerald-200 shadow-sm shadow-emerald-500/10">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-transparent border-emerald-300/80 shadow-sm shadow-emerald-500/10">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-xs font-extrabold uppercase tracking-wider text-slate-600">
                   AICTE Internship Portal Registered Organization
@@ -736,7 +715,7 @@ const Hero = () => {
                 </Link>
                 <a
                   href="#categories"
-                  className="px-8 py-4 rounded-2xl font-extrabold text-sm border-2 border-slate-200 bg-white hover:border-indigo-300 hover:text-indigo-600 active:scale-95 transition-all text-center"
+                  className="px-8 py-4 rounded-2xl font-extrabold text-sm border-2 border-slate-300/80 bg-transparent hover:border-indigo-400 hover:text-indigo-600 active:scale-95 transition-all text-center"
                 >
                   Explore Programs
                 </a>
@@ -790,7 +769,7 @@ const Hero = () => {
               {statsList.map((stat) => {
                 const IconComp = stat.icon
                 return (
-                  <div key={stat.label} className="p-4 sm:p-6 rounded-2xl border bg-white border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between min-h-[130px]">
+                  <div key={stat.label} className="p-4 sm:p-6 rounded-2xl border bg-transparent border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between min-h-[130px]">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${stat.color} bg-current/10`}>
                       <IconComp className={`w-5 h-5 ${stat.color}`} />
                     </div>
@@ -853,7 +832,7 @@ const Hero = () => {
                   viewport={{ once: true }}
                   whileHover={{ y: -4 }}
                   key={tech.name}
-                  className="flex flex-col items-center gap-2.5 p-4 rounded-xl border bg-white border-slate-200/80 shadow-sm hover:shadow-md hover:border-slate-300 transition-all"
+                  className="flex flex-col items-center gap-2.5 p-4 rounded-xl border bg-transparent border-slate-200/80 shadow-sm hover:shadow-md hover:border-slate-300 transition-all"
                 >
                   <div className={`p-2.5 rounded-lg ${tech.color}`}>
                     <IconComp className="w-5 h-5" />
@@ -893,7 +872,7 @@ const Hero = () => {
                   transition={{ delay: idx * 0.05, duration: 0.5 }}
                   whileHover={{ y: -6 }}
                   key={cat.title}
-                  className="p-6 rounded-2xl border bg-white border-slate-200/80 shadow-sm hover:shadow-lg hover:border-indigo-200 transition-all flex flex-col justify-between group"
+                  className="p-6 rounded-2xl border bg-transparent border-slate-200/80 shadow-sm hover:shadow-lg hover:border-indigo-200 transition-all flex flex-col justify-between group"
                 >
                   <div className="space-y-4">
                     {/* Icon & Badges */}
@@ -954,7 +933,7 @@ const Hero = () => {
             {WHY_CHOOSE.map((item) => {
               const IconComp = item.icon
               return (
-                <div key={item.title} className="p-6 rounded-2xl border bg-white border-slate-200/85 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex gap-4">
+                <div key={item.title} className="p-6 rounded-2xl border bg-transparent border-slate-200/85 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex gap-4">
                   <div className={`p-3 rounded-xl border flex-shrink-0 h-fit ${item.color}`}>
                     <IconComp className="w-5 h-5" />
                   </div>
@@ -981,7 +960,7 @@ const Hero = () => {
               return (
                 <div
                   key={point.title}
-                  className="p-6 rounded-2xl border bg-white border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex items-start gap-4"
+                  className="p-6 rounded-2xl border bg-transparent border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex items-start gap-4"
                 >
                   <div className={`p-3 rounded-xl border flex-shrink-0 ${point.color}`}>
                     <IconComp className="w-5 h-5" />
@@ -1018,7 +997,7 @@ const Hero = () => {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
                 key={item.name}
-                className="p-6 rounded-2xl border bg-white border-slate-200/80 flex flex-col justify-between relative shadow-sm hover:shadow-md transition-shadow"
+                className="p-6 rounded-2xl border bg-transparent border-slate-200/80 flex flex-col justify-between relative shadow-sm hover:shadow-md transition-shadow"
               >
                 {/* Rating stars */}
                 <div className="flex gap-1 text-amber-400 text-sm mb-4">

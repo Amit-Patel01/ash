@@ -25,35 +25,44 @@ export function AuthProvider({ children }) {
     const token = localStorage.getItem('token')
     if (!token) return null
 
-    const response = await fetch(api.userProfile, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+    try {
+      const response = await fetch(api.userProfile, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      })
+      const data = await response.json()
+
+      if (response.ok && data.success && data.profile) {
+        const profileData = data.profile
+        const normalizedRole = normalizeUserRole(profileData?.role || 'student')
+        const userData = {
+          uid: profileData.uid || profileData.id,
+          ...profileData,
+          role: normalizedRole
+        }
+        setCurrentUser(userData)
+        setUserProfile(userData)
+        return userData
       }
-    })
-    const data = await response.json()
 
-    if (response.ok && data.success && data.profile) {
-      const profileData = data.profile
-      const normalizedRole = normalizeUserRole(profileData?.role || 'student')
-      const userData = {
-        uid: profileData.uid || profileData.id,
-        ...profileData,
-        role: normalizedRole
+      if (data?.code === 'SESSION_EXPIRED_SINGLE_DEVICE') {
+        setAuthError('Your account was logged in from another device. For security, your previous session has been logged out.')
       }
-      setCurrentUser(userData)
-      setUserProfile(userData)
-      return userData
-    }
 
-    if (data?.code === 'SESSION_EXPIRED_SINGLE_DEVICE') {
-      setAuthError('Your account was logged in from another device. For security, your previous session has been logged out.')
+      localStorage.removeItem('token')
+      setCurrentUser(null)
+      setUserProfile(null)
+      return null
+    } catch (error) {
+      // Network failure or JSON parse error — clear auth gracefully
+      console.warn('[AuthContext] refreshCurrentUser failed (network/parse error):', error.message)
+      localStorage.removeItem('token')
+      setCurrentUser(null)
+      setUserProfile(null)
+      return null
     }
-
-    localStorage.removeItem('token')
-    setCurrentUser(null)
-    setUserProfile(null)
-    return null
   }, [])
 
   // Initialize auth state from local storage token
