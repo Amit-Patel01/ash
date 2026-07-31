@@ -35,6 +35,7 @@ import {
 } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
 import msmeLogo from '../assets/msme.png'
+import tejashImg from '../assets/tejash-patil.png'
 
 // Inline Custom SVGs for Github and Linkedin since the installed lucide-react package does not export them
 const Github = ({ size = 20, className = "" }) => (
@@ -548,18 +549,18 @@ export default function About() {
         </section>
 
         {/* ── 10. LEADERSHIP ── */}
-        <section className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto z-10 border-t border-slate-200/40 dark:border-slate-900/50">
+        <section className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 border-t border-slate-200/40 dark:border-slate-900/50">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
             <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-indigo-500 text-white shadow-sm">
-              Founding Team
+              Founding Team & Leadership
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-800 dark:text-white">Leadership</h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
-              Leading our vision and technical execution to build digital solutions that drive success.
+              Leading our vision, operations, and technical execution to build digital solutions that drive success.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             
             {/* Founder: Amit Patel */}
             <div className="p-8 rounded-[2rem] border-2 bg-gradient-to-br from-blue-50/60 to-white dark:from-blue-950/20 dark:to-slate-950/30 border-blue-200/70 dark:border-blue-900/60 shadow-[0_8px_30px_rgba(59,130,246,0.08)] dark:shadow-[0_8px_30px_rgba(59,130,246,0.12)] backdrop-blur-xl flex flex-col justify-between hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
@@ -679,6 +680,63 @@ export default function About() {
                   className="flex-1 py-2.5 rounded-xl text-xs font-extrabold text-center border-2 border-purple-200 dark:border-purple-800 bg-white dark:bg-slate-900 hover:bg-purple-50 dark:hover:bg-slate-800 text-purple-700 dark:text-purple-300 transition-all"
                 >
                   LinkedIn
+                </a>
+              </div>
+            </div>
+
+            {/* Head: Tejash Patil */}
+            <div className="p-8 rounded-[2rem] border-2 bg-gradient-to-br from-emerald-50/60 to-white dark:from-emerald-950/20 dark:to-slate-950/30 border-emerald-200/70 dark:border-emerald-900/60 shadow-[0_8px_30px_rgba(16,185,129,0.08)] dark:shadow-[0_8px_30px_rgba(16,185,129,0.12)] backdrop-blur-xl flex flex-col justify-between hover:border-emerald-400 dark:hover:border-emerald-500 hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
+              <div className="space-y-6">
+                <div className="flex items-start justify-between flex-wrap gap-4">
+                  <div className="relative w-28 h-28 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border-2 border-emerald-200 dark:border-emerald-800 flex items-center justify-center shrink-0 shadow-md">
+                    <img 
+                      src={tejashImg || "https://media.licdn.com/dms/image/v2/D4D03AQEWuA51rLjzxA/profile-displayphoto-scale_400_400/B4DZ5TknxUKEAg-/0/1779518571006?e=1786579200&v=beta&t=bPQT9l4WP1gftoGcFYtoNTavm14vph4vlsSliDg23bw"} 
+                      alt="Tejash Patil" 
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      onError={(e) => { 
+                        e.currentTarget.style.display = 'none'; 
+                        if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex'; 
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-600 text-white text-xl font-bold flex items-center justify-center hidden">TP</div>
+                  </div>
+                  <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-600 text-white shadow-sm">
+                    Head
+                  </span>
+                </div>
+
+                <div className="space-y-1">
+                  <h3 className="font-extrabold text-xl text-slate-800 dark:text-slate-100">Tejash Patil</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Head of Operations & Execution</p>
+                </div>
+
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                  I oversee team management, operational strategy, and project execution at AmitSolutionHub. Dedicated to optimizing internal workflows, maintaining quality standards, and driving cross-departmental success.
+                </p>
+
+                {/* Skill Badges */}
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {['Operations Lead', 'Team Leadership', 'Workflow Planning', 'Project Execution', 'Quality Assurance'].map(tag => (
+                    <span key={tag} className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-6 mt-6 border-t border-emerald-200/50 dark:border-emerald-900/50">
+                <a 
+                  href="mailto:tejasspatil2601@gmail.com" 
+                  className="flex-1 py-2.5 rounded-xl text-xs font-extrabold text-center bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md shadow-emerald-500/20 transition-all"
+                >
+                  Contact
+                </a>
+                <a 
+                  href="mailto:tejasspatil2601@gmail.com" 
+                  className="flex-1 py-2.5 rounded-xl text-xs font-extrabold text-center border-2 border-emerald-200 dark:border-emerald-800 bg-white dark:bg-slate-900 hover:bg-emerald-50 dark:hover:bg-slate-800 text-emerald-700 dark:text-emerald-300 transition-all"
+                >
+                  Email
                 </a>
               </div>
             </div>

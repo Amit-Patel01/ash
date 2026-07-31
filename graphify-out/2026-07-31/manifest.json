@@ -1605,8 +1605,8 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/About.jsx": {
-    "mtime": 1785477365.3080175,
-    "ast_hash": "287d6d01a08b1e60a444a49f9766d7b6",
+    "mtime": 1785474932.0098426,
+    "ast_hash": "fbdb4b93ace08ae2d29d99a8666046b6",
     "semantic_hash": ""
   },
   "frontend/src/pages/AboutTradingMentorship.jsx": {
@@ -2802,11 +2802,6 @@
   "backend/scripts/test_nodemailer_email.js": {
     "mtime": 1785256163.0802884,
     "ast_hash": "69964b3471ab56dfef8c8b56e027e9bf",
-    "semantic_hash": ""
-  },
-  "frontend/src/assets/tejash-patil.png": {
-    "mtime": 1785477346.3057709,
-    "ast_hash": "07ccc1cf20d575f8d4e1df1adc38bb94",
     "semantic_hash": ""
   }
 }

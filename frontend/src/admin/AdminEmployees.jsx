@@ -14,6 +14,9 @@ const avatarColors = [
 
 const departments = ['Engineering', 'Design', 'Marketing', 'Management', 'Support', 'Sales', 'Editor', 'Technician', 'HR', 'Operations', 'Placement', 'Other']
 const employeeRoles = [
+  'Head',
+  'Head of Operations',
+  'Head of Technology',
   'HR & Recruitment Executive',
   'Student Support Executive',
   'Business Development Executive (BDE)',
