@@ -49,8 +49,6 @@ const Navbar = () => {
   const [mobileWhyUsOpen, setMobileWhyUsOpen] = useState(false)
   const [programsDropdownOpen, setProgramsDropdownOpen] = useState(false)
   const [mobileProgramsOpen, setMobileProgramsOpen] = useState(false)
-  const [offeringsDropdownOpen, setOfferingsDropdownOpen] = useState(false)
-  const [mobileOfferingsOpen, setMobileOfferingsOpen] = useState(false)
 
   // Pull course categories for Programs sub-menu
   const { courses, courseCategories } = useStore()
@@ -112,17 +110,16 @@ const Navbar = () => {
 
           {/* Left: Logo + Nav Links */}
           <div className="flex min-w-0 items-center gap-3 lg:gap-5 xl:gap-10 h-full">
-            <Link to="/" className="relative z-10 flex min-w-0 items-center group flex-shrink-0 outline-none">
-              <div className="relative overflow-hidden rounded-xl px-1.5 sm:px-3 py-1.5 transform transition-all duration-500 group-hover:scale-105 group-hover:-rotate-1">
+            <Link to="/" className="relative z-10 flex min-w-0 items-center gap-2 sm:gap-3 group flex-shrink-0 outline-none">
+              <div className="relative overflow-hidden rounded-xl px-1.5 sm:px-2 py-1 transform transition-all duration-500 group-hover:scale-105 group-hover:-rotate-1">
                 {/* Radial Glow on Hover */}
                 <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 blur-lg transition-opacity duration-500 pointer-events-none ${isDark ? 'bg-gradient-to-br from-indigo-500/30 to-purple-500/20' : 'bg-gradient-to-br from-blue-500/20 to-purple-500/15'}`} />
 
                 <img
                   src={brandLogo}
-                  alt="Brand Logo"
-                  className="relative z-10 h-8 max-h-8 sm:h-10 sm:max-h-10 lg:h-12 lg:max-h-12 w-auto max-w-[118px] sm:max-w-none object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.15)]"
+                  alt="Amit Solution Hub Logo"
+                  className="relative z-10 h-7 sm:h-9 lg:h-10 w-auto object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.15)]"
                 />
-
 
                 {/* Shine Sweep Beam */}
                 <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
@@ -133,6 +130,16 @@ const Navbar = () => {
                     }}
                   />
                 </div>
+              </div>
+
+              {/* Full Brand Name Text */}
+              <div className="flex flex-col min-w-0">
+                <span className={`text-sm sm:text-base lg:text-lg font-black tracking-tight leading-none whitespace-nowrap ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  Amit <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">Solution Hub</span>
+                </span>
+                <span className="hidden sm:inline-block text-[9px] font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 leading-none mt-0.5">
+                  Tech & Learning
+                </span>
               </div>
             </Link>
 
@@ -265,56 +272,6 @@ const Navbar = () => {
                             </Link>
                           </>
                         )}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* Offerings Dropdown */}
-              <div
-                className="relative flex items-center"
-                onMouseEnter={() => setOfferingsDropdownOpen(true)}
-                onMouseLeave={() => setOfferingsDropdownOpen(false)}
-              >
-                <button
-                  className={`relative px-4 py-2 flex items-center gap-1.5 rounded-xl text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${
-                    isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
-                  }`}
-                >
-                  <span className="relative z-10">Offerings</span>
-                  <svg
-                    className={`w-4 h-4 transition-transform duration-300 ${offeringsDropdownOpen ? 'rotate-180' : ''}`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2.5}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-
-                {/* Floating Dropdown Card */}
-                <AnimatePresence>
-                  {offeringsDropdownOpen && (
-                    <motion.div
-                      variants={dropdownVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                      className={`absolute left-0 top-[100%] mt-1 w-64 rounded-2xl border shadow-2xl origin-top-left ${
-                        isDark
-                          ? 'bg-slate-950/95 border-white/10 text-slate-200 backdrop-blur-2xl'
-                          : 'bg-white/95 border-slate-100 text-slate-800 backdrop-blur-2xl shadow-slate-300/40'
-                      }`}
-                    >
-                      <div className="p-4 text-center space-y-2">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-sm">
-                          Coming Soon
-                        </span>
-                        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 leading-relaxed">
-                          New specialized courses, resource libraries, and bootcamps are on their way!
-                        </p>
                       </div>
                     </motion.div>
                   )}
@@ -671,48 +628,6 @@ const Navbar = () => {
                         >
                           View All Courses →
                         </Link>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                {/* Mobile Offerings Dropdown Accordion */}
-                <div className="flex flex-col">
-                  <button
-                    onClick={() => setMobileOfferingsOpen(!mobileOfferingsOpen)}
-                    className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${
-                      isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
-                    }`}
-                  >
-                    <span>Offerings</span>
-                    <svg
-                      className={`w-4 h-4 transition-transform duration-300 ${mobileOfferingsOpen ? 'rotate-180' : ''}`}
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2.5}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  <AnimatePresence initial={false}>
-                    {mobileOfferingsOpen && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25 }}
-                        className="overflow-hidden pl-6 pr-4"
-                      >
-                        <div className={`p-4 mb-2 rounded-xl border border-dashed text-center ${isDark ? 'border-white/10 bg-slate-950/20' : 'border-slate-200 bg-slate-50/50'}`}>
-                          <span className="inline-block px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase bg-gradient-to-r from-blue-500 to-indigo-500 text-white mb-1">
-                            Coming Soon
-                          </span>
-                          <p className="text-[11px] font-bold text-slate-400">
-                            New resources and bootcamps are on their way!
-                          </p>
-                        </div>
                       </motion.div>
                     )}
                   </AnimatePresence>

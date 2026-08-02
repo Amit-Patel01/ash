@@ -1420,8 +1420,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/Hero.jsx": {
-    "mtime": 1785390653.3659408,
-    "ast_hash": "ef118ebf8aad6bd7657723ba18254496",
+    "mtime": 1785591134.7967372,
+    "ast_hash": "2b473d81d9912fbc06abd3b5196fb101",
     "semantic_hash": ""
   },
   "frontend/src/components/Layout.jsx": {
@@ -1430,8 +1430,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/Navbar.jsx": {
-    "mtime": 1785391385.606351,
-    "ast_hash": "22fa4a50ad2143af5c341afcd82ae2e3",
+    "mtime": 1785591217.8231423,
+    "ast_hash": "1c3f44310823db260cfb374cef42d3b9",
     "semantic_hash": ""
   },
   "frontend/src/components/NotificationBell.jsx": {
@@ -1450,8 +1450,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/SEO.jsx": {
-    "mtime": 1785216734.8586736,
-    "ast_hash": "a3d6d7283eb12106a469861c54687dc9",
+    "mtime": 1785591209.8412619,
+    "ast_hash": "56693d05cd64773a7a587b5ea7aae8e5",
     "semantic_hash": ""
   },
   "frontend/src/components/Services.jsx": {
@@ -1605,8 +1605,8 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/About.jsx": {
-    "mtime": 1785477365.3080175,
-    "ast_hash": "287d6d01a08b1e60a444a49f9766d7b6",
+    "mtime": 1785477419.8264112,
+    "ast_hash": "8c7b9fbc647cf5adcafd218422085f7b",
     "semantic_hash": ""
   },
   "frontend/src/pages/AboutTradingMentorship.jsx": {
@@ -1920,8 +1920,8 @@
     "semantic_hash": ""
   },
   "frontend/index.html": {
-    "mtime": 1783616372.5914154,
-    "ast_hash": "57ce5d4b0e0bcf89d95ac9d0d65b43e2",
+    "mtime": 1785591204.7995524,
+    "ast_hash": "166129bb9342f5fa44a0975bf5687ff1",
     "semantic_hash": ""
   },
   "frontend/lint_output.txt": {
@@ -2805,8 +2805,8 @@
     "semantic_hash": ""
   },
   "frontend/src/assets/tejash-patil.png": {
-    "mtime": 1785477346.3057709,
-    "ast_hash": "07ccc1cf20d575f8d4e1df1adc38bb94",
+    "mtime": 1785477413.7334344,
+    "ast_hash": "04db79b70e5d973220a6d17973effbe1",
     "semantic_hash": ""
   }
 }

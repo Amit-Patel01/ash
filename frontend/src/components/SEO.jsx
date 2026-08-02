@@ -1,10 +1,10 @@
 import { Helmet } from 'react-helmet-async'
 
 export default function SEO({ 
-  title = 'AmitSolutionHub - Tech Agency & Solutions',
-  description = 'AmitSolutionHub is a verified MSME tech company providing premium web development, hardware repair, video editing, and mentorship services.',
-  keywords = 'Tech Agency, Web Development, Software Services, Mentorship, Repair, India, MSME, SolutionHub',
-  name = 'AmitSolutionHub',
+  title = 'Amit Solution Hub — Tech Agency & Learning Platform',
+  description = 'Amit Solution Hub is a verified MSME tech company providing premium web development, software solutions, AI workforce, and mentorship programs.',
+  keywords = 'Amit Solution Hub, Tech Agency, Web Development, Software Services, Mentorship, Repair, India, MSME',
+  name = 'Amit Solution Hub',
   type = 'website',
   url = 'https://amitsolutionhub.com',
   image = 'https://amitsolutionhub.com/og-banner.png',
@@ -13,7 +13,7 @@ export default function SEO({
   const defaultSchema = {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
-    "name": "AmitSolutionHub",
+    "name": "Amit Solution Hub",
     "url": url,
     "logo": `${url}/src/assets/brand-logo.png`,
     "description": description,
