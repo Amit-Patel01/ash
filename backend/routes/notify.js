@@ -10,6 +10,7 @@ const express = require('express')
 const router = express.Router()
 const { sendEmail, emailTemplate } = require('../services/emailService')
 const { logger } = require('../logger')
+const { getDb } = require('../utils/mongo')
 
 const ADMIN_EMAIL = 'amitpatel07029@gmail.com'
 const SITE_URL = 'https://www.amitsolutionhub.com'
@@ -425,6 +426,203 @@ const templates = {
     )
   }),
 
+  // 14. Bootcamp Date Announcement — Student (YouTube Live)
+  bootcamp_date_announcement: ({
+    studentName,
+    studentEmail,
+    bootcampName,
+    bootcampDate,         // e.g. "15 August 2026"
+    bootcampTime,         // e.g. "10:00 AM – 6:00 PM IST"
+    batchNumber,          // e.g. "Batch #7"
+    mode,                 // "Online" | "Offline" | "Hybrid"
+    venue,                // Offline address OR online platform name
+    youtubeLink,          // YouTube Live stream URL (primary)
+    youtubeChannelLink,   // YouTube Channel link (for Subscribe button)
+    meetLink,             // Optional: Zoom/Meet fallback link
+    instructor,           // e.g. "Amit Patel"
+    totalSeats,           // e.g. 30 (optional for YouTube live)
+    seatsLeft,            // e.g. 12 (optional)
+    registrationDeadline, // e.g. "12 August 2026"
+    fee,                  // e.g. 999 or 0
+    ctaLabel,             // Optional override for button text
+  }) => ({
+    to: studentEmail,
+    subject: bootcampDate
+      ? `🚀 Bootcamp Announced — ${bootcampName} | ${bootcampDate}`
+      : `🚀 Bootcamp Announced — ${bootcampName} | Date Coming Soon`,
+    html: emailTemplate(
+      bootcampDate ? `${bootcampName} — Date Confirmed! 🎯` : `${bootcampName} — Coming Soon! 🎯`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${studentName}</strong>,</p>
+      <p style="margin-bottom:20px;">
+        We are excited to announce an upcoming bootcamp exclusively for you!
+        Get ready for an intensive, hands-on learning experience designed to
+        level up your skills — all under expert guidance from
+        <strong>${instructor || 'our mentors'}</strong>.
+      </p>
+
+      <!-- Bootcamp Date Hero Card -->
+      <div style="margin:28px 0;padding:28px;background:linear-gradient(135deg,#fff7ed 0%,#ffedd5 100%);border-radius:20px;border:1px solid #fed7aa;text-align:center;">
+        <div style="font-size:11px;font-weight:900;letter-spacing:1.5px;color:#c2410c;text-transform:uppercase;margin-bottom:10px;">📅 Bootcamp Date</div>
+        <div style="font-size:32px;font-weight:900;color:#ea580c;letter-spacing:-0.5px;margin-bottom:4px;">
+          ${bootcampDate || 'To Be Announced'}
+        </div>
+        ${bootcampTime ? `<div style="font-size:15px;font-weight:700;color:#9a3412;">⏰ ${bootcampTime}</div>` : ''}
+        ${!bootcampDate ? `<div style="margin-top:10px;font-size:12px;color:#c2410c;">We will notify you as soon as the date is finalized.</div>` : ''}
+        ${batchNumber ? `<div style="margin-top:12px;display:inline-block;padding:5px 18px;background:#ea580c;border-radius:50px;color:#fff;font-size:12px;font-weight:900;letter-spacing:1px;">${batchNumber}</div>` : ''}
+      </div>
+
+      <!-- Details Table -->
+      <div style="margin:20px 0;padding:24px;background:#f8fafc;border-radius:18px;border:1px solid #e2e8f0;">
+        <div style="font-size:11px;font-weight:900;letter-spacing:1px;color:#ea580c;text-transform:uppercase;margin-bottom:14px;">📋 Bootcamp Details</div>
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <tr><td style="padding:9px 0;color:#64748b;width:38%;border-bottom:1px solid #f1f5f9;">Bootcamp</td><td style="font-weight:800;color:#0f172a;border-bottom:1px solid #f1f5f9;">${bootcampName}</td></tr>
+          <tr><td style="padding:9px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Date</td><td style="font-weight:800;color:${bootcampDate ? '#ea580c' : '#94a3b8'};border-bottom:1px solid #f1f5f9;">📅 ${bootcampDate || 'To Be Announced'}</td></tr>
+          ${bootcampTime ? `<tr><td style="padding:9px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Time</td><td style="font-weight:700;color:#0f172a;border-bottom:1px solid #f1f5f9;">⏰ ${bootcampTime}</td></tr>` : ''}
+          <tr><td style="padding:9px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Mode</td><td style="font-weight:700;color:#0f172a;border-bottom:1px solid #f1f5f9;">${mode === 'Online' ? '💻 Online' : mode === 'Offline' ? '🏢 Offline' : '🔀 Hybrid'}</td></tr>
+          ${venue ? `<tr><td style="padding:9px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Venue / Platform</td><td style="font-weight:700;color:#0f172a;border-bottom:1px solid #f1f5f9;">${venue}</td></tr>` : ''}
+          ${instructor ? `<tr><td style="padding:9px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Instructor</td><td style="font-weight:700;color:#2563eb;border-bottom:1px solid #f1f5f9;">👨‍🏫 ${instructor}</td></tr>` : ''}
+          ${totalSeats ? `<tr><td style="padding:9px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Total Seats</td><td style="font-weight:700;color:#0f172a;border-bottom:1px solid #f1f5f9;">${totalSeats} seats</td></tr>` : ''}
+          ${seatsLeft !== undefined ? `<tr><td style="padding:9px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Seats Remaining</td><td style="font-weight:900;color:${seatsLeft <= 5 ? '#dc2626' : '#16a34a'};border-bottom:1px solid #f1f5f9;">${seatsLeft <= 5 ? '🔥' : '✅'} Only ${seatsLeft} left!</td></tr>` : ''}
+          ${fee !== undefined ? `<tr><td style="padding:9px 0;color:#64748b;">Fee</td><td style="font-weight:900;color:#16a34a;">${fee === 0 ? '🎁 FREE' : `₹${Number(fee).toLocaleString('en-IN')}`}</td></tr>` : ''}
+        </table>
+      </div>
+
+      <!-- Livestream Platform Notice -->
+      <div style="margin:20px 0;padding:18px 22px;background:linear-gradient(135deg,#fff1f2 0%,#ffe4e6 100%);border-radius:16px;border:2px solid #fecdd3;text-align:center;">
+        <span style="display:inline-block;background:#ff0000;color:#fff;font-size:11px;font-weight:900;letter-spacing:2px;padding:4px 14px;border-radius:50px;text-transform:uppercase;margin-bottom:10px;">🔴 LIVE on YouTube</span>
+        <p style="margin:0;font-size:13px;font-weight:700;color:#9f1239;">
+          This bootcamp will be streamed live on YouTube.<br>
+          The join link will be shared with you shortly.
+        </p>
+      </div>
+
+      ${registrationDeadline ? `
+      <!-- Deadline Warning -->
+      <div style="margin:20px 0;padding:16px 20px;background:#fef2f2;border-radius:14px;border-left:4px solid #ef4444;">
+        <p style="margin:0;font-size:13px;color:#dc2626;font-weight:800;">⚠️ Registration Deadline: ${registrationDeadline}</p>
+        <p style="margin:4px 0 0;font-size:12px;color:#b91c1c;">Confirm your seat before the deadline to avoid missing out!</p>
+      </div>
+      ` : ''}
+
+      <!-- How to Prepare -->
+      <div style="margin:20px 0;padding:20px;background:#f0fdf4;border-radius:16px;border:1px solid #bbf7d0;">
+        <div style="font-size:13px;font-weight:900;color:#166534;margin-bottom:10px;">✅ How to Prepare</div>
+        <ul style="padding-left:18px;color:#475569;font-size:13px;line-height:1.9;margin:0;">
+          <li>Keep a <strong>notebook or laptop</strong> ready for live exercises</li>
+          <li>Ensure a stable internet connection for online sessions</li>
+          <li>Join the session <strong>10 minutes early</strong> for setup</li>
+          <li>Feel free to reply to this email if you have any questions</li>
+        </ul>
+      </div>
+
+      <p style="font-size:14px;color:#64748b;margin-top:24px;">
+        This bootcamp has been specially curated to give you <strong>real-world skills</strong>
+        in a focused, result-oriented environment. We look forward to seeing you there! 🎊
+      </p>
+      `,
+      ctaLabel || '📅 View My Dashboard',
+      `${SITE_URL}/customer`,
+      '#ea580c',
+      'BOOTCAMP',
+      `${SITE_URL}/unsubscribe`
+    )
+  }),
+
+  // 15. Bootcamp YouTube Link — Send when link is ready (separate follow-up email)
+  bootcamp_youtube_link: ({
+    studentName,
+    studentEmail,
+    bootcampName,
+    bootcampDate,       // e.g. "15 August 2026"
+    bootcampTime,       // e.g. "10:00 AM IST"
+    youtubeLink,        // The YouTube Live URL (now available!)
+    youtubeChannelLink, // Optional: channel subscribe link
+    instructor,         // e.g. "Amit Patel"
+  }) => ({
+    to: studentEmail,
+    subject: `🔴 YouTube Live Link is Here! — ${bootcampName}${bootcampDate ? ' | ' + bootcampDate : ''}`,
+    html: emailTemplate(
+      `Your YouTube Live Link is Ready! 🎯`,
+      `
+      <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${studentName}</strong>,</p>
+      <p style="margin-bottom:8px;">
+        The wait is over! The YouTube Live link for <strong>${bootcampName}</strong> is now available.
+        Click the button below and hit <strong>Set Reminder</strong> so you get notified
+        the moment we go live! 🔔
+      </p>
+
+      <!-- Date Reminder Strip -->
+      ${bootcampDate ? `
+      <div style="margin:20px 0;padding:14px 20px;background:#fff7ed;border-radius:14px;border-left:4px solid #ea580c;">
+        <div style="font-size:12px;color:#c2410c;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Bootcamp Date</div>
+        <div style="font-size:16px;font-weight:800;color:#ea580c;">📅 ${bootcampDate}${bootcampTime ? ' &nbsp;⏰ ' + bootcampTime : ''}</div>
+      </div>
+      ` : ''}
+
+      <!-- YouTube Live Big Card -->
+      <div style="margin:24px 0;padding:28px;background:linear-gradient(135deg,#fff1f2 0%,#ffe4e6 100%);border-radius:20px;border:2px solid #fecdd3;text-align:center;">
+        <div style="margin-bottom:12px;">
+          <span style="display:inline-block;background:#ff0000;color:#fff;font-size:11px;font-weight:900;letter-spacing:2px;padding:5px 16px;border-radius:50px;text-transform:uppercase;">🔴 LIVE on YouTube</span>
+        </div>
+        <div style="font-size:14px;font-weight:700;color:#9f1239;margin-bottom:18px;">
+          Save this link — the bootcamp will be streamed here!
+        </div>
+
+        <!-- Link Box -->
+        <div style="margin:0 auto 18px;padding:12px 16px;background:#fff;border-radius:12px;border:1px solid #fecdd3;word-break:break-all;font-size:13px;color:#be123c;font-weight:700;">
+          ${youtubeLink}
+        </div>
+
+        <a href="${youtubeLink}" style="display:inline-block;background:#ff0000;color:#ffffff;padding:16px 36px;border-radius:50px;font-weight:900;font-size:16px;text-decoration:none;box-shadow:0 8px 24px -4px rgba(255,0,0,0.45);letter-spacing:0.3px;">
+          ▶ Watch on YouTube
+        </a>
+
+        <p style="margin:16px 0 4px;font-size:12px;color:#be123c;">
+          👆 Click the link above → press <strong>"Set Reminder"</strong>
+        </p>
+        <p style="margin:0;font-size:11px;color:#9f1239;">
+          YouTube will automatically notify you when we go live 🚀
+        </p>
+      </div>
+
+      ${youtubeChannelLink ? `
+      <!-- Subscribe Box -->
+      <div style="margin:16px 0;padding:18px 20px;background:#f8fafc;border-radius:16px;border:1px solid #e2e8f0;text-align:center;">
+        <div style="font-size:13px;font-weight:800;color:#0f172a;margin-bottom:8px;">📢 Not Subscribed Yet?</div>
+        <p style="margin:0 0 12px;font-size:12px;color:#64748b;">
+          Subscribe to our channel to stay updated on future bootcamps, tutorials, and live sessions!
+        </p>
+        <a href="${youtubeChannelLink}" style="display:inline-block;background:#ff0000;color:#ffffff;padding:11px 28px;border-radius:50px;font-weight:800;font-size:13px;text-decoration:none;">
+          🔔 Subscribe Now
+        </a>
+        <p style="margin:10px 0 0;font-size:11px;color:#94a3b8;">After subscribing, set notifications to ALL 🔔 to never miss a live session.</p>
+      </div>
+      ` : ''}
+
+      <!-- Quick Steps -->
+      <div style="margin:20px 0;padding:18px 20px;background:#f0fdf4;border-radius:14px;border:1px solid #bbf7d0;">
+        <div style="font-size:13px;font-weight:900;color:#166534;margin-bottom:8px;">✅ 3 Quick Steps:</div>
+        <ol style="padding-left:18px;color:#475569;font-size:13px;line-height:2;margin:0;">
+          <li>Click the <a href="${youtubeLink}" style="color:#ff0000;font-weight:700;text-decoration:none;">YouTube Live link</a></li>
+          <li>Press the <strong>Set Reminder</strong> button (🔔 bell icon)</li>
+          <li>Show up on bootcamp day${bootcampTime ? ' at <strong>' + bootcampTime + '</strong>' : ''} and enjoy learning!</li>
+        </ol>
+      </div>
+
+      <p style="font-size:13px;color:#94a3b8;margin-top:20px;text-align:center;">
+        Have any questions? Simply reply to this email —
+        <strong>${instructor || 'Amit Patel'}</strong> will personally get back to you. 💬
+      </p>
+      `,
+      '▶ Watch on YouTube',
+      youtubeLink,
+      '#ff0000',
+      'YOUTUBE LIVE',
+      `${SITE_URL}/unsubscribe`
+    )
+  }),
+
 }
 
 
@@ -450,6 +648,140 @@ router.post('/', async (req, res) => {
   } catch (err) {
     logger.error(`[notify] Failed type=${type}: ${err.message}`)
     res.status(500).json({ success: false, message: err.message })
+  }
+})
+
+// ── POST /api/notify/bootcamp-broadcast — Send bootcamp email to ALL enrolled students ──
+//    Body: same fields as bootcamp_date_announcement template
+//    Auth: Admin only (uses verifyFirebaseToken from admin middleware)
+
+router.post('/bootcamp-broadcast', async (req, res) => {
+  try {
+    const {
+      bootcampName,
+      bootcampDate,
+      bootcampTime,
+      batchNumber,
+      mode,
+      venue,
+      youtubeLink,
+      youtubeChannelLink,
+      meetLink,
+      instructor,
+      totalSeats,
+      seatsLeft,
+      registrationDeadline,
+      fee,
+      emailType,         // 'bootcamp_date_announcement' (default) OR 'bootcamp_youtube_link'
+      manualEmails,      // optional: comma/newline separated emails to override DB fetch
+    } = req.body
+
+    if (!bootcampName) {
+      return res.status(400).json({ success: false, message: 'bootcampName is required' })
+    }
+
+    const type = emailType || 'bootcamp_date_announcement'
+    const builder = templates[type]
+    if (!builder) {
+      return res.status(400).json({ success: false, message: `Unknown emailType: ${type}` })
+    }
+
+    // ── Fetch Recipients ──────────────────────────────────────────────────────
+    let students = []
+
+    if (manualEmails) {
+      // Manual override — parse email list, use email as name fallback
+      const emails = manualEmails
+        .split(/[\n,]+/)
+        .map(e => e.trim())
+        .filter(e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))
+      students = emails.map(email => ({ email, name: email.split('@')[0] }))
+    } else {
+      // Fetch all active enrolled students from MongoDB
+      const db = getDb()
+      const enrollments = await db
+        .collection('enrollments')
+        .find({ status: 'active' })
+        .project({ userEmail: 1, userName: 1, name: 1, studentName: 1, _id: 0 })
+        .toArray()
+
+      // Deduplicate by email
+      const seen = new Set()
+      for (const doc of enrollments) {
+        const email = doc.userEmail?.trim()
+        if (!email || seen.has(email)) continue
+        seen.add(email)
+        students.push({
+          email,
+          name: doc.userName || doc.studentName || doc.name || email.split('@')[0],
+        })
+      }
+    }
+
+    if (students.length === 0) {
+      return res.status(400).json({ success: false, message: 'No enrolled students found to email.' })
+    }
+
+    logger.info(`[bootcamp-broadcast] Starting broadcast of type=${type} to ${students.length} students`)
+
+    // ── Send in batches of 50 ─────────────────────────────────────────────────
+    const results = { sent: 0, failed: 0, skipped: 0 }
+    const BATCH_SIZE = 50
+    const BATCH_DELAY_MS = 1000  // 1s pause between batches to avoid SMTP rate limits
+
+    for (let i = 0; i < students.length; i += BATCH_SIZE) {
+      const batch = students.slice(i, i + BATCH_SIZE)
+
+      await Promise.all(
+        batch.map(async ({ email, name }) => {
+          try {
+            const emailOpts = builder({
+              studentName: name,
+              studentEmail: email,
+              bootcampName,
+              bootcampDate,
+              bootcampTime,
+              batchNumber,
+              mode: mode || 'Online',
+              venue,
+              youtubeLink,
+              youtubeChannelLink,
+              meetLink,
+              instructor,
+              totalSeats,
+              seatsLeft,
+              registrationDeadline,
+              fee,
+            })
+
+            await sendEmail(emailOpts)
+            results.sent++
+          } catch (err) {
+            logger.error(`[bootcamp-broadcast] Failed for ${email}: ${err.message}`)
+            results.failed++
+          }
+        })
+      )
+
+      // Pause between batches (skip after last batch)
+      if (i + BATCH_SIZE < students.length) {
+        await new Promise(resolve => setTimeout(resolve, BATCH_DELAY_MS))
+      }
+    }
+
+    logger.info(`[bootcamp-broadcast] Done. Sent=${results.sent} Failed=${results.failed} Skipped=${results.skipped}`)
+
+    res.json({
+      success: true,
+      message: `Bootcamp broadcast complete!`,
+      total: students.length,
+      sent: results.sent,
+      failed: results.failed,
+    })
+
+  } catch (error) {
+    logger.error(`[bootcamp-broadcast] Error: ${error.message}`)
+    res.status(500).json({ success: false, message: error.message })
   }
 })
 
