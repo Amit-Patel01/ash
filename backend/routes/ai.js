@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { chatWithAI, getRecommendations, getAIStatus, generateText } = require("../services/aiService");
-const { optionalAuth } = require("../middlewares/authMiddleware");
+const { verifyFirebaseToken, optionalAuth } = require("../middlewares/authMiddleware");
+const { adminOnly } = require("../middlewares/rbacMiddleware");
 const { logger } = require("../logger");
 
 router.get("/status", (req, res) => {
@@ -181,7 +182,7 @@ const { dispatchDepartmentTask } = require("../services/aiAgents/agentDispatcher
  * GET /api/ai/department/proposals
  * Fetch real-time codebase & database generated proposals for admin approval
  */
-router.get("/department/proposals", async (req, res) => {
+router.get("/department/proposals", verifyFirebaseToken, adminOnly, async (req, res) => {
   try {
     const proposals = await generateRealtimeProposalsFromCodebase();
     res.json({ success: true, proposals });
@@ -195,7 +196,7 @@ router.get("/department/proposals", async (req, res) => {
  * POST /api/ai/department/proposals/resolve
  * Resolve (Approve / Reject) an AI proposal and execute real database action
  */
-router.post("/department/proposals/resolve", optionalAuth, async (req, res) => {
+router.post("/department/proposals/resolve", verifyFirebaseToken, adminOnly, async (req, res) => {
   const { proposalId, approved } = req.body;
   if (!proposalId) {
     return res.status(400).json({ success: false, message: "proposalId is required" });
@@ -214,7 +215,7 @@ router.post("/department/proposals/resolve", optionalAuth, async (req, res) => {
  * Clear all proposals
  */
 
-router.post("/department/proposals/clear", optionalAuth, (req, res) => {
+router.post("/department/proposals/clear", verifyFirebaseToken, adminOnly, (req, res) => {
   try {
     const proposals = clearAllProposals();
     res.json({ success: true, proposals });
@@ -243,7 +244,7 @@ const markdownToHtml = (text) => {
     .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" style="color:#2563eb">$1</a>');
 };
 
-router.post("/department/email/broadcast", optionalAuth, async (req, res) => {
+router.post("/department/email/broadcast", verifyFirebaseToken, adminOnly, async (req, res) => {
   const { subject, body, targetEmail, recipients: customRecipients } = req.body;
   if (!subject || !body) {
     return res.status(400).json({ success: false, message: "subject and body are required" });
@@ -346,7 +347,7 @@ router.post("/department/email/broadcast", optionalAuth, async (req, res) => {
  * GET /api/ai/department/config
  * Fetch configurations & metrics of all AI Departments
  */
-router.get("/department/config", (req, res) => {
+router.get("/department/config", verifyFirebaseToken, adminOnly, (req, res) => {
   try {
     const config = getDepartmentConfig();
     res.json({ success: true, config });
@@ -359,7 +360,7 @@ router.get("/department/config", (req, res) => {
  * POST /api/ai/department/config
  * Update prompt or settings for a specific department
  */
-router.post("/department/config", optionalAuth, (req, res) => {
+router.post("/department/config", verifyFirebaseToken, adminOnly, (req, res) => {
   const { deptId, updates } = req.body;
   if (!deptId || !updates) {
     return res.status(400).json({ success: false, message: "deptId and updates object are required" });
@@ -376,7 +377,7 @@ router.post("/department/config", optionalAuth, (req, res) => {
  * GET /api/ai/department/logs
  * Fetch real-time AI execution logs
  */
-router.get("/department/logs", (req, res) => {
+router.get("/department/logs", verifyFirebaseToken, adminOnly, (req, res) => {
   try {
     const logs = getExecutionLogs();
     res.json({ success: true, logs });
@@ -398,7 +399,7 @@ const dispatchRateLimiter = require('express-rate-limit')({
   message: { success: false, message: 'Too many AI tasks dispatched. Please wait 1 minute.' }
 });
 
-router.post("/department/dispatch", optionalAuth, dispatchRateLimiter, async (req, res) => {
+router.post("/department/dispatch", verifyFirebaseToken, adminOnly, dispatchRateLimiter, async (req, res) => {
   const { department, prompt, context } = req.body;
   if (!department || !prompt) {
     return res.status(400).json({ success: false, message: "department and prompt are required" });
@@ -420,7 +421,7 @@ router.post("/department/dispatch", optionalAuth, dispatchRateLimiter, async (re
  * GET /api/ai/department/analytics
  * Real-time revenue analytics & scheduler health from real MongoDB database
  */
-router.get("/department/analytics", async (req, res) => {
+router.get("/department/analytics", verifyFirebaseToken, adminOnly, async (req, res) => {
   try {
     const { getDb } = require("../utils/mongo");
     let db = null;

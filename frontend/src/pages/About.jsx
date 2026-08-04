@@ -285,7 +285,7 @@ export default function About() {
       </Helmet>
 
       <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
-        
+
         {/* Background Gradients */}
         <div className="absolute top-0 inset-x-0 h-[700px] pointer-events-none overflow-hidden z-0">
           <div className={`absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full blur-[140px] opacity-40 ${isDark ? 'bg-indigo-600' : 'bg-blue-400'}`} />
@@ -371,7 +371,7 @@ export default function About() {
         {/* ── 2. COMPANY STORY, 3. MISSION, 4. VISION ── */}
         <section className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 border-t border-slate-200/40 dark:border-slate-900/50">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            
+
             {/* Story */}
             <div className="lg:col-span-6 space-y-6">
               <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-blue-500 text-white shadow-sm">
@@ -388,7 +388,7 @@ export default function About() {
 
             {/* Mission & Vision Cards */}
             <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
-              
+
               {/* Mission Card */}
               <div className="p-6 rounded-3xl border-2 border-orange-200/70 dark:border-orange-900/50 bg-gradient-to-br from-orange-50/70 to-white dark:from-orange-950/20 dark:to-slate-900/20 backdrop-blur-xl space-y-4 shadow-sm hover:shadow-lg hover:shadow-orange-500/10 transition-all">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-orange-500/30">
@@ -561,20 +561,20 @@ export default function About() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            
+
             {/* Founder: Amit Patel */}
             <div className="p-8 rounded-[2rem] border-2 bg-gradient-to-br from-blue-50/60 to-white dark:from-blue-950/20 dark:to-slate-950/30 border-blue-200/70 dark:border-blue-900/60 shadow-[0_8px_30px_rgba(59,130,246,0.08)] dark:shadow-[0_8px_30px_rgba(59,130,246,0.12)] backdrop-blur-xl flex flex-col justify-between hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
               <div className="space-y-6">
                 <div className="flex items-start justify-between flex-wrap gap-4">
                   <div className="relative w-28 h-28 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border-2 border-blue-200 dark:border-blue-800 flex items-center justify-center shrink-0 shadow-md">
-                    <img 
-                      src="https://cdn.phototourl.com/free/2026-04-17-0ae88615-c6d0-46bb-b3a9-271cc07980a8.jpg" 
-                      alt="Amit Patel" 
+                    <img
+                      src="https://cdn.phototourl.com/free/2026-04-17-0ae88615-c6d0-46bb-b3a9-271cc07980a8.jpg"
+                      alt="Amit Patel"
                       className="w-full h-full object-cover"
                       loading="lazy"
-                      onError={(e) => { 
-                        e.currentTarget.style.display = 'none'; 
-                        if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex'; 
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex';
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-indigo-600 text-white text-xl font-bold flex items-center justify-center hidden">AP</div>
@@ -604,18 +604,18 @@ export default function About() {
               </div>
 
               <div className="flex gap-3 pt-6 mt-6 border-t border-blue-200/50 dark:border-blue-900/50">
-                <a 
-                  href="https://portfolio.amitsolutionhub.com/" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <a
+                  href="https://portfolio.amitsolutionhub.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex-1 py-2.5 rounded-xl text-xs font-extrabold text-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/20 transition-all"
                 >
                   Portfolio
                 </a>
-                <a 
-                  href="https://www.linkedin.com/in/amit-patel01/" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <a
+                  href="https://www.linkedin.com/in/amit-patel01/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex-1 py-2.5 rounded-xl text-xs font-extrabold text-center border-2 border-blue-200 dark:border-blue-800 bg-white dark:bg-slate-900 hover:bg-blue-50 dark:hover:bg-slate-800 text-blue-700 dark:text-blue-300 transition-all"
                 >
                   LinkedIn
@@ -628,14 +628,14 @@ export default function About() {
               <div className="space-y-6">
                 <div className="flex items-start justify-between flex-wrap gap-4">
                   <div className="relative w-28 h-28 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border-2 border-purple-200 dark:border-purple-800 flex items-center justify-center shrink-0 shadow-md">
-                    <img 
-                      src="https://cdn.phototourl.com/free/2026-04-17-535a233f-3c4a-4bf3-9f98-b1131ef6064a.jpg" 
-                      alt="Naivedh Patel" 
+                    <img
+                      src="https://cdn.phototourl.com/free/2026-04-17-535a233f-3c4a-4bf3-9f98-b1131ef6064a.jpg"
+                      alt="Naivedh Patel"
                       className="w-full h-full object-cover"
                       loading="lazy"
-                      onError={(e) => { 
-                        e.currentTarget.style.display = 'none'; 
-                        if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex'; 
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex';
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-fuchsia-600 text-white text-xl font-bold flex items-center justify-center hidden">NP</div>
@@ -665,18 +665,18 @@ export default function About() {
               </div>
 
               <div className="flex gap-3 pt-6 mt-6 border-t border-purple-200/50 dark:border-purple-900/50">
-                <a 
-                  href="https://portfolio-beta-five-50.vercel.app/" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <a
+                  href="https://portfolio-beta-five-50.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex-1 py-2.5 rounded-xl text-xs font-extrabold text-center bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white shadow-md shadow-purple-500/20 transition-all"
                 >
                   Portfolio
                 </a>
-                <a 
-                  href="https://www.linkedin.com/in/naivedh2518/" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <a
+                  href="https://www.linkedin.com/in/naivedh2518/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex-1 py-2.5 rounded-xl text-xs font-extrabold text-center border-2 border-purple-200 dark:border-purple-800 bg-white dark:bg-slate-900 hover:bg-purple-50 dark:hover:bg-slate-800 text-purple-700 dark:text-purple-300 transition-all"
                 >
                   LinkedIn
@@ -689,14 +689,14 @@ export default function About() {
               <div className="space-y-6">
                 <div className="flex items-start justify-between flex-wrap gap-4">
                   <div className="relative w-28 h-28 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border-2 border-emerald-200 dark:border-emerald-800 flex items-center justify-center shrink-0 shadow-md">
-                    <img 
-                      src={tejashImg || "https://media.licdn.com/dms/image/v2/D4D03AQEWuA51rLjzxA/profile-displayphoto-scale_400_400/B4DZ5TknxUKEAg-/0/1779518571006?e=1786579200&v=beta&t=bPQT9l4WP1gftoGcFYtoNTavm14vph4vlsSliDg23bw"} 
-                      alt="Tejash Patil" 
+                    <img
+                      src={tejashImg || "https://media.licdn.com/dms/image/v2/D4D03AQEWuA51rLjzxA/profile-displayphoto-scale_400_400/B4DZ5TknxUKEAg-/0/1779518571006?e=1786579200&v=beta&t=bPQT9l4WP1gftoGcFYtoNTavm14vph4vlsSliDg23bw"}
+                      alt="Tejas Patil"
                       className="w-full h-full object-cover"
                       loading="lazy"
-                      onError={(e) => { 
-                        e.currentTarget.style.display = 'none'; 
-                        if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex'; 
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        if (e.currentTarget.nextElementSibling) e.currentTarget.nextElementSibling.style.display = 'flex';
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-600 text-white text-xl font-bold flex items-center justify-center hidden">TP</div>
@@ -707,7 +707,7 @@ export default function About() {
                 </div>
 
                 <div className="space-y-1">
-                  <h3 className="font-extrabold text-xl text-slate-800 dark:text-slate-100">Tejash Patil</h3>
+                  <h3 className="font-extrabold text-xl text-slate-800 dark:text-slate-100">Tejas Patil</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Head of Operations & Execution</p>
                 </div>
 
@@ -726,14 +726,14 @@ export default function About() {
               </div>
 
               <div className="flex gap-3 pt-6 mt-6 border-t border-emerald-200/50 dark:border-emerald-900/50">
-                <a 
-                  href="mailto:tejasspatil2601@gmail.com" 
+                <a
+                  href="mailto:tejasspatil2601@gmail.com"
                   className="flex-1 py-2.5 rounded-xl text-xs font-extrabold text-center bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-md shadow-emerald-500/20 transition-all"
                 >
                   Contact
                 </a>
-                <a 
-                  href="mailto:tejasspatil2601@gmail.com" 
+                <a
+                  href="mailto:tejasspatil2601@gmail.com"
                   className="flex-1 py-2.5 rounded-xl text-xs font-extrabold text-center border-2 border-emerald-200 dark:border-emerald-800 bg-white dark:bg-slate-900 hover:bg-emerald-50 dark:hover:bg-slate-800 text-emerald-700 dark:text-emerald-300 transition-all"
                 >
                   Email
@@ -836,11 +836,10 @@ export default function About() {
               return (
                 <div
                   key={idx}
-                  className={`rounded-3xl border-2 transition-all duration-300 ${
-                    isOpen
+                  className={`rounded-3xl border-2 transition-all duration-300 ${isOpen
                       ? 'border-blue-400 bg-blue-50/50 dark:border-blue-500 dark:bg-blue-950/20 shadow-lg shadow-blue-500/5'
                       : 'border-slate-200/80 bg-white/50 dark:border-slate-900/80 dark:bg-slate-900/20'
-                  }`}
+                    }`}
                 >
                   <button
                     onClick={() => toggleFaq(idx)}
@@ -876,7 +875,7 @@ export default function About() {
         {/* ── 13. CTA SECTION ── */}
         <section className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto z-10 border-t border-slate-200/40 dark:border-slate-900/50">
           <div className="relative overflow-hidden rounded-[2.5rem] border bg-gradient-to-r from-blue-600 via-indigo-600 via-purple-600 to-pink-600 dark:border-indigo-500/20 p-8 sm:p-12 lg:p-16 text-center text-white shadow-2xl">
-            
+
             {/* Grid Pattern Background */}
             <div className="absolute inset-0 bg-grid-white/[0.05] pointer-events-none" />
             <div className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-white/10 filter blur-3xl opacity-30 pointer-events-none" />
@@ -892,7 +891,7 @@ export default function About() {
               <p className="text-xs sm:text-sm text-white/90 leading-relaxed max-w-md mx-auto">
                 Sign up for an industry-grade learning experience or consult with our technical team to custom build your next cloud codebase.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                 <Link
                   to="/join-us"

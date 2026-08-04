@@ -117,6 +117,14 @@ const ACCENTS = [
 const getAccent = (index = 0) => ACCENTS[index % ACCENTS.length]
 const callsign = (index = 0) => `AGT-${String(index + 1).padStart(2, '0')}`
 
+const getAiAdminHeaders = (withJson = true) => {
+  const token = localStorage.getItem('token')
+  if (!token) throw new Error('Please sign in again to manage AI agents.')
+  return withJson
+    ? { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+    : { Authorization: `Bearer ${token}` }
+}
+
 // HUD-style corner brackets — the signature motif of the control-room theme
 const CornerFrame = ({ colorClass = 'border-violet-300' }) => (
   <>
@@ -192,7 +200,7 @@ export default function AdminAIDepartments() {
     try {
       const res = await fetch(api.aiDepartmentBroadcastEmail, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAiAdminHeaders(),
         body: JSON.stringify({ subject, body: replyText })
       }).then(readApiJson)
       setBroadcastStatus(res)
@@ -214,7 +222,7 @@ export default function AdminAIDepartments() {
     try {
       const res = await fetch(api.aiDepartmentBroadcastEmail, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAiAdminHeaders(),
         body: JSON.stringify({ subject, body })
       }).then(readApiJson)
       setDirectBroadcastStatus(res)
@@ -234,10 +242,10 @@ export default function AdminAIDepartments() {
     try {
       setLoading(true)
       const [configRes, logsRes, propRes, analyticsRes] = await Promise.all([
-        fetch(api.aiDepartmentConfig).then(readApiJson),
-        fetch(api.aiDepartmentLogs).then(readApiJson),
-        fetch(api.aiDepartmentProposals).then(readApiJson),
-        fetch(api.aiDepartmentAnalytics).then(readApiJson)
+        fetch(api.aiDepartmentConfig, { headers: getAiAdminHeaders(false) }).then(readApiJson),
+        fetch(api.aiDepartmentLogs, { headers: getAiAdminHeaders(false) }).then(readApiJson),
+        fetch(api.aiDepartmentProposals, { headers: getAiAdminHeaders(false) }).then(readApiJson),
+        fetch(api.aiDepartmentAnalytics, { headers: getAiAdminHeaders(false) }).then(readApiJson)
       ])
 
       if (configRes.success && configRes.config) {
@@ -266,9 +274,9 @@ export default function AdminAIDepartments() {
     const interval = setInterval(async () => {
       try {
         const [propRes, logsRes, analyticsRes] = await Promise.all([
-          fetch(api.aiDepartmentProposals).then(readApiJson),
-          fetch(api.aiDepartmentLogs).then(readApiJson),
-          fetch(api.aiDepartmentAnalytics).then(readApiJson)
+          fetch(api.aiDepartmentProposals, { headers: getAiAdminHeaders(false) }).then(readApiJson),
+          fetch(api.aiDepartmentLogs, { headers: getAiAdminHeaders(false) }).then(readApiJson),
+          fetch(api.aiDepartmentAnalytics, { headers: getAiAdminHeaders(false) }).then(readApiJson)
         ])
         if (propRes.success && propRes.proposals) {
           setProposals(prev => {
@@ -297,7 +305,7 @@ export default function AdminAIDepartments() {
     try {
       const res = await fetch(api.aiDepartmentConfig, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAiAdminHeaders(),
         body: JSON.stringify({
           deptId,
           updates: { enabled: !currentEnabled }
@@ -321,7 +329,7 @@ export default function AdminAIDepartments() {
     try {
       const res = await fetch(api.aiDepartmentConfig, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAiAdminHeaders(),
         body: JSON.stringify({
           deptId: selectedDept.id,
           updates: { systemPrompt: promptEdit }
@@ -345,7 +353,7 @@ export default function AdminAIDepartments() {
   const handleClearAllProposals = async () => {
     setProposals([])
     try {
-      await fetch(api.aiDepartmentClearProposals, { method: 'POST' }).catch(() => {})
+      await fetch(api.aiDepartmentClearProposals, { method: 'POST', headers: getAiAdminHeaders(false) }).catch(() => {})
     } catch {
       // safe fallback
     }
@@ -357,7 +365,7 @@ export default function AdminAIDepartments() {
     try {
       const res = await fetch(api.aiDepartmentResolveProposal, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAiAdminHeaders(),
         body: JSON.stringify({ proposalId, approved })
       }).then(readApiJson)
 
@@ -402,7 +410,7 @@ export default function AdminAIDepartments() {
     try {
       const res = await fetch(api.aiDepartmentDispatch, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAiAdminHeaders(),
         body: JSON.stringify({
           department: testTaskDept,
           prompt: testTaskPrompt
@@ -437,7 +445,7 @@ export default function AdminAIDepartments() {
       for (const deptId of enabledDepts) {
         await fetch(api.aiDepartmentDispatch, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAiAdminHeaders(),
           body: JSON.stringify({
             department: deptId,
             prompt: `Autonomous scan requested by Admin for department ${deptId}. Review metrics and generate any pending proposals.`

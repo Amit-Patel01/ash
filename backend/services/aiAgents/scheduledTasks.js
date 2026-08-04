@@ -344,12 +344,15 @@ const runSellProjectAutoReviewer = async () => {
       addPendingProposal(
         'sales',
         `🏷️ Review Sell-Project Request: "${req.projectTitle || 'Untitled Project'}"`,
-        'sitewide_sales_campaign',
+        'create_project',
         `SalesAgent auto-reviewed employee project submission "${req.projectTitle}". Seller Asking: ₹${req.askingPrice}. Suggested Listed Price: ₹${suggestedPrice}. Click Approve to publish project to marketplace.`,
         {
-          projectTitle: req.projectTitle,
+          title: req.projectTitle || 'Untitled Project',
+          description: req.projectDesc || req.description || '',
+          price: suggestedPrice,
+          category: req.category || 'Full-Stack',
+          techStack: Array.isArray(req.techStack) ? req.techStack : [],
           requestId: req._id?.toString(),
-          suggestedPrice,
           sellerEmail: req.email || req.employeeEmail
         }
       );

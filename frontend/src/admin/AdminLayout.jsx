@@ -4,6 +4,7 @@ import { Search, Globe, ChevronDown, LogOut, Menu, X, Bell } from 'lucide-react'
 
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
+import { normalizeUserRole } from '../utils/roles'
 
 const navGroups = [
   {
@@ -195,6 +196,21 @@ export default function AdminLayout({ onLogout }) {
   const displayName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Admin'
   const displayEmail = currentUser?.email || 'admin@solutionhub.com'
   const avatar = displayName.charAt(0).toUpperCase()
+  const isAdminRole = normalizeUserRole(currentUser?.role || userProfile?.role || '') === 'admin'
+
+  const canAccessPermission = (permissionKey) => {
+    if (!permissionKey) return true
+    if (isAdminRole) return true
+
+    const permissionMap = currentUser?.permissions || userProfile?.permissions || {}
+    if (Array.isArray(permissionMap)) return permissionMap.includes(permissionKey)
+    if (permissionMap && typeof permissionMap === 'object') {
+      const value = permissionMap[permissionKey]
+      return value === true || value === 1 || value === 'true' || value === '1'
+    }
+
+    return false
+  }
 
   // Close dropdowns on outside click or route change
   useEffect(() => {
@@ -290,7 +306,7 @@ export default function AdminLayout({ onLogout }) {
             {/* Desktop Navigation Dropdowns */}
             <nav className="hidden lg:flex items-center gap-1">
               {navGroups.map((group) => {
-                const visibleItems = group.items.filter(item => !item.permission || hasPermission(item.permission))
+                const visibleItems = group.items.filter(item => !item.permission || canAccessPermission(item.permission))
                 if (visibleItems.length === 0) return null
 
                 const active = isGroupActive(group)
@@ -500,7 +516,7 @@ export default function AdminLayout({ onLogout }) {
 
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
             {navGroups.map((group) => {
-              const visibleItems = group.items.filter(item => !item.permission || hasPermission(item.permission))
+              const visibleItems = group.items.filter(item => !item.permission || canAccessPermission(item.permission))
               if (visibleItems.length === 0) return null
 
               return (

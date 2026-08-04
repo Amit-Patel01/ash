@@ -11,6 +11,8 @@ const router = express.Router()
 const { sendEmail, emailTemplate } = require('../services/emailService')
 const { logger } = require('../logger')
 const { getDb } = require('../utils/mongo')
+const { verifyFirebaseToken } = require('../middlewares/authMiddleware')
+const { adminOnly } = require('../middlewares/rbacMiddleware')
 
 const ADMIN_EMAIL = 'amitpatel07029@gmail.com'
 const SITE_URL = 'https://www.amitsolutionhub.com'
@@ -655,7 +657,7 @@ router.post('/', async (req, res) => {
 //    Body: same fields as bootcamp_date_announcement template
 //    Auth: Admin only (uses verifyFirebaseToken from admin middleware)
 
-router.post('/bootcamp-broadcast', async (req, res) => {
+router.post('/bootcamp-broadcast', verifyFirebaseToken, adminOnly, async (req, res) => {
   try {
     const {
       bootcampName,
@@ -685,6 +687,9 @@ router.post('/bootcamp-broadcast', async (req, res) => {
     if (!builder) {
       return res.status(400).json({ success: false, message: `Unknown emailType: ${type}` })
     }
+    if (type === 'bootcamp_youtube_link' && !youtubeLink) {
+      return res.status(400).json({ success: false, message: 'youtubeLink is required for YouTube link emails' })
+    }
 
     // ── Fetch Recipients ──────────────────────────────────────────────────────
     let students = []
@@ -695,22 +700,54 @@ router.post('/bootcamp-broadcast', async (req, res) => {
         .split(/[\n,]+/)
         .map(e => e.trim())
         .filter(e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e))
-      students = emails.map(email => ({ email, name: email.split('@')[0] }))
+      const seen = new Set()
+      students = emails
+        .filter(email => {
+          const key = email.toLowerCase()
+          if (seen.has(key)) return false
+          seen.add(key)
+          return true
+        })
+        .map(email => ({ email, name: email.split('@')[0] }))
     } else {
-      // Fetch all active enrolled students from MongoDB
       const db = getDb()
+
+      // 1. Enrolled students (active)
       const enrollments = await db
         .collection('enrollments')
         .find({ status: 'active' })
         .project({ userEmail: 1, userName: 1, name: 1, studentName: 1, _id: 0 })
         .toArray()
 
-      // Deduplicate by email
+      // 2. Employees and Admins from users collection
+      const staffUsers = await db
+        .collection('users')
+        .find({ role: { $in: ['admin', 'employee'] }, status: 'active' })
+        .project({ email: 1, displayName: 1, name: 1, role: 1, _id: 0 })
+        .toArray()
+
+      // Deduplicate by email — merge both sources
       const seen = new Set()
+
+      // Add staff (employees + admins)
+      for (const doc of staffUsers) {
+        const email = doc.email?.trim()
+        const emailKey = email?.toLowerCase()
+        if (!emailKey || seen.has(emailKey)) continue
+        seen.add(emailKey)
+        students.push({
+          email,
+          name: doc.displayName || doc.name || email.split('@')[0],
+          source: doc.role,
+        })
+      }
+
+      // Add enrolled students
       for (const doc of enrollments) {
         const email = doc.userEmail?.trim()
-        if (!email || seen.has(email)) continue
-        seen.add(email)
+        const emailKey = email?.toLowerCase()
+        if (!emailKey || seen.has(emailKey)) continue
+        seen.add(emailKey)
         students.push({
           email,
           name: doc.userName || doc.studentName || doc.name || email.split('@')[0],
@@ -769,7 +806,14 @@ router.post('/bootcamp-broadcast', async (req, res) => {
       }
     }
 
-    logger.info(`[bootcamp-broadcast] Done. Sent=${results.sent} Failed=${results.failed} Skipped=${results.skipped}`)
+    logger.info(`[bootcamp-broadcast] Done. Sent=${results.sent} Failed=${results.failed}`)
+
+    // Count breakdown
+    const breakdown = {
+      admins:      students.filter(s => s.source === 'admin').length,
+      employees:   students.filter(s => s.source === 'employee').length,
+      enrollments: students.filter(s => !s.source || s.source === 'enrollment').length,
+    }
 
     res.json({
       success: true,
@@ -777,6 +821,7 @@ router.post('/bootcamp-broadcast', async (req, res) => {
       total: students.length,
       sent: results.sent,
       failed: results.failed,
+      breakdown,
     })
 
   } catch (error) {

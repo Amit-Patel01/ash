@@ -191,8 +191,8 @@ const resolveProposal = async (proposalId, approved = true) => {
           code: couponCode,
           discountType: 'percentage',
           discountValue: proposal.proposedData?.discountPercentage || 25,
-          maxUses: 1000,
-          is_active: true
+          usageLimit: 1000,
+          isActive: true
         }).catch(err => logger.warn(`Coupon creation note: ${err.message}`));
         logger.info(`[Real Database Execution] Created & Activated real coupon "${couponCode}" in 'coupons' database collection.`);
       }
@@ -366,6 +366,15 @@ const resolveProposal = async (proposalId, approved = true) => {
             updatedAt: new Date()
           };
           await db.collection('projects').insertOne(projectDoc).catch(err => logger.warn(`Project insert note: ${err.message}`));
+          if (proposal.proposedData?.requestId) {
+            const { ObjectId } = require('mongodb');
+            let requestId = proposal.proposedData.requestId;
+            try { requestId = new ObjectId(requestId); } catch (e) {}
+            await db.collection('sell_requests').updateOne(
+              { _id: requestId },
+              { $set: { status: 'approved', publishedProjectTitle: projectDoc.title, publishedAt: new Date(), updatedAt: new Date() } }
+            ).catch(err => logger.warn(`Sell request update note: ${err.message}`));
+          }
           logger.info(`[Real Database Execution] Published new project "${projectDoc.title}" in 'projects' collection.`);
         }
       }
@@ -473,7 +482,6 @@ module.exports = {
   resolveProposal,
   clearAllProposals
 };
-
 
 
 
