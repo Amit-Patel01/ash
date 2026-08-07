@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import brandLogo from '../assets/brand-logo.png'
 import { useAuth } from '../context/AuthContext'
+import { getHomePathForRole } from '../utils/roles'
 import { useTheme } from '../context/ThemeContext'
 import { useStore } from '../store/StoreContext'
 
@@ -430,7 +431,7 @@ const Navbar = () => {
               {currentUser ? (
                 <div className={`flex items-center gap-2 p-1 rounded-full border ${isDark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/5'}`}>
                   <Link
-                    to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'student' ? '/user' : '/employee'}
+                    to={getHomePathForRole(currentUser?.role)}
                     className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-white shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:shadow-indigo-500/30"
                   >
                     <div className="w-6 h-6 rounded-full overflow-hidden bg-white/10 flex items-center justify-center shrink-0">
@@ -493,7 +494,7 @@ const Navbar = () => {
             <div className="2xl:hidden flex shrink-0 items-center gap-1.5 sm:gap-2">
               {currentUser && (
                 <Link
-                  to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'student' ? '/user' : '/employee'}
+                  to={getHomePathForRole(currentUser?.role)}
                   title="Dashboard"
                   className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full border overflow-hidden shadow-sm active:scale-95 transition-transform shrink-0 ${
                     isDark ? 'border-slate-700 bg-slate-800 text-white' : 'border-slate-200 bg-white text-slate-800'
@@ -789,7 +790,7 @@ const Navbar = () => {
                   {currentUser ? (
                     <>
                       <Link
-                        to={currentUser?.role === 'admin' ? '/admin' : currentUser?.role === 'student' ? '/user' : '/employee'}
+                        to={getHomePathForRole(currentUser?.role)}
                         onClick={() => setIsOpen(false)}
                         className="flex flex-col items-center justify-center gap-1.5 py-3.5 rounded-2xl text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/50 transition-all duration-300 active:scale-95 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
                       >

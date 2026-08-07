@@ -3,12 +3,11 @@ const { logger } = require("../logger");
 
 const SMTP_URL = process.env.SMTP_URL || process.env.MAIL_URL || "";
 const SMTP_HOST = process.env.SMTP_HOST || process.env.MAIL_HOST || process.env.SMTP_HOSTNAME || "smtp.gmail.com";
-const SMTP_PORT = parseInt(process.env.SMTP_PORT || process.env.MAIL_PORT || process.env.SMTP_PORT_NUMBER || "465", 10);
+// Default 587 (STARTTLS) — works on Render. 465 (SSL) is blocked by Render's firewall.
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || process.env.MAIL_PORT || process.env.SMTP_PORT_NUMBER || "587", 10);
 const SMTP_SECURE = process.env.SMTP_SECURE !== undefined ? process.env.SMTP_SECURE === "true" : (SMTP_PORT === 465);
 const SMTP_USER = process.env.SMTP_USER || process.env.MAIL_USER || process.env.EMAIL_USER || process.env.GMAIL_USER || process.env.SMTP_USERNAME || "";
 const SMTP_PASS = process.env.SMTP_PASS || process.env.MAIL_PASS || process.env.EMAIL_PASS || process.env.GMAIL_PASS || process.env.SMTP_PASSWORD || "";
-const RESEND_API_KEY = process.env.RESEND_API_KEY || process.env.RESEND_KEY || "";
-const RESEND_FROM = process.env.RESEND_FROM || process.env.FROM_EMAIL || process.env.SMTP_FROM || "";
 
 const createTransporterConfig = ({ host, port, secure, user, pass }) => ({
   host,
@@ -71,9 +70,9 @@ const fallbackTransporter = smtpConfig.port === 465 ? nodemailer.createTransport
 })) : null;
 
 if (smtpConfig.user && smtpConfig.pass) {
-  logger.info(`[Email] Nodemailer configured using SMTP host: ${smtpConfig.host}:${smtpConfig.port} (${smtpConfig.user}) [IPv4 Forced]`);
+  logger.info(`[Email] Nodemailer configured — ${smtpConfig.host}:${smtpConfig.port} secure=${smtpConfig.secure} user=${smtpConfig.user} [IPv4]`);
 } else {
-  logger.warn("⚠️ [Email] SMTP credentials are not configured. Configure SMTP_* or RESEND_API_KEY for production mail dispatch.");
+  logger.warn("⚠️ [Email] SMTP credentials not set. Set SMTP_USER + SMTP_PASS in environment variables.");
 }
 
 /**
@@ -206,33 +205,7 @@ const normalizeRecipients = (value) => {
     .filter(Boolean);
 };
 
-const sendWithResend = async ({ to, subject, html, text }) => {
-  if (!RESEND_API_KEY) {
-    throw new Error('RESEND_API_KEY is not configured');
-  }
 
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${RESEND_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: RESEND_FROM || 'onboarding@resend.dev',
-      to: normalizeRecipients(to),
-      subject,
-      html: html || `<p>${text || ''}</p>`,
-      text: text || undefined,
-    }),
-  });
-
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(data?.message || `Resend request failed (${response.status})`);
-  }
-
-  return { success: true, id: data.id || data.messageId, messageId: data.id || data.messageId };
-};
 
 const sendEmail = async ({ to, subject, html, text, attachments }) => {
   try {
@@ -251,7 +224,12 @@ const sendEmail = async ({ to, subject, html, text, attachments }) => {
       return { success: false, error: 'Email content (html or text) is required' };
     }
 
-    const defaultFrom = RESEND_FROM || process.env.FROM_EMAIL || process.env.SMTP_FROM || `Amit Solution Hub <${smtpConfig.user || 'support@amitsolutionhub.com'}>`;
+    if (!smtpConfig.user || !smtpConfig.pass) {
+      logger.warn(`[Email] SMTP credentials not configured — set SMTP_USER and SMTP_PASS`);
+      return { success: false, error: 'SMTP credentials not configured' };
+    }
+
+    const defaultFrom = process.env.FROM_EMAIL || process.env.SMTP_FROM || `Amit Solution Hub <${smtpConfig.user}>`;
 
     const mailOptions = {
       from: defaultFrom,
@@ -267,55 +245,33 @@ const sendEmail = async ({ to, subject, html, text, attachments }) => {
       })) : undefined,
     };
 
-    if (!smtpConfig.user || !smtpConfig.pass) {
-      if (RESEND_API_KEY) {
-        logger.info(`[Email] SMTP credentials missing, sending via Resend fallback for ${recipients.join(', ')}`);
-        const resendResult = await sendWithResend({ to: recipients, subject, html, text });
-        logger.info(`[Email] Sent email via Resend to ${recipients.join(', ')}. MessageId: ${resendResult.messageId || resendResult.id}`);
-        return resendResult;
-      }
-
-      logger.warn(`[Email] No SMTP credentials or Resend key configured for ${recipients.join(', ')}`);
-      return { success: false, error: 'Email provider not configured for this environment' };
-    }
-
+    // Primary attempt — uses configured port (default 587 STARTTLS)
     try {
       const info = await transporter.sendMail(mailOptions);
-      logger.info(`[Email] Sent email via Nodemailer to ${recipients.join(', ')}. MessageId: ${info.messageId || info.response}`);
+      logger.info(`[Email] Sent to ${recipients.join(', ')} via port ${smtpConfig.port}. MsgId: ${info.messageId || info.response}`);
       return { success: true, id: info.messageId || info.response, messageId: info.messageId };
     } catch (primaryError) {
+      // Retry on port 587 if primary failed (covers case where 465 was configured)
       if (fallbackTransporter) {
-        logger.warn(`[Email] Primary transport error for ${recipients.join(', ')} (${primaryError.message}). Retrying via fallback (port 587)...`);
+        logger.warn(`[Email] Port ${smtpConfig.port} failed (${primaryError.message}). Retrying on port 587...`);
         try {
           const info = await fallbackTransporter.sendMail(mailOptions);
-          logger.info(`[Email] Sent email via fallback Nodemailer to ${recipients.join(', ')}. MessageId: ${info.messageId || info.response}`);
+          logger.info(`[Email] Sent to ${recipients.join(', ')} via fallback port 587. MsgId: ${info.messageId || info.response}`);
           return { success: true, id: info.messageId || info.response, messageId: info.messageId };
         } catch (fallbackError) {
           const errorMessage = fallbackError?.message || String(fallbackError);
-          logger.error(`[Email] Nodemailer fallback error for ${recipients.join(', ')}: ${errorMessage}`);
-          if (RESEND_API_KEY) {
-            logger.info(`[Email] Attempting Resend fallback after SMTP failure for ${recipients.join(', ')}`);
-            const resendResult = await sendWithResend({ to: recipients, subject, html, text });
-            logger.info(`[Email] Sent email via Resend fallback to ${recipients.join(', ')}. MessageId: ${resendResult.messageId || resendResult.id}`);
-            return resendResult;
-          }
+          logger.error(`[Email] Both ports failed for ${recipients.join(', ')}: ${errorMessage}`);
           return { success: false, error: errorMessage };
         }
       }
 
       const errorMessage = primaryError?.message || String(primaryError);
-      logger.error(`[Email] Nodemailer send error for ${recipients.join(', ')}: ${errorMessage}`);
-      if (RESEND_API_KEY) {
-        logger.info(`[Email] Attempting Resend fallback after SMTP failure for ${recipients.join(', ')}`);
-        const resendResult = await sendWithResend({ to: recipients, subject, html, text });
-        logger.info(`[Email] Sent email via Resend fallback to ${recipients.join(', ')}. MessageId: ${resendResult.messageId || resendResult.id}`);
-        return resendResult;
-      }
+      logger.error(`[Email] Nodemailer error for ${recipients.join(', ')}: ${errorMessage}`);
       return { success: false, error: errorMessage };
     }
   } catch (error) {
     const errorMessage = error?.message || String(error);
-    logger.error(`[Email] Nodemailer send error for ${to}: ${errorMessage}`);
+    logger.error(`[Email] sendEmail error for ${to}: ${errorMessage}`);
     return { success: false, error: errorMessage };
   }
 };

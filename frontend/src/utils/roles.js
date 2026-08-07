@@ -1,8 +1,8 @@
-﻿export const normalizeUserRole = (role) => {
+export const normalizeUserRole = (role) => {
   const normalized = String(role || '').trim().toLowerCase()
 
   if (!normalized) return 'student'
-  if (normalized === 'admin') return 'admin'
+  if (['admin', 'administrator', 'superadmin', 'super_admin'].includes(normalized)) return 'admin'
   if (normalized === 'mentor') return 'mentor'
   if (['employee', 'team', 'team member', 'staff', 'developer'].includes(normalized)) return 'employee'
   if (['student', 'client', 'user', 'customer'].includes(normalized)) return 'student'

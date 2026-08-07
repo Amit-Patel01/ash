@@ -46,6 +46,7 @@ export default function AdminSettings() {
 
   const [maintenanceForm, setMaintenanceForm] = useState({
     isActive: maintenance?.isActive || false,
+    onlyAllowedDomain: maintenance?.onlyAllowedDomain !== false,
     message: maintenance?.message || '',
   })
 
@@ -91,6 +92,7 @@ export default function AdminSettings() {
     if (maintenance) {
       setMaintenanceForm({
         isActive: maintenance.isActive || false,
+        onlyAllowedDomain: maintenance.onlyAllowedDomain !== false,
         message: maintenance.message || '',
       })
     }
@@ -537,7 +539,7 @@ export default function AdminSettings() {
               <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl">
                 <div>
                   <p className="text-sm font-medium text-slate-900">Enable Maintenance Mode</p>
-                  <p className="text-xs text-slate-400">Show maintenance page to all visitors (except admin at /admin)</p>
+                  <p className="text-xs text-slate-400">Show maintenance page to visitors (except admin at /admin)</p>
                 </div>
                 <label className="relative inline-flex cursor-pointer">
                   <input 
@@ -547,6 +549,22 @@ export default function AdminSettings() {
                     className="sr-only peer" 
                   />
                   <div className="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:bg-red-500 after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" />
+                </label>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                <div>
+                  <p className="text-sm font-medium text-slate-900">Restrict Live App to www.amitsolutionhub.com</p>
+                  <p className="text-xs text-slate-400">When maintenance mode is active, ONLY visitors on www.amitsolutionhub.com can see the live app. All other preview/alternative domains will show the Maintenance Page.</p>
+                </div>
+                <label className="relative inline-flex cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={maintenanceForm.onlyAllowedDomain} 
+                    onChange={() => setMaintenanceForm({ ...maintenanceForm, onlyAllowedDomain: !maintenanceForm.onlyAllowedDomain })} 
+                    className="sr-only peer" 
+                  />
+                  <div className="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" />
                 </label>
               </div>
 
@@ -562,7 +580,7 @@ export default function AdminSettings() {
               </div>
 
               <div className="rounded-xl border border-amber-500/20 bg-amber-500/[0.04] px-4 py-4 text-sm leading-6 text-slate-700">
-                <strong className="text-slate-900 font-semibold">Warning:</strong> When active, this blocks all users from accessing any public routes (home page, services, contact, etc.) and shows them a maintenance page with the support email <strong className="text-slate-900">support@amitsolutionhub.com</strong>. The admin portal (<code className="text-red-500">/admin</code>) and login page will remain fully accessible to you.
+                <strong className="text-slate-900 font-semibold">Note:</strong> When maintenance mode is active with domain restriction enabled, only visitors accessing via <strong className="text-blue-600">www.amitsolutionhub.com</strong> can view the live site. All other preview or third-party domains will display the Maintenance Page. The admin portal (<code className="text-red-500">/admin</code>) remains accessible.
               </div>
 
               <div className="flex justify-end pt-4">

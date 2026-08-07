@@ -207,7 +207,7 @@ export default function AdminQrCertificates() {
     })
     
     return { groups, sortedNames }
-  }, [qrCertificates])
+  }, [qrCertificates, searchQuery])
 
   const editingCertificate = useMemo(
     () => qrCertificates.find((certificate) => certificate.id === editingId) || null,

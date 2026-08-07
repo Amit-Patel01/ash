@@ -319,8 +319,6 @@ export default function AdminLayout({ onLogout }) {
                   <div 
                     key={group.label} 
                     className="relative"
-                    onMouseEnter={() => setOpenGroup(group.label)}
-                    onMouseLeave={() => setOpenGroup(null)}
                   >
                     <button
                       onClick={() => setOpenGroup(isOpen ? null : group.label)}

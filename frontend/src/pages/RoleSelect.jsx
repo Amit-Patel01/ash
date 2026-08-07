@@ -1,11 +1,8 @@
 import { Link, useSearchParams } from 'react-router-dom'
-import { useTheme } from '../context/ThemeContext'
 
 export default function RoleSelect() {
   const [searchParams] = useSearchParams()
   const fromGoogle = searchParams.get('reason') === 'google-no-account'
-  const { theme } = useTheme()
-  const isDark = theme === 'dark'
 
   return (
     <section className="relative w-full min-h-screen pt-[120px] md:pt-[160px] pb-24 px-4 overflow-hidden transition-colors duration-500">

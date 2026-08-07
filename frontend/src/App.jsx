@@ -282,12 +282,13 @@ function AppContent() {
   const navigate = useNavigate()
   const location = useLocation()
   const isAdminRoute = location.pathname.startsWith('/admin') || location.pathname === '/login'
+  const showChatbot = !isAdminRoute && !location.pathname.startsWith('/employee') && !location.pathname.startsWith('/user')
+  const currentHostname = (typeof window !== 'undefined' ? window.location.hostname : '').toLowerCase()
+  const isTargetLiveDomain = currentHostname === 'www.amitsolutionhub.com' || currentHostname === 'amitsolutionhub.com'
+  const isLocalDevHost = currentHostname === 'localhost' || currentHostname === '127.0.0.1'
+
   const isMaintenanceActive = Boolean(maintenance?.isActive)
-  const allowedChatbotPaths = ['/about', '/courses', '/services', '/projects', '/contact', '/infrastructure']
-  const isHome = location.pathname === '/'
-  const isAllowedPath = allowedChatbotPaths.some(path => location.pathname.startsWith(path))
-  const isVerifyPage = location.pathname.startsWith('/verify')
-  const showChatbot = (isHome || isAllowedPath) && !isVerifyPage
+  const isOnlyAllowedDomain = maintenance?.onlyAllowedDomain !== false
 
   const handleLogout = useCallback(async () => {
     await logout()
@@ -308,7 +309,10 @@ function AppContent() {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   }, [location.pathname, location.search, location.hash])
 
-  if (isMaintenanceActive && !isAdminRoute) {
+  // Under maintenance page disabled — live app is shown on amitsolutionhub.com, Vercel, and Devtunnel
+  const shouldShowMaintenance = false
+
+  if (shouldShowMaintenance) {
     return <MaintenancePage message={maintenance?.message} />
   }
 

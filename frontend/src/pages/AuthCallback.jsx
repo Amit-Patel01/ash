@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ShieldCheck, AlertCircle, ArrowRight, CheckCircle2, Lock } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { getHomePathForRole } from '../utils/roles'
 import { useTheme } from '../context/ThemeContext'
 import brandLogo from '../assets/brand-logo.png'
 import SEO from '../components/SEO'
@@ -57,13 +58,7 @@ export default function AuthCallback() {
         const user = await refreshCurrentUser()
         if (!user) throw new Error('Could not load user profile')
 
-        const role = String(user.role || 'customer').toLowerCase()
-        let path = '/user'
-        if (role === 'admin') {
-          path = '/admin'
-        } else if (['employee', 'mentor', 'developer', 'staff'].includes(role)) {
-          path = '/employee'
-        }
+        const path = getHomePathForRole(user?.role)
 
         if (isMounted) {
           setStatus('success')

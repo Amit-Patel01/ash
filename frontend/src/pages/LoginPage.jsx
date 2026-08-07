@@ -38,10 +38,8 @@ export default function LoginPage() {
       const isTerminated = Boolean(
         userProfile?.status === 'terminated' ||
         userProfile?.isTerminated ||
-        userProfile?.previousRole ||
         currentUser?.status === 'terminated' ||
-        currentUser?.isTerminated ||
-        currentUser?.previousRole
+        currentUser?.isTerminated
       )
       if (isTerminated) {
         setShowReinstatementModal(true)
@@ -75,13 +73,11 @@ export default function LoginPage() {
       // Automated former staff check
       const isTerminated = Boolean(
         user?.status === 'terminated' ||
-        user?.isTerminated ||
-        user?.previousRole
+        user?.isTerminated
       )
 
       if (isTerminated) {
         setShowReinstatementModal(true)
-        setLoading(false)
         return
       }
 

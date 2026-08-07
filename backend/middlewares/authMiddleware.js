@@ -2,29 +2,40 @@ const jwt = require("jsonwebtoken");
 const { getDb } = require("../utils/mongo");
 const { logger } = require("../logger");
 
+const ADMIN_EMAILS = [
+  (process.env.ADMIN_EMAIL || "").trim().toLowerCase(),
+  "support@amitsolutionhub.com",
+  "amitpatel07029@gmail.com"
+].filter(Boolean);
+
 const enrichDecodedUser = async (decoded) => {
   let profileData = null;
 
-  if (decoded?.uid) {
+  if (decoded?.uid || decoded?.email) {
     try {
       const db = getDb();
       profileData = await db.collection("users").findOne({
         $or: [
-          { uid: decoded.uid },
-          { email: decoded.email }
+          ...(decoded.uid ? [{ uid: decoded.uid }] : []),
+          ...(decoded.email ? [{ email: decoded.email.trim().toLowerCase() }] : [])
         ]
       });
     } catch (error) {
-      logger.warn(`[Auth] Failed to load profile for ${decoded.uid}: ${error.message}`);
+      logger.warn(`[Auth] Failed to load profile for ${decoded.uid || decoded.email}: ${error.message}`);
     }
   }
+
+  const userEmail = (decoded?.email || profileData?.email || "").trim().toLowerCase();
+  const role = ADMIN_EMAILS.includes(userEmail)
+    ? "admin"
+    : (profileData?.role || decoded?.role || null);
 
   return {
     ...decoded,
     ...profileData,
-    uid: decoded?.uid,
+    uid: decoded?.uid || profileData?.uid || profileData?._id?.toString(),
     email: decoded?.email || profileData?.email,
-    role: profileData?.role || decoded?.role || null,
+    role,
     employeeId: profileData?.employeeId || decoded?.employeeId || null,
     permissions: profileData?.permissions || decoded?.permissions || {},
   };

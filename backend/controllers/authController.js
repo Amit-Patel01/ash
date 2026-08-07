@@ -180,6 +180,23 @@ const login = async (req, res) => {
       return res.status(401).json({ success: false, message: "Incorrect password.", code: "invalid_password" });
     }
 
+    const ADMIN_EMAILS = [
+      (process.env.ADMIN_EMAIL || "").trim().toLowerCase(),
+      "support@amitsolutionhub.com",
+      "amitpatel07029@gmail.com"
+    ].filter(Boolean);
+
+    let userRole = user.role || "customer";
+    if (ADMIN_EMAILS.includes(normalizedEmail)) {
+      userRole = "admin";
+      if (user.role !== "admin") {
+        await db.collection("users").updateOne(
+          { email: normalizedEmail },
+          { $set: { role: "admin", updatedAt: new Date() } }
+        );
+      }
+    }
+
     const clientIp = getClientIp(req);
     const userAgent = req.headers["user-agent"] || "Unknown Device";
     const sessionId = crypto.randomUUID();
@@ -201,7 +218,7 @@ const login = async (req, res) => {
       {
         uid: user.uid || user._id.toString(),
         email: user.email,
-        role: user.role || "customer",
+        role: userRole,
         employeeId: user.employeeId || null,
         permissions: user.permissions || {},
         sessionId: sessionId
@@ -212,6 +229,7 @@ const login = async (req, res) => {
 
     const { passwordHash, ...userResponse } = user;
     userResponse.uid = user.uid || user._id.toString();
+    userResponse.role = userRole;
     userResponse.lastLoginIp = clientIp;
     userResponse.lastLoginDevice = userAgent;
     userResponse.lastLoginAt = new Date().toISOString();

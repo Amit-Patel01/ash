@@ -39,15 +39,57 @@ export default defineConfig(({ mode }) => {
       }
       : undefined,
     build: {
-      sourcemap: false, // Security: Disable source maps in production
+      sourcemap: false,
       minify: 'esbuild',
       target: 'es2020',
       cssMinify: true,
       chunkSizeWarningLimit: 1000,
+      // Inline small assets (<4KB) as base64 to save HTTP requests
+      assetsInlineLimit: 4096,
+      rollupOptions: {
+        output: {
+          // Split vendor libs into separate long-cached chunks
+          manualChunks(id) {
+            // React core — smallest, most critical chunk
+            if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+              return 'vendor-react'
+            }
+            // Router
+            if (id.includes('node_modules/react-router')) {
+              return 'vendor-router'
+            }
+            // Firebase — very large, split separately
+            if (id.includes('node_modules/firebase') || id.includes('node_modules/@firebase')) {
+              return 'vendor-firebase'
+            }
+            // Framer Motion
+            if (id.includes('node_modules/framer-motion')) {
+              return 'vendor-motion'
+            }
+            // Lucide icons
+            if (id.includes('node_modules/lucide-react')) {
+              return 'vendor-icons'
+            }
+            // QR code library
+            if (id.includes('node_modules/qrcode')) {
+              return 'vendor-qrcode'
+            }
+            // All other node_modules together
+            if (id.includes('node_modules/')) {
+              return 'vendor-misc'
+            }
+          },
+          // Deterministic filenames for better CDN caching
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          entryFileNames: 'assets/js/[name]-[hash].js',
+          assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+        },
+      },
     },
     server: {
       // Bind to all network interfaces so port-forwarding / remote access works
       host: true,
+      allowedHosts: true,
       // Default dev port (can be overridden with --port or VITE_PORT env)
       port: Number(env.VITE_PORT) || 5173,
       strictPort: false,

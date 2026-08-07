@@ -57,9 +57,8 @@ app.use(async (req, res, next) => {
       const db = require("./utils/mongo").getDb();
       const data = await db.collection("settings").findOne({ _id: "maintenance" });
       if (data) {
-        const isDev = process.env.NODE_ENV !== "production";
-        isMaintenanceModeEnabled = isDev ? !!data.isActiveDev : !!data.isActive;
-        maintenanceMessage = data.message || "";
+        isMaintenanceModeEnabled = false;
+        maintenanceMessage = "";
       } else {
         isMaintenanceModeEnabled = false;
         maintenanceMessage = "";
@@ -268,13 +267,16 @@ app.use(
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
 
-      // Suffix matching helper
+      // Suffix matching & dynamic tunnel origin helper
       const isAllowed = 
         allowedOrigins.some(allowed => allowed.replace(/\/$/, "") === origin.replace(/\/$/, "")) ||
         origin.endsWith(".vercel.app") ||
         origin.endsWith(".amitsolutionhub.com") ||
         origin.endsWith(".onrender.com") ||
-        /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+        origin.includes("devtunnels.ms") ||
+        origin.includes("ngrok") ||
+        origin.includes("loca.lt") ||
+        /^https?:\/\/(localhost|127\.0\.0\.1|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?$/.test(origin);
 
       if (isAllowed) {
         callback(null, true);
@@ -657,8 +659,8 @@ app.use((err, req, res, next) => {
 // ─── Start Server ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 connectDB().then(() => {
-  app.listen(PORT, () => {
-    logger.info(`SolutionHub backend v2.0 listening on port ${PORT}`);
+  app.listen(PORT, "0.0.0.0", () => {
+    logger.info(`SolutionHub backend listening on 0.0.0.0:${PORT}`);
     logger.info("Modules: trading | admin | auth | users | certificates | razorpay | ai | webhook");
 
     // ─── Start AI Workforce Scheduled Tasks ─────────────────────────────────────

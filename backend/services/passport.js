@@ -32,6 +32,9 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
           const name = profile.displayName || email.split("@")[0];
           const picture = profile.photos?.[0]?.value || "";
 
+          const ADMIN_EMAILS = [ADMIN_EMAIL, "support@amitsolutionhub.com", "amitpatel07029@gmail.com"].filter(Boolean);
+          const isAdminUser = ADMIN_EMAILS.includes(normalizedEmail);
+
           let user = await db.collection("users").findOne({ email: normalizedEmail });
 
           if (!user) {
@@ -41,7 +44,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
               email: normalizedEmail,
               displayName: name,
               photoURL: picture,
-              role: "student",
+              role: isAdminUser ? "admin" : "student",
               status: "active",
               authProvider: "google",
               googleId,
@@ -52,7 +55,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
             user = newUser;
             logger.info(`[Passport Google] New user created: ${normalizedEmail}`);
 
-            if (ADMIN_EMAIL) {
+            if (ADMIN_EMAIL && !isAdminUser) {
               sendEmail({
                 to: ADMIN_EMAIL,
                 subject: `New student signed up via Google: ${normalizedEmail}`,
@@ -72,16 +75,19 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
               }).catch(err => logger.warn("[Passport Google] Admin notification failed:", err.message));
             }
           } else {
+            const updatePayload = {
+              googleId,
+              photoURL: user.photoURL || picture || "",
+              authProvider: user.authProvider || "google",
+              updatedAt: new Date(),
+            };
+            if (isAdminUser && user.role !== "admin") {
+              updatePayload.role = "admin";
+              user.role = "admin";
+            }
             await db.collection("users").updateOne(
               { email: normalizedEmail },
-              {
-                $set: {
-                  googleId,
-                  photoURL: user.photoURL || picture || "",
-                  authProvider: user.authProvider || "google",
-                  updatedAt: new Date(),
-                },
-              }
+              { $set: updatePayload }
             );
             logger.info(`[Passport Google] Existing user logged in: ${normalizedEmail}`);
           }

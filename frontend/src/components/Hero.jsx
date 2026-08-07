@@ -496,48 +496,48 @@ const STEPS = [
 
 const TESTIMONIALS = [
   {
-    name: 'Sneha Patel',
-    course: 'Full Stack Development Intern',
+    name: 'Priya Verma',
+    course: 'Web Development Intern — Jaipur',
     rating: 5,
-    feedback: 'The project-based curriculum was incredible. I built a functional MERN app and verified my certificate instantly on the website. Highly recommended!',
+    feedback: "Honestly, I was skeptical at first. But when I submitted my first project and got the certificate, I couldn't stop smiling. The QR code actually works — my college accepted it without any issue.",
     avatar: '👩‍💻'
   },
   {
-    name: 'Rohan Sharma',
-    course: 'AI & Data Science Intern',
+    name: 'Rahul Mishra',
+    course: 'AI & ML Intern — Lucknow',
     rating: 5,
-    feedback: 'Excellent mentor support. The feedback on my machine learning assignments was quick and constructive. The self-paced layout fits my college schedule perfectly.',
+    feedback: "I tried 2-3 other platforms before this that just gave PDF certificates. Here I got actual guidance. My mentor reviewed my code directly and gave real feedback. That made a huge difference.",
     avatar: '👨‍🎓'
   },
   {
-    name: 'Anjali Gupta',
-    course: 'UI/UX Design Intern',
+    name: 'Kavya Sharma',
+    course: 'UI/UX Design Intern — Bhopal',
     rating: 5,
-    feedback: 'I loved working on responsive prototypes. The program taught me how to present projects on my resume and portfolio.',
+    feedback: "I wanted to learn design but was on a tight budget. This was affordable and I actually learned something. My Figma portfolio is ready now and I've already landed a small freelance project.",
     avatar: '👩‍🎨'
   }
 ]
 
 const FAQS = [
   {
-    q: 'Is the internship online?',
-    a: 'Yes, all our internship and training programs are 100% online, allowing you to learn from anywhere at your own pace.'
+    q: 'Is this internship fully online?',
+    a: 'Yes, everything is online. Work from home, at your own pace — no fixed class timings.'
   },
   {
-    q: 'How long are the programs?',
-    a: 'The standard duration of our programs is 4 to 8 weeks, depending on the speed at which you complete the projects.'
+    q: 'How long does it take?',
+    a: 'Usually 4 to 8 weeks. It depends on how much time you put into the projects. No strict deadlines.'
   },
   {
-    q: 'Will I receive a certificate?',
-    a: 'Absolutely! Upon successful completion of all projects, you will receive a verified certificate co-signed by an industry mentor.'
-  },
-  {
-    q: 'What projects will I build?',
-    a: 'You will build practical, real-world projects customized to your track (e.g., full-stack websites, AI models, security audits) to showcase in your portfolio.'
+    q: 'Will I actually get a certificate?',
+    a: 'Yes — a QR-verified certificate that anyone can scan and confirm online. Not just a PDF, a real verifiable one.'
   },
   {
     q: 'Who can apply?',
-    a: 'Students, graduates, and professionals wanting to transition into tech can apply. Basic programming logic or track familiarity is recommended.'
+    a: 'Students, freshers, or anyone who wants to learn tech. No prior experience needed — just the willingness to build.'
+  },
+  {
+    q: 'What is the fee?',
+    a: "It's very affordable for what you get. Check the signup page for the latest pricing or contact us directly."
   }
 ]
 
@@ -693,15 +693,15 @@ const Hero = () => {
 
               {/* Main Headline */}
               <h1 className="ash-display text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight">
-                Learn Today. <br />
+                Learn Skills. Build Projects. <br />
                 <span className="bg-gradient-to-r from-indigo-600 via-violet-500 to-fuchsia-500 bg-clip-text text-transparent">
-                  Build Tomorrow.
+                  Get Certified.
                 </span>
               </h1>
 
               {/* Subheading */}
               <p className="text-base sm:text-lg text-slate-500 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                Develop practical skills through project-based internship and training programs in Web Development, Artificial Intelligence, Cyber Security, Data Science, UI/UX Design, Digital Marketing, and other emerging technologies.
+                I built this platform because I felt students needed a place to actually <em>do</em> real work — not just watch videos. Here, you take on a real internship, complete real projects, and walk away with a real verified certificate.
               </p>
 
               {/* CTA Buttons */}
@@ -725,12 +725,11 @@ const Hero = () => {
               <div className="pt-4 border-t border-slate-200/60">
                 <div className="flex flex-wrap justify-center lg:justify-start gap-2.5">
                   {[
-                    { label: '100% Online Learning', color: 'text-blue-600 bg-blue-500/10 border-blue-500/20' },
-                    { label: 'Verified Certificate', color: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20' },
-                    { label: 'Mentor Guidance', color: 'text-purple-600 bg-purple-500/10 border-purple-500/20' },
-                    { label: 'Real Projects', color: 'text-amber-600 bg-amber-500/10 border-amber-500/20' },
-                    { label: 'Flexible Learning', color: 'text-teal-600 bg-teal-500/10 border-teal-500/20' },
-                    { label: 'Career-Focused Training', color: 'text-indigo-600 bg-indigo-500/10 border-indigo-500/20' }
+                    { label: '✅ 100% Online', color: 'text-blue-600 bg-blue-500/10 border-blue-500/20' },
+                    { label: '🏅 Verified Certificate', color: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20' },
+                    { label: '👨‍💻 Real Projects', color: 'text-purple-600 bg-purple-500/10 border-purple-500/20' },
+                    { label: '🎯 AICTE Registered', color: 'text-amber-600 bg-amber-500/10 border-amber-500/20' },
+                    { label: '📞 Mentor Support', color: 'text-teal-600 bg-teal-500/10 border-teal-500/20' },
                   ].map((tag) => (
                     <span
                       key={tag.label}
@@ -796,14 +795,21 @@ const Hero = () => {
                 <GraduationCap className="w-3.5 h-3.5" /> About Us
               </div>
               <h2 className="ash-display ash-underline text-3xl sm:text-4xl font-extrabold tracking-tight">
-                Helping Students Build Real Skills
+                Built by a Developer, for Students
               </h2>
               <p className="text-slate-500 leading-relaxed font-medium">
-                AmitSolutionHub is an education and technology platform focused on practical learning through internship and training programs. Our goal is to help students strengthen their technical skills, build real-world projects, and gain hands-on experience that supports their academic and career growth.
+                My name is <strong className="text-slate-700">Amit Patel</strong> — I'm a developer and trainer. I noticed that a lot of students finish college knowing theory but have no idea how real work actually looks. That gap bothered me.
               </p>
               <p className="text-slate-500 leading-relaxed font-medium">
-                We provide structured learning paths, mentor guidance, project-based assignments, and verified internship certificates in multiple technology domains.
+                So I built this — a place where you don't just read about tech, you actually build things. Every internship involves a real project, real mentor feedback, and a certificate that anyone can verify online with a QR code.
               </p>
+              <div className="flex items-center gap-3 pt-2">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-black text-sm">A</div>
+                <div>
+                  <p className="text-sm font-black text-slate-800">Amit Patel</p>
+                  <p className="text-xs text-slate-400 font-medium">Founder &amp; Head — Amit Solution Hub</p>
+                </div>
+              </div>
             </motion.div>
           </div>
         </section>
