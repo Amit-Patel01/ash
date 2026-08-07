@@ -57,8 +57,8 @@ app.use(async (req, res, next) => {
       const db = require("./utils/mongo").getDb();
       const data = await db.collection("settings").findOne({ _id: "maintenance" });
       if (data) {
-        isMaintenanceModeEnabled = false;
-        maintenanceMessage = "";
+        isMaintenanceModeEnabled = Boolean(data.isActive);
+        maintenanceMessage = data.message || "";
       } else {
         isMaintenanceModeEnabled = false;
         maintenanceMessage = "";
