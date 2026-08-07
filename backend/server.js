@@ -49,7 +49,7 @@ app.use(passport.initialize());
 // ─── Webhook route FIRST (needs raw body before express.json) ────────────────
 app.use("/api/webhook", require("./routes/webhook"));
 
-// ─── Dynamic Maintenance Middleware ──────────────────────────────────────────
+// ─── Dynamic Maintenance Middleware ────────────────────────────────────────
 app.use(async (req, res, next) => {
   const now = Date.now();
   if (now - lastMaintenanceCheck > MAINTENANCE_CACHE_TTL_MS) {
