@@ -125,13 +125,13 @@
     "semantic_hash": ""
   },
   "backend/server.js": {
-    "mtime": 1785388585.6018243,
-    "ast_hash": "d2cb49d0b1c98062df5612920e8b2c5f",
+    "mtime": 1786116283.233241,
+    "ast_hash": "2efed6a700679aa86b70059d0e8a8072",
     "semantic_hash": ""
   },
   "backend/services/aiService.js": {
-    "mtime": 1783616369.152834,
-    "ast_hash": "5f7ca24b643cbf8e152e22a342b3e145",
+    "mtime": 1786114140.1024287,
+    "ast_hash": "d715eeb4d6a4983f170fec252f0ed7d3",
     "semantic_hash": ""
   },
   "backend/services/couponService.js": {
@@ -140,8 +140,8 @@
     "semantic_hash": ""
   },
   "backend/services/emailService.js": {
-    "mtime": 1785859183.966375,
-    "ast_hash": "d0a1dd19ff26c1a5e68882fe5d2f1d52",
+    "mtime": 1786114689.5917573,
+    "ast_hash": "b4a9fd89a74d3a12bcb5d444aecb9f42",
     "semantic_hash": ""
   },
   "backend/services/firebaseService.js": {
@@ -1295,8 +1295,8 @@
     "semantic_hash": ""
   },
   "frontend/src/App.jsx": {
-    "mtime": 1786035575.5928195,
-    "ast_hash": "55e81b6b2c3af3db74ea967e8a3ac6f0",
+    "mtime": 1786115641.814439,
+    "ast_hash": "2fe0b764934a6394bcff8cc82a00a62c",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminAccountRequests.jsx": {
@@ -1335,8 +1335,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminLayout.jsx": {
-    "mtime": 1785859183.7171633,
-    "ast_hash": "7402c9852b56957b82f0b9a1b615eebb",
+    "mtime": 1786115893.3198438,
+    "ast_hash": "b170647775ebea4fddd39568651c5ec4",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminMessages.jsx": {
@@ -1350,8 +1350,8 @@
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminQrCertificates.jsx": {
-    "mtime": 1785214464.5971508,
-    "ast_hash": "320370f9913d08ac182295245137a575",
+    "mtime": 1786113588.2754207,
+    "ast_hash": "a81cbcf179985eb721dc2d8787500fda",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminSales.jsx": {
@@ -1420,8 +1420,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/Hero.jsx": {
-    "mtime": 1785745928.4027727,
-    "ast_hash": "b4bc0ff0154a41ac72ba8d8032f20720",
+    "mtime": 1786115245.619369,
+    "ast_hash": "45044d4822cbbc9ff061bbe6b9c29186",
     "semantic_hash": ""
   },
   "frontend/src/components/Layout.jsx": {
@@ -1475,8 +1475,8 @@
     "semantic_hash": ""
   },
   "frontend/src/config/api.js": {
-    "mtime": 1785217828.8415332,
-    "ast_hash": "9e964d9e38d9be994b2088abc9d6556d",
+    "mtime": 1786115540.0747595,
+    "ast_hash": "ec1bd744cbc38ccaece97b2e2dd5c484",
     "semantic_hash": ""
   },
   "frontend/src/context/AuthContext.jsx": {
@@ -1655,8 +1655,8 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/LoginPage.jsx": {
-    "mtime": 1784976461.471696,
-    "ast_hash": "2aa32099c2b651f513b6b505c12aea19",
+    "mtime": 1786113578.9687254,
+    "ast_hash": "5c72e81cd49494a0b854bdf77c25cc5d",
     "semantic_hash": ""
   },
   "frontend/src/pages/ProjectDetails.jsx": {
@@ -1680,8 +1680,8 @@
     "semantic_hash": ""
   },
   "frontend/src/pages/RoleSelect.jsx": {
-    "mtime": 1784977206.6915238,
-    "ast_hash": "8db687c87a04155230bfdf37de382f1c",
+    "mtime": 1786113599.2360175,
+    "ast_hash": "9eb26e5dff2bf0d89efa5a1d7bad2af7",
     "semantic_hash": ""
   },
   "frontend/src/pages/Services.jsx": {
@@ -1795,13 +1795,13 @@
     "semantic_hash": ""
   },
   "frontend/vercel.json": {
-    "mtime": 1783616372.8406646,
-    "ast_hash": "bb323a026df50fcbd367921c509ad486",
+    "mtime": 1786115456.2971342,
+    "ast_hash": "a31fc5b8a3064403a8b5048f28c4a538",
     "semantic_hash": ""
   },
   "frontend/vite.config.js": {
-    "mtime": 1783616372.841666,
-    "ast_hash": "25404471993fb50604ed5c70b41fc91b",
+    "mtime": 1786115351.3562908,
+    "ast_hash": "5255a6443fb2b3d91b2da56effe78bef",
     "semantic_hash": ""
   },
   "package.json": {
@@ -1920,8 +1920,8 @@
     "semantic_hash": ""
   },
   "frontend/index.html": {
-    "mtime": 1785591204.7995524,
-    "ast_hash": "166129bb9342f5fa44a0975bf5687ff1",
+    "mtime": 1786114323.6741884,
+    "ast_hash": "bc536d42d018d787ff721ad11f900920",
     "semantic_hash": ""
   },
   "frontend/lint_output.txt": {
@@ -2725,8 +2725,8 @@
     "semantic_hash": ""
   },
   "backend/scripts/turn_off_all_maintenance.js": {
-    "mtime": 1784974299.9512045,
-    "ast_hash": "dc6d13877546da4c5377046d182cd60c",
+    "mtime": 1786116267.8224025,
+    "ast_hash": "4ba350b364f6e6eda943da95a377e0a1",
     "semantic_hash": ""
   },
   "frontend/src/admin/AdminProfile.jsx": {
@@ -2817,6 +2817,16 @@
   "backend/scripts/fix_admin_roles.js": {
     "mtime": 1786035349.800429,
     "ast_hash": "e1da518317994a0cc6590f802d87f002",
+    "semantic_hash": ""
+  },
+  "frontend/public/llms.txt": {
+    "mtime": 1786114345.5737436,
+    "ast_hash": "d6f3c10e6e1ecba11af0a7e6a9805992",
+    "semantic_hash": ""
+  },
+  "frontend/public/robots.txt": {
+    "mtime": 1786114359.9527833,
+    "ast_hash": "fff3fd4c2a5da86fabfef89da17e9a18",
     "semantic_hash": ""
   }
 }

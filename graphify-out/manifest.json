@@ -1805,8 +1805,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1783616373.5177794,
-    "ast_hash": "96f85e48ae3ec47ee351ed5ebd2e3870",
+    "mtime": 1786116517.7472692,
+    "ast_hash": "9ed08d68a2fdc92dd4e958ea1e05c6c4",
     "semantic_hash": ""
   },
   "response.json": {
@@ -2827,6 +2827,11 @@
   "frontend/public/robots.txt": {
     "mtime": 1786114359.9527833,
     "ast_hash": "fff3fd4c2a5da86fabfef89da17e9a18",
+    "semantic_hash": ""
+  },
+  "vercel.json": {
+    "mtime": 1786116513.5534396,
+    "ast_hash": "584dafb7212e3e31898bee370c057874",
     "semantic_hash": ""
   }
 }
