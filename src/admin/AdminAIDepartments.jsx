@@ -179,6 +179,29 @@ export default function AdminAIDepartments() {
     healthStatus: {}
   })
 
+  // Newsletter Agent Dispatch state
+  const [dispatchingNewsletter, setDispatchingNewsletter] = useState(false)
+  const [newsletterResult, setNewsletterResult] = useState(null)
+
+  const handleDispatchNewsletter = async (slot = '7am') => {
+    setDispatchingNewsletter(true)
+    setNewsletterResult(null)
+    try {
+      const res = await fetch('/api/ai/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slot })
+      }).then(r => r.json())
+      setNewsletterResult(res)
+      setExecutionSuccessMsg(`✅ ${res.slotLabel || 'Newsletter'} dispatched successfully!`)
+      setTimeout(() => setExecutionSuccessMsg(null), 6000)
+    } catch (err) {
+      setNewsletterResult({ success: false, error: err.message })
+    } finally {
+      setDispatchingNewsletter(false)
+    }
+  }
+
   // Send broadcast from AI dispatch result
   const handleSendEmailBroadcast = async () => {
     const replyText = dispatchResult?.reply
@@ -608,6 +631,113 @@ export default function AdminAIDepartments() {
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* ── AUTONOMOUS SQUAD ONLINE & DAILY NEWSLETTER HUB ── */}
+      <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-indigo-500/30 relative overflow-hidden my-6">
+        {/* Glow Effects */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="relative z-10 space-y-6">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-white/10 pb-5">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
+                </span>
+                <span className="text-[11px] font-mono font-black tracking-widest text-emerald-400 uppercase bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-500/30">
+                  AUTONOMOUS SQUAD ONLINE
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+                Website Monitor &amp; Scheduled Newsletter Control
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1">
+                Automated multi-agent workforce for website maintenance, marketing campaigns, and daily 7 AM / 3 PM / 8 PM newsletter dispatches.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap shrink-0">
+              <button
+                onClick={() => handleDispatchNewsletter('7am')}
+                disabled={dispatchingNewsletter}
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:brightness-110 text-white font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer disabled:opacity-50"
+              >
+                🌅 7:00 AM Morning Brief
+              </button>
+              <button
+                onClick={() => handleDispatchNewsletter('3pm')}
+                disabled={dispatchingNewsletter}
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:brightness-110 text-white font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer disabled:opacity-50"
+              >
+                ☀️ 3:00 PM Afternoon Highlight
+              </button>
+              <button
+                onClick={() => handleDispatchNewsletter('8pm')}
+                disabled={dispatchingNewsletter}
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:brightness-110 text-white font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer disabled:opacity-50"
+              >
+                🌙 8:00 PM Evening Masterclass
+              </button>
+            </div>
+          </div>
+
+          {/* Agents Status Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* AGT-01 */}
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-indigo-500/40 transition-all space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-mono font-bold text-indigo-400">AGT-01</span>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-extrabold text-[10px]">OPERATIONAL</span>
+              </div>
+              <h4 className="font-bold text-white text-sm">Web Sentinel &amp; Department Monitor</h4>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Monitors website health, database connections, pending orders, and QR certificate verifications.
+              </p>
+            </div>
+
+            {/* AGT-02 */}
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-purple-500/40 transition-all space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-mono font-bold text-purple-400">AGT-02</span>
+                <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-extrabold text-[10px]">CAMPAIGN ACTIVE</span>
+              </div>
+              <h4 className="font-bold text-white text-sm">Course &amp; Project Marketing Agent</h4>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Auto-generates promotional campaigns for Full-Stack, AI/ML, Cyber Security, and Python internships.
+              </p>
+            </div>
+
+            {/* AGT-03 */}
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-500/40 transition-all space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-mono font-bold text-amber-400">AGT-03</span>
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-extrabold text-[10px]">SCHEDULED (7, 3, 8 PM)</span>
+              </div>
+              <h4 className="font-bold text-white text-sm">Daily Newsletter Broadcast Agent</h4>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Auto-compiles tech newsletters &amp; discounts, dispatching emails at 7:00 AM, 3:00 PM, and 8:00 PM.
+              </p>
+            </div>
+          </div>
+
+          {/* Newsletter Dispatch Result Preview */}
+          {newsletterResult && (
+            <div className="p-5 rounded-2xl bg-slate-900/90 border border-indigo-500/40 text-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="font-mono font-bold text-indigo-400">DISPATCH RESULT — {newsletterResult.slotLabel}</span>
+                <span className="text-slate-400">{newsletterResult.timestamp}</span>
+              </div>
+              <div className="text-slate-200 font-semibold">{newsletterResult.subject}</div>
+              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 max-h-48 overflow-y-auto font-mono text-[11px] whitespace-pre-wrap">
+                {newsletterResult.preview || JSON.stringify(newsletterResult, null, 2)}
+              </div>
+              <div className="text-emerald-400 font-bold">Status: {newsletterResult.emailStatus}</div>
+            </div>
+          )}
         </div>
       </div>
 
