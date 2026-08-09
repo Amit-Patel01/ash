@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext'
 import { getHomePathForRole } from '../utils/roles'
 import { useTheme } from '../context/ThemeContext'
 import { useStore } from '../store/StoreContext'
+import { GraduationCap } from 'lucide-react'
 
 
 /* ── Theme Toggle Component ── */
@@ -56,11 +57,11 @@ const Navbar = () => {
   const { theme, toggleTheme } = useTheme()
   const isDark = theme === 'dark'
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false)
-  const [mobileCompanyOpen, setMobileCompanyOpen] = useState(false)
+  const [mobileCompanyOpen, setMobileCompanyOpen] = useState(true)
   const [whyUsDropdownOpen, setWhyUsDropdownOpen] = useState(false)
-  const [mobileWhyUsOpen, setMobileWhyUsOpen] = useState(false)
+  const [mobileWhyUsOpen, setMobileWhyUsOpen] = useState(true)
   const [programsDropdownOpen, setProgramsDropdownOpen] = useState(false)
-  const [mobileProgramsOpen, setMobileProgramsOpen] = useState(false)
+  const [mobileProgramsOpen, setMobileProgramsOpen] = useState(true)
 
   // Pull course categories for Programs sub-menu
   const { courses, courseCategories } = useStore()
@@ -82,7 +83,7 @@ const Navbar = () => {
 
   useEffect(() => {
     setIsOpen(false)
-  }, [location])
+  }, [pathname])
 
   const [isVisible, setIsVisible] = useState(true)
   const lastScrollY = useRef(0)
@@ -267,7 +268,7 @@ const Navbar = () => {
                               : isDark ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-50 hover:text-blue-600'
                             }`}
                         >
-                          <span className="text-base">🎓</span>
+                          <GraduationCap className="w-4 h-4 text-indigo-500" />
                           All Programs
                         </Link>
 
@@ -524,10 +525,13 @@ const Navbar = () => {
               )}
 
               <button
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIsOpen((prev) => !prev)
+                }}
                 aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
                 aria-expanded={isOpen}
-                className={`relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl sm:rounded-2xl shadow-lg border transition-all duration-300 active:scale-95 outline-none ${isDark ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700' : 'bg-white border-slate-200 text-slate-900 hover:bg-slate-50'
+                className={`relative w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl sm:rounded-2xl shadow-lg border transition-all duration-300 active:scale-95 outline-none cursor-pointer ${isDark ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700' : 'bg-white border-slate-200 text-slate-900 hover:bg-slate-50'
                   }`}
               >
                 <div className="flex flex-col items-center justify-center gap-1.5">
@@ -548,7 +552,7 @@ const Navbar = () => {
               animate={{ opacity: 1, scaleY: 1, y: 0 }}
               exit={{ opacity: 0, scaleY: 0.95, y: -10 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="2xl:hidden absolute top-full left-2 right-2 sm:left-4 sm:right-4 mt-2 max-h-[calc(100vh-4.5rem)] sm:max-h-[82vh] overflow-y-auto overscroll-contain origin-top custom-scrollbar z-50 rounded-3xl"
+              className="lg:hidden absolute top-full left-2 right-2 sm:left-4 sm:right-4 mt-2 max-h-[calc(100vh-4.5rem)] sm:max-h-[82vh] overflow-y-auto overscroll-contain origin-top custom-scrollbar z-50 rounded-3xl"
             >
               <div className={`border shadow-2xl rounded-3xl p-4 flex flex-col gap-2 relative overflow-hidden ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
 
@@ -610,12 +614,13 @@ const Navbar = () => {
                         <Link
                           href="/programs"
                           onClick={() => setIsOpen(false)}
-                          className={`block px-6 py-3 text-sm font-black rounded-xl transition-all duration-200 ${location.pathname === '/programs'
+                          className={`flex items-center gap-2 px-6 py-3 text-sm font-black rounded-xl transition-all duration-200 ${location.pathname === '/programs'
                               ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
                               : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
                             }`}
                         >
-                          🎓 All Programs
+                          <GraduationCap className="w-4 h-4 text-indigo-500" />
+                          All Programs
                         </Link>
                         {domainLinks.map(domain => (
                           <Link
