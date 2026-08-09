@@ -347,11 +347,11 @@ export default function CourseDetailPage() {
   const canManage = isAdmin || (isEmployee && assignedEmployeeIds.some(id => currentEmployeeIds.includes(id)))
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-white text-slate-900'}`}>
+    <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-transparent text-slate-100' : 'bg-transparent text-slate-900'}`}>
       
       {/* Admin/Employee tabs */}
       {canManage && (
-        <div className={`sticky top-0 z-40 backdrop-blur-md border-b pt-20 ${isDark ? 'bg-slate-950/90 border-slate-900' : 'bg-white/90 border-slate-100'}`}>
+        <div className={`sticky top-0 z-40 backdrop-blur-md border-b pt-20 ${isDark ? 'bg-slate-950/90 border-slate-900' : 'bg-white/70 border-slate-200/60'}`}>
           <div className="max-w-6xl mx-auto px-4 flex justify-center pb-3">
             <div className={`inline-flex items-center gap-1 p-1.5 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100/60 border-slate-200/70'}`}>
               {[
@@ -416,7 +416,7 @@ export default function CourseDetailPage() {
       {activeSection === 'overview' && (
         <>
           {/* HERO */}
-          <section ref={heroRef} className={`relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-24 pb-16 px-4 ${isDark ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-white via-slate-50 to-blue-50/30'}`}>
+          <section ref={heroRef} className={`relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-24 pb-16 px-4 bg-transparent`}>
             {/* BG blobs */}
             <div className={`absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none ${isDark ? 'bg-blue-900/10' : 'bg-blue-100/30'}`} />
             <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full blur-3xl pointer-events-none" style={{ background: catMeta?.color ? catMeta.color + (isDark ? '08' : '15') : (isDark ? '#3b82f608' : '#3b82f615') }} />
@@ -554,7 +554,7 @@ export default function CourseDetailPage() {
           </section>
 
           {/* 2. CHOOSE YOUR PLAN (PRICING) */}
-          <section id="pricing" ref={planRef} className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
+          <section id="pricing" ref={planRef} className="py-20 px-4 bg-transparent">
             <div className={`max-w-6xl mx-auto ${fade(planVisible)}`}>
               <div className="text-center mb-14">
                 <h2 className={sectionHeading(isDark)}>
@@ -721,7 +721,7 @@ export default function CourseDetailPage() {
 
           {/* 4. CURRICULUM */}
           {curriculum.length > 0 && (
-            <section id="curriculum" className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
+            <section id="curriculum" className="py-20 px-4 bg-transparent">
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-14">
                   <h2 className={sectionHeading(isDark)}>{itemLabel} <span className={gradientText}>Curriculum</span></h2>
@@ -851,7 +851,7 @@ export default function CourseDetailPage() {
 
           {/* 7. RELATED COURSES */}
           {relatedCourses.length > 0 && (
-            <section className={`py-20 px-4 transition-colors duration-300 ${isDark ? 'bg-slate-950' : 'bg-white'}`}>
+            <section className="py-20 px-4 bg-transparent">
               <div className="max-w-6xl mx-auto">
                 <div className="mb-10 text-center"><h2 className={sectionHeading(isDark)}>More in <span className={gradientText}>{course.category}</span></h2></div>
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
