@@ -16,8 +16,10 @@ credentials.json
 # Build output
 dist/
 build/
+.next/
 **/dist/
 **/build/
+**/.next/
 
 # Logs
 *.log

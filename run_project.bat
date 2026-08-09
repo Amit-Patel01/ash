@@ -1,7 +1,7 @@
 @echo off
-title SolutionHub Launcher
+title AmitSolutionHub Launcher
 echo ==========================================
-echo Starting SolutionHub Development Servers...
+echo Starting AmitSolutionHub Next.js Application...
 echo ==========================================
 echo.
 
@@ -17,15 +17,7 @@ if %errorlevel% neq 0 (
     exit /b
 )
 
-echo [1/2] Starting Backend Server...
-start "SolutionHub Backend" cmd /k "cd backend && npm run dev"
+echo Starting AmitSolutionHub Next.js Monolith Server...
+npm run dev
 
-echo [2/2] Starting Frontend Server...
-start "SolutionHub Frontend" cmd /k "cd frontend && npm run dev"
-
-echo.
-echo Both servers are starting up in separate terminal windows!
-echo - Backend: http://localhost:5000
-echo - Frontend: http://localhost:5173
-echo.
 pause
