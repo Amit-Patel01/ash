@@ -134,86 +134,116 @@ export default function LoginPage() {
 
   if (dashboardLoading) {
     return (
-      <div className="relative h-screen w-screen flex items-center justify-center bg-white text-slate-900 font-['Outfit',sans-serif]">
-        <div className="relative z-10 text-center">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full border-4 border-indigo-200 border-t-indigo-600 animate-spin shadow-lg shadow-indigo-500/10" />
-          <h2 className="text-2xl font-black tracking-tight text-slate-900 mb-2">Welcome Back!</h2>
-          <p className="text-slate-500 text-sm font-medium">Preparing your secure portal...</p>
+      <div className="relative h-screen w-screen flex items-center justify-center bg-slate-950 text-white font-['Outfit',sans-serif]">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-indigo-600/30 blur-[120px] animate-pulse" />
+        </div>
+        <div className="relative z-10 text-center space-y-4">
+          <div className="relative w-16 h-16 mx-auto">
+            <div className="w-16 h-16 rounded-full border-4 border-indigo-500/20 border-t-indigo-500 animate-spin" />
+            <ShieldCheck className="w-7 h-7 text-indigo-400 absolute inset-0 m-auto" />
+          </div>
+          <h2 className="text-2xl font-black tracking-tight text-white">Welcome Back!</h2>
+          <p className="text-slate-400 text-xs font-semibold tracking-wider uppercase">Authenticating your secure session...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="relative w-screen h-screen min-h-screen overflow-hidden bg-white text-slate-800 font-['Outfit',sans-serif]">
+    <div className="relative w-screen h-screen min-h-screen overflow-hidden bg-slate-50 dark:bg-[#030712] text-slate-800 dark:text-slate-100 font-['Outfit',sans-serif]">
       
-      {/* FULL SCREEN DUAL COLUMN LAYOUT (100vh Edge-to-Edge) */}
-      <div className="w-full h-full grid grid-cols-1 lg:grid-cols-12 overflow-y-auto lg:overflow-hidden">
+      {/* Ambient background glow orbs */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-indigo-500/15 dark:bg-indigo-600/20 blur-[120px] animate-blob" />
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-purple-500/15 dark:bg-purple-600/20 blur-[120px] animate-blob [animation-delay:3s]" />
+      </div>
+
+      {/* FULL SCREEN DUAL COLUMN LAYOUT */}
+      <div className="w-full h-full grid grid-cols-1 lg:grid-cols-12 overflow-y-auto lg:overflow-hidden relative z-10">
         
-        {/* ── LEFT COLUMN: Full Screen Height 3D Hero Image Showcase ── */}
-        <div className="lg:col-span-6 relative h-64 lg:h-full w-full bg-slate-900 flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden group">
+        {/* ── LEFT COLUMN: 3D Tech Showcase Panel ── */}
+        <div className="lg:col-span-6 relative h-72 lg:h-full w-full bg-slate-950 flex flex-col justify-between p-6 sm:p-10 lg:p-14 overflow-hidden group">
           
-          {/* Background 3D Tech Illustration (Full Height Object Cover) */}
+          {/* Background Illustration with Parallax Glow */}
           <img
             src="/login_hero_banner.png"
             alt="Amit Solution Hub Technology"
-            className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.95] contrast-[1.05] transition-transform duration-700 group-hover:scale-105"
+            className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.9] contrast-[1.1] transition-transform duration-700 group-hover:scale-105"
           />
           
-          {/* Subtle Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-slate-950/50" />
+          {/* Gradient & Dark Overlay for Crisp Contrast */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/60" />
 
-          {/* Top Brand Header */}
+          {/* Top Brand Tag */}
           <div className="relative z-10 flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/60 shadow-lg">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold shadow-xs">
-                <ShieldCheck className="w-5 h-5" />
+            <Link href="/" className="flex items-center gap-3 bg-slate-900/90 backdrop-blur-xl px-4 py-2.5 rounded-2xl border border-white/15 shadow-2xl hover:scale-105 transition-transform">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-indigo-700 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/30">
+                <ShieldCheck className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-sm font-black tracking-tight text-slate-900 leading-none">
+                <h2 className="text-sm font-black tracking-tight text-white leading-none">
                   Amit Solution Hub
                 </h2>
-                <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Technology Pvt Ltd</span>
+                <span className="text-[9px] font-extrabold text-indigo-400 uppercase tracking-widest">Tech &amp; Learning Portal</span>
               </div>
+            </Link>
+
+            <Link
+              href="/"
+              className="text-xs font-extrabold text-white bg-slate-900/80 hover:bg-slate-800 backdrop-blur-md px-3.5 py-2 rounded-xl transition-all border border-white/15 shadow-md"
+            >
+              ← Website
             </Link>
           </div>
 
-          {/* Bottom Caption Overlay */}
+          {/* Bottom Banner Content Card */}
           <div className="relative z-10 text-white mt-auto pt-8">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[11px] font-black uppercase tracking-wider mb-3 border border-white/30">
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" /> Enterprise Tech Platform
+            <div className="bg-slate-950/80 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-white/15 shadow-2xl space-y-3">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/20 text-indigo-300 text-[11px] font-black uppercase tracking-wider border border-indigo-500/40 shadow-inner">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" /> MSME Registered Organization
+              </div>
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight text-white">
+                <span className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">Learn Skills. Build Projects.</span> <br />
+                <span className="bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-300 bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">Get Certified.</span>
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-200 font-medium leading-relaxed drop-shadow-md">
+                Access your real internship workspace, code repositories, live project milestones, and verified certificates.
+              </p>
             </div>
-            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight drop-shadow-md">
-              Empowering Digital Innovation
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-200 mt-2 font-medium max-w-md drop-shadow-xs leading-relaxed">
-              Access your training tracks, source code repositories, and workspace tools.
-            </p>
           </div>
 
         </div>
 
-        {/* ── RIGHT COLUMN: Full Screen Height Light Sign In Form ── */}
-        <div className="lg:col-span-6 h-full w-full bg-white p-8 sm:p-12 lg:p-16 flex flex-col justify-between overflow-y-auto">
+        {/* ── RIGHT COLUMN: Glassmorphic Auth Form ── */}
+        <div className="lg:col-span-6 h-full w-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl p-6 sm:p-10 lg:p-16 flex flex-col justify-between overflow-y-auto">
           
-          {/* Top Header Spacer */}
-          <div className="hidden lg:block text-right">
-            <Link href="/" className="text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors">
-              ← Back to Main Website
-            </Link>
+          {/* Top Info Bar */}
+          <div className="hidden lg:flex items-center justify-between text-xs">
+            <span className="font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-[10px]">Portal Authentication</span>
+            <div className="flex items-center gap-2">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">New student?</span>
+              <Link href="/join-us" className="font-extrabold text-indigo-600 dark:text-indigo-400 hover:underline">
+                Create Account →
+              </Link>
+            </div>
           </div>
 
           {/* Form Content Container */}
           <div className="my-auto max-w-md w-full mx-auto py-6">
             
+            {/* Header */}
             <div className="mb-8">
-              <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Member Sign In</h1>
-              <p className="text-xs sm:text-sm text-slate-500 mt-2 font-medium">Enter your credentials to access your dashboard.</p>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 text-xs font-bold mb-3 border border-indigo-100 dark:border-indigo-900/50">
+                <Lock className="w-3.5 h-3.5" /> Secure Single Sign-On
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">Member Sign In</h1>
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">Enter your credentials to access your dashboard.</p>
             </div>
 
             {errorCode === 'forgot_password_required' ? (
               <div className="space-y-4 my-4">
-                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold leading-relaxed">
+                <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 text-amber-800 dark:text-amber-300 text-xs font-semibold leading-relaxed">
                   {error}
                 </div>
                 <Link
@@ -226,14 +256,14 @@ export default function LoginPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 {error && (
-                  <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold leading-relaxed">
+                  <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-300 text-xs font-semibold leading-relaxed">
                     {error}
                   </div>
                 )}
 
                 {/* Email Input */}
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">
+                  <label className="block text-[11px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">
                     Email Address
                   </label>
                   <div className="relative">
@@ -245,7 +275,7 @@ export default function LoginPage() {
                       placeholder="name@domain.com"
                       required
                       autoFocus
-                      className="w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
+                      className="w-full pl-11 pr-4 py-4 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
                     />
                   </div>
                 </div>
@@ -253,10 +283,10 @@ export default function LoginPage() {
                 {/* Password Input */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+                    <label className="block text-[11px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
                       Password
                     </label>
-                    <Link href="/forgot-password?from=student" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+                    <Link href="/forgot-password?from=student" className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400 hover:underline transition-colors">
                       Forgot Password?
                     </Link>
                   </div>
@@ -268,12 +298,12 @@ export default function LoginPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
                       required
-                      className="w-full pl-11 pr-12 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
+                      className="w-full pl-11 pr-12 py-4 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -284,10 +314,13 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={loading || !email || !password}
-                  className="w-full py-4.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-600 hover:shadow-xl hover:shadow-indigo-500/25 text-white font-extrabold text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 active:scale-98"
                 >
                   {loading ? (
-                    <span>Verifying Credentials...</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                      <span>Verifying Credentials...</span>
+                    </div>
                   ) : (
                     <>
                       <span>Sign In to Dashboard</span>
@@ -300,9 +333,9 @@ export default function LoginPage() {
 
             {/* Divider */}
             <div className="flex items-center gap-3 my-6">
-              <div className="flex-1 h-px bg-slate-200" />
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">or</span>
-              <div className="flex-1 h-px bg-slate-200" />
+              <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
+              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">or</span>
+              <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
             </div>
 
             {/* Google Sign In */}
@@ -310,7 +343,7 @@ export default function LoginPage() {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={googleLoading || loading}
-              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 transition-colors cursor-pointer disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-slate-50 dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors cursor-pointer disabled:opacity-50"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -324,9 +357,9 @@ export default function LoginPage() {
           </div>
 
           {/* Bottom Footer */}
-          <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
+          <div className="pt-4 border-t border-slate-100 dark:border-slate-900 flex items-center justify-between text-xs text-slate-400 font-medium">
             <span>© {new Date().getFullYear()} Amit Solution Hub Technology Pvt Ltd</span>
-            <Link href="/contact" className="hover:text-indigo-600 transition-colors">Support</Link>
+            <Link href="/contact" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Support</Link>
           </div>
 
         </div>

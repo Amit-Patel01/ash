@@ -100,7 +100,7 @@ export default function UserOrders() {
   const { currentUser } = useAuth()
   const { orders, serviceRequests } = useStore()
   const pathname = usePathname() || ''; const location = { pathname }
-  
+
   const [activeTab, setActiveTab] = useState(() => {
     return location.pathname.includes('receipts') ? 'receipts' : 'orders'
   })
@@ -140,13 +140,13 @@ export default function UserOrders() {
 
   const calculateTotals = (receipt) => {
     if (!receipt) return { amount: 0, discount: 0, net: 0, tax: 0, cgst: 0, sgst: 0, igst: 0, total: 0 }
-    
+
     const amount = Number(receipt.amount || 0)
     const discount = Number(receipt.discount || 0)
     const net = Math.max(0, amount - discount)
     const taxPercent = Number(receipt.taxPercent || 0)
     const tax = net * (taxPercent / 100)
-    
+
     let cgst = 0, sgst = 0, igst = 0
     if (receipt.taxType === 'cgst_sgst') {
       cgst = tax / 2
@@ -154,7 +154,7 @@ export default function UserOrders() {
     } else if (receipt.taxType === 'igst') {
       igst = tax
     }
-    
+
     const total = net + tax
     return { amount, discount, net, tax, cgst, sgst, igst, total }
   }
@@ -175,7 +175,7 @@ export default function UserOrders() {
 
   const myCustomRequests = useMemo(() => {
     if (!serviceRequests) return [];
-    return serviceRequests.filter(req => 
+    return serviceRequests.filter(req =>
       req.email?.trim().toLowerCase() === currentUser?.email?.trim().toLowerCase()
     )
   }, [serviceRequests, currentUser])
@@ -314,7 +314,7 @@ export default function UserOrders() {
                 return (
                   <div key={req.id} className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 md:p-8 hover:border-slate-300 transition-all shadow-sm relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform duration-700"></div>
-                    
+
                     <div className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
                       <div>
                         <div className="flex items-center gap-3">
@@ -336,13 +336,12 @@ export default function UserOrders() {
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative mt-8 pb-6 border-b border-white/5">
                       {/* Connection Line (Desktop only) */}
                       <div className="hidden md:block absolute top-[18px] left-[5%] right-[5%] h-0.5 bg-gray-800 z-0">
-                        <div 
-                          className={`h-full bg-gradient-to-r ${
-                            currentStep === 0 ? 'from-amber-500 to-amber-500 w-[0%]' :
-                            currentStep === 1 ? 'from-amber-500 to-sky-500 w-[33%]' :
-                            currentStep === 2 ? 'from-amber-500 via-sky-500 to-violet-500 w-[66%]' :
-                            'from-amber-500 via-sky-500 via-violet-500 to-emerald-500 w-[100%]'
-                          } transition-all duration-500`}
+                        <div
+                          className={`h-full bg-gradient-to-r ${currentStep === 0 ? 'from-amber-500 to-amber-500 w-[0%]' :
+                              currentStep === 1 ? 'from-amber-500 to-sky-500 w-[33%]' :
+                                currentStep === 2 ? 'from-amber-500 via-sky-500 to-violet-500 w-[66%]' :
+                                  'from-amber-500 via-sky-500 via-violet-500 to-emerald-500 w-[100%]'
+                            } transition-all duration-500`}
                         />
                       </div>
 
@@ -353,16 +352,15 @@ export default function UserOrders() {
                         return (
                           <div key={idx} className="flex md:flex-col items-center gap-4 md:text-center z-10 flex-1">
                             {/* Circle */}
-                            <div 
-                              className={`w-9 h-9 rounded-full flex items-center justify-center font-black text-xs transition-all duration-300 ${
-                                isActive ? 'bg-gradient-to-br text-slate-950 shadow-lg ' + (
+                            <div
+                              className={`w-9 h-9 rounded-full flex items-center justify-center font-black text-xs transition-all duration-300 ${isActive ? 'bg-gradient-to-br text-slate-950 shadow-lg ' + (
                                   currentStep === 0 ? 'from-amber-400 to-orange-500 shadow-amber-500/20 ring-4 ring-amber-500/20' :
-                                  currentStep === 1 ? 'from-sky-400 to-blue-500 shadow-sky-500/20 ring-4 ring-sky-500/20' :
-                                  currentStep === 2 ? 'from-violet-400 to-indigo-500 shadow-violet-500/20 ring-4 ring-violet-500/20' :
-                                  'from-emerald-400 to-green-500 shadow-emerald-500/20 ring-4 ring-emerald-500/20'
+                                    currentStep === 1 ? 'from-sky-400 to-blue-500 shadow-sky-500/20 ring-4 ring-sky-500/20' :
+                                      currentStep === 2 ? 'from-violet-400 to-indigo-500 shadow-violet-500/20 ring-4 ring-violet-500/20' :
+                                        'from-emerald-400 to-green-500 shadow-emerald-500/20 ring-4 ring-emerald-500/20'
                                 ) : isCompleted ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
-                                'bg-gray-950 text-gray-600 border border-gray-800'
-                              }`}
+                                  'bg-gray-950 text-gray-600 border border-gray-800'
+                                }`}
                             >
                               {isCompleted ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : idx + 1}
 
@@ -473,11 +471,10 @@ export default function UserOrders() {
                             {receipt.paymentDate}
                           </td>
                           <td className="px-6 py-4">
-                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${
-                              receipt.status === 'completed' 
-                                ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' 
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${receipt.status === 'completed'
+                                ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
                                 : 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20'
-                            }`}>
+                              }`}>
                               {receipt.status === 'completed' ? 'Paid' : 'Pending'}
                             </span>
                           </td>
@@ -508,14 +505,14 @@ export default function UserOrders() {
       {showPreviewModal && activeReceipt && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-md">
           <div className="relative bg-white rounded-3xl w-full max-w-4xl p-6 md:p-8 my-8 shadow-2xl flex flex-col md:flex-row gap-6 text-slate-800">
-            
+
             {/* Left Column: Actions */}
             <div className="md:w-64 flex flex-col gap-4 shrink-0">
               <h3 className="text-lg font-black text-slate-900">Receipt Viewer</h3>
               <p className="text-xs text-slate-500 leading-relaxed">
                 You are viewing your official payment receipt. Download and print actions are restricted for this document. For assistance, contact support@amitsolutionhub.com.
               </p>
-              
+
               <button
                 onClick={() => setShowPreviewModal(false)}
                 className="w-full flex items-center justify-center gap-2 px-5 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl font-bold transition-all shadow-md cursor-pointer"
@@ -571,7 +568,7 @@ export default function UserOrders() {
                       <div>
                         <p className="text-slate-500 text-[10.5px]">Name:</p>
                         <p className="font-bold text-slate-900">{activeReceipt.customerName}</p>
-                        
+
                         <p className="text-slate-500 text-[10.5px] mt-2">Email:</p>
                         <p>{activeReceipt.customerEmail}</p>
                       </div>
@@ -655,16 +652,16 @@ export default function UserOrders() {
                       {activeReceipt.taxType === 'cgst_sgst' && (
                         <>
                           <div className="flex justify-between text-slate-500 text-[10.5px]">
-                            <span>CGST ({Number(activeReceipt.taxPercent)/2}%):</span>
+                            <span>CGST ({Number(activeReceipt.taxPercent) / 2}%):</span>
                             <span>₹{calculateTotals(activeReceipt).cgst.toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between text-slate-500 text-[10.5px]">
-                            <span>SGST ({Number(activeReceipt.taxPercent)/2}%):</span>
+                            <span>SGST ({Number(activeReceipt.taxPercent) / 2}%):</span>
                             <span>₹{calculateTotals(activeReceipt).sgst.toFixed(2)}</span>
                           </div>
                         </>
                       )}
-                      
+
                       {activeReceipt.taxType === 'igst' && (
                         <div className="flex justify-between text-slate-500 text-[10.5px]">
                           <span>IGST ({activeReceipt.taxPercent}%):</span>
@@ -725,7 +722,7 @@ export default function UserOrders() {
 
               </div>
             </div>
-            
+
           </div>
         </div>
       )}

@@ -11,7 +11,7 @@ import brandLogo from '../assets/brand-logo.png'
 import SEO from '../components/SEO'
 
 export default function AuthCallback() {
-    const router = useRouter()
+  const router = useRouter()
   const navigate = (path, options) => {
     if (typeof path === 'number') router.back()
     else if (options?.replace) router.replace(path)
@@ -35,11 +35,12 @@ export default function AuthCallback() {
 
       if (error) {
         const messages = {
-          google_denied:       'You cancelled Google sign-in.',
-          account_inactive:    'Your account is currently inactive. Please contact support.',
+          google_denied: 'You cancelled Google sign-in.',
+          account_inactive: 'Your account is currently inactive. Please contact support.',
           google_token_failed: 'Google authentication failed. Please try again.',
-          google_no_email:     'Could not retrieve your email address from Google.',
-          google_server_error: 'A server error occurred during Google sign-in.' }
+          google_no_email: 'Could not retrieve your email address from Google.',
+          google_server_error: 'A server error occurred during Google sign-in.'
+        }
         const errorText = messages[error] || 'Google sign-in failed. Please try again.'
         sessionStorage.setItem('auth_error', errorText)
         if (isMounted) {
@@ -98,9 +99,8 @@ export default function AuthCallback() {
     <>
       <SEO title="Authenticating... | SolutionHub" />
 
-      <div className={`min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-500 ${
-        isDark ? 'bg-[#030712] text-slate-100' : 'bg-slate-50 text-slate-800'
-      }`}>
+      <div className={`min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden transition-colors duration-500 ${isDark ? 'bg-[#030712] text-slate-100' : 'bg-slate-50 text-slate-800'
+        }`}>
         {/* Animated Background Orbs */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-blue-500/15 blur-[120px] animate-pulse" />
@@ -115,12 +115,11 @@ export default function AuthCallback() {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="relative z-10 w-full max-w-md"
         >
-          <div className={`p-8 sm:p-10 rounded-3xl border shadow-2xl backdrop-blur-2xl text-center relative overflow-hidden transition-all duration-300 ${
-            isDark 
-              ? 'bg-slate-900/80 border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.6)]' 
+          <div className={`p-8 sm:p-10 rounded-3xl border shadow-2xl backdrop-blur-2xl text-center relative overflow-hidden transition-all duration-300 ${isDark
+              ? 'bg-slate-900/80 border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.6)]'
               : 'bg-white/90 border-slate-200/80 shadow-[0_25px_60px_rgba(37,99,235,0.12)]'
-          }`}>
-            
+            }`}>
+
             {/* Top Glow Accent */}
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500" />
 

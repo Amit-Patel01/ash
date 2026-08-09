@@ -58,6 +58,11 @@ export const metadata = {
     'geo.position': '19.0760;72.8777',
     'ICBM': '19.0760, 72.8777',
   },
+  icons: {
+    icon: '/tab-icon.png',
+    shortcut: '/tab-icon.png',
+    apple: '/tab-icon.png',
+  },
 };
 
 const jsonLdSchema = {
@@ -112,6 +117,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
       <head>
+        <link rel="icon" href="/tab-icon.png" type="image/png" />
+        <link rel="shortcut icon" href="/tab-icon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/tab-icon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />

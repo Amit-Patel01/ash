@@ -26,27 +26,33 @@ const CERTIFICATE_TYPES = [
   {
     value: AICTE_INTERNSHIP_CERTIFICATE_TYPE,
     label: 'Completion Certificate',
-    defaultText: 'This is to certify that the above-named candidate has successfully completed the AICTE-approved internship program conducted by Amit Solution Hub. The internship included guided learning, assigned project work, practical training, and performance evaluation with verified participation.' },
+    defaultText: 'This is to certify that the above-named candidate has successfully completed the AICTE-approved internship program conducted by Amit Solution Hub. The internship included guided learning, assigned project work, practical training, and performance evaluation with verified participation.'
+  },
   {
     value: 'LOR',
     label: 'Letter of Recommendation',
-    defaultText: 'This letter confirms that the holder demonstrated consistent performance, strong character, and reliable contribution. Based on observed work quality and professional conduct, this recommendation is issued in support of future academic or career opportunities.' },
+    defaultText: 'This letter confirms that the holder demonstrated consistent performance, strong character, and reliable contribution. Based on observed work quality and professional conduct, this recommendation is issued in support of future academic or career opportunities.'
+  },
   {
     value: 'LOA',
     label: 'Letter of Achievement',
-    defaultText: 'This letter recognizes the holder for notable achievement, dedication, and measurable contribution. The holder successfully met expectations and demonstrated commitment, discipline, and excellence throughout the engagement period.' },
+    defaultText: 'This letter recognizes the holder for notable achievement, dedication, and measurable contribution. The holder successfully met expectations and demonstrated commitment, discipline, and excellence throughout the engagement period.'
+  },
   {
     value: 'Appreciation',
     label: 'Appreciation Certificate',
-    defaultText: 'This certificate is presented in appreciation of the holder for valuable contribution, sincerity, and professional attitude. The effort and commitment shown during the engagement are gratefully acknowledged by Amit Solution Hub.' },
+    defaultText: 'This certificate is presented in appreciation of the holder for valuable contribution, sincerity, and professional attitude. The effort and commitment shown during the engagement are gratefully acknowledged by Amit Solution Hub.'
+  },
   {
     value: 'Offer Letter',
     label: 'Offer Letter',
-    defaultText: 'We are delighted to welcome you for the internship in Web Development at our organization. This internship is observed by Amit Solution Hub as being a learning opportunity for you, spanning a duration of 1 month.\n\nIn essence, your internship will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application of the knowledge you gain as an intern. Our team is confident that you will acknowledge your obligation to perform all work allocated to you to the best of your ability within lawful and reasonable direction given to you.\n\nWe look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful internship program experience.' },
+    defaultText: 'We are delighted to welcome you for the internship in Web Development at our organization. This internship is observed by Amit Solution Hub as being a learning opportunity for you, spanning a duration of 1 month.\n\nIn essence, your internship will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application of the knowledge you gain as an intern. Our team is confident that you will acknowledge your obligation to perform all work allocated to you to the best of your ability within lawful and reasonable direction given to you.\n\nWe look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful internship program experience.'
+  },
   {
     value: 'Other',
     label: 'Other Certificate',
-    defaultText: 'This certificate is proudly presented to acknowledge the holder\'s effort, performance, or participation. The organization recognizes and appreciates their valuable contribution.' },
+    defaultText: 'This certificate is proudly presented to acknowledge the holder\'s effort, performance, or participation. The organization recognizes and appreciates their valuable contribution.'
+  },
 ]
 
 const getTypeMeta = (value) => CERTIFICATE_TYPES.find((type) => type.value === value) || CERTIFICATE_TYPES[0]
@@ -73,7 +79,8 @@ const createInitialForm = () => ({
   duration: '',
   startDate: '',
   endDate: '',
-  mode: '' })
+  mode: ''
+})
 
 const mapCertificateToForm = (certificate = {}) => ({
   certificate_id: certificate.certificate_id || '',
@@ -97,7 +104,8 @@ const mapCertificateToForm = (certificate = {}) => ({
   duration: certificate.duration || '',
   startDate: certificate.startDate || '',
   endDate: certificate.endDate || '',
-  mode: certificate.mode || '' })
+  mode: certificate.mode || ''
+})
 
 const formatDisplayDate = (value) => {
   if (!value) return 'N/A'
@@ -120,7 +128,8 @@ function StatCard({ label, value, tone = 'cyan' }) {
   const tones = {
     cyan: 'border-cyan-200 bg-cyan-50 text-cyan-700',
     emerald: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-    amber: 'border-amber-200 bg-amber-50 text-amber-700' }
+    amber: 'border-amber-200 bg-amber-50 text-amber-700'
+  }
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_10px_24px_rgba(15,23,42,0.05)]">
@@ -177,7 +186,7 @@ export default function AdminQrCertificates() {
       const name = cert.name || cert.userName || 'Unknown'
       const email = cert.assignedEmployeeEmail || cert.email || ''
       const cid = cert.certificate_id || ''
-      
+
       if (query && !name.toLowerCase().includes(query) && !email.toLowerCase().includes(query) && !cid.toLowerCase().includes(query)) {
         return
       }
@@ -186,9 +195,9 @@ export default function AdminQrCertificates() {
       groups[name].items.push(cert)
       if (email && !groups[name].email) groups[name].email = email
     })
-    
+
     const sortedNames = Object.keys(groups).sort()
-    
+
     sortedNames.forEach(name => {
       groups[name].items.sort((a, b) => {
         const dateA = new Date(a.rawDate || a.date).getTime()
@@ -196,7 +205,7 @@ export default function AdminQrCertificates() {
         return dateB - dateA
       })
     })
-    
+
     return { groups, sortedNames }
   }, [qrCertificates, searchQuery])
 
@@ -255,7 +264,8 @@ export default function AdminQrCertificates() {
     duration: form.duration || '8 Weeks',
     startDate: form.startDate || '01 May 2026',
     endDate: form.endDate || '27 June 2026',
-    mode: form.mode || 'Online' }), [editingCertificate, form, isAictePreview, previewDisplayId, previewType])
+    mode: form.mode || 'Online'
+  }), [editingCertificate, form, isAictePreview, previewDisplayId, previewType])
   const canDownloadPreview = Boolean(form.name.trim() && form.certificateText.trim())
 
   const [exportTarget, setExportTarget] = useState(null)
@@ -332,7 +342,8 @@ export default function AdminQrCertificates() {
         assignedEmployeeId: selectedEmployee?.employeeId || '',
         assignedEmployeeName: nextAssignedEmployeeName,
         assignedEmployeeEmail: selectedEmployee?.email || '',
-        assignedEmployeeRole: selectedEmployee?.role || '' }
+        assignedEmployeeRole: selectedEmployee?.role || ''
+      }
     })
   }
 
@@ -349,7 +360,8 @@ export default function AdminQrCertificates() {
         ...current,
         certificateType: nextType,
         certificateText: nextText,
-        customTitle: nextType !== 'Other' ? '' : current.customTitle }
+        customTitle: nextType !== 'Other' ? '' : current.customTitle
+      }
     })
   }
 
@@ -369,8 +381,10 @@ export default function AdminQrCertificates() {
       const response = await fetch(api.uploadCertificateAsset, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${token}` },
-        body: formData })
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      })
 
       const data = await readApiJson(response)
       if (!response.ok || !data.success || !data.url) {
@@ -401,7 +415,8 @@ export default function AdminQrCertificates() {
       ...form,
       signatureImageUrl: normalizeCertificateAssetUrl(form.signatureImageUrl),
       stampImageUrl: normalizeCertificateAssetUrl(form.stampImageUrl),
-      mentorSignatureImageUrl: normalizeCertificateAssetUrl(form.mentorSignatureImageUrl) }
+      mentorSignatureImageUrl: normalizeCertificateAssetUrl(form.mentorSignatureImageUrl)
+    }
 
     try {
       if (editingId) {
@@ -1023,11 +1038,10 @@ export default function AdminQrCertificates() {
               <button
                 type="button"
                 onClick={() => setViewMode('list')}
-                className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
-                  viewMode === 'list'
+                className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${viewMode === 'list'
                     ? 'bg-white text-indigo-600 shadow-sm border border-slate-200'
                     : 'text-slate-600 hover:text-slate-900'
-                }`}
+                  }`}
               >
                 <List size={15} />
                 <span>List View</span>
@@ -1035,11 +1049,10 @@ export default function AdminQrCertificates() {
               <button
                 type="button"
                 onClick={() => setViewMode('grid')}
-                className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
-                  viewMode === 'grid'
+                className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${viewMode === 'grid'
                     ? 'bg-white text-indigo-600 shadow-sm border border-slate-200'
                     : 'text-slate-600 hover:text-slate-900'
-                }`}
+                  }`}
               >
                 <LayoutGrid size={15} />
                 <span>Grid View</span>
@@ -1074,7 +1087,7 @@ export default function AdminQrCertificates() {
                     <ChevronDown size={20} />
                   </div>
                 </summary>
-                
+
                 <div className="border-t border-slate-200 p-5 pt-0">
                   <div className={`mt-5 ${viewMode === 'grid' ? 'grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3' : 'flex flex-col gap-5'}`}>
                     {groupedCertificates.groups[name].items.map((certificate) => {
@@ -1091,11 +1104,10 @@ export default function AdminQrCertificates() {
                                 <span className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-indigo-700">
                                   {certificate.certificateTypeLabel || getTypeMeta(certificate.certificateType).label || certificate.certificateType}
                                 </span>
-                                <span className={`rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-wider ${
-                                  isActive
+                                <span className={`rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-wider ${isActive
                                     ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
                                     : 'border-amber-200 bg-amber-50 text-amber-700'
-                                }`}>
+                                  }`}>
                                   {isActive ? 'Active' : 'Revoked'}
                                 </span>
                               </div>
@@ -1166,11 +1178,10 @@ export default function AdminQrCertificates() {
                               type="button"
                               onClick={() => handleToggleStatus(certificate)}
                               disabled={isBusy || exportTarget?.id === certificate.id}
-                              className={`inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-bold transition disabled:opacity-50 cursor-pointer ${
-                                isActive
+                              className={`inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-bold transition disabled:opacity-50 cursor-pointer ${isActive
                                   ? 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100'
                                   : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                              }`}
+                                }`}
                             >
                               {isActive ? <ShieldOff size={14} /> : <ShieldCheck size={14} />}
                               {isBusy ? 'Working...' : isActive ? 'Revoke' : 'Activate'}
@@ -1187,12 +1198,12 @@ export default function AdminQrCertificates() {
                             </button>
                           </div>
                         </article>
-              )
-            })}
-          </div>
-        </div>
-      </details>
-    ))}
+                      )
+                    })}
+                  </div>
+                </div>
+              </details>
+            ))}
           </div>
         )}
       </section>

@@ -13,7 +13,8 @@ export default function VerifiedCertificateSection({ courseTitle = "Web Developm
     approval_date: new Date().toISOString(),
     signatoryName: "Amit Patel",
     signatoryRole: "Director & Founder",
-    mentorName: "Naivedh Patel" }
+    mentorName: "Naivedh Patel"
+  }
 
   return (
     <section className={`relative z-10 py-20 px-4 sm:px-6 lg:px-8 transition-colors duration-300 ${isDark ? 'bg-slate-900/40 border-t border-slate-800' : 'bg-slate-50/60 border-t border-slate-200/60'}`}>

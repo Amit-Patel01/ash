@@ -7,32 +7,33 @@ import stempImage from './Stemp.png'
 import {
   formatCertificateDate,
   getCertificateHolderName,
-  normalizeCertificateAssetUrl } from '../../utils/certificateHelpers'
+  normalizeCertificateAssetUrl
+} from '../../utils/certificateHelpers'
 
-const NAVY  = '#1a3564'
-const GOLD  = '#b8912a'
+const NAVY = '#1a3564'
+const GOLD = '#b8912a'
 const LIGHT = '#FFFEF8'
 
 export default function OfferLetterDocument({ certificate, template, className = '' }) {
   /* ── Data (unchanged) ── */
-  const holderName   = getCertificateHolderName(certificate)
-  const certId       = certificate?.certificate_id || 'PENDING-ID'
-  const issueDate    = formatCertificateDate(certificate?.approval_date || certificate?.createdAt || certificate?.date)
-  const sigName      = certificate?.signatoryName  || template?.signatureName  || certificate?.issuedByName  || 'Amit Patel'
-  const sigRole      = certificate?.signatoryRole  || template?.signatureRole  || certificate?.issuedByRole  || 'Program Coordinator'
-  const sigImg       = normalizeCertificateAssetUrl(certificate?.signatureImageUrl) || founderSign
-  const stampImg     = normalizeCertificateAssetUrl(certificate?.stampImageUrl)     || stempImage
-  const domain       = certificate?.customTitle    || certificate?.courseName   || 'Web Development'
-  const duration     = certificate?.duration       || '1 month'
+  const holderName = getCertificateHolderName(certificate)
+  const certId = certificate?.certificate_id || 'PENDING-ID'
+  const issueDate = formatCertificateDate(certificate?.approval_date || certificate?.createdAt || certificate?.date)
+  const sigName = certificate?.signatoryName || template?.signatureName || certificate?.issuedByName || 'Amit Patel'
+  const sigRole = certificate?.signatoryRole || template?.signatureRole || certificate?.issuedByRole || 'Program Coordinator'
+  const sigImg = normalizeCertificateAssetUrl(certificate?.signatureImageUrl) || founderSign
+  const stampImg = normalizeCertificateAssetUrl(certificate?.stampImageUrl) || stempImage
+  const domain = certificate?.customTitle || certificate?.courseName || 'Web Development'
+  const duration = certificate?.duration || '1 month'
 
   /* Body paragraphs (unchanged) */
   const bodyParas = certificate?.certificateText
     ? certificate.certificateText.split('\n').map(p => p.trim()).filter(Boolean)
     : [
-        `We are delighted to welcome you for the internship in <strong>${domain}</strong> at our organization. This internship is observed by <strong>Amit Solution Hub</strong> as a learning opportunity for you, spanning a duration of <strong>${duration}</strong>.`,
-        `Your internship will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application. Our team is confident that you will perform all work allocated to you to the best of your ability.`,
-        `We look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful internship experience.`,
-      ]
+      `We are delighted to welcome you for the internship in <strong>${domain}</strong> at our organization. This internship is observed by <strong>Amit Solution Hub</strong> as a learning opportunity for you, spanning a duration of <strong>${duration}</strong>.`,
+      `Your internship will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application. Our team is confident that you will perform all work allocated to you to the best of your ability.`,
+      `We look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful internship experience.`,
+    ]
 
   /* ── Shared visual tokens (purely presentational) ── */
   const microLabel = { fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', color: `${NAVY}99` }
@@ -54,7 +55,8 @@ export default function OfferLetterDocument({ certificate, template, className =
         style={{
           height: 'clamp(36px,7.5cqw,90px)',
           background: `linear-gradient(180deg, ${NAVY}, #142a52)`,
-          boxShadow: `0 4px 14px ${NAVY}22` }}
+          boxShadow: `0 4px 14px ${NAVY}22`
+        }}
       />
 
       {/* ── Watermark ── */}
@@ -79,7 +81,8 @@ export default function OfferLetterDocument({ certificate, template, className =
             marginLeft: 'clamp(-14px,-3cqw,-40px)',
             marginRight: 'clamp(-14px,-3cqw,-40px)',
             padding: '0 clamp(14px,3cqw,40px)',
-            marginTop: 'clamp(-10px,-2cqw,-26px)' }}
+            marginTop: 'clamp(-10px,-2cqw,-26px)'
+          }}
         >
           {/* Logo */}
           <img src={brandLogo} alt="Amit Solution Hub" crossOrigin="anonymous"
@@ -107,7 +110,8 @@ export default function OfferLetterDocument({ certificate, template, className =
             height: 'clamp(2px,0.38cqw,5px)',
             background: `linear-gradient(90deg, ${GOLD}, ${GOLD}bb, ${GOLD})`,
             marginLeft: 'clamp(-14px,-3cqw,-40px)',
-            marginRight: 'clamp(-14px,-3cqw,-40px)' }}
+            marginRight: 'clamp(-14px,-3cqw,-40px)'
+          }}
         />
 
         {/* ── Thin rule ── */}
@@ -117,7 +121,8 @@ export default function OfferLetterDocument({ certificate, template, className =
             ...hairline(0.13),
             marginLeft: 'clamp(-14px,-3cqw,-40px)',
             marginRight: 'clamp(-14px,-3cqw,-40px)',
-            marginTop: 'clamp(1px,0.18cqw,2.5px)' }}
+            marginTop: 'clamp(1px,0.18cqw,2.5px)'
+          }}
         />
 
         {/* ══ LETTER TITLE ══ */}
@@ -220,7 +225,8 @@ export default function OfferLetterDocument({ certificate, template, className =
             paddingTop: 'clamp(4px,0.65cqw,9px)',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center' }}
+            alignItems: 'center'
+          }}
         >
           <p className="font-semibold" style={{ fontSize: 'clamp(5.5px,0.72cqw,9.5px)', color: `${NAVY}88` }}>
             www.amitsolutionhub.com

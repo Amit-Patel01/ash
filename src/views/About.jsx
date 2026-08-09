@@ -93,37 +93,43 @@ export default function About() {
       desc: 'Constantly exploring new technological frontiers and teaching methods to keep our learners ahead.',
       icon: Sparkles,
       color: 'from-blue-500 to-indigo-500',
-      ring: 'hover:border-blue-400/60 dark:hover:border-blue-400/40' },
+      ring: 'hover:border-blue-400/60 dark:hover:border-blue-400/40'
+    },
     {
       title: 'Transparency',
       desc: 'We build direct relationships with no hidden policies or fake placement/salary claims.',
       icon: Eye,
       color: 'from-emerald-500 to-teal-500',
-      ring: 'hover:border-emerald-400/60 dark:hover:border-emerald-400/40' },
+      ring: 'hover:border-emerald-400/60 dark:hover:border-emerald-400/40'
+    },
     {
       title: 'Quality',
       desc: 'Delivering exceptional educational standards and robust enterprise software services.',
       icon: ShieldCheck,
       color: 'from-violet-500 to-purple-500',
-      ring: 'hover:border-violet-400/60 dark:hover:border-violet-400/40' },
+      ring: 'hover:border-violet-400/60 dark:hover:border-violet-400/40'
+    },
     {
       title: 'Integrity',
       desc: 'Honesty is at our core. Ethical practices guide every decision, internship, and codebase.',
       icon: CheckCircle2,
       color: 'from-amber-500 to-orange-500',
-      ring: 'hover:border-amber-400/60 dark:hover:border-amber-400/40' },
+      ring: 'hover:border-amber-400/60 dark:hover:border-amber-400/40'
+    },
     {
       title: 'Continuous Learning',
       desc: 'Technology evolves daily. We cultivate an environment of continuous upskilling and adaptiveness.',
       icon: Compass,
       color: 'from-rose-500 to-pink-500',
-      ring: 'hover:border-rose-400/60 dark:hover:border-rose-400/40' },
+      ring: 'hover:border-rose-400/60 dark:hover:border-rose-400/40'
+    },
     {
       title: 'Customer Success',
       desc: 'Empowering students to land jobs and enabling clients to scale their software systems.',
       icon: HeartHandshake,
       color: 'from-cyan-500 to-sky-500',
-      ring: 'hover:border-cyan-400/60 dark:hover:border-cyan-400/40' }
+      ring: 'hover:border-cyan-400/60 dark:hover:border-cyan-400/40'
+    }
   ]
 
   // What We Do Data
@@ -270,7 +276,7 @@ export default function About() {
 
   return (
     <>
-      
+
       <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
 
         {/* Background Gradients */}
@@ -824,8 +830,8 @@ export default function About() {
                 <div
                   key={idx}
                   className={`rounded-3xl border-2 transition-all duration-300 ${isOpen
-                      ? 'border-blue-400 bg-blue-50/50 dark:border-blue-500 dark:bg-blue-950/20 shadow-lg shadow-blue-500/5'
-                      : 'border-slate-200/80 bg-white/50 dark:border-slate-900/80 dark:bg-slate-900/20'
+                    ? 'border-blue-400 bg-blue-50/50 dark:border-blue-500 dark:bg-blue-950/20 shadow-lg shadow-blue-500/5'
+                    : 'border-slate-200/80 bg-white/50 dark:border-slate-900/80 dark:bg-slate-900/20'
                     }`}
                 >
                   <button

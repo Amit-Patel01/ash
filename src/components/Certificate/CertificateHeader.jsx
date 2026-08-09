@@ -24,7 +24,8 @@ export default function CertificateHeader({
           style={{
             borderColor: hexToRgba(navyColor, 0.16),
             borderRadius: 'clamp(8px, 1cqw, 14px)',
-            padding: 'clamp(7px, 0.85cqw, 12px) clamp(9px, 1.1cqw, 16px)' }}
+            padding: 'clamp(7px, 0.85cqw, 12px) clamp(9px, 1.1cqw, 16px)'
+          }}
         >
           <img
             src={aicteLogo}
@@ -68,7 +69,8 @@ export default function CertificateHeader({
           style={{
             borderColor: hexToRgba(greenColor, 0.18),
             borderRadius: 'clamp(8px, 1cqw, 14px)',
-            padding: 'clamp(7px, 0.85cqw, 12px) clamp(9px, 1.1cqw, 16px)' }}
+            padding: 'clamp(7px, 0.85cqw, 12px) clamp(9px, 1.1cqw, 16px)'
+          }}
         >
           <div>
             <p
@@ -113,7 +115,8 @@ export default function CertificateHeader({
             borderColor: hexToRgba(accentColor, 0.15),
             background: `linear-gradient(180deg, rgba(255,255,255,0.95), ${hexToRgba(accentColor, 0.04)})`,
             borderRadius: 'clamp(12px, 1.5cqw, 32px)',
-            padding: 'clamp(6px, 0.8cqw, 12px) clamp(10px, 1.2cqw, 20px)' }}
+            padding: 'clamp(6px, 0.8cqw, 12px) clamp(10px, 1.2cqw, 20px)'
+          }}
         >
           <p
             className="font-black uppercase tracking-[0.22em] text-slate-400"

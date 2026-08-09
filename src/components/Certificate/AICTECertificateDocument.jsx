@@ -10,7 +10,8 @@ import { hexToRgba, mergeCertificateTemplate } from '../../utils/certificateTemp
 import {
   normalizeCertificateAssetUrl,
   getCertificateHolderName,
-  getCertificateVerifyUrl } from '../../utils/certificateHelpers'
+  getCertificateVerifyUrl
+} from '../../utils/certificateHelpers'
 import { AICTE_LOGO_SRC } from './certificateConstants'
 import { formatAicteCertificateDate, resolveAicteCertificateId, normalizeDisplayText } from './CertificateNarrative'
 import CornerAccent from './CornerAccent'
@@ -22,17 +23,17 @@ export default function AICTECertificateDocument({ certificate, template, classN
   )
 
   /* ── Data (unchanged) ── */
-  const accentColor  = '#cba450' // Muted gold matching the image
-  const navyColor    = '#16315c' // Deep navy matching the image
-  const pageBg        = '#FFFEF8'
-  const holderName   = getCertificateHolderName(certificate)
-  const certId       = resolveAicteCertificateId(certificate?.certificate_id)
-  const verifyUrl    = getCertificateVerifyUrl(certId)
-  const issueDate    = formatAicteCertificateDate(certificate?.approval_date || certificate?.createdAt || certificate?.rawDate || certificate?.date)
-  const sigName      = certificate?.signatoryName || activeTemplate.signatureName || 'Amit Patel'
-  const sigImg       = normalizeCertificateAssetUrl(certificate?.signatureImageUrl) || founderSign
-  const stampImg     = normalizeCertificateAssetUrl(certificate?.stampImageUrl)     || stempImage
-  const orgName      = activeTemplate.organizationName || 'Amit Solution Hub'
+  const accentColor = '#cba450' // Muted gold matching the image
+  const navyColor = '#16315c' // Deep navy matching the image
+  const pageBg = '#FFFEF8'
+  const holderName = getCertificateHolderName(certificate)
+  const certId = resolveAicteCertificateId(certificate?.certificate_id)
+  const verifyUrl = getCertificateVerifyUrl(certId)
+  const issueDate = formatAicteCertificateDate(certificate?.approval_date || certificate?.createdAt || certificate?.rawDate || certificate?.date)
+  const sigName = certificate?.signatoryName || activeTemplate.signatureName || 'Amit Patel'
+  const sigImg = normalizeCertificateAssetUrl(certificate?.signatureImageUrl) || founderSign
+  const stampImg = normalizeCertificateAssetUrl(certificate?.stampImageUrl) || stempImage
+  const orgName = activeTemplate.organizationName || 'Amit Solution Hub'
   const mentorSignImg = normalizeCertificateAssetUrl(certificate?.mentorSignatureImageUrl) || mentorSign
   const mentorNameResolved = certificate?.mentorName || 'Program Mentor'
 
@@ -40,8 +41,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
     holderName.length > 28
       ? 'clamp(24px,3.5cqw,48px)'
       : holderName.length > 18
-      ? 'clamp(32px,4.5cqw,64px)'
-      : 'clamp(40px,5.5cqw,75px)'
+        ? 'clamp(32px,4.5cqw,64px)'
+        : 'clamp(40px,5.5cqw,75px)'
 
   /* ── Shared visual tokens (purely presentational) ── */
   const cardRadius = 'clamp(6px,0.8cqw,12px)'
@@ -53,16 +54,19 @@ export default function AICTECertificateDocument({ certificate, template, classN
     letterSpacing: '0.09em',
     textTransform: 'uppercase',
     color: navyColor,
-    opacity: 0.82 }
+    opacity: 0.82
+  }
   const valueStyle = {
     fontSize: 'clamp(8px,1.15cqw,14.5px)',
     fontWeight: 700,
     color: '#1F2937',
     marginTop: '0.15cqw',
-    lineHeight: 1.2 }
+    lineHeight: 1.2
+  }
   const footerLabelStyle = {
     ...labelStyle,
-    fontSize: 'clamp(5.5px,0.75cqw,11px)' }
+    fontSize: 'clamp(5.5px,0.75cqw,11px)'
+  }
 
   const detailItems = [
     { icon: FileText, label: 'INTERNSHIP DOMAIN', value: certificate?.domain || 'Web Development' },
@@ -114,7 +118,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
             height: '84%',
             background: `linear-gradient(180deg, ${navyColor} 0%, ${hexToRgba(navyColor, 0.88)} 100%)`,
             clipPath: 'polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%)',
-            boxShadow: `2px 0 8px ${hexToRgba(navyColor, 0.22)}` }}
+            boxShadow: `2px 0 8px ${hexToRgba(navyColor, 0.22)}`
+          }}
         >
           <div className="absolute left-[15%] top-0 h-[78%] w-[1.5px]" style={{ background: accentColor, opacity: 0.75 }} />
           <div className="absolute right-[15%] top-0 h-[78%] w-[1.5px]" style={{ background: accentColor, opacity: 0.75 }} />
@@ -129,7 +134,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
             height: 'clamp(54px,7.4cqw,106px)',
             background: `radial-gradient(circle at 35% 28%, ${hexToRgba('#ffffff', 0.10)}, transparent 60%), ${navyColor}`,
             border: `clamp(2px,0.3cqw,4px) solid ${accentColor}`,
-            boxShadow: `0 6px 16px ${hexToRgba(navyColor, 0.38)}, inset 0 0 0 clamp(3px,0.4cqw,6px) ${hexToRgba('#ffffff', 0.05)}` }}
+            boxShadow: `0 6px 16px ${hexToRgba(navyColor, 0.38)}, inset 0 0 0 clamp(3px,0.4cqw,6px) ${hexToRgba('#ffffff', 0.05)}`
+          }}
         >
           <p className="text-white font-bold uppercase leading-tight" style={{ fontSize: 'clamp(5px,0.68cqw,10px)', letterSpacing: '0.04em' }}>
             AICTE PORTAL<br />REGISTERED
@@ -156,7 +162,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
             borderRadius: cardRadius,
             padding: 'clamp(4px,0.6cqw,8px) clamp(8px,1cqw,14px)',
             gap: 'clamp(5px,0.8cqw,12px)',
-            boxShadow: cardShadow }}>
+            boxShadow: cardShadow
+          }}>
             <img src={AICTE_LOGO_SRC} alt="AICTE" crossOrigin="anonymous" style={{ height: 'clamp(30px,4.5cqw,65px)', width: 'auto', objectFit: 'contain' }} />
             <div className="flex flex-col justify-center">
               <p className="font-bold uppercase text-[#173F8A] leading-none" style={{ fontSize: 'clamp(7px,0.9cqw,13px)' }}>
@@ -193,7 +200,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
               borderRadius: cardRadius,
               padding: 'clamp(4px,0.6cqw,8px) clamp(8px,1cqw,14px)',
               gap: 'clamp(5px,0.8cqw,12px)',
-              boxShadow: cardShadow }}>
+              boxShadow: cardShadow
+            }}>
               <div className="flex flex-col justify-center text-right">
                 <p className="font-bold uppercase text-[#167044] leading-none" style={{ fontSize: 'clamp(7px,0.9cqw,13px)' }}>
                   MSME REGISTERED
@@ -215,7 +223,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
                 borderRadius: 'clamp(4px,0.6cqw,8px)',
                 padding: 'clamp(2px,0.3cqw,5px) clamp(6px,1cqw,12px)',
                 background: 'white',
-                boxShadow: cardShadow }}>
+                boxShadow: cardShadow
+              }}>
                 <p className="font-bold text-[#173F8A]" style={{ fontSize: 'clamp(6px,0.85cqw,12px)', letterSpacing: '0.02em' }}>
                   {certId}
                 </p>
@@ -239,7 +248,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
               color: navyColor,
               fontFamily: '"Cinzel", serif',
               fontSize: 'clamp(20px, 3.2cqw, 48px)',
-              letterSpacing: '0.045em' }}
+              letterSpacing: '0.045em'
+            }}
           >
             INTERNSHIP COMPLETION CERTIFICATE
           </h1>
@@ -261,7 +271,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
               color: navyColor,
               fontFamily: '"Playfair Display", serif',
               fontStyle: 'italic',
-              fontSize: nameFontSize }}
+              fontSize: nameFontSize
+            }}
           >
             {normalizeDisplayText(holderName)}
           </h2>
@@ -281,7 +292,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
             fontWeight: 500,
             fontSize: 'clamp(10px, 1.6cqw, 18px)',
             lineHeight: '1.8',
-            maxWidth: '75%' }}>
+            maxWidth: '75%'
+          }}>
             {certificate?.certificateText ? (
               certificate.certificateText.split('\n').map((line, i) => (
                 <p key={i}>{line}</p>
@@ -308,7 +320,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
               borderTop: `2px solid ${accentColor}`,
               borderRadius: 'clamp(8px,1cqw,14px)',
               boxShadow: cardShadow,
-              overflow: 'hidden' }}
+              overflow: 'hidden'
+            }}
           >
             {detailItems.map((item, index) => (
               <React.Fragment key={index}>
@@ -320,7 +333,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
                   style={{
                     padding: 'clamp(7px,0.9cqw,14px) clamp(10px,1.4cqw,20px)',
                     gap: 'clamp(6px,0.8cqw,12px)',
-                    minWidth: 'clamp(96px,14cqw,190px)' }}
+                    minWidth: 'clamp(96px,14cqw,190px)'
+                  }}
                 >
                   <div
                     className="flex items-center justify-center shrink-0"
@@ -328,7 +342,8 @@ export default function AICTECertificateDocument({ certificate, template, classN
                       width: 'clamp(24px,3.4cqw,42px)',
                       height: 'clamp(24px,3.4cqw,42px)',
                       borderRadius: '9999px',
-                      backgroundColor: hexToRgba(accentColor, 0.14) }}
+                      backgroundColor: hexToRgba(accentColor, 0.14)
+                    }}
                   >
                     <item.icon style={{ width: 'clamp(14px, 2cqw, 24px)', height: 'clamp(14px, 2cqw, 24px)', color: navyColor }} />
                   </div>

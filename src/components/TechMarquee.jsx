@@ -14,74 +14,95 @@ import { useEffect, useRef, useState } from 'react'
 const TECHS = [
   {
     name: 'Google Cloud',
-    logo: 'https://cdn.simpleicons.org/googlecloud/4285F4' },
+    logo: 'https://cdn.simpleicons.org/googlecloud/4285F4'
+  },
   {
     name: 'Google Gemini',
-    logo: 'https://cdn.simpleicons.org/googlegemini/8E75B2' },
+    logo: 'https://cdn.simpleicons.org/googlegemini/8E75B2'
+  },
   {
     name: 'AWS',
-    logo: 'https://cdn.simpleicons.org/amazonwebservices/FF9900' },
+    logo: 'https://cdn.simpleicons.org/amazonwebservices/FF9900'
+  },
   {
     name: 'MongoDB',
-    logo: 'https://cdn.simpleicons.org/mongodb/47A248' },
+    logo: 'https://cdn.simpleicons.org/mongodb/47A248'
+  },
   {
     name: 'Razorpay',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg' },
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg'
+  },
   {
     name: 'Cashfree',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg' },
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg'
+  },
 
   {
     name: 'Clerk',
-    logo: 'https://cdn.simpleicons.org/clerk/6C47FF' },
+    logo: 'https://cdn.simpleicons.org/clerk/6C47FF'
+  },
   {
     name: 'Meta',
-    logo: 'https://cdn.simpleicons.org/meta/0081FB' },
+    logo: 'https://cdn.simpleicons.org/meta/0081FB'
+  },
   {
     name: 'GitHub',
-    logo: 'https://cdn.simpleicons.org/github/ffffff' },
+    logo: 'https://cdn.simpleicons.org/github/ffffff'
+  },
   {
     name: 'Node.js',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg' },
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg'
+  },
   {
     name: 'React',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg' },
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg'
+  },
   {
     name: 'Express.js',
-    logo: 'https://cdn.simpleicons.org/express/ffffff' },
+    logo: 'https://cdn.simpleicons.org/express/ffffff'
+  },
   {
     name: 'Docker',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg' },
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg'
+  },
   {
     name: 'Firebase',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original.svg' },
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original.svg'
+  },
   {
     name: 'Cloudflare',
-    logo: 'https://cdn.simpleicons.org/cloudflare/F38020' },
+    logo: 'https://cdn.simpleicons.org/cloudflare/F38020'
+  },
   {
     name: 'Vercel',
-    logo: 'https://cdn.simpleicons.org/vercel/ffffff' },
+    logo: 'https://cdn.simpleicons.org/vercel/ffffff'
+  },
   {
     name: 'Git',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg' },
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg'
+  },
   {
     name: 'Figma',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg' },
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg'
+  },
   {
     name: 'Adobe Photoshop',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg' },
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg'
+  },
   {
     name: 'Adobe After Effects',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/aftereffects/aftereffects-original.svg' },
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/aftereffects/aftereffects-original.svg'
+  },
   {
     name: 'Adobe Premiere Pro',
-    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/premierepro/premierepro-original.svg' },
+    logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/premierepro/premierepro-original.svg'
+  },
 ]
 
 /* Split into two rows for the dual-direction marquee */
-const mid   = Math.ceil(TECHS.length / 2)
-const ROW1  = TECHS.slice(0, mid)
-const ROW2  = TECHS.slice(mid)
+const mid = Math.ceil(TECHS.length / 2)
+const ROW1 = TECHS.slice(0, mid)
+const ROW2 = TECHS.slice(mid)
 
 /* ── Logo Card ─────────────────────────────────────────────────────── */
 function LogoCard({ tech }) {
@@ -128,7 +149,7 @@ function MarqueeRow({ items, direction = 'left' }) {
 
 /* ── Heading – fade-up on scroll into view ──────────────────────────── */
 function AnimatedHeading() {
-  const ref     = useRef(null)
+  const ref = useRef(null)
   const [vis, setVis] = useState(false)
 
   useEffect(() => {
@@ -155,7 +176,7 @@ export default function TechMarquee() {
       <style>{STYLES}</style>
       <AnimatedHeading />
       <div className="tm-rows">
-        <MarqueeRow items={ROW1} direction="left"  />
+        <MarqueeRow items={ROW1} direction="left" />
         <MarqueeRow items={ROW2} direction="right" />
       </div>
     </section>

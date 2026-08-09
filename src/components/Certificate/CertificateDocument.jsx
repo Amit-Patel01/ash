@@ -11,7 +11,8 @@ import {
   getCertificateHolderName,
   getCertificateCourseName,
   getCertificateDocumentLabel,
-  getCertificateVerifyUrl } from '../../utils/certificateHelpers'
+  getCertificateVerifyUrl
+} from '../../utils/certificateHelpers'
 import { getDocumentNarrative, resolveAicteStatus } from './CertificateNarrative'
 
 /* ─── Gold divider ─── */
@@ -43,29 +44,29 @@ export default function CertificateDocument({ certificate, template, className =
   )
 
   /* ── Data ── */
-  const accentColor  = activeTemplate.accentColor || '#b8912a'
-  const navyColor    = '#1a3564'
-  const holderName   = getCertificateHolderName(certificate)
-  const courseName   = getCertificateCourseName(certificate, activeTemplate)
+  const accentColor = activeTemplate.accentColor || '#b8912a'
+  const navyColor = '#1a3564'
+  const holderName = getCertificateHolderName(certificate)
+  const courseName = getCertificateCourseName(certificate, activeTemplate)
   const documentLabel = getCertificateDocumentLabel(certificate, activeTemplate)
-  const certId       = certificate?.certificate_id || 'PENDING-ID'
-  const verifyUrl    = getCertificateVerifyUrl(certId)
-  const issueDate    = formatDate(certificate?.approval_date || certificate?.createdAt || certificate?.date)
-  const sigName      = certificate?.signatoryName || activeTemplate.signatureName || 'Amit Patel'
-  const sigRole      = certificate?.signatoryRole || activeTemplate.signatureRole || 'Authorized Signatory'
-  const sigImg       = normalizeCertificateAssetUrl(certificate?.signatureImageUrl) || founderSign
-  const stampImg     = normalizeCertificateAssetUrl(certificate?.stampImageUrl)     || stempImage
+  const certId = certificate?.certificate_id || 'PENDING-ID'
+  const verifyUrl = getCertificateVerifyUrl(certId)
+  const issueDate = formatDate(certificate?.approval_date || certificate?.createdAt || certificate?.date)
+  const sigName = certificate?.signatoryName || activeTemplate.signatureName || 'Amit Patel'
+  const sigRole = certificate?.signatoryRole || activeTemplate.signatureRole || 'Authorized Signatory'
+  const sigImg = normalizeCertificateAssetUrl(certificate?.signatureImageUrl) || founderSign
+  const stampImg = normalizeCertificateAssetUrl(certificate?.stampImageUrl) || stempImage
   const mentorSignImg = normalizeCertificateAssetUrl(certificate?.mentorSignatureImageUrl) || mentorSign
   const mentorNameResolved = certificate?.mentorName || 'Program Mentor'
-  const narrative    = getDocumentNarrative(documentType, holderName, courseName, activeTemplate, certificate)
-  const statusLabel  = resolveAicteStatus(certificate)
+  const narrative = getDocumentNarrative(documentType, holderName, courseName, activeTemplate, certificate)
+  const statusLabel = resolveAicteStatus(certificate)
 
   const nameFontSize =
     holderName.length > 28
       ? 'clamp(13px, 2.5cqw, 30px)'
       : holderName.length > 18
-      ? 'clamp(15px, 3.2cqw, 36px)'
-      : 'clamp(17px, 3.8cqw, 42px)'
+        ? 'clamp(15px, 3.2cqw, 36px)'
+        : 'clamp(17px, 3.8cqw, 42px)'
 
   const orgName = activeTemplate.organizationName || 'Amit Solution Hub'
 
@@ -77,7 +78,7 @@ export default function CertificateDocument({ certificate, template, className =
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
       `}</style>
-      
+
       {/* ── Borders ── */}
       <div className="absolute inset-0 pointer-events-none z-50" style={{ border: `clamp(3px,0.4cqw,6px) solid ${navyColor}` }} />
       <div className="absolute pointer-events-none z-50" style={{ inset: 'clamp(5px,0.7cqw,10px)', border: `clamp(1px,0.1cqw,2px) solid ${hexToRgba(accentColor, 0.7)}` }} />
@@ -129,7 +130,8 @@ export default function CertificateDocument({ certificate, template, className =
                 border: `1px solid ${hexToRgba(accentColor, 0.4)}`,
                 borderRadius: 'clamp(6px,1cqw,12px)',
                 padding: 'clamp(4px,0.5cqw,8px) clamp(8px,1.2cqw,16px)',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}
+                boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
+              }}
             >
               <p className="font-bold uppercase text-slate-500" style={{ fontSize: 'clamp(4.5px,0.6cqw,8px)', letterSpacing: '0.1em' }}>
                 {activeTemplate.referenceLabel || 'CERTIFICATE ID'}
@@ -155,7 +157,8 @@ export default function CertificateDocument({ certificate, template, className =
               color: '#173F8A',
               fontFamily: '"Playfair Display", "Cinzel", serif',
               fontSize: 'clamp(14px, 3.2cqw, 40px)',
-              letterSpacing: '0.05em' }}
+              letterSpacing: '0.05em'
+            }}
           >
             {documentLabel}
           </h1>
@@ -171,11 +174,12 @@ export default function CertificateDocument({ certificate, template, className =
             style={{
               color: '#173F8A',
               fontFamily: '"Playfair Display", "Cinzel", serif',
-              fontSize: nameFontSize }}
+              fontSize: nameFontSize
+            }}
           >
             {narrative.highlight || holderName}
           </h2>
-          
+
           <p
             className="text-[#64748B] mt-[0.3cqw]"
             style={{
@@ -183,7 +187,8 @@ export default function CertificateDocument({ certificate, template, className =
               fontSize: 'clamp(7.5px, 1.1cqw, 14px)',
               lineHeight: '1.45',
               maxWidth: '88%',
-              textAlign: 'center' }}
+              textAlign: 'center'
+            }}
           >
             {narrative.paragraph}
           </p>
@@ -198,10 +203,10 @@ export default function CertificateDocument({ certificate, template, className =
 
         {/* ══ BOTTOM SECTION: Floating Chips & 5-Column Footer ══ */}
         <div className="w-full mt-auto flex flex-col justify-end">
-          
+
           {/* Floating Row (Left info box & Right QR box) */}
           <div className="flex justify-between items-end mb-[2cqw] w-full px-[1cqw]">
-            
+
             {/* Left Info Box */}
             <div className="flex bg-[#F8FAFC] border border-[#E2E8F0] rounded-[0.8cqw] overflow-hidden shadow-sm" style={{ padding: '0.8cqw 0' }}>
               <div className="px-[1.5cqw] border-r border-[#E2E8F0]">
@@ -235,7 +240,8 @@ export default function CertificateDocument({ certificate, template, className =
             style={{
               gridTemplateColumns: 'repeat(5, 1fr)',
               gap: '1cqw',
-              paddingTop: 'clamp(8px, 1.5cqw, 20px)' }}
+              paddingTop: 'clamp(8px, 1.5cqw, 20px)'
+            }}
           >
             {/* Col 1: Issue Date */}
             <div className="flex flex-col items-start justify-end w-full">

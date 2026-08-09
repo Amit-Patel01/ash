@@ -42,7 +42,7 @@ const numberToWords = (num) => {
 
   let str = '';
   const parts = [];
-  
+
   // Crore (10,000,000)
   parts.push(Math.floor(num / 10000000));
   num %= 10000000;
@@ -178,7 +178,7 @@ export default function AdminReceipts() {
     // Auto-generate invoice/receipt ID
     const randomSuffix = Math.floor(1000 + Math.random() * 9000)
     const generatedId = `ASH/2026/${randomSuffix}`
-    
+
     setFormData({
       receiptId: generatedId,
       customerName: '',
@@ -318,12 +318,12 @@ export default function AdminReceipts() {
       const token = localStorage.getItem('token')
       const headers = { 'Content-Type': 'application/json' }
       if (token) headers.Authorization = `Bearer ${token}`
-      
+
       const res = await fetch(`${api.base}/api/admin/receipts/${receipt.id}/send-email`, {
         method: 'POST',
         headers
       })
-      
+
       const data = await res.json()
       if (res.ok && data.success) {
         alert("Receipt emailed successfully to " + receipt.customerEmail)
@@ -438,13 +438,13 @@ export default function AdminReceipts() {
   // Calculate pricing values
   const calculateTotals = (receipt) => {
     if (!receipt) return { subtotal: 0, discount: 0, net: 0, tax: 0, cgst: 0, sgst: 0, igst: 0, total: 0 }
-    
+
     const amount = Number(receipt.amount || 0)
     const discount = Number(receipt.discount || 0)
     const net = Math.max(0, amount - discount)
     const taxPercent = Number(receipt.taxPercent || 0)
     const tax = net * (taxPercent / 100)
-    
+
     let cgst = 0, sgst = 0, igst = 0
     if (receipt.taxType === 'cgst_sgst') {
       cgst = tax / 2
@@ -452,7 +452,7 @@ export default function AdminReceipts() {
     } else if (receipt.taxType === 'igst') {
       igst = tax
     }
-    
+
     const total = net + tax
     return { amount, discount, net, tax, cgst, sgst, igst, total }
   }
@@ -472,7 +472,8 @@ export default function AdminReceipts() {
   return (
     <div className="space-y-6">
       {/* Print Styles Injection */}
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         @media print {
           body {
             background: white !important;
@@ -699,7 +700,7 @@ export default function AdminReceipts() {
                 {/* Left Column: Customer & Transaction */}
                 <div className="space-y-4">
                   <h3 className="text-sm font-black text-slate-900 border-b border-slate-100 pb-2">Client Details</h3>
-                  
+
                   <div>
                     <label className="block text-xs font-bold text-slate-500 mb-1.5">Receipt / Invoice Number *</label>
                     <input
@@ -968,14 +969,14 @@ export default function AdminReceipts() {
       {showPreviewModal && activeReceipt && (
         <div className="fixed inset-0 z-55 flex items-start justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-md modal-backdrop">
           <div className="relative bg-white rounded-3xl w-full max-w-4xl p-6 md:p-8 my-8 shadow-2xl flex flex-col md:flex-row gap-6">
-            
+
             {/* Left Column: Controls (no-print) */}
             <div className="md:w-64 flex flex-col gap-4 no-print shrink-0">
               <h3 className="text-lg font-black text-slate-900">Receipt Actions</h3>
               <p className="text-xs text-slate-500 leading-relaxed">
                 Click print to save the receipt as a PDF or send it to a physical printer. Adjust margins and options in the print dialog.
               </p>
-              
+
               <button
                 onClick={() => handleDownloadPdf(activeReceipt)}
                 disabled={downloadingPdf}
@@ -1083,7 +1084,7 @@ export default function AdminReceipts() {
                       <div>
                         <p className="text-slate-500 text-[10.5px]">Name:</p>
                         <p className="font-bold text-slate-900">{activeReceipt.customerName}</p>
-                        
+
                         <p className="text-slate-500 text-[10.5px] mt-2">Email:</p>
                         <p>{activeReceipt.customerEmail}</p>
                       </div>
@@ -1169,16 +1170,16 @@ export default function AdminReceipts() {
                       {activeReceipt.taxType === 'cgst_sgst' && (
                         <>
                           <div className="flex justify-between text-slate-505 text-[10.5px]">
-                            <span>CGST ({Number(activeReceipt.taxPercent)/2}%):</span>
+                            <span>CGST ({Number(activeReceipt.taxPercent) / 2}%):</span>
                             <span>₹{totals.cgst.toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between text-slate-505 text-[10.5px]">
-                            <span>SGST ({Number(activeReceipt.taxPercent)/2}%):</span>
+                            <span>SGST ({Number(activeReceipt.taxPercent) / 2}%):</span>
                             <span>₹{totals.sgst.toFixed(2)}</span>
                           </div>
                         </>
                       )}
-                      
+
                       {activeReceipt.taxType === 'igst' && (
                         <div className="flex justify-between text-slate-500 text-[10.5px]">
                           <span>IGST ({activeReceipt.taxPercent}%):</span>
@@ -1241,7 +1242,7 @@ export default function AdminReceipts() {
 
               </div>
             </div>
-            
+
           </div>
         </div>
       )}

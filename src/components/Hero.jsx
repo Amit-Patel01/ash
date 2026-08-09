@@ -351,8 +351,8 @@ const TechIllustration = () => {
 /* ── Static Data ── */
 const STATS = [
   { value: '5,000+', label: 'Students Trained', icon: Users, color: 'text-blue-500' },
-  { value: '12+',    label: 'Internship Programs', icon: BookOpen, color: 'text-indigo-500' },
-  { value: '800+',   label: 'Live Projects Completed', icon: Code, color: 'text-purple-500' },
+  { value: '12+', label: 'Internship Programs', icon: BookOpen, color: 'text-indigo-500' },
+  { value: '800+', label: 'Live Projects Completed', icon: Code, color: 'text-purple-500' },
   { value: '4,800+', label: 'Certificates Issued', icon: Award, color: 'text-emerald-500' },
 ]
 
@@ -363,56 +363,64 @@ const CATEGORIES = [
     icon: Code,
     duration: '4-8 Weeks',
     level: 'Beginner',
-    color: 'text-blue-500 bg-blue-500/10 border-blue-500/20' },
+    color: 'text-blue-500 bg-blue-500/10 border-blue-500/20'
+  },
   {
     title: 'Artificial Intelligence',
     desc: 'Dive into machine learning models, neural networks, natural language processing, and computer vision.',
     icon: Cpu,
     duration: '4-8 Weeks',
     level: 'Intermediate',
-    color: 'text-purple-500 bg-purple-500/10 border-purple-500/20' },
+    color: 'text-purple-500 bg-purple-500/10 border-purple-500/20'
+  },
   {
     title: 'Cyber Security',
     icon: Shield,
     desc: 'Understand threat detection, ethical hacking practices, network security, and risk analysis.',
     duration: '4-8 Weeks',
     level: 'Intermediate',
-    color: 'text-red-500 bg-red-500/10 border-red-500/20' },
+    color: 'text-red-500 bg-red-500/10 border-red-500/20'
+  },
   {
     title: 'Data Science',
     icon: Database,
     desc: 'Analyze massive datasets, build automated predictive models, and master scientific libraries.',
     duration: '4-8 Weeks',
     level: 'Beginner',
-    color: 'text-teal-500 bg-teal-500/10 border-teal-500/20' },
+    color: 'text-teal-500 bg-teal-500/10 border-teal-500/20'
+  },
   {
     title: 'UI/UX Design',
     icon: Layers,
     desc: 'Design beautiful, user-centered screens, master modern layouts, and build responsive wireframes.',
     duration: '4-8 Weeks',
     level: 'Beginner',
-    color: 'text-orange-500 bg-orange-500/10 border-orange-500/20' },
+    color: 'text-orange-500 bg-orange-500/10 border-orange-500/20'
+  },
   {
     title: 'Digital Marketing',
     icon: Globe,
     desc: 'Master organic SEO, social media strategies, audience optimization, and marketing funnels.',
     duration: '4-8 Weeks',
     level: 'Beginner',
-    color: 'text-cyan-500 bg-cyan-500/10 border-cyan-500/20' },
+    color: 'text-cyan-500 bg-cyan-500/10 border-cyan-500/20'
+  },
   {
     title: 'Python Programming',
     icon: Terminal,
     desc: 'Build foundational programming skills, object-oriented code, algorithm logic, and basic utilities.',
     duration: '4-8 Weeks',
     level: 'Beginner',
-    color: 'text-violet-500 bg-violet-500/10 border-violet-500/20' },
+    color: 'text-violet-500 bg-violet-500/10 border-violet-500/20'
+  },
   {
     title: 'Cloud Computing',
     icon: Cloud,
     desc: 'Understand virtual architecture, serverless infrastructure, continuous integration, and deployments.',
     duration: '4-8 Weeks',
     level: 'Intermediate',
-    color: 'text-sky-500 bg-sky-500/10 border-sky-500/20' }
+    color: 'text-sky-500 bg-sky-500/10 border-sky-500/20'
+  }
 ]
 
 const WHY_CHOOSE = [
@@ -420,32 +428,38 @@ const WHY_CHOOSE = [
     title: 'Practical Learning',
     desc: 'Build real-world projects that simulate technical assignments in modern organizations.',
     icon: Code,
-    color: 'text-blue-500 bg-blue-500/10 border-blue-500/20' },
+    color: 'text-blue-500 bg-blue-500/10 border-blue-500/20'
+  },
   {
     title: 'Mentor Guidance',
     desc: 'Connect with experienced industry professionals for feedback and track optimization.',
     icon: Users,
-    color: 'text-purple-500 bg-purple-500/10 border-purple-500/20' },
+    color: 'text-purple-500 bg-purple-500/10 border-purple-500/20'
+  },
   {
     title: 'Flexible Online Learning',
     desc: 'Learn on your own schedule with self-paced assignments and online resources.',
     icon: Clock,
-    color: 'text-teal-500 bg-teal-500/10 border-teal-500/20' },
+    color: 'text-teal-500 bg-teal-500/10 border-teal-500/20'
+  },
   {
     title: 'Verified Certificate',
     desc: 'Receive an official verifiable certificate with a unique tracking ID and QR code.',
     icon: Award,
-    color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20' },
+    color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20'
+  },
   {
     title: 'Portfolio Development',
     desc: 'Develop codebases you can host on GitHub to showcase to prospective employers.',
     icon: Sparkles,
-    color: 'text-amber-500 bg-amber-500/10 border-amber-500/20' },
+    color: 'text-amber-500 bg-amber-500/10 border-amber-500/20'
+  },
   {
     title: 'Career Skill Development',
     desc: 'Improve your overall engineering practices, problem solving, and design patterns.',
     icon: GraduationCap,
-    color: 'text-indigo-500 bg-indigo-500/10 border-indigo-500/20' }
+    color: 'text-indigo-500 bg-indigo-500/10 border-indigo-500/20'
+  }
 ]
 
 const STEPS = [
@@ -453,27 +467,32 @@ const STEPS = [
     step: 'Step 1',
     title: 'Register',
     desc: 'Select your preferred technology track and fill out the details.',
-    icon: FileText },
+    icon: FileText
+  },
   {
     step: 'Step 2',
     title: 'Get Selected',
     desc: 'Receive your selection notification with credentials and dashboard access.',
-    icon: Check },
+    icon: Check
+  },
   {
     step: 'Step 3',
     title: 'Start Learning',
     desc: 'Access video instructions, guidelines, and assignment files.',
-    icon: Play },
+    icon: Play
+  },
   {
     step: 'Step 4',
     title: 'Complete Projects',
     desc: 'Submit your completed project assignments for mentor review.',
-    icon: Code },
+    icon: Code
+  },
   {
     step: 'Step 5',
     title: 'Receive Certificate',
     desc: 'Download your verified certificate co-signed by our training lead.',
-    icon: Award }
+    icon: Award
+  }
 ]
 
 const TESTIMONIALS = [
@@ -541,30 +560,25 @@ const TRUST_POINTS = [
     title: 'Verified Certificate',
     desc: 'Every certificate carries a unique ID and QR code that anyone can verify online.',
     icon: Shield,
-    color: 'text-indigo-500 bg-indigo-500/10 border-indigo-500/20' },
+    color: 'text-indigo-500 bg-indigo-500/10 border-indigo-500/20'
+  },
   {
     title: 'Mentor Support',
     desc: 'Get your project doubts and reviews answered by real mentors, not bots.',
     icon: Users,
-    color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20' },
+    color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20'
+  },
   {
     title: 'Lifetime Access',
     desc: 'Keep access to your learning material and certificate record even after completion.',
     icon: Clock,
-    color: 'text-amber-500 bg-amber-500/10 border-amber-500/20' },
+    color: 'text-amber-500 bg-amber-500/10 border-amber-500/20'
+  },
 ]
 
 const Hero = () => {
   const { homepageStats, testimonials, internshipCategories } = useStore()
   const [activeFaq, setActiveFaq] = useState(null)
-
-  /* ── sticky announcement bar visibility on scroll (pure UI state, no backend calls) ── */
-  const [showStickyBar, setShowStickyBar] = useState(false)
-  useEffect(() => {
-    const handleScroll = () => setShowStickyBar(window.scrollY > 480)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   // Icon name → Lucide component map (for DB-stored categories)
   const ICON_MAP = useMemo(() => ({
@@ -572,14 +586,16 @@ const Hero = () => {
     BookOpen, Users, Award, Sparkles, GraduationCap, Clock, Play,
     FileText, Check, ArrowRight, Star, MessageSquare, LineChart,
     BarChart2: LineChart, Smartphone: MessageSquare, Lock: Shield,
-    Zap: Sparkles }), [])
+    Zap: Sparkles
+  }), [])
 
   // Dynamic categories – fall back to static CATEGORIES if DB is empty
   const categoriesList = useMemo(() => {
     if (internshipCategories && internshipCategories.length > 0) {
       return internshipCategories.map(cat => ({
         ...cat,
-        icon: ICON_MAP[cat.icon] || Code }))
+        icon: ICON_MAP[cat.icon] || Code
+      }))
     }
     return CATEGORIES
   }, [internshipCategories, ICON_MAP])
@@ -592,7 +608,8 @@ const Hero = () => {
         course: t.role || t.course || '',
         rating: Number(t.rating) || 5,
         feedback: t.text || t.feedback || '',
-        avatar: t.avatar || '👨‍🎓' }))
+        avatar: t.avatar || '👨‍🎓'
+      }))
     }
     return TESTIMONIALS
   }, [testimonials])
@@ -600,8 +617,8 @@ const Hero = () => {
   const statsList = useMemo(() => {
     return [
       { value: homepageStats?.studentsTrained || '5,000+', label: 'Students Trained', icon: Users, color: 'text-blue-500' },
-      { value: homepageStats?.internshipPrograms || '12+',    label: 'Internship Programs', icon: BookOpen, color: 'text-indigo-500' },
-      { value: homepageStats?.liveProjects || '800+',   label: 'Live Projects Completed', icon: Code, color: 'text-purple-500' },
+      { value: homepageStats?.internshipPrograms || '12+', label: 'Internship Programs', icon: BookOpen, color: 'text-indigo-500' },
+      { value: homepageStats?.liveProjects || '800+', label: 'Live Projects Completed', icon: Code, color: 'text-purple-500' },
       { value: homepageStats?.certificatesIssued || '4,800+', label: 'Certificates Issued', icon: Award, color: 'text-emerald-500' },
     ]
   }, [homepageStats])
@@ -610,32 +627,6 @@ const Hero = () => {
     <>
       <SEO />
       <HeroBackgroundStyles />
-
-      {/* ── Sticky announcement / CTA bar (pure UI, appears after scrolling) ── */}
-      <AnimatePresence>
-        {showStickyBar && (
-          <motion.div
-            initial={{ y: -60, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -60, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 text-white"
-          >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2 text-xs sm:text-sm font-bold truncate">
-                <Sparkles className="w-4 h-4 flex-shrink-0" />
-                <span className="truncate">Applications are open for the next batch — limited seats available.</span>
-              </div>
-              <Link
-                href="/signup"
-                className="flex-shrink-0 px-4 py-1.5 rounded-lg bg-white text-indigo-600 text-xs font-extrabold hover:bg-slate-50 transition-colors"
-              >
-                Apply Now
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* ── Floating Contact button ── */}
       <a
@@ -701,19 +692,23 @@ const Hero = () => {
               <div className="pt-4 border-t border-slate-200/60">
                 <div className="flex flex-wrap justify-center lg:justify-start gap-2.5">
                   {[
-                    { label: '✅ 100% Online', color: 'text-blue-600 bg-blue-500/10 border-blue-500/20' },
-                    { label: '🏅 Verified Certificate', color: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20' },
-                    { label: '👨‍💻 Real Projects', color: 'text-purple-600 bg-purple-500/10 border-purple-500/20' },
-                    { label: '🎯 AICTE Registered', color: 'text-amber-600 bg-amber-500/10 border-amber-500/20' },
-                    { label: '📞 Mentor Support', color: 'text-teal-600 bg-teal-500/10 border-teal-500/20' },
-                  ].map((tag) => (
-                    <span
-                      key={tag.label}
-                      className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border ${tag.color}`}
-                    >
-                      {tag.label}
-                    </span>
-                  ))}
+                    { label: '100% Online', icon: Globe, color: 'text-blue-600 bg-blue-500/10 border-blue-500/20' },
+                    { label: 'Verified Certificate', icon: Award, color: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20' },
+                    { label: 'Real Projects', icon: Code, color: 'text-purple-600 bg-purple-500/10 border-purple-500/20' },
+                    { label: 'AICTE Registered', icon: Shield, color: 'text-amber-600 bg-amber-500/10 border-amber-500/20' },
+                    { label: 'Mentor Support', icon: Users, color: 'text-teal-600 bg-teal-500/10 border-teal-500/20' },
+                  ].map((tag) => {
+                    const TagIcon = tag.icon
+                    return (
+                      <span
+                        key={tag.label}
+                        className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold border ${tag.color}`}
+                      >
+                        <TagIcon className="w-3.5 h-3.5" />
+                        {tag.label}
+                      </span>
+                    )
+                  })}
                 </div>
               </div>
             </motion.div>
@@ -995,9 +990,8 @@ const Hero = () => {
 
                 {/* User row */}
                 <div className="mt-6 flex items-center gap-3 border-t border-slate-200/60 pt-4 flex-shrink-0">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
-                    ['bg-blue-100', 'bg-purple-100', 'bg-emerald-100'][idx % 3]
-                  }`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${['bg-blue-100', 'bg-purple-100', 'bg-emerald-100'][idx % 3]
+                    }`}>
                     {item.avatar}
                   </div>
                   <div>
