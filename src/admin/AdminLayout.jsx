@@ -181,8 +181,13 @@ const iconMap = {
   ) }
 
 export default function AdminLayout({ children, onLogout }) {
-  const { currentUser, hasPermission, userProfile } = useAuth()
+  const { currentUser, hasPermission, userProfile, logout } = useAuth()
   const { accountRequests, sellRequests, serviceRequests, messages } = useStore()
+
+  const handleAdminLogout = async () => {
+    if (onLogout) await onLogout()
+    await logout()
+  }
   
   const [openGroup, setOpenGroup] = useState(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -486,7 +491,7 @@ export default function AdminLayout({ children, onLogout }) {
                       <span>System Settings</span>
                     </Link>
                     <button
-                      onClick={onLogout}
+                      onClick={handleAdminLogout}
                       className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 text-left cursor-pointer border-t border-slate-100 mt-1 pt-2"
                     >
                       <LogOut className="w-3.5 h-3.5" />

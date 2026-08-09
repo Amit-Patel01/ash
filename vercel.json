@@ -26,5 +26,19 @@
         { "key": "X-Permitted-Cross-Domain-Policies", "value": "none" }
       ]
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/ai/newsletter?slot=7am",
+      "schedule": "30 1 * * *"
+    },
+    {
+      "path": "/api/ai/newsletter?slot=3pm",
+      "schedule": "30 9 * * *"
+    },
+    {
+      "path": "/api/ai/newsletter?slot=8pm",
+      "schedule": "30 14 * * *"
+    }
   ]
 }

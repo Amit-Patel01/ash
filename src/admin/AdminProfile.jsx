@@ -95,7 +95,7 @@ export default function AdminProfile() {
 
   const displayName = profileForm.displayName || userProfile?.displayName || currentUser?.displayName || 'Admin'
   const accountEmail = currentUser?.email || userProfile?.email || ''
-  const userId = currentUser?.uid || userProfile?.uid || ''
+  const userId = currentUser?.uid || userProfile?.uid || currentUser?.id || currentUser?._id || userProfile?.id || userProfile?._id || currentUser?.email || 'admin-session'
 
   const publicProfileId = encodeURIComponent(
     userProfile?.uid ||

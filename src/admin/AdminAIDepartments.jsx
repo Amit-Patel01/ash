@@ -187,14 +187,16 @@ export default function AdminAIDepartments() {
     setDispatchingNewsletter(true)
     setNewsletterResult(null)
     try {
-      const res = await fetch('/api/ai/newsletter', {
+      const res = await fetch(api.aiNewsletter, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAiAdminHeaders(),
         body: JSON.stringify({ slot })
-      }).then(r => r.json())
+      }).then(readApiJson)
       setNewsletterResult(res)
-      setExecutionSuccessMsg(`✅ ${res.slotLabel || 'Newsletter'} dispatched successfully!`)
-      setTimeout(() => setExecutionSuccessMsg(null), 6000)
+      if (res.success) {
+        setExecutionSuccessMsg(`✅ ${res.slotLabel || 'Newsletter'} dispatched successfully!`)
+        setTimeout(() => setExecutionSuccessMsg(null), 6000)
+      }
     } catch (err) {
       setNewsletterResult({ success: false, error: err.message })
     } finally {

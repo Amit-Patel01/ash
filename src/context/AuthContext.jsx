@@ -181,8 +181,16 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(async () => {
     localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
+    try {
+      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+    } catch {}
     setCurrentUser(null)
     setUserProfile(null)
+    setAuthError('')
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login'
+    }
   }, [])
 
   const resetPassword = useCallback(async (email, from) => {

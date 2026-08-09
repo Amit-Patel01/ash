@@ -218,6 +218,8 @@ export const api = {
   aiDepartmentClearProposals: buildApiUrl('/api/ai/department/proposals/clear'),
   aiDepartmentBroadcastEmail: buildApiUrl('/api/ai/department/email/broadcast'),
   aiDepartmentAnalytics: buildApiUrl('/api/ai/department/analytics'),
+  aiNewsletter: buildApiUrl('/api/ai/newsletter'),
+  aiSquad: buildApiUrl('/api/ai/squad'),
 
 
 
