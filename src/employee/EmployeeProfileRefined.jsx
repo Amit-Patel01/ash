@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
 import { api } from '../config/api'
+import ImageCropModal from '../components/ImageCropModal'
 import {
   EmployeeBadge,
   EmployeeSurface } from './EmployeePanelUI'
@@ -40,6 +41,9 @@ export default function EmployeeProfileRefined() {
   const [passwordLoading, setPasswordLoading] = useState(false)
   const [imageLoading, setImageLoading] = useState(false)
   const [coverLoading, setCoverLoading] = useState(false)
+
+  const [cropModalOpen, setCropModalOpen] = useState(false)
+  const [rawImageSrc, setRawImageSrc] = useState(null)
 
   useEffect(() => {
     setProfileForm(createProfileForm(userProfile))
@@ -96,8 +100,8 @@ export default function EmployeeProfileRefined() {
     }
   }
 
-  // Realtime Automatic Avatar Upload & DB Save
-  const handleImageUpload = async (event) => {
+  // Open Image Crop Modal on File Selection
+  const handleImageUpload = (event) => {
     const file = event.target.files?.[0]
     event.target.value = ''
 
@@ -111,57 +115,28 @@ export default function EmployeeProfileRefined() {
       return
     }
 
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      setRawImageSrc(e.target.result)
+      setCropModalOpen(true)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  // Handle Cropped Image Save
+  const handleCropComplete = async (croppedBase64) => {
     setImageLoading(true)
     setProfileStatus({ type: '', message: '' })
 
     try {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const img = new Image()
-        img.onload = () => {
-          const canvas = document.createElement('canvas')
-          const MAX_WIDTH = 300
-          const MAX_HEIGHT = 300
-          let width = img.width
-          let height = img.height
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width
-              width = MAX_WIDTH
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height
-              width = MAX_HEIGHT
-            }
-          }
-
-          canvas.width = width
-          canvas.height = height
-          const ctx = canvas.getContext('2d')
-          ctx.drawImage(img, 0, 0, width, height)
-
-          const base64Url = canvas.toDataURL('image/jpeg', 0.85)
-          setProfileForm(current => ({ ...current, avatar: base64Url }))
-
-          // Realtime DB Save instantly!
-          updateUserProfile(userId, { avatar: base64Url })
-            .then(() => {
-              setImageLoading(false)
-              setProfileStatus({ type: 'success', message: 'Profile photo updated & saved instantly!' })
-            })
-            .catch((err) => {
-              setImageLoading(false)
-              setProfileStatus({ type: 'error', message: err.message || 'Failed to save profile photo.' })
-            })
-        }
-        img.src = e.target.result
-      }
-      reader.readAsDataURL(file)
-    } catch (error) {
-      setProfileStatus({ type: 'error', message: error.message || 'Unable to process image.' })
+      setProfileForm((current) => ({ ...current, avatar: croppedBase64 }))
+      await updateUserProfile(userId, { avatar: croppedBase64 })
+      setProfileStatus({ type: 'success', message: 'Profile photo cropped & saved successfully!' })
+    } catch (err) {
+      setProfileStatus({ type: 'error', message: err.message || 'Failed to save photo.' })
+    } finally {
       setImageLoading(false)
+      setCropModalOpen(false)
     }
   }
 
@@ -778,6 +753,14 @@ export default function EmployeeProfileRefined() {
           )}
         </div>
       )}
+
+      {/* Interactive Image Crop Modal */}
+      <ImageCropModal
+        isOpen={cropModalOpen}
+        imageSrc={rawImageSrc}
+        onClose={() => setCropModalOpen(false)}
+        onCropComplete={handleCropComplete}
+      />
 
     </div>
   )

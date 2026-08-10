@@ -29,6 +29,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useStore } from '../store/StoreContext'
+import ImageCropModal from '../components/ImageCropModal'
 
 function GithubIcon({ size = 18, className = "" }) {
   return (
@@ -84,6 +85,9 @@ export default function AdminProfile() {
   const [profileLoading, setProfileLoading] = useState(false)
   const [imageLoading, setImageLoading] = useState(false)
   const [coverLoading, setCoverLoading] = useState(false)
+  
+  const [cropModalOpen, setCropModalOpen] = useState(false)
+  const [rawImageSrc, setRawImageSrc] = useState(null)
 
   useEffect(() => {
     setProfileForm(createProfileForm(userProfile, currentUser))
@@ -133,8 +137,8 @@ export default function AdminProfile() {
     }
   }
 
-  // Realtime Avatar Upload & Save
-  const handleAvatarUpload = async (event) => {
+  // Open Image Crop Modal on File Selection
+  const handleAvatarUpload = (event) => {
     const file = event.target.files?.[0]
     event.target.value = ''
 
@@ -148,56 +152,28 @@ export default function AdminProfile() {
       return
     }
 
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      setRawImageSrc(e.target.result)
+      setCropModalOpen(true)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  // Handle Cropped Image Save
+  const handleCropComplete = async (croppedBase64) => {
     setImageLoading(true)
     setProfileStatus({ type: '', message: '' })
 
     try {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const img = new Image()
-        img.onload = () => {
-          const canvas = document.createElement('canvas')
-          const MAX_WIDTH = 300
-          const MAX_HEIGHT = 300
-          let width = img.width
-          let height = img.height
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width
-              width = MAX_WIDTH
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height
-              width = MAX_HEIGHT
-            }
-          }
-
-          canvas.width = width
-          canvas.height = height
-          const ctx = canvas.getContext('2d')
-          ctx.drawImage(img, 0, 0, width, height)
-
-          const base64Url = canvas.toDataURL('image/jpeg', 0.85)
-          setProfileForm((curr) => ({ ...curr, avatar: base64Url }))
-
-          updateUserProfile(userId, { avatar: base64Url })
-            .then(() => {
-              setImageLoading(false)
-              setProfileStatus({ type: 'success', message: 'Admin profile photo saved instantly!' })
-            })
-            .catch((err) => {
-              setImageLoading(false)
-              setProfileStatus({ type: 'error', message: err.message || 'Failed to save profile photo.' })
-            })
-        }
-        img.src = e.target.result
-      }
-      reader.readAsDataURL(file)
-    } catch (error) {
-      setProfileStatus({ type: 'error', message: error.message || 'Unable to process image.' })
+      setProfileForm((current) => ({ ...current, avatar: croppedBase64 }))
+      await updateUserProfile(userId, { avatar: croppedBase64 })
+      setProfileStatus({ type: 'success', message: 'Admin profile photo cropped & saved successfully!' })
+    } catch (err) {
+      setProfileStatus({ type: 'error', message: err.message || 'Failed to save photo.' })
+    } finally {
       setImageLoading(false)
+      setCropModalOpen(false)
     }
   }
 
@@ -888,6 +864,14 @@ export default function AdminProfile() {
         )}
 
       </div>
+
+      {/* Interactive Image Crop Modal */}
+      <ImageCropModal
+        isOpen={cropModalOpen}
+        imageSrc={rawImageSrc}
+        onClose={() => setCropModalOpen(false)}
+        onCropComplete={handleCropComplete}
+      />
 
     </div>
   )

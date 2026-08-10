@@ -294,10 +294,8 @@ export default function AdminLayout({ children, onLogout }) {
               </button>
 
               <Link href="/admin" className="flex items-center gap-2.5 shrink-0 group">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300 shrink-0">
-                  <svg className="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                  </svg>
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-slate-900 border border-slate-700/80 p-1 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300 shrink-0">
+                  <img src="/brand-logo.png" alt="Amit Solution Hub Logo" className="w-full h-full object-contain" />
                 </div>
                 <div className="flex flex-col justify-center">
                   <h1 className="text-sm sm:text-base font-black tracking-tight text-slate-900 leading-tight whitespace-nowrap flex items-center gap-1">
@@ -439,7 +437,9 @@ export default function AdminLayout({ children, onLogout }) {
                       <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
                         {accountRequests.filter(r => r.status === 'pending').length > 0 && (
                           <Link href="/admin/account-requests" onClick={() => setShowNotifications(false)} className="flex items-center gap-3 p-3 hover:bg-slate-50">
-                            <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600">{iconMap.userPlus}</div>
+                            <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 p-1 flex items-center justify-center text-white shadow-md">
+                <img src="/brand-logo.png" alt="Amit Solution Hub Logo" className="w-full h-full object-contain" />
+              </div>
                             <div>
                               <p className="text-xs font-bold text-slate-900">Account Requests</p>
                               <p className="text-[10px] text-slate-500">{accountRequests.filter(r => r.status === 'pending').length} pending approval</p>
@@ -511,8 +511,8 @@ export default function AdminLayout({ children, onLogout }) {
         <div className="lg:hidden fixed inset-0 z-50 bg-white/95 backdrop-blur-2xl flex flex-col animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-4 sm:px-6 h-16 border-b border-slate-200/80">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white font-black text-xs shadow-md shadow-indigo-500/20">
-                SH
+              <div className="w-9 h-9 rounded-2xl bg-slate-900 border border-slate-700/80 p-1 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+                <img src="/brand-logo.png" alt="Amit Solution Hub Logo" className="w-full h-full object-contain" />
               </div>
               <div>
                 <span className="font-black text-sm text-slate-900 block leading-tight">Amit Solution Hub AI</span>
