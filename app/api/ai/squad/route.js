@@ -69,8 +69,9 @@ export async function POST(request) {
       });
     }
 
+    const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
 
     let systemContext = '';
     let userPrompt = '';

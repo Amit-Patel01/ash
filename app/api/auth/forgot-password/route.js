@@ -1,25 +1,10 @@
 export const dynamic = 'force-dynamic';
+export const maxDuration = 30;
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { getDb } from '@/lib/db/mongo';
-import nodemailer from 'nodemailer';
+import { sendEmail } from '@/lib/email';
 import { createEmailTemplate } from '@/lib/emailTemplate';
-
-const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
-const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587', 10);
-const SMTP_USER = process.env.SMTP_USER || 'support@amitsolutionhub.com';
-const SMTP_PASS = process.env.SMTP_PASS || '';
-const FROM_EMAIL = process.env.FROM_EMAIL || 'Amit Solution Hub <support@amitsolutionhub.com>';
-
-const transporter = nodemailer.createTransport({
-  host: SMTP_HOST,
-  port: SMTP_PORT,
-  secure: SMTP_PORT === 465,
-  auth: {
-    user: SMTP_USER,
-    pass: SMTP_PASS,
-  },
-});
 
 export async function POST(request) {
   try {
@@ -47,7 +32,7 @@ export async function POST(request) {
       { $set: { resetToken, resetExpires, updatedAt: new Date() } }
     );
 
-    const appUrl = process.env.APP_URL || process.env.FRONTEND_URL || 'https://amitsolutionhub.com';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || process.env.FRONTEND_URL || 'https://www.amitsolutionhub.com';
     const resetUrl = `${appUrl.replace(/\/+$/, '')}/reset-password?token=${resetToken}`;
 
     const resetEmailHtml = createEmailTemplate({
@@ -63,17 +48,14 @@ export async function POST(request) {
       ctaUrl: resetUrl
     });
 
-    if (SMTP_PASS) {
-      try {
-        await transporter.sendMail({
-          from: FROM_EMAIL,
-          to: normalizedEmail,
-          subject: '🔒 Reset Your Password - Amit Solution Hub',
-          html: resetEmailHtml,
-        });
-      } catch (mailErr) {
-        console.error('Failed to send reset email via SMTP:', mailErr);
-      }
+    const mailResult = await sendEmail({
+      to: normalizedEmail,
+      subject: '🔒 Reset Your Password - Amit Solution Hub',
+      html: resetEmailHtml,
+    });
+
+    if (!mailResult.success) {
+      console.warn('Password reset email warning:', mailResult.error);
     }
 
     return NextResponse.json({

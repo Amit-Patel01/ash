@@ -1,24 +1,10 @@
 export const dynamic = 'force-dynamic';
+export const maxDuration = 30;
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { sendEmail } from '@/lib/email';
 import { createEmailTemplate } from '@/lib/emailTemplate';
 
-const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
-const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587', 10);
-const SMTP_USER = process.env.SMTP_USER || 'support@amitsolutionhub.com';
-const SMTP_PASS = process.env.SMTP_PASS || '';
-const FROM_EMAIL = process.env.FROM_EMAIL || 'Amit Solution Hub <support@amitsolutionhub.com>';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'support@amitsolutionhub.com';
-
-const transporter = nodemailer.createTransport({
-  host: SMTP_HOST,
-  port: SMTP_PORT,
-  secure: SMTP_PORT === 465,
-  auth: {
-    user: SMTP_USER,
-    pass: SMTP_PASS,
-  },
-});
 
 export async function POST(request) {
   try {
@@ -35,7 +21,7 @@ export async function POST(request) {
     let badgeText = 'NOTIFICATION';
     let bodyContent = `<p>Notification <strong>${type}</strong> received.</p><pre style="background:#0f172a; padding:12px; border-radius:8px;">${JSON.stringify(data, null, 2)}</pre>`;
     let ctaText = 'Go to Dashboard';
-    let ctaUrl = 'https://amitsolutionhub.com/login';
+    let ctaUrl = 'https://www.amitsolutionhub.com/login';
 
     if (type === 'welcome') {
       subject = '🎉 Welcome to Amit Solution Hub!';
@@ -47,7 +33,7 @@ export async function POST(request) {
         <p>You can now browse internship tracks, access code repositories, and work on live projects to earn your QR-verified certificate.</p>
       `;
       ctaText = 'Access Dashboard';
-      ctaUrl = 'https://amitsolutionhub.com/login';
+      ctaUrl = 'https://www.amitsolutionhub.com/login';
     } else if (type === 'enrollment_student') {
       subject = `✅ Course Enrollment Confirmed: ${data.courseTitle || 'Course'}`;
       title = 'Enrollment Confirmed!';
@@ -59,7 +45,7 @@ export async function POST(request) {
         <p>Your mentor assignments and project files are now available in your portal.</p>
       `;
       ctaText = 'Start Learning';
-      ctaUrl = 'https://amitsolutionhub.com/user/courses';
+      ctaUrl = 'https://www.amitsolutionhub.com/user/courses';
     }
 
     const html = createEmailTemplate({
@@ -71,18 +57,19 @@ export async function POST(request) {
       ctaUrl
     });
 
-    if (SMTP_PASS) {
-      await transporter.sendMail({
-        from: FROM_EMAIL,
-        to,
-        subject,
-        html,
-      });
-    }
+    const mailResult = await sendEmail({
+      to,
+      subject,
+      html,
+    });
 
-    return NextResponse.json({ success: true, message: 'Notification dispatched successfully' });
+    return NextResponse.json({
+      success: true,
+      message: mailResult.success ? 'Notification dispatched successfully' : 'Notification logged (SMTP issue)',
+      emailResult: mailResult,
+    });
   } catch (error) {
     console.error('POST /api/notify error:', error);
-    return NextResponse.json({ success: true, message: 'Notification processed (log mode)', error: error.message });
+    return NextResponse.json({ success: true, message: 'Notification processed with log fallback', error: error.message });
   }
 }

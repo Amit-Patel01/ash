@@ -1,7 +1,7 @@
 # Graph Report - amitsolutionhub  (2026-08-10)
 
 ## Corpus Check
-- 715 files · ~1,645,503 words
+- 715 files · ~1,645,484 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -252,8 +252,8 @@ Cohesion: 0.05
 Nodes (75): AdminQrCertificates(), buildVerifyUrl(), CERTIFICATE_TYPES, createInitialForm(), formatDisplayDate(), getTypeMeta(), mapCertificateToForm(), resolveAssetSrc() (+67 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.28
-Nodes (11): CertificateRouter(), CertificateCard(), downloadCertificatePdf(), downloadCertificatePng(), formatCertificateDate(), getCertificateDocumentLabel(), getCertificateDocumentType(), getCertificateFilename() (+3 more)
+Cohesion: 0.20
+Nodes (14): CertificateDocument(), formatDate(), getDocumentNarrative(), resolveAicteStatus(), CertificateCard(), formatCertificateDate(), getCertificateCourseName(), getCertificateDocumentLabel() (+6 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.03
@@ -593,8 +593,8 @@ Cohesion: 0.13
 Nodes (14): devDependencies, eslint, eslint-config-next, @types/node, @types/react, @types/react-dom, name, private (+6 more)
 
 ### Community 81 - "Community 81"
-Cohesion: 0.21
-Nodes (17): copyCanvasContents(), copyCanvasTree(), createCaptureStage(), downloadBlob(), EXPORT_STYLE_PROPS, getColorNormalizationContext(), getExportDimensions(), loadHtml2Canvas() (+9 more)
+Cohesion: 0.20
+Nodes (20): copyCanvasContents(), copyCanvasTree(), createCaptureStage(), downloadBlob(), downloadCertificatePdf(), downloadCertificatePng(), EXPORT_STYLE_PROPS, getColorNormalizationContext() (+12 more)
 
 ### Community 82 - "Community 82"
 Cohesion: 0.17
@@ -665,16 +665,16 @@ Cohesion: 0.29
 Nodes (9): AdminTasks(), avatarColors, buildAssigneeRows(), columns, emptyAssignee, getAvatarInitials(), priorityColors, resolveAssigneeFromTask() (+1 more)
 
 ### Community 99 - "Community 99"
-Cohesion: 0.17
-Nodes (18): AICTECertificateDocument(), AICTE_LOGO_SRC, CertificateDocument(), formatDate(), formatAicteCertificateDate(), getDocumentNarrative(), isAicteInternshipCertificate(), normalizeDisplayText() (+10 more)
+Cohesion: 0.23
+Nodes (12): AICTECertificateDocument(), formatAicteCertificateDate(), isAicteInternshipCertificate(), normalizeDisplayText(), resolveAicteCertificateId(), CornerAccent(), POSITIONS, ROTATIONS (+4 more)
 
 ### Community 100 - "Community 100"
 Cohesion: 0.22
 Nodes (5): { chatWithAI }, express, { getDb }, { logger }, router
 
 ### Community 101 - "Community 101"
-Cohesion: 0.28
-Nodes (10): COLORS, SIGNATURE_SIZES, CertificateFooter(), CertificateHeader(), getDetailChipStyle(), textSafeStyle, DetailChip(), renderSpacedWords() (+2 more)
+Cohesion: 0.25
+Nodes (11): AICTE_LOGO_SRC, COLORS, SIGNATURE_SIZES, CertificateFooter(), CertificateHeader(), getDetailChipStyle(), textSafeStyle, DetailChip() (+3 more)
 
 ### Community 102 - "Community 102"
 Cohesion: 0.22
@@ -705,8 +705,8 @@ Cohesion: 0.33
 Nodes (5): ac(), Fb(), Gb(), Hb(), zb()
 
 ### Community 111 - "Community 111"
-Cohesion: 0.31
-Nodes (11): AdminSettings(), DEFAULT_CERTIFICATE_TEMPLATE, DOCUMENT_TEMPLATE_DEFAULTS, DOCUMENT_TYPES, LEGACY_TEMPLATE_KEYS, mergeCertificateTemplate(), mergeVariant(), normalizeCertificateTemplate() (+3 more)
+Cohesion: 0.30
+Nodes (10): AdminSettings(), DEFAULT_CERTIFICATE_TEMPLATE, DOCUMENT_TEMPLATE_DEFAULTS, DOCUMENT_TYPES, LEGACY_TEMPLATE_KEYS, mergeVariant(), normalizeCertificateTemplate(), pickLegacyTemplateOverrides() (+2 more)
 
 ### Community 112 - "Community 112"
 Cohesion: 0.33

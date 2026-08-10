@@ -1,28 +1,48 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { sendEmail } from '@/lib/email';
 import { createEmailTemplate } from '@/lib/emailTemplate';
+import { getDb } from '@/lib/db/mongo';
 
-const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
-const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587', 10);
-const SMTP_USER = process.env.SMTP_USER || 'support@amitsolutionhub.com';
-const SMTP_PASS = process.env.SMTP_PASS || '';
-const FROM_EMAIL = process.env.FROM_EMAIL || 'Amit Solution Hub <support@amitsolutionhub.com>';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'support@amitsolutionhub.com';
 
-const transporter = nodemailer.createTransport({
-  host: SMTP_HOST,
-  port: SMTP_PORT,
-  secure: SMTP_PORT === 465,
-  auth: {
-    user: SMTP_USER,
-    pass: SMTP_PASS,
-  },
-});
+async function getBroadcastRecipients(customRecipients) {
+  if (Array.isArray(customRecipients) && customRecipients.length > 0) {
+    return customRecipients;
+  }
+
+  try {
+    const db = await getDb();
+    if (db) {
+      const [userDocs, blacklist] = await Promise.all([
+        db.collection('users').find(
+          { email: { $exists: true }, emailUnsubscribed: { $ne: true } },
+          { projection: { email: 1 } }
+        ).toArray().catch(() => []),
+        db.collection('email_unsubscribes').distinct('email').catch(() => [])
+      ]);
+
+      const blackSet = new Set((blacklist || []).map(e => String(e).toLowerCase()));
+      const validEmails = userDocs
+        .map(u => u.email)
+        .filter(e => e && typeof e === 'string' && e.includes('@') && !blackSet.has(e.toLowerCase().trim()));
+
+      if (validEmails.length > 0) {
+        return Array.from(new Set(validEmails));
+      }
+    }
+  } catch (dbErr) {
+    console.warn('⚠️ [BROADCAST] DB subscriber fetch warning:', dbErr.message);
+  }
+
+  return [ADMIN_EMAIL];
+}
 
 export async function POST(request) {
   try {
-    const { subject = 'Announcement from Amit Solution Hub', body = '' } = await request.json();
+    const { subject = 'Announcement from Amit Solution Hub', body = '', recipientEmails } = await request.json();
+
+    const recipients = await getBroadcastRecipients(recipientEmails);
 
     const formattedHtml = createEmailTemplate({
       title: subject,
@@ -30,33 +50,23 @@ export async function POST(request) {
       badgeText: 'ANNOUNCEMENT',
       bodyContent: body,
       ctaText: 'Visit Amit Solution Hub',
-      ctaUrl: 'https://amitsolutionhub.com'
+      ctaUrl: 'https://www.amitsolutionhub.com'
     });
 
-    let emailSent = false;
-    let message = 'Log mode (Set SMTP_PASS in .env.local to send actual Gmail emails)';
-
-    if (SMTP_PASS) {
-      try {
-        await transporter.sendMail({
-          from: FROM_EMAIL,
-          to: ADMIN_EMAIL,
-          subject,
-          html: formattedHtml
-        });
-        emailSent = true;
-        message = 'Broadcast email sent successfully via SMTP!';
-      } catch (mailErr) {
-        message = `SMTP Error: ${mailErr.message}`;
-      }
-    }
+    const mailResult = await sendEmail({
+      to: recipients.join(', '),
+      subject,
+      html: formattedHtml,
+    });
 
     return NextResponse.json({
       success: true,
-      emailSent,
-      message
+      emailSent: mailResult.success,
+      recipientsCount: recipients.length,
+      message: mailResult.success ? `Broadcast email sent successfully to ${recipients.length} recipient(s) via SMTP!` : `SMTP Error: ${mailResult.error}`
     });
   } catch (error) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
+
