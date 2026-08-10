@@ -180,7 +180,7 @@ export default function UserLayout({ children }) {
       list.push(
         {
           id: 'welcome-1',
-          title: 'Welcome to SolutionHub!',
+          title: 'Welcome to Amit Solution Hub!',
           desc: 'Explore enrolled training tracks, verified offer letters, and custom project tools.',
           time: 'Just now',
           link: '/user/my-courses'
@@ -269,7 +269,7 @@ export default function UserLayout({ children }) {
                 </div>
                 <div>
                   <h1 className="text-base font-bold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent leading-none">
-                    SolutionHub
+                    Amit Solution Hub
                   </h1>
                   <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase">Student Portal</span>
                 </div>

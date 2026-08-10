@@ -228,7 +228,7 @@ export default function EmployeeLayout({ children }) {
                 </div>
                 <div>
                   <h1 className="text-base font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent leading-none">
-                    SolutionHub
+                    Amit Solution Hub
                   </h1>
                   <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase">
                     {isTeamMember ? 'Team Portal' : 'Employee Desk'}

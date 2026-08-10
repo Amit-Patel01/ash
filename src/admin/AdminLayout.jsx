@@ -301,7 +301,7 @@ export default function AdminLayout({ children, onLogout }) {
                 </div>
                 <div className="flex flex-col justify-center">
                   <h1 className="text-sm sm:text-base font-black tracking-tight text-slate-900 leading-tight whitespace-nowrap flex items-center gap-1">
-                    <span>SolutionHub</span>
+                    <span>Amit Solution Hub</span>
                     <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">AI</span>
                   </h1>
                   <span className="text-[9px] sm:text-[10px] font-mono font-bold text-slate-400 tracking-wider uppercase whitespace-nowrap block leading-none mt-0.5">Admin Workspace</span>
@@ -515,7 +515,7 @@ export default function AdminLayout({ children, onLogout }) {
                 SH
               </div>
               <div>
-                <span className="font-black text-sm text-slate-900 block leading-tight">SolutionHub AI</span>
+                <span className="font-black text-sm text-slate-900 block leading-tight">Amit Solution Hub AI</span>
                 <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Admin Workspace</span>
               </div>
             </div>
