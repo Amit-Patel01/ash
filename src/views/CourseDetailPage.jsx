@@ -11,6 +11,7 @@ import VerifiedCertificateSection from '../components/VerifiedCertificateSection
 import { CategoryIcon } from '../utils/CategoryIcon'
 import { formatEnrollmentDeadline, isEnrollmentClosed, isPlanEnrollmentClosed } from '../utils/enrollmentDeadline'
 import { getLearningTypeLabel, normalizeLearningType } from '../utils/learningType'
+import { parseList } from '../utils/parseList'
 
 // Intersection observer hook
 function useInView() {
@@ -24,23 +25,7 @@ function useInView() {
   return [ref, visible]
 }
 
-const fade = () => 'transition-all duration-700 opacity-100 translate-y-0'
-
-const parseList = (val) => {
-  if (!val) return []
-  if (Array.isArray(val)) return val
-  if (typeof val === 'string') {
-    const trimmed = val.trim()
-    if (!trimmed) return []
-    try {
-      const parsed = JSON.parse(trimmed)
-      if (Array.isArray(parsed)) return parsed
-    } catch {
-      return trimmed.split(',').map((s) => s.trim()).filter(Boolean)
-    }
-  }
-  return []
-}
+const fade = (visible) => visible ? 'transition-all duration-700 opacity-100 translate-y-0' : 'transition-all duration-700 opacity-0 translate-y-10'
 
 const LEVEL_COLORS = { Beginner: 'bg-emerald-100 text-emerald-700', Intermediate: 'bg-amber-100 text-amber-700', Advanced: 'bg-red-100 text-red-700' }
 
@@ -457,7 +442,7 @@ export default function CourseDetailPage() {
               </h1>
 
               {course.description && (
-                <p className={`text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{course.description}</p>
+                <p className={`text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed whitespace-pre-line ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{course.description}</p>
               )}
 
               {/* Meta badges */}

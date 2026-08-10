@@ -42,7 +42,7 @@ const Checkout = () => {
     screenshot_file: null })
 
   useEffect(() => {
-    const found = projects.find(p => p.slug === slug && p.status === 'active')
+    const found = projects.find(p => (p.slug === slug || String(p.id) === String(slug)) && p.status === 'active')
     setProject(found || null)
     setLoading(false)
     setTimeout(() => setLoaded(true), 100)
@@ -60,8 +60,8 @@ const Checkout = () => {
 
   const amount = project
     ? purchaseType === 'project_with_source'
-      ? Number(project.price_with_source)
-      : Number(project.price_project_only)
+      ? Number(project.price_with_source || project.price_project_only || 0)
+      : Number(project.price_project_only || 0)
     : 0
 
   const handleSubmit = async (e) => {
@@ -82,9 +82,12 @@ const Checkout = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount })
       })
-      const { order } = await orderRes.json()
+      const data = await orderRes.json()
 
-      if (!order) throw new Error("Could not create Razorpay order")
+      if (!orderRes.ok || !data.success || !data.order) {
+        throw new Error(data.message || "Could not create Razorpay order")
+      }
+      const order = data.order
 
       // 2. Open Razorpay Modal
       const options = {
@@ -146,7 +149,7 @@ const Checkout = () => {
 
     } catch (err) {
       console.error(err)
-      setError('Failed to initiate payment. Please try again.')
+      setError(err?.message || 'Failed to initiate payment. Please try again.')
     } finally {
       setSubmitting(false)
     }

@@ -277,7 +277,10 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
           method: 'POST',
           headers,
           body: JSON.stringify({
+            amount: payableAmount,
             courseId: actualCourseId,
+            courseName: actualCourseTitle,
+            userEmail: currentUser?.email || '',
             planId: actualPlanId,
             couponCode: appliedCouponCode })
         })
@@ -287,6 +290,11 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
         }
         const { order, pricing } = orderData
         if (!order) throw new Error("Could not create Razorpay order")
+
+        const finalAmt = pricing?.finalAmount ?? payableAmount
+        const origAmt = pricing?.originalAmount ?? actualPrice
+        const discAmt = pricing?.discountAmount ?? discountAmount
+        const cCode = pricing?.couponCode ?? appliedCouponCode
 
         const options = {
           key: (typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID : null) || 'rzp_live_SXgcywjUbXwb34',
@@ -308,12 +316,12 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
                   courseId: actualCourseId,
                   planId: actualPlanId || course.id,
                   planName: actualPlanLabel || actualCourseTitle,
-                  amount: pricing.finalAmount,
-                  originalAmount: pricing.originalAmount,
-                  discountAmount: pricing.discountAmount,
-                  finalAmount: pricing.finalAmount,
-                  couponCode: pricing.couponCode || '',
-                  couponId: pricing.couponId || '' })
+                  amount: finalAmt,
+                  originalAmount: origAmt,
+                  discountAmount: discAmt,
+                  finalAmount: finalAmt,
+                  couponCode: cCode || '',
+                  couponId: pricing?.couponId || '' })
               })
               const verifyData = await readApiJson(verifyRes)
 
@@ -326,12 +334,12 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
                   courseId: actualCourseId,
                   courseTitle: actualCourseTitle,
                   category: course.category,
-                  amount: pricing.finalAmount,
-                  originalAmount: pricing.originalAmount,
-                  discountAmount: pricing.discountAmount,
-                  finalAmount: pricing.finalAmount,
-                  couponCode: pricing.couponCode || '',
-                  couponId: pricing.couponId || '',
+                  amount: finalAmt,
+                  originalAmount: origAmt,
+                  discountAmount: discAmt,
+                  finalAmount: finalAmt,
+                  couponCode: cCode || '',
+                  couponId: pricing?.couponId || '',
                   instructor: course.instructor || '',
                   assignedEmployeeId: course.assignedEmployeeId || '',
                   paymentId: response.razorpay_payment_id,

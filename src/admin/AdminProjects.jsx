@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { useStore } from '../store/StoreContext'
 import { Search } from 'lucide-react'
 
+import { parseList } from '../utils/parseList'
+
 export default function AdminProjects() {
   const { projects, addProject, updateProject, deleteProject } = useStore()
   const [viewMode, setViewMode] = useState('grid')
@@ -40,11 +42,15 @@ export default function AdminProjects() {
 
   const openEdit = (project) => {
     setEditingProject(project)
+    const featList = parseList(project.features)
+    const techList = parseList(project.tech_stack)
     setFormData({
       title: project.title, description: project.description, long_description: project.long_description || '',
       category_name: project.category_name, category_slug: project.category_slug,
       price_project_only: String(project.price_project_only), price_with_source: String(project.price_with_source),
-      features: Array.isArray(project.features) ? project.features.join(', ') : (project.features || ''), tech_stack: Array.isArray(project.tech_stack) ? project.tech_stack.join(', ') : (project.tech_stack || ''), is_featured: project.is_featured, status: project.status || 'active',
+      features: featList.join(', '),
+      tech_stack: techList.join(', '),
+      is_featured: project.is_featured, status: project.status || 'active',
       thumbnail: project.thumbnail || ''
     })
     setShowModal(true)

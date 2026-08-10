@@ -270,8 +270,8 @@
     "semantic_hash": ""
   },
   "app/api/auth/forgot-password/route.js": {
-    "mtime": 1786337305.550448,
-    "ast_hash": "d56849c483c0404008229ce3050932f6",
+    "mtime": 1786377476.295582,
+    "ast_hash": "798722392b354ab95299decefd4fcf9e",
     "semantic_hash": ""
   },
   "app/api/auth/register-customer/route.js": {
@@ -335,8 +335,8 @@
     "semantic_hash": ""
   },
   "app/api/notify/route.js": {
-    "mtime": 1786337310.6930075,
-    "ast_hash": "9f06cec61e41b8c4ec6b2b0bc8dbd1f0",
+    "mtime": 1786377468.3726082,
+    "ast_hash": "9aa68dc37645f3e49f5dcc207e0835f8",
     "semantic_hash": ""
   },
   "app/api/razorpay/create-course-order/route.js": {
@@ -2795,8 +2795,8 @@
     "semantic_hash": ""
   },
   "src/admin/AdminAIDepartments.jsx": {
-    "mtime": 1786300062.6069767,
-    "ast_hash": "954f96710d09b9534f9992d98b895e36",
+    "mtime": 1786378215.990333,
+    "ast_hash": "b3285902844bd357cf6f3980a036ad6c",
     "semantic_hash": ""
   },
   "src/admin/AdminAccountRequests.jsx": {
@@ -2840,8 +2840,8 @@
     "semantic_hash": ""
   },
   "src/admin/AdminLayout.jsx": {
-    "mtime": 1786300454.509431,
-    "ast_hash": "572a9fbfe015df7b4babb5f7562c34ac",
+    "mtime": 1786379202.9961371,
+    "ast_hash": "5e82e28ac9fc799b8113f03ac144b5c6",
     "semantic_hash": ""
   },
   "src/admin/AdminMessages.jsx": {
@@ -2855,8 +2855,8 @@
     "semantic_hash": ""
   },
   "src/admin/AdminProfile.jsx": {
-    "mtime": 1786300511.0359163,
-    "ast_hash": "7215f2eb3cb9712324c5a9c5801a5335",
+    "mtime": 1786379336.8618162,
+    "ast_hash": "37091b778a4e9eb8f43e6b99a44fd7e8",
     "semantic_hash": ""
   },
   "src/admin/AdminProjects.jsx": {
@@ -3170,8 +3170,8 @@
     "semantic_hash": ""
   },
   "src/employee/EmployeeLayout.jsx": {
-    "mtime": 1786297412.099214,
-    "ast_hash": "53835ed451c08621a38b4dd628157c24",
+    "mtime": 1786379220.1399372,
+    "ast_hash": "4586ebae09a762d8d281a2c2b7a728eb",
     "semantic_hash": ""
   },
   "src/employee/EmployeeOverview.jsx": {
@@ -3190,8 +3190,8 @@
     "semantic_hash": ""
   },
   "src/employee/EmployeeProfileRefined.jsx": {
-    "mtime": 1786297412.1030486,
-    "ast_hash": "f51293ee0672f1688cd7041e6e7093de",
+    "mtime": 1786379363.6122363,
+    "ast_hash": "b64080ed2540f18ec1f65659e05aaa61",
     "semantic_hash": ""
   },
   "src/employee/EmployeeProjects.jsx": {
@@ -3270,8 +3270,8 @@
     "semantic_hash": ""
   },
   "src/user/UserLayout.jsx": {
-    "mtime": 1786297412.120989,
-    "ast_hash": "4bbf832edacdf520f1d15f7ced569ea3",
+    "mtime": 1786379211.2139022,
+    "ast_hash": "9197c48d7df2cd91d6e6d6c072414d44",
     "semantic_hash": ""
   },
   "src/user/UserMyCourses.jsx": {
@@ -3290,8 +3290,8 @@
     "semantic_hash": ""
   },
   "src/user/UserProfile.jsx": {
-    "mtime": 1786297412.1252227,
-    "ast_hash": "9e4fd8a0e00e86a19c25c24f067e10de",
+    "mtime": 1786379308.5960753,
+    "ast_hash": "2fd98c58d8d4bf03463bfdaaf0c33bb0",
     "semantic_hash": ""
   },
   "src/user/UserSupport.jsx": {
@@ -3350,8 +3350,8 @@
     "semantic_hash": ""
   },
   "src/views/About.jsx": {
-    "mtime": 1786299005.4824688,
-    "ast_hash": "5acaca09faf2cec78d46cc6d436090cc",
+    "mtime": 1786378906.4071314,
+    "ast_hash": "9b70e1b05dd98eea37eac3c6d13acbf7",
     "semantic_hash": ""
   },
   "src/views/AboutTradingMentorship.jsx": {
@@ -4280,8 +4280,8 @@
     "semantic_hash": ""
   },
   "app/api/ai/department/email/broadcast/route.js": {
-    "mtime": 1786375854.4663978,
-    "ast_hash": "099c7fc2b47565ca163a2da713032d36",
+    "mtime": 1786378608.351759,
+    "ast_hash": "9d9edcdd49d53c493dadd59a6fd53bd1",
     "semantic_hash": ""
   },
   "app/api/ai/department/proposals/clear/route.js": {
@@ -4300,8 +4300,8 @@
     "semantic_hash": ""
   },
   "app/api/ai/newsletter/route.js": {
-    "mtime": 1786375846.6151514,
-    "ast_hash": "6bd71d71a71ad3d25fd95eddeba30f87",
+    "mtime": 1786378275.240441,
+    "ast_hash": "131c961426028b169d1775859c4b9d28",
     "semantic_hash": ""
   },
   "app/api/ai/squad/route.js": {
@@ -4320,13 +4320,13 @@
     "semantic_hash": ""
   },
   "lib/email.js": {
-    "mtime": 1786375837.7070665,
-    "ast_hash": "e7ffab09b1138e7d7b166332e9b2831a",
+    "mtime": 1786378268.018086,
+    "ast_hash": "d11473f884c829259f53fc1cb6ff1a93",
     "semantic_hash": ""
   },
   "lib/emailTemplate.js": {
-    "mtime": 1786300316.8972857,
-    "ast_hash": "6befee2f61189c8d8fd156a853148282",
+    "mtime": 1786378598.7650917,
+    "ast_hash": "1ae2824cfcaa474b6f8775af61d37f72",
     "semantic_hash": ""
   },
   "public/tab-icon.png": {
@@ -4337,6 +4337,11 @@
   "src/assets/title-logo.png": {
     "mtime": 1786298801.7402937,
     "ast_hash": "69c394c7617ae238628de8c84763e4d8",
+    "semantic_hash": ""
+  },
+  "src/components/ImageCropModal.jsx": {
+    "mtime": 1786379276.7129183,
+    "ast_hash": "aeb6caef7cd779204f355d79b716a7e5",
     "semantic_hash": ""
   }
 }

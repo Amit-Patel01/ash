@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
-const KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
+const KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'ZQL0f06MX9O2w9YShTx3bApG';
 
 export async function POST(request) {
   try {

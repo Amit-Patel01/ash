@@ -5,21 +5,7 @@ import { useParams } from 'next/navigation'
 import { useStore } from '../store/StoreContext'
 import { useAuth } from '../context/AuthContext'
 
-const parseList = (val) => {
-  if (!val) return []
-  if (Array.isArray(val)) return val
-  if (typeof val === 'string') {
-    const trimmed = val.trim()
-    if (!trimmed) return []
-    try {
-      const parsed = JSON.parse(trimmed)
-      if (Array.isArray(parsed)) return parsed
-    } catch {
-      return trimmed.split(',').map((s) => s.trim()).filter(Boolean)
-    }
-  }
-  return []
-}
+import { parseList } from '../utils/parseList'
 
 // Feature chip accents — cycled purely for visual rhythm, no logic impact
 const FEATURE_COLORS = [
@@ -242,7 +228,7 @@ const ProjectDetails = () => {
           {/* Info */}
           <div className="p-8 md:p-10">
             <h1 className="pd-display text-3xl md:text-4xl font-extrabold mb-4 text-slate-800">{project.title}</h1>
-            <p className="text-lg leading-relaxed mb-8 text-slate-600">
+            <p className="text-lg leading-relaxed mb-8 text-slate-600 whitespace-pre-line">
               {project.long_description || project.description}
             </p>
 
