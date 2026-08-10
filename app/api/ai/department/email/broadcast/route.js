@@ -54,7 +54,8 @@ export async function POST(request) {
     });
 
     const mailResult = await sendEmail({
-      to: recipients.join(', '),
+      to: ADMIN_EMAIL,
+      bcc: recipients,
       subject,
       html: formattedHtml,
     });

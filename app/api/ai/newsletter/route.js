@@ -105,7 +105,8 @@ Format nicely with clean HTML paragraphs, bullet points, and strong text.`;
     });
 
     const mailResult = await sendEmail({
-      to: recipientEmails.join(', '),
+      to: ADMIN_EMAIL,
+      bcc: recipientEmails,
       subject: newsletterSubject,
       html: newsletterHtml,
     });
