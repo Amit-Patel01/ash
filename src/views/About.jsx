@@ -30,8 +30,7 @@ import {
   PenTool,
   Cpu,
   CheckSquare,
-  Rocket,
-  ShieldAlert
+  Rocket
 } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
 import msmeLogo from '../assets/msme.png'
@@ -784,31 +783,7 @@ export default function About() {
             </div>
           </div>
 
-          {/* Placeholders for Future Programs */}
-          <div className="mt-16 text-center max-w-4xl mx-auto space-y-6">
-            <div className="relative inline-flex items-center gap-2 px-3 py-1 rounded-full border border-dashed border-amber-300 dark:border-amber-800 text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400">
-              <ShieldAlert size={12} className="text-amber-500" /> Upcoming Cloud & Startup Program Enlistments
-            </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 opacity-70">
-              <div className="p-4 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-slate-100/40 dark:bg-slate-900/20 text-center flex flex-col items-center justify-center">
-                <span className="text-xs font-bold text-slate-600 dark:text-slate-300">Microsoft for Startups</span>
-                <span className="text-[9px] text-blue-500 dark:text-indigo-400 font-black uppercase tracking-widest mt-1">Pending Approval</span>
-              </div>
-              <div className="p-4 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-slate-100/40 dark:bg-slate-900/20 text-center flex flex-col items-center justify-center">
-                <span className="text-xs font-bold text-slate-600 dark:text-slate-300">Google for Startups</span>
-                <span className="text-[9px] text-blue-500 dark:text-indigo-400 font-black uppercase tracking-widest mt-1">Assessment Phase</span>
-              </div>
-              <div className="p-4 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-slate-100/40 dark:bg-slate-900/20 text-center flex flex-col items-center justify-center">
-                <span className="text-xs font-bold text-slate-600 dark:text-slate-300">Cloudflare Portal</span>
-                <span className="text-[9px] text-blue-500 dark:text-indigo-400 font-black uppercase tracking-widest mt-1">Integration Queue</span>
-              </div>
-              <div className="p-4 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-slate-100/40 dark:bg-slate-900/20 text-center flex flex-col items-center justify-center">
-                <span className="text-xs font-bold text-slate-600 dark:text-slate-300">MongoDB for Academics</span>
-                <span className="text-[9px] text-blue-500 dark:text-indigo-400 font-black uppercase tracking-widest mt-1">Under Enlistment</span>
-              </div>
-            </div>
-          </div>
         </section>
 
         {/* ── 12. FAQ ── */}
