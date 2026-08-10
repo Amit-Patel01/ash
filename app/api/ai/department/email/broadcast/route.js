@@ -42,13 +42,25 @@ export async function POST(request) {
   try {
     const { subject = 'Announcement from Amit Solution Hub', body = '', recipientEmails } = await request.json();
 
+    let cleanSubject = subject;
+    let cleanBody = String(body || '').trim();
+
+    const subjectMatch = cleanBody.match(/^(?:\*\*)?Subject:\s*([^\n\r*]+)(?:\*\*)?/i);
+    if (subjectMatch && subjectMatch[1]) {
+      if (subject === 'Announcement from Amit Solution Hub' || !subject) {
+        cleanSubject = subjectMatch[1].trim();
+      }
+      cleanBody = cleanBody.replace(/^(?:\*\*)?Subject:\s*[^\n]+\r?\n(?:\*\*)?\s*/i, '');
+      cleanBody = cleanBody.replace(/^\*\*\s*Subject:\s*.*?\*\*\s*/i, '');
+    }
+
     const recipients = await getBroadcastRecipients(recipientEmails);
 
     const formattedHtml = createEmailTemplate({
-      title: subject,
-      subtitle: 'Official AI Broadcast Email',
+      title: cleanSubject,
+      subtitle: 'Official Announcement',
       badgeText: 'ANNOUNCEMENT',
-      bodyContent: body,
+      bodyContent: cleanBody,
       ctaText: 'Visit Amit Solution Hub',
       ctaUrl: 'https://www.amitsolutionhub.com'
     });
@@ -56,7 +68,7 @@ export async function POST(request) {
     const mailResult = await sendEmail({
       to: ADMIN_EMAIL,
       bcc: recipients,
-      subject,
+      subject: cleanSubject,
       html: formattedHtml,
     });
 
