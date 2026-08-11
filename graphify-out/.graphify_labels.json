@@ -214,6 +214,8 @@
   "212": "TeamMemberCard.jsx",
   "213": "ComingSoon.jsx",
   "214": "Community 214",
+  "215": "EmployeeLayout.jsx",
+  "216": "ProjectDetails.jsx",
   "217": "help.jsx",
   "218": "RoleSelect.jsx",
   "219": "Community 219",
@@ -303,6 +305,7 @@
   "303": "eslint.config.js",
   "304": "postcss.config.js",
   "305": "tailwind.config.js",
+  "306": "page.jsx",
   "307": "Coding Conventions",
   "308": "Testing Strategy",
   "309": "route.js",
@@ -328,5 +331,8 @@
   "329": "graphify",
   "330": "graphify",
   "331": "emailTemplate.js",
-  "332": "replace_customer.ps1"
+  "332": "replace_customer.ps1",
+  "333": "page.jsx",
+  "334": "page.jsx",
+  "335": "page.jsx"
 }

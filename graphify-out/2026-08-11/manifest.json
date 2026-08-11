@@ -325,8 +325,8 @@
     "semantic_hash": ""
   },
   "app/api/db/[...slug]/route.js": {
-    "mtime": 1786297407.8893435,
-    "ast_hash": "0204ce578cdee49250abb3f9a1f0f048",
+    "mtime": 1786462090.982276,
+    "ast_hash": "aff568b6fd270b268ffe171b3f5e0b0c",
     "semantic_hash": ""
   },
   "app/api/db/settings/maintenance/route.js": {
@@ -2860,8 +2860,8 @@
     "semantic_hash": ""
   },
   "src/admin/AdminProjects.jsx": {
-    "mtime": 1786382002.5700788,
-    "ast_hash": "5f2d8e3b1522c98a1f33cafeba2e19ae",
+    "mtime": 1786462148.1878862,
+    "ast_hash": "00b6571d5ecf1e8731bc9ada8c7e75b2",
     "semantic_hash": ""
   },
   "src/admin/AdminQrCertificates.jsx": {
@@ -2875,8 +2875,8 @@
     "semantic_hash": ""
   },
   "src/admin/AdminSales.jsx": {
-    "mtime": 1786297411.929892,
-    "ast_hash": "151930bcf9d82adfe4f1a1df21068998",
+    "mtime": 1786462141.4586382,
+    "ast_hash": "00d50a69990401d8a5b7ca5939864675",
     "semantic_hash": ""
   },
   "src/admin/AdminSellRequests.jsx": {
@@ -3245,8 +3245,8 @@
     "semantic_hash": ""
   },
   "src/store/StoreContext.jsx": {
-    "mtime": 1786297412.1149266,
-    "ast_hash": "e129c6eff06b0465b2133909cea72326",
+    "mtime": 1786462132.5256724,
+    "ast_hash": "136182f6a419cb56f71dc76677e2ab7c",
     "semantic_hash": ""
   },
   "src/technicalsupport/RepairService.jsx": {
@@ -4352,6 +4352,31 @@
   "src/utils/parseList.js": {
     "mtime": 1786381971.253949,
     "ast_hash": "1b2d689f4844957f3d1bd3a699f618a0",
+    "semantic_hash": ""
+  },
+  "app/api/admin/account-requests/[id]/route.js": {
+    "mtime": 1786462104.5782528,
+    "ast_hash": "33691137f340a7732aa33ca0e68790e8",
+    "semantic_hash": ""
+  },
+  "app/api/admin/users/[id]/route.js": {
+    "mtime": 1786462099.5955033,
+    "ast_hash": "12438ee1ce5823512f228538a806a3a5",
+    "semantic_hash": ""
+  },
+  "app/api/certificates/qr/[id]/route.js": {
+    "mtime": 1786462118.6930344,
+    "ast_hash": "1e48c5f00ba49ea10004cfaf538b60a1",
+    "semantic_hash": ""
+  },
+  "app/api/certificates/qr/route.js": {
+    "mtime": 1786462114.2331867,
+    "ast_hash": "fc3c9a7d0a59291a925d678a1f1ae27d",
+    "semantic_hash": ""
+  },
+  "app/api/coupons/[id]/route.js": {
+    "mtime": 1786462109.6308098,
+    "ast_hash": "02619bc0de0a512b450fd745d99d853a",
     "semantic_hash": ""
   }
 }

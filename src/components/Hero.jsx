@@ -104,6 +104,31 @@ const HeroBackgroundStyles = () => (
 
     @media (prefers-reduced-motion: reduce) {
       .ash-canvas, .ash-particle, .ash-underline::after { animation: none !important; }
+      .testimonial-marquee-track { animation-play-state: paused !important; }
+    }
+
+    .testimonial-marquee-wrapper {
+      position: relative;
+      overflow: hidden;
+      mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+    }
+
+    .testimonial-marquee-track {
+      display: flex;
+      gap: 1.5rem;
+      width: max-content;
+      animation: testimonialScroll 38s linear infinite;
+      will-change: transform;
+    }
+
+    .testimonial-marquee-wrapper:hover .testimonial-marquee-track {
+      animation-play-state: paused;
+    }
+
+    @keyframes testimonialScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-33.333%); }
     }
   `}</style>
 )
@@ -857,7 +882,7 @@ const Hero = () => {
           </div>
         </section>
 
-        {/* ── STUDENT TESTIMONIALS ── */}
+        {/* ── STUDENT TESTIMONIALS (Single Line Continuous Marquee) ── */}
         <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/60">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
             <span className="px-3 py-1 rounded-full text-xs font-bold text-indigo-600 bg-indigo-50 uppercase tracking-wider border border-indigo-100">
@@ -871,41 +896,38 @@ const Hero = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {testimonialsList.map((item, idx) => (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1, duration: 0.5 }}
-                key={item.name}
-                className="p-6 rounded-2xl border bg-white/90 border-slate-200/80 flex flex-col justify-between relative shadow-sm hover:shadow-md transition-shadow"
-              >
-                {/* Rating stars */}
-                <div className="flex gap-1 text-amber-400 text-sm mb-4">
-                  {[...Array(item.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
-                  ))}
-                </div>
-
-                {/* Review body */}
-                <p className="text-sm text-slate-550 leading-relaxed font-medium italic flex-grow">
-                  "{item.feedback}"
-                </p>
-
-                {/* User row */}
-                <div className="mt-6 flex items-center gap-3 border-t border-slate-200/60 pt-4 flex-shrink-0">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${['bg-blue-100', 'bg-purple-100', 'bg-emerald-100'][idx % 3]
-                    }`}>
-                    {item.avatar}
+          <div className="testimonial-marquee-wrapper py-3">
+            <div className="testimonial-marquee-track">
+              {[...testimonialsList, ...testimonialsList, ...testimonialsList].map((item, idx) => (
+                <div
+                  key={`${item.name}-${idx}`}
+                  className="w-[310px] sm:w-[370px] flex-shrink-0 p-6 rounded-2xl border bg-white/95 border-slate-200/80 flex flex-col justify-between relative shadow-sm hover:shadow-md transition-shadow"
+                >
+                  {/* Rating stars */}
+                  <div className="flex gap-1 text-amber-400 text-sm mb-3">
+                    {[...Array(item.rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-current" />
+                    ))}
                   </div>
-                  <div>
-                    <h4 className="text-xs font-black text-slate-800">{item.name}</h4>
-                    <span className="text-[10px] font-bold text-slate-450">{item.course}</span>
+
+                  {/* Review body */}
+                  <p className="text-sm text-slate-600 leading-relaxed font-medium italic flex-grow">
+                    "{item.feedback}"
+                  </p>
+
+                  {/* User row */}
+                  <div className="mt-5 flex items-center gap-3 border-t border-slate-200/60 pt-4 flex-shrink-0">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${['bg-blue-100', 'bg-purple-100', 'bg-emerald-100'][idx % 3]}`}>
+                      {item.avatar}
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-slate-900">{item.name}</h4>
+                      <span className="text-[10px] font-bold text-slate-500">{item.course}</span>
+                    </div>
                   </div>
                 </div>
-              </motion.div>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
 
