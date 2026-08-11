@@ -211,6 +211,7 @@ export async function GET(request) {
   const slot = searchParams.get('slot') || '7am';
   return POST(new Request(request.url, {
     method: 'POST',
+    headers: request.headers,
     body: JSON.stringify({ slot })
   }));
 }

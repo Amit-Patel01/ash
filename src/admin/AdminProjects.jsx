@@ -93,7 +93,7 @@ export default function AdminProjects() {
 
   const confirmDelete = async () => {
     if (!projectToDelete) return
-    const id = projectToDelete.id
+    const id = projectToDelete.id || projectToDelete._id
     setDeletingId(id)
     try {
       await deleteProject(id)

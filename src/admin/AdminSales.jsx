@@ -33,12 +33,13 @@ export default function AdminSales() {
 
   const confirmDelete = async () => {
     if (!orderToDelete) return
-    setDeletingId(orderToDelete.id)
+    const id = orderToDelete.id || orderToDelete._id
+    setDeletingId(id)
     try {
-      await deleteOrder(orderToDelete.id)
+      await deleteOrder(id)
       setShowDeleteModal(false)
     } catch (err) {
-      alert("Failed to delete order record.")
+      alert("Failed to delete order record: " + (err.message || 'Unknown error'))
     } finally {
       setDeletingId(null)
       setOrderToDelete(null)

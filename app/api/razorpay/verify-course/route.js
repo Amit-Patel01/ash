@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { getDb } from '@/lib/db/mongo';
 
-const KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'ZQL0f06MX9O2w9YShTx3bApG';
+const KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
 
 export async function POST(request) {
   try {

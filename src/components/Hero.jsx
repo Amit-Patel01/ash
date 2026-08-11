@@ -152,198 +152,93 @@ const Counter = ({ value, duration = 1.8 }) => {
   return <span>{count.toLocaleString('en-IN')}{suffix}</span>
 }
 
-/* ── Custom Animated Tech Illustration ── */
+/* ── Custom Student Portal Showcase Card ── */
 const TechIllustration = () => {
   return (
-    <div className="relative w-full max-w-lg mx-auto h-72 sm:h-96 lg:aspect-square flex items-center justify-center select-none">
-      {/* Background Neon Glow Orbs */}
-      <motion.div
-        animate={{ scale: [1, 1.25, 1], opacity: [0.35, 0.6, 0.35] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-6 left-6 w-56 h-56 rounded-full bg-blue-500/25 blur-3xl pointer-events-none"
-      />
-      <motion.div
-        animate={{ scale: [1.2, 1, 1.2], opacity: [0.4, 0.25, 0.4] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        className="absolute bottom-6 right-6 w-64 h-64 rounded-full bg-indigo-500/25 blur-3xl pointer-events-none"
-      />
-      <motion.div
-        animate={{ scale: [0.9, 1.15, 0.9], opacity: [0.2, 0.45, 0.2] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-        className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-purple-500/20 blur-3xl pointer-events-none"
-      />
+    <div className="relative w-full max-w-md mx-auto select-none">
+      {/* Background Soft Glow Orbs */}
+      <div className="absolute -top-6 -left-6 w-48 h-48 rounded-full bg-indigo-500/15 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-6 -right-6 w-48 h-48 rounded-full bg-blue-500/15 blur-3xl pointer-events-none" />
 
-      <svg className="w-[90%] h-[90%] relative z-10 filter drop-shadow-2xl" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="orbitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
-            <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#ec4899" stopOpacity="0.8" />
-          </linearGradient>
-          <linearGradient id="termHeaderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#1e293b" />
-            <stop offset="100%" stopColor="#0f172a" />
-          </linearGradient>
-          <filter id="glowFilter" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
+      {/* Main Student Dashboard Showcase Card */}
+      <div className="relative rounded-3xl border border-slate-200/90 bg-white/95 p-6 shadow-2xl backdrop-blur-xl space-y-5">
 
-        {/* Outer Spinning Orbit Ring */}
-        <motion.circle
-          cx="250" cy="250" r="225"
-          stroke="url(#orbitGrad)"
-          strokeWidth="1.5"
-          strokeDasharray="12 12"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-          style={{ transformOrigin: '250px 250px' }}
-        />
-        {/* Inner Pulsing Orbit Ring */}
-        <motion.circle
-          cx="250" cy="250" r="175"
-          stroke="currentColor"
-          className="text-slate-300/60"
-          strokeWidth="1.2"
-          strokeDasharray="4 8"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-          style={{ transformOrigin: '250px 250px' }}
-        />
+        {/* Header Bar */}
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-md shadow-indigo-500/20">
+              PS
+            </div>
+            <div>
+              <h4 className="text-sm font-extrabold text-slate-900">Priya Sharma</h4>
+              <p className="text-[11px] font-semibold text-slate-500">Full Stack Web Intern</p>
+            </div>
+          </div>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Active Session
+          </span>
+        </div>
 
-        {/* Coding Terminal Mockup */}
-        <motion.g
-          initial={{ y: 30, opacity: 0, scale: 0.95 }}
-          animate={{ y: 0, opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          {/* Main Terminal Outer Shadow & Shell */}
-          <rect x="70" y="100" width="360" height="245" rx="20" className="fill-slate-900/95 stroke-slate-700/80 shadow-2xl" strokeWidth="2.5" />
-          {/* Header Bar */}
-          <rect x="70" y="100" width="360" height="42" rx="20" fill="url(#termHeaderGrad)" />
+        {/* Live Project Card */}
+        <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-200/70 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <Code className="w-4 h-4 text-indigo-600" /> Current Project Assignment
+            </span>
+            <span className="text-[11px] font-black text-indigo-600">85% Done</span>
+          </div>
 
-          {/* Window Control Buttons */}
-          <circle cx="96" cy="121" r="6.5" fill="#ef4444" className="hover:opacity-80 transition-opacity" />
-          <circle cx="114" cy="121" r="6.5" fill="#f59e0b" className="hover:opacity-80 transition-opacity" />
-          <circle cx="132" cy="121" r="6.5" fill="#10b981" className="hover:opacity-80 transition-opacity" />
+          <p className="text-xs font-semibold text-slate-900">
+            MERN E-Commerce Dashboard with Payment Gateway
+          </p>
 
-          {/* Editor Tab Pill */}
-          <rect x="180" y="110" width="140" height="24" rx="8" className="fill-slate-800/90 stroke-slate-700/50" strokeWidth="1" />
-          <circle cx="195" cy="122" r="3.5" fill="#3b82f6" />
-          <text x="255" y="126" textAnchor="middle" className="fill-slate-200 text-xs font-mono font-semibold">App.jsx</text>
+          {/* Progress Bar */}
+          <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+            <div className="h-full bg-indigo-600 rounded-full w-[85%]" />
+          </div>
 
-          {/* Animated Coding Lines (Typing Effect) */}
-          <g transform="translate(95, 162)">
-            {/* Line 1: Import */}
-            <rect x="0" y="0" width="45" height="9" rx="4.5" fill="#c084fc" />
-            <rect x="52" y="0" width="65" height="9" rx="4.5" fill="#38bdf8" />
-            <rect x="124" y="0" width="35" height="9" rx="4.5" fill="#c084fc" />
-            <rect x="166" y="0" width="85" height="9" rx="4.5" fill="#34d399" />
+          <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 pt-1">
+            <span>Modules: 12/14</span>
+            <span className="text-emerald-600 flex items-center gap-1">
+              <Check className="w-3 h-3" /> Code Review Approved
+            </span>
+          </div>
+        </div>
 
-            {/* Line 2: Function */}
-            <rect x="0" y="22" width="60" height="9" rx="4.5" fill="#f43f5e" />
-            <rect x="67" y="22" width="110" height="9" rx="4.5" fill="#fbbf24" />
+        {/* Mentor Feedback Box */}
+        <div className="p-3.5 rounded-2xl bg-indigo-50/60 border border-indigo-100 flex items-start gap-3">
+          <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
+            AP
+          </div>
+          <div className="space-y-0.5 text-xs">
+            <div className="flex items-center justify-between">
+              <span className="font-extrabold text-slate-900">Amit Patel (Lead Mentor)</span>
+              <span className="text-[10px] font-medium text-slate-400">10m ago</span>
+            </div>
+            <p className="text-[11px] text-slate-600 font-medium leading-tight">
+              "Great work on MongoDB schema optimization! Certificate approval dispatched."
+            </p>
+          </div>
+        </div>
 
-            {/* Line 3: Indented return */}
-            <motion.rect
-              x="20" y="44" width="75" height="9" rx="4.5" fill="#3b82f6"
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <motion.rect
-              x="102" y="44" width="165" height="9" rx="4.5" fill="#a855f7"
-              animate={{ opacity: [1, 0.5, 1] }}
-              transition={{ duration: 2.6, repeat: Infinity }}
-            />
+        {/* Floating Verified Certificate Pill Overlay */}
+        <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-900 text-white shadow-lg">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+              <Award className="w-4 h-4" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-white">QR Certificate Verified</p>
+              <p className="text-[10px] text-slate-400 font-mono">ID: ASH-2026-8942</p>
+            </div>
+          </div>
+          <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider px-2 py-0.5 bg-amber-400/10 rounded-md border border-amber-400/20">
+            MSME Verified
+          </span>
+        </div>
 
-            {/* Line 4: JSX component line */}
-            <rect x="40" y="66" width="140" height="9" rx="4.5" fill="#34d399" />
-            <motion.rect
-              x="187" y="66" width="55" height="9" rx="4.5" fill="#fbbf24"
-              animate={{ opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            />
-
-            {/* Line 5: Typing line with cursor */}
-            <motion.rect
-              x="40" y="88" height="9" rx="4.5" fill="#38bdf8"
-              initial={{ width: 30 }}
-              animate={{ width: [30, 200, 200, 30] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            />
-            <motion.rect
-              x="235" y="86" width="3.5" height="13" rx="1.75" fill="#38bdf8"
-              animate={{ opacity: [1, 0, 1] }}
-              transition={{ duration: 0.75, repeat: Infinity }}
-            />
-
-            {/* Line 6: Closing bracket */}
-            <rect x="0" y="110" width="30" height="9" rx="4.5" fill="#c084fc" />
-          </g>
-
-          {/* Interactive Build Success Status Badge */}
-          <motion.g
-            animate={{ scale: [1, 1.03, 1] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <rect x="235" y="280" width="175" height="52" rx="14" className="fill-slate-900/95 stroke-emerald-500/60 shadow-xl" strokeWidth="1.5" />
-
-            {/* Pulsing Sonar Green Dot */}
-            <circle cx="260" cy="306" r="4.5" fill="#10b981" />
-            <motion.circle
-              cx="260" cy="306" r="9"
-              stroke="#10b981" strokeWidth="1.5" fill="none"
-              animate={{ scale: [1, 1.8], opacity: [0.8, 0] }}
-              transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut' }}
-            />
-
-            <text x="330" y="310" textAnchor="middle" className="fill-emerald-400 text-[11px] font-black font-mono tracking-wide">
-              Build Success ✓
-            </text>
-          </motion.g>
-        </motion.g>
-
-        {/* Floating Badge 1: Top Left - Code Icon */}
-        <motion.g
-          animate={{ y: [0, -10, 0], rotate: [-2, 2, -2] }}
-          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <rect x="35" y="80" width="60" height="60" rx="16" className="fill-transparent stroke-blue-500/50 shadow-xl" strokeWidth="1.5" />
-          <g transform="translate(50, 95)">
-            <svg className="w-7 h-7 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />
-            </svg>
-          </g>
-        </motion.g>
-
-        {/* Floating Badge 2: Bottom Left - Database */}
-        <motion.g
-          animate={{ y: [0, -12, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
-        >
-          <rect x="40" y="285" width="70" height="70" rx="18" className="fill-transparent stroke-indigo-500/50 shadow-2xl" strokeWidth="1.5" />
-          <Database className="w-8 h-8 text-indigo-500" x="61" y="306" />
-        </motion.g>
-
-        {/* Floating Badge 3: Top Right - AI / CPU Chip */}
-        <motion.g
-          animate={{ y: [0, 12, 0], scale: [1, 1.05, 1] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
-        >
-          <rect x="385" y="55" width="72" height="72" rx="18" className="fill-transparent stroke-pink-500/50 shadow-2xl" strokeWidth="1.5" />
-          <Cpu className="w-8 h-8 text-pink-500" x="405" y="75" />
-        </motion.g>
-
-        {/* Floating Badge 4: Bottom Right - Certificate / Trophy */}
-        <motion.g
-          animate={{ y: [0, -8, 0], scale: [1, 1.06, 1] }}
-          transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
-        >
-          <rect x="370" y="295" width="78" height="78" rx="20" className="fill-transparent stroke-emerald-500/50 shadow-2xl" strokeWidth="1.5" />
-          <Award className="w-9 h-9 text-emerald-500" x="390" y="315" />
-        </motion.g>
-      </svg>
+      </div>
     </div>
   )
 }
@@ -577,7 +472,7 @@ const TRUST_POINTS = [
 ]
 
 const Hero = () => {
-  const { homepageStats, testimonials, internshipCategories } = useStore()
+  const { homepageStats, testimonials, internshipCategories, courseCategories, courses } = useStore()
   const [activeFaq, setActiveFaq] = useState(null)
 
   // Icon name → Lucide component map (for DB-stored categories)
@@ -589,16 +484,40 @@ const Hero = () => {
     Zap: Sparkles
   }), [])
 
-  // Dynamic categories – fall back to static CATEGORIES if DB is empty
+  // Dynamic categories — fetch real data from MongoDB
   const categoriesList = useMemo(() => {
     if (internshipCategories && internshipCategories.length > 0) {
       return internshipCategories.map(cat => ({
-        ...cat,
-        icon: ICON_MAP[cat.icon] || Code
+        title: cat.title || cat.name,
+        desc: cat.desc || cat.description || `Master ${cat.title || cat.name} with real projects and expert feedback.`,
+        icon: ICON_MAP[cat.icon] || Code,
+        duration: cat.duration || '4-8 Weeks',
+        level: cat.level || 'Beginner',
+        color: cat.color || 'text-indigo-600 bg-indigo-50 border-indigo-200'
+      }))
+    }
+    if (courseCategories && courseCategories.length > 0) {
+      return courseCategories.map(cat => ({
+        title: cat.name || cat.title,
+        desc: cat.description || cat.desc || `Explore real-world ${cat.name || cat.title} tracks.`,
+        icon: ICON_MAP[cat.icon] || Code,
+        duration: cat.duration || '4-8 Weeks',
+        level: cat.level || 'Beginner',
+        color: cat.color || 'text-indigo-600 bg-indigo-50 border-indigo-200'
+      }))
+    }
+    if (courses && courses.length > 0) {
+      return courses.slice(0, 8).map(course => ({
+        title: course.title || course.name,
+        desc: course.description || course.shortDesc || `Learn ${course.title || course.name} with live mentor support.`,
+        icon: ICON_MAP[course.icon] || Code,
+        duration: course.duration || '4-8 Weeks',
+        level: course.level || 'Beginner',
+        color: 'text-indigo-600 bg-indigo-50 border-indigo-200'
       }))
     }
     return CATEGORIES
-  }, [internshipCategories, ICON_MAP])
+  }, [internshipCategories, courseCategories, courses, ICON_MAP])
 
   // Dynamic testimonials – fall back to static TESTIMONIALS if DB is empty
   const testimonialsList = useMemo(() => {
@@ -639,90 +558,76 @@ const Hero = () => {
 
       <div className="ash-canvas w-full min-h-screen relative overflow-hidden text-slate-800">
 
-        {/* ── HERO SECTION ── */}
-        <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24 md:pt-16 md:pb-32">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        {/* ── HERO SECTION (Clean Centered White Layout) ── */}
+        <section className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 md:pt-24 md:pb-28 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="space-y-8"
+          >
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-white border-emerald-200 shadow-sm">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-700">
+                AICTE Internship Portal Registered Organization
+              </span>
+            </div>
 
-            {/* Left Content */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              className="lg:col-span-7 space-y-8 text-center lg:text-left"
-            >
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-transparent border-emerald-300/80 shadow-sm shadow-emerald-500/10">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-xs font-extrabold uppercase tracking-wider text-slate-600">
-                  AICTE Internship Portal Registered Organization
-                </span>
+            {/* Main Headline */}
+            <h1 className="ash-display text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-slate-900">
+              Learn Skills. Build Projects. <br />
+              <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-700 bg-clip-text text-transparent">
+                Get Certified.
+              </span>
+            </h1>
+
+            {/* Subheading */}
+            <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium">
+              Take on real internships, complete hands-on projects, and earn an official QR-verified certificate co-signed by industry mentors.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link
+                href="/signup"
+                className="w-full sm:w-auto px-8 py-4 rounded-2xl font-extrabold text-sm text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-500/25 active:scale-95 transition-all text-center flex items-center justify-center gap-2"
+              >
+                Apply for Certification Course
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <a
+                href="#categories"
+                className="w-full sm:w-auto px-8 py-4 rounded-2xl font-extrabold text-sm border-2 border-slate-300/80 bg-white hover:border-indigo-500 hover:text-indigo-600 active:scale-95 transition-all text-center text-slate-700 shadow-sm"
+              >
+                Explore Programs
+              </a>
+            </div>
+
+            {/* Highlights tags */}
+            <div className="pt-6 border-t border-slate-200/60 max-w-3xl mx-auto">
+              <div className="flex flex-wrap justify-center gap-2.5">
+                {[
+                  { label: '100% Online', icon: Globe, color: 'text-blue-600 bg-blue-50 border-blue-200' },
+                  { label: 'Verified Certificate', icon: Award, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
+                  { label: 'Real Projects', icon: Code, color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
+                  { label: 'AICTE Registered', icon: Shield, color: 'text-amber-600 bg-amber-50 border-amber-200' },
+                  { label: 'Mentor Support', icon: Users, color: 'text-teal-600 bg-teal-50 border-teal-200' },
+                ].map((tag) => {
+                  const TagIcon = tag.icon
+                  return (
+                    <span
+                      key={tag.label}
+                      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold border ${tag.color}`}
+                    >
+                      <TagIcon className="w-3.5 h-3.5" />
+                      {tag.label}
+                    </span>
+                  )
+                })}
               </div>
-
-              {/* Main Headline */}
-              <h1 className="ash-display text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight">
-                Learn Skills. Build Projects. <br />
-                <span className="bg-gradient-to-r from-indigo-600 via-violet-500 to-fuchsia-500 bg-clip-text text-transparent">
-                  Get Certified.
-                </span>
-              </h1>
-
-              {/* Subheading */}
-              <p className="text-base sm:text-lg text-slate-500 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                I built this platform because I felt students needed a place to actually <em>do</em> real work — not just watch videos. Here, you take on a real internship, complete real projects, and walk away with a real verified certificate.
-              </p>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Link
-                  href="/signup"
-                  className="ash-cta group px-8 py-4 rounded-2xl font-extrabold text-sm text-white bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 hover:shadow-xl hover:shadow-violet-500/30 shadow-lg shadow-indigo-500/20 active:scale-95 transition-all text-center flex items-center justify-center gap-2"
-                >
-                  Apply for Internship
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <a
-                  href="#categories"
-                  className="px-8 py-4 rounded-2xl font-extrabold text-sm border-2 border-slate-300/80 bg-transparent hover:border-indigo-400 hover:text-indigo-600 active:scale-95 transition-all text-center"
-                >
-                  Explore Programs
-                </a>
-              </div>
-
-              {/* Highlights tags */}
-              <div className="pt-4 border-t border-slate-200/60">
-                <div className="flex flex-wrap justify-center lg:justify-start gap-2.5">
-                  {[
-                    { label: '100% Online', icon: Globe, color: 'text-blue-600 bg-blue-500/10 border-blue-500/20' },
-                    { label: 'Verified Certificate', icon: Award, color: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20' },
-                    { label: 'Real Projects', icon: Code, color: 'text-purple-600 bg-purple-500/10 border-purple-500/20' },
-                    { label: 'AICTE Registered', icon: Shield, color: 'text-amber-600 bg-amber-500/10 border-amber-500/20' },
-                    { label: 'Mentor Support', icon: Users, color: 'text-teal-600 bg-teal-500/10 border-teal-500/20' },
-                  ].map((tag) => {
-                    const TagIcon = tag.icon
-                    return (
-                      <span
-                        key={tag.label}
-                        className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold border ${tag.color}`}
-                      >
-                        <TagIcon className="w-3.5 h-3.5" />
-                        {tag.label}
-                      </span>
-                    )
-                  })}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Right: Premium Interactive Illustration */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.15 }}
-              className="lg:col-span-5 w-full flex justify-center"
-            >
-              <TechIllustration />
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </section>
 
         {/* ── ABOUT AMITSOLUTIONHUB ── */}
@@ -739,15 +644,15 @@ const Hero = () => {
               {statsList.map((stat) => {
                 const IconComp = stat.icon
                 return (
-                  <div key={stat.label} className="p-4 sm:p-6 rounded-2xl border bg-transparent border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between min-h-[130px]">
+                  <div key={stat.label} className="p-4 sm:p-6 rounded-2xl border bg-white/90 border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between min-h-[130px]">
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${stat.color} bg-current/10`}>
                       <IconComp className={`w-5 h-5 ${stat.color}`} />
                     </div>
                     <div>
-                      <div className="ash-display text-2xl sm:text-3xl font-extrabold tracking-tight mb-1">
+                      <div className="ash-display text-2xl sm:text-3xl font-extrabold tracking-tight mb-1 text-slate-900">
                         <Counter value={stat.value} />
                       </div>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{stat.label}</p>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{stat.label}</p>
                     </div>
                   </div>
                 )
@@ -830,8 +735,8 @@ const Hero = () => {
             <span className="px-3 py-1 rounded-full text-xs font-bold text-blue-500 bg-blue-500/10 uppercase tracking-wider">
               Explore Paths
             </span>
-            <h2 className="ash-display ash-underline text-3xl sm:text-4xl font-extrabold tracking-tight">
-              Internship Categories
+            <h2 className="ash-display ash-underline text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+              Certification Categories
             </h2>
             <p className="text-slate-500 text-sm font-medium">
               Choose from our curated technology tracks designed to teach you coding, logic, and problem-solving through live projects.
@@ -849,7 +754,7 @@ const Hero = () => {
                   transition={{ delay: idx * 0.05, duration: 0.5 }}
                   whileHover={{ y: -6 }}
                   key={cat.title}
-                  className="p-6 rounded-2xl border bg-transparent border-slate-200/80 shadow-sm hover:shadow-lg hover:border-indigo-200 transition-all flex flex-col justify-between group"
+                  className="p-6 rounded-2xl border bg-white/90 border-slate-200/80 shadow-sm hover:shadow-lg hover:border-indigo-200 transition-all flex flex-col justify-between group"
                 >
                   <div className="space-y-4">
                     {/* Icon & Badges */}
@@ -858,10 +763,10 @@ const Hero = () => {
                         <IconComp className="w-6 h-6" />
                       </div>
                       <div className="flex flex-col items-end gap-1">
-                        <span className="text-[10px] font-black uppercase tracking-wider bg-slate-200/60 text-slate-500 px-2 py-0.5 rounded-md">
+                        <span className="text-[10px] font-black uppercase tracking-wider bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md border border-slate-200">
                           {cat.level}
                         </span>
-                        <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                        <span className="text-[10px] font-bold text-slate-500 flex items-center gap-1">
                           <Clock className="w-3 h-3" /> {cat.duration}
                         </span>
                       </div>
@@ -869,7 +774,7 @@ const Hero = () => {
 
                     {/* Title & Description */}
                     <div className="space-y-2">
-                      <h3 className="text-lg font-bold group-hover:text-indigo-500 transition-colors">
+                      <h3 className="text-lg font-bold group-hover:text-indigo-600 transition-colors text-slate-900">
                         {cat.title}
                       </h3>
                       <p className="text-xs text-slate-500 leading-relaxed font-medium">
@@ -895,10 +800,10 @@ const Hero = () => {
         {/* ── WHY CHOOSE AMITSOLUTIONHUB ── */}
         <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/60">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
-            <span className="px-3 py-1 rounded-full text-xs font-bold text-indigo-500 bg-indigo-500/10 uppercase tracking-wider">
+            <span className="px-3 py-1 rounded-full text-xs font-bold text-indigo-600 bg-indigo-50 uppercase tracking-wider border border-indigo-100">
               Our Core Strengths
             </span>
-            <h2 className="ash-display ash-underline text-3xl sm:text-4xl font-extrabold tracking-tight">
+            <h2 className="ash-display ash-underline text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
               Why Choose AmitSolutionHub
             </h2>
             <p className="text-slate-500 text-sm font-medium">
@@ -910,7 +815,7 @@ const Hero = () => {
             {WHY_CHOOSE.map((item) => {
               const IconComp = item.icon
               return (
-                <div key={item.title} className="p-6 rounded-2xl border bg-transparent border-slate-200/85 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex gap-4">
+                <div key={item.title} className="p-6 rounded-2xl border bg-white/90 border-slate-200/85 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex gap-4">
                   <div className={`p-3 rounded-xl border flex-shrink-0 h-fit ${item.color}`}>
                     <IconComp className="w-5 h-5" />
                   </div>
@@ -937,7 +842,7 @@ const Hero = () => {
               return (
                 <div
                   key={point.title}
-                  className="p-6 rounded-2xl border bg-transparent border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex items-start gap-4"
+                  className="p-6 rounded-2xl border bg-white/90 border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex items-start gap-4"
                 >
                   <div className={`p-3 rounded-xl border flex-shrink-0 ${point.color}`}>
                     <IconComp className="w-5 h-5" />
@@ -955,10 +860,10 @@ const Hero = () => {
         {/* ── STUDENT TESTIMONIALS ── */}
         <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/60">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
-            <span className="px-3 py-1 rounded-full text-xs font-bold text-indigo-500 bg-indigo-500/10 uppercase tracking-wider">
+            <span className="px-3 py-1 rounded-full text-xs font-bold text-indigo-600 bg-indigo-50 uppercase tracking-wider border border-indigo-100">
               Feedback
             </span>
-            <h2 className="ash-display ash-underline text-3xl sm:text-4xl font-extrabold tracking-tight">
+            <h2 className="ash-display ash-underline text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
               Student Testimonials
             </h2>
             <p className="text-slate-500 text-sm font-medium">
@@ -974,7 +879,7 @@ const Hero = () => {
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
                 key={item.name}
-                className="p-6 rounded-2xl border bg-transparent border-slate-200/80 flex flex-col justify-between relative shadow-sm hover:shadow-md transition-shadow"
+                className="p-6 rounded-2xl border bg-white/90 border-slate-200/80 flex flex-col justify-between relative shadow-sm hover:shadow-md transition-shadow"
               >
                 {/* Rating stars */}
                 <div className="flex gap-1 text-amber-400 text-sm mb-4">

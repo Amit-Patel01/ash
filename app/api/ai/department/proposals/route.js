@@ -7,7 +7,7 @@ export async function GET() {
     const db = await getDb();
 
     // Query real pending account requests and pending certificates
-    const pendingAccountRequests = await db.collection('account_requests').find({ status: 'pending' }).limit(10).toArray().catch(() => []);
+    const pendingAccountRequests = await db.collection('accountRequests').find({ status: 'pending' }).limit(10).toArray().catch(() => []);
     const pendingCertificates = await db.collection('certificates').find({ status: 'pending' }).limit(10).toArray().catch(() => []);
 
     const proposals = [];

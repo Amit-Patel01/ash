@@ -540,16 +540,18 @@ export function StoreProvider({ children }) {
 
   const deleteProject = async (id) => {
     try {
+      const targetId = typeof id === 'object' ? (id?.id || id?._id) : id;
+      if (!targetId) throw new Error('Valid project ID required');
       const headers = getAuthorizedHeaders();
-      const response = await fetch(`${api.base}/api/db/projects/${id}`, {
+      const response = await fetch(`${api.base}/api/db/projects/${targetId}`, {
         method: 'DELETE',
         headers
       });
-      if (!response.ok) {
-        const data = await response.json();
+      const data = await readApiJson(response);
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete project');
       }
-      setProjects(prev => prev.filter(p => p.id !== id));
+      setProjects(prev => prev.filter(p => p.id !== targetId && p._id !== targetId));
     } catch (err) { console.error('Error deleting project:', err); throw err }
   }
 
@@ -600,16 +602,18 @@ export function StoreProvider({ children }) {
 
   const deleteOrder = async (id) => {
     try {
+      const targetId = typeof id === 'object' ? (id?.id || id?._id) : id;
+      if (!targetId) throw new Error('Valid order ID required');
       const headers = getAuthorizedHeaders();
-      const response = await fetch(`${api.base}/api/db/orders/${id}`, {
+      const response = await fetch(`${api.base}/api/db/orders/${targetId}`, {
         method: 'DELETE',
         headers
       });
-      if (!response.ok) {
-        const data = await response.json();
+      const data = await readApiJson(response);
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete order');
       }
-      setOrders(prev => prev.filter(o => o.id !== id));
+      setOrders(prev => prev.filter(o => o.id !== targetId && o._id !== targetId));
     } catch (err) { console.error("Error deleting order:", err); throw err }
   }
 
@@ -649,16 +653,18 @@ export function StoreProvider({ children }) {
 
   const deleteTask = async (id) => {
     try {
+      const targetId = typeof id === 'object' ? (id?.id || id?._id) : id;
+      if (!targetId) throw new Error('Valid task ID required');
       const headers = getAuthorizedHeaders();
-      const response = await fetch(`${api.base}/api/db/tasks/${id}`, {
+      const response = await fetch(`${api.base}/api/db/tasks/${targetId}`, {
         method: 'DELETE',
         headers
       });
-      if (!response.ok) {
-        const data = await response.json();
+      const data = await readApiJson(response);
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete task');
       }
-      setTasks(prev => prev.filter(t => t.id !== id));
+      setTasks(prev => prev.filter(t => t.id !== targetId && t._id !== targetId));
     } catch (err) { console.error("Error deleting task:", err); throw err }
   }
 
@@ -698,16 +704,18 @@ export function StoreProvider({ children }) {
 
   const deleteManualEmployee = async (id) => {
     try {
+      const targetId = typeof id === 'object' ? (id?.id || id?._id) : id;
+      if (!targetId) throw new Error('Valid employee ID required');
       const headers = getAuthorizedHeaders();
-      const response = await fetch(`${api.base}/api/db/employees/${id}`, {
+      const response = await fetch(`${api.base}/api/db/employees/${targetId}`, {
         method: 'DELETE',
         headers
       });
-      if (!response.ok) {
-        const data = await response.json();
+      const data = await readApiJson(response);
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete employee record');
       }
-      setManualEmployees(prev => prev.filter(e => e.id !== id));
+      setManualEmployees(prev => prev.filter(e => e.id !== targetId && e._id !== targetId));
     } catch (err) { console.error("Error deleting employee record:", err); throw err }
   }
 
@@ -759,22 +767,24 @@ export function StoreProvider({ children }) {
 
   const deleteUser = async (id) => {
     try { 
+      const targetId = typeof id === 'object' ? (id?.uid || id?.id || id?._id) : id;
+      if (!targetId) throw new Error('Valid user ID required');
       const headers = getAuthorizedHeaders()
-      const response = await fetch(`${api.adminUsers}/${id}`, {
+      const response = await fetch(`${api.adminUsers}/${targetId}`, {
         method: 'DELETE',
         headers
       })
-      const data = await response.json()
+      const data = await readApiJson(response)
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete the user.')
       }
-      const targetId = String(id || '').toLowerCase()
+      const matchId = String(targetId || '').toLowerCase()
       setUsers(prev => prev.filter(u => {
         const isMatch = [u.uid, u.id, u._id, u.firebaseUid, u.email]
           .filter(Boolean)
           .map(String)
           .map(s => s.toLowerCase())
-          .includes(targetId)
+          .includes(matchId)
         return !isMatch
       }))
       return data.user
@@ -925,16 +935,18 @@ export function StoreProvider({ children }) {
 
   const deleteService = async (id) => {
     try {
+      const targetId = typeof id === 'object' ? (id?.id || id?._id) : id;
+      if (!targetId) throw new Error('Valid service ID required');
       const headers = getAuthorizedHeaders();
-      const response = await fetch(`${api.base}/api/db/services/${id}`, {
+      const response = await fetch(`${api.base}/api/db/services/${targetId}`, {
         method: 'DELETE',
         headers
       });
-      if (!response.ok) {
-        const data = await response.json();
+      const data = await readApiJson(response);
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete service');
       }
-      setServices(prev => prev.filter(s => s.id !== id));
+      setServices(prev => prev.filter(s => s.id !== targetId && s._id !== targetId));
     } catch (err) { console.error("Error deleting service:", err); throw err }
   }
 
@@ -978,16 +990,18 @@ export function StoreProvider({ children }) {
 
   const deleteTradingCourse = async (id) => {
     try {
+      const targetId = typeof id === 'object' ? (id?.id || id?._id) : id;
+      if (!targetId) throw new Error('Valid course ID required');
       const headers = getAuthorizedHeaders();
-      const response = await fetch(`${api.base}/api/db/tradingCourses/${id}`, {
+      const response = await fetch(`${api.base}/api/db/tradingCourses/${targetId}`, {
         method: 'DELETE',
         headers
       });
-      if (!response.ok) {
-        const data = await response.json();
+      const data = await readApiJson(response);
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete trading course');
       }
-      setTradingCourses(prev => prev.filter(c => c.id !== id));
+      setTradingCourses(prev => prev.filter(c => c.id !== targetId && c._id !== targetId));
     } catch (err) { console.error("Error deleting trading course:", err); throw err }
   }
 
@@ -1855,16 +1869,18 @@ export function StoreProvider({ children }) {
 
   const deleteAdminMessage = async (id) => {
     try {
+      const targetId = typeof id === 'object' ? (id?.id || id?._id) : id;
+      if (!targetId) throw new Error('Valid message ID required');
       const headers = getAuthorizedHeaders();
-      const response = await fetch(`${api.base}/api/db/messages/${id}`, {
+      const response = await fetch(`${api.base}/api/db/messages/${targetId}`, {
         method: 'DELETE',
         headers
       });
-      if (!response.ok) {
-        const data = await response.json();
+      const data = await readApiJson(response);
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete message');
       }
-      setMessages(prev => prev.filter(m => m.id !== id));
+      setMessages(prev => prev.filter(m => m.id !== targetId && m._id !== targetId));
     } catch (err) { console.error("Error deleting message:", err); throw err }
   }
 
@@ -1886,16 +1902,18 @@ export function StoreProvider({ children }) {
 
   const deleteServiceRequest = async (id) => {
     try {
+      const targetId = typeof id === 'object' ? (id?.id || id?._id) : id;
+      if (!targetId) throw new Error('Valid service request ID required');
       const headers = getAuthorizedHeaders();
-      const response = await fetch(`${api.base}/api/db/custom_requests/${id}`, {
+      const response = await fetch(`${api.base}/api/db/custom_requests/${targetId}`, {
         method: 'DELETE',
         headers
       });
-      if (!response.ok) {
-        const data = await response.json();
+      const data = await readApiJson(response);
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete service request');
       }
-      setServiceRequests(prev => prev.filter(r => r.id !== id));
+      setServiceRequests(prev => prev.filter(r => r.id !== targetId && r._id !== targetId));
     } catch (err) { console.error("Error deleting service request:", err); throw err }
   }
 
@@ -1946,16 +1964,18 @@ export function StoreProvider({ children }) {
 
   const deleteSellRequest = async (id) => {
     try {
+      const targetId = typeof id === 'object' ? (id?.id || id?._id) : id;
+      if (!targetId) throw new Error('Valid sell request ID required');
       const headers = getAuthorizedHeaders();
-      const response = await fetch(`${api.base}/api/db/sellRequests/${id}`, {
+      const response = await fetch(`${api.base}/api/db/sellRequests/${targetId}`, {
         method: 'DELETE',
         headers
       });
-      if (!response.ok) {
-        const data = await response.json();
+      const data = await readApiJson(response);
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete sell request');
       }
-      setSellRequests(prev => prev.filter(r => r.id !== id));
+      setSellRequests(prev => prev.filter(r => r.id !== targetId && r._id !== targetId));
     } catch (err) { console.error("Error deleting sell request:", err); throw err }
   }
 
@@ -2029,16 +2049,18 @@ export function StoreProvider({ children }) {
 
   const deleteTestimonial = async (id) => {
     try {
+      const targetId = typeof id === 'object' ? (id?.id || id?._id) : id;
+      if (!targetId) throw new Error('Valid testimonial ID required');
       const headers = getAuthorizedHeaders();
-      const response = await fetch(`${api.base}/api/db/testimonials/${id}`, {
+      const response = await fetch(`${api.base}/api/db/testimonials/${targetId}`, {
         method: 'DELETE',
         headers
       });
-      if (!response.ok) {
-        const data = await response.json();
+      const data = await readApiJson(response);
+      if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to delete testimonial');
       }
-      setTestimonials(prev => prev.filter(t => t.id !== id));
+      setTestimonials(prev => prev.filter(t => t.id !== targetId && t._id !== targetId));
     } catch (err) { console.error("Error deleting testimonial:", err); throw err }
   }
 
@@ -2067,12 +2089,14 @@ export function StoreProvider({ children }) {
 
   const deleteInternshipCategory = async (id) => {
     try {
-      const response = await fetch(`${api.base}/api/db/internshipCategories/${id}`, {
+      const targetId = typeof id === 'object' ? (id?.id || id?._id) : id;
+      if (!targetId) throw new Error('Valid category ID required');
+      const response = await fetch(`${api.base}/api/db/internshipCategories/${targetId}`, {
         method: 'DELETE', headers: getAuthorizedHeaders()
       })
-      const data = await response.json()
-      if (!data.success) throw new Error(data.message || 'Failed to delete internship category');
-      setInternshipCategories(prev => prev.filter(c => c.id !== id));
+      const data = await readApiJson(response)
+      if (!response.ok || !data.success) throw new Error(data.message || 'Failed to delete internship category');
+      setInternshipCategories(prev => prev.filter(c => c.id !== targetId && c._id !== targetId));
     } catch (err) { console.error("Error deleting internship category:", err); throw err }
   };
 

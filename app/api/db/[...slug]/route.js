@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'b8d7a12e4f901c56a839e2d04f11a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4';
 
-const PUBLIC_GET_COLLECTIONS = new Set(['courses', 'projects', 'services', 'settings', 'tradingSettings', 'team', 'faqs', 'certificates', 'certificateQr', 'testimonials', 'coupons']);
+const PUBLIC_GET_COLLECTIONS = new Set(['courses', 'courseCategories', 'internshipCategories', 'projects', 'services', 'settings', 'tradingSettings', 'team', 'faqs', 'certificates', 'certificateQr', 'testimonials', 'coupons']);
 
 function verifyAuth(request) {
   try {
@@ -46,11 +46,19 @@ export async function GET(request, { params }) {
 
     // 1. Single document query: /api/db/:collection/:id
     if (docId) {
-      let query = { _id: getQueryId(docId) };
+      let query;
 
       // Handle sub-keys in settings collection, e.g., /api/db/settings/maintenance
       if (collectionName === 'settings' || collectionName === 'tradingSettings') {
         query = { _id: docId };
+      } else {
+        query = {
+          $or: [
+            { _id: getQueryId(docId) },
+            { _id: docId },
+            { id: docId }
+          ]
+        };
       }
 
       const doc = await db.collection(collectionName).findOne(query);
@@ -140,14 +148,20 @@ export async function PATCH(request, { params }) {
     const collectionName = slug[0];
     const docId = slug[1];
 
-    if (!collectionName || !docId) {
-      return NextResponse.json({ success: false, message: 'Collection and ID required' }, { status: 400 });
+    if (!collectionName || !docId || docId === 'undefined' || docId === 'null') {
+      return NextResponse.json({ success: false, message: 'Collection and valid ID required' }, { status: 400 });
     }
 
     const body = await request.json();
     const db = await getDb();
 
-    let query = { _id: getQueryId(docId) };
+    let query = {
+      $or: [
+        { _id: getQueryId(docId) },
+        { _id: docId },
+        { id: docId }
+      ]
+    };
     if (collectionName === 'settings' || collectionName === 'tradingSettings') {
       query = { _id: docId };
     }
@@ -176,12 +190,19 @@ export async function DELETE(request, { params }) {
     const collectionName = slug[0];
     const docId = slug[1];
 
-    if (!collectionName || !docId) {
-      return NextResponse.json({ success: false, message: 'Collection and ID required' }, { status: 400 });
+    if (!collectionName || !docId || docId === 'undefined' || docId === 'null') {
+      return NextResponse.json({ success: false, message: 'Collection and valid ID required' }, { status: 400 });
     }
 
     const db = await getDb();
-    const query = { _id: getQueryId(docId) };
+    const query = {
+      $or: [
+        { _id: getQueryId(docId) },
+        { _id: docId },
+        { id: docId }
+      ]
+    };
+
     await db.collection(collectionName).deleteOne(query);
 
     return NextResponse.json({ success: true, message: 'Document deleted successfully' });

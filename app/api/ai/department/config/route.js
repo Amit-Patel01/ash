@@ -1,7 +1,11 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
+import { getDb } from '@/lib/db/mongo';
 
-let departmentConfig = {
+const COLLECTION = 'aiDepartmentConfig';
+const CONFIG_DOC_ID = 'main';
+
+const DEFAULT_CONFIG = {
   support: {
     id: 'support',
     name: 'Customer Support & Helpdesk',
@@ -46,18 +50,53 @@ let departmentConfig = {
   }
 };
 
+async function getConfigFromDb() {
+  try {
+    const db = await getDb();
+    const doc = await db.collection(COLLECTION).findOne({ _id: CONFIG_DOC_ID });
+    if (doc) {
+      const { _id, updatedAt, ...config } = doc;
+      return { ...DEFAULT_CONFIG, ...config };
+    }
+    return DEFAULT_CONFIG;
+  } catch {
+    return DEFAULT_CONFIG;
+  }
+}
+
+async function saveConfigToDb(config) {
+  const db = await getDb();
+  await db.collection(COLLECTION).updateOne(
+    { _id: CONFIG_DOC_ID },
+    { $set: { ...config, updatedAt: new Date() } },
+    { upsert: true }
+  );
+}
+
 export async function GET() {
-  return NextResponse.json({ success: true, config: departmentConfig });
+  try {
+    const config = await getConfigFromDb();
+    return NextResponse.json({ success: true, config });
+  } catch (error) {
+    console.error('GET /api/ai/department/config error:', error);
+    return NextResponse.json({ success: true, config: DEFAULT_CONFIG });
+  }
 }
 
 export async function POST(request) {
   try {
     const { deptId, updates } = await request.json();
-    if (deptId && departmentConfig[deptId]) {
-      departmentConfig[deptId] = { ...departmentConfig[deptId], ...updates };
+
+    const currentConfig = await getConfigFromDb();
+
+    if (deptId && currentConfig[deptId]) {
+      currentConfig[deptId] = { ...currentConfig[deptId], ...updates };
+      await saveConfigToDb(currentConfig);
     }
-    return NextResponse.json({ success: true, config: departmentConfig });
+
+    return NextResponse.json({ success: true, config: currentConfig });
   } catch (error) {
+    console.error('POST /api/ai/department/config error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
