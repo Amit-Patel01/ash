@@ -42,13 +42,55 @@ async function getNewsletterRecipients(customRecipients) {
   return [ADMIN_EMAIL];
 }
 
+async function getWebsiteContentData() {
+  try {
+    const db = await getDb();
+    if (!db) return { courses: [], projects: [], activeCoupons: [] };
+
+    const now = new Date();
+    const [courses, projects, coupons] = await Promise.all([
+      db.collection('courses').find({ published: { $ne: false }, isPublished: { $ne: false } }).limit(6).toArray().catch(() => []),
+      db.collection('projects').find({ published: { $ne: false }, isPublished: { $ne: false } }).limit(6).toArray().catch(() => []),
+      db.collection('coupons').find({ isActive: true }).toArray().catch(() => [])
+    ]);
+
+    const activeCoupons = (coupons || []).filter(c => {
+      if (!c.code) return false;
+      if (c.validTill && new Date(c.validTill) < now) return false;
+      return true;
+    });
+
+    return { courses, projects, activeCoupons };
+  } catch (err) {
+    console.warn('⚠️ [NEWSLETTER] DB content fetch error:', err.message);
+    return { courses: [], projects: [], activeCoupons: [] };
+  }
+}
+
 export async function POST(request) {
   try {
     const bodyJson = await request.json().catch(() => ({}));
     const slot = bodyJson.slot || '7am';
     const rawRecipients = bodyJson.recipientEmails;
 
-    const recipientEmails = await getNewsletterRecipients(rawRecipients);
+    const [recipientEmails, websiteData] = await Promise.all([
+      getNewsletterRecipients(rawRecipients),
+      getWebsiteContentData()
+    ]);
+
+    const { courses, projects, activeCoupons } = websiteData;
+
+    const courseListText = courses.length > 0
+      ? courses.map(c => `- ${c.title || c.name} (${c.category || 'Course/Internship'})`).join('\n')
+      : `- Full-Stack Web Development Internship (React, Node.js, Express, MongoDB)\n- AI & Machine Learning Track (Python, PyTorch, Data Science)\n- Cyber Security & Ethical Hacking Track (Network Security & Labs)\n- Python & Web Automation Engineering Track`;
+
+    const projectListText = projects.length > 0
+      ? projects.map(p => `- ${p.title || p.name}`).join('\n')
+      : `- E-Commerce Portal with Payment Gateway & Admin Dashboard\n- AI Support Chatbot & Automation Suite\n- Real-Time Trading & Portfolio Analytics Dashboard`;
+
+    const activeCouponsText = activeCoupons.length > 0
+      ? activeCoupons.map(c => `- Coupon Code "${c.code}": ${c.discountType === 'percentage' ? `${c.discountValue}% OFF` : `₹${c.discountValue} OFF`}`).join('\n')
+      : 'None (No active coupon discounts currently available on website)';
 
     const timeSlotLabelMap = {
       '7am': '07:00 AM Morning Tech & Career Brief',
@@ -67,12 +109,31 @@ export async function POST(request) {
 
         const prompt = `You are AGT-03, the Autonomous Newsletter AI Agent for Amit Solution Hub (amitsolutionhub.com).
 Generate an engaging, concise tech newsletter for students for the ${slotLabel} edition.
-Include:
-1. Motivational greeting.
-2. Featured Internship Track (Full-Stack Web Dev, AI/ML, Cyber Security, Python).
-3. Live Project Spotlight & Source Code Repository update.
-4. Limited-time coupon discount call to action for amitsolutionhub.com.
-Format nicely with clean HTML paragraphs, bullet points, and strong text.`;
+
+STRICT MANDATORY CONSTRAINTS:
+1. Only feature programs, courses, and live projects that are actually available on amitsolutionhub.com listed below.
+2. DO NOT invent, hallucinate, or generate any fake promo codes, fake coupon codes (such as AFTERNOONTECH25, DISCOUNT25, PROMO25, etc.), or fake discount percentages.
+3. DO NOT mention coupons, discounts, or promotional codes UNLESS they are explicitly listed under "Active Valid Coupons On Website" below. If "Active Valid Coupons On Website" states None, DO NOT include any coupon codes or discount offers!
+4. Format nicely with clean HTML paragraphs (<p>), subheadings (<h3>), bullet lists (<ul><li>), and bold text (<strong>).
+
+Real Available Content on Website:
+---
+[Real Courses & Internship Tracks]
+${courseListText}
+
+[Real Live Projects]
+${projectListText}
+
+[Active Valid Coupons On Website]
+${activeCouponsText}
+---
+
+Newsletter Outline:
+1. Motivational greeting & concise tech insight/tip.
+2. Highlight real available courses/internships from the list above.
+3. Live project spotlight from the list above.
+${activeCoupons.length > 0 ? '4. Mention only the active valid website coupon offer listed above.' : '4. Call to action to visit amitsolutionhub.com for enrollments.'}
+5. Warm professional closing from Amit Solution Hub Team.`;
 
         const result = await model.generateContent(prompt);
         rawBody = result.response.text();
@@ -83,15 +144,30 @@ Format nicely with clean HTML paragraphs, bullet points, and strong text.`;
     }
 
     if (!rawBody) {
+      const couponHtml = activeCoupons.length > 0
+        ? `<div style="background:#f8fafc; border-left:4px solid #6366f1; padding:14px; margin:18px 0; border-radius:6px;">
+            <h4 style="margin:0 0 6px 0; color:#4f46e5;">🎟️ Active Website Coupon Offer:</h4>
+            ${activeCoupons.map(c => `<p style="margin:4px 0; color:#1e293b;">Use coupon code <strong>${c.code}</strong> to get ${c.discountType === 'percentage' ? `${c.discountValue}% OFF` : `₹${c.discountValue} OFF`} at checkout!</p>`).join('')}
+           </div>`
+        : '';
+
       rawBody = `
         <p>Welcome to your daily edition of tech insights and career growth from <strong>Amit Solution Hub</strong>.</p>
-        <h3>🔥 Featured Programs Today:</h3>
+        <p>We are dedicated to delivering hands-on skill development, industry-recognized internship programs, and real-world project experience to empower your tech journey.</p>
+        
+        <h3>🔥 Featured Programs & Internships Available:</h3>
         <ul>
-          <li><strong>Full-Stack Web Development Internship:</strong> Hands-on React, Node.js & MongoDB projects.</li>
-          <li><strong>AI & Machine Learning Track:</strong> Build Python models with real mentor code reviews.</li>
-          <li><strong>Cyber Security & Ethical Hacking:</strong> Real-world network security labs.</li>
+          <li><strong>Full-Stack Web Development Internship:</strong> Build production-ready MERN stack applications with live database integrations and code reviews.</li>
+          <li><strong>AI & Machine Learning Track:</strong> Master Python, model development, and real-world AI applications with mentor guidance.</li>
+          <li><strong>Cyber Security & Ethical Hacking:</strong> Learn hands-on network security, penetration testing, and ethical hacking protocols.</li>
         </ul>
-        <p>Visit <a href="https://www.amitsolutionhub.com">amitsolutionhub.com</a> to claim your student scholarship today!</p>
+
+        <h3>💻 Live Project Showcase:</h3>
+        <p>Explore real-world software architecture and production source code repositories designed to boost your portfolio and job readiness.</p>
+
+        ${couponHtml}
+
+        <p>Visit <a href="https://www.amitsolutionhub.com">amitsolutionhub.com</a> to explore our available programs and accelerate your tech career today!</p>
       `;
     }
 

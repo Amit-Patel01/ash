@@ -36,7 +36,7 @@ export async function GET() {
           department: 'email',
           status: 'SCHEDULED',
           schedule: '07:00 AM | 03:00 PM | 08:00 PM',
-          task: 'Tech updates, course discounts & student project showcases',
+          task: 'Tech updates, verified website courses & student project showcases',
           lastRun: new Date().toISOString(),
           metrics: { dailyEmailsSent: '4,800+', openRate: '48.5%' }
         },

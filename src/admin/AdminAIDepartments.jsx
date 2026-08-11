@@ -721,7 +721,7 @@ export default function AdminAIDepartments() {
               </div>
               <h4 className="font-black text-white text-sm">Daily Newsletter Dispatcher</h4>
               <p className="text-xs text-slate-200 leading-relaxed">
-                Auto-compiles tech newsletters &amp; discounts, sending emails at 7:00 AM, 3:00 PM, and 8:00 PM.
+                Auto-compiles tech newsletters with live website programs &amp; active offers, sending emails at 7:00 AM, 3:00 PM, and 8:00 PM.
               </p>
             </div>
           </div>
