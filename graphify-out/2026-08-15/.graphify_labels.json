@@ -214,7 +214,6 @@
   "212": "TeamMemberCard.jsx",
   "213": "ComingSoon.jsx",
   "214": "Community 214",
-  "215": "EmployeeLayout.jsx",
   "216": "ProjectDetails.jsx",
   "217": "help.jsx",
   "218": "RoleSelect.jsx",
@@ -334,5 +333,13 @@
   "332": "replace_customer.ps1",
   "333": "page.jsx",
   "334": "page.jsx",
-  "335": "page.jsx"
+  "335": "page.jsx",
+  "336": "package.json",
+  "337": "chat.js",
+  "338": "unsubscribe.js",
+  "339": "agentDispatcher.js",
+  "340": "UserOrders.jsx",
+  "342": "EmployeeTasks.jsx",
+  "343": "devDependencies",
+  "344": "page.jsx"
 }

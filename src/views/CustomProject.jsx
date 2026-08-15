@@ -115,14 +115,7 @@ const CustomProject = () => {
   ];
 
   return (
-    <section className="relative w-full min-h-screen pt-10 md:pt-14 pb-20 overflow-hidden bg-gradient-to-br from-slate-50 to-slate-100 px-4">
-      {/* Background */}
-      <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
-        <div className="absolute top-20 -right-20 w-[30rem] h-[30rem] bg-blue-500/15 rounded-full blur-[100px]"></div>
-        <div className="absolute bottom-20 -left-20 w-[30rem] h-[30rem] bg-purple-500/15 rounded-full blur-[100px]"></div>
-      </div>
-      <div className="absolute inset-0 z-[2] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-30"></div>
-
+    <section className="relative w-full min-h-screen pt-10 md:pt-14 pb-20 overflow-hidden bg-transparent px-4">
       <div
         className={`w-full max-w-5xl mx-auto relative z-20 transition-all duration-1000 ease-out ${
           loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-20"

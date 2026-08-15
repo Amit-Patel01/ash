@@ -7,6 +7,7 @@ import GlowBackground from './GlowBackground'
 import AnnouncementPopup from './AnnouncementPopup'
 import DarkModeBackgroundFix from './DarkModeBackgroundFix'
 import GuidanceModal from './GuidanceModal'
+import AshxOsAnnouncementBar from './AshxOsAnnouncementBar'
 import { useTheme } from '../context/ThemeContext'
 
 const Layout = ({ children }) => {
@@ -47,6 +48,7 @@ const Layout = ({ children }) => {
       {!hideGlowBackground && <GlowBackground />}
       {!hideAnnouncement && <AnnouncementPopup />}
       {!hideNavbar && <GuidanceModal />}
+      {!hideNavbar && <AshxOsAnnouncementBar />}
       
       <div className="relative z-10 flex flex-col min-h-screen w-full overflow-x-hidden">
         {!hideNavbar && <Navbar />}

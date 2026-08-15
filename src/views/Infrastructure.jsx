@@ -216,12 +216,7 @@ export default function Infrastructure() {
   const [activeService, setActiveService] = useState(null)
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-[linear-gradient(135deg,#f8fafc_0%,#eef6ff_46%,#f4fbf7_100%)] px-4 py-28 text-slate-900 dark:bg-[linear-gradient(135deg,#020617_0%,#0f172a_52%,#071b18_100%)] dark:text-white sm:px-6 lg:px-8">
-      {/* Background grid */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.05] dark:opacity-[0.08]">
-        <div className="h-full w-full bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:44px_44px]" />
-      </div>
-
+    <section className="relative min-h-screen w-full overflow-hidden bg-transparent px-4 py-28 text-slate-900 dark:text-white sm:px-6 lg:px-8">
       <div className="relative z-10 mx-auto w-full max-w-7xl">
         {/* Header Section */}
         <div className="text-center max-w-4xl mx-auto mb-20">

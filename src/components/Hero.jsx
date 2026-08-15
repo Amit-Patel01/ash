@@ -36,6 +36,7 @@ import SEO from './SEO'
 import msmeQR from '../assets/msme-qr.png'
 import msmeLogo from '../assets/msme.png'
 import VerifiedCertificateSection from './VerifiedCertificateSection'
+import AshxOsHeroSection from './AshxOsHeroSection'
 
 /* ── Signature background styles (shared visual language with the rest of the site) ── */
 const HeroBackgroundStyles = () => (
@@ -753,6 +754,9 @@ const Hero = () => {
 
         {/* Trusted Payment Partners */}
         <TrustedPartners />
+
+        {/* ── ASHX OS LAUNCH SHOWCASE SECTION ── */}
+        <AshxOsHeroSection />
 
         {/* ── INTERNSHIP CATEGORIES ── */}
         <section id="categories" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/60">

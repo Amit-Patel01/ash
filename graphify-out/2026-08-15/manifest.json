@@ -200,8 +200,8 @@
     "semantic_hash": ""
   },
   "app/admin/page.jsx": {
-    "mtime": 1786771586.8264027,
-    "ast_hash": "7ffd4e2af0cd14998fd8cb85726a6e1e",
+    "mtime": 1786297407.867885,
+    "ast_hash": "75365a92b1e6113760f19c6b131abd6e",
     "semantic_hash": ""
   },
   "app/contact/page.jsx": {
@@ -2840,8 +2840,8 @@
     "semantic_hash": ""
   },
   "src/admin/AdminLayout.jsx": {
-    "mtime": 1786771575.6835852,
-    "ast_hash": "a7512d399eab5f342fb1c09d211c2e5d",
+    "mtime": 1786379202.9961371,
+    "ast_hash": "5e82e28ac9fc799b8113f03ac144b5c6",
     "semantic_hash": ""
   },
   "src/admin/AdminMessages.jsx": {
@@ -3050,8 +3050,8 @@
     "semantic_hash": ""
   },
   "src/components/Navbar.jsx": {
-    "mtime": 1786771809.8166935,
-    "ast_hash": "8edf0b500fdb190d6fa4ea8e163f67fd",
+    "mtime": 1786771291.4370718,
+    "ast_hash": "76eceae2e2847d81d5c32ff4f06f0f60",
     "semantic_hash": ""
   },
   "src/components/NotificationBell.jsx": {
@@ -4400,8 +4400,8 @@
     "semantic_hash": ""
   },
   "app/ashx-os/page.jsx": {
-    "mtime": 1786771618.69158,
-    "ast_hash": "f3a235d4177b519f60039a9cdf3ffab6",
+    "mtime": 1786771325.7128296,
+    "ast_hash": "19a4ce999f466b4850acc4b4ca56c316",
     "semantic_hash": ""
   },
   "src/components/AshxOsAnnouncementBar.jsx": {
@@ -4410,8 +4410,8 @@
     "semantic_hash": ""
   },
   "src/components/AshxOsHeroSection.jsx": {
-    "mtime": 1786771597.6430047,
-    "ast_hash": "d1fa8e9c25762145f7975011540f6d5b",
+    "mtime": 1786771307.458162,
+    "ast_hash": "2c39783e938d62ba054db181760c1f2e",
     "semantic_hash": ""
   },
   "public/ashx-os-poster.jpg": {
@@ -4422,16 +4422,6 @@
   "src/assets/ashx-os-poster.jpg": {
     "mtime": 1786770715.749207,
     "ast_hash": "0ece300b96bd7cb2c149d22ea260a9c2",
-    "semantic_hash": ""
-  },
-  "app/api/ashx-os/waitlist/route.js": {
-    "mtime": 1786771551.0059426,
-    "ast_hash": "2105eb9e414800f2ce04a921a4d9f4b2",
-    "semantic_hash": ""
-  },
-  "src/admin/AdminAshxWaitlist.jsx": {
-    "mtime": 1786771563.261691,
-    "ast_hash": "3554e3e941fa2e2fe666f29cc1cc456c",
     "semantic_hash": ""
   }
 }

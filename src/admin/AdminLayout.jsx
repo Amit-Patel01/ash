@@ -48,6 +48,7 @@ const navGroups = [
   {
     label: 'Inbox & Requests',
     items: [
+      { path: '/admin/ashx-waitlist', label: 'ASHX OS Waitlist', icon: 'robot' },
       { path: '/admin/messages', label: 'Messages', icon: 'mail', permission: 'can_manage_messages' },
       { path: '/admin/account-requests', label: 'Account Requests', icon: 'userPlus', permission: 'can_approve_accounts' },
       { path: '/admin/service-requests', label: 'Service Requests', icon: 'clipboardList', permission: 'can_manage_service_requests' },

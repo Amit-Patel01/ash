@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "app/api/razorpay/create-order/route.js": {
-    "mtime": 1786382288.4795732,
-    "ast_hash": "e0130fbf0b797d85bb50bebf3cfed72a",
+    "mtime": 1786463181.8283284,
+    "ast_hash": "ec22ff053b587e66a801a862430fb9c2",
     "semantic_hash": ""
   },
   "app/courses/page.jsx": {
@@ -250,8 +250,8 @@
     "semantic_hash": ""
   },
   "app/api/admin/users/by-email/route.js": {
-    "mtime": 1786297407.8719625,
-    "ast_hash": "fbe150a082b002b15e57f92524f913fb",
+    "mtime": 1786463151.75297,
+    "ast_hash": "1d82385c01dcbf3153e7a2a71325d5fb",
     "semantic_hash": ""
   },
   "app/api/admin/users/lookup/route.js": {
@@ -260,8 +260,8 @@
     "semantic_hash": ""
   },
   "app/api/admin/users/route.js": {
-    "mtime": 1786297407.8737354,
-    "ast_hash": "b72707761688991b96317a0bed974567",
+    "mtime": 1786463132.2644749,
+    "ast_hash": "5fee6c344079a3a01edaef15bc442d99",
     "semantic_hash": ""
   },
   "app/api/auth/account-requests/route.js": {
@@ -325,8 +325,8 @@
     "semantic_hash": ""
   },
   "app/api/db/[...slug]/route.js": {
-    "mtime": 1786462090.982276,
-    "ast_hash": "aff568b6fd270b268ffe171b3f5e0b0c",
+    "mtime": 1786464041.3801477,
+    "ast_hash": "785e6762625407bc4db2e143ef84027d",
     "semantic_hash": ""
   },
   "app/api/db/settings/maintenance/route.js": {
@@ -345,13 +345,13 @@
     "semantic_hash": ""
   },
   "app/api/razorpay/verify-course/route.js": {
-    "mtime": 1786382305.1572237,
-    "ast_hash": "1d0539c5473be4c4ea634a0a5f3dd902",
+    "mtime": 1786463196.982284,
+    "ast_hash": "211807770118216e32e854032dcc5d78",
     "semantic_hash": ""
   },
   "app/api/razorpay/verify-payment/route.js": {
-    "mtime": 1786382298.8241625,
-    "ast_hash": "8da1a26c72f97ff3ad7689ca1445bdba",
+    "mtime": 1786463189.6139975,
+    "ast_hash": "c2cf0105cae94142f254a53e4d7dff62",
     "semantic_hash": ""
   },
   "app/api/upload/[...slug]/route.js": {
@@ -2790,8 +2790,8 @@
     "semantic_hash": ""
   },
   "src/App.jsx": {
-    "mtime": 1786297411.9081438,
-    "ast_hash": "7675b35ff68bfaaeea971ba997623304",
+    "mtime": 1786464213.8438673,
+    "ast_hash": "3f81724201091eafa7309125ab877c5f",
     "semantic_hash": ""
   },
   "src/admin/AdminAIDepartments.jsx": {
@@ -3015,8 +3015,8 @@
     "semantic_hash": ""
   },
   "src/components/Footer.jsx": {
-    "mtime": 1786297412.0681634,
-    "ast_hash": "328c48a75c8e9d66e4cadc29f43213b6",
+    "mtime": 1786464219.1044207,
+    "ast_hash": "fe6ad606571101196a16d30a39901863",
     "semantic_hash": ""
   },
   "src/components/FormerStaffModal.jsx": {
@@ -3035,8 +3035,8 @@
     "semantic_hash": ""
   },
   "src/components/Hero.jsx": {
-    "mtime": 1786299230.9610453,
-    "ast_hash": "c4768255594ad596f288f051797955e4",
+    "mtime": 1786464056.8012693,
+    "ast_hash": "f2e5b46ef8ce2f3af38c480d2973a772",
     "semantic_hash": ""
   },
   "src/components/Layout.jsx": {
@@ -3085,8 +3085,8 @@
     "semantic_hash": ""
   },
   "src/components/TechMarquee.jsx": {
-    "mtime": 1786299005.103686,
-    "ast_hash": "4ed687a8978af955c9bc0f5de9e11361",
+    "mtime": 1786463624.8641272,
+    "ast_hash": "d3d2f12c84557d310c06298844f116f1",
     "semantic_hash": ""
   },
   "src/components/TermsAndConditions.jsx": {
@@ -3100,8 +3100,8 @@
     "semantic_hash": ""
   },
   "src/components/VerifiedCertificateSection.jsx": {
-    "mtime": 1786299005.271713,
-    "ast_hash": "b4c6eed38179d0e90e69b70b1223dbd9",
+    "mtime": 1786463631.4720721,
+    "ast_hash": "e882c3a346f5448f3a58338f81613a06",
     "semantic_hash": ""
   },
   "src/components/public/PublicPageShell.jsx": {
@@ -3245,8 +3245,8 @@
     "semantic_hash": ""
   },
   "src/store/StoreContext.jsx": {
-    "mtime": 1786462132.5256724,
-    "ast_hash": "136182f6a419cb56f71dc76677e2ab7c",
+    "mtime": 1786463108.3562262,
+    "ast_hash": "3eafa2fe1c032ca1f97ca2adc72c5a58",
     "semantic_hash": ""
   },
   "src/technicalsupport/RepairService.jsx": {
@@ -4270,8 +4270,8 @@
     "semantic_hash": ""
   },
   "app/api/ai/department/config/route.js": {
-    "mtime": 1786300172.8967297,
-    "ast_hash": "121973dc4ed93deb4d646301f897c437",
+    "mtime": 1786463215.9607515,
+    "ast_hash": "1b124682adb63a155ebfa230b769d5d3",
     "semantic_hash": ""
   },
   "app/api/ai/department/dispatch/route.js": {
@@ -4295,13 +4295,13 @@
     "semantic_hash": ""
   },
   "app/api/ai/department/proposals/route.js": {
-    "mtime": 1786300387.8183591,
-    "ast_hash": "f634709f451e647411b62d81656396c4",
+    "mtime": 1786463075.4282491,
+    "ast_hash": "cee1c3def1742ce011cef73ae5f4d3dc",
     "semantic_hash": ""
   },
   "app/api/ai/newsletter/route.js": {
-    "mtime": 1786442985.8901522,
-    "ast_hash": "4410c731df4ce30f6c53123cdd93638b",
+    "mtime": 1786463225.7374938,
+    "ast_hash": "e7652089670abfe75d2fa78d88594233",
     "semantic_hash": ""
   },
   "app/api/ai/squad/route.js": {
@@ -4360,8 +4360,8 @@
     "semantic_hash": ""
   },
   "app/api/admin/users/[id]/route.js": {
-    "mtime": 1786462099.5955033,
-    "ast_hash": "12438ee1ce5823512f228538a806a3a5",
+    "mtime": 1786463165.3737302,
+    "ast_hash": "f090e44e0a65b5efd953efed946585ea",
     "semantic_hash": ""
   },
   "app/api/certificates/qr/[id]/route.js": {
@@ -4377,6 +4377,26 @@
   "app/api/coupons/[id]/route.js": {
     "mtime": 1786462109.6308098,
     "ast_hash": "02619bc0de0a512b450fd745d99d853a",
+    "semantic_hash": ""
+  },
+  "app/grievance/page.jsx": {
+    "mtime": 1786464202.8126726,
+    "ast_hash": "c1c5fc6c9ba07767e8d5dabcfa0f5b70",
+    "semantic_hash": ""
+  },
+  "app/privacy-policy/page.jsx": {
+    "mtime": 1786464186.1309037,
+    "ast_hash": "fc6e4b96c225fba4f00604425a376c65",
+    "semantic_hash": ""
+  },
+  "app/refund-policy/page.jsx": {
+    "mtime": 1786464197.9356222,
+    "ast_hash": "e70980264dcd42818df5e206f4f223fb",
+    "semantic_hash": ""
+  },
+  "app/terms-of-service/page.jsx": {
+    "mtime": 1786464192.5389876,
+    "ast_hash": "68db351dbc2edfae3b6d36c5daf11b81",
     "semantic_hash": ""
   }
 }

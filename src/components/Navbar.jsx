@@ -127,7 +127,7 @@ const Navbar = () => {
   // Theme toggle component moved outside to prevent re-renders
 
   return (
-    <nav className={`fixed inset-x-0 top-2 sm:top-4 z-[140] max-w-7xl w-[96%] sm:w-full mx-auto px-1 sm:px-4 pointer-events-auto transition-all duration-500 ease-in-out ${isVisible || isOpen ? 'translate-y-0 opacity-100' : '-translate-y-28 opacity-0 pointer-events-none'}`}>
+    <nav className={`fixed inset-x-0 ${scrolled ? 'top-2 sm:top-3' : 'top-10 sm:top-12'} z-[140] max-w-7xl w-[96%] sm:w-full mx-auto px-1 sm:px-4 pointer-events-auto transition-all duration-300 ease-in-out ${isVisible || isOpen ? 'translate-y-0 opacity-100' : '-translate-y-28 opacity-0 pointer-events-none'}`}>
       <div className={`
         relative rounded-full border transition-all duration-500 backdrop-blur-2xl px-3 sm:px-6 shadow-2xl
         ${isDark
@@ -138,38 +138,26 @@ const Navbar = () => {
         {/* Glow */}
         <div className={`absolute inset-0 rounded-full blur-xl opacity-20 pointer-events-none ${isDark ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500' : 'bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400'}`} />
 
-        <div className="relative flex min-w-0 justify-between items-center h-14 sm:h-16">
+        <div className="relative flex min-w-0 justify-between items-center h-14 sm:h-16 gap-2">
 
           {/* Left: Logo + Nav Links */}
-          <div className="flex min-w-0 items-center gap-2 lg:gap-4 xl:gap-6 h-full">
-            <Link href="/" className="relative z-10 flex min-w-0 items-center gap-2 sm:gap-3 group flex-shrink-0 outline-none">
-              <div className="relative overflow-hidden rounded-xl px-1.5 sm:px-2 py-1 transform transition-all duration-500 group-hover:scale-105 group-hover:-rotate-1">
-                {/* Radial Glow on Hover */}
-                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 blur-lg transition-opacity duration-500 pointer-events-none ${isDark ? 'bg-gradient-to-br from-indigo-500/30 to-purple-500/20' : 'bg-gradient-to-br from-blue-500/20 to-purple-500/15'}`} />
-
+          <div className="flex min-w-0 items-center gap-2 xl:gap-4 h-full flex-shrink">
+            <Link href="/" className="relative z-10 flex min-w-0 items-center gap-2 sm:gap-2.5 group flex-shrink-0 outline-none">
+              {/* Logo icon container */}
+              <div className="relative p-1 sm:p-1.5 rounded-xl bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-indigo-500/20 shadow-inner group-hover:scale-105 group-hover:border-indigo-500/40 transition-all duration-300 overflow-hidden flex-shrink-0">
                 <img
                   src={brandLogo?.src || brandLogo}
                   alt="Amit Solution Hub Logo"
-                  className="relative z-10 h-7 sm:h-9 lg:h-10 w-auto object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.15)]"
+                  className="relative z-10 h-7 sm:h-8 lg:h-9 w-auto object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.15)]"
                 />
-
-                {/* Shine Sweep Beam */}
-                <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden">
-                  <div
-                    className="absolute top-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-[-30deg]"
-                    style={{
-                      animation: 'logo-shine 4s infinite ease-in-out'
-                    }}
-                  />
-                </div>
               </div>
 
               {/* Full Brand Name Text */}
               <div className="flex flex-col min-w-0">
-                <span className={`text-sm sm:text-base lg:text-lg font-black tracking-tight leading-none whitespace-nowrap ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                <span className={`text-xs sm:text-sm lg:text-[15px] font-black tracking-tight leading-none whitespace-nowrap ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   Amit <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">Solution Hub</span>
                 </span>
-                <span className="hidden sm:inline-block text-[9px] font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 leading-none mt-0.5 whitespace-nowrap">
+                <span className="hidden sm:inline-block text-[8.5px] font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 leading-none mt-0.5 whitespace-nowrap">
                   Tech & Learning
                 </span>
               </div>
@@ -194,19 +182,19 @@ const Navbar = () => {
             `}} />
 
             {/* Desktop Links */}
-            <div className="hidden lg:flex items-center gap-1 py-2">
+            <div className="hidden lg:flex items-center gap-0.5 xl:gap-1 py-2">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path
                 return (
                   <Link
                     key={link.name}
                     href={link.path}
-                    className={`relative px-4 py-2 flex items-center rounded-xl text-sm xl:text-[15px] font-bold transition-all duration-300 group outline-none ${isActive
+                    className={`relative px-2 xl:px-3 py-1.5 flex items-center rounded-xl text-xs xl:text-[13.5px] font-bold transition-all duration-300 group outline-none whitespace-nowrap flex-shrink-0 ${isActive
                         ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 shadow-md shadow-indigo-500/20' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md shadow-blue-500/20'
                         : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
                       }`}
                   >
-                    <span className="relative z-10">{link.name}</span>
+                    <span className="relative z-10 whitespace-nowrap">{link.name}</span>
                   </Link>
                 )
               })}
@@ -214,29 +202,43 @@ const Navbar = () => {
               {/* Projects Link */}
               <Link
                 href="/projects"
-                className={`relative px-4 py-2 flex items-center rounded-xl text-sm xl:text-[15px] font-bold transition-all duration-300 group outline-none ${location.pathname === '/projects'
+                className={`relative px-2 xl:px-3 py-1.5 flex items-center rounded-xl text-xs xl:text-[13.5px] font-bold transition-all duration-300 group outline-none whitespace-nowrap flex-shrink-0 ${location.pathname === '/projects'
                     ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 shadow-md shadow-indigo-500/20' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md shadow-blue-500/20'
                     : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
                   }`}
               >
-                <span className="relative z-10">Project</span>
+                <span className="relative z-10 whitespace-nowrap">Project</span>
+              </Link>
+
+              {/* ASHX OS Link */}
+              <Link
+                href="/ashx-os"
+                className={`relative px-2 xl:px-2.5 py-1.5 flex items-center gap-1 rounded-xl text-xs xl:text-[13.5px] font-bold transition-all duration-300 group outline-none whitespace-nowrap flex-shrink-0 ${location.pathname === '/ashx-os'
+                    ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 shadow-md shadow-indigo-500/20' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md shadow-blue-500/20'
+                    : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
+                  }`}
+              >
+                <span className="relative z-10 whitespace-nowrap">ASHX OS</span>
+                <span className="relative z-10 px-1.5 py-0.5 rounded-full text-[8.5px] font-black uppercase tracking-wider whitespace-nowrap bg-indigo-600 text-white shadow-sm">
+                  Dec '26
+                </span>
               </Link>
 
               {/* Programs Dropdown */}
               <div
-                className="relative flex items-center"
+                className="relative flex items-center flex-shrink-0"
                 onMouseEnter={() => setProgramsDropdownOpen(true)}
                 onMouseLeave={() => setProgramsDropdownOpen(false)}
               >
                 <button
-                  className={`relative px-4 py-2 flex items-center gap-1.5 rounded-xl text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${isProgramsActive
+                  className={`relative px-2 xl:px-3 py-1.5 flex items-center gap-1 rounded-xl text-xs xl:text-[13.5px] font-bold transition-all duration-300 outline-none whitespace-nowrap flex-shrink-0 ${isProgramsActive
                       ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 shadow-md shadow-indigo-500/20' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md shadow-blue-500/20'
                       : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
                     }`}
                 >
-                  <span className="relative z-10">Programs</span>
+                  <span className="relative z-10 whitespace-nowrap">Programs</span>
                   <svg
-                    className={`w-4 h-4 transition-transform duration-300 ${programsDropdownOpen ? 'rotate-180' : ''}`}
+                    className={`w-3.5 h-3.5 transition-transform duration-300 flex-shrink-0 ${programsDropdownOpen ? 'rotate-180' : ''}`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -306,19 +308,19 @@ const Navbar = () => {
 
               {/* Why Us Dropdown */}
               <div
-                className="relative flex items-center"
+                className="relative flex items-center flex-shrink-0"
                 onMouseEnter={() => setWhyUsDropdownOpen(true)}
                 onMouseLeave={() => setWhyUsDropdownOpen(false)}
               >
                 <button
-                  className={`relative px-4 py-2 flex items-center gap-1.5 rounded-xl text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${isWhyUsActive
+                  className={`relative px-2 xl:px-3 py-1.5 flex items-center gap-1 rounded-xl text-xs xl:text-[13.5px] font-bold transition-all duration-300 outline-none whitespace-nowrap flex-shrink-0 ${isWhyUsActive
                       ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 shadow-md shadow-indigo-500/20' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md shadow-blue-500/20'
                       : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
                     }`}
                 >
-                  <span className="relative z-10">Why Us</span>
+                  <span className="relative z-10 whitespace-nowrap">Why Us</span>
                   <svg
-                    className={`w-4 h-4 transition-transform duration-300 ${whyUsDropdownOpen ? 'rotate-180' : ''}`}
+                    className={`w-3.5 h-3.5 transition-transform duration-300 flex-shrink-0 ${whyUsDropdownOpen ? 'rotate-180' : ''}`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -368,19 +370,19 @@ const Navbar = () => {
 
               {/* Company Dropdown */}
               <div
-                className="relative flex items-center"
+                className="relative flex items-center flex-shrink-0"
                 onMouseEnter={() => setCompanyDropdownOpen(true)}
                 onMouseLeave={() => setCompanyDropdownOpen(false)}
               >
                 <button
-                  className={`relative px-4 py-2 flex items-center gap-1.5 rounded-xl text-sm xl:text-[15px] font-bold transition-all duration-300 outline-none ${isCompanyActive
+                  className={`relative px-2 xl:px-3 py-1.5 flex items-center gap-1 rounded-xl text-xs xl:text-[13.5px] font-bold transition-all duration-300 outline-none whitespace-nowrap flex-shrink-0 ${isCompanyActive
                       ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 shadow-md shadow-indigo-500/20' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md shadow-blue-500/20'
                       : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
                     }`}
                 >
-                  <span className="relative z-10">Company</span>
+                  <span className="relative z-10 whitespace-nowrap">Company</span>
                   <svg
-                    className={`w-4 h-4 transition-transform duration-300 ${companyDropdownOpen ? 'rotate-180' : ''}`}
+                    className={`w-3.5 h-3.5 transition-transform duration-300 flex-shrink-0 ${companyDropdownOpen ? 'rotate-180' : ''}`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -440,17 +442,17 @@ const Navbar = () => {
           </div>
 
           {/* Right: Theme + Auth + Chat */}
-          <div className="flex items-center gap-1.5 lg:gap-2 xl:gap-3 h-full">
+          <div className="flex items-center gap-1.5 xl:gap-2.5 h-full flex-shrink-0">
 
             {/* Desktop */}
-            <div className="hidden lg:flex items-center gap-1.5 xl:gap-2">
+            <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 flex-shrink-0">
               {currentUser ? (
-                <div className={`flex items-center gap-2 p-1 rounded-full border ${isDark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/5'}`}>
+                <div className={`flex items-center gap-2 p-1 rounded-full border flex-shrink-0 ${isDark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/5'}`}>
                   <Link
                     href={getHomePathForRole(currentUser?.role)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-white shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:shadow-indigo-500/30"
+                    className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-bold text-white shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:shadow-indigo-500/30 whitespace-nowrap"
                   >
-                    <div className="w-6 h-6 rounded-full overflow-hidden bg-white/10 flex items-center justify-center shrink-0">
+                    <div className="w-5 h-5 rounded-full overflow-hidden bg-white/10 flex items-center justify-center shrink-0">
                       {avatarUrl ? (
                         <img src={avatarUrl} alt={userDisplayName} className="w-full h-full object-cover" />
                       ) : (
@@ -463,10 +465,10 @@ const Navbar = () => {
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className={`w-10 h-10 flex items-center justify-center rounded-full transition-all group active:scale-95 ${isDark ? 'text-red-400 hover:bg-red-500/10' : 'text-red-600 hover:bg-red-50'}`}
+                    className={`w-8 h-8 flex items-center justify-center rounded-full transition-all group active:scale-95 ${isDark ? 'text-red-400 hover:bg-red-500/10' : 'text-red-600 hover:bg-red-50'}`}
                     title="Logout"
                   >
-                    <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                       <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                       <polyline points="16 17 21 12 16 7" />
                       <line x1="21" x2="9" y1="12" y2="12" />
@@ -474,16 +476,16 @@ const Navbar = () => {
                   </button>
                 </div>
               ) : (
-                <div className={`flex items-center p-1 rounded-full border transition-all duration-300 ${isDark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/5'}`}>
+                <div className={`flex items-center p-0.5 sm:p-1 rounded-full border transition-all duration-300 flex-shrink-0 ${isDark ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/5'}`}>
                   <Link
                     href="/login"
-                    className={`px-3.5 lg:px-4 xl:px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 ${isDark ? 'text-slate-300 hover:text-white' : 'text-slate-700 hover:text-black'}`}
+                    className={`px-3 xl:px-4 py-1.5 rounded-full text-xs xl:text-sm font-bold transition-all duration-300 whitespace-nowrap ${isDark ? 'text-slate-300 hover:text-white' : 'text-slate-700 hover:text-black'}`}
                   >
                     Login
                   </Link>
                   <Link
                     href="/join-us"
-                    className="relative group overflow-hidden px-3.5 lg:px-4 xl:px-5 py-2 rounded-full text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95 whitespace-nowrap"
+                    className="relative group overflow-hidden px-3 xl:px-4 py-1.5 rounded-full text-xs xl:text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95 whitespace-nowrap flex-shrink-0"
                   >
                     Join Us
                   </Link>
@@ -493,12 +495,12 @@ const Navbar = () => {
               {/* Chat Button */}
               <Link
                 href="/chat"
-                className={`hidden lg:flex relative items-center gap-2 backdrop-blur-md px-5 py-2.5 rounded-full font-bold text-sm lg:text-[15px] hover:-translate-y-0.5 transition-all duration-300 shadow-md border ${isDark
-                    ? 'bg-slate-800/80 text-slate-200 border-slate-700 hover:bg-slate-700'
-                    : 'bg-white/90 text-slate-900 border-slate-200 hover:bg-white'
+                className={`hidden lg:flex relative items-center gap-1.5 backdrop-blur-md px-3.5 xl:px-4 py-1.5 rounded-full font-bold text-xs xl:text-sm hover:-translate-y-0.5 transition-all duration-300 shadow-md border whitespace-nowrap flex-shrink-0 ${isDark
+                  ? 'bg-slate-800/80 text-slate-200 border-slate-700 hover:bg-slate-700'
+                  : 'bg-white/90 text-slate-900 border-slate-200 hover:bg-white'
                   }`}
               >
-                <svg className="w-5 h-5 text-blue-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <svg className="w-4 h-4 text-blue-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
                 </svg>
                 Chat
@@ -566,8 +568,8 @@ const Navbar = () => {
                       href={link.path}
                       onClick={() => setIsOpen(false)}
                       className={`relative block px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 overflow-hidden ${isActive
-                          ? isDark ? 'text-white bg-gradient-to-r from-indigo-500/25 to-purple-500/20' : 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm'
-                          : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-600 hover:text-blue-600 hover:bg-slate-50'
+                        ? isDark ? 'text-white bg-gradient-to-r from-indigo-500/25 to-purple-500/20' : 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm'
+                        : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-600 hover:text-blue-600 hover:bg-slate-50'
                         }`}
                     >
                       <span className="relative z-10 flex items-center gap-3">
@@ -583,8 +585,8 @@ const Navbar = () => {
                   <button
                     onClick={() => setMobileProgramsOpen(!mobileProgramsOpen)}
                     className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${isProgramsActive
-                        ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
-                        : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
+                      ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
+                      : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
                       }`}
                   >
                     <span className="flex items-center gap-3">
@@ -615,8 +617,8 @@ const Navbar = () => {
                           href="/programs"
                           onClick={() => setIsOpen(false)}
                           className={`flex items-center gap-2 px-6 py-3 text-sm font-black rounded-xl transition-all duration-200 ${location.pathname === '/programs'
-                              ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
-                              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
+                            ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                            : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
                             }`}
                         >
                           <GraduationCap className="w-4 h-4 text-indigo-500" />
@@ -651,8 +653,8 @@ const Navbar = () => {
                   <button
                     onClick={() => setMobileWhyUsOpen(!mobileWhyUsOpen)}
                     className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${isWhyUsActive
-                        ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
-                        : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
+                      ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
+                      : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
                       }`}
                   >
                     <span className="flex items-center gap-3">
@@ -683,8 +685,8 @@ const Navbar = () => {
                           href="/services"
                           onClick={() => setIsOpen(false)}
                           className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${location.pathname === '/services'
-                              ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
-                              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
+                            ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                            : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
                             }`}
                         >
                           Our Services
@@ -693,8 +695,8 @@ const Navbar = () => {
                           href="/custom-project"
                           onClick={() => setIsOpen(false)}
                           className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 mt-1 ${location.pathname === '/custom-project'
-                              ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
-                              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
+                            ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                            : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
                             }`}
                         >
                           Custom Build
@@ -709,8 +711,8 @@ const Navbar = () => {
                   href="/projects"
                   onClick={() => setIsOpen(false)}
                   className={`relative block px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 overflow-hidden ${location.pathname === '/projects'
-                      ? isDark ? 'text-white bg-gradient-to-r from-indigo-500/25 to-purple-500/20' : 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm'
-                      : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-600 hover:text-blue-600 hover:bg-slate-50'
+                    ? isDark ? 'text-white bg-gradient-to-r from-indigo-500/25 to-purple-500/20' : 'text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm'
+                    : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-600 hover:text-blue-600 hover:bg-slate-50'
                     }`}
                 >
                   <span className="relative z-10 flex items-center gap-3">
@@ -719,13 +721,33 @@ const Navbar = () => {
                   </span>
                 </Link>
 
+                {/* Mobile ASHX OS Link */}
+                <Link
+                  href="/ashx-os"
+                  onClick={() => setIsOpen(false)}
+                  className={`relative block px-6 py-4 text-base font-black rounded-2xl transition-all duration-300 overflow-hidden ${location.pathname === '/ashx-os'
+                    ? isDark ? 'text-cyan-300 bg-cyan-500/20 border border-cyan-400/30' : 'text-cyan-700 bg-cyan-50 border border-cyan-300'
+                    : isDark ? 'text-cyan-400 hover:bg-cyan-950/40' : 'text-cyan-600 hover:bg-cyan-50'
+                    }`}
+                >
+                  <span className="relative z-10 flex items-center justify-between">
+                    <span className="flex items-center gap-3 font-mono">
+                      {location.pathname === '/ashx-os' && <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]" />}
+                      ASHX OS
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 animate-pulse">
+                      Dec 2026
+                    </span>
+                  </span>
+                </Link>
+
                 {/* Mobile Company Dropdown */}
                 <div className="flex flex-col">
                   <button
                     onClick={() => setMobileCompanyOpen(!mobileCompanyOpen)}
                     className={`flex items-center justify-between px-6 py-4 text-base font-bold rounded-2xl transition-all duration-300 outline-none ${isCompanyActive
-                        ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
-                        : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
+                      ? isDark ? 'text-indigo-400 bg-indigo-500/5' : 'text-blue-700 bg-blue-50/50'
+                      : isDark ? 'text-slate-300 hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
                       }`}
                   >
                     <span className="flex items-center gap-3">
@@ -756,8 +778,8 @@ const Navbar = () => {
                           href="/about"
                           onClick={() => setIsOpen(false)}
                           className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 ${location.pathname === '/about'
-                              ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
-                              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
+                            ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                            : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
                             }`}
                         >
                           About Us
@@ -766,8 +788,8 @@ const Navbar = () => {
                           href="/infrastructure"
                           onClick={() => setIsOpen(false)}
                           className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 mt-1 ${location.pathname === '/infrastructure'
-                              ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
-                              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
+                            ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                            : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
                             }`}
                         >
                           Our Infrastructure
@@ -776,8 +798,8 @@ const Navbar = () => {
                           href="/contact"
                           onClick={() => setIsOpen(false)}
                           className={`block px-6 py-3 text-sm font-bold rounded-xl transition-all duration-200 mt-1 ${location.pathname === '/contact'
-                              ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
-                              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
+                            ? isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-blue-700 bg-blue-50'
+                            : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-blue-600'
                             }`}
                         >
                           Contact Us
