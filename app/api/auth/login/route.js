@@ -28,7 +28,38 @@ export async function POST(request) {
       );
     }
 
-    const isValidPassword = await bcrypt.compare(password, user.passwordHash || user.password || '');
+    if (!user.passwordHash && !user.password) {
+      return NextResponse.json(
+        { success: false, message: 'No password has been set for this account yet. Please click "Forgot Password?" to set your password.' },
+        { status: 401 }
+      );
+    }
+
+    let isValidPassword = false;
+    if (user.passwordHash) {
+      try {
+        isValidPassword = await bcrypt.compare(password, user.passwordHash);
+      } catch (e) {
+        console.warn('bcrypt compare error:', e);
+      }
+    }
+
+    if (!isValidPassword && user.password) {
+      if (user.password === password) {
+        isValidPassword = true;
+        try {
+          const newHash = await bcrypt.hash(password, 10);
+          await db.collection('users').updateOne({ _id: user._id }, { $set: { passwordHash: newHash, updatedAt: new Date() } });
+        } catch (e) {
+          console.warn('Failed to upgrade password hash:', e);
+        }
+      } else {
+        try {
+          isValidPassword = await bcrypt.compare(password, user.password);
+        } catch {}
+      }
+    }
+
     if (!isValidPassword) {
       return NextResponse.json(
         { success: false, message: 'Invalid email or password.' },
