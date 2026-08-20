@@ -44,7 +44,7 @@ const employeeRoles = [
 ]
 
 export default function AdminEmployees() {
-  const { users, addUser, updateUser, deleteUser, mergeUsers, fireEmployee, reinstateEmployee } = useStore()
+  const { users, addUser, updateUser, deleteUser, mergeUsers, fireEmployee, reinstateEmployee, loading: storeLoading } = useStore()
     const router = useRouter()
   const navigate = (path, options) => {
     if (typeof path === 'number') router.back()
@@ -565,7 +565,32 @@ export default function AdminEmployees() {
 
       {/* Employee Cards Grid */}
       <div className="grid grid-cols-1 gap-4">
-        {filteredEmployees.length === 0 ? (
+        {storeLoading ? (
+          // Skeleton loading state
+          <div className="space-y-3">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-5 py-4">
+                  <div className="flex items-center gap-4">
+                    {/* Avatar skeleton */}
+                    <div className="w-12 h-12 rounded-xl bg-slate-200 animate-pulse flex-shrink-0" />
+                    <div className="space-y-2">
+                      <div className="h-4 w-36 bg-slate-200 rounded-full animate-pulse" />
+                      <div className="h-3 w-52 bg-slate-100 rounded-full animate-pulse" />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-7 w-24 bg-slate-100 rounded-xl animate-pulse" />
+                    <div className="h-7 w-14 bg-slate-100 rounded-xl animate-pulse" />
+                    <div className="h-7 w-24 bg-slate-100 rounded-xl animate-pulse" />
+                    <div className="h-7 w-20 bg-slate-900/10 rounded-xl animate-pulse" />
+                  </div>
+                </div>
+              </div>
+            ))}
+            <p className="text-center text-xs text-slate-400 font-medium py-2 animate-pulse">Loading staff accounts...</p>
+          </div>
+        ) : filteredEmployees.length === 0 ? (
           <div className="bg-white border border-slate-200 rounded-2xl px-6 py-16 text-center">
             <div className="flex flex-col items-center justify-center gap-3">
               {statusTab === 'terminated' ? (
