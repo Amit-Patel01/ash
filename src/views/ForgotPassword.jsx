@@ -63,7 +63,7 @@ export default function ForgotPassword() {
       await resetPassword(email, from)
       setSent(true)
     } catch (err) {
-      let msg = 'Failed to send reset email. Please try again.'
+      let msg = err?.message || 'Failed to send reset email. Please try again.'
       const rawMessage = String(err?.message || '').toLowerCase()
       if (
         rawMessage.includes('not found') ||
