@@ -54,7 +54,32 @@ export async function POST(request) {
 
     const existing = await db.collection('users').findOne({ email: normalizedEmail });
     if (existing) {
-      return NextResponse.json({ success: false, message: 'A user with this email already exists.' }, { status: 409 });
+      const updateDoc = {
+        name: name || displayName || existing.name || existing.displayName || '',
+        displayName: displayName || name || existing.displayName || existing.name || '',
+        role: role || existing.role || 'employee',
+        status: 'active',
+        isTerminated: false,
+        fireReason: null,
+        ...rest,
+        updatedAt: new Date(),
+      };
+
+      if (password) {
+        updateDoc.passwordHash = await bcrypt.hash(password, 10);
+      }
+
+      await db.collection('users').updateOne({ _id: existing._id }, { $set: updateDoc });
+      const updated = await db.collection('users').findOne(
+        { _id: existing._id },
+        { projection: { passwordHash: 0, password: 0 } }
+      );
+
+      return NextResponse.json({
+        success: true,
+        message: 'Existing user updated to staff successfully.',
+        user: { ...updated, id: updated._id.toString(), _id: updated._id.toString() }
+      }, { status: 200 });
     }
 
     const userDoc = {

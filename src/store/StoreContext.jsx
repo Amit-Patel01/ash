@@ -731,7 +731,18 @@ export function StoreProvider({ children }) {
       if (!response.ok || !data.success) {
         throw new Error(data.message || 'Failed to create the user.')
       }
-      setUsers(prev => [data.user, ...prev]);
+      setUsers(prev => {
+        const email = String(data.user?.email || '').toLowerCase();
+        const id = data.user?.id || data.user?._id;
+        const exists = prev.some(u => (u.id && u.id === id) || (u._id && u._id === id) || (u.email && u.email.toLowerCase() === email));
+        if (exists) {
+          return prev.map(u => {
+            const isMatch = (u.id && u.id === id) || (u._id && u._id === id) || (u.email && u.email.toLowerCase() === email);
+            return isMatch ? { ...u, ...data.user } : u;
+          });
+        }
+        return [data.user, ...prev];
+      });
       return data.user
     } catch (err) { console.error("Error adding user:", err); throw err }
   }
