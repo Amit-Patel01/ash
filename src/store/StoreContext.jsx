@@ -1945,6 +1945,24 @@ export function StoreProvider({ children }) {
     } catch (err) { console.error("Error updating service request status:", err); throw err }
   }
 
+  const createAccountRequest = async (requestData) => {
+    try {
+      const response = await fetch(api.submitAccountRequest, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Failed to submit account request.');
+      }
+      return data;
+    } catch (err) {
+      console.error('Error submitting account request:', err);
+      throw err;
+    }
+  };
+
   const deleteAccountRequest = async (id) => {
     try {
       const headers = getAuthorizedHeaders()
@@ -2122,6 +2140,7 @@ export function StoreProvider({ children }) {
     addUser, updateUser, deleteUser, mergeUsers, fireEmployee, reinstateEmployee, submitReinstatementRequest,
     services, addService, updateService, deleteService,
     accountRequests, sellRequests, serviceRequests, messages,
+    createAccountRequest,
     deleteAdminMessage, updateMessageStatus,
     deleteServiceRequest, updateServiceRequestStatus,
     deleteAccountRequest, rejectAccountRequest,
