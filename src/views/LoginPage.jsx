@@ -134,29 +134,45 @@ export default function LoginPage() {
 
   if (dashboardLoading) {
     return (
-      <div className="relative h-screen w-screen flex items-center justify-center bg-slate-950 text-white font-['Outfit',sans-serif]">
+      <div className="relative h-screen w-screen flex items-center justify-center bg-white font-['Outfit',sans-serif]">
+        {/* Soft light glow */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-indigo-600/30 blur-[120px] animate-pulse" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-indigo-100 blur-[120px]" />
+          <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-violet-100/60 blur-[80px]" />
         </div>
-        <div className="relative z-10 text-center space-y-4">
-          <div className="relative w-16 h-16 mx-auto">
-            <div className="w-16 h-16 rounded-full border-4 border-indigo-500/20 border-t-indigo-500 animate-spin" />
-            <ShieldCheck className="w-7 h-7 text-indigo-400 absolute inset-0 m-auto" />
+        <div className="relative z-10 text-center space-y-5">
+          {/* Spinner ring */}
+          <div className="relative w-20 h-20 mx-auto">
+            <div className="w-20 h-20 rounded-full border-[3px] border-indigo-100 border-t-indigo-500 animate-spin" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-50 to-violet-50 border border-indigo-100 flex items-center justify-center shadow-lg shadow-indigo-100">
+                <ShieldCheck className="w-6 h-6 text-indigo-500" />
+              </div>
+            </div>
           </div>
-          <h2 className="text-2xl font-black tracking-tight text-white">Welcome Back!</h2>
-          <p className="text-slate-400 text-xs font-semibold tracking-wider uppercase">Authenticating your secure session...</p>
+          <div className="space-y-1.5">
+            <h2 className="text-2xl font-black tracking-tight text-slate-800">Welcome Back!</h2>
+            <p className="text-slate-400 text-xs font-semibold tracking-widest uppercase">Authenticating your secure session...</p>
+          </div>
+          {/* Animated dots */}
+          <div className="flex items-center justify-center gap-1.5">
+            {[0,1,2].map(i => (
+              <div key={i} className="w-1.5 h-1.5 rounded-full bg-indigo-400" style={{ animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }} />
+            ))}
+          </div>
         </div>
+        <style>{`@keyframes bounce { 0%,80%,100%{transform:translateY(0);opacity:0.4} 40%{transform:translateY(-6px);opacity:1} }`}</style>
       </div>
     )
   }
 
   return (
-    <div className="relative w-screen h-screen min-h-screen overflow-hidden bg-slate-50 dark:bg-[#030712] text-slate-800 dark:text-slate-100 font-['Outfit',sans-serif]">
+    <div className="relative w-screen h-screen min-h-screen overflow-hidden bg-white text-slate-800 font-['Outfit',sans-serif]">
       
       {/* Ambient background glow orbs */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-indigo-500/15 dark:bg-indigo-600/20 blur-[120px] animate-blob" />
-        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-purple-500/15 dark:bg-purple-600/20 blur-[120px] animate-blob [animation-delay:3s]" />
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-indigo-100/80 blur-[120px]" />
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-violet-100/60 blur-[120px]" />
       </div>
 
       {/* FULL SCREEN DUAL COLUMN LAYOUT */}
@@ -216,14 +232,14 @@ export default function LoginPage() {
         </div>
 
         {/* ── RIGHT COLUMN: Glassmorphic Auth Form ── */}
-        <div className="lg:col-span-6 h-full w-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl p-6 sm:p-10 lg:p-16 flex flex-col justify-between overflow-y-auto">
+        <div className="lg:col-span-6 h-full w-full bg-white p-6 sm:p-10 lg:p-16 flex flex-col justify-between overflow-y-auto">
           
           {/* Top Info Bar */}
           <div className="hidden lg:flex items-center justify-between text-xs">
-            <span className="font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-[10px]">Portal Authentication</span>
+            <span className="font-bold text-slate-400 uppercase tracking-widest text-[10px]">Portal Authentication</span>
             <div className="flex items-center gap-2">
-              <span className="text-slate-500 dark:text-slate-400 font-medium">New student?</span>
-              <Link href="/join-us" className="font-extrabold text-indigo-600 dark:text-indigo-400 hover:underline">
+              <span className="text-slate-500 font-medium">New student?</span>
+              <Link href="/join-us" className="font-extrabold text-indigo-600 hover:underline">
                 Create Account →
               </Link>
             </div>
@@ -234,16 +250,16 @@ export default function LoginPage() {
             
             {/* Header */}
             <div className="mb-8">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 text-xs font-bold mb-3 border border-indigo-100 dark:border-indigo-900/50">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold mb-3 border border-indigo-100">
                 <Lock className="w-3.5 h-3.5" /> Secure Single Sign-On
               </div>
-              <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">Member Sign In</h1>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">Enter your credentials to access your dashboard.</p>
+              <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Member Sign In</h1>
+              <p className="text-xs sm:text-sm text-slate-500 mt-2 font-medium">Enter your credentials to access your dashboard.</p>
             </div>
 
             {errorCode === 'forgot_password_required' ? (
               <div className="space-y-4 my-4">
-                <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 text-amber-800 dark:text-amber-300 text-xs font-semibold leading-relaxed">
+                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold leading-relaxed">
                   {error}
                 </div>
                 <Link
@@ -256,14 +272,14 @@ export default function LoginPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 {error && (
-                  <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-300 text-xs font-semibold leading-relaxed">
+                  <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold leading-relaxed">
                     {error}
                   </div>
                 )}
 
                 {/* Email Input */}
                 <div>
-                  <label className="block text-[11px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2">
+                  <label className="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-2">
                     Email Address
                   </label>
                   <div className="relative">
@@ -275,7 +291,7 @@ export default function LoginPage() {
                       placeholder="name@domain.com"
                       required
                       autoFocus
-                      className="w-full pl-11 pr-4 py-4 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
+                      className="w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
                     />
                   </div>
                 </div>
@@ -283,10 +299,10 @@ export default function LoginPage() {
                 {/* Password Input */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <label className="block text-[11px] font-extrabold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                    <label className="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">
                       Password
                     </label>
-                    <Link href="/forgot-password?from=student" className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400 hover:underline transition-colors">
+                    <Link href="/forgot-password?from=student" className="text-xs font-extrabold text-indigo-600 hover:underline transition-colors">
                       Forgot Password?
                     </Link>
                   </div>
@@ -298,12 +314,12 @@ export default function LoginPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
                       required
-                      className="w-full pl-11 pr-12 py-4 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
+                      className="w-full pl-11 pr-12 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -333,9 +349,9 @@ export default function LoginPage() {
 
             {/* Divider */}
             <div className="flex items-center gap-3 my-6">
-              <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
+              <div className="flex-1 h-px bg-slate-200" />
               <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">or</span>
-              <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
+              <div className="flex-1 h-px bg-slate-200" />
             </div>
 
             {/* Google Sign In */}
@@ -343,7 +359,7 @@ export default function LoginPage() {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={googleLoading || loading}
-              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-slate-50 dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors cursor-pointer disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-3 px-4 py-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 transition-colors cursor-pointer disabled:opacity-50"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -357,9 +373,9 @@ export default function LoginPage() {
           </div>
 
           {/* Bottom Footer */}
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-900 flex items-center justify-between text-xs text-slate-400 font-medium">
+          <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
             <span>© {new Date().getFullYear()} Amit Solution Hub Technology Pvt Ltd</span>
-            <Link href="/contact" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Support</Link>
+            <Link href="/contact" className="hover:text-indigo-600 transition-colors">Support</Link>
           </div>
 
         </div>

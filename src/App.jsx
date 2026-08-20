@@ -255,6 +255,18 @@ function ProtectedEmployee({ children }) {
   return children
 }
 
+function ProtectedMentor({ children }) {
+  const { currentUser, loading } = useAuth()
+  const normalizedRole = normalizeUserRole(currentUser?.role)
+
+  if (loading) return null
+  if (!currentUser) return <Navigate href="/login" replace />
+  if (normalizedRole !== 'mentor' && normalizedRole !== 'admin') {
+    return <Navigate href={getHomePathForRole(normalizedRole)} replace />
+  }
+  return children
+}
+
 function ProtectedStudent({ children }) {
   const { currentUser, loading } = useAuth()
   const normalizedRole = normalizeUserRole(currentUser?.role)
@@ -428,6 +440,9 @@ function AppContent() {
             <Route path="profile" element={<EmployeeProfile />} />
             <Route path="mentor" element={<MentorDashboard />} />
           </Route>
+
+          {/* Mentor Panel */}
+          <Route path="/mentor/*" element={<ProtectedMentor><MentorDashboard /></ProtectedMentor>} />
 
           {/* User Panel */}
           <Route path="/user" element={<ProtectedStudent><UserLayout /></ProtectedStudent>}>

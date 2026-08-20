@@ -118,7 +118,8 @@ export default function AdminTeam() {
         isMentor: Boolean(formData.isMentor),
         bio: formData.bio || '',
         showOnTeam: Boolean(formData.showOnTeam),
-        role: 'employee' }
+        role: formData.isMentor ? 'mentor' : (editingMember?.role === 'mentor' ? 'employee' : (editingMember?.role || 'employee'))
+      }
 
       // Clean up temp fields
       if (editingMember) {

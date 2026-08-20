@@ -1,135 +1,281 @@
 'use client'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useTheme } from '../context/ThemeContext'
-import SEO from '../components/SEO'
+import { useEffect, useState } from 'react'
 
 export default function NotFound() {
-  const { theme } = useTheme()
-  const isDark = theme === 'dark'
-    const router = useRouter()
-  const navigate = (path, options) => {
-    if (typeof path === 'number') router.back()
-    else if (options?.replace) router.replace(path)
-    else router.push(path)
-  }
-  navigate.push = (path) => router.push(path)
-  navigate.replace = (path) => router.replace(path)
+  const router = useRouter()
+  const [dots, setDots] = useState('.')
+  const [progress, setProgress] = useState(0)
+  const [retrying, setRetrying] = useState(false)
 
-  const quickLinks = [
-    { to: '/', label: '🏠 Home' },
-    { to: '/projects', label: '📦 Projects' },
-    { to: '/courses', label: '🎓 Courses' },
-    { to: '/about', label: '🏢 About Us' },
-    { to: '/contact', label: '📞 Contact' },
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDots(prev => prev.length >= 3 ? '.' : prev + '.')
+    }, 500)
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 73) { clearInterval(timer); return 73 }
+        return prev + 1
+      })
+    }, 18)
+    return () => clearInterval(timer)
+  }, [])
+
+  const handleRetry = () => {
+    setRetrying(true)
+    setProgress(0)
+    setTimeout(() => {
+      setRetrying(false)
+      setProgress(73)
+      router.refresh()
+    }, 2000)
+  }
+
+  const statusItems = [
+    { label: 'DNS Resolution', status: 'ok' },
+    { label: 'SSL Handshake', status: 'ok' },
+    { label: 'Server Response', status: 'error' },
+    { label: 'Page Rendering', status: 'pending' },
   ]
 
   return (
-    <>
-      <SEO
-        title="Page Not Found | AmitSolutionHub"
-        description="The page you're looking for doesn't exist. Head back to AmitSolutionHub."
-      />
-      <div className={`min-h-[80vh] flex items-center justify-center px-6 py-20 ${isDark ? 'bg-slate-950' : 'bg-gradient-to-br from-indigo-50/60 via-white to-violet-50/40'}`}>
-        <div className="max-w-lg w-full text-center space-y-8">
+    <div style={{
+      minHeight: '100vh',
+      width: '100%',
+      background: 'radial-gradient(ellipse at top left, #0f0a2e 0%, #0a0a1a 40%, #050510 100%)',
+      fontFamily: "'Outfit', 'Inter', sans-serif",
+      color: 'white',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '2rem',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
 
-          {/* 404 Graphic */}
-          <div className="relative mx-auto w-fit">
-            {/* Glow orb */}
-            <div className="absolute inset-0 rounded-full bg-indigo-500/20 blur-3xl scale-150 pointer-events-none" />
+      {/* Background grid */}
+      <div style={{
+        position: 'absolute', inset: 0, opacity: 0.08,
+        backgroundImage: 'linear-gradient(rgba(99,102,241,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.6) 1px, transparent 1px)',
+        backgroundSize: '60px 60px',
+      }} />
 
-            <div className={`relative rounded-3xl border p-10 shadow-xl ${
-              isDark
-                ? 'bg-slate-900 border-slate-800'
-                : 'bg-white border-slate-200/80 shadow-slate-200/60'
-            }`}>
-              {/* Big 404 number */}
-              <div
-                className="text-[96px] font-black leading-none tracking-tighter select-none"
-                style={{
-                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text' }}
-              >
-                404
-              </div>
+      {/* Glowing orbs */}
+      <div style={{
+        position: 'absolute', top: '10%', left: '15%',
+        width: '400px', height: '400px', borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(239,68,68,0.15) 0%, transparent 70%)',
+        filter: 'blur(60px)',
+      }} />
+      <div style={{
+        position: 'absolute', bottom: '10%', right: '15%',
+        width: '350px', height: '350px', borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)',
+        filter: 'blur(60px)',
+      }} />
 
-              {/* Broken link icon */}
-              <div className="mx-auto mt-2 w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                </svg>
-              </div>
-            </div>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+        @keyframes scanline { from{top:-2px} to{top:100%} }
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-4px)} 40%,80%{transform:translateX(4px)} }
+        @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        .nf-link:hover { color:white!important; border-color:rgba(99,102,241,0.5)!important; background:rgba(99,102,241,0.1)!important; }
+        .nf-back:hover { background:rgba(255,255,255,0.1)!important; border-color:rgba(255,255,255,0.2)!important; }
+      `}</style>
+
+      {/* Main Card */}
+      <div style={{
+        position: 'relative', zIndex: 10,
+        maxWidth: '580px', width: '100%',
+        background: 'rgba(15,10,46,0.85)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(239,68,68,0.25)',
+        borderRadius: '28px',
+        padding: '2.5rem',
+        boxShadow: '0 0 60px rgba(239,68,68,0.08), 0 40px 80px rgba(0,0,0,0.6)',
+        animation: 'fadeInUp 0.7s ease forwards',
+      }}>
+        {/* Scanline */}
+        <div style={{ position:'absolute',inset:0,borderRadius:'28px',overflow:'hidden',pointerEvents:'none' }}>
+          <div style={{
+            position:'absolute', left:0, right:0, height:'2px',
+            background:'linear-gradient(90deg,transparent,rgba(239,68,68,0.4),transparent)',
+            animation:'scanline 3s linear infinite',
+          }} />
+        </div>
+
+        {/* Status bar */}
+        <div style={{
+          display:'flex', alignItems:'center', justifyContent:'space-between',
+          marginBottom:'2rem', padding:'0.6rem 1rem',
+          background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.2)', borderRadius:'12px',
+        }}>
+          <div style={{ display:'flex', alignItems:'center', gap:'0.5rem' }}>
+            <div style={{
+              width:'8px', height:'8px', borderRadius:'50%', background:'#ef4444',
+              animation:'blink 1s ease-in-out infinite', boxShadow:'0 0 8px #ef4444',
+            }} />
+            <span style={{ fontSize:'0.7rem', fontFamily:"'JetBrains Mono',monospace", color:'#f87171', fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase' }}>
+              ERR_CONNECTION_FAILED
+            </span>
+          </div>
+          <span style={{ fontSize:'0.65rem', fontFamily:"'JetBrains Mono',monospace", color:'#475569' }}>
+            HTTP 404 • amitsolutionhub.com
+          </span>
+        </div>
+
+        {/* Heading */}
+        <div style={{ textAlign:'center', marginBottom:'2rem' }}>
+          <div style={{
+            display:'inline-flex', alignItems:'center', justifyContent:'center',
+            width:'80px', height:'80px', borderRadius:'24px',
+            background:'linear-gradient(135deg,rgba(239,68,68,0.2),rgba(239,68,68,0.05))',
+            border:'1px solid rgba(239,68,68,0.3)', marginBottom:'1.25rem',
+            animation:'shake 0.6s ease 1s both', position:'relative',
+          }}>
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="2" width="20" height="8" rx="2" /><rect x="2" y="14" width="20" height="8" rx="2" />
+              <circle cx="6" cy="6" r="1" fill="#f87171" /><circle cx="6" cy="18" r="1" fill="#f87171" />
+              <line x1="10" y1="6" x2="16" y2="6" stroke="#f87171" strokeWidth="2" />
+              <line x1="10" y1="18" x2="16" y2="18" stroke="#f87171" strokeWidth="2" />
+            </svg>
+            <div style={{
+              position:'absolute', top:'-6px', right:'-6px', width:'20px', height:'20px', borderRadius:'50%',
+              background:'#ef4444', display:'flex', alignItems:'center', justifyContent:'center',
+              fontSize:'11px', fontWeight:900, color:'white', boxShadow:'0 0 10px rgba(239,68,68,0.6)',
+            }}>✕</div>
           </div>
 
-          {/* Text */}
-          <div className="space-y-3">
-            <h1 className={`text-3xl font-black tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              Page not found
-            </h1>
-            <p className={`text-base leading-7 font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              The page you're looking for doesn't exist or may have been moved. Don't worry — here are some helpful links.
-            </p>
-          </div>
-
-          {/* Quick Links */}
-          <div className="flex flex-wrap justify-center gap-2.5">
-            {quickLinks.map(link => (
-              <Link
-                key={link.to}
-                href={link.to}
-                className={`px-4 py-2 rounded-full text-sm font-bold border transition-all duration-200 hover:-translate-y-0.5 ${
-                  isDark
-                    ? 'border-slate-700 bg-slate-800 text-slate-300 hover:border-violet-500 hover:text-violet-300'
-                    : 'border-slate-200 bg-white text-slate-700 hover:border-indigo-300 hover:text-indigo-700 hover:shadow-sm'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button
-              onClick={() => navigate(-1)}
-              className={`inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl border text-sm font-bold transition-all ${
-                isDark
-                  ? 'border-slate-700 bg-slate-800 text-white hover:bg-slate-700'
-                  : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:shadow-md'
-              }`}
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-              </svg>
-              Go Back
-            </button>
-            <Link
-              href="/"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-bold shadow-lg shadow-indigo-500/25 hover:-translate-y-0.5 hover:shadow-indigo-500/40 transition-all"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-              </svg>
-              Back to Home
-            </Link>
-          </div>
-
-          {/* Contact note */}
-          <p className={`text-xs font-medium ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>
-            Need help?{' '}
-            <Link href="/contact" className="text-indigo-500 hover:text-indigo-400 underline underline-offset-2">
-              Contact our team
-            </Link>
-            {' '}or{' '}
-            <a href="mailto:support@amitsolutionhub.com" className="text-indigo-500 hover:text-indigo-400 underline underline-offset-2">
-              email us
-            </a>
+          <h1 style={{ fontSize:'1.9rem', fontWeight:900, letterSpacing:'-0.02em', color:'white', margin:'0 0 0.5rem', lineHeight:1.2 }}>
+            Oops! Page Not Found
+          </h1>
+          <p style={{ color:'#94a3b8', fontSize:'0.9rem', lineHeight:1.6, margin:0, fontWeight:500 }}>
+            The server couldn&apos;t locate this page. It may have been moved, deleted, or never existed.
           </p>
         </div>
+
+        {/* Diagnostics panel */}
+        <div style={{
+          background:'rgba(0,0,0,0.3)', border:'1px solid rgba(255,255,255,0.06)',
+          borderRadius:'16px', padding:'1.25rem', marginBottom:'1.5rem',
+        }}>
+          <div style={{ fontSize:'0.65rem', fontFamily:"'JetBrains Mono',monospace", color:'#64748b', textTransform:'uppercase', letterSpacing:'0.1em', marginBottom:'0.9rem', fontWeight:700 }}>
+            ◎ Connection Diagnostics
+          </div>
+          <div style={{ display:'flex', flexDirection:'column', gap:'0.6rem' }}>
+            {statusItems.map(item => (
+              <div key={item.label} style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:'0.6rem' }}>
+                  <div style={{
+                    width:'6px', height:'6px', borderRadius:'50%', flexShrink:0,
+                    background: item.status==='ok'?'#22c55e':item.status==='error'?'#ef4444':'#f59e0b',
+                    boxShadow:`0 0 6px ${item.status==='ok'?'#22c55e':item.status==='error'?'#ef4444':'#f59e0b'}`,
+                    ...(item.status!=='ok'&&{animation:'blink 1.2s ease-in-out infinite'}),
+                  }} />
+                  <span style={{ fontSize:'0.8rem', color:'#94a3b8', fontWeight:500 }}>{item.label}</span>
+                </div>
+                <span style={{
+                  fontSize:'0.7rem', fontFamily:"'JetBrains Mono',monospace", fontWeight:700,
+                  color: item.status==='ok'?'#22c55e':item.status==='error'?'#f87171':'#fbbf24',
+                }}>
+                  {item.status==='ok'?'✓ OK':item.status==='error'?'✕ FAILED':`~ WAITING${dots}`}
+                </span>
+              </div>
+            ))}
+          </div>
+          {/* Progress */}
+          <div style={{ marginTop:'1rem' }}>
+            <div style={{ display:'flex', justifyContent:'space-between', marginBottom:'0.4rem' }}>
+              <span style={{ fontSize:'0.65rem', fontFamily:"'JetBrains Mono',monospace", color:'#475569' }}>Load progress</span>
+              <span style={{ fontSize:'0.65rem', fontFamily:"'JetBrains Mono',monospace", color:'#ef4444' }}>{progress}%</span>
+            </div>
+            <div style={{ height:'4px', background:'rgba(255,255,255,0.06)', borderRadius:'4px', overflow:'hidden' }}>
+              <div style={{
+                height:'100%', width:`${progress}%`,
+                background:'linear-gradient(90deg,#6366f1,#ef4444)',
+                borderRadius:'4px', transition:'width 0.05s linear',
+                boxShadow:'0 0 10px rgba(239,68,68,0.5)',
+              }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Buttons */}
+        <div style={{ display:'flex', gap:'0.75rem', flexWrap:'wrap' }}>
+          <button
+            onClick={handleRetry}
+            disabled={retrying}
+            style={{
+              flex:1, minWidth:'120px', padding:'0.85rem 1.25rem', borderRadius:'14px',
+              background: retrying?'rgba(99,102,241,0.15)':'linear-gradient(135deg,#6366f1,#8b5cf6)',
+              border:'1px solid rgba(99,102,241,0.4)', color:'white', fontWeight:700, fontSize:'0.85rem',
+              cursor:retrying?'not-allowed':'pointer',
+              display:'flex', alignItems:'center', justifyContent:'center', gap:'0.5rem',
+              boxShadow:retrying?'none':'0 4px 20px rgba(99,102,241,0.3)',
+              transition:'all 0.2s', opacity:retrying?0.7:1,
+            }}
+          >
+            {retrying ? (
+              <>
+                <div style={{ width:'14px',height:'14px',border:'2px solid rgba(255,255,255,0.3)',borderTopColor:'white',borderRadius:'50%',animation:'spin 0.7s linear infinite',flexShrink:0 }} />
+                Retrying{dots}
+              </>
+            ) : (
+              <>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+                </svg>
+                Retry
+              </>
+            )}
+          </button>
+
+          <Link href="/" className="nf-back" style={{
+            flex:2, minWidth:'160px', padding:'0.85rem 1.25rem', borderRadius:'14px',
+            background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)',
+            color:'white', fontWeight:700, fontSize:'0.85rem', textDecoration:'none',
+            display:'flex', alignItems:'center', justifyContent:'center', gap:'0.5rem',
+            transition:'all 0.2s',
+          }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/>
+            </svg>
+            Back to Home
+          </Link>
+        </div>
+
+        {/* Quick links */}
+        <div style={{
+          marginTop:'1.5rem', paddingTop:'1.25rem',
+          borderTop:'1px solid rgba(255,255,255,0.06)',
+          display:'flex', flexWrap:'wrap', gap:'0.5rem', justifyContent:'center',
+        }}>
+          {[{href:'/projects',label:'Projects'},{href:'/courses',label:'Courses'},{href:'/services',label:'Services'},{href:'/contact',label:'Support'}].map(link => (
+            <Link key={link.href} href={link.href} className="nf-link" style={{
+              padding:'0.35rem 0.85rem', borderRadius:'20px',
+              border:'1px solid rgba(255,255,255,0.08)', color:'#94a3b8',
+              fontSize:'0.75rem', fontWeight:600, textDecoration:'none', transition:'all 0.2s',
+            }}>
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        <p style={{ textAlign:'center', marginTop:'1.25rem', fontSize:'0.7rem', color:'#334155', fontWeight:500 }}>
+          © 2026 Amit Solution Hub Technology Pvt Ltd &nbsp;·&nbsp;
+          <a href="mailto:support@amitsolutionhub.com" style={{ color:'#475569', textDecoration:'none' }}>
+            Report an issue
+          </a>
+        </p>
       </div>
-    </>
+    </div>
   )
 }

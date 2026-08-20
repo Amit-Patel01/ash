@@ -10,6 +10,7 @@ const UserCertificates = dynamic(() => import('@/src/user/UserCertificates'), { 
 const UserCustomProject = dynamic(() => import('@/src/user/UserCustomProject'), { ssr: false })
 const UserProfile = dynamic(() => import('@/src/user/UserProfile'), { ssr: false })
 const UserSupport = dynamic(() => import('@/src/user/UserSupport'), { ssr: false })
+const AboutTradingMentorship = dynamic(() => import('@/src/views/AboutTradingMentorship'), { ssr: false })
 
 export default function UserPage() {
   const pathname = usePathname() || '/user'
@@ -18,10 +19,12 @@ export default function UserPage() {
 
   if (pathname.includes('/user/my-courses')) content = <UserMyCourses />
   else if (pathname.includes('/user/orders')) content = <UserOrders />
+  else if (pathname.includes('/user/receipts')) content = <UserOrders />
   else if (pathname.includes('/user/certificates')) content = <UserCertificates />
   else if (pathname.includes('/user/custom-project')) content = <UserCustomProject />
   else if (pathname.includes('/user/profile')) content = <UserProfile />
   else if (pathname.includes('/user/support')) content = <UserSupport />
+  else if (pathname.includes('/user/trading-mentorship')) content = <AboutTradingMentorship />
 
   return (
     <UserLayout>

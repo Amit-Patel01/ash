@@ -20,8 +20,19 @@ import {
   Clock,
   Sparkles,
   ChevronRight,
-  Folder
+  Folder,
+  MessageSquare,
+  Send,
+  Code,
+  CornerDownRight,
+  Plus
 } from 'lucide-react'
+
+const GithubIcon = ({ className = "w-3.5 h-3.5" }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+  </svg>
+)
 
 export default function UserMyCourses() {
   const { getUserEnrollments, courses, certificates } = useStore()
@@ -37,6 +48,28 @@ export default function UserMyCourses() {
   const [expandedId, setExpandedId] = useState(null)
   const [selectedFolder, setSelectedFolder] = useState('all')
   const [activeCourseWorkspace, setActiveCourseWorkspace] = useState(null)
+  const [workspaceTab, setWorkspaceTab] = useState('curriculum')
+
+  // Real-time Assignment & Doubt states for Student
+  const [studentAssignments, setStudentAssignments] = useState([])
+  const [studentDoubts, setStudentDoubts] = useState([])
+  const [isSubmittingTask, setIsSubmittingTask] = useState(false)
+  const [isPostingDoubt, setIsPostingDoubt] = useState(false)
+  const [userActionMsg, setUserActionMsg] = useState('')
+
+  // New Submission Form State
+  const [projectForm, setProjectForm] = useState({
+    assignmentTitle: '',
+    repoUrl: '',
+    liveUrl: '',
+    studentNotes: ''
+  })
+
+  // New Doubt Form State
+  const [doubtForm, setDoubtForm] = useState({
+    question: '',
+    codeSnippet: ''
+  })
 
   const progressStorageKey = `solutionhub:lms-progress:${currentUser?.uid || 'guest'}`
   const [resourceProgress, setResourceProgress] = useState(() => {
@@ -129,6 +162,110 @@ export default function UserMyCourses() {
     const numericPrice = Number(price)
     if (Number.isNaN(numericPrice)) return String(price)
     return `₹${numericPrice.toLocaleString()}`
+  }
+
+  // Fetch live assignments & doubts for active course workspace
+  const fetchStudentCourseData = async () => {
+    if (!activeCourseWorkspace) return
+    try {
+      const [resA, resD] = await Promise.all([
+        fetch('/api/mentor/assignments', { cache: 'no-store' }),
+        fetch('/api/mentor/doubts', { cache: 'no-store' })
+      ])
+      if (resA.ok) {
+        const dataA = await resA.json()
+        if (dataA.success && Array.isArray(dataA.assignments)) {
+          setStudentAssignments(dataA.assignments)
+        }
+      }
+      if (resD.ok) {
+        const dataD = await resD.json()
+        if (dataD.success && Array.isArray(dataD.doubts)) {
+          setStudentDoubts(dataD.doubts)
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching student live data:', err)
+    }
+  }
+
+  // Real-time live polling for student workspace (every 4s)
+  useEffect(() => {
+    if (activeCourseWorkspace) {
+      fetchStudentCourseData()
+      const interval = setInterval(fetchStudentCourseData, 4000)
+      return () => clearInterval(interval)
+    }
+  }, [activeCourseWorkspace])
+
+  // Student Submits Assignment to Mentor Live
+  const handleStudentProjectSubmit = async (e, courseTitle) => {
+    e.preventDefault()
+    if (!projectForm.assignmentTitle.trim()) return
+
+    setIsSubmittingTask(true)
+    try {
+      const studentName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Student'
+      const studentEmail = currentUser?.email || 'student@example.com'
+      const res = await fetch('/api/mentor/assignments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentName,
+          studentEmail,
+          courseTitle: courseTitle || 'Full-Stack Web Development',
+          assignmentTitle: projectForm.assignmentTitle.trim(),
+          repoUrl: projectForm.repoUrl.trim(),
+          liveUrl: projectForm.liveUrl.trim(),
+          studentNotes: projectForm.studentNotes.trim()
+        })
+      })
+
+      if (res.ok) {
+        setProjectForm({ assignmentTitle: '', repoUrl: '', liveUrl: '', studentNotes: '' })
+        setUserActionMsg('Project submitted successfully! Your faculty mentor has received it in real time.')
+        fetchStudentCourseData()
+        setTimeout(() => setUserActionMsg(''), 5000)
+      }
+    } catch (err) {
+      console.error('Submission failed:', err)
+    } finally {
+      setIsSubmittingTask(false)
+    }
+  }
+
+  // Student Posts Doubt to Mentor Live
+  const handleStudentDoubtSubmit = async (e, courseTitle) => {
+    e.preventDefault()
+    if (!doubtForm.question.trim()) return
+
+    setIsPostingDoubt(true)
+    try {
+      const studentName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Student'
+      const studentEmail = currentUser?.email || 'student@example.com'
+      const res = await fetch('/api/mentor/doubts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentName,
+          studentEmail,
+          courseTitle: courseTitle || 'Full-Stack Web Development',
+          question: doubtForm.question.trim(),
+          codeSnippet: doubtForm.codeSnippet.trim()
+        })
+      })
+
+      if (res.ok) {
+        setDoubtForm({ question: '', codeSnippet: '' })
+        setUserActionMsg('Doubt posted! Your faculty mentor will reply in real time.')
+        fetchStudentCourseData()
+        setTimeout(() => setUserActionMsg(''), 5000)
+      }
+    } catch (err) {
+      console.error('Failed to post doubt:', err)
+    } finally {
+      setIsPostingDoubt(false)
+    }
   }
 
   // Group enrollments by course
@@ -353,78 +490,383 @@ export default function UserMyCourses() {
         {/* Workspace Dual Column Content */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* Left Column: Learning Curriculum Modules */}
+          {/* Left Column: Interactive Workspace Tabs */}
           <div className="lg:col-span-8 space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-blue-600" /> Program Curriculum & Lessons
-              </h2>
-              <span className="text-xs font-bold text-slate-500">{learningResources.length} items available</span>
+            
+            {/* Workspace Inner Navigation Tabs */}
+            <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+              <button
+                onClick={() => setWorkspaceTab('curriculum')}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  workspaceTab === 'curriculum'
+                    ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>Lessons & Curriculum</span>
+              </button>
+              <button
+                onClick={() => setWorkspaceTab('assignments')}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  workspaceTab === 'assignments'
+                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <FileText className="w-4 h-4" />
+                <span>Projects & Assignments</span>
+              </button>
+              <button
+                onClick={() => setWorkspaceTab('doubts')}
+                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  workspaceTab === 'doubts'
+                    ? 'bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-400 shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>Doubts & Mentor Q&A</span>
+              </button>
             </div>
 
-            <div className="space-y-3">
-              {learningResources.length === 0 ? (
-                <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center">
-                  <p className="text-sm font-bold text-slate-600 dark:text-slate-300">Curriculum content is being updated by your mentor.</p>
-                </div>
-              ) : (
-                learningResources.map((res, index) => {
-                  const resourceComplete = isResourceComplete(res.id)
-                  return (
-                    <div 
-                      key={res.id} 
-                      className={`p-5 rounded-3xl border transition-all ${
-                        resourceComplete 
-                          ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200/90 dark:border-emerald-500/30' 
-                          : 'bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800 hover:border-blue-300'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-start gap-3.5 min-w-0">
-                          <button 
-                            onClick={() => toggleResourceProgress(res.id)}
-                            className="mt-0.5 text-emerald-600 hover:scale-110 transition-transform shrink-0"
-                            title={resourceComplete ? "Mark incomplete" : "Mark completed"}
-                          >
-                            {resourceComplete ? (
-                              <CheckCircle2 className="w-6 h-6 text-emerald-600 fill-emerald-100 dark:fill-emerald-950" />
-                            ) : (
-                              <Circle className="w-6 h-6 text-slate-300 dark:text-slate-600" />
-                            )}
-                          </button>
+            {userActionMsg && (
+              <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-bold flex items-center gap-2 animate-fadeIn">
+                <CheckCircle2 className="w-4 h-4" />
+                <span>{userActionMsg}</span>
+              </div>
+            )}
 
-                          <div>
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100">
-                                {res.type} #{index + 1}
-                              </span>
-                              {resourceComplete && (
-                                <span className="text-[10px] font-black text-emerald-600 bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full">
-                                  COMPLETED
-                                </span>
-                              )}
+            {/* TAB 1: CURRICULUM LESSONS */}
+            {workspaceTab === 'curriculum' && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-base font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-blue-600" /> Program Curriculum & Modules
+                  </h2>
+                  <span className="text-xs font-bold text-slate-500">{learningResources.length} items available</span>
+                </div>
+
+                <div className="space-y-3">
+                  {learningResources.length === 0 ? (
+                    <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center">
+                      <p className="text-sm font-bold text-slate-600 dark:text-slate-300">Curriculum content is being updated by your mentor.</p>
+                    </div>
+                  ) : (
+                    learningResources.map((res, index) => {
+                      const resourceComplete = isResourceComplete(res.id)
+                      return (
+                        <div 
+                          key={res.id} 
+                          className={`p-5 rounded-3xl border transition-all ${
+                            resourceComplete 
+                              ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200/90 dark:border-emerald-500/30' 
+                              : 'bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800 hover:border-blue-300'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex items-start gap-3.5 min-w-0">
+                              <button 
+                                onClick={() => toggleResourceProgress(res.id)}
+                                className="mt-0.5 text-emerald-600 hover:scale-110 transition-transform shrink-0"
+                                title={resourceComplete ? "Mark incomplete" : "Mark completed"}
+                              >
+                                {resourceComplete ? (
+                                  <CheckCircle2 className="w-6 h-6 text-emerald-600 fill-emerald-100 dark:fill-emerald-950" />
+                                ) : (
+                                  <Circle className="w-6 h-6 text-slate-300 dark:text-slate-600" />
+                                )}
+                              </button>
+
+                              <div>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-100">
+                                    {res.type} #{index + 1}
+                                  </span>
+                                  {resourceComplete && (
+                                    <span className="text-[10px] font-black text-emerald-600 bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full">
+                                      COMPLETED
+                                    </span>
+                                  )}
+                                </div>
+                                <h3 className="text-base font-black text-slate-900 dark:text-white mt-1">{res.title}</h3>
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">{res.subtitle}</p>
+                              </div>
                             </div>
-                            <h3 className="text-base font-black text-slate-900 dark:text-white mt-1">{res.title}</h3>
-                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">{res.subtitle}</p>
+
+                            {res.url && (
+                              <a 
+                                href={res.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-blue-600 text-white font-extrabold text-xs hover:bg-blue-700 shadow-sm transition-all shrink-0"
+                              >
+                                Open <ExternalLink className="w-3.5 h-3.5" />
+                              </a>
+                            )}
                           </div>
                         </div>
+                      )
+                    })
+                  )}
+                </div>
+              </div>
+            )}
 
-                        {res.url && (
-                          <a 
-                            href={res.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-blue-600 text-white font-extrabold text-xs hover:bg-blue-700 shadow-sm transition-all shrink-0"
-                          >
-                            Open <ExternalLink className="w-3.5 h-3.5" />
-                          </a>
-                        )}
+            {/* TAB 2: LIVE ASSIGNMENT & PROJECT SUBMISSIONS */}
+            {workspaceTab === 'assignments' && (
+              <div className="space-y-6">
+                
+                {/* Submit New Project Form */}
+                <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-indigo-600" /> Submit Project for Mentor Review
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-0.5">Submit your source code repository or live link for feedback & grading.</p>
+                    </div>
+                  </div>
+
+                  <form onSubmit={(e) => handleStudentProjectSubmit(e, course.title)} className="space-y-4 pt-2">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                        Project / Milestone Title
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Capstone Project: Full-Stack React & Node.js API"
+                        value={projectForm.assignmentTitle}
+                        onChange={(e) => setProjectForm({ ...projectForm, assignmentTitle: e.target.value })}
+                        className="w-full text-xs p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white outline-none focus:border-indigo-500"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                          GitHub Repository URL
+                        </label>
+                        <input
+                          type="url"
+                          placeholder="https://github.com/your-username/repo-name"
+                          value={projectForm.repoUrl}
+                          onChange={(e) => setProjectForm({ ...projectForm, repoUrl: e.target.value })}
+                          className="w-full text-xs p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white outline-none focus:border-indigo-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                          Live Deployment URL (Optional)
+                        </label>
+                        <input
+                          type="url"
+                          placeholder="https://your-project.vercel.app"
+                          value={projectForm.liveUrl}
+                          onChange={(e) => setProjectForm({ ...projectForm, liveUrl: e.target.value })}
+                          className="w-full text-xs p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white outline-none focus:border-indigo-500"
+                        />
                       </div>
                     </div>
-                  )
-                })
-              )}
-            </div>
+
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                        Implementation Notes / Features Completed
+                      </label>
+                      <textarea
+                        rows={2}
+                        placeholder="Briefly describe what you built, architecture choices, or instructions to run..."
+                        value={projectForm.studentNotes}
+                        onChange={(e) => setProjectForm({ ...projectForm, studentNotes: e.target.value })}
+                        className="w-full text-xs p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white outline-none resize-none focus:border-indigo-500"
+                      />
+                    </div>
+
+                    <div className="flex justify-end">
+                      <button
+                        type="submit"
+                        disabled={isSubmittingTask}
+                        className="px-6 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-500/20 transition-all flex items-center gap-2 cursor-pointer"
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                        <span>{isSubmittingTask ? 'Submitting...' : 'Submit to Mentor'}</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+                {/* Submissions History */}
+                <div className="space-y-3">
+                  <h4 className="text-sm font-black text-slate-900 dark:text-white">Your Project Submissions & Feedback</h4>
+                  {studentAssignments.filter(a => (a.studentEmail || '').toLowerCase() === (currentUser?.email || '').toLowerCase() || a.courseTitle === course.title).length === 0 ? (
+                    <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500">
+                      No project submissions yet. Submit your project code above to get evaluated!
+                    </div>
+                  ) : (
+                    studentAssignments.filter(a => (a.studentEmail || '').toLowerCase() === (currentUser?.email || '').toLowerCase() || a.courseTitle === course.title).map((sub) => (
+                      <div
+                        key={sub.id || sub._id}
+                        className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 space-y-3 shadow-xs"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <h5 className="text-sm font-black text-slate-900 dark:text-white">{sub.assignmentTitle}</h5>
+                          <span className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full ${
+                            sub.status === 'graded'
+                              ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
+                              : sub.status === 'revision_requested'
+                                ? 'bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800'
+                                : 'bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800'
+                          }`}>
+                            {sub.status === 'graded' ? `Score: ${sub.score}` : sub.status === 'revision_requested' ? 'Revision Needed' : 'Under Review'}
+                          </span>
+                        </div>
+
+                        {sub.studentNotes && (
+                          <p className="text-xs text-slate-500">"{sub.studentNotes}"</p>
+                        )}
+
+                        {sub.feedback && (
+                          <div className="p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-800 text-xs">
+                            <strong className="text-indigo-600 dark:text-indigo-400 font-bold block mb-0.5">Faculty Mentor Feedback:</strong>
+                            <span className="text-slate-700 dark:text-slate-300">{sub.feedback}</span>
+                          </div>
+                        )}
+
+                        <div className="flex flex-wrap items-center gap-3 pt-1 text-xs font-bold">
+                          {sub.repoUrl && (
+                            <a href={sub.repoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-slate-700 dark:text-slate-300 hover:text-indigo-600">
+                              <GithubIcon className="w-3.5 h-3.5" /> Source Code
+                            </a>
+                          )}
+                          {sub.liveUrl && (
+                            <a href={sub.liveUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-indigo-600 hover:underline">
+                              <ExternalLink className="w-3.5 h-3.5" /> Live Preview
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+              </div>
+            )}
+
+            {/* TAB 3: LIVE DOUBTS & MENTOR Q&A */}
+            {workspaceTab === 'doubts' && (
+              <div className="space-y-6">
+                
+                {/* Ask Doubt Form */}
+                <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4 text-purple-600" /> Ask a Question to Faculty Mentor
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-0.5">Post technical questions or errors. Your mentor will reply directly.</p>
+                    </div>
+                  </div>
+
+                  <form onSubmit={(e) => handleStudentDoubtSubmit(e, course.title)} className="space-y-4 pt-2">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                        Your Question / Doubt
+                      </label>
+                      <textarea
+                        rows={3}
+                        required
+                        placeholder="Explain the problem or error you are facing in detail..."
+                        value={doubtForm.question}
+                        onChange={(e) => setDoubtForm({ ...doubtForm, question: e.target.value })}
+                        className="w-full text-xs p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white outline-none resize-none focus:border-purple-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                        Code Snippet / Error Logs (Optional)
+                      </label>
+                      <textarea
+                        rows={3}
+                        placeholder="Paste code or error stack trace here..."
+                        value={doubtForm.codeSnippet}
+                        onChange={(e) => setDoubtForm({ ...doubtForm, codeSnippet: e.target.value })}
+                        className="w-full text-xs p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-indigo-400 font-mono outline-none resize-none focus:border-purple-500"
+                      />
+                    </div>
+
+                    <div className="flex justify-end">
+                      <button
+                        type="submit"
+                        disabled={isPostingDoubt}
+                        className="px-6 py-2.5 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-md shadow-purple-500/20 transition-all flex items-center gap-2 cursor-pointer"
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                        <span>{isPostingDoubt ? 'Posting...' : 'Ask Faculty Mentor'}</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+                {/* Doubts Thread Feed */}
+                <div className="space-y-3">
+                  <h4 className="text-sm font-black text-slate-900 dark:text-white">Discussion & Mentor Solutions</h4>
+                  {studentDoubts.length === 0 ? (
+                    <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500">
+                      No questions asked yet. Ask a question above to start the discussion!
+                    </div>
+                  ) : (
+                    studentDoubts.map((d) => (
+                      <div
+                        key={d.id || d._id}
+                        className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 space-y-3 shadow-xs"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-black text-slate-900 dark:text-white">{d.studentName}</span>
+                            <span className="text-[10px] text-slate-400">• {d.postedAt || 'Recently'}</span>
+                          </div>
+                          <span className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full ${
+                            d.status === 'resolved'
+                              ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
+                              : 'bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800'
+                          }`}>
+                            {d.status === 'resolved' ? 'Answered' : 'Waiting for Mentor'}
+                          </span>
+                        </div>
+
+                        <p className="text-xs font-bold text-slate-800 dark:text-slate-200">{d.question}</p>
+
+                        {d.codeSnippet && (
+                          <div className="p-3 rounded-xl bg-slate-950 text-indigo-300 font-mono text-[11px] overflow-x-auto border border-slate-800">
+                            <pre>{d.codeSnippet}</pre>
+                          </div>
+                        )}
+
+                        {/* Replies */}
+                        {Array.isArray(d.replies) && d.replies.length > 0 && (
+                          <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                            {d.replies.map((r, rIdx) => (
+                              <div key={rIdx} className="p-3 rounded-2xl bg-purple-50/70 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-800/40 text-xs">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <CornerDownRight className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                                  <strong className="text-purple-700 dark:text-purple-300 font-bold">{r.author || 'Faculty Mentor'}</strong>
+                                  <span className="text-[10px] text-slate-400">• {r.time || 'Recently'}</span>
+                                </div>
+                                <p className="text-slate-700 dark:text-slate-300 pl-5">{r.text}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+
+              </div>
+            )}
+
           </div>
 
           {/* Right Column: Active Plans & Verified Documents */}

@@ -411,7 +411,7 @@ export default function AdminEmployees() {
         jobTitle: finalJobTitle,
         department: finalDepartment,
         skills: skillsArray,
-        role: editingEmployee ? (editingEmployee.role || 'employee') : 'employee',
+        role: formData.isMentor ? 'mentor' : (editingEmployee?.role === 'mentor' ? 'employee' : (editingEmployee?.role || 'employee')),
         avatar: (formData.avatar || '').trim(),
         customImageUrl: (formData.customImageUrl || '').trim(),
         avatarSource: normalizeAvatarSource(formData.avatarSource) }

@@ -10,17 +10,23 @@ export const normalizeUserRole = (role) => {
   return normalized
 }
 
+export const isMentorRole = (role) => {
+  const normalized = normalizeUserRole(role)
+  return normalized === 'mentor'
+}
+
 export const isEmployeeRole = (role) => {
   const normalized = normalizeUserRole(role)
-  return normalized === 'employee' || normalized === 'mentor'
+  return normalized === 'employee'
 }
 
 export const getHomePathForRole = (role) => {
   const normalized = normalizeUserRole(role)
 
   if (normalized === 'admin') return '/admin'
+  if (normalized === 'mentor') return '/mentor'
+  if (normalized === 'employee') return '/employee'
   if (normalized === 'student') return '/user'
-  if (isEmployeeRole(normalized)) return '/employee'
   return '/user'
 }
 

@@ -259,7 +259,7 @@ export default function StudentSignup() {
                   <input
                     type="tel"
                     value={form.phone}
-                    onChange={e => setForm({ ...form, phone: e.target.replace(/\D/g, '').slice(0, 10) })}
+                    onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
                     required
                     placeholder="10-digit mobile number"
                     className="w-full pl-20 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"

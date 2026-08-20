@@ -94,6 +94,18 @@ const ROLE_PRESETS = {
       'view_employees',
     ]
   },
+  mentor: {
+    name: 'Faculty Mentor',
+    description: 'Course mentorship, student assignment evaluations, and doubt resolution',
+    permissions: [
+      'view_dashboard',
+      'manage_courses',
+      'manage_enrollments',
+      'manage_messages',
+      'send_broadcasts',
+      'manage_certificates',
+    ]
+  },
   content: {
     name: 'Content Manager',
     description: 'Content and course management',
@@ -122,7 +134,7 @@ export default function AdminPermissions() {
   const [saving, setSaving] = useState(false)
   const [showPresets, setShowPresets] = useState(false)
 
-  const employees = users.filter(u => (u.role || '').toLowerCase() === 'employee')
+  const employees = users.filter(u => ['employee', 'mentor', 'developer', 'staff'].includes((u.role || '').toLowerCase()))
 
   const filteredEmployees = employees.filter(emp => {
     const name = (emp.displayName || '').toLowerCase()
