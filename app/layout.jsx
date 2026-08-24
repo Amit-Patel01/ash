@@ -7,13 +7,13 @@ export const metadata = {
     default: 'Amit Solution Hub — Professional IT Solutions, Services & Trading Mentorship',
     template: '%s | Amit Solution Hub',
   },
-  description: 'Amit Solution Hub is a verified MSME tech agency offering custom software development, AI workforce integration, trading mentorship, IT services, and certified internship programs.',
+  description: 'Amit Solution Hub is a verified MSME tech agency offering custom software development, AI workforce integration, trading mentorship, IT services, and certified certification courses.',
   keywords: [
     'Amit Solution Hub',
     'SolutionHub',
     'Software Development Company India',
     'Trading Mentorship Program',
-    'IT Internship Programs',
+    'Certification Courses',
     'Web Application Development',
     'MSME Certified Tech Agency',
     'Custom AI Solutions',
@@ -32,7 +32,7 @@ export const metadata = {
   },
   openGraph: {
     title: 'Amit Solution Hub — Professional IT Solutions, Services & Trading Mentorship',
-    description: 'Empowering students and businesses with cutting-edge software development, trading education, internship opportunities, and tech services.',
+    description: 'Empowering students and businesses with cutting-edge software development, trading education, certification courses, and tech services.',
     url: 'https://www.amitsolutionhub.com',
     siteName: 'Amit Solution Hub',
     images: [
@@ -49,7 +49,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Amit Solution Hub — Professional IT Solutions & Mentorship',
-    description: 'Custom software development, trading mentorship, IT services, and certified internship programs.',
+    description: 'Custom software development, trading mentorship, IT services, and certified certification courses.',
     images: ['/brand-logo.png'],
   },
   other: {
@@ -74,7 +74,7 @@ const jsonLdSchema = {
       'name': 'Amit Solution Hub',
       'url': 'https://www.amitsolutionhub.com',
       'logo': 'https://www.amitsolutionhub.com/logo.png',
-      'description': 'Verified MSME tech agency and learning platform providing software development, trading mentorship, IT services, and student internships.',
+      'description': 'Verified MSME tech agency and learning platform providing software development, trading mentorship, IT services, and certification courses.',
       'address': {
         '@type': 'PostalAddress',
         'addressLocality': 'Mumbai',

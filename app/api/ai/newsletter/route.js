@@ -81,8 +81,8 @@ export async function POST(request) {
     const { courses, projects, activeCoupons } = websiteData;
 
     const courseListText = courses.length > 0
-      ? courses.map(c => `- ${c.title || c.name} (${c.category || 'Course/Internship'})`).join('\n')
-      : `- Full-Stack Web Development Internship (React, Node.js, Express, MongoDB)\n- AI & Machine Learning Track (Python, PyTorch, Data Science)\n- Cyber Security & Ethical Hacking Track (Network Security & Labs)\n- Python & Web Automation Engineering Track`;
+      ? courses.map(c => `- ${c.title || c.name} (${c.category || 'Certification Course'})`).join('\n')
+      : `- Full-Stack Web Development Certification Course (React, Node.js, Express, MongoDB)\n- AI & Machine Learning Track (Python, PyTorch, Data Science)\n- Cyber Security & Ethical Hacking Track (Network Security & Labs)\n- Python & Web Automation Engineering Track`;
 
     const projectListText = projects.length > 0
       ? projects.map(p => `- ${p.title || p.name}`).join('\n')
@@ -94,7 +94,7 @@ export async function POST(request) {
 
     const timeSlotLabelMap = {
       '7am': '07:00 AM Morning Tech & Career Brief',
-      '3pm': '03:00 PM Afternoon Project & Internship Highlight',
+      '3pm': '03:00 PM Afternoon Project & Course Highlight',
       '8pm': '08:00 PM Evening Masterclass & Course Promotion'
     };
 
@@ -118,7 +118,7 @@ STRICT MANDATORY CONSTRAINTS:
 
 Real Available Content on Website:
 ---
-[Real Courses & Internship Tracks]
+[Real Certification Courses & Tracks]
 ${courseListText}
 
 [Real Live Projects]
@@ -130,7 +130,7 @@ ${activeCouponsText}
 
 Newsletter Outline:
 1. Motivational greeting & concise tech insight/tip.
-2. Highlight real available courses/internships from the list above.
+2. Highlight real available certification courses from the list above.
 3. Live project spotlight from the list above.
 ${activeCoupons.length > 0 ? '4. Mention only the active valid website coupon offer listed above.' : '4. Call to action to visit amitsolutionhub.com for enrollments.'}
 5. Warm professional closing from Amit Solution Hub Team.`;
@@ -153,11 +153,11 @@ ${activeCoupons.length > 0 ? '4. Mention only the active valid website coupon of
 
       rawBody = `
         <p>Welcome to your daily edition of tech insights and career growth from <strong>Amit Solution Hub</strong>.</p>
-        <p>We are dedicated to delivering hands-on skill development, industry-recognized internship programs, and real-world project experience to empower your tech journey.</p>
+        <p>We are dedicated to delivering hands-on skill development, industry-recognized certification courses, and real-world project experience to empower your tech journey.</p>
         
-        <h3>🔥 Featured Programs & Internships Available:</h3>
+        <h3>🔥 Featured Certification Courses Available:</h3>
         <ul>
-          <li><strong>Full-Stack Web Development Internship:</strong> Build production-ready MERN stack applications with live database integrations and code reviews.</li>
+          <li><strong>Full-Stack Web Development Certification Course:</strong> Build production-ready MERN stack applications with live database integrations and code reviews.</li>
           <li><strong>AI & Machine Learning Track:</strong> Master Python, model development, and real-world AI applications with mentor guidance.</li>
           <li><strong>Cyber Security & Ethical Hacking:</strong> Learn hands-on network security, penetration testing, and ethical hacking protocols.</li>
         </ul>

@@ -26,7 +26,7 @@ const CERTIFICATE_TYPES = [
   {
     value: AICTE_INTERNSHIP_CERTIFICATE_TYPE,
     label: 'Completion Certificate',
-    defaultText: 'This is to certify that the above-named candidate has successfully completed the AICTE-approved internship program conducted by Amit Solution Hub. The internship included guided learning, assigned project work, practical training, and performance evaluation with verified participation.'
+    defaultText: 'This is to certify that the above-named candidate has successfully completed the AICTE-approved certification course program conducted by Amit Solution Hub. The course included guided learning, assigned project work, practical training, and performance evaluation with verified participation.'
   },
   {
     value: 'LOR',
@@ -46,7 +46,7 @@ const CERTIFICATE_TYPES = [
   {
     value: 'Offer Letter',
     label: 'Offer Letter',
-    defaultText: 'We are delighted to welcome you for the internship in Web Development at our organization. This internship is observed by Amit Solution Hub as being a learning opportunity for you, spanning a duration of 1 month.\n\nIn essence, your internship will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application of the knowledge you gain as an intern. Our team is confident that you will acknowledge your obligation to perform all work allocated to you to the best of your ability within lawful and reasonable direction given to you.\n\nWe look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful internship program experience.'
+    defaultText: 'We are delighted to welcome you for the certification course in Web Development at our organization. This certification course is observed by Amit Solution Hub as being a learning opportunity for you, spanning a duration of 1 month.\n\nIn essence, your course will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application of the knowledge you gain. Our team is confident that you will acknowledge your obligation to perform all work allocated to you to the best of your ability within lawful and reasonable direction given to you.\n\nWe look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful learning experience.'
   },
   {
     value: 'Other',
@@ -611,7 +611,7 @@ export default function AdminQrCertificates() {
               {form.certificateType === AICTE_INTERNSHIP_CERTIFICATE_TYPE && (
                 <div className="md:col-span-2 grid gap-4 md:grid-cols-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
                   <label className="block">
-                    <span className="text-sm font-semibold text-slate-700">Internship Domain</span>
+                    <span className="text-sm font-semibold text-slate-700">Course / Domain</span>
                     <input
                       type="text"
                       value={form.domain}

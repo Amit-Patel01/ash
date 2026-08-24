@@ -26,7 +26,7 @@ const coreInfrastructure = [
   {
     icon: Server,
     title: 'End-to-End Training Infrastructure',
-    desc: 'We are a full-cycle skill-training organisation with in-house resources to design, mentor, and deliver every stage of our internship programs.',
+    desc: 'We are a full-cycle skill-training organisation with in-house resources to design, mentor, and deliver every stage of our certification courses.',
     details: ['Structured curriculum design', 'In-house mentor team', 'Project-based learning tracks', 'Certificate & assessment pipeline']
   },
   {
@@ -56,26 +56,26 @@ const coreInfrastructure = [
   {
     icon: Layers,
     title: 'Scalable Program Architecture',
-    desc: 'Our internship tracks are modular by design, allowing learners to progress from fundamentals to advanced, project-based, industry-relevant work.',
+    desc: 'Our certification courses are modular by design, allowing learners to progress from fundamentals to advanced, project-based, industry-relevant work.',
     details: ['Beginner to advanced tracks', 'Real-world mini projects', 'Structured weekly milestones', 'Progress tracking for mentors']
   }
 ]
 
 const services = [
   {
-    category: 'Web Development Internship',
+    category: 'Web Development Certification Course',
     items: ['HTML, CSS & JavaScript', 'React & Modern Frontend', 'Node.js Backend Basics', 'Full-stack Mini Projects', 'Git & Deployment'],
     icon: Code,
     color: 'from-blue-500 to-cyan-600'
   },
   {
-    category: 'AI Internship',
+    category: 'AI Certification Course',
     items: ['Python for AI', 'Machine Learning Basics', 'Neural Networks Intro', 'AI Project Building', 'Real-world Use Cases'],
     icon: BrainCircuit,
     color: 'from-indigo-500 to-purple-600'
   },
   {
-    category: 'Stock Market Internship',
+    category: 'Stock Market Certification Course',
     items: ['Market Fundamentals', 'Technical Analysis', 'Trading Strategies', 'Risk Management', 'Live Market Practice'],
     icon: CandlestickChart,
     color: 'from-emerald-500 to-teal-600'
@@ -109,7 +109,7 @@ const capabilities = [
   },
   {
     icon: BrainCircuit,
-    title: 'Artificial Intelligence Internship',
+    title: 'Artificial Intelligence Certification Course',
     desc: 'Practical exposure to AI and machine learning concepts through guided projects and real datasets',
     color: 'from-indigo-500 to-purple-600'
   },
@@ -133,7 +133,7 @@ const capabilities = [
   },
   {
     icon: GraduationCap,
-    title: 'Structured Internship Batches',
+    title: 'Structured Certification Course Batches',
     desc: 'Fixed-duration batches with clear milestones, mentor check-ins, and defined outcomes',
     color: 'from-slate-500 to-zinc-600'
   },
@@ -146,13 +146,13 @@ const capabilities = [
   {
     icon: Users,
     title: 'Personal Mentorship',
-    desc: 'Dedicated mentor support for doubts, code reviews, and guidance throughout the internship',
+    desc: 'Dedicated mentor support for doubts, code reviews, and guidance throughout the certification course',
     color: 'from-rose-500 to-red-600'
   },
   {
     icon: Megaphone,
     title: 'Career Guidance',
-    desc: 'Resume building, interview preparation, and guidance on next steps after the internship',
+    desc: 'Resume building, interview preparation, and guidance on next steps after the certification course',
     color: 'from-teal-500 to-emerald-600'
   }
 ]
@@ -222,13 +222,13 @@ export default function Infrastructure() {
         <div className="text-center max-w-4xl mx-auto mb-20">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:bg-cyan-500/10 dark:text-cyan-300 text-xs font-bold uppercase tracking-wider mb-6">
             <Sparkles className="h-3.5 w-3.5" />
-            End-to-End Internship & Training Infrastructure
+            End-to-End Certification Course & Training Infrastructure
           </div>
           <h1 className="text-4xl font-black tracking-tight text-slate-950 dark:text-white sm:text-5.5xl leading-tight mb-6">
             Structured Programs. Real Mentorship. Real Skills.
           </h1>
           <p className="text-lg leading-8 text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-            AmitSolutionHub is a skill-based internship and training company built to give learners hands-on, project-driven experience — not just theory.
+            AmitSolutionHub is a skill-based certification course and training company built to give learners hands-on, project-driven experience — not just theory.
           </p>
           <p className="text-base leading-7 text-slate-500 dark:text-slate-400 max-w-3xl mx-auto mt-4">
             From Web Development to AI, Stock Market, and Emerging Technologies — every program is designed around real projects, mentor support, and industry-relevant outcomes.
@@ -303,7 +303,7 @@ export default function Infrastructure() {
               What We Offer
             </h2>
             <p className="text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Skill-based internship programs designed to take learners from fundamentals to real, project-ready capability.
+              Skill-based certification courses designed to take learners from fundamentals to real, project-ready capability.
             </p>
           </div>
 
@@ -349,7 +349,7 @@ export default function Infrastructure() {
               Program Highlights
             </h2>
             <p className="text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              What learners get in every AmitSolutionHub internship track
+              What learners get in every AmitSolutionHub certification course track
             </p>
           </div>
 
@@ -422,7 +422,7 @@ export default function Infrastructure() {
           </div>
 
           <div className="relative z-10 max-w-2xl mx-auto">
-            <h2 className="text-3xl font-black sm:text-4xl mb-4">Ready to Start Your Internship?</h2>
+            <h2 className="text-3xl font-black sm:text-4xl mb-4">Ready to Start Your Certification Course?</h2>
             <p className="mx-auto max-w-xl text-sm sm:text-base leading-6 text-blue-100 font-medium">
               Explore our Web Development, AI, Stock Market, and Emerging Technologies programs and take the first step toward real, hands-on skills.
             </p>

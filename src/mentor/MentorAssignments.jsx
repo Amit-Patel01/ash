@@ -563,7 +563,7 @@ export default function MentorAssignments() {
                   ) : (
                     <>
                       <option value="Full-Stack Web Development">Full-Stack Web Development</option>
-                      <option value="AI & Machine Learning Internship">AI & Machine Learning Internship</option>
+                      <option value="AI & Machine Learning Certification Course">AI & Machine Learning Certification Course</option>
                       <option value="Python & Data Science Bootcamp">Python & Data Science Bootcamp</option>
                     </>
                   )}

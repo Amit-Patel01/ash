@@ -30,7 +30,7 @@ export async function POST(request) {
       badgeText = 'WELCOME TO SOLUTION HUB';
       bodyContent = `
         <p>Your account has been created successfully.</p>
-        <p>You can now browse internship tracks, access code repositories, and work on live projects to earn your QR-verified certificate.</p>
+        <p>You can now browse certification courses, access code repositories, and work on live projects to earn your QR-verified certificate.</p>
       `;
       ctaText = 'Access Dashboard';
       ctaUrl = 'https://www.amitsolutionhub.com/login';

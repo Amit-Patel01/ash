@@ -39,7 +39,7 @@ export async function GET() {
       id: 'newsletter-daily-dispatch',
       deptId: 'marketing',
       title: 'Dispatch Daily 7 AM / 3 PM / 8 PM Email Newsletters',
-      description: 'Auto-compiled email newsletter promoting Full-Stack Web Development and AI/ML internship tracks to active subscribers.',
+      description: 'Auto-compiled email newsletter promoting Full-Stack Web Development and AI/ML certification courses to active subscribers.',
       impact: 'Student Reach',
       createdAt: new Date().toISOString()
     });

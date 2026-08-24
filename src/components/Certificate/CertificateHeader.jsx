@@ -44,7 +44,7 @@ export default function CertificateHeader({
               className="mt-0.5 font-bold uppercase text-slate-500"
               style={{ fontSize: 'clamp(6.5px, 0.72cqw, 10px)', letterSpacing: 0 }}
             >
-              Internship Program
+              Certification Course
             </p>
           </div>
         </div>

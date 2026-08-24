@@ -282,7 +282,7 @@ export default function StudentSignup() {
                     <option value="Buying Projects / Source Code">Buying Readymade Projects & Source Code</option>
                     <option value="Custom Project Development">Custom Software & App Development Service</option>
                     <option value="Training Courses">Enrolling in Technical Training & Courses</option>
-                    <option value="College Internship & Projects">College Internship & Major Project</option>
+                    <option value="College Certification Course & Projects">College Certification Course & Major Project</option>
                     <option value="General User">General Inquiry / Browsing</option>
                   </select>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">▼</div>

@@ -44,7 +44,7 @@ export default function MentorBroadcast() {
     {
       id: 'ann-2',
       title: '📁 Milestone 2 Project Submissions Deadline Extended',
-      batch: 'AI & Machine Learning Internship',
+      batch: 'AI & Machine Learning Certification Course',
       type: 'Announcement',
       meetingUrl: '',
       message: 'Based on student requests, the deadline for submitting the Churn Model repository has been extended to Sunday 11:59 PM.',

@@ -5,6 +5,7 @@ import Navbar from './Navbar'
 import Footer from './Footer'
 import GlowBackground from './GlowBackground'
 import AnnouncementPopup from './AnnouncementPopup'
+import NoticePopup from './NoticePopup'
 import DarkModeBackgroundFix from './DarkModeBackgroundFix'
 import GuidanceModal from './GuidanceModal'
 import AshxOsAnnouncementBar from './AshxOsAnnouncementBar'
@@ -46,6 +47,7 @@ const Layout = ({ children }) => {
     <div className="min-h-screen w-full flex flex-col relative text-slate-900 ash-canvas">
       <DarkModeBackgroundFix />
       {!hideGlowBackground && <GlowBackground />}
+      <NoticePopup />
       {!hideAnnouncement && <AnnouncementPopup />}
       {!hideNavbar && <GuidanceModal />}
       {!hideNavbar && <AshxOsAnnouncementBar />}

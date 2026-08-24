@@ -343,7 +343,7 @@ export default function UserCertificates() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Certificates & Letters</h1>
-          <p className="text-sm text-slate-500 mt-1">Your issued certificates, internship credentials, and offer letters will appear here.</p>
+          <p className="text-sm text-slate-500 mt-1">Your issued certificates, certification course credentials, and offer letters will appear here.</p>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-3xl p-12 text-center shadow-[0_10px_30px_rgba(148,163,184,0.25)]">
@@ -352,7 +352,7 @@ export default function UserCertificates() {
           </div>
           <h2 className="text-xl font-bold text-slate-900">No documents yet</h2>
           <p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">
-            Issued course certificates, internship certificates, and offer letters appear here with their verification links.
+            Issued course certificates, certification course certificates, and offer letters appear here with their verification links.
           </p>
           <div className="flex items-center justify-center gap-3 mt-6 flex-wrap">
             <Link

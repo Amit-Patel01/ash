@@ -22,7 +22,7 @@ const navGroups = [
       { path: '/admin/receipts', label: 'Receipts', icon: 'receipt', permission: 'can_manage_sales' },
       { path: '/admin/services', label: 'Services', icon: 'design_services', permission: 'can_manage_services' },
       { path: '/admin/testimonials', label: 'Testimonials', icon: 'comment' },
-      { path: '/admin/internship-categories', label: 'Internship Categories', icon: 'layers' },
+      { path: '/admin/internship-categories', label: 'Certification Categories', icon: 'layers' },
     ]
   },
 

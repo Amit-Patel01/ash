@@ -69,7 +69,7 @@ export default function AICTECertificateDocument({ certificate, template, classN
   }
 
   const detailItems = [
-    { icon: FileText, label: 'INTERNSHIP DOMAIN', value: certificate?.domain || 'Web Development' },
+    { icon: FileText, label: 'COURSE DOMAIN', value: certificate?.domain || 'Web Development' },
     { icon: Calendar, label: 'DURATION', value: certificate?.duration || '8 Weeks' },
     { icon: CalendarDays, label: 'START DATE', value: certificate?.startDate || '01 May 2026' },
     { icon: CalendarCheck, label: 'END DATE', value: certificate?.endDate || '27 June 2026' },
@@ -142,7 +142,7 @@ export default function AICTECertificateDocument({ certificate, template, classN
           </p>
           <div className="my-[0.3cqw] h-[1px] w-[52%]" style={{ background: hexToRgba(accentColor, 0.65) }} />
           <p className="text-white/85 font-medium leading-tight" style={{ fontSize: 'clamp(3.5px,0.42cqw,6.5px)', letterSpacing: '0.08em' }}>
-            INTERNSHIP<br />PROGRAM
+            CERTIFICATION<br />COURSE
           </p>
         </div>
       </div>
@@ -170,7 +170,7 @@ export default function AICTECertificateDocument({ certificate, template, classN
                 AICTE PORTAL REGISTERED
               </p>
               <p className="font-semibold uppercase text-slate-600 mt-[0.2cqw] leading-none" style={{ fontSize: 'clamp(5px,0.6cqw,8px)' }}>
-                INTERNSHIP PROGRAM
+                CERTIFICATION COURSE
               </p>
               <p className="text-slate-500 mt-[0.3cqw] leading-tight" style={{ fontSize: 'clamp(4px,0.5cqw,7px)' }}>
                 All India Council for Technical Education<br />
@@ -238,7 +238,7 @@ export default function AICTECertificateDocument({ certificate, template, classN
           <div className="flex items-center gap-[0.6cqw] mb-[0.5cqw]">
             <div className="h-[1px] w-[clamp(16px,2.4cqw,34px)]" style={{ background: hexToRgba(accentColor, 0.6) }} />
             <p className="font-bold uppercase tracking-[0.22em]" style={{ color: navyColor, fontSize: 'clamp(7px,0.9cqw,14px)' }}>
-              AICTE PORTAL REGISTERED INTERNSHIP
+              AICTE PORTAL REGISTERED CERTIFICATION
             </p>
             <div className="h-[1px] w-[clamp(16px,2.4cqw,34px)]" style={{ background: hexToRgba(accentColor, 0.6) }} />
           </div>
@@ -251,7 +251,7 @@ export default function AICTECertificateDocument({ certificate, template, classN
               letterSpacing: '0.045em'
             }}
           >
-            INTERNSHIP COMPLETION CERTIFICATE
+            CERTIFICATION COURSE COMPLETION CERTIFICATE
           </h1>
           <div className="mt-[0.7cqw] flex items-center gap-[0.4cqw]">
             <div className="rotate-45" style={{ width: 'clamp(3px,0.4cqw,5px)', height: 'clamp(3px,0.4cqw,5px)', backgroundColor: accentColor }} />
@@ -300,9 +300,9 @@ export default function AICTECertificateDocument({ certificate, template, classN
               ))
             ) : (
               <>
-                <p>has successfully completed the <span className="font-bold text-[#173F8A]">AICTE National Internship Portal Registered Internship Program</span></p>
-                <p>organized by Amit Solution Hub, a registered organization on the AICTE National Internship Portal.</p>
-                <p>During the internship period, the student was found sincere, hardworking and</p>
+                <p>has successfully completed the <span className="font-bold text-[#173F8A]">AICTE National Portal Registered Certification Course</span></p>
+                <p>organized by Amit Solution Hub, a registered organization on the AICTE National Portal.</p>
+                <p>During the course period, the student was found sincere, hardworking and</p>
                 <p>actively participated in all assigned tasks.</p>
                 <p>We wish him/her all the best for future endeavors.</p>
               </>

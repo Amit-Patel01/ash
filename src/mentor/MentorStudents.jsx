@@ -66,7 +66,7 @@ export default function MentorStudents() {
         name: 'Priya Verma',
         email: 'priya.verma@example.com',
         phone: '+91 98234 56789',
-        course: 'AI & Machine Learning Internship',
+        course: 'AI & Machine Learning Certification Course',
         progress: 92,
         status: 'Active',
         joinedDate: '05 Aug 2026'

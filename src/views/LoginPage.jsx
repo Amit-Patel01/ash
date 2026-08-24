@@ -224,7 +224,7 @@ export default function LoginPage() {
                 <span className="bg-gradient-to-r from-indigo-300 via-purple-200 to-pink-300 bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">Get Certified.</span>
               </h3>
               <p className="text-xs sm:text-sm text-slate-200 font-medium leading-relaxed drop-shadow-md">
-                Access your real internship workspace, code repositories, live project milestones, and verified certificates.
+                Access your real certification course workspace, code repositories, live project milestones, and verified certificates.
               </p>
             </div>
           </div>

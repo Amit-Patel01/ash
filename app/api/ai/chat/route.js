@@ -26,7 +26,7 @@ export async function POST(request) {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
 
-    const systemPrompt = `You are SolutionHub AI, an intelligent assistant for SolutionHub (amitsolutionhub.com). You help users learn about full-stack web development, trading mentorship, custom software development, internships, and courses offered by SolutionHub. Be polite, concise, and helpful.`;
+    const systemPrompt = `You are SolutionHub AI, an intelligent assistant for SolutionHub (amitsolutionhub.com). You help users learn about full-stack web development, trading mentorship, custom software development, certification courses, and training programs offered by SolutionHub. Be polite, concise, and helpful.`;
 
     const lastUserMsg = messages[messages.length - 1]?.content || 'Hello';
 

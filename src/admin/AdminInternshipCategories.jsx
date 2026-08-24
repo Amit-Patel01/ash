@@ -112,7 +112,7 @@ export default function AdminInternshipCategories() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Internship Categories</h1>
+          <h1 className="text-2xl font-bold text-slate-900">Certification Categories</h1>
           <p className="text-sm text-slate-500 mt-1">
             {internshipCategories?.length || 0} categories &middot; Displayed on the home page hero section
           </p>
@@ -136,7 +136,7 @@ export default function AdminInternshipCategories() {
         <div>
           <p className="text-sm font-semibold text-blue-800">Dynamic Home Page Categories</p>
           <p className="text-xs text-blue-600 mt-0.5">
-            These categories are displayed in the <strong>"Internship Categories"</strong> section on the home page.
+            These categories are displayed in the <strong>"Certification Categories"</strong> section on the home page.
             When no categories exist in the database, the home page shows built-in defaults as fallback.
             Add at least one category here to switch to dynamic content.
           </p>
@@ -147,9 +147,9 @@ export default function AdminInternshipCategories() {
       {(!internshipCategories || internshipCategories.length === 0) ? (
         <div className="bg-white border border-slate-200 rounded-2xl p-14 text-center">
           <div className="text-5xl mb-4">🗂️</div>
-          <p className="text-slate-500 font-medium mb-2">No internship categories yet</p>
+          <p className="text-slate-500 font-medium mb-2">No certification categories yet</p>
           <p className="text-xs text-slate-400 max-w-sm mx-auto">
-            Click "Add Category" to create dynamic internship tracks displayed on the home page.
+            Click "Add Category" to create dynamic certification tracks displayed on the home page.
             Until you add one, the home page will show built-in default categories.
           </p>
         </div>
@@ -214,7 +214,7 @@ export default function AdminInternshipCategories() {
           <div className="relative bg-white border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
               <h2 className="text-lg font-bold text-slate-900">
-                {editing ? 'Edit Category' : 'Add Internship Category'}
+                {editing ? 'Edit Category' : 'Add Certification Category'}
               </h2>
               <button onClick={() => setShowModal(false)} className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

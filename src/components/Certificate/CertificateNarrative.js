@@ -13,7 +13,7 @@ export const isAicteInternshipCertificate = (certificate = {}) => {
     certificate?.courseName,
   ].filter(Boolean).join(' ').toLowerCase()
 
-  return haystack.includes('aicte') && haystack.includes('internship') && haystack.includes('completion')
+  return haystack.includes('aicte') && (haystack.includes('internship') || haystack.includes('certification') || haystack.includes('course')) && haystack.includes('completion')
 }
 
 export const formatAicteCertificateDate = (value) => {
@@ -38,16 +38,16 @@ export const normalizeAicteParagraph = (value) => {
     .replace(/\bsuccessfullycompletedthe\b/g, 'successfully completed the')
     .replace(/\bsuccessfullycompleted\b/g, 'successfully completed')
     .replace(/\bcompletedthe\b/g, 'completed the')
-    .replace(/\binternshipprogram\b/g, 'internship program')
+    .replace(/\binternshipprogram\b/g, 'certification course program')
     .replace(/\bconductedby\b/g, 'conducted by')
-    .replace(/\binternshipincludedguidedlearning\b/g, 'internship included guided learning')
+    .replace(/\binternshipincludedguidedlearning\b/g, 'course included guided learning')
     .replace(/\bincludedguidedlearning\b/g, 'included guided learning')
     .replace(/\bguidedlearning\b/g, 'guided learning')
     .replace(/\bassignedprojectwork\b/g, 'assigned project work')
     .replace(/\bpracticaltraining\b/g, 'practical training')
     .replace(/\bperformanceevaluationwith\b/g, 'performance evaluation with')
     .replace(/\bverifiedparticipation\b/g, 'verified participation')
-    .replace('AICTE approved internship program', 'AICTE-approved internship program')
+    .replace('AICTE approved internship program', 'AICTE-approved certification course program')
     .replace(/\s+/g, ' ')
 }
 
@@ -66,7 +66,7 @@ export const normalizeDisplayText = (value) =>
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     .replace(/\bAICTEApproved\b/g, 'AICTE Approved')
     .replace(/\bAICTEapproved\b/g, 'AICTE approved')
-    .replace(/\bInternshipCompletion\b/g, 'Internship Completion')
+    .replace(/\bInternshipCompletion\b/g, 'Certification Course Completion')
     .replace(/\bQRVerified\b/g, 'QR Verified')
     .replace(/\bMSMERegistered\b/g, 'MSME Registered')
     .replace(/\s+/g, ' ')
@@ -97,7 +97,7 @@ export function getDocumentNarrative(documentType, holderName, courseName, templ
     return {
       intro: template.summaryLine,
       highlight: holderName,
-      paragraph: `We are pleased to confirm the selection for ${internshipRole} under ${courseName} at ${template.organizationName}. This offer confirms eligibility for the upcoming internship or training cycle, subject to onboarding completion and reporting compliance.`,
+      paragraph: `We are pleased to confirm the selection for ${internshipRole} under ${courseName} at ${template.organizationName}. This offer confirms eligibility for the upcoming certification course cycle, subject to onboarding completion and reporting compliance.`,
       chips: [
         { label: 'Role / Track', value: internshipRole },
         { label: 'Joining Date', value: joiningDate },
@@ -109,9 +109,9 @@ export function getDocumentNarrative(documentType, holderName, courseName, templ
     return {
       intro: template.summaryLine,
       highlight: holderName,
-      paragraph: `${template.bodyPrefix} ${courseName}. The internship tenure covered ${internshipDuration}, guided milestones, practical assignments, and verified participation with ${template.organizationName}.`,
+      paragraph: `${template.bodyPrefix} ${courseName}. The course tenure covered ${internshipDuration}, guided milestones, practical assignments, and verified participation with ${template.organizationName}.`,
       chips: [
-        { label: 'Internship Domain', value: internshipRole },
+        { label: 'Course Domain', value: internshipRole },
         { label: 'Duration', value: internshipDuration },
         { label: 'Issued By', value: template.organizationName },
       ] }

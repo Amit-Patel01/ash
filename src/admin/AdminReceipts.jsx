@@ -772,7 +772,7 @@ export default function AdminReceipts() {
                       required
                       value={formData.itemName}
                       onChange={e => setFormData(p => ({ ...p, itemName: e.target.value }))}
-                      placeholder="e.g. MERN Stack Web Development Internship"
+                      placeholder="e.g. MERN Stack Web Development Certification Course"
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
                     />
                   </div>
@@ -785,7 +785,7 @@ export default function AdminReceipts() {
                         onChange={e => setFormData(p => ({ ...p, itemCategory: e.target.value }))}
                         className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
                       >
-                        <option value="Internship">Internship</option>
+                        <option value="Certification Course">Certification Course</option>
                         <option value="Course">Course</option>
                         <option value="Project">Project</option>
                         <option value="Service">Service</option>

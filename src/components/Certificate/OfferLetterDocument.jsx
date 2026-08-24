@@ -30,9 +30,9 @@ export default function OfferLetterDocument({ certificate, template, className =
   const bodyParas = certificate?.certificateText
     ? certificate.certificateText.split('\n').map(p => p.trim()).filter(Boolean)
     : [
-      `We are delighted to welcome you for the internship in <strong>${domain}</strong> at our organization. This internship is observed by <strong>Amit Solution Hub</strong> as a learning opportunity for you, spanning a duration of <strong>${duration}</strong>.`,
-      `Your internship will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application. Our team is confident that you will perform all work allocated to you to the best of your ability.`,
-      `We look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful internship experience.`,
+      `We are delighted to welcome you for the certification course in <strong>${domain}</strong> at our organization. This certification course is observed by <strong>Amit Solution Hub</strong> as a learning opportunity for you, spanning a duration of <strong>${duration}</strong>.`,
+      `Your course will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application. Our team is confident that you will perform all work allocated to you to the best of your ability.`,
+      `We look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful learning experience.`,
     ]
 
   /* ── Shared visual tokens (purely presentational) ── */
@@ -134,7 +134,7 @@ export default function OfferLetterDocument({ certificate, template, className =
             className="font-bold uppercase mt-[0.4cqw]"
             style={{ color: NAVY, fontFamily: 'Georgia, "Times New Roman", serif', fontSize: 'clamp(14px,2.2cqw,28px)', letterSpacing: '0.1em' }}
           >
-            Internship Offer Letter
+            Offer &amp; Admission Letter
           </h1>
           <div style={{ height: 'clamp(1.5px,0.2cqw,2.5px)', width: 'clamp(40px,8cqw,100px)', background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`, margin: 'clamp(3px,0.5cqw,7px) auto 0' }} />
         </div>

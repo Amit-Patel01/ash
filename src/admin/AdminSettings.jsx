@@ -60,8 +60,8 @@ export default function AdminSettings() {
   const selectedDocumentMeta = getDocumentTypeMeta(selectedDocumentType)
   const certificatePreview = {
     userName: 'Amit Patel',
-    courseName: selectedDocumentType === 'offer_letter' ? 'Software Development Internship' : 'All Blueprint Of Course',
-    internshipRole: selectedDocumentType === 'offer_letter' ? 'Frontend Developer Intern' : 'Full Stack Development Track',
+    courseName: selectedDocumentType === 'offer_letter' ? 'Software Development Track' : 'All Blueprint Of Course',
+    internshipRole: selectedDocumentType === 'offer_letter' ? 'Frontend Developer Trainee' : 'Full Stack Development Track',
     internshipDuration: '3 Months',
     joiningDate: new Date().toISOString(),
     documentType: selectedDocumentType,
@@ -610,7 +610,7 @@ export default function AdminSettings() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-500 mb-1.5">Internship Programs</label>
+                <label className="block text-xs font-medium text-slate-500 mb-1.5">Certification Courses</label>
                 <input
                   type="text"
                   value={statsForm.internshipPrograms}

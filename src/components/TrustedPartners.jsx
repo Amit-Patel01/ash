@@ -32,7 +32,7 @@ export default function TrustedPartners() {
       name: 'AICTE',
       logo: 'https://upload.wikimedia.org/wikipedia/en/e/eb/All_India_Council_for_Technical_Education_logo.png',
       height: 'h-12',
-      desc: 'Internship Portal Registered',
+      desc: 'Certification & Training Portal',
       type: 'image'
     }
   ]

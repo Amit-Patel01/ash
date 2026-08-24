@@ -110,7 +110,7 @@ export default function About() {
     },
     {
       title: 'Integrity',
-      desc: 'Honesty is at our core. Ethical practices guide every decision, internship, and codebase.',
+      desc: 'Honesty is at our core. Ethical practices guide every decision, certification course, and codebase.',
       icon: CheckCircle2,
       color: 'from-amber-500 to-orange-500',
       ring: 'hover:border-amber-400/60 dark:hover:border-amber-400/40'
@@ -162,7 +162,7 @@ export default function About() {
       gradient: 'hover:border-amber-500/50 dark:hover:border-amber-400/50 hover:shadow-amber-500/10'
     },
     {
-      title: 'Internship Programs',
+      title: 'Certification Courses',
       desc: 'Hands-on industrial training with real client tasks, peer code reviews, and structured timelines.',
       icon: GraduationCap,
       iconBg: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
@@ -170,7 +170,7 @@ export default function About() {
     },
     {
       title: 'Hiring Network',
-      desc: 'Connect directly with verified businesses looking for skilled graduates and interns.',
+      desc: 'Connect directly with verified businesses looking for skilled graduates and certified candidates.',
       icon: Users2,
       iconBg: 'bg-rose-500/10 text-rose-500 border-rose-500/20',
       gradient: 'hover:border-rose-500/50 dark:hover:border-rose-400/50 hover:shadow-rose-500/10'
@@ -207,7 +207,7 @@ export default function About() {
       color: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
     },
     {
-      title: 'AICTE Internship Portal Registered',
+      title: 'AICTE National Portal Registered',
       desc: 'Aligned directly with national guidelines to deliver valid, credit-mappable academic programs.',
       icon: GraduationCap,
       color: 'bg-orange-500/10 text-orange-500 border border-orange-500/20'
@@ -253,10 +253,10 @@ export default function About() {
   const faqs = [
     {
       q: 'Is Amit Solution Hub an AICTE-approved college?',
-      a: 'No. Amit Solution Hub is a private technology development agency registered on the AICTE National Internship Portal. We provide industrial training programs and build real-world software products, which colleges accept for credit mapping under their internship guidelines.'
+      a: 'No. Amit Solution Hub is a private technology development agency registered on the AICTE National Portal. We provide industrial training programs and build real-world software products, which colleges accept for credit mapping under their certification course guidelines.'
     },
     {
-      q: 'How do employers verify my internship certificate?',
+      q: 'How do employers verify my certification course certificate?',
       a: 'Every certificate we issue features a unique certificate serial ID and a secure QR code. Employers can scan the QR code or enter the ID on our /verify portal to instantly check the authentic candidate details, domain, and completion date.'
     },
     {
@@ -265,7 +265,7 @@ export default function About() {
     },
     {
       q: 'Do you offer offline classroom coaching?',
-      a: 'We focus entirely on digital platform delivery and remote, project-based internships, enabling students from any corner of India to learn hands-on from home at a highly flexible pace.'
+      a: 'We focus entirely on digital platform delivery and remote, project-based certification courses, enabling students from any corner of India to learn hands-on from home at a highly flexible pace.'
     },
     {
       q: 'How can clients request a custom software quote?',
@@ -295,7 +295,7 @@ export default function About() {
                   <ShieldCheck size={11} /> MSME Registered Organization
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-orange-500 text-white shadow-md shadow-orange-500/30">
-                  <GraduationCap size={11} /> AICTE National Internship Portal Registered Organization
+                  <GraduationCap size={11} /> AICTE National Portal Registered Organization
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-blue-500 text-white shadow-md shadow-blue-500/30">
                   <Zap size={11} /> Razorpay Reseller Partner
@@ -310,7 +310,7 @@ export default function About() {
               </h1>
 
               <p className="text-sm sm:text-base lg:text-lg text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
-                Amit Solution Hub is an AI-powered EdTech and IT development platform delivering premium hands-on internships, custom software architectures, expert training, and secure verification systems.
+                Amit Solution Hub is an AI-powered EdTech and IT development platform delivering premium hands-on certification courses, custom software architectures, expert training, and secure verification systems.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -415,7 +415,7 @@ export default function About() {
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">Our Core Values</h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
-              These shared guidelines shape how we write code, support interns, and interact with partners.
+              These shared guidelines shape how we write code, support students, and interact with partners.
             </p>
           </div>
 
@@ -582,7 +582,7 @@ export default function About() {
                 </div>
 
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                  I lead the design and development of digital projects at AmitSolutionHub. With a focus on full-stack technologies and stock market analytics, I guide our software team to implement clean solutions for clients, while mentoring students through hands-on internship courses.
+                  I lead the design and development of digital projects at AmitSolutionHub. With a focus on full-stack technologies and stock market analytics, I guide our software team to implement clean solutions for clients, while mentoring students through hands-on certification courses.
                 </p>
 
                 {/* Skill Badges */}
@@ -767,7 +767,7 @@ export default function About() {
                 </div>
               </div>
               <div className="space-y-1">
-                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200">AICTE National Internship Portal</h4>
+                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200">AICTE National Portal</h4>
                 <p className="text-[9px] text-orange-600 dark:text-orange-400 font-black uppercase tracking-wider">Registered Organization</p>
               </div>
             </div>
@@ -865,7 +865,7 @@ export default function About() {
                   href="/join-us"
                   className="px-8 py-3.5 rounded-2xl text-sm font-extrabold bg-white text-blue-700 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 active:scale-98 shadow-md"
                 >
-                  Start Internship <ArrowRight size={14} />
+                  Start Certification Course <ArrowRight size={14} />
                 </Link>
                 <Link
                   href="/contact"

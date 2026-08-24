@@ -36,7 +36,7 @@ const ComingSoon = () => {
         </h1>
         
         <p className="text-lg md:text-xl text-slate-300 mb-10 leading-relaxed max-w-lg mx-auto">
-          Our latest programs are now active. Explore the available courses and internships to get started today.
+          Our latest programs are now active. Explore the available certification courses to get started today.
         </p>
 
         {/* Info Box */}

@@ -362,7 +362,7 @@ export default function UserProfile() {
             </span>
             <h3 className="text-base font-bold text-slate-900">Certificates & Awards</h3>
             <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-              Download QR-verified official course completion & internship certificates.
+              Download QR-verified official course completion & certification course certificates.
             </p>
           </div>
 

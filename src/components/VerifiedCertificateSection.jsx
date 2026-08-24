@@ -32,10 +32,10 @@ export default function VerifiedCertificateSection({ courseTitle = "Web Developm
               <Award className="w-4 h-4" /> Official Certificate
             </div>
             <h2 className="ash-display text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
-              Verified Internship & Course Certificate
+              Verified Course & Certification Credential
             </h2>
             <p className="leading-relaxed font-medium text-slate-600">
-              Students who successfully complete their training or internship receive an official verifiable certificate with real-time QR code verification, ISO aligned quality standards, and Govt. of India MSME registration.
+              Students who successfully complete their training or certification course receive an official verifiable certificate with real-time QR code verification, ISO aligned quality standards, and Govt. of India MSME registration.
             </p>
 
             {/* Certificate Features */}

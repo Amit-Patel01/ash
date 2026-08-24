@@ -89,7 +89,7 @@ const Contact = () => {
             support
           </>
         }
-        description="Whether it's a project inquiry, internship request, or technical help — we respond within 24 hours and deliver with care."
+        description="Whether it's a project inquiry, certification course request, or technical help — we respond within 24 hours and deliver with care."
         actions={[
           { label: 'Chat with Team', to: '/chat' },
           { label: 'Call Support', href: 'tel:+917874248481', variant: 'secondary' },
@@ -158,7 +158,7 @@ const Contact = () => {
               <div className="grid gap-3">
                 {[
                   { emoji: '💻', title: 'Project or Service Enquiry', text: 'Mention your goals, timeline, and the type of deliverable you need.' },
-                  { emoji: '🎓', title: 'Internship or Training', text: 'Share your current role, learning interest, and expected outcomes.' },
+                  { emoji: '🎓', title: 'Certification Course or Training', text: 'Share your current role, learning interest, and expected outcomes.' },
                   { emoji: '🔧', title: 'Technical Help', text: 'Include the exact problem, device/stack details, and any blockers.' },
                 ].map((item) => (
                   <div key={item.title} className="rounded-2xl border border-slate-200/70 bg-white/80 p-5 dark:border-white/8 dark:bg-white/4 transition-all hover:-translate-y-0.5">

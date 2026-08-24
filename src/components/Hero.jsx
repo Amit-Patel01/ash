@@ -197,7 +197,7 @@ const TechIllustration = () => {
             </div>
             <div>
               <h4 className="text-sm font-extrabold text-slate-900">Priya Sharma</h4>
-              <p className="text-[11px] font-semibold text-slate-500">Full Stack Web Intern</p>
+              <p className="text-[11px] font-semibold text-slate-500">Full Stack Web Trainee</p>
             </div>
           </div>
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -272,7 +272,7 @@ const TechIllustration = () => {
 /* ── Static Data ── */
 const STATS = [
   { value: '5,000+', label: 'Students Trained', icon: Users, color: 'text-blue-500' },
-  { value: '12+', label: 'Internship Programs', icon: BookOpen, color: 'text-indigo-500' },
+  { value: '12+', label: 'Certification Courses', icon: BookOpen, color: 'text-indigo-500' },
   { value: '800+', label: 'Live Projects Completed', icon: Code, color: 'text-purple-500' },
   { value: '4,800+', label: 'Certificates Issued', icon: Award, color: 'text-emerald-500' },
 ]
@@ -419,21 +419,21 @@ const STEPS = [
 const TESTIMONIALS = [
   {
     name: 'Priya Verma',
-    course: 'Web Development Intern — Jaipur',
+    course: 'Web Development Certification — Jaipur',
     rating: 5,
     feedback: "Honestly, I was skeptical at first. But when I submitted my first project and got the certificate, I couldn't stop smiling. The QR code actually works — my college accepted it without any issue.",
     avatar: '👩‍💻'
   },
   {
     name: 'Rahul Mishra',
-    course: 'AI & ML Intern — Lucknow',
+    course: 'AI & ML Certification — Lucknow',
     rating: 5,
     feedback: "I tried 2-3 other platforms before this that just gave PDF certificates. Here I got actual guidance. My mentor reviewed my code directly and gave real feedback. That made a huge difference.",
     avatar: '👨‍🎓'
   },
   {
     name: 'Kavya Sharma',
-    course: 'UI/UX Design Intern — Bhopal',
+    course: 'UI/UX Design Certification — Bhopal',
     rating: 5,
     feedback: "I wanted to learn design but was on a tight budget. This was affordable and I actually learned something. My Figma portfolio is ready now and I've already landed a small freelance project.",
     avatar: '👩‍🎨'
@@ -442,7 +442,7 @@ const TESTIMONIALS = [
 
 const FAQS = [
   {
-    q: 'Is this internship fully online?',
+    q: 'Is this certification course fully online?',
     a: 'Yes, everything is online. Work from home, at your own pace — no fixed class timings.'
   },
   {
@@ -562,7 +562,7 @@ const Hero = () => {
   const statsList = useMemo(() => {
     return [
       { value: homepageStats?.studentsTrained || '5,000+', label: 'Students Trained', icon: Users, color: 'text-blue-500' },
-      { value: homepageStats?.internshipPrograms || '12+', label: 'Internship Programs', icon: BookOpen, color: 'text-indigo-500' },
+      { value: homepageStats?.internshipPrograms || '12+', label: 'Certification Courses', icon: BookOpen, color: 'text-indigo-500' },
       { value: homepageStats?.liveProjects || '800+', label: 'Live Projects Completed', icon: Code, color: 'text-purple-500' },
       { value: homepageStats?.certificatesIssued || '4,800+', label: 'Certificates Issued', icon: Award, color: 'text-emerald-500' },
     ]
@@ -596,7 +596,7 @@ const Hero = () => {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border bg-white border-emerald-200 shadow-sm">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs font-extrabold uppercase tracking-wider text-slate-700">
-                AICTE Internship Portal Registered Organization
+                AICTE National Portal Registered Organization
               </span>
             </div>
 
@@ -610,7 +610,7 @@ const Hero = () => {
 
             {/* Subheading */}
             <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-medium">
-              Take on real internships, complete hands-on projects, and earn an official QR-verified certificate co-signed by industry mentors.
+              Take on real certification courses, complete hands-on projects, and earn an official QR-verified certificate co-signed by industry mentors.
             </p>
 
             {/* CTA Buttons */}
@@ -703,7 +703,7 @@ const Hero = () => {
                 My name is <strong className="text-slate-700">Amit Patel</strong> — I'm a developer and trainer. I noticed that a lot of students finish college knowing theory but have no idea how real work actually looks. That gap bothered me.
               </p>
               <p className="text-slate-500 leading-relaxed font-medium">
-                So I built this — a place where you don't just read about tech, you actually build things. Every internship involves a real project, real mentor feedback, and a certificate that anyone can verify online with a QR code.
+                So I built this — a place where you don't just read about tech, you actually build things. Every certification course involves a real project, real mentor feedback, and a certificate that anyone can verify online with a QR code.
               </p>
               <div className="flex items-center gap-3 pt-2">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-black text-sm">A</div>
@@ -758,7 +758,7 @@ const Hero = () => {
         {/* ── ASHX OS LAUNCH SHOWCASE SECTION ── */}
         <AshxOsHeroSection />
 
-        {/* ── INTERNSHIP CATEGORIES ── */}
+        {/* ── CERTIFICATION CATEGORIES ── */}
         <section id="categories" className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/60">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
             <span className="px-3 py-1 rounded-full text-xs font-bold text-blue-500 bg-blue-500/10 uppercase tracking-wider">

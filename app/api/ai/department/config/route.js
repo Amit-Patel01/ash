@@ -16,7 +16,7 @@ const DEFAULT_CONFIG = {
     id: 'sales',
     name: 'Course Sales & Growth',
     enabled: true,
-    systemPrompt: 'Promote internship tracks, manage discount coupons, and optimize course conversions.'
+    systemPrompt: 'Promote certification courses, manage discount coupons, and optimize course conversions.'
   },
   marketing: {
     id: 'marketing',

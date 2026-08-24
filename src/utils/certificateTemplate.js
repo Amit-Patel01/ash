@@ -1,6 +1,6 @@
 export const DOCUMENT_TYPES = [
   { id: 'certificate', label: 'Course Certificate', shortLabel: 'Certificate' },
-  { id: 'internship_certificate', label: 'Internship Certificate', shortLabel: 'Internship Certificate' },
+  { id: 'internship_certificate', label: 'Certification Course Certificate', shortLabel: 'Certification Course Certificate' },
   { id: 'offer_letter', label: 'Offer Letter', shortLabel: 'Offer Letter' },
 ]
 
@@ -29,16 +29,16 @@ const DOCUMENT_TEMPLATE_DEFAULTS = {
     referenceLabel: 'Certificate ID' },
   internship_certificate: {
     documentType: 'internship_certificate',
-    documentLabel: 'Internship Certificate',
-    certificatePrefix: 'INT',
-    title: 'Internship',
-    subtitle: 'Certificate',
-    sealLabel: 'Verified Internship',
-    overline: 'Industrial Training Credential',
-    summaryLine: 'This internship certificate is awarded to',
-    bodyPrefix: 'For successfully completing the internship program in',
+    documentLabel: 'Certification Course Certificate',
+    certificatePrefix: 'CRT',
+    title: 'Certification',
+    subtitle: 'Course Certificate',
+    sealLabel: 'Verified Certification',
+    overline: 'Professional Training Credential',
+    summaryLine: 'This certification course certificate is awarded to',
+    bodyPrefix: 'For successfully completing the certification course program in',
     bodySuffix: 'with active learning, assigned project work, and verified participation.',
-    referenceLabel: 'Internship ID' },
+    referenceLabel: 'Certification ID' },
   offer_letter: {
     documentType: 'offer_letter',
     documentLabel: 'Offer Letter',
@@ -48,7 +48,7 @@ const DOCUMENT_TEMPLATE_DEFAULTS = {
     sealLabel: 'Official Offer',
     overline: 'Selection Confirmation',
     summaryLine: 'This letter is issued in favour of',
-    bodyPrefix: 'Selected for the internship / training role in',
+    bodyPrefix: 'Selected for the certification course / training track in',
     bodySuffix: 'subject to platform rules, reporting timelines, and onboarding compliance.',
     referenceLabel: 'Offer Ref' } }
 

@@ -9,7 +9,7 @@ const TermsOfService = () => {
 
   return (
     <>
-      <SEO title="Terms of Service | AmitSolutionHub" description="Terms and conditions for utilizing AmitSolutionHub's internship and trading mentorship programs." />
+      <SEO title="Terms of Service | AmitSolutionHub" description="Terms and conditions for utilizing AmitSolutionHub's certification courses and trading mentorship programs." />
       <div className="min-h-screen pt-10 lg:pt-14 pb-20 px-4 md:px-8 bg-slate-50">
         <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100">
           <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-8 tracking-tight">Terms of Service</h1>
@@ -18,7 +18,7 @@ const TermsOfService = () => {
           <div className="space-y-8 text-slate-600 leading-relaxed max-w-none">
             <section>
               <h2 className="text-xl font-bold text-slate-800 mb-4">1. Acceptance of Terms</h2>
-              <p>By registering for an internship, purchasing a mentorship program, or utilizing the AmitSolutionHub platform, you agree to comply with and be bound by these Terms of Service. If you do not agree, please refrain from using our services.</p>
+              <p>By registering for a certification course, purchasing a mentorship program, or utilizing the AmitSolutionHub platform, you agree to comply with and be bound by these Terms of Service. If you do not agree, please refrain from using our services.</p>
             </section>
 
             <section>

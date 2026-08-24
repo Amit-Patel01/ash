@@ -9,7 +9,7 @@ const RefundPolicy = () => {
 
   return (
     <>
-      <SEO title="Refund Policy | AmitSolutionHub" description="Cancellation and refund policies for our premium mentorship and internship programs." />
+      <SEO title="Refund Policy | AmitSolutionHub" description="Cancellation and refund policies for our premium mentorship and certification courses." />
       <div className="min-h-screen pt-10 lg:pt-14 pb-20 px-4 md:px-8 bg-slate-50">
         <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100">
           <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-8 tracking-tight">Refund Policy</h1>
@@ -18,7 +18,7 @@ const RefundPolicy = () => {
           <div className="space-y-8 text-slate-600 leading-relaxed max-w-none">
             <section>
               <h2 className="text-xl font-bold text-slate-800 mb-4">1. General Overview</h2>
-              <p>At AmitSolutionHub, we strive to deliver extreme value in all our mentorship programs and internship cohorts. Because digital access to proprietary knowledge, curriculum blueprints, and live sessions cannot be easily "returned", we maintain a strict policy regarding refunds and cancellations.</p>
+              <p>At AmitSolutionHub, we strive to deliver extreme value in all our mentorship programs and certification course cohorts. Because digital access to proprietary knowledge, curriculum blueprints, and live sessions cannot be easily "returned", we maintain a strict policy regarding refunds and cancellations.</p>
             </section>
 
             <section>
@@ -30,8 +30,8 @@ const RefundPolicy = () => {
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-slate-800 mb-4">3. Technology Internships</h2>
-              <p>For standard coding and technology internships:</p>
+              <h2 className="text-xl font-bold text-slate-800 mb-4">3. Technology Certification Courses</h2>
+              <p>For standard coding and technology certification courses:</p>
               <ul className="list-disc pl-5 mt-3 space-y-2">
                 <li>Any administrative or registration fee paid is generally non-refundable once the batch induction is complete.</li>
                 <li>If an applicant is rejected by our selection committee, a full refund of any deposited fee will be initiated within 5-7 business days.</li>
