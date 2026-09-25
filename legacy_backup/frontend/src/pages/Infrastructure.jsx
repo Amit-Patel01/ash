@@ -232,7 +232,7 @@ export default function Infrastructure() {
             Structured Programs. Real Mentorship. Real Skills.
           </h1>
           <p className="text-lg leading-8 text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-            AmitSolutionHub is a skill-based internship and training company built to give learners hands-on, project-driven experience — not just theory.
+            Ashnexa Systems is a skill-based internship and training company built to give learners hands-on, project-driven experience — not just theory.
           </p>
           <p className="text-base leading-7 text-slate-500 dark:text-slate-400 max-w-3xl mx-auto mt-4">
             From Web Development to AI, Stock Market, and Emerging Technologies — every program is designed around real projects, mentor support, and industry-relevant outcomes.
@@ -353,7 +353,7 @@ export default function Infrastructure() {
               Program Highlights
             </h2>
             <p className="text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              What learners get in every AmitSolutionHub internship track
+              What learners get in every Ashnexa Systems internship track
             </p>
           </div>
 

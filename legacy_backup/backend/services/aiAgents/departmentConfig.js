@@ -252,7 +252,7 @@ const resolveProposal = async (proposalId, approved = true) => {
             courseName: proposal.proposedData?.courseName || 'Course Completion',
             issueDate: proposal.proposedData?.issueDate || new Date().toISOString().split('T')[0],
             status: 'valid',
-            verificationUrl: `https://www.amitsolutionhub.com/verify/${proposal.proposedData?.certificateId}`,
+            verificationUrl: `https://www.ashnexasystems.com/verify/${proposal.proposedData?.certificateId}`,
             createdAt: new Date()
           };
           await db.collection('certificates').insertOne(certDoc).catch(err => logger.warn(`Cert insert note: ${err.message}`));
@@ -286,15 +286,15 @@ const resolveProposal = async (proposalId, approved = true) => {
         }
 
         if (recipients.length === 0) {
-          recipients = [process.env.ADMIN_EMAIL || 'admin@amitsolutionhub.com'];
+          recipients = [process.env.ADMIN_EMAIL || 'admin@Ashnexa Systems.com'];
         }
 
         const { sendEmail, emailTemplate } = require('../emailService');
         const { generateUnsubscribeToken } = require('../../routes/unsubscribe');
-        const subject = proposal.proposedData?.emailSubject || proposal.title || 'Announcement from Amit Solution Hub';
+        const subject = proposal.proposedData?.emailSubject || proposal.title || 'Announcement from Ashnexa Systems';
         const rawContent = proposal.proposedData?.aiResponse || proposal.details || 'Official Announcement';
         const emailContent = typeof rawContent === 'string' ? rawContent : JSON.stringify(rawContent, null, 2);
-        const baseUrl = process.env.BACKEND_URL || process.env.PUBLIC_URL || 'https://api.amitsolutionhub.com';
+        const baseUrl = process.env.BACKEND_URL || process.env.PUBLIC_URL || 'https://api.Ashnexa Systems.com';
 
         // Markdown to HTML helper
         const markdownToHtml = (text) => {
@@ -327,8 +327,8 @@ const resolveProposal = async (proposalId, approved = true) => {
                 const formattedHtml = emailTemplate(
                   subject,
                   htmlBody,
-                  'Visit Amit Solution Hub',
-                  'https://www.amitsolutionhub.com',
+                  'Visit Ashnexa Systems',
+                  'https://www.ashnexasystems.com',
                   '#2563eb',
                   null,
                   unsubUrl

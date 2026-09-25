@@ -231,7 +231,7 @@ Respond with ONLY the selected role name string in quotation marks. Do not write
           id: aiMessageId,
           senderId: "solutionhub-ai",
           senderName: "SolutionHub AI",
-          senderEmail: "support@amitsolutionhub.com",
+          senderEmail: "support@Ashnexa Systems.com",
           text: aiReplyText,
           imageUrl: null,
           timestamp: new Date().toISOString(),

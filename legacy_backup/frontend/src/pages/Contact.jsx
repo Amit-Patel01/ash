@@ -15,8 +15,8 @@ const contactInfo = [
       </svg>
     ),
     label: 'Email',
-    value: 'support@amitsolutionhub.com',
-    href: 'mailto:support@amitsolutionhub.com',
+    value: 'support@Ashnexa Systems.com',
+    href: 'mailto:support@Ashnexa Systems.com',
     color: 'text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-500/10',
   },
   {
@@ -79,8 +79,8 @@ const Contact = () => {
   return (
     <>
       <SEO
-        title="Contact | AmitSolutionHub"
-        description="Get in touch with AmitSolutionHub for web development, technical support, and custom project inquiries."
+        title="Contact | Ashnexa Systems"
+        description="Get in touch with Ashnexa Systems for web development, technical support, and custom project inquiries."
       />
 
       <PublicPageShell
@@ -179,7 +179,7 @@ const Contact = () => {
               <div className="rounded-2xl border border-slate-200/60 bg-slate-50/80 p-5 dark:border-white/8 dark:bg-white/3">
                 <div className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-3">Quick links</div>
                 <div className="flex flex-wrap gap-2">
-                  <a href="mailto:support@amitsolutionhub.com" className="rounded-full border border-slate-200/80 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-indigo-200 hover:text-indigo-700 transition-all dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10">
+                  <a href="mailto:support@Ashnexa Systems.com" className="rounded-full border border-slate-200/80 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-indigo-200 hover:text-indigo-700 transition-all dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10">
                     📧 Email Support
                   </a>
                   <a href="tel:+917874248481" className="rounded-full border border-slate-200/80 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-emerald-200 hover:text-emerald-700 transition-all dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10">

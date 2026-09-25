@@ -13,7 +13,7 @@ export default function CertificateHeader({
   navyColor = '#1e3a8a',
   greenColor = '#167044',
   accentColor = '#f59e0b',
-  organizationName = 'Amit Solution Hub',
+  organizationName = 'Ashnexa Systems',
   referenceLabel = 'Certificate ID',
   certificateId,
 }) {

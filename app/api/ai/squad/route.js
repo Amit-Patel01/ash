@@ -77,13 +77,13 @@ export async function POST(request) {
     let userPrompt = '';
 
     if (action === 'site_health_audit') {
-      systemContext = `You are AGT-01 (Web Sentinel Agent for Amit Solution Hub). Audit website health, database status, course catalog integrity, and certificate verification readiness. Give a clean, structured executive report.`;
-      userPrompt = `Perform a comprehensive health check audit for Amit Solution Hub website (amitsolutionhub.com). Check course catalog, certificate QR verification, and student portals.`;
+      systemContext = `You are AGT-01 (Web Sentinel Agent for Ashnexa Systems). Audit website health, database status, course catalog integrity, and certificate verification readiness. Give a clean, structured executive report.`;
+      userPrompt = `Perform a comprehensive health check audit for Ashnexa Systems website (Ashnexa Systems.com). Check course catalog, certificate QR verification, and student portals.`;
     } else if (action === 'generate_marketing_campaign') {
-      systemContext = `You are AGT-02 (Marketing & Course Growth Strategist for Amit Solution Hub). Generate high-converting marketing posts and social media headlines to promote Amit Solution Hub's Full-Stack Web Development, AI & ML, Cyber Security, and Python certification courses.`;
-      userPrompt = customPrompt || `Create 3 exciting marketing announcements for our top tech certification courses and project source code repository. Include call to action for amitsolutionhub.com.`;
+      systemContext = `You are AGT-02 (Marketing & Course Growth Strategist for Ashnexa Systems). Generate high-converting marketing posts and social media headlines to promote Ashnexa Systems's Full-Stack Web Development, AI & ML, Cyber Security, and Python certification courses.`;
+      userPrompt = customPrompt || `Create 3 exciting marketing announcements for our top tech certification courses and project source code repository. Include call to action for Ashnexa Systems.com.`;
     } else {
-      systemContext = `You are an Autonomous AI Agent for Amit Solution Hub (amitsolutionhub.com). Perform the requested department operation concisely and professionally.`;
+      systemContext = `You are an Autonomous AI Agent for Ashnexa Systems (Ashnexa Systems.com). Perform the requested department operation concisely and professionally.`;
       userPrompt = customPrompt || `Run routine diagnostic check for department ${agentId || 'general'}.`;
     }
 

@@ -16,8 +16,8 @@ export default function CertificateFooter({
   issueDate,
   issuerName,
   issuerRole,
-  organizationName = 'Amit Solution Hub',
-  supportEmail = 'support@amitsolutionhub.com',
+  organizationName = 'Ashnexa Systems',
+  supportEmail = 'support@Ashnexa Systems.com',
   navyColor = '#1e3a8a',
 }) {
   const isMentorMode = type === 'mentor' || Boolean(mentorSignatureUrl) || Boolean(mentorName)
@@ -169,7 +169,7 @@ export default function CertificateFooter({
           <div className="mt-[0.55cqw] h-px w-full" style={{ backgroundColor: dividerSoft }} />
           <div className="mt-[0.65cqw] space-y-[0.2cqw]">
             <p className="font-semibold" style={{ fontSize: 'clamp(7.5px, 0.82cqw, 11px)', letterSpacing: 0, overflowWrap: 'anywhere', color: hexToRgba(navyColor, 0.65) }}>
-              www.amitsolutionhub.com
+              www.ashnexasystems.com
             </p>
             <p className="font-semibold" style={{ fontSize: 'clamp(7.5px, 0.82cqw, 11px)', letterSpacing: 0, overflowWrap: 'anywhere', color: hexToRgba(navyColor, 0.65) }}>
               {supportEmail}

@@ -128,10 +128,10 @@ export default function CoursesPage() {
   return (
     <>
       <Helmet>
-        <title>Courses | Amit Solution Hub</title>
+        <title>Courses | Ashnexa Systems</title>
         <meta
           name="description"
-          content="Browse Amit Solution Hub courses and webinars with industry-focused learning paths, mentor support, and verifiable outcomes."
+          content="Browse Ashnexa Systems courses and webinars with industry-focused learning paths, mentor support, and verifiable outcomes."
         />
       </Helmet>
       <div className="pt-8 lg:pt-12">

@@ -8,7 +8,7 @@ import { useStore } from '../store/StoreContext'
 import FormerStaffModal from '../components/FormerStaffModal'
 import { Sparkles, ArrowRight, Lock, Mail, Eye, EyeOff, ShieldCheck } from 'lucide-react'
 
-const FAILED_KEY = 'solutionhub:login_fails'
+const FAILED_KEY = 'ashnexa:login_fails'
 
 function getStoredFails() {
   try { return Number(sessionStorage.getItem(FAILED_KEY)) || 0 } catch { return 0 }
@@ -184,7 +184,7 @@ export default function LoginPage() {
           {/* Background Illustration with Parallax Glow */}
           <img
             src="/login_hero_banner.png"
-            alt="Amit Solution Hub Technology"
+            alt="Ashnexa Systems"
             className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.9] contrast-[1.1] transition-transform duration-700 group-hover:scale-105"
           />
           
@@ -199,7 +199,7 @@ export default function LoginPage() {
               </div>
               <div>
                 <h2 className="text-sm font-black tracking-tight text-white leading-none">
-                  Amit Solution Hub
+                  Ashnexa Systems
                 </h2>
                 <span className="text-[9px] font-extrabold text-indigo-400 uppercase tracking-widest">Tech &amp; Learning Portal</span>
               </div>
@@ -217,7 +217,7 @@ export default function LoginPage() {
           <div className="relative z-10 text-white mt-auto pt-8">
             <div className="bg-slate-950/80 backdrop-blur-xl p-6 sm:p-8 rounded-3xl border border-white/15 shadow-2xl space-y-3">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/20 text-indigo-300 text-[11px] font-black uppercase tracking-wider border border-indigo-500/40 shadow-inner">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" /> MSME Registered Organization
+                <Sparkles className="w-3.5 h-3.5 text-indigo-400" /> Verified Learning Platform
               </div>
               <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight text-white">
                 <span className="text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">Learn Skills. Build Projects.</span> <br />
@@ -374,7 +374,7 @@ export default function LoginPage() {
 
           {/* Bottom Footer */}
           <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
-            <span>© {new Date().getFullYear()} Amit Solution Hub Technology Pvt Ltd</span>
+            <span>© {new Date().getFullYear()} Ashnexa Systems Pvt Ltd</span>
             <Link href="/contact" className="hover:text-indigo-600 transition-colors">Support</Link>
           </div>
 

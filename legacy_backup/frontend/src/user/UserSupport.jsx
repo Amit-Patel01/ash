@@ -36,7 +36,7 @@ export default function UserSupport() {
           const chatId = await getOrCreateChat(
             supportAgent.uid || supportAgent.id,
             supportAgent.displayName || supportAgent.name || 'Support Team',
-            supportAgent.email || 'support@amitsolutionhub.com',
+            supportAgent.email || 'support@Ashnexa Systems.com',
             supportAgent.role || 'admin'
           )
           if (chatId) {

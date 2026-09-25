@@ -3,6 +3,7 @@ import { useState } from 'react'
 import SEO from '../components/SEO'
 import PublicPageShell, { PublicGlassCard, PublicSection, PublicSectionHeading } from '../components/public/PublicPageShell'
 import { api } from '../config/api'
+import AshnexaRobot from '../components/robot/AshnexaRobot'
 
 const inputClasses =
   'w-full rounded-2xl border bg-white/80 px-5 py-4 text-sm text-slate-700 outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 focus:bg-white dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:placeholder:text-slate-500 dark:focus:border-indigo-500 dark:focus:ring-indigo-500/10 dark:focus:bg-white/8 border-slate-200/80 font-medium'
@@ -15,8 +16,8 @@ const contactInfo = [
       </svg>
     ),
     label: 'Email',
-    value: 'support@amitsolutionhub.com',
-    href: 'mailto:support@amitsolutionhub.com',
+    value: 'support@Ashnexa Systems.com',
+    href: 'mailto:support@Ashnexa Systems.com',
     color: 'text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-500/10' },
   {
     icon: (
@@ -74,8 +75,8 @@ const Contact = () => {
   return (
     <>
       <SEO
-        title="Contact | AmitSolutionHub"
-        description="Get in touch with AmitSolutionHub for web development, technical support, and custom project inquiries."
+        title="Contact | Ashnexa Systems"
+        description="Get in touch with Ashnexa Systems for web development, technical support, and custom project inquiries."
       />
 
       <PublicPageShell
@@ -94,7 +95,7 @@ const Contact = () => {
           { label: 'Chat with Team', to: '/chat' },
           { label: 'Call Support', href: 'tel:+917874248481', variant: 'secondary' },
         ]}
-        pills={['24/7 Response', 'MSME Registered', 'India-Based Team', 'Professional Support']}
+        pills={['24/7 Response', 'Verified Solutions', 'India-Based Team', 'Professional Support']}
         stats={[
           { value: '24h', label: 'Response Time' },
           { value: '< 1 Day', label: 'Typical Reply' },
@@ -142,6 +143,11 @@ const Contact = () => {
                 Expect a reply within 24 hours. For urgent support, call us directly.
               </p>
             </div>
+
+            {/* 24/7 AI Support Desk Robot */}
+            <div className="rounded-2xl border border-indigo-100 dark:border-indigo-900/60 bg-white/80 dark:bg-white/4 p-4 shadow-sm flex justify-center">
+              <AshnexaRobot action="contact-support" />
+            </div>
           </div>
         }
       >
@@ -174,7 +180,7 @@ const Contact = () => {
               <div className="rounded-2xl border border-slate-200/60 bg-slate-50/80 p-5 dark:border-white/8 dark:bg-white/3">
                 <div className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-3">Quick links</div>
                 <div className="flex flex-wrap gap-2">
-                  <a href="mailto:support@amitsolutionhub.com" className="rounded-full border border-slate-200/80 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-indigo-200 hover:text-indigo-700 transition-all dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10">
+                  <a href="mailto:support@Ashnexa Systems.com" className="rounded-full border border-slate-200/80 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-indigo-200 hover:text-indigo-700 transition-all dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10">
                     📧 Email Support
                   </a>
                   <a href="tel:+917874248481" className="rounded-full border border-slate-200/80 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-emerald-200 hover:text-emerald-700 transition-all dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10">

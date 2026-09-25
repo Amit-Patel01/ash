@@ -262,7 +262,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
           finalAmount: payableAmount,
           couponCode: appliedCouponCode,
           couponId: appliedPricing?.couponId || '',
-          instructor: course.instructor || '',
+          instructor: typeof course.instructor === 'object' ? (course.instructor?.name || '') : (course.instructor || ''),
           assignedEmployeeId: course.assignedEmployeeId || '',
           planId: actualPlanId || course.id || '',
           planLabel: actualPlanLabel })
@@ -300,7 +300,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
           key: (typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID : null) || 'rzp_live_SXgcywjUbXwb34',
           amount: order.amount,
           currency: order.currency,
-          name: "Amit Solution Hub",
+          name: "Ashnexa Systems",
           description: `Enrollment for ${course.title}`,
           order_id: order.id,
           handler: async (response) => {
@@ -340,7 +340,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
                   finalAmount: finalAmt,
                   couponCode: cCode || '',
                   couponId: pricing?.couponId || '',
-                  instructor: course.instructor || '',
+                  instructor: typeof course.instructor === 'object' ? (course.instructor?.name || '') : (course.instructor || ''),
                   assignedEmployeeId: course.assignedEmployeeId || '',
                   paymentId: response.razorpay_payment_id,
                   planId: actualPlanId || course.id || '',

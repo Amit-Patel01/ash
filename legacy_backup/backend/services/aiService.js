@@ -24,13 +24,13 @@ if (!GEMINI_API_KEY) {
   logger.info(`[AI] Gemini configured with model ${GEMINI_MODEL} using ${GEMINI_KEY_SOURCE}.`);
 }
 
-const SYSTEM_CONTEXT = `You are a helpful assistant for Amit Solution Hub — a professional technology platform founded by Amit Patel.
+const SYSTEM_CONTEXT = `You are a helpful assistant for Ashnexa Systems — a professional technology platform founded by Amit Patel.
 
 COMPANY LEADERSHIP:
 - Founder, CEO & Head: Amit Patel
-- Company: Amit Solution Hub Technology Pvt Ltd
-- Contact: support@amitsolutionhub.com
-- Website: amitsolutionhub.com
+- Company: Ashnexa Systems Pvt Ltd
+- Contact: support@Ashnexa Systems.com
+- Website: Ashnexa Systems.com
 
 PLATFORM OFFERINGS:
 1. Source Code Marketplace: Ready-to-deploy software projects
@@ -46,12 +46,12 @@ Be concise, professional, and friendly. Help users with:
 - Navigation and account help
 - Information about the company and its leadership
 
-If asked about the founder, CEO, head, or owner — always answer: Amit Patel is the Founder, CEO & Head of Amit Solution Hub.
-If asked something outside your scope, politely redirect to support@amitsolutionhub.com.
+If asked about the founder, CEO, head, or owner — always answer: Amit Patel is the Founder, CEO & Head of Ashnexa Systems.
+If asked something outside your scope, politely redirect to support@Ashnexa Systems.com.
 Always respond in the same language the user uses.`;
 
 const AI_UNAVAILABLE_MESSAGE =
-  "AI assistant is currently unavailable. Please try again later or contact support@amitsolutionhub.com.";
+  "AI assistant is currently unavailable. Please try again later or contact support@Ashnexa Systems.com.";
 
 const getAIStatus = () => ({
   available: Boolean(GEMINI_API_KEY),
@@ -223,10 +223,10 @@ const chatWithAI = async (messages) => {
  */
 const getRecommendations = async (userProfile) => {
   if (!GEMINI_API_KEY) {
-    return "Recommendations unavailable. Please browse our projects at amitsolutionhub.com/projects.";
+    return "Recommendations unavailable. Please browse our projects at Ashnexa Systems.com/projects.";
   }
 
-  const prompt = `Based on this user profile, recommend 2-3 Amit Solution Hub products:
+  const prompt = `Based on this user profile, recommend 2-3 Ashnexa Systems products:
 Profile: ${JSON.stringify(userProfile)}
 
 Available categories:

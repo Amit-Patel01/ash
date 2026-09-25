@@ -28,6 +28,6 @@ export default function robots() {
         allow: '/',
       },
     ],
-    sitemap: 'https://www.amitsolutionhub.com/sitemap.xml',
+    sitemap: 'https://www.ashnexasystems.com/sitemap.xml',
   };
 }

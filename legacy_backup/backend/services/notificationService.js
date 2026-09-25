@@ -6,7 +6,7 @@ const {
 } = require("./firebaseService");
 const { logger } = require("../logger");
 
-const CUSTOMER_DASHBOARD_URL = "https://www.amitsolutionhub.com/customer";
+const CUSTOMER_DASHBOARD_URL = "https://www.ashnexasystems.com/customer";
 
 const normalizeText = (value) => String(value || "").trim().toLowerCase();
 const compactText = (value) => normalizeText(value).replace(/[^a-z0-9]/g, "");

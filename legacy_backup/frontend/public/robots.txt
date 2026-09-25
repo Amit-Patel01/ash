@@ -1,5 +1,5 @@
-# Amit Solution Hub — robots.txt
-# https://www.amitsolutionhub.com/robots.txt
+﻿# Ashnexa Systems — robots.txt
+# https://www.Ashnexa Systems.com/robots.txt
 
 # Allow all standard web crawlers
 User-agent: *
@@ -51,7 +51,7 @@ User-agent: ia_archiver
 Allow: /
 
 # Sitemap
-Sitemap: https://www.amitsolutionhub.com/sitemap.xml
+Sitemap: https://www.Ashnexa Systems.com/sitemap.xml
 
 # LLM Context File
-# https://www.amitsolutionhub.com/llms.txt
+# https://www.Ashnexa Systems.com/llms.txt

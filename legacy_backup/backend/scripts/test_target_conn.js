@@ -1,10 +1,10 @@
 const { MongoClient } = require("mongodb");
 
 const connectionStrings = [
-  "mongodb+srv://Amitsolution_db:djJVMdx8nzY6mcZB@amitsolutionhub.t8phtbl.mongodb.net/solutionhub",
-  "mongodb+srv://Amitsolution_db:djJVMdx8nzY6mcZB@amitsolutionhub.t8phtbl.mongodb.net/solutionhub?retryWrites=true&w=majority",
-  "mongodb+srv://Amitsolution_db:djJVMdx8nzY6mcZB@amitsolutionhub.t8phtbl.mongodb.net/solutionhub?tls=true&tlsAllowInvalidCertificates=true",
-  "mongodb+srv://Amitsolution_db:djJVMdx8nzY6mcZB@amitsolutionhub.t8phtbl.mongodb.net/solutionhub?directConnection=false"
+  "mongodb+srv://Amitsolution_db:djJVMdx8nzY6mcZB@Ashnexa Systems.t8phtbl.mongodb.net/solutionhub",
+  "mongodb+srv://Amitsolution_db:djJVMdx8nzY6mcZB@Ashnexa Systems.t8phtbl.mongodb.net/solutionhub?retryWrites=true&w=majority",
+  "mongodb+srv://Amitsolution_db:djJVMdx8nzY6mcZB@Ashnexa Systems.t8phtbl.mongodb.net/solutionhub?tls=true&tlsAllowInvalidCertificates=true",
+  "mongodb+srv://Amitsolution_db:djJVMdx8nzY6mcZB@Ashnexa Systems.t8phtbl.mongodb.net/solutionhub?directConnection=false"
 ];
 
 async function testConnections() {

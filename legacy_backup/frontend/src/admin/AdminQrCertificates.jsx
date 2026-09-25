@@ -25,7 +25,7 @@ const CERTIFICATE_TYPES = [
   {
     value: AICTE_INTERNSHIP_CERTIFICATE_TYPE,
     label: 'Completion Certificate',
-    defaultText: 'This is to certify that the above-named candidate has successfully completed the AICTE-approved internship program conducted by Amit Solution Hub. The internship included guided learning, assigned project work, practical training, and performance evaluation with verified participation.',
+    defaultText: 'This is to certify that the above-named candidate has successfully completed the AICTE-approved internship program conducted by Ashnexa Systems. The internship included guided learning, assigned project work, practical training, and performance evaluation with verified participation.',
   },
   {
     value: 'LOR',
@@ -40,12 +40,12 @@ const CERTIFICATE_TYPES = [
   {
     value: 'Appreciation',
     label: 'Appreciation Certificate',
-    defaultText: 'This certificate is presented in appreciation of the holder for valuable contribution, sincerity, and professional attitude. The effort and commitment shown during the engagement are gratefully acknowledged by Amit Solution Hub.',
+    defaultText: 'This certificate is presented in appreciation of the holder for valuable contribution, sincerity, and professional attitude. The effort and commitment shown during the engagement are gratefully acknowledged by Ashnexa Systems.',
   },
   {
     value: 'Offer Letter',
     label: 'Offer Letter',
-    defaultText: 'We are delighted to welcome you for the internship in Web Development at our organization. This internship is observed by Amit Solution Hub as being a learning opportunity for you, spanning a duration of 1 month.\n\nIn essence, your internship will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application of the knowledge you gain as an intern. Our team is confident that you will acknowledge your obligation to perform all work allocated to you to the best of your ability within lawful and reasonable direction given to you.\n\nWe look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful internship program experience.',
+    defaultText: 'We are delighted to welcome you for the internship in Web Development at our organization. This internship is observed by Ashnexa Systems as being a learning opportunity for you, spanning a duration of 1 month.\n\nIn essence, your internship will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application of the knowledge you gain as an intern. Our team is confident that you will acknowledge your obligation to perform all work allocated to you to the best of your ability within lawful and reasonable direction given to you.\n\nWe look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful internship program experience.',
   },
   {
     value: 'Other',
@@ -118,7 +118,7 @@ const buildVerifyUrl = (certificateId, fallback = '') => {
 
   const hostname = window.location.hostname
   const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
-  const frontendOrigin = isLocalhost ? window.location.origin : 'https://www.amitsolutionhub.com'
+  const frontendOrigin = isLocalhost ? window.location.origin : 'https://www.ashnexasystems.com'
 
   return `${frontendOrigin}/verify/${encodeURIComponent(certificateId)}`
 }

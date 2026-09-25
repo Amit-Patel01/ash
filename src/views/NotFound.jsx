@@ -128,7 +128,7 @@ export default function NotFound() {
             </span>
           </div>
           <span style={{ fontSize:'0.65rem', fontFamily:"'JetBrains Mono',monospace", color:'#475569' }}>
-            HTTP 404 • amitsolutionhub.com
+            HTTP 404 • Ashnexa Systems.com
           </span>
         </div>
 
@@ -270,8 +270,8 @@ export default function NotFound() {
         </div>
 
         <p style={{ textAlign:'center', marginTop:'1.25rem', fontSize:'0.7rem', color:'#334155', fontWeight:500 }}>
-          © 2026 Amit Solution Hub Technology Pvt Ltd &nbsp;·&nbsp;
-          <a href="mailto:support@amitsolutionhub.com" style={{ color:'#475569', textDecoration:'none' }}>
+          © 2026 Ashnexa Systems Pvt Ltd &nbsp;·&nbsp;
+          <a href="mailto:support@Ashnexa Systems.com" style={{ color:'#475569', textDecoration:'none' }}>
             Report an issue
           </a>
         </p>

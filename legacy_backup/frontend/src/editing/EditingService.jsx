@@ -15,7 +15,7 @@ const EditingService = () => {
 
   return (
     <>
-      <SEO title="Video & Photo Editing | AmitSolutionHub" 
+      <SEO title="Video & Photo Editing | Ashnexa Systems" 
            description="Professional video editing, photo retouching, motion graphics, and brand identity design services." />
       
       <div className="pt-[140px] md:pt-[180px] pb-20 min-h-screen relative">

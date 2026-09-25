@@ -46,7 +46,7 @@ const getSubscribedEmails = async (db) => {
  * Build a secure personalized unsubscribe URL for each recipient
  */
 const buildUnsubscribeUrl = (email) => {
-  const baseUrl = process.env.BACKEND_URL || process.env.PUBLIC_URL || 'https://api.amitsolutionhub.com';
+  const baseUrl = process.env.BACKEND_URL || process.env.PUBLIC_URL || 'https://api.Ashnexa Systems.com';
   const token = generateUnsubscribeToken(email);
   return `${baseUrl}/api/unsubscribe?email=${encodeURIComponent(email)}&token=${token}`;
 };
@@ -155,7 +155,7 @@ const runSupportScan = async () => {
     for (const msg of unreadMessages) {
       const aiDraft = await dispatchDepartmentTask({
         department: 'support',
-        prompt: `Draft a professional, empathetic reply to this student message:\n\nFrom: ${msg.firstName || msg.name || 'Student'}\nMessage: "${msg.message || msg.content || 'No message'}"\n\nWrite a helpful response from the AmitSolutionHub team.`
+        prompt: `Draft a professional, empathetic reply to this student message:\n\nFrom: ${msg.firstName || msg.name || 'Student'}\nMessage: "${msg.message || msg.content || 'No message'}"\n\nWrite a helpful response from the Ashnexa Systems team.`
       }).catch(() => null);
 
       if (aiDraft) {
@@ -204,7 +204,7 @@ const runAbandonedCartRecovery = async () => {
           emailSubject: '🎓 Your Learning Journey Awaits — Exclusive Offer Inside!',
           targetUserCount: abandonedUsers.length,
           targetEmails: abandonedUsers.map(u => u.email).filter(Boolean),
-          aiResponse: `Dear Student,\n\nWe noticed you haven't explored our courses yet. Get started today with an exclusive 20% discount using code: WELCOME20.\n\nVisit AmitSolutionHub.com to discover 50+ premium projects and courses.\n\nWarm regards,\nThe AmitSolutionHub Team`
+          aiResponse: `Dear Student,\n\nWe noticed you haven't explored our courses yet. Get started today with an exclusive 20% discount using code: WELCOME20.\n\nVisit Ashnexa Systems.com to discover 50+ premium projects and courses.\n\nWarm regards,\nThe Ashnexa Systems Team`
         }
       );
 
@@ -255,7 +255,7 @@ const runDailyNewsletter = async (session = 'evening') => {
 
     const aiContent = await generateText({
       contents: [{ role: 'user', parts: [{ text:
-        `Write a daily ${session} newsletter email for AmitSolutionHub — India's premium tech learning platform.
+        `Write a daily ${session} newsletter email for Ashnexa Systems — India's premium tech learning platform.
 
 Tone: ${tone}
 Date: ${new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
@@ -272,20 +272,20 @@ Write a short, powerful email (150-200 words) with:
 1. Personalized greeting (use "Dear Student" or "Hello Learner")
 2. One practical coding/career tip relevant to today
 3. Highlight one course or project with its real benefit
-${offerLine ? '4. Mention the active discount offer' : '4. Encourage visiting amitsolutionhub.com'}
+${offerLine ? '4. Mention the active discount offer' : '4. Encourage visiting Ashnexa Systems.com'}
 5. Motivational sign-off from Amit Patel (Founder)
 
 Format ONLY with HTML <p> tags. NO markdown. Professional yet warm.`
       }] }],
       temperature: 0.75,
       maxOutputTokens: 600
-    }).catch(() => `<p>Dear Student,</p><p>Your learning journey continues today! Explore our latest courses and projects at <a href="https://www.amitsolutionhub.com" style="color:#2563eb;font-weight:700;">AmitSolutionHub.com</a>.</p><p>${offerLine}</p><p>Keep building. Keep growing.</p><p><strong>— Amit Patel, Founder</strong></p>`);
+    }).catch(() => `<p>Dear Student,</p><p>Your learning journey continues today! Explore our latest courses and projects at <a href="https://www.ashnexasystems.com" style="color:#2563eb;font-weight:700;">Ashnexa Systems.com</a>.</p><p>${offerLine}</p><p>Keep building. Keep growing.</p><p><strong>— Amit Patel, Founder</strong></p>`);
 
     // 4. Build subject based on session
     const dateStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long' });
     const subject = session === 'morning'
       ? `🌅 Good Morning! Your Daily Learning Boost — ${dateStr}`
-      : `🚀 AmitSolutionHub Evening Update — ${dateStr}`;
+      : `🚀 Ashnexa Systems Evening Update — ${dateStr}`;
 
     // 5. Send to every subscribed user with personalized unsubscribe link (parallel batches of 10)
     let sentCount = 0, failCount = 0;
@@ -304,7 +304,7 @@ Format ONLY with HTML <p> tags. NO markdown. Professional yet warm.`
             subject,
             contentWithOffer.replace(/\n/g, '<br/>'),
             session === 'morning' ? 'Start Learning Today →' : 'Explore All Courses →',
-            'https://www.amitsolutionhub.com/courses',
+            'https://www.ashnexasystems.com/courses',
             session === 'morning' ? '#f59e0b' : '#2563eb',
             session === 'morning' ? '🌅 Morning Edition' : '🌙 Evening Edition',
             unsubUrl
@@ -393,9 +393,9 @@ const runStudentInactivityAlert = async () => {
         'marketing_email_broadcast',
         `SupportAgent detected ${inactiveStudents.length} enrolled students who haven't logged in for 14+ days. Proposing a friendly check-in & progress reminder broadcast.`,
         {
-          emailSubject: '👋 We miss you on AmitSolutionHub — Resume your learning today!',
+          emailSubject: '👋 We miss you on Ashnexa Systems — Resume your learning today!',
           recipientCount: inactiveStudents.length,
-          aiResponse: `Hi Student,\n\nWe noticed you haven't logged in for a while. Your learning progress is waiting for you!\n\nLog in today to continue your courses and work towards your verified certificate.\n\nHappy Learning,\nAmitSolutionHub Mentorship Team`
+          aiResponse: `Hi Student,\n\nWe noticed you haven't logged in for a while. Your learning progress is waiting for you!\n\nLog in today to continue your courses and work towards your verified certificate.\n\nHappy Learning,\nAshnexa Systems Mentorship Team`
         }
       );
       logger.info(`[Scheduler] SupportAgent: Proposed re-engagement for ${inactiveStudents.length} inactive students.`);
@@ -420,7 +420,7 @@ const runMarketingAnalysis = async () => {
 
     await dispatchDepartmentTask({
       department: 'marketing',
-      prompt: `Generate a weekly marketing strategy for AmitSolutionHub with ${userCount} users, ${projectCount} source code projects, and ${courseCount} courses. Suggest 3 specific email broadcast topics, 2 new project ideas to list, and 1 promotional campaign for this week.`
+      prompt: `Generate a weekly marketing strategy for Ashnexa Systems with ${userCount} users, ${projectCount} source code projects, and ${courseCount} courses. Suggest 3 specific email broadcast topics, 2 new project ideas to list, and 1 promotional campaign for this week.`
     }).catch(() => {});
 
     logger.info('[Scheduler] MarketingAgent: Weekly marketing analysis completed.');

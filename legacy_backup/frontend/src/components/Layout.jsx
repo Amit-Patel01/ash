@@ -70,7 +70,7 @@ const Layout = ({ children }) => {
       {/* WhatsApp Floating Button */}
       {!isPrivateRoute && !hideNavbar && (
         <a
-          href="https://wa.me/917874248481?text=Hi%2C%20I%20visited%20AmitSolutionHub%20and%20would%20like%20to%20know%20more!"
+          href="https://wa.me/917874248481?text=Hi%2C%20I%20visited%20Ashnexa Systems%20and%20would%20like%20to%20know%20more!"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Chat on WhatsApp"

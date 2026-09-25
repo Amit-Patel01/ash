@@ -72,7 +72,7 @@ const getFrontendUrl = (req) => {
   }
   
   // Production default
-  return 'https://www.amitsolutionhub.com';
+  return 'https://www.ashnexasystems.com';
 };
 
 const buildVerifyUrl = (req, certId) => {

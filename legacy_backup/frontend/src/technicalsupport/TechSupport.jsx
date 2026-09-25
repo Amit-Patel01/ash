@@ -15,7 +15,7 @@ const TechSupport = () => {
 
   return (
     <>
-      <SEO title="Technical Support | AmitSolutionHub" 
+      <SEO title="Technical Support | Ashnexa Systems" 
            description="24/7 technical support, remote consultation, and network setup services." />
       
       <div className="pt-[140px] md:pt-[180px] pb-20 min-h-screen relative">

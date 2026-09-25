@@ -16,7 +16,7 @@ const RepairService = () => {
 
   return (
     <>
-      <SEO title="PC & Laptop Repair | AmitSolutionHub" 
+      <SEO title="PC & Laptop Repair | Ashnexa Systems" 
            description="Fast, reliable, and affordable computer repair and optimization services." />
       
       <div className="pt-[140px] md:pt-[180px] pb-20 min-h-screen relative">

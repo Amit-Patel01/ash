@@ -22,7 +22,7 @@ function ComposeForm({ onSend }) {
         body: JSON.stringify({
           firstName: form.name || 'User',
           email: form.email,
-          subject: form.subject || 'Message from Amit Solution Hub',
+          subject: form.subject || 'Message from Ashnexa Systems',
           message: form.message
         })
       })

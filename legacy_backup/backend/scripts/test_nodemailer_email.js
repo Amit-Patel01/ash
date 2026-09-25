@@ -24,7 +24,7 @@ async function testNodemailer() {
       </div>
     `,
     "Open SolutionHub Dashboard",
-    "https://www.amitsolutionhub.com"
+    "https://www.ashnexasystems.com"
   );
 
   const result = await sendEmail({

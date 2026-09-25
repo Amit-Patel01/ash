@@ -48,7 +48,6 @@ const navGroups = [
   {
     label: 'Inbox & Requests',
     items: [
-      { path: '/admin/ashx-waitlist', label: 'ASHX OS Waitlist', icon: 'robot' },
       { path: '/admin/messages', label: 'Messages', icon: 'mail', permission: 'can_manage_messages' },
       { path: '/admin/account-requests', label: 'Account Requests', icon: 'userPlus', permission: 'can_approve_accounts' },
       { path: '/admin/service-requests', label: 'Service Requests', icon: 'clipboardList', permission: 'can_manage_service_requests' },
@@ -210,7 +209,7 @@ export default function AdminLayout({ children, onLogout }) {
 
   const avatarUrl = userProfile?.avatar || userProfile?.photoURL || currentUser?.photoURL || currentUser?.avatar || ''
   const displayName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Admin'
-  const displayEmail = currentUser?.email || 'admin@amitsolutionhub.com'
+  const displayEmail = currentUser?.email || 'admin@Ashnexa Systems.com'
   const avatar = displayName.charAt(0).toUpperCase()
   const isAdminRole = normalizeUserRole(currentUser?.role || userProfile?.role || '') === 'admin'
 
@@ -295,12 +294,12 @@ export default function AdminLayout({ children, onLogout }) {
               </button>
 
               <Link href="/admin" className="flex items-center gap-2.5 shrink-0 group">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-slate-900 border border-slate-700/80 p-1 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300 shrink-0">
-                  <img src="/brand-logo.png" alt="Amit Solution Hub Logo" className="w-full h-full object-contain" />
+                <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shrink-0">
+                  <img src="/brand-logo.png" alt="Ashnexa Systems Logo" className="w-full h-full object-contain" />
                 </div>
                 <div className="flex flex-col justify-center">
                   <h1 className="text-sm sm:text-base font-black tracking-tight text-slate-900 leading-tight whitespace-nowrap flex items-center gap-1">
-                    <span>Amit Solution Hub</span>
+                    <span>Ashnexa Systems</span>
                     <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">AI</span>
                   </h1>
                   <span className="text-[9px] sm:text-[10px] font-mono font-bold text-slate-400 tracking-wider uppercase whitespace-nowrap block leading-none mt-0.5">Admin Workspace</span>
@@ -438,9 +437,9 @@ export default function AdminLayout({ children, onLogout }) {
                       <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
                         {accountRequests.filter(r => r.status === 'pending').length > 0 && (
                           <Link href="/admin/account-requests" onClick={() => setShowNotifications(false)} className="flex items-center gap-3 p-3 hover:bg-slate-50">
-                            <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/80 p-1 flex items-center justify-center text-white shadow-md">
-                <img src="/brand-logo.png" alt="Amit Solution Hub Logo" className="w-full h-full object-contain" />
-              </div>
+                            <div className="w-9 h-9 flex items-center justify-center shrink-0">
+                              <img src="/brand-logo.png" alt="Ashnexa Systems Logo" className="w-full h-full object-contain" />
+                            </div>
                             <div>
                               <p className="text-xs font-bold text-slate-900">Account Requests</p>
                               <p className="text-[10px] text-slate-500">{accountRequests.filter(r => r.status === 'pending').length} pending approval</p>
@@ -512,11 +511,11 @@ export default function AdminLayout({ children, onLogout }) {
         <div className="lg:hidden fixed inset-0 z-50 bg-white/95 backdrop-blur-2xl flex flex-col animate-in fade-in duration-200">
           <div className="flex items-center justify-between px-4 sm:px-6 h-16 border-b border-slate-200/80">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-2xl bg-slate-900 border border-slate-700/80 p-1 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
-                <img src="/brand-logo.png" alt="Amit Solution Hub Logo" className="w-full h-full object-contain" />
+              <div className="w-9 h-9 flex items-center justify-center shrink-0">
+                <img src="/brand-logo.png" alt="Ashnexa Systems Logo" className="w-full h-full object-contain" />
               </div>
               <div>
-                <span className="font-black text-sm text-slate-900 block leading-tight">Amit Solution Hub AI</span>
+                <span className="font-black text-sm text-slate-900 block leading-tight">Ashnexa Systems AI</span>
                 <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Admin Workspace</span>
               </div>
             </div>

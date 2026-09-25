@@ -50,6 +50,13 @@ const getCategoryIconKey = (value = '') => {
   return 'book'
 }
 
+const getInstructorDisplayName = (instructor, fallback = 'Mentor Support') => {
+  if (!instructor) return fallback
+  if (typeof instructor === 'string') return instructor.trim() || fallback
+  if (typeof instructor === 'object') return instructor.name || instructor.displayName || instructor.title || fallback
+  return String(instructor) || fallback
+}
+
 export default function CoursesPage() {
   const { courses, courseCategories, isUserEnrolled, loading } = useStore()
   const { currentUser } = useAuth()
@@ -77,7 +84,7 @@ export default function CoursesPage() {
         String(course.title || '').toLowerCase().includes(query) ||
         String(course.description || '').toLowerCase().includes(query) ||
         String(course.category || '').toLowerCase().includes(query) ||
-        String(course.instructor || '').toLowerCase().includes(query)
+        getInstructorDisplayName(course.instructor, '').toLowerCase().includes(query)
 
       return matchCategory && matchQuery
     })
@@ -335,7 +342,7 @@ export default function CoursesPage() {
                         <div className={`min-w-0 rounded-2xl border px-3 py-2.5 ${isDark ? 'border-slate-800 bg-slate-950' : 'border-slate-100 bg-slate-50'}`}>
                           <span className="inline-flex max-w-full items-center gap-1.5">
                             <PageIcon name="mentor" size={14} />
-                            <span className="truncate">{course.instructor || 'Mentor Support'}</span>
+                            <span className="truncate">{getInstructorDisplayName(course.instructor)}</span>
                           </span>
                         </div>
                         <div className={`min-w-0 rounded-2xl border px-3 py-2.5 ${isDark ? 'border-slate-800 bg-slate-950' : 'border-slate-100 bg-slate-50'}`}>

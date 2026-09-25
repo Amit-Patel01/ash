@@ -5,12 +5,12 @@ export const DOCUMENT_TYPES = [
 ]
 
 const SHARED_TEMPLATE_DEFAULTS = {
-  organizationName: 'Amit Solution Hub',
+  organizationName: 'Ashnexa Systems',
   issuerName: 'Amit Patel',
   issuerRole: 'Founder & Program Director',
   signatureName: 'Amit Patel',
   signatureRole: 'Authorized Signatory',
-  supportEmail: 'support@amitsolutionhub.com',
+  supportEmail: 'support@Ashnexa Systems.com',
   footerNote: 'This credential can be verified online using the document ID.',
   accentColor: '#f59e0b',
 }

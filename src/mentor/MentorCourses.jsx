@@ -36,7 +36,7 @@ export default function MentorCourses() {
   const assignedCourses = useMemo(() => {
     return (courses || []).filter(c => {
       const instructorEmail = (c.instructorEmail || c.mentorEmail || '').toLowerCase()
-      const instructorName = (c.instructor || c.mentor || '').toLowerCase()
+      const instructorName = (typeof c.instructor === 'object' ? (c.instructor?.name || '') : (c.instructor || c.mentor || '')).toLowerCase()
       return (
         instructorEmail === mentorEmail ||
         instructorName === displayName.toLowerCase() ||

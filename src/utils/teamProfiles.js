@@ -47,7 +47,7 @@ const normalizeTeamProfile = (member = {}) => {
     employeeId: normalizeText(member.employeeId),
     department: normalizeText(member.department) || 'Core Team',
     jobTitle: resolveJobTitle(member),
-    bio: normalizeText(member.bio) || 'Professional team member at AmitSolutionHub.',
+    bio: normalizeText(member.bio) || 'Professional team member at Ashnexa Systems.',
     status: normalizeKey(member.status || 'active') === 'inactive' ? 'inactive' : 'active',
     showOnTeam: member.showOnTeam !== false }
 }

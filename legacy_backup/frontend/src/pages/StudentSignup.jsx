@@ -103,7 +103,7 @@ export default function StudentSignup() {
           {/* Background 3D Tech Illustration */}
           <img
             src="/login_hero_banner.png"
-            alt="Amit Solution Hub Technology"
+            alt="Ashnexa Systems"
             className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.95] contrast-[1.05] transition-transform duration-700 group-hover:scale-105"
           />
           
@@ -118,7 +118,7 @@ export default function StudentSignup() {
               </div>
               <div>
                 <h2 className="text-sm font-black tracking-tight text-slate-900 leading-none">
-                  Amit Solution Hub
+                  Ashnexa Systems
                 </h2>
                 <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Technology Pvt Ltd</span>
               </div>
@@ -188,7 +188,7 @@ export default function StudentSignup() {
             
             <div className="mb-6">
               <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Create User Account</h1>
-              <p className="text-xs sm:text-sm text-slate-500 mt-2 font-medium">Join thousands of developers, clients, and learners at Amit Solution Hub.</p>
+              <p className="text-xs sm:text-sm text-slate-500 mt-2 font-medium">Join thousands of developers, clients, and learners at Ashnexa Systems.</p>
               
               {/* Feature Pill Highlights */}
               <div className="mt-4 flex flex-wrap gap-2">
@@ -339,7 +339,7 @@ export default function StudentSignup() {
 
           {/* Bottom Footer */}
           <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
-            <span>© {new Date().getFullYear()} Amit Solution Hub Technology Pvt Ltd</span>
+            <span>© {new Date().getFullYear()} Ashnexa Systems Pvt Ltd</span>
             <Link to="/contact" className="hover:text-indigo-600 transition-colors">Support</Link>
           </div>
 

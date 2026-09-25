@@ -30,7 +30,7 @@ export default function OfferLetterDocument({ certificate, template, className =
   const bodyParas = certificate?.certificateText
     ? certificate.certificateText.split('\n').map(p => p.trim()).filter(Boolean)
     : [
-      `We are delighted to welcome you for the certification course in <strong>${domain}</strong> at our organization. This certification course is observed by <strong>Amit Solution Hub</strong> as a learning opportunity for you, spanning a duration of <strong>${duration}</strong>.`,
+      `We are delighted to welcome you for the certification course in <strong>${domain}</strong> at our organization. This certification course is observed by <strong>Ashnexa Systems</strong> as a learning opportunity for you, spanning a duration of <strong>${duration}</strong>.`,
       `Your course will embrace orientation and give emphasis on learning new skills with a deeper understanding of concepts through hands-on application. Our team is confident that you will perform all work allocated to you to the best of your ability.`,
       `We look forward to a worthwhile and fruitful association which will make you equipped for future projects. Wishing you the most enjoyable and truly meaningful learning experience.`,
     ]
@@ -85,13 +85,13 @@ export default function OfferLetterDocument({ certificate, template, className =
           }}
         >
           {/* Logo */}
-          <img src={brandLogo} alt="Amit Solution Hub" crossOrigin="anonymous"
+          <img src={brandLogo} alt="Ashnexa Systems" crossOrigin="anonymous"
             style={{ height: 'clamp(24px,5cqw,60px)', width: 'auto', objectFit: 'contain', filter: 'brightness(10)' }} />
 
           {/* Org name */}
           <div className="px-[1.5cqw]">
             <p className="font-black uppercase text-white" style={{ fontSize: 'clamp(9px,1.6cqw,20px)', letterSpacing: '0.12em', fontFamily: 'Georgia, serif' }}>
-              Amit Solution Hub
+              Ashnexa Systems
             </p>
             <p className="text-white/70 uppercase" style={{ fontSize: 'clamp(5.5px,0.88cqw,11px)', letterSpacing: '0.18em' }}>
               Technology · Innovation · Excellence
@@ -193,7 +193,7 @@ export default function OfferLetterDocument({ certificate, template, className =
 
               {/* CEO Signature */}
               <div className="flex flex-col">
-                <p className="font-bold text-slate-800" style={{ fontSize: 'clamp(8px,1.1cqw,14px)' }}>For Amit Solution Hub</p>
+                <p className="font-bold text-slate-800" style={{ fontSize: 'clamp(8px,1.1cqw,14px)' }}>For Ashnexa Systems</p>
                 <div className="mt-[1cqw] relative flex items-end" style={{ height: 'clamp(32px,5.5cqw,72px)' }}>
                   <img src={sigImg} alt={sigName} crossOrigin="anonymous"
                     className="mix-blend-multiply"
@@ -229,7 +229,7 @@ export default function OfferLetterDocument({ certificate, template, className =
           }}
         >
           <p className="font-semibold" style={{ fontSize: 'clamp(5.5px,0.72cqw,9.5px)', color: `${NAVY}88` }}>
-            www.amitsolutionhub.com
+            www.ashnexasystems.com
           </p>
           <div style={{ width: 'clamp(14px,2cqw,26px)', height: 'clamp(1.5px,0.2cqw,2.5px)', backgroundColor: GOLD }} />
           <p className="font-semibold" style={{ fontSize: 'clamp(5.5px,0.72cqw,9.5px)', color: `${NAVY}88` }}>
@@ -237,7 +237,7 @@ export default function OfferLetterDocument({ certificate, template, className =
           </p>
           <div style={{ width: 'clamp(14px,2cqw,26px)', height: 'clamp(1.5px,0.2cqw,2.5px)', backgroundColor: GOLD }} />
           <p className="font-semibold" style={{ fontSize: 'clamp(5.5px,0.72cqw,9.5px)', color: `${NAVY}88` }}>
-            support@amitsolutionhub.com
+            support@Ashnexa Systems.com
           </p>
         </div>
       </div>

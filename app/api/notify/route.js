@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email';
 import { createEmailTemplate } from '@/lib/emailTemplate';
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'support@amitsolutionhub.com';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'support@Ashnexa Systems.com';
 
 export async function POST(request) {
   try {
@@ -16,15 +16,15 @@ export async function POST(request) {
 
     let to = data.email || data.studentEmail || ADMIN_EMAIL;
     let subject = `Notification from SolutionHub [${type}]`;
-    let title = 'Amit Solution Hub';
+    let title = 'Ashnexa Systems';
     let subtitle = 'Official Notification';
     let badgeText = 'NOTIFICATION';
     let bodyContent = `<p>Notification <strong>${type}</strong> received.</p><pre style="background:#0f172a; padding:12px; border-radius:8px;">${JSON.stringify(data, null, 2)}</pre>`;
     let ctaText = 'Go to Dashboard';
-    let ctaUrl = 'https://www.amitsolutionhub.com/login';
+    let ctaUrl = 'https://www.ashnexasystems.com/login';
 
     if (type === 'welcome') {
-      subject = '🎉 Welcome to Amit Solution Hub!';
+      subject = '🎉 Welcome to Ashnexa Systems!';
       title = `Welcome, ${data.name || 'Student'}! 👋`;
       subtitle = 'Your Learning Journey Starts Now';
       badgeText = 'WELCOME TO SOLUTION HUB';
@@ -33,7 +33,7 @@ export async function POST(request) {
         <p>You can now browse certification courses, access code repositories, and work on live projects to earn your QR-verified certificate.</p>
       `;
       ctaText = 'Access Dashboard';
-      ctaUrl = 'https://www.amitsolutionhub.com/login';
+      ctaUrl = 'https://www.ashnexasystems.com/login';
     } else if (type === 'enrollment_student') {
       subject = `✅ Course Enrollment Confirmed: ${data.courseTitle || 'Course'}`;
       title = 'Enrollment Confirmed!';
@@ -45,7 +45,7 @@ export async function POST(request) {
         <p>Your mentor assignments and project files are now available in your portal.</p>
       `;
       ctaText = 'Start Learning';
-      ctaUrl = 'https://www.amitsolutionhub.com/user/courses';
+      ctaUrl = 'https://www.ashnexasystems.com/user/courses';
     }
 
     const html = createEmailTemplate({

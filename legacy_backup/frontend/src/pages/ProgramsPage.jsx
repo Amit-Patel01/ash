@@ -73,10 +73,10 @@ export default function ProgramsPage() {
   return (
     <>
       <Helmet>
-        <title>Programs | Amit Solution Hub</title>
+        <title>Programs | Ashnexa Systems</title>
         <meta
           name="description"
-          content="Explore all learning domains and programs at Amit Solution Hub. Choose your skill track and start your journey today."
+          content="Explore all learning domains and programs at Ashnexa Systems. Choose your skill track and start your journey today."
         />
       </Helmet>
 

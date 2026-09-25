@@ -101,7 +101,7 @@ const sendEnrollmentEmail = async (req, res) => {
         <p>You can now access live sessions, curriculum, and community resources through your dashboard.</p>
         `,
         "Go to Dashboard",
-        "https://www.amitsolutionhub.com/customer"
+        "https://www.ashnexasystems.com/customer"
       ),
     });
     res.json({ success: true, message: "Enrollment email sent" });

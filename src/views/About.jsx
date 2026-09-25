@@ -33,7 +33,6 @@ import {
   Rocket
 } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
-import msmeLogo from '../assets/msme.png'
 import tejashImg from '../assets/tejash-patil.png'
 
 // Inline Custom SVGs for Github and Linkedin since the installed lucide-react package does not export them
@@ -201,14 +200,14 @@ export default function About() {
   // Why Choose Us Data
   const points = [
     {
-      title: 'MSME Registered',
-      desc: 'Conforming strictly to Indian Government standards for corporate training and delivery.',
+      title: 'Modern Architecture',
+      desc: 'Building high-performance, maintainable software systems and enterprise applications.',
       icon: ShieldCheck,
       color: 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
     },
     {
-      title: 'AICTE National Portal Registered',
-      desc: 'Aligned directly with national guidelines to deliver valid, credit-mappable academic programs.',
+      title: 'Industry-Standard Training',
+      desc: 'Aligned directly with current tech industry requirements to build real engineering capabilities.',
       icon: GraduationCap,
       color: 'bg-orange-500/10 text-orange-500 border border-orange-500/20'
     },
@@ -252,8 +251,8 @@ export default function About() {
   // FAQ Data
   const faqs = [
     {
-      q: 'Is Amit Solution Hub an AICTE-approved college?',
-      a: 'No. Amit Solution Hub is a private technology development agency registered on the AICTE National Portal. We provide industrial training programs and build real-world software products, which colleges accept for credit mapping under their certification course guidelines.'
+      q: 'Are the certification courses self-paced and online?',
+      a: 'Yes. All programs are fully online, practical, and self-paced with dedicated code review feedback from our engineering mentors.'
     },
     {
       q: 'How do employers verify my certification course certificate?',
@@ -292,10 +291,10 @@ export default function About() {
               {/* Badges Stack */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-2.5">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500 text-white shadow-md shadow-emerald-500/30">
-                  <ShieldCheck size={11} /> MSME Registered Organization
+                  <ShieldCheck size={11} /> Verified Tech Agency
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-orange-500 text-white shadow-md shadow-orange-500/30">
-                  <GraduationCap size={11} /> AICTE National Portal Registered Organization
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-indigo-500 text-white shadow-md shadow-indigo-500/30">
+                  <GraduationCap size={11} /> Hands-On Engineering Training
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-blue-500 text-white shadow-md shadow-blue-500/30">
                   <Zap size={11} /> Razorpay Reseller Partner
@@ -310,7 +309,7 @@ export default function About() {
               </h1>
 
               <p className="text-sm sm:text-base lg:text-lg text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
-                Amit Solution Hub is an AI-powered EdTech and IT development platform delivering premium hands-on certification courses, custom software architectures, expert training, and secure verification systems.
+                Ashnexa Systems is an AI-powered EdTech and IT development platform delivering premium hands-on certification courses, custom software architectures, expert training, and secure verification systems.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -347,13 +346,13 @@ export default function About() {
                   </div>
                   <h3 className="text-xl font-bold">Verifiable Credentials</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
-                    We combine MSME statutory compliance with modern scanning verification, giving graduates reliable proofs of technical training.
+                    We deliver modern scanning verification, giving graduates reliable proofs of technical training.
                   </p>
                 </div>
 
                 <div className="pt-6 border-t border-indigo-200/60 dark:border-indigo-800/60 flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Govt Registration</span>
-                  <span className="text-xs font-black text-indigo-600 dark:text-indigo-300 font-mono">GJ-17-0037282</span>
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Digital Verification</span>
+                  <span className="text-xs font-black text-indigo-600 dark:text-indigo-300 font-mono">100% Online</span>
                 </div>
               </motion.div>
             </div>
@@ -371,7 +370,7 @@ export default function About() {
               </span>
               <h2 className="text-3xl font-extrabold tracking-tight">Our Story</h2>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                Amit Solution Hub started with a bold vision: to bridge the gap between academic education and industry standards through project-based learning and real-world experience. We observed that traditional classrooms often focus on theory, leaving a skill gap for graduates transitioning into technical careers.
+                Ashnexa Systems started with a bold vision: to bridge the gap between academic education and industry standards through project-based learning and real-world experience. We observed that traditional classrooms often focus on theory, leaving a skill gap for graduates transitioning into technical careers.
               </p>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
                 To solve this, we created an ecosystem where students solve actual business codebases and build verifiable web models, while businesses receive optimized, high-fidelity software products.
@@ -578,11 +577,11 @@ export default function About() {
 
                 <div className="space-y-1">
                   <h3 className="font-extrabold text-xl text-slate-800 dark:text-slate-100">Amit Patel</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Founder of AmitSolutionHub</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Founder of Ashnexa Systems</p>
                 </div>
 
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                  I lead the design and development of digital projects at AmitSolutionHub. With a focus on full-stack technologies and stock market analytics, I guide our software team to implement clean solutions for clients, while mentoring students through hands-on certification courses.
+                  I lead the design and development of digital projects at Ashnexa Systems. With a focus on full-stack technologies and stock market analytics, I guide our software team to implement clean solutions for clients, while mentoring students through hands-on certification courses.
                 </p>
 
                 {/* Skill Badges */}
@@ -597,7 +596,7 @@ export default function About() {
 
               <div className="flex gap-3 pt-6 mt-6 border-t border-blue-200/50 dark:border-blue-900/50">
                 <a
-                  href="https://portfolio.amitsolutionhub.com/"
+                  href="https://portfolio.Ashnexa Systems.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 py-2.5 rounded-xl text-xs font-extrabold text-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/20 transition-all"
@@ -704,7 +703,7 @@ export default function About() {
                 </div>
 
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                  I oversee team management, operational strategy, and project execution at AmitSolutionHub. Dedicated to optimizing internal workflows, maintaining quality standards, and driving cross-departmental success.
+                  I oversee team management, operational strategy, and project execution at Ashnexa Systems. Dedicated to optimizing internal workflows, maintaining quality standards, and driving cross-departmental success.
                 </p>
 
                 {/* Skill Badges */}
@@ -752,23 +751,21 @@ export default function About() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
             <div className="p-6 rounded-3xl border-2 border-emerald-200/70 dark:border-emerald-900/50 bg-gradient-to-br from-emerald-50/60 to-white dark:from-emerald-950/20 dark:to-slate-950/30 backdrop-blur-xl flex flex-col items-center justify-center text-center space-y-3 shadow-sm hover:shadow-md transition-all">
               <div className="h-10 flex items-center">
-                <img src={msmeLogo} alt="MSME Logo" className="h-8 object-contain" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Vercel_logo_2020.svg" alt="Vercel Logo" className="h-6 object-contain" />
               </div>
               <div className="space-y-1">
-                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200">MSME Registered Organization</h4>
-                <p className="text-[9px] text-emerald-600 dark:text-emerald-400 font-black uppercase tracking-wider">GJ-17-0037282</p>
+                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200">Cloud & Edge Deployment</h4>
+                <p className="text-[9px] text-emerald-600 dark:text-emerald-400 font-black uppercase tracking-wider">Fast & Scalable</p>
               </div>
             </div>
 
-            <div className="p-6 rounded-3xl border-2 border-orange-200/70 dark:border-orange-900/50 bg-gradient-to-br from-orange-50/60 to-white dark:from-orange-950/20 dark:to-slate-950/30 backdrop-blur-xl flex flex-col items-center justify-center text-center space-y-3 shadow-sm hover:shadow-md transition-all">
+            <div className="p-6 rounded-3xl border-2 border-indigo-200/70 dark:border-indigo-900/50 bg-gradient-to-br from-indigo-50/60 to-white dark:from-indigo-950/20 dark:to-slate-950/30 backdrop-blur-xl flex flex-col items-center justify-center text-center space-y-3 shadow-sm hover:shadow-md transition-all">
               <div className="h-10 flex items-center">
-                <div className="w-8 h-8 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-sm">
-                  <GraduationCap size={18} />
-                </div>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/MongoDB_Logo.svg" alt="MongoDB Logo" className="h-6 object-contain" />
               </div>
               <div className="space-y-1">
-                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200">AICTE National Portal</h4>
-                <p className="text-[9px] text-orange-600 dark:text-orange-400 font-black uppercase tracking-wider">Registered Organization</p>
+                <h4 className="font-extrabold text-sm text-slate-800 dark:text-slate-200">Modern Database Systems</h4>
+                <p className="text-[9px] text-indigo-600 dark:text-indigo-400 font-black uppercase tracking-wider">Cloud Data Engine</p>
               </div>
             </div>
 

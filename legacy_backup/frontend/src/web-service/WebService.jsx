@@ -15,8 +15,8 @@ const WebService = () => {
 
   return (
     <>
-      <SEO title="Web Development Services | AmitSolutionHub" 
-           description="Premium custom web development services and comprehensive Web Development Courses offered by AmitSolutionHub." />
+      <SEO title="Web Development Services | Ashnexa Systems" 
+           description="Premium custom web development services and comprehensive Web Development Courses offered by Ashnexa Systems." />
       
       <div className="pt-[140px] md:pt-[180px] pb-20 min-h-screen relative">
         <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 transition-all duration-1000 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
@@ -60,7 +60,7 @@ const WebService = () => {
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
               <div className="max-w-2xl">
                 <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-3 py-1 rounded-full mb-4">
-                  <span className="text-indigo-300 font-bold text-xs">🎓 AmitSolutionHub Academy</span>
+                  <span className="text-indigo-300 font-bold text-xs">🎓 Ashnexa Systems Academy</span>
                 </div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight">Want to learn Web Development yourself?</h2>
                 <p className="text-indigo-200 text-lg mb-0 leading-relaxed">

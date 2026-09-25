@@ -125,13 +125,11 @@ export default function AuthCallback() {
 
             {/* Brand Logo Header */}
             <div className="flex justify-center mb-8">
-              <div className="relative p-3 rounded-2xl bg-white/5 border border-white/10 shadow-lg group">
-                <img
-                  src={brandLogo}
-                  alt="SolutionHub Logo"
-                  className="h-10 w-auto object-contain filter drop-shadow-md"
-                />
-              </div>
+              <img
+                src={brandLogo}
+                alt="Ashnexa Systems Logo"
+                className="h-10 w-auto object-contain"
+              />
             </div>
 
             <AnimatePresence mode="wait">

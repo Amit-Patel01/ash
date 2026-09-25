@@ -69,7 +69,7 @@ const ComingSoon = () => {
 
         {/* Footer Text */}
         <p className="mt-16 text-slate-500 text-sm font-medium tracking-widest uppercase">
-          Amit Solution Hub &bull; Programs Open Now
+          Ashnexa Systems &bull; Programs Open Now
         </p>
       </div>
     </section>

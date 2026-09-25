@@ -113,7 +113,7 @@ export default function DashboardRedirect() {
         position: 'absolute', bottom: '2rem',
         fontSize: '0.7rem', color: '#cbd5e1', fontWeight: 600, letterSpacing: '0.05em',
       }}>
-        © 2026 Amit Solution Hub Technology Pvt Ltd
+        © 2026 Ashnexa Systems Pvt Ltd
       </div>
     </div>
   )

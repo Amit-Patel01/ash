@@ -8,7 +8,7 @@ const GrievanceCell = () => {
 
   return (
     <>
-      <SEO title="Grievance Redressal | AmitSolutionHub" description="Submit your complaints or grievances. AmitSolutionHub is committed to a transparent and fair resolution process." />
+      <SEO title="Grievance Redressal | Ashnexa Systems" description="Submit your complaints or grievances. Ashnexa Systems is committed to a transparent and fair resolution process." />
       <div className="min-h-screen pt-10 lg:pt-14 pb-20 px-4 md:px-8 bg-slate-50">
         <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100">
           <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">Grievance Cell</h1>
@@ -18,7 +18,7 @@ const GrievanceCell = () => {
             
             <div className="bg-blue-50/50 rounded-2xl p-6 border border-blue-100">
               <h2 className="text-xl font-bold text-blue-900 mb-3">Our Objective</h2>
-              <p className="text-blue-800/80">In alignment with educational guidelines and standard corporate practices, AmitSolutionHub has established a dedicated Grievance Redressal mechanism. We aim to address all complaints, payment discrepancies, and training issues within 7 business days.</p>
+              <p className="text-blue-800/80">In alignment with educational guidelines and standard corporate practices, Ashnexa Systems has established a dedicated Grievance Redressal mechanism. We aim to address all complaints, payment discrepancies, and training issues within 7 business days.</p>
             </div>
 
             <section>
@@ -33,11 +33,11 @@ const GrievanceCell = () => {
               <div className="grid md:grid-cols-2 gap-4 mt-4">
                 <div className="p-5 border border-slate-200 rounded-xl">
                   <div className="text-sm text-slate-400 font-semibold uppercase tracking-wider mb-1">Email Support</div>
-                  <a href="mailto:support@amitsolutionhub.com" className="text-blue-600 font-bold hover:underline">support@amitsolutionhub.com</a>
+                  <a href="mailto:support@Ashnexa Systems.com" className="text-blue-600 font-bold hover:underline">support@Ashnexa Systems.com</a>
                 </div>
                 <div className="p-5 border border-slate-200 rounded-xl">
                   <div className="text-sm text-slate-400 font-semibold uppercase tracking-wider mb-1">Corporate HQ</div>
-                  <div className="text-slate-800 font-medium">AmitSolutionHub, Gujarat, India</div>
+                  <div className="text-slate-800 font-medium">Ashnexa Systems, Gujarat, India</div>
                 </div>
               </div>
             </section>

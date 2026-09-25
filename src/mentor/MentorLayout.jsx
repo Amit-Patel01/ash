@@ -121,16 +121,16 @@ export default function MentorLayout({ children }) {
         {/* Brand Header */}
         <div className="p-5 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="p-1.5 rounded-xl bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-indigo-500/20 group-hover:scale-105 transition-all">
+            <div className="flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
               <img
                 src={brandLogo?.src || brandLogo}
-                alt="Amit Solution Hub Logo"
+                alt="Ashnexa Systems Logo"
                 className="h-8 w-auto object-contain"
               />
             </div>
             <div>
               <div className="text-sm font-black tracking-tight leading-none text-slate-900 dark:text-white">
-                Amit Solution Hub
+                Ashnexa Systems
               </div>
               <div className="inline-flex items-center gap-1 mt-1 text-[10px] font-black tracking-wider uppercase px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs">
                 <GraduationCap className="w-3 h-3" />
@@ -236,7 +236,7 @@ export default function MentorLayout({ children }) {
               <Menu className="w-5 h-5" />
             </button>
             <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-500">
-              <span>Amit Solution Hub</span>
+              <span>Ashnexa Systems</span>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
               <span className="text-indigo-600 dark:text-indigo-400 font-extrabold">Faculty & Mentorship Space</span>
             </div>
@@ -305,7 +305,7 @@ export default function MentorLayout({ children }) {
                     <div className="flex items-center gap-3">
                       <img src={brandLogo?.src || brandLogo} alt="Logo" className="h-8 w-auto" />
                       <div>
-                        <div className="text-sm font-black text-slate-900 dark:text-white">Amit Solution Hub</div>
+                        <div className="text-sm font-black text-slate-900 dark:text-white">Ashnexa Systems</div>
                         <span className="text-[10px] font-black uppercase text-indigo-600 dark:text-indigo-400">Mentor Portal</span>
                       </div>
                     </div>

@@ -1,8 +1,6 @@
 'use client'
 import Link from 'next/link'
 import brandName from '../assets/brdname.png'
-import msmeLogo from '../assets/msme.png'
-import msmeQR from '../assets/msme-qr.png'
 import { useTheme } from '../context/ThemeContext'
 
 const Footer = () => {
@@ -44,45 +42,20 @@ const Footer = () => {
                 We build powerful web solutions, dashboards and smart systems for growing businesses.
               </p>
 
-              {/* MSME Verification Box */}
-              <div className="flex flex-col items-center md:items-start mb-8 w-full group">
-                <div className={`p-3.5 rounded-2xl inline-flex items-center gap-4 shadow-lg hover:shadow-xl transition-all duration-500 relative overflow-hidden border ${isDark ? 'bg-white/5 border-white/10 hover:bg-white/10' : 'bg-white border-slate-200/80 hover:bg-slate-100/50'}`}>
-                  <div className="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <div className={`w-12 h-12 flex items-center justify-center rounded-xl p-1.5 border shadow-inner overflow-hidden ${isDark ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-200'}`}>
-                    <img src={msmeLogo?.src || msmeLogo} alt="MSME" className="w-full h-full object-contain brightness-110" />
-                  </div>
-                  <div className="text-left">
-                    <div className={`text-[10px] uppercase tracking-[0.2em] font-extrabold mb-0.5 ${isDark ? 'text-gray-500' : 'text-slate-400'}`}>MSME Registered</div>
-                    <div className={`text-xs font-black tracking-widest flex items-center gap-1.5 ${isDark ? 'text-white' : 'text-slate-800'}`}>
-                      UDYAM-GJ-17-0037282
-                      <div className="relative group/qr">
-                        <svg className="w-3.5 h-3.5 text-blue-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {/* QR Code Tooltip */}
-                        <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-32 p-2 rounded-xl shadow-2xl opacity-0 invisible group-hover/qr:opacity-100 group-hover/qr:visible transition-all scale-90 group-hover/qr:scale-100 z-50 border ${isDark ? 'bg-slate-900 border-white/10' : 'bg-white border-slate-200'}`}>
-                          <img src={msmeQR?.src || msmeQR} alt="MSME QR" className="w-full h-full rounded-lg bg-white p-1" />
-                          <p className="text-[8px] text-center mt-1.5 text-gray-400 font-bold tracking-tighter">Scan to Verify</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
               {/* Social Icons (Official Brand Colors) */}
               <div className="flex justify-center md:justify-start gap-3">
                 {[
                   {
                     name: 'X',
-                    href: 'https://x.com/AmitSolutionHub',
+                    href: 'https://x.com/Ashnexa Systems',
                     icon: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z',
                     color: 'text-slate-900 dark:text-white',
                     bg: 'bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 border-slate-200 dark:border-slate-700'
                   },
                   {
                     name: 'Instagram',
-                    href: 'https://www.instagram.com/amitsolutionhub',
+                    href: 'https://www.instagram.com/Ashnexa Systems',
                     icon: 'M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z',
                     color: 'text-pink-600 dark:text-pink-400',
                     bg: 'bg-pink-50 dark:bg-pink-950/40 hover:bg-pink-100 border-pink-200 dark:border-pink-900/50'
@@ -178,14 +151,14 @@ const Footer = () => {
                 Contact
               </h3>
               <div className="space-y-5 text-sm font-medium text-slate-500 dark:text-slate-400 w-full">
-                <a href="mailto:support@amitsolutionhub.com" className="flex items-center justify-center md:justify-start gap-4 group hover:text-indigo-600 dark:hover:text-indigo-400 transition-all">
+                <a href="mailto:support@Ashnexa Systems.com" className="flex items-center justify-center md:justify-start gap-4 group hover:text-indigo-600 dark:hover:text-indigo-400 transition-all">
                   <span className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-all border bg-indigo-50 border-indigo-200 text-indigo-600 dark:bg-indigo-950/50 dark:border-indigo-800 dark:text-indigo-400 shadow-sm">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5A2.5 2.5 0 0 1 5.5 5h13A2.5 2.5 0 0 1 21 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 16.5v-9Z" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="m4 8 8 6 8-6" />
                     </svg>
                   </span>
-                  <span className="group-hover:translate-x-1.5 transition-transform text-slate-700 dark:text-slate-300 font-semibold">support@amitsolutionhub.com</span>
+                  <span className="group-hover:translate-x-1.5 transition-transform text-slate-700 dark:text-slate-300 font-semibold">support@Ashnexa Systems.com</span>
                 </a>
 
                 <a href="tel:+917874248481" className="flex items-center justify-center md:justify-start gap-4 group hover:text-emerald-600 dark:hover:text-emerald-400 transition-all">
@@ -215,13 +188,63 @@ const Footer = () => {
           <div className="border-t border-slate-200/50 dark:border-white/5 pt-10 mb-4">
               {/* Copyright */}
               <div className="text-slate-400 dark:text-gray-500 text-xs text-center md:text-left font-medium tracking-wide">
-                © {currentYear} <span className="text-slate-800 dark:text-gray-200 font-black">AMITSOLUTIONHUB</span> — All rights reserved
+                © {currentYear} <span className="text-slate-800 dark:text-gray-200 font-black">Ashnexa Systems</span> — All rights reserved
               </div>
           </div>
 
         </div>
       </div>
+
+      {/* ── Bottom Branding Strip ── */}
+      <div className={`relative w-full py-6 overflow-hidden ${isDark ? 'bg-slate-950 border-t border-white/5' : 'bg-white border-t border-slate-200/60'}`}>
+
+        {/* Animated glow orbs */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute left-1/4 top-1/2 -translate-y-1/2 w-48 h-10 rounded-full blur-3xl opacity-40 bg-indigo-500 animate-pulse" />
+          <div className="absolute right-1/4 top-1/2 -translate-y-1/2 w-48 h-10 rounded-full blur-3xl opacity-30 bg-pink-500 animate-pulse [animation-delay:1s]" />
+          <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-72 h-12 rounded-full blur-3xl opacity-20 bg-purple-500 animate-pulse [animation-delay:0.5s]" />
+        </div>
+
+        {/* Shine sweep animation */}
+        <style>{`
+          @keyframes shine-sweep {
+            0%   { left: -80%; }
+            60%  { left: 110%; }
+            100% { left: 110%; }
+          }
+          .branding-shine { animation: shine-sweep 3.5s ease-in-out infinite; }
+        `}</style>
+
+        <div className="relative flex items-center justify-center overflow-hidden">
+          {/* The big text */}
+          <p className="relative text-3xl sm:text-4xl md:text-5xl font-black tracking-[0.18em] uppercase select-none">
+            <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Ashnexa
+            </span>
+            <span className={`mx-3 ${isDark ? 'text-white/10' : 'text-slate-200'}`}>·</span>
+            <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
+              Systems
+            </span>
+
+            {/* Shine sweep overlay */}
+            <span
+              className="branding-shine absolute top-0 h-full w-24 -skew-x-12 pointer-events-none"
+              style={{
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent)',
+              }}
+            />
+          </p>
+        </div>
+
+        {/* Tagline */}
+        <p className={`text-center text-[10px] font-semibold tracking-[0.3em] uppercase mt-2 ${isDark ? 'text-slate-600' : 'text-slate-400'}`}>
+          Build · Scale · Innovate
+        </p>
+
+      </div>
+
     </footer>
+
   )
 }
 

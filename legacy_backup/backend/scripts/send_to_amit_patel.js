@@ -20,7 +20,7 @@ async function sendToAmitPatel() {
       </ul>
       <p>Aapke sahyog aur samarthan ke liye dhanyawad!</p>
       <br/>
-      <p>Best regards,<br/><strong>Amit Solution Hub Technology Pvt Ltd</strong></p>
+      <p>Best regards,<br/><strong>Ashnexa Systems Pvt Ltd</strong></p>
     </div>
   `;
 

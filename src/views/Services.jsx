@@ -3,6 +3,7 @@ import Link from 'next/link'
 import SEO from '../components/SEO'
 import PublicPageShell, { PublicGlassCard, PublicSection, PublicSectionHeading } from '../components/public/PublicPageShell'
 import { useStore } from '../store/StoreContext'
+import AshnexaRobot from '../components/robot/AshnexaRobot'
 import {
   Code2,
   Laptop,
@@ -142,41 +143,51 @@ export default function Services() {
   return (
     <PublicPageShell hideHeader>
       <SEO 
-        title="Our Services - Web Development, Cloud & Tech Solutions | Amit Solution Hub" 
-        description="Explore end-to-end software development, UI/UX design, cloud infrastructure, and technical consulting services delivered by Amit Solution Hub." 
+        title="Our Services - Web Development, Cloud & Tech Solutions | Ashnexa Systems" 
+        description="Explore end-to-end software development, UI/UX design, cloud infrastructure, and technical consulting services delivered by Ashnexa Systems." 
       />
       
-      {/* ── TOP HERO SECTION ── */}
-      <section className="relative overflow-hidden pt-12 pb-16 md:pt-20 md:pb-24 text-center">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50/80 dark:bg-slate-800/80 border border-indigo-200/80 dark:border-slate-700 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-6 shadow-xs backdrop-blur-md">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>Enterprise Digital & Tech Services</span>
-          </div>
+      {/* ── TOP HERO SECTION WITH CLOUD ROBOT ── */}
+      <section className="relative overflow-hidden pt-10 pb-16 md:pt-16 md:pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            {/* Left 7 cols: Content */}
+            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50/80 dark:bg-slate-800/80 border border-indigo-200/80 dark:border-slate-700 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider shadow-xs backdrop-blur-md">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>Enterprise Digital & Tech Services</span>
+              </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.15]">
-            Build, Scale & Innovate With <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">Amit Solution Hub</span>
-          </h1>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.15]">
+                Build, Scale & Innovate With <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">Ashnexa Systems</span>
+              </h1>
 
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-2xl mx-auto mt-6">
-            From custom web applications to scalable cloud infrastructure, we deliver high-impact software solutions tailored for modern businesses.
-          </p>
+              <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                From custom web applications to scalable cloud infrastructure, we deliver high-impact software solutions tailored for modern businesses.
+              </p>
 
-          <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href="/custom-project"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-blue-500/25 hover:scale-105 transition-all cursor-pointer"
-            >
-              <span>Request Custom Project</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white font-bold text-xs uppercase tracking-wider shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer"
-            >
-              <Headphones className="w-4 h-4 text-indigo-500" />
-              <span>Free Tech Consultation</span>
-            </Link>
+              <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                <Link
+                  href="/custom-project"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-blue-500/25 hover:scale-105 transition-all cursor-pointer"
+                >
+                  <span>Request Custom Project</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white font-bold text-xs uppercase tracking-wider shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer"
+                >
+                  <Headphones className="w-4 h-4 text-indigo-500" />
+                  <span>Free Tech Consultation</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right 5 cols: Cloud & DevOps Robot */}
+            <div className="lg:col-span-5 flex justify-center">
+              <AshnexaRobot action="services-cloud" />
+            </div>
           </div>
         </div>
       </section>

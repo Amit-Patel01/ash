@@ -4,7 +4,7 @@ import { sendEmail } from '@/lib/email';
 import { createEmailTemplate } from '@/lib/emailTemplate';
 import { getDb } from '@/lib/db/mongo';
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'support@amitsolutionhub.com';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'support@Ashnexa Systems.com';
 
 async function getBroadcastRecipients(customRecipients) {
   if (Array.isArray(customRecipients) && customRecipients.length > 0) {
@@ -40,14 +40,14 @@ async function getBroadcastRecipients(customRecipients) {
 
 export async function POST(request) {
   try {
-    const { subject = 'Announcement from Amit Solution Hub', body = '', recipientEmails } = await request.json();
+    const { subject = 'Announcement from Ashnexa Systems', body = '', recipientEmails } = await request.json();
 
     let cleanSubject = subject;
     let cleanBody = String(body || '').trim();
 
     const subjectMatch = cleanBody.match(/^(?:\*\*)?Subject:\s*([^\n\r*]+)(?:\*\*)?/i);
     if (subjectMatch && subjectMatch[1]) {
-      if (subject === 'Announcement from Amit Solution Hub' || !subject) {
+      if (subject === 'Announcement from Ashnexa Systems' || !subject) {
         cleanSubject = subjectMatch[1].trim();
       }
       cleanBody = cleanBody.replace(/^(?:\*\*)?Subject:\s*[^\n]+\r?\n(?:\*\*)?\s*/i, '');
@@ -61,8 +61,8 @@ export async function POST(request) {
       subtitle: 'Official Announcement',
       badgeText: 'ANNOUNCEMENT',
       bodyContent: cleanBody,
-      ctaText: 'Visit Amit Solution Hub',
-      ctaUrl: 'https://www.amitsolutionhub.com'
+      ctaText: 'Visit Ashnexa Systems',
+      ctaUrl: 'https://www.ashnexasystems.com'
     });
 
     const mailResult = await sendEmail({

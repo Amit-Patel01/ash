@@ -5,7 +5,7 @@ const ATLAS_URI = process.env.MONGODB_URI_ATLAS;
 const LOCAL_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/solutionhub';
 
 const ADMIN_EMAILS = [
-  'support@amitsolutionhub.com',
+  'support@Ashnexa Systems.com',
   'amitpatel07029@gmail.com',
   'admin@company.com'
 ];

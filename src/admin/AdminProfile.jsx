@@ -56,7 +56,7 @@ const createProfileForm = (profile, currentUser) => ({
   department: profile?.department || 'Executive / Management',
   avatar: profile?.avatar || profile?.photoURL || currentUser?.photoURL || '',
   coverImage: profile?.coverImage || '',
-  bio: profile?.bio || 'Administrator & Platform Leader at Amit Solution Hub.',
+  bio: profile?.bio || 'Administrator & Platform Leader at Ashnexa Systems.',
   jobTitle: profile?.jobTitle || 'Administrator',
   experience: profile?.experience || '5+ Years',
   location: profile?.location || 'Gujarat, India',
@@ -697,7 +697,7 @@ export default function AdminProfile() {
                     value={profileForm.portfolio}
                     onChange={(e) => setProfileForm({ ...profileForm, portfolio: e.target.value })}
                     className="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-white text-xs font-medium text-slate-900 focus:border-indigo-600 focus:outline-none shadow-xs"
-                    placeholder="https://amitsolutionhub.com"
+                    placeholder="https://ashnexasystems.com"
                   />
                 </label>
               </div>

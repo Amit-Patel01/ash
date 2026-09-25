@@ -63,7 +63,7 @@ export default function FormerStaffModal({ isOpen, onClose }) {
             Staff Account Reinstatement
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            You were previously designated as <strong className="text-slate-700 dark:text-slate-200">{previousRole}</strong> at Amit Solution Hub Technology Pvt Ltd.
+            You were previously designated as <strong className="text-slate-700 dark:text-slate-200">{previousRole}</strong> at Ashnexa Systems Pvt Ltd.
           </p>
         </div>
 

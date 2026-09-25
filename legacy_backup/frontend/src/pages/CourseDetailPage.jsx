@@ -345,7 +345,7 @@ export default function CourseDetailPage() {
   return (
     <div className={`min-h-screen transition-colors duration-300 ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-white text-slate-900'}`}>
       <Helmet>
-        <title>{course.title} — Amit Solution Hub</title>
+        <title>{course.title} — Ashnexa Systems</title>
         <meta name="description" content={course.description} />
         <script type="application/ld+json">
           {JSON.stringify({
@@ -355,8 +355,8 @@ export default function CourseDetailPage() {
             "description": course.description,
             "provider": {
               "@type": "Organization",
-              "name": "AmitSolutionHub",
-              "sameAs": "https://amitsolutionhub.com"
+              "name": "Ashnexa Systems",
+              "sameAs": "https://ashnexasystems.com"
             },
             "hasCourseInstance": {
               "@type": "CourseInstance",

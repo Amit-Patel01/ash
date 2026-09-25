@@ -73,8 +73,8 @@ const Footer = () => {
               {/* Social Icons */}
               <div className="flex justify-center md:justify-start gap-3">
                 {[
-                  { name: 'X', href: 'https://x.com/AmitSolutionHub', icon: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z' },
-                  { name: 'Instagram', href: 'https://www.instagram.com/amitsolutionhub', icon: 'M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z' },
+                  { name: 'X', href: 'https://x.com/Ashnexa Systems', icon: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z' },
+                  { name: 'Instagram', href: 'https://www.instagram.com/Ashnexa Systems', icon: 'M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z' },
                   { name: 'LinkedIn', href: 'https://www.linkedin.com/company/amit-solution-hub', icon: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z' },
                   { name: 'GitHub', href: 'https://github.com/Amit-Patel01', icon: 'M12 .297a12 12 0 00-3.794 23.4c.6.111.82-.261.82-.577v-2.165c-3.338.726-4.042-1.416-4.042-1.416-.546-1.385-1.333-1.754-1.333-1.754-1.089-.745.083-.73.083-.73 1.205.085 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.775.418-1.305.76-1.606-2.665-.303-5.467-1.332-5.467-5.93 0-1.311.469-2.381 1.236-3.221-.124-.303-.536-1.526.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 016.003 0c2.293-1.552 3.3-1.23 3.3-1.23.654 1.65.242 2.873.118 3.176.77.84 1.235 1.91 1.235 3.221 0 4.61-2.807 5.624-5.479 5.921.43.371.823 1.102.823 2.222v3.293c0 .319.216.694.825.576A12.003 12.003 0 0012 .297z' },
                 ].map((social) => (
@@ -154,14 +154,14 @@ const Footer = () => {
                 Contact
               </h3>
               <div className="space-y-5 text-sm font-medium text-slate-500 dark:text-slate-400 w-full">
-                <a href="mailto:support@amitsolutionhub.com" className="flex items-center justify-center md:justify-start gap-4 group hover:text-blue-500 dark:hover:text-indigo-400 transition-all">
+                <a href="mailto:support@Ashnexa Systems.com" className="flex items-center justify-center md:justify-start gap-4 group hover:text-blue-500 dark:hover:text-indigo-400 transition-all">
                   <span className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-all border ${isDark ? 'bg-white/5 border-white/10 group-hover:bg-indigo-500/10 group-hover:border-indigo-500/20' : 'bg-white border-slate-200 group-hover:bg-blue-50 group-hover:border-blue-500/20'} shadow-lg`}>
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5A2.5 2.5 0 0 1 5.5 5h13A2.5 2.5 0 0 1 21 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 16.5v-9Z" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="m4 8 8 6 8-6" />
                     </svg>
                   </span>
-                  <span className="group-hover:translate-x-1.5 transition-transform">support@amitsolutionhub.com</span>
+                  <span className="group-hover:translate-x-1.5 transition-transform">support@Ashnexa Systems.com</span>
                 </a>
                 <a href="tel:+917874248481" className="flex items-center justify-center md:justify-start gap-4 group hover:text-blue-500 dark:hover:text-indigo-400 transition-all">
                   <span className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-all border ${isDark ? 'bg-white/5 border-white/10 group-hover:bg-indigo-500/10 group-hover:border-indigo-500/20' : 'bg-white border-slate-200 group-hover:bg-blue-50 group-hover:border-blue-500/20'} shadow-lg`}>
@@ -189,7 +189,7 @@ const Footer = () => {
           <div className="border-t border-slate-200/50 dark:border-white/5 pt-10 mb-4">
               {/* Copyright */}
               <div className="text-slate-400 dark:text-gray-500 text-xs text-center md:text-left font-medium tracking-wide">
-                © {currentYear} <span className="text-slate-800 dark:text-gray-200 font-black">AMITSOLUTIONHUB</span> — All rights reserved
+                © {currentYear} <span className="text-slate-800 dark:text-gray-200 font-black">Ashnexa Systems</span> — All rights reserved
               </div>
           </div>
 

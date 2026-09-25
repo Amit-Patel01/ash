@@ -55,7 +55,7 @@ router.get("/sitemap.xml", async (req, res) => {
       db.collection("courses").find({}, { projection: { slug: 1, id: 1, updatedAt: 1 } }).toArray().catch(() => [])
     ]);
 
-    const baseUrl = "https://amitsolutionhub.com";
+    const baseUrl = "https://ashnexasystems.com";
     const staticPages = ["", "/about", "/projects", "/courses", "/services", "/contact", "/custom-project", "/infrastructure", "/help", "/verify"];
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;

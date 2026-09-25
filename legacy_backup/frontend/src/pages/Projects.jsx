@@ -98,7 +98,7 @@ const Projects = () => {
   return (
     <>
       <SEO
-        title="Our Projects | AmitSolutionHub"
+        title="Our Projects | Ashnexa Systems"
         description="Browse ready-to-deploy professional projects — web apps, dashboards, and custom systems across all complexity levels."
       />
 

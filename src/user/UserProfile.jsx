@@ -277,7 +277,7 @@ export default function UserProfile() {
                 </span>
               </div>
               <p className="mt-1 text-xs sm:text-sm font-medium text-slate-500">
-                {profileForm.bio ? profileForm.bio.slice(0, 60) + '...' : 'Learning and growing with Amit Solution Hub'}
+                {profileForm.bio ? profileForm.bio.slice(0, 60) + '...' : 'Learning and growing with Ashnexa Systems'}
                 {profileForm.location ? ` · based in ${profileForm.location}` : ''}
               </p>
 

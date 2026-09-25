@@ -142,25 +142,12 @@ const Navbar = () => {
 
           {/* Left: Logo + Nav Links */}
           <div className="flex min-w-0 items-center gap-2 xl:gap-4 h-full flex-shrink">
-            <Link href="/" className="relative z-10 flex min-w-0 items-center gap-2 sm:gap-2.5 group flex-shrink-0 outline-none">
-              {/* Logo icon container */}
-              <div className="relative p-1 sm:p-1.5 rounded-xl bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-indigo-500/20 shadow-inner group-hover:scale-105 group-hover:border-indigo-500/40 transition-all duration-300 overflow-hidden flex-shrink-0">
-                <img
-                  src={brandLogo?.src || brandLogo}
-                  alt="Amit Solution Hub Logo"
-                  className="relative z-10 h-7 sm:h-8 lg:h-9 w-auto object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.15)]"
-                />
-              </div>
-
-              {/* Full Brand Name Text */}
-              <div className="flex flex-col min-w-0">
-                <span className={`text-xs sm:text-sm lg:text-[15px] font-black tracking-tight leading-none whitespace-nowrap ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  Amit <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">Solution Hub</span>
-                </span>
-                <span className="hidden sm:inline-block text-[8.5px] font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 leading-none mt-0.5 whitespace-nowrap">
-                  Tech & Learning
-                </span>
-              </div>
+            <Link href="/" className="relative z-10 flex min-w-0 items-center group flex-shrink-0 outline-none">
+              <img
+                src={brandLogo?.src || brandLogo}
+                alt="Ashnexa Systems Logo"
+                className="h-8 sm:h-9 lg:h-10 w-auto object-contain group-hover:scale-105 transition-transform duration-300"
+              />
             </Link>
 
             <style dangerouslySetInnerHTML={{
@@ -210,19 +197,6 @@ const Navbar = () => {
                 <span className="relative z-10 whitespace-nowrap">Project</span>
               </Link>
 
-              {/* ASHX OS Link */}
-              <Link
-                href="/ashx-os"
-                className={`relative px-2 xl:px-2.5 py-1.5 flex items-center gap-1 rounded-xl text-xs xl:text-[13.5px] font-bold transition-all duration-300 group outline-none whitespace-nowrap flex-shrink-0 ${location.pathname === '/ashx-os'
-                    ? isDark ? 'text-white nav-active-pill bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 shadow-md shadow-indigo-500/20' : 'text-white nav-active-pill bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 shadow-md shadow-blue-500/20'
-                    : isDark ? 'text-slate-300 hover:text-indigo-300 hover:bg-white/5' : 'text-slate-800 hover:text-blue-600 hover:bg-slate-100/60'
-                  }`}
-              >
-                <span className="relative z-10 whitespace-nowrap">ASHX OS</span>
-                <span className="relative z-10 px-1.5 py-0.5 rounded-full text-[8.5px] font-black uppercase tracking-wider whitespace-nowrap bg-indigo-600 text-white shadow-sm">
-                  Dec '26
-                </span>
-              </Link>
 
               {/* Programs Dropdown */}
               <div
@@ -721,25 +695,6 @@ const Navbar = () => {
                   </span>
                 </Link>
 
-                {/* Mobile ASHX OS Link */}
-                <Link
-                  href="/ashx-os"
-                  onClick={() => setIsOpen(false)}
-                  className={`relative block px-6 py-4 text-base font-black rounded-2xl transition-all duration-300 overflow-hidden ${location.pathname === '/ashx-os'
-                    ? isDark ? 'text-cyan-300 bg-cyan-500/20 border border-cyan-400/30' : 'text-cyan-700 bg-cyan-50 border border-cyan-300'
-                    : isDark ? 'text-cyan-400 hover:bg-cyan-950/40' : 'text-cyan-600 hover:bg-cyan-50'
-                    }`}
-                >
-                  <span className="relative z-10 flex items-center justify-between">
-                    <span className="flex items-center gap-3 font-mono">
-                      {location.pathname === '/ashx-os' && <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]" />}
-                      ASHX OS
-                    </span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 animate-pulse">
-                      Dec 2026
-                    </span>
-                  </span>
-                </Link>
 
                 {/* Mobile Company Dropdown */}
                 <div className="flex flex-col">

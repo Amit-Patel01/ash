@@ -12,7 +12,7 @@ export async function GET(request) {
   const code = searchParams.get('code');
   const error = searchParams.get('error');
 
-  const host = request.headers.get('host') || 'www.amitsolutionhub.com';
+  const host = request.headers.get('host') || 'www.ashnexasystems.com';
   const protocol = host.includes('localhost') ? 'http' : 'https';
   const appUrl = `${protocol}://${host}`;
 
@@ -57,7 +57,7 @@ export async function GET(request) {
 
     const ADMIN_EMAILS = [
       (process.env.ADMIN_EMAIL || '').trim().toLowerCase(),
-      'support@amitsolutionhub.com',
+      'support@Ashnexa Systems.com',
       'amitpatel07029@gmail.com',
     ].filter(Boolean);
 

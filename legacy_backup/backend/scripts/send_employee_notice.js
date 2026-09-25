@@ -16,7 +16,7 @@ async function processEmployees() {
 
     // Filter employees except admin, naivedh, amit patel
     const excludedEmails = [
-      'support@amitsolutionhub.com',
+      'support@Ashnexa Systems.com',
       'naivedhpatel2518@gmail.com',
       'amitpatel07029@gmail.com',
       'amitpatel02754@gmail.com'
@@ -64,7 +64,7 @@ async function processEmployees() {
         <p>Account delete karne ke karan hue kisi bhi asuvidha ke liye hum dil se mafi chahte hain.</p>
         <p>Aapke sahyog aur samarthan ke liye dhanyawad!</p>
         <br/>
-        <p>Best regards,<br/><strong>Amit Solution Hub Technology Pvt Ltd</strong></p>
+        <p>Best regards,<br/><strong>Ashnexa Systems Pvt Ltd</strong></p>
       </div>
     `;
 

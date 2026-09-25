@@ -8,7 +8,6 @@ import AnnouncementPopup from './AnnouncementPopup'
 import NoticePopup from './NoticePopup'
 import DarkModeBackgroundFix from './DarkModeBackgroundFix'
 import GuidanceModal from './GuidanceModal'
-import AshxOsAnnouncementBar from './AshxOsAnnouncementBar'
 import { useTheme } from '../context/ThemeContext'
 
 const Layout = ({ children }) => {
@@ -44,13 +43,12 @@ const Layout = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col relative text-slate-900 ash-canvas">
+    <div className="min-h-screen w-full flex flex-col relative text-slate-900 bg-[#FAFAFA]">
       <DarkModeBackgroundFix />
-      {!hideGlowBackground && <GlowBackground />}
+      {isDark && !hideGlowBackground && <GlowBackground />}
       <NoticePopup />
       {!hideAnnouncement && <AnnouncementPopup />}
       {!hideNavbar && <GuidanceModal />}
-      {!hideNavbar && <AshxOsAnnouncementBar />}
       
       <div className="relative z-10 flex flex-col min-h-screen w-full overflow-x-hidden">
         {!hideNavbar && <Navbar />}
@@ -66,7 +64,7 @@ const Layout = ({ children }) => {
       {/* WhatsApp Floating Button */}
       {!isPrivateRoute && !hideNavbar && (
         <a
-          href="https://wa.me/917874248481?text=Hi%2C%20I%20visited%20AmitSolutionHub%20and%20would%20like%20to%20know%20more!"
+          href="https://wa.me/917874248481?text=Hi%2C%20I%20visited%20Ashnexa Systems%20and%20would%20like%20to%20know%20more!"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Chat on WhatsApp"

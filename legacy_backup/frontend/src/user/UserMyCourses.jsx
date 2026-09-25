@@ -29,7 +29,7 @@ export default function UserMyCourses() {
   const [selectedFolder, setSelectedFolder] = useState('all')
   const [activeCourseWorkspace, setActiveCourseWorkspace] = useState(null)
 
-  const progressStorageKey = `solutionhub:lms-progress:${currentUser?.uid || 'guest'}`
+  const progressStorageKey = `ashnexa:lms-progress:${currentUser?.uid || 'guest'}`
   const [resourceProgress, setResourceProgress] = useState(() => {
     if (typeof window === 'undefined') return {}
     try {

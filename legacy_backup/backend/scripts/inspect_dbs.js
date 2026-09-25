@@ -2,7 +2,7 @@ const { MongoClient } = require("mongodb");
 require("dotenv").config({ path: __dirname + "/../.env" });
 
 const sourceUri = process.env.MONGODB_URI_ATLAS || process.env.MONGODB_URI;
-const targetUri = "mongodb+srv://Amitsolution_db:djJVMdx8nzY6mcZB@amitsolutionhub.t8phtbl.mongodb.net/solutionhub";
+const targetUri = "mongodb+srv://Amitsolution_db:djJVMdx8nzY6mcZB@Ashnexa Systems.t8phtbl.mongodb.net/solutionhub";
 
 async function inspect() {
   console.log("--- SOURCE DB ---");

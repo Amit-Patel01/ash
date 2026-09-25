@@ -1,19 +1,19 @@
 import { Helmet } from 'react-helmet-async'
 
 export default function SEO({ 
-  title = 'Amit Solution Hub — Tech Agency & Learning Platform',
-  description = 'Amit Solution Hub is a verified MSME tech company providing premium web development, software solutions, AI workforce, and mentorship programs.',
-  keywords = 'Amit Solution Hub, Tech Agency, Web Development, Software Services, Mentorship, Repair, India, MSME',
-  name = 'Amit Solution Hub',
+  title = 'Ashnexa Systems — Tech Agency & Learning Platform',
+  description = 'Ashnexa Systems is a verified MSME tech company providing premium web development, software solutions, AI workforce, and mentorship programs.',
+  keywords = 'Ashnexa Systems, Tech Agency, Web Development, Software Services, Mentorship, Repair, India, MSME',
+  name = 'Ashnexa Systems',
   type = 'website',
-  url = 'https://amitsolutionhub.com',
-  image = 'https://amitsolutionhub.com/og-banner.png',
+  url = 'https://ashnexasystems.com',
+  image = 'https://ashnexasystems.com/og-banner.png',
   schema = null
 }) {
   const defaultSchema = {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
-    "name": "Amit Solution Hub",
+    "name": "Ashnexa Systems",
     "url": url,
     "logo": `${url}/src/assets/brand-logo.png`,
     "description": description,
@@ -27,11 +27,11 @@ export default function SEO({
       "@type": "ContactPoint",
       "telephone": "+91-7874248481",
       "contactType": "student service",
-      "email": "support@amitsolutionhub.com"
+      "email": "support@Ashnexa Systems.com"
     },
     "sameAs": [
-      "https://x.com/AmitSolutionHub",
-      "https://www.instagram.com/amitsolutionhub",
+      "https://x.com/Ashnexa Systems",
+      "https://www.instagram.com/Ashnexa Systems",
       "https://www.linkedin.com/company/amit-solution-hub",
       "https://github.com/Amit-Patel01"
     ]

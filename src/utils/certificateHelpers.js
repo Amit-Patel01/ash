@@ -33,7 +33,7 @@ export const getCertificateVerifyUrl = (certificateId) => {
   const isBrowser = typeof window !== 'undefined'
   const hostname = isBrowser ? window.location.hostname : ''
   const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
-  const origin = isLocalhost && isBrowser ? window.location.origin : 'https://www.amitsolutionhub.com'
+  const origin = isLocalhost && isBrowser ? window.location.origin : 'https://www.ashnexasystems.com'
   return `${origin}/verify/${encodeURIComponent(certificateId)}`
 }
 

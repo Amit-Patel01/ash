@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Award, ArrowRight, CheckCircle2, ShieldCheck, QrCode, ExternalLink } from 'lucide-react'
 import CertificateDocument from './Certificate/CertificateDocument'
+import AshnexaRobot from './robot/AshnexaRobot'
 
 export default function VerifiedCertificateSection({ courseTitle = "Web Development Track", isDark = false }) {
   const sampleCertificate = {
@@ -35,7 +36,7 @@ export default function VerifiedCertificateSection({ courseTitle = "Web Developm
               Verified Course & Certification Credential
             </h2>
             <p className="leading-relaxed font-medium text-slate-600">
-              Students who successfully complete their training or certification course receive an official verifiable certificate with real-time QR code verification, ISO aligned quality standards, and Govt. of India MSME registration.
+              Students who successfully complete their training or certification course receive an official verifiable certificate with real-time QR code verification and tamper-proof digital authorization.
             </p>
 
             {/* Certificate Features */}
@@ -64,18 +65,23 @@ export default function VerifiedCertificateSection({ courseTitle = "Web Developm
                 Verify a Certificate <ArrowRight className="w-4 h-4" />
               </Link>
               <span className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" /> Govt. MSME Registered
+                <ShieldCheck className="w-4 h-4 text-emerald-600" /> Cryptographically Verified
               </span>
             </div>
           </motion.div>
 
-          {/* Right: REAL CERTIFICATE DOCUMENT PREVIEW */}
+          {/* Right: REAL CERTIFICATE DOCUMENT PREVIEW + SCANNER ROBOT */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="lg:col-span-6"
+            className="lg:col-span-6 space-y-4"
           >
+            {/* Certificate Optical Scanner Robot */}
+            <div className="flex justify-center max-w-md mx-auto">
+              <AshnexaRobot action="certificate-scanner" />
+            </div>
+
             <div className="relative group max-w-xl mx-auto">
               {/* Outer Glow & Decoration */}
               <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500/30 via-indigo-500/30 to-emerald-500/30 rounded-2xl blur-lg opacity-40 group-hover:opacity-70 transition duration-500" />
@@ -87,7 +93,7 @@ export default function VerifiedCertificateSection({ courseTitle = "Web Developm
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                     <span>Real Certificate Sample</span>
                   </div>
-                  <span className="text-amber-400 font-mono text-[10px]">MSME GOVT REGISTERED</span>
+                  <span className="text-indigo-400 font-mono text-[10px]">OFFICIAL REGISTRY VERIFIED</span>
                 </div>
 
                 {/* Real Certificate Document Component */}

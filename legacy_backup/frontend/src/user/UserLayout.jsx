@@ -59,7 +59,7 @@ export default function UserLayout() {
   
   const [readNotificationIds, setReadNotificationIds] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('solutionhub:read-notifications') || '[]')
+      return JSON.parse(localStorage.getItem('ashnexa:read-notifications') || '[]')
     } catch {
       return []
     }
@@ -197,14 +197,14 @@ export default function UserLayout() {
   const markAllAsRead = () => {
     const allIds = realNotifications.map(n => n.id)
     setReadNotificationIds(allIds)
-    localStorage.setItem('solutionhub:read-notifications', JSON.stringify(allIds))
+    localStorage.setItem('ashnexa:read-notifications', JSON.stringify(allIds))
   }
 
   const handleNotificationClick = (notification) => {
     if (!notification.read) {
       const nextRead = [...readNotificationIds, notification.id]
       setReadNotificationIds(nextRead)
-      localStorage.setItem('solutionhub:read-notifications', JSON.stringify(nextRead))
+      localStorage.setItem('ashnexa:read-notifications', JSON.stringify(nextRead))
     }
     setShowNotifications(false)
     if (notification.link) navigate(notification.link)

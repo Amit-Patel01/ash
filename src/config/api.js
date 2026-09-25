@@ -16,7 +16,7 @@ const isBrowser = typeof window !== 'undefined'
 const hostname = isBrowser ? window.location.hostname : ''
 const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
 
-export const RENDER_PRIMARY_URL = 'https://amitsolutionhub-1.onrender.com'
+export const RENDER_PRIMARY_URL = 'https://ashnexasystems.com-1.onrender.com'
 export const DEVTUNNEL_FALLBACK_URL = (
   getEnv('VITE_DEVTUNNEL_URL') ||
   'https://9p4l1tql-5000.inc1.devtunnels.ms'

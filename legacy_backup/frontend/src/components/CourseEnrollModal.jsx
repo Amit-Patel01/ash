@@ -294,7 +294,7 @@ export default function CourseEnrollModal({ course, onClose, onSuccess }) {
           key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_live_SXgcywjUbXwb34',
           amount: order.amount,
           currency: order.currency,
-          name: "Amit Solution Hub",
+          name: "Ashnexa Systems",
           description: `Enrollment for ${course.title}`,
           order_id: order.id,
           handler: async (response) => {

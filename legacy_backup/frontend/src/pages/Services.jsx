@@ -158,8 +158,8 @@ export default function Services() {
   return (
     <PublicPageShell hideHeader>
       <SEO 
-        title="Our Services - Web Development, Cloud & Tech Solutions | Amit Solution Hub" 
-        description="Explore end-to-end software development, UI/UX design, cloud infrastructure, and technical consulting services delivered by Amit Solution Hub." 
+        title="Our Services - Web Development, Cloud & Tech Solutions | Ashnexa Systems" 
+        description="Explore end-to-end software development, UI/UX design, cloud infrastructure, and technical consulting services delivered by Ashnexa Systems." 
       />
       
       {/* ── TOP HERO SECTION ── */}
@@ -171,7 +171,7 @@ export default function Services() {
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.15]">
-            Build, Scale & Innovate With <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">Amit Solution Hub</span>
+            Build, Scale & Innovate With <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">Ashnexa Systems</span>
           </h1>
 
           <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-2xl mx-auto mt-6">

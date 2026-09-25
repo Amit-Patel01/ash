@@ -114,9 +114,9 @@ export function AuthProvider({ children }) {
       }
     }
 
-    window.addEventListener('solutionhub:user-updated', handleCurrentUserUpdate)
+    window.addEventListener('ashnexa:user-updated', handleCurrentUserUpdate)
     return () => {
-      window.removeEventListener('solutionhub:user-updated', handleCurrentUserUpdate)
+      window.removeEventListener('ashnexa:user-updated', handleCurrentUserUpdate)
     }
   }, [currentUser?.uid, refreshCurrentUser])
 

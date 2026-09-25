@@ -1,5 +1,5 @@
 export default async function sitemap() {
-  const baseUrl = 'https://www.amitsolutionhub.com';
+  const baseUrl = 'https://www.ashnexasystems.com';
 
   const routes = [
     '',

@@ -168,7 +168,7 @@ export default function EmployeeLayout({ children }) {
 
   const isTeamMember = userProfile?.role === 'team' || userProfile?.role === 'Team Member'
   const employeeName = userProfile?.displayName || currentUser?.displayName || 'Employee'
-  const employeeEmail = currentUser?.email || 'employee@amitsolutionhub.com'
+  const employeeEmail = currentUser?.email || 'employee@Ashnexa Systems.com'
   const employeeRole = userProfile?.jobTitle || userProfile?.role || 'employee'
   const employeeInitial = employeeName.charAt(0).toUpperCase()
   const employeeAvatar = userProfile?.avatar || userProfile?.photoURL || currentUser?.photoURL || currentUser?.avatar || ''
@@ -221,12 +221,12 @@ export default function EmployeeLayout({ children }) {
               </button>
 
               <Link href="/employee" className="flex items-center gap-2.5 group">
-                <div className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700/80 p-1 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-                  <img src="/brand-logo.png" alt="Amit Solution Hub Logo" className="w-full h-full object-contain" />
+                <div className="w-9 h-9 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                  <img src="/brand-logo.png" alt="Ashnexa Systems Logo" className="w-full h-full object-contain" />
                 </div>
                 <div>
                   <h1 className="text-base font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent leading-none">
-                    Amit Solution Hub
+                    Ashnexa Systems
                   </h1>
                   <span className="text-[10px] font-bold text-slate-400 tracking-wider uppercase">
                     {isTeamMember ? 'Team Portal' : 'Employee Desk'}

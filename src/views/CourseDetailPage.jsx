@@ -136,7 +136,10 @@ const resolveInstructorProfile = (course, users = [], teamMembers = []) => {
   const directCourseIdentities = [course?.assignedEmployeeId, course?.assignedEmployeeRef]
     .filter(Boolean)
     .map(normalize)
-  const fallbackCourseIdentities = [course?.assignedEmployeeName, course?.instructor]
+  const instructorStringFromCourse = typeof course?.instructor === 'object'
+    ? (course.instructor?.name || course.instructor?.displayName || '')
+    : (course?.instructor || '')
+  const fallbackCourseIdentities = [course?.assignedEmployeeName, instructorStringFromCourse]
     .filter(Boolean)
     .map(normalize)
   const courseIdentities = [...directCourseIdentities, ...fallbackCourseIdentities]
@@ -174,7 +177,7 @@ const resolveInstructorProfile = (course, users = [], teamMembers = []) => {
       primaryMatch?.name ||
       secondaryMatch?.name ||
       course?.assignedEmployeeName ||
-      course?.instructor ||
+      instructorStringFromCourse ||
       'Instructor',
     name:
       primaryMatch?.name ||
@@ -182,7 +185,7 @@ const resolveInstructorProfile = (course, users = [], teamMembers = []) => {
       primaryMatch?.displayName ||
       secondaryMatch?.displayName ||
       course?.assignedEmployeeName ||
-      course?.instructor ||
+      instructorStringFromCourse ||
       'Instructor',
     email: primaryMatch?.email || secondaryMatch?.email || '',
     employeeId: primaryMatch?.employeeId || secondaryMatch?.employeeId || '',
@@ -274,9 +277,14 @@ export default function CourseDetailPage() {
     instructor?.displayName ||
     instructor?.name ||
     course.assignedEmployeeName ||
-    course.instructor ||
+    (typeof course.instructor === 'object' ? (course.instructor?.name || course.instructor?.displayName) : course.instructor) ||
     `${itemLabel} Instructor`
-  const instructorRole = formatInstructorRole(instructor?.jobTitle || instructor?.role, itemLabel)
+  const instructorRole = formatInstructorRole(
+    instructor?.jobTitle ||
+    instructor?.role ||
+    (typeof course.instructor === 'object' ? course.instructor?.title : ''),
+    itemLabel
+  )
   const instructorBio = instructor?.bio || 'Expert instructor with proven industry experience.'
   const instructorExperience = instructor?.experience || '5+ Years'
   const matchesCourseEnrollment = (enrollment) =>

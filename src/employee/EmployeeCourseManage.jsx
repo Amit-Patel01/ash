@@ -402,7 +402,7 @@ export default function EmployeeCourseManage() {
               employeeName:
                 userProfile?.displayName ||
                 currentUser?.displayName ||
-                selectedCourse.instructor ||
+                (typeof selectedCourse.instructor === 'object' ? selectedCourse.instructor?.name : selectedCourse.instructor) ||
                 'Instructor',
               reason: 'schedule_updated' })
           )
@@ -467,7 +467,7 @@ export default function EmployeeCourseManage() {
               planLabel: 'Course Live Session',
               weeklySchedule: weeklySchedule || 'Weekly Live Class',
               meetingLink: meetingLink || '',
-              employeeName: userProfile?.displayName || currentUser?.displayName || selectedCourse.instructor || 'Lead Mentor',
+              employeeName: userProfile?.displayName || currentUser?.displayName || (typeof selectedCourse.instructor === 'object' ? selectedCourse.instructor?.name : selectedCourse.instructor) || 'Lead Mentor',
               reason: 'schedule_updated'
             })
           )
@@ -519,7 +519,7 @@ export default function EmployeeCourseManage() {
               planLabel: updatedPlan.label || 'Plan Access',
               weeklySchedule: updatedPlan.weeklySchedule || 'Weekly Live Session',
               meetingLink: updatedPlan.meetingLink || '',
-              employeeName: userProfile?.displayName || currentUser?.displayName || selectedCourse.instructor || 'Lead Mentor',
+              employeeName: userProfile?.displayName || currentUser?.displayName || (typeof selectedCourse.instructor === 'object' ? selectedCourse.instructor?.name : selectedCourse.instructor) || 'Lead Mentor',
               reason: 'schedule_updated'
             })
           )

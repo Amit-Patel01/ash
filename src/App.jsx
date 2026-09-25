@@ -301,7 +301,7 @@ function AppContent() {
   const isAdminRoute = location.pathname.startsWith('/admin') || location.pathname === '/login'
   const showChatbot = !isAdminRoute && !location.pathname.startsWith('/employee') && !location.pathname.startsWith('/user')
   const currentHostname = (typeof window !== 'undefined' ? window.location.hostname : '').toLowerCase()
-  const isTargetLiveDomain = currentHostname === 'www.amitsolutionhub.com' || currentHostname === 'amitsolutionhub.com'
+  const isTargetLiveDomain = currentHostname === 'www.ashnexasystems.com' || currentHostname === 'Ashnexa Systems.com'
   const isLocalDevHost = currentHostname === 'localhost' || currentHostname === '127.0.0.1'
 
   const isMaintenanceActive = Boolean(maintenance?.isActive)
@@ -326,7 +326,7 @@ function AppContent() {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   }, [location.pathname, location.search, location.hash])
 
-  // Under maintenance page disabled — live app is shown on amitsolutionhub.com, Vercel, and Devtunnel
+  // Under maintenance page disabled — live app is shown on Ashnexa Systems.com, Vercel, and Devtunnel
   const shouldShowMaintenance = false
 
   if (shouldShowMaintenance) {

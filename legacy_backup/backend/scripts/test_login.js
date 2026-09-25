@@ -1,6 +1,6 @@
 const http = require('http');
 
-const body = JSON.stringify({ email: 'support@amitsolutionhub.com', password: 'Admin@123' });
+const body = JSON.stringify({ email: 'support@Ashnexa Systems.com', password: 'Admin@123' });
 
 const options = {
   hostname: 'localhost',

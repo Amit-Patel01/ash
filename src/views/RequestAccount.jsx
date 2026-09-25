@@ -176,7 +176,7 @@ export default function RequestAccount() {
           {/* Background 3D Tech Illustration */}
           <img
             src="/login_hero_banner.png"
-            alt="Amit Solution Hub Technology"
+            alt="Ashnexa Systems"
             className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.95] contrast-[1.05] transition-transform duration-700 group-hover:scale-105"
           />
           
@@ -191,7 +191,7 @@ export default function RequestAccount() {
               </div>
               <div>
                 <h2 className="text-sm font-black tracking-tight text-slate-900 leading-none">
-                  Amit Solution Hub
+                  Ashnexa Systems
                 </h2>
                 <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">Technology Pvt Ltd</span>
               </div>
@@ -405,7 +405,7 @@ export default function RequestAccount() {
 
           {/* Bottom Footer */}
           <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
-            <span>© {new Date().getFullYear()} Amit Solution Hub Technology Pvt Ltd</span>
+            <span>© {new Date().getFullYear()} Ashnexa Systems Pvt Ltd</span>
             <Link href="/contact" className="hover:text-indigo-600 transition-colors">Support</Link>
           </div>
 

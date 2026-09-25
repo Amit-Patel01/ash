@@ -1,14 +1,12 @@
 import { motion } from 'framer-motion'
 import { GraduationCap } from 'lucide-react'
-import msmeLogo from '../assets/msme.png'
-
 export default function TrustedPartners() {
   const partners = [
     {
-      name: 'MSME Registered',
-      logo: msmeLogo,
-      height: 'h-10',
-      desc: 'UDYAM-GJ-17-0037282',
+      name: 'Vercel',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Vercel_logo_2020.svg',
+      height: 'h-6',
+      desc: 'Cloud & Edge Infrastructure',
       type: 'image'
     },
 
@@ -29,10 +27,10 @@ export default function TrustedPartners() {
     },
 
     {
-      name: 'AICTE',
-      logo: 'https://upload.wikimedia.org/wikipedia/en/e/eb/All_India_Council_for_Technical_Education_logo.png',
-      height: 'h-12',
-      desc: 'Certification & Training Portal',
+      name: 'GitHub',
+      logo: 'https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg',
+      height: 'h-9',
+      desc: 'Source Code & Versioning',
       type: 'image'
     }
   ]

@@ -442,7 +442,7 @@ export default function AIChatbot() {
     } catch (err) {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: err.message || '❌ Connection error. Please check your network or contact support@amitsolutionhub.com.'
+        content: err.message || '❌ Connection error. Please check your network or contact support@Ashnexa Systems.com.'
       }])
     } finally {
       setLoading(false)

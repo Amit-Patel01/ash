@@ -230,7 +230,7 @@ export default function AdminAIDepartments() {
     setSendingBroadcast(true)
     setBroadcastStatus(null)
 
-    let subject = 'Announcement from Amit Solution Hub'
+    let subject = 'Announcement from Ashnexa Systems'
     const subjectMatch = replyText.match(/Subject:\s*([^\n]+)/i)
     if (subjectMatch && subjectMatch[1]) {
       subject = subjectMatch[1].trim()
@@ -258,7 +258,7 @@ export default function AdminAIDepartments() {
 
   const handleDirectBroadcast = async () => {
     const body = directBroadcastBody.trim()
-    const subject = directBroadcastSubject.trim() || 'Announcement from Amit Solution Hub'
+    const subject = directBroadcastSubject.trim() || 'Announcement from Ashnexa Systems'
     if (!body) return
     setSendingDirectBroadcast(true)
     setDirectBroadcastStatus(null)

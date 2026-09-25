@@ -117,7 +117,7 @@ const emailTemplate = (subject, content, ctaText = null, ctaUrl = null, headerCo
             ` : ''}
             
             <div style="margin-bottom: 16px;">
-              <img src="https://www.amitsolutionhub.com/logo.png" alt="Amit Solution Hub" style="height: 56px; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)); max-width: 100%;" />
+              <img src="https://www.ashnexasystems.com/logo.png" alt="Ashnexa Systems" style="height: 56px; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4)); max-width: 100%;" />
             </div>
 
             <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.35; text-shadow: 0 4px 10px rgba(0,0,0,0.5);">
@@ -145,7 +145,7 @@ const emailTemplate = (subject, content, ctaText = null, ctaUrl = null, headerCo
               <div>
                 <p style="margin: 0; font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Official Direct Contact</p>
                 <p style="margin: 2px 0 0; color: #0f172a; font-weight: 900; font-size: 16px;">Amit Patel</p>
-                <p style="margin: 0; font-size: 12px; color: #2563eb; font-weight: 700;">Founder, Amit Solution Hub</p>
+                <p style="margin: 0; font-size: 12px; color: #2563eb; font-weight: 700;">Founder, Ashnexa Systems</p>
               </div>
               <div style="text-align: right;">
                 <span style="display: inline-block; padding: 6px 14px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #86efac; border-radius: 30px; font-size: 11px; font-weight: 900; color: #15803d; box-shadow: 0 2px 6px rgba(22,163,74,0.15);">
@@ -158,10 +158,10 @@ const emailTemplate = (subject, content, ctaText = null, ctaUrl = null, headerCo
           <!-- Samsung-Grade Dark Footer -->
           <div style="background-color: #090d16; padding: 28px 32px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.08);">
             <p style="margin: 0; font-size: 12px; color: #94a3b8; font-weight: 800; letter-spacing: 0.5px;">
-              © 2026 Amit Solution Hub | Ultra-Premium Tech Platform
+              © 2026 Ashnexa Systems | Ultra-Premium Tech Platform
             </p>
             <p style="margin: 8px 0 0; font-size: 11px; color: #64748b;">
-              Need instant support? Reply to this email or visit <a href="https://www.amitsolutionhub.com" style="color: #3b82f6; text-decoration: none; font-weight: 700;">amitsolutionhub.com</a>
+              Need instant support? Reply to this email or visit <a href="https://www.ashnexasystems.com" style="color: #3b82f6; text-decoration: none; font-weight: 700;">Ashnexa Systems.com</a>
             </p>
             ${unsubscribeUrl ? `
             <p style="margin: 14px 0 0; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.07); font-size: 11px; color: #475569;">
@@ -229,7 +229,7 @@ const sendEmail = async ({ to, subject, html, text, attachments }) => {
       return { success: false, error: 'SMTP credentials not configured' };
     }
 
-    const defaultFrom = process.env.FROM_EMAIL || process.env.SMTP_FROM || `Amit Solution Hub <${smtpConfig.user}>`;
+    const defaultFrom = process.env.FROM_EMAIL || process.env.SMTP_FROM || `Ashnexa Systems <${smtpConfig.user}>`;
 
     const mailOptions = {
       from: defaultFrom,

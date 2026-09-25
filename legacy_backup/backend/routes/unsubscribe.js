@@ -8,7 +8,7 @@ const { logger } = require('../logger');
  * Generate a unique, secure unsubscribe token for a user email
  */
 const generateUnsubscribeToken = (email) => {
-  const secret = process.env.JWT_SECRET || 'amitsolutionhub-secret';
+  const secret = process.env.JWT_SECRET || 'Ashnexa Systems-secret';
   return crypto.createHmac('sha256', secret).update(email.toLowerCase().trim()).digest('hex').slice(0, 32);
 };
 
@@ -20,12 +20,12 @@ router.get('/', async (req, res) => {
   const { email, token } = req.query;
 
   if (!email || !token) {
-    return res.status(400).send(renderPage('❌ Invalid Link', 'This unsubscribe link is missing required parameters. Please contact support@amitsolutionhub.com', false));
+    return res.status(400).send(renderPage('❌ Invalid Link', 'This unsubscribe link is missing required parameters. Please contact support@Ashnexa Systems.com', false));
   }
 
   const expectedToken = generateUnsubscribeToken(email);
   if (token !== expectedToken) {
-    return res.status(400).send(renderPage('❌ Invalid Token', 'This link has expired or is invalid. Please contact support@amitsolutionhub.com', false));
+    return res.status(400).send(renderPage('❌ Invalid Token', 'This link has expired or is invalid. Please contact support@Ashnexa Systems.com', false));
   }
 
   try {
@@ -47,13 +47,13 @@ router.get('/', async (req, res) => {
     logger.info(`[Unsubscribe] ${email} unsubscribed from newsletters.`);
     return res.send(renderPage(
       '✅ Newsletter Unsubscribed',
-      `<strong>${email}</strong> will no longer receive <strong>newsletters and promotional emails</strong> from Amit Solution Hub.<br/><br/>⚠️ <strong>Note:</strong> You will still receive important transactional emails such as:<br/>• Password reset links<br/>• Order confirmations &amp; receipts<br/>• Certificate download links<br/>• Account verification emails<br/><br/>These cannot be turned off as they are essential for your account.<br/><br/>If you change your mind, contact <a href="mailto:support@amitsolutionhub.com" style="color:#2563eb;">support@amitsolutionhub.com</a>`,
+      `<strong>${email}</strong> will no longer receive <strong>newsletters and promotional emails</strong> from Ashnexa Systems.<br/><br/>⚠️ <strong>Note:</strong> You will still receive important transactional emails such as:<br/>• Password reset links<br/>• Order confirmations &amp; receipts<br/>• Certificate download links<br/>• Account verification emails<br/><br/>These cannot be turned off as they are essential for your account.<br/><br/>If you change your mind, contact <a href="mailto:support@Ashnexa Systems.com" style="color:#2563eb;">support@Ashnexa Systems.com</a>`,
       true
     ));
 
   } catch (err) {
     logger.error(`[Unsubscribe] Error for ${email}: ${err.message}`);
-    return res.status(500).send(renderPage('⚠️ Server Error', 'Something went wrong. Please try again or contact support@amitsolutionhub.com', false));
+    return res.status(500).send(renderPage('⚠️ Server Error', 'Something went wrong. Please try again or contact support@Ashnexa Systems.com', false));
   }
 });
 
@@ -87,7 +87,7 @@ const renderPage = (title, message, success) => `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title} — Amit Solution Hub</title>
+  <title>${title} — Ashnexa Systems</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #0b0f19; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -107,7 +107,7 @@ const renderPage = (title, message, success) => `
     <p>${message}</p>
     <div class="badge">${success ? 'Newsletter Unsubscribed' : 'Action Failed'}</div>
     <br/>
-    <a href="https://www.amitsolutionhub.com" class="home-link">← Back to Amit Solution Hub</a>
+    <a href="https://www.ashnexasystems.com" class="home-link">← Back to Ashnexa Systems</a>
   </div>
 </body>
 </html>

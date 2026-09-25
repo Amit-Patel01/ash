@@ -8,7 +8,7 @@ const PrivacyPolicy = () => {
 
   return (
     <>
-      <SEO title="Privacy Policy | AmitSolutionHub" description="Privacy policy and data protection guidelines for AmitSolutionHub internship and mentorship programs." />
+      <SEO title="Privacy Policy | Ashnexa Systems" description="Privacy policy and data protection guidelines for Ashnexa Systems internship and mentorship programs." />
       <div className="min-h-screen pt-10 lg:pt-14 pb-20 px-4 md:px-8 bg-slate-50">
         <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100">
           <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-8 tracking-tight">Privacy Policy</h1>
@@ -17,7 +17,7 @@ const PrivacyPolicy = () => {
           <div className="space-y-8 text-slate-600 leading-relaxed max-w-none">
             <section>
               <h2 className="text-xl font-bold text-slate-800 mb-4">1. Information We Collect</h2>
-              <p>At AmitSolutionHub, we prioritize the privacy of our students, trainees, and visitors. When you register for an internship, mentorship program (such as Trading Mentorship), or create an account on our platform, we collect certain personal information including your name, email address, phone number, and educational background.</p>
+              <p>At Ashnexa Systems, we prioritize the privacy of our students, trainees, and visitors. When you register for an internship, mentorship program (such as Trading Mentorship), or create an account on our platform, we collect certain personal information including your name, email address, phone number, and educational background.</p>
             </section>
 
             <section>

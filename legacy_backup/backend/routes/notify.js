@@ -15,7 +15,7 @@ const { verifyFirebaseToken } = require('../middlewares/authMiddleware')
 const { adminOnly } = require('../middlewares/rbacMiddleware')
 
 const ADMIN_EMAIL = 'amitpatel07029@gmail.com'
-const SITE_URL = 'https://www.amitsolutionhub.com'
+const SITE_URL = 'https://www.ashnexasystems.com'
 
 // ── Templates ────────────────────────────────────────────────────────────────
 
@@ -24,12 +24,12 @@ const templates = {
   // 1. Customer Welcome
   welcome: ({ name, email }) => ({
     to: email,
-    subject: '🎉 Welcome to Amit Solution Hub!',
+    subject: '🎉 Welcome to Ashnexa Systems!',
     html: emailTemplate(
-      'Welcome to Amit Solution Hub!',
+      'Welcome to Ashnexa Systems!',
       `
       <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${name}</strong> 👋,</p>
-      <p>We are thrilled to welcome you to <strong>Amit Solution Hub</strong>! Your account is now fully active and ready.</p>
+      <p>We are thrilled to welcome you to <strong>Ashnexa Systems</strong>! Your account is now fully active and ready.</p>
       
       <div style="margin:24px 0;padding:24px;background:#f0fdf4;border-radius:18px;border:1px solid #bbf7d0;">
         <div style="font-size:15px;font-weight:800;color:#166534;margin-bottom:8px;">✅ Account Successfully Activated</div>
@@ -210,7 +210,7 @@ const templates = {
         <p style="margin:0;font-size:13px;color:#15803d;">You can now log in to access your employee panel, manage courses, and review student tasks.</p>
       </div>
 
-      <p style="font-size:14px;color:#475569;">If you need onboarding assistance, reach out to support@amitsolutionhub.com</p>
+      <p style="font-size:14px;color:#475569;">If you need onboarding assistance, reach out to support@Ashnexa Systems.com</p>
       `,
       'Login to Employee Dashboard',
       `${SITE_URL}/employee`,
@@ -250,12 +250,12 @@ const templates = {
   // 8. Service Request — User Acknowledgment
   service_request_user: ({ clientName, clientEmail, serviceType }) => ({
     to: clientEmail,
-    subject: '📋 Inquiry Received — Amit Solution Hub',
+    subject: '📋 Inquiry Received — Ashnexa Systems',
     html: emailTemplate(
       `We Have Received Your Inquiry!`,
       `
       <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${clientName}</strong> 👋,</p>
-      <p>Thank you for reaching out to <strong>Amit Solution Hub</strong>! We have received your request for <strong>${serviceType || 'Custom Solution Services'}</strong>.</p>
+      <p>Thank you for reaching out to <strong>Ashnexa Systems</strong>! We have received your request for <strong>${serviceType || 'Custom Solution Services'}</strong>.</p>
 
       <div style="margin:24px 0;padding:24px;background:#f0f9ff;border-radius:18px;border:1px solid #bae6fd;">
         <div style="font-size:14px;font-weight:800;color:#0369a1;margin-bottom:6px;">⏱ Expected SLA: Within 24 Hours</div>
@@ -279,7 +279,7 @@ const templates = {
       `New Project Submission for Sale`,
       `
       <p style="font-size:16px;margin-bottom:16px;">Hello Admin 💰,</p>
-      <p>A developer wants to list and sell a project on Amit Solution Hub.</p>
+      <p>A developer wants to list and sell a project on Ashnexa Systems.</p>
 
       <div style="margin:24px 0;padding:24px;background:#fff7ed;border-radius:18px;border:1px solid #fed7aa;">
         <div style="font-size:11px;font-weight:900;letter-spacing:1px;color:#c2410c;text-transform:uppercase;margin-bottom:12px;">Submission Details</div>
@@ -303,12 +303,12 @@ const templates = {
   // 10. Sell Request — User Acknowledgment
   sell_request_user: ({ sellerName, sellerEmail, projectTitle }) => ({
     to: sellerEmail,
-    subject: '💼 Sell Request Received — Amit Solution Hub',
+    subject: '💼 Sell Request Received — Ashnexa Systems',
     html: emailTemplate(
       `Project Submission Received!`,
       `
       <p style="font-size:16px;margin-bottom:16px;">Hello <strong>${sellerName}</strong> 👋,</p>
-      <p>We have successfully received your request to list <strong>${projectTitle || 'your project'}</strong> on Amit Solution Hub.</p>
+      <p>We have successfully received your request to list <strong>${projectTitle || 'your project'}</strong> on Ashnexa Systems.</p>
 
       <div style="margin:24px 0;padding:24px;background:#fff7ed;border-radius:18px;border:1px solid #fed7aa;">
         <div style="font-size:14px;font-weight:800;color:#c2410c;margin-bottom:6px;">📋 Code Quality Evaluation</div>

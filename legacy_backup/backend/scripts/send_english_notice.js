@@ -25,7 +25,7 @@ async function sendEnglishNotice() {
       <p style="font-size: 15px;">Dear Team Member,</p>
       
       <p style="font-size: 14px; color: #334155;">
-        We would like to inform you that <strong>Amit Solution Hub Technology Pvt Ltd</strong> is currently undergoing a major system infrastructure upgrade and comprehensive platform enhancement.
+        We would like to inform you that <strong>Ashnexa Systems Pvt Ltd</strong> is currently undergoing a major system infrastructure upgrade and comprehensive platform enhancement.
       </p>
       
       <p style="font-size: 14px; color: #334155;">
@@ -50,7 +50,7 @@ async function sendEnglishNotice() {
 
       <br/>
       <div style="border-top: 1px solid #e2e8f0; padding-top: 14px;">
-        <p style="margin: 0; font-size: 14px; font-weight: bold; color: #0f172a;">Amit Solution Hub Technology Pvt Ltd</p>
+        <p style="margin: 0; font-size: 14px; font-weight: bold; color: #0f172a;">Ashnexa Systems Pvt Ltd</p>
         <p style="margin: 2px 0 0; font-size: 12px; color: #64748b;">Official Administration & Engineering Team</p>
       </div>
     </div>

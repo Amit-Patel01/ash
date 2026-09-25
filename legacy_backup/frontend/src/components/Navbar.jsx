@@ -119,7 +119,7 @@ const Navbar = () => {
 
                 <img
                   src={brandLogo}
-                  alt="Amit Solution Hub Logo"
+                  alt="Ashnexa Systems Logo"
                   className="relative z-10 h-7 sm:h-9 lg:h-10 w-auto object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.15)]"
                 />
 

@@ -62,7 +62,7 @@ export default function UserLayout({ children }) {
 
   const [readNotificationIds, setReadNotificationIds] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('solutionhub:read-notifications') || '[]')
+      return JSON.parse(localStorage.getItem('ashnexa:read-notifications') || '[]')
     } catch {
       return []
     }
@@ -180,7 +180,7 @@ export default function UserLayout({ children }) {
       list.push(
         {
           id: 'welcome-1',
-          title: 'Welcome to Amit Solution Hub!',
+          title: 'Welcome to Ashnexa Systems!',
           desc: 'Explore enrolled training tracks, verified offer letters, and custom project tools.',
           time: 'Just now',
           link: '/user/my-courses'
@@ -208,14 +208,14 @@ export default function UserLayout({ children }) {
   const markAllAsRead = () => {
     const allIds = realNotifications.map(n => n.id)
     setReadNotificationIds(allIds)
-    localStorage.setItem('solutionhub:read-notifications', JSON.stringify(allIds))
+    localStorage.setItem('ashnexa:read-notifications', JSON.stringify(allIds))
   }
 
   const handleNotificationClick = (notification) => {
     if (!notification.read) {
       const nextRead = [...readNotificationIds, notification.id]
       setReadNotificationIds(nextRead)
-      localStorage.setItem('solutionhub:read-notifications', JSON.stringify(nextRead))
+      localStorage.setItem('ashnexa:read-notifications', JSON.stringify(nextRead))
     }
     setShowNotifications(false)
     if (notification.link) navigate(notification.link)
@@ -241,7 +241,7 @@ export default function UserLayout({ children }) {
   }
 
   const userName = userProfile?.displayName || currentUser?.displayName || 'Amit'
-  const userEmail = currentUser?.email || 'student@amitsolutionhub.com'
+  const userEmail = currentUser?.email || 'student@Ashnexa Systems.com'
   const userAvatar = userProfile?.avatar || userProfile?.photoURL || currentUser?.avatar || currentUser?.photoURL || ''
 
   return (
@@ -264,12 +264,12 @@ export default function UserLayout({ children }) {
               </button>
 
               <Link href="/user" className="flex items-center gap-2.5 group">
-                <div className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700/80 p-1 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-                  <img src="/brand-logo.png" alt="Amit Solution Hub Logo" className="w-full h-full object-contain" />
+                <div className="w-9 h-9 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                  <img src="/brand-logo.png" alt="Ashnexa Systems Logo" className="w-full h-full object-contain" />
                 </div>
                 <div>
                   <h1 className="text-base font-bold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent leading-none">
-                    Amit Solution Hub
+                    Ashnexa Systems
                   </h1>
                   <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase">Student Portal</span>
                 </div>
@@ -474,8 +474,8 @@ export default function UserLayout({ children }) {
           isDark ? 'bg-slate-950 text-white' : 'bg-white text-slate-900'
         }`}>
           <div className="flex items-center justify-between px-4 h-16 border-b border-slate-200 dark:border-slate-800">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-xs">SH</div>
+            <div className="flex items-center gap-2.5">
+              <img src="/brand-logo.png" alt="Ashnexa Systems Logo" className="w-8 h-8 object-contain shrink-0" />
               <span className="font-bold text-sm">Student Navigation</span>
             </div>
             <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-slate-600 dark:text-slate-300">

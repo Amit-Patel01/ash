@@ -61,7 +61,7 @@ export default function UserOverview() {
   useEffect(() => {
     if (!currentUser?.uid) return
     try {
-      const progressKey = `solutionhub:lms-progress:${currentUser.uid}`
+      const progressKey = `ashnexa:lms-progress:${currentUser.uid}`
       const savedProgress = JSON.parse(localStorage.getItem(progressKey) || '{}')
       if (savedProgress && typeof savedProgress === 'object') {
         setCompletedLessonsCount(Object.keys(savedProgress).length)
@@ -155,7 +155,7 @@ export default function UserOverview() {
             {/* Pill Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] font-black bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700 shadow-xs uppercase tracking-widest">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Amit Solution Hub Workspace
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Ashnexa Systems Workspace
             </div>
 
             {/* Headline */}

@@ -2,7 +2,7 @@ const { MongoClient } = require("mongodb");
 require("dotenv").config({ path: __dirname + "/../.env" });
 
 const sourceUri = process.env.MONGODB_URI_ATLAS || process.env.MONGODB_URI;
-const targetUri = "mongodb+srv://Amitsolution_db:djJVMdx8nzY6mcZB@amitsolutionhub.t8phtbl.mongodb.net/solutionhub?tls=true&tlsAllowInvalidCertificates=true";
+const targetUri = "mongodb+srv://Amitsolution_db:djJVMdx8nzY6mcZB@Ashnexa Systems.t8phtbl.mongodb.net/solutionhub?tls=true&tlsAllowInvalidCertificates=true";
 
 async function migrate() {
   console.log("=== STARTING MONGODB DATABASE MIGRATION ===");

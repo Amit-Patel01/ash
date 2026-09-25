@@ -20,9 +20,9 @@ async function setMaintenanceDomainRestricted() {
       id: "maintenance",
       isActive: true,               // Enable maintenance check
       isActiveDev: false,           // OFF for local dev
-      onlyAllowedDomain: true,      // ONLY www.amitsolutionhub.com can run live app
-      allowedDomains: ["www.amitsolutionhub.com", "amitsolutionhub.com"],
-      message: "Website Under Maintenance\n\nWe are currently performing scheduled maintenance and updates to enhance system performance. Access is restricted to our primary domain www.amitsolutionhub.com.\n\nThank you for your understanding.\n\n— Team Amit Solution Hub",
+      onlyAllowedDomain: true,      // ONLY www.ashnexasystems.com can run live app
+      allowedDomains: ["www.ashnexasystems.com", "Ashnexa Systems.com"],
+      message: "Website Under Maintenance\n\nWe are currently performing scheduled maintenance and updates to enhance system performance. Access is restricted to our primary domain www.ashnexasystems.com.\n\nThank you for your understanding.\n\n— Team Ashnexa Systems",
       updatedAt: new Date().toISOString()
     };
 

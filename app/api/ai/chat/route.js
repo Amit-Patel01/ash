@@ -19,14 +19,14 @@ export async function POST(request) {
     if (!apiKey) {
       return NextResponse.json({
         success: false,
-        reply: "AI Chatbot is currently offline. Please contact support@amitsolutionhub.com.",
+        reply: "AI Chatbot is currently offline. Please contact support@Ashnexa Systems.com.",
       });
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
 
-    const systemPrompt = `You are SolutionHub AI, an intelligent assistant for SolutionHub (amitsolutionhub.com). You help users learn about full-stack web development, trading mentorship, custom software development, certification courses, and training programs offered by SolutionHub. Be polite, concise, and helpful.`;
+    const systemPrompt = `You are SolutionHub AI, an intelligent assistant for SolutionHub (Ashnexa Systems.com). You help users learn about full-stack web development, trading mentorship, custom software development, certification courses, and training programs offered by SolutionHub. Be polite, concise, and helpful.`;
 
     const lastUserMsg = messages[messages.length - 1]?.content || 'Hello';
 

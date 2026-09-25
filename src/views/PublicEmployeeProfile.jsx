@@ -321,7 +321,7 @@ const PublicEmployeeProfile = () => {
   if (loading) {
     return (
       <>
-        <SEO title="Loading Profile | AmitSolutionHub" />
+        <SEO title="Loading Profile | Ashnexa Systems" />
         <style>{CSS}</style>
         <div className="profile-page">
           <div className="profile-hero">
@@ -339,7 +339,7 @@ const PublicEmployeeProfile = () => {
   if (!member) {
     return (
       <>
-        <SEO title="Profile Not Found | AmitSolutionHub" description="The requested team profile was not found." />
+        <SEO title="Profile Not Found | Ashnexa Systems" description="The requested team profile was not found." />
         <style>{CSS}</style>
         <div className="profile-page">
           <div className="profile-hero">
@@ -370,8 +370,8 @@ const PublicEmployeeProfile = () => {
   return (
     <>
       <SEO
-        title={`${member.displayName} | AmitSolutionHub`}
-        description={`View the team profile for ${member.displayName}, ${member.jobTitle}, at AmitSolutionHub.`}
+        title={`${member.displayName} | Ashnexa Systems`}
+        description={`View the team profile for ${member.displayName}, ${member.jobTitle}, at Ashnexa Systems.`}
       />
       <style>{CSS}</style>
 
@@ -424,7 +424,7 @@ const PublicEmployeeProfile = () => {
                     <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981' }} />
                     {member.department || 'Core Team'}
                   </div>
-                  <p className="profile-bio">{member.bio || 'Professional team member at AmitSolutionHub.'}</p>
+                  <p className="profile-bio">{member.bio || 'Professional team member at Ashnexa Systems.'}</p>
 
                   {/* Action Buttons */}
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 24 }}>
@@ -517,7 +517,7 @@ const PublicEmployeeProfile = () => {
                 <div style={{ marginTop: 20, padding: 16, background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(59, 130, 246, 0.08))', border: '1px solid rgba(99, 102, 241, 0.15)', borderRadius: 16 }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: 'rgb(var(--fg))', marginBottom: 6 }}>🎯 Why Team Profiles Matter</div>
                   <p style={{ fontSize: 12, color: 'rgb(var(--fg-muted))', lineHeight: 1.65 }}>
-                    Public team profiles build trust and credibility, showing the expertise behind AmitSolutionHub's projects and mentorship programs.
+                    Public team profiles build trust and credibility, showing the expertise behind Ashnexa Systems's projects and mentorship programs.
                   </p>
                 </div>
               </div>

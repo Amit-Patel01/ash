@@ -37,7 +37,7 @@ export default function RoleSelect() {
             </svg>
           </div>
           <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tight text-slate-900 dark:text-white leading-tight">
-            Join <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500 drop-shadow-sm">Amit Solution Hub</span>
+            Join <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500 drop-shadow-sm">Ashnexa Systems</span>
           </h1>
           <p className="text-base md:text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto font-medium">
             Select your account type to proceed to registration and start your workspace.

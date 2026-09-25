@@ -33,7 +33,7 @@ export default function AICTECertificateDocument({ certificate, template, classN
   const sigName = certificate?.signatoryName || activeTemplate.signatureName || 'Amit Patel'
   const sigImg = normalizeCertificateAssetUrl(certificate?.signatureImageUrl) || founderSign
   const stampImg = normalizeCertificateAssetUrl(certificate?.stampImageUrl) || stempImage
-  const orgName = activeTemplate.organizationName || 'Amit Solution Hub'
+  const orgName = activeTemplate.organizationName || 'Ashnexa Systems'
   const mentorSignImg = normalizeCertificateAssetUrl(certificate?.mentorSignatureImageUrl) || mentorSign
   const mentorNameResolved = certificate?.mentorName || 'Program Mentor'
 
@@ -301,7 +301,7 @@ export default function AICTECertificateDocument({ certificate, template, classN
             ) : (
               <>
                 <p>has successfully completed the <span className="font-bold text-[#173F8A]">AICTE National Portal Registered Certification Course</span></p>
-                <p>organized by Amit Solution Hub, a registered organization on the AICTE National Portal.</p>
+                <p>organized by Ashnexa Systems, a registered organization on the AICTE National Portal.</p>
                 <p>During the course period, the student was found sincere, hardworking and</p>
                 <p>actively participated in all assigned tasks.</p>
                 <p>We wish him/her all the best for future endeavors.</p>
@@ -438,11 +438,11 @@ export default function AICTECertificateDocument({ certificate, template, classN
       <div className="absolute bottom-[clamp(4px,0.5cqw,8px)] left-0 w-full z-[60] flex items-center justify-center"
         style={{ background: `linear-gradient(90deg, ${navyColor}, #1d3f78, ${navyColor})`, height: 'clamp(14px, 2cqw, 28px)' }}>
         <p className="text-white flex items-center gap-[0.5cqw] font-medium" style={{ fontSize: 'clamp(5px, 0.7cqw, 11px)' }}>
-          This certificate is verifiable at: https://amitsolutionhub.in/verify
+          This certificate is verifiable at: https://ashnexasystems.com.in/verify
           <span style={{ color: accentColor }}>|</span>
-          Email: support@amitsolutionhub.in
+          Email: support@Ashnexa Systems.in
           <span style={{ color: accentColor }}>|</span>
-          Website: www.amitsolutionhub.in
+          Website: www.Ashnexa Systems.in
         </p>
       </div>
 

@@ -554,8 +554,8 @@ export default function AdminSettings() {
 
               <div className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl">
                 <div>
-                  <p className="text-sm font-medium text-slate-900">Restrict Live App to www.amitsolutionhub.com</p>
-                  <p className="text-xs text-slate-400">When maintenance mode is active, ONLY visitors on www.amitsolutionhub.com can see the live app. All other preview/alternative domains will show the Maintenance Page.</p>
+                  <p className="text-sm font-medium text-slate-900">Restrict Live App to www.ashnexasystems.com</p>
+                  <p className="text-xs text-slate-400">When maintenance mode is active, ONLY visitors on www.ashnexasystems.com can see the live app. All other preview/alternative domains will show the Maintenance Page.</p>
                 </div>
                 <label className="relative inline-flex cursor-pointer">
                   <input 
@@ -580,7 +580,7 @@ export default function AdminSettings() {
               </div>
 
               <div className="rounded-xl border border-amber-500/20 bg-amber-500/[0.04] px-4 py-4 text-sm leading-6 text-slate-700">
-                <strong className="text-slate-900 font-semibold">Note:</strong> When maintenance mode is active with domain restriction enabled, only visitors accessing via <strong className="text-blue-600">www.amitsolutionhub.com</strong> can view the live site. All other preview or third-party domains will display the Maintenance Page. The admin portal (<code className="text-red-500">/admin</code>) remains accessible.
+                <strong className="text-slate-900 font-semibold">Note:</strong> When maintenance mode is active with domain restriction enabled, only visitors accessing via <strong className="text-blue-600">www.ashnexasystems.com</strong> can view the live site. All other preview or third-party domains will display the Maintenance Page. The admin portal (<code className="text-red-500">/admin</code>) remains accessible.
               </div>
 
               <div className="flex justify-end pt-4">

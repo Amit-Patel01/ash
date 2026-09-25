@@ -32,7 +32,7 @@ export async function POST(request) {
       { $set: { resetToken, resetExpires, updatedAt: new Date() } }
     );
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || process.env.FRONTEND_URL || 'https://www.amitsolutionhub.com';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || process.env.FRONTEND_URL || 'https://www.ashnexasystems.com';
     const resetUrl = `${appUrl.replace(/\/+$/, '')}/reset-password?token=${resetToken}`;
 
     const resetEmailHtml = createEmailTemplate({
@@ -40,7 +40,7 @@ export async function POST(request) {
       subtitle: `Account Security Request for ${normalizedEmail}`,
       badgeText: 'SECURITY VERIFICATION',
       bodyContent: `
-        <p>We received a request to reset the password for your <strong>Amit Solution Hub</strong> account.</p>
+        <p>We received a request to reset the password for your <strong>Ashnexa Systems</strong> account.</p>
         <p>Click the button below to choose a new password. This link is valid for 1 hour.</p>
         <p style="font-size: 12px; color: #94a3b8;">If you did not request a password reset, you can safely ignore this email.</p>
       `,
@@ -50,7 +50,7 @@ export async function POST(request) {
 
     const mailResult = await sendEmail({
       to: normalizedEmail,
-      subject: '🔒 Reset Your Password - Amit Solution Hub',
+      subject: '🔒 Reset Your Password - Ashnexa Systems',
       html: resetEmailHtml,
     });
 

@@ -2,8 +2,8 @@ import { Suspense } from 'react';
 import ForgotPassword from '@/src/views/ForgotPassword';
 
 export const metadata = {
-  title: 'Forgot Password | Amit Solution Hub',
-  description: 'Reset your Amit Solution Hub member password securely.',
+  title: 'Forgot Password | Ashnexa Systems',
+  description: 'Reset your Ashnexa Systems member password securely.',
 };
 
 export default function ForgotPasswordPage() {

@@ -5,6 +5,7 @@ import ProjectCard from '../components/ProjectCard'
 import SEO from '../components/SEO'
 import PublicPageShell, { PublicGlassCard, PublicSection, PublicSectionHeading } from '../components/public/PublicPageShell'
 import { useStore } from '../store/StoreContext'
+import AshnexaRobot from '../components/robot/AshnexaRobot'
 
 const categoryColors = {
   basic:    { active: 'from-emerald-500 to-green-600 shadow-[0_12px_28px_-10px_rgba(22,163,74,0.5)]',    inactive: 'border-emerald-200/80  text-emerald-700  hover:bg-emerald-50  dark:border-emerald-500/20 dark:text-emerald-400  dark:hover:bg-emerald-500/10' },
@@ -97,12 +98,38 @@ const Projects = () => {
   return (
     <>
       <SEO
-        title="Our Projects | AmitSolutionHub"
+        title="Our Projects | Ashnexa Systems"
         description="Browse ready-to-deploy professional projects — web apps, dashboards, and custom systems across all complexity levels."
       />
 
       <PublicPageShell hideHeader>
         <PublicSection className="space-y-8">
+          {/* Architecture Analyzer Robot Banner */}
+          <div className="rounded-3xl border border-indigo-100 dark:border-indigo-900/60 bg-gradient-to-r from-indigo-50/70 via-white to-purple-50/70 dark:from-slate-900/80 dark:via-slate-900 dark:to-indigo-950/60 p-6 sm:p-8 shadow-sm">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7 space-y-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-white dark:bg-slate-800 border border-indigo-100 dark:border-indigo-800 shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+                  3D Architecture-Verified Projects
+                </div>
+                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Production-Ready Software Architectures
+                </h1>
+                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-xl">
+                  Every system in our registry is engineered with scalable microservices, clean API layers, and optimized database schemas analyzed for enterprise reliability.
+                </p>
+                <div className="flex flex-wrap gap-4 pt-1 text-xs font-bold text-slate-700 dark:text-slate-300">
+                  <span className="flex items-center gap-1.5"><span className="text-emerald-500 font-bold">✓</span> Full Source Code & Docs</span>
+                  <span className="flex items-center gap-1.5"><span className="text-emerald-500 font-bold">✓</span> Interactive API Gateway</span>
+                  <span className="flex items-center gap-1.5"><span className="text-emerald-500 font-bold">✓</span> Verified Deployments</span>
+                </div>
+              </div>
+              <div className="lg:col-span-5 flex justify-center">
+                <AshnexaRobot action="projects-architecture" />
+              </div>
+            </div>
+          </div>
+
           {/* Search + Sort Controls */}
           <PublicGlassCard className="p-7 space-y-6">
             <PublicSectionHeading

@@ -66,7 +66,7 @@ export default function EmployeeProfileRefined() {
   const publicProfileUrl =
     typeof window !== 'undefined'
       ? new URL(publicProfilePath, window.location.origin).toString()
-      : `https://www.amitsolutionhub.com${publicProfilePath}`
+      : `https://www.ashnexasystems.com${publicProfilePath}`
 
   // Metrics from assigned tasks & projects
   const myTasksCount = useMemo(() => {
@@ -358,7 +358,7 @@ export default function EmployeeProfileRefined() {
               </div>
               <p className="mt-1 text-xs sm:text-sm font-medium text-slate-500">
                 {profileForm.jobTitle || userProfile?.role || 'Team Specialist'}
-                {profileForm.department ? ` based in ${profileForm.department}` : ' at Amit Solution Hub'}
+                {profileForm.department ? ` based in ${profileForm.department}` : ' at Ashnexa Systems'}
               </p>
 
               {/* Action Buttons: Solid Pill & Outlined Pill */}
@@ -675,7 +675,7 @@ export default function EmployeeProfileRefined() {
                   type="email"
                   value={emailForm}
                   onChange={(event) => setEmailForm(event.target.value)}
-                  placeholder="employee@amitsolutionhub.com"
+                  placeholder="employee@Ashnexa Systems.com"
                   className="w-full rounded-2xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-sm text-slate-900 focus:bg-white focus:border-blue-500 focus:outline-none"
                   required
                 />

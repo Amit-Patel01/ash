@@ -15,9 +15,9 @@ export default function GuidanceModal() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    const submitted = localStorage.getItem('solutionhub:guidance_submitted') === 'true'
-    const dismissed = localStorage.getItem('solutionhub:guidance_dismissed') === 'true'
-    const seen = sessionStorage.getItem('solutionhub:guidance_seen') === 'true'
+    const submitted = localStorage.getItem('ashnexa:guidance_submitted') === 'true'
+    const dismissed = localStorage.getItem('ashnexa:guidance_dismissed') === 'true'
+    const seen = sessionStorage.getItem('ashnexa:guidance_seen') === 'true'
 
     if (submitted || dismissed || seen) {
       return
@@ -25,14 +25,14 @@ export default function GuidanceModal() {
 
     const timer = setTimeout(() => {
       setIsOpen(true)
-      sessionStorage.setItem('solutionhub:guidance_seen', 'true')
+      sessionStorage.setItem('ashnexa:guidance_seen', 'true')
     }, 1500)
     return () => clearTimeout(timer)
   }, [])
 
   const handleClose = () => {
-    localStorage.setItem('solutionhub:guidance_dismissed', 'true')
-    sessionStorage.setItem('solutionhub:guidance_seen', 'true')
+    localStorage.setItem('ashnexa:guidance_dismissed', 'true')
+    sessionStorage.setItem('ashnexa:guidance_seen', 'true')
     setIsOpen(false)
   }
 
@@ -77,8 +77,8 @@ export default function GuidanceModal() {
 
       if (!response.ok) throw new Error('Failed to submit details')
 
-      localStorage.setItem('solutionhub:guidance_submitted', 'true')
-      localStorage.setItem('solutionhub:guidance_dismissed', 'true')
+      localStorage.setItem('ashnexa:guidance_submitted', 'true')
+      localStorage.setItem('ashnexa:guidance_dismissed', 'true')
       setSuccess(true)
       setTimeout(() => {
         setIsOpen(false)

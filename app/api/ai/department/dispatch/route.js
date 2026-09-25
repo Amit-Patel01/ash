@@ -20,7 +20,7 @@ export async function POST(request) {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
 
-    const result = await model.generateContent(`You are the AI Department Agent for ${department.toUpperCase()} at Amit Solution Hub (amitsolutionhub.com). Execute the task: ${prompt}`);
+    const result = await model.generateContent(`You are the AI Department Agent for ${department.toUpperCase()} at Ashnexa Systems (Ashnexa Systems.com). Execute the task: ${prompt}`);
     const replyText = result.response.text();
 
     return NextResponse.json({

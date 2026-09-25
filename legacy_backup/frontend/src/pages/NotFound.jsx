@@ -18,8 +18,8 @@ export default function NotFound() {
   return (
     <>
       <SEO
-        title="Page Not Found | AmitSolutionHub"
-        description="The page you're looking for doesn't exist. Head back to AmitSolutionHub."
+        title="Page Not Found | Ashnexa Systems"
+        description="The page you're looking for doesn't exist. Head back to Ashnexa Systems."
       />
       <div className={`min-h-[80vh] flex items-center justify-center px-6 py-20 ${isDark ? 'bg-slate-950' : 'bg-gradient-to-br from-indigo-50/60 via-white to-violet-50/40'}`}>
         <div className="max-w-lg w-full text-center space-y-8">
@@ -116,7 +116,7 @@ export default function NotFound() {
               Contact our team
             </Link>
             {' '}or{' '}
-            <a href="mailto:support@amitsolutionhub.com" className="text-indigo-500 hover:text-indigo-400 underline underline-offset-2">
+            <a href="mailto:support@Ashnexa Systems.com" className="text-indigo-500 hover:text-indigo-400 underline underline-offset-2">
               email us
             </a>
           </p>

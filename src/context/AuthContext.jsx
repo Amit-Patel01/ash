@@ -114,9 +114,9 @@ export function AuthProvider({ children }) {
       }
     }
 
-    window.addEventListener('amitsolutionhub:user-updated', handleCurrentUserUpdate)
+    window.addEventListener('Ashnexa Systems:user-updated', handleCurrentUserUpdate)
     return () => {
-      window.removeEventListener('amitsolutionhub:user-updated', handleCurrentUserUpdate)
+      window.removeEventListener('Ashnexa Systems:user-updated', handleCurrentUserUpdate)
     }
   }, [currentUser?.uid, refreshCurrentUser])
 

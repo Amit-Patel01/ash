@@ -219,9 +219,9 @@ function CertificateCard({ certificate, templateState, currentUser, copiedId, on
         const issueYear = dateObj.getFullYear();
         const issueMonth = dateObj.getMonth() + 1;
         const publicVerifyUrl = `${window.location.origin}/verify?id=${certificate.certificate_id}`;
-        const linkedInAddUrl = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(documentLabel)}&organizationName=${encodeURIComponent(template.organizationName || 'Amit Solution Hub')}&issueYear=${issueYear}&issueMonth=${issueMonth}&certUrl=${encodeURIComponent(publicVerifyUrl)}&certId=${encodeURIComponent(certificate.certificate_id)}`;
+        const linkedInAddUrl = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(documentLabel)}&organizationName=${encodeURIComponent(template.organizationName || 'Ashnexa Systems')}&issueYear=${issueYear}&issueMonth=${issueMonth}&certUrl=${encodeURIComponent(publicVerifyUrl)}&certId=${encodeURIComponent(certificate.certificate_id)}`;
         const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(publicVerifyUrl)}`;
-        const xShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`I'm excited to share that I have completed the course "${certificate.courseName}" with Amit Solution Hub! You can verify my credential here:`)}&url=${encodeURIComponent(publicVerifyUrl)}`;
+        const xShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`I'm excited to share that I have completed the course "${certificate.courseName}" with Ashnexa Systems! You can verify my credential here:`)}&url=${encodeURIComponent(publicVerifyUrl)}`;
 
         return (
           <div className="mt-6 flex flex-wrap items-center gap-3">

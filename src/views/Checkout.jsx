@@ -94,7 +94,7 @@ const Checkout = () => {
         key: (typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID : null) || 'rzp_live_SXgcywjUbXwb34',
         amount: order.amount,
         currency: order.currency,
-        name: "Amit Solution Hub",
+        name: "Ashnexa Systems",
         description: `Purchase for ${project.title}`,
         order_id: order.id,
         handler: async (response) => {

@@ -15,7 +15,7 @@ async function setMaintenanceProdOnDevOff() {
       id: "maintenance",
       isActive: true,       // ON for Deployed / Production
       isActiveDev: false,   // OFF for Local Development
-      message: "Website Under Maintenance\n\nWe are currently performing scheduled maintenance and improvements to enhance your experience.\n\nThe website will be available again shortly.\n\nThank you for your patience and understanding.\n\n— Team Amit Solution Hub",
+      message: "Website Under Maintenance\n\nWe are currently performing scheduled maintenance and improvements to enhance your experience.\n\nThe website will be available again shortly.\n\nThank you for your patience and understanding.\n\n— Team Ashnexa Systems",
       updatedAt: new Date().toISOString()
     };
 

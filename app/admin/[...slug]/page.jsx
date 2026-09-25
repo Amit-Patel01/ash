@@ -27,15 +27,13 @@ const AdminAccountRequests = dynamic(() => import('@/src/admin/AdminAccountReque
 const AdminSettings = dynamic(() => import('@/src/admin/AdminSettings'), { ssr: false })
 const AdminProfile = dynamic(() => import('@/src/admin/AdminProfile'), { ssr: false })
 const AdminAIDepartments = dynamic(() => import('@/src/admin/AdminAIDepartments'), { ssr: false })
-const AdminAshxWaitlist = dynamic(() => import('@/src/admin/AdminAshxWaitlist'), { ssr: false })
 
 export default function AdminSlugPage() {
   const pathname = usePathname() || '/admin'
 
   let content = <AdminDashboard />
 
-  if (pathname.includes('/admin/ashx-waitlist')) content = <AdminAshxWaitlist />
-  else if (pathname.includes('/admin/projects')) content = <AdminProjects />
+  if (pathname.includes('/admin/projects')) content = <AdminProjects />
   else if (pathname.includes('/admin/tasks')) content = <AdminTasks />
   else if (pathname.includes('/admin/sales')) content = <AdminSales />
   else if (pathname.includes('/admin/receipts')) content = <AdminReceipts />

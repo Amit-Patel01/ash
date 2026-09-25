@@ -4,7 +4,7 @@ const { logger } = require("../logger");
 
 const ADMIN_EMAILS = [
   (process.env.ADMIN_EMAIL || "").trim().toLowerCase(),
-  "support@amitsolutionhub.com",
+  "support@Ashnexa Systems.com",
   "amitpatel07029@gmail.com"
 ].filter(Boolean);
 

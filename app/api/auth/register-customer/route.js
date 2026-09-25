@@ -29,7 +29,7 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || process.env.FRONTEND_URL || 'https://www.amitsolutionhub.com';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || process.env.FRONTEND_URL || 'https://www.ashnexasystems.com';
     const cleanAppUrl = appUrl.replace(/\/+$/, '');
 
     const newUser = {
@@ -56,11 +56,11 @@ export async function POST(request) {
       // Send welcome activation email
       const activationUrl = `${cleanAppUrl}/reset-password?token=${resetToken}`;
       const welcomeHtml = createEmailTemplate({
-        title: 'Welcome to Amit Solution Hub!',
+        title: 'Welcome to Ashnexa Systems!',
         subtitle: `Hello ${trimmedName}, your student account is ready.`,
         badgeText: 'ACCOUNT CREATED',
         bodyContent: `
-          <p>Thank you for joining <strong>Amit Solution Hub</strong>!</p>
+          <p>Thank you for joining <strong>Ashnexa Systems</strong>!</p>
           <p>To secure your account and access your dashboard, projects, and courses, please click the button below to set up your password.</p>
           <div style="background-color: #f8fafc; border-left: 4px solid #6366f1; padding: 12px 16px; margin: 16px 0; border-radius: 6px;">
             <p style="margin: 0; font-size: 13px; color: #475569;"><strong>Email:</strong> ${normalizedEmail}</p>
@@ -73,7 +73,7 @@ export async function POST(request) {
 
       sendEmail({
         to: normalizedEmail,
-        subject: '🎉 Welcome to Amit Solution Hub - Set Up Your Password',
+        subject: '🎉 Welcome to Ashnexa Systems - Set Up Your Password',
         html: welcomeHtml,
       }).catch(err => console.warn('Welcome activation email failed:', err.message));
     }

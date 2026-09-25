@@ -9,7 +9,7 @@ const TermsOfService = () => {
 
   return (
     <>
-      <SEO title="Terms of Service | AmitSolutionHub" description="Terms and conditions for utilizing AmitSolutionHub's certification courses and trading mentorship programs." />
+      <SEO title="Terms of Service | Ashnexa Systems" description="Terms and conditions for utilizing Ashnexa Systems's certification courses and trading mentorship programs." />
       <div className="min-h-screen pt-10 lg:pt-14 pb-20 px-4 md:px-8 bg-slate-50">
         <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100">
           <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-8 tracking-tight">Terms of Service</h1>
@@ -18,7 +18,7 @@ const TermsOfService = () => {
           <div className="space-y-8 text-slate-600 leading-relaxed max-w-none">
             <section>
               <h2 className="text-xl font-bold text-slate-800 mb-4">1. Acceptance of Terms</h2>
-              <p>By registering for a certification course, purchasing a mentorship program, or utilizing the AmitSolutionHub platform, you agree to comply with and be bound by these Terms of Service. If you do not agree, please refrain from using our services.</p>
+              <p>By registering for a certification course, purchasing a mentorship program, or utilizing the Ashnexa Systems platform, you agree to comply with and be bound by these Terms of Service. If you do not agree, please refrain from using our services.</p>
             </section>
 
             <section>
@@ -31,14 +31,14 @@ const TermsOfService = () => {
               <p>For individuals participating in the "Trading Mentorship" program:</p>
               <ul className="list-disc pl-5 mt-3 space-y-2">
                 <li>All educational material, live sessions, and chart analyses provided are strictly for <strong>educational purposes only</strong>.</li>
-                <li>AmitSolutionHub and its mentors are <strong>not SEBI-registered financial advisors</strong>.</li>
+                <li>Ashnexa Systems and its mentors are <strong>not SEBI-registered financial advisors</strong>.</li>
                 <li>We do not provide direct buy/sell tips or manage capital. Any trades executed in the financial markets are at your own personal risk.</li>
               </ul>
             </section>
 
             <section>
               <h2 className="text-xl font-bold text-slate-800 mb-4">4. Certification & Intellectual Property</h2>
-              <p>Certificates are awarded strictly on the basis of attendance, task completion, and performance. We hold the absolute right to withhold certification if criteria are not met. Furthermore, all study materials, source codes, and curriculum blueprints provided are the intellectual property of AmitSolutionHub and cannot be resold.</p>
+              <p>Certificates are awarded strictly on the basis of attendance, task completion, and performance. We hold the absolute right to withhold certification if criteria are not met. Furthermore, all study materials, source codes, and curriculum blueprints provided are the intellectual property of Ashnexa Systems and cannot be resold.</p>
             </section>
 
             <section>

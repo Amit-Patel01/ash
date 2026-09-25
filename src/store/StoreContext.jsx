@@ -770,7 +770,7 @@ export function StoreProvider({ children }) {
         return isMatch ? { ...u, ...updatedRecord } : u
       }))
       if (typeof window !== 'undefined' && updatedRecord?.uid) {
-        window.dispatchEvent(new CustomEvent('amitsolutionhub:user-updated', { detail: updatedRecord }))
+        window.dispatchEvent(new CustomEvent('Ashnexa Systems:user-updated', { detail: updatedRecord }))
       }
       return updatedRecord
     } catch (err) { console.error('Error updating user:', err); throw err }
@@ -847,7 +847,7 @@ export function StoreProvider({ children }) {
       ) ? { ...u, ...data.user } : u))
       await loadUsers()
       if (typeof window !== 'undefined' && data.user?.uid) {
-        window.dispatchEvent(new CustomEvent('amitsolutionhub:user-updated', { detail: data.user }))
+        window.dispatchEvent(new CustomEvent('Ashnexa Systems:user-updated', { detail: data.user }))
       }
       return data
     } catch (err) { console.error('Error firing employee:', err); throw err }
@@ -879,7 +879,7 @@ export function StoreProvider({ children }) {
       ) ? { ...u, ...data.user } : u))
       await loadUsers()
       if (typeof window !== 'undefined' && data.user?.uid) {
-        window.dispatchEvent(new CustomEvent('amitsolutionhub:user-updated', { detail: data.user }))
+        window.dispatchEvent(new CustomEvent('Ashnexa Systems:user-updated', { detail: data.user }))
       }
       return data
     } catch (err) { console.error('Error reinstating employee:', err); throw err }

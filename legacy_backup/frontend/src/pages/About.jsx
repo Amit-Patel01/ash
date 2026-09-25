@@ -254,8 +254,8 @@ export default function About() {
   // FAQ Data
   const faqs = [
     {
-      q: 'Is Amit Solution Hub an AICTE-approved college?',
-      a: 'No. Amit Solution Hub is a private technology development agency registered on the AICTE National Internship Portal. We provide industrial training programs and build real-world software products, which colleges accept for credit mapping under their internship guidelines.'
+      q: 'Is Ashnexa Systems an AICTE-approved college?',
+      a: 'No. Ashnexa Systems is a private technology development agency registered on the AICTE National Internship Portal. We provide industrial training programs and build real-world software products, which colleges accept for credit mapping under their internship guidelines.'
     },
     {
       q: 'How do employers verify my internship certificate?',
@@ -278,10 +278,10 @@ export default function About() {
   return (
     <>
       <Helmet>
-        <title>About Us | Amit Solution Hub</title>
+        <title>About Us | Ashnexa Systems</title>
         <meta
           name="description"
-          content="Learn about Amit Solution Hub, a registered MSME and AICTE National Internship Portal Registered Organization providing technology, custom software development, and online internships."
+          content="Learn about Ashnexa Systems, a registered MSME and AICTE National Internship Portal Registered Organization providing technology, custom software development, and online internships."
         />
       </Helmet>
 
@@ -319,7 +319,7 @@ export default function About() {
               </h1>
 
               <p className="text-sm sm:text-base lg:text-lg text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-xl mx-auto lg:mx-0">
-                Amit Solution Hub is an AI-powered EdTech and IT development platform delivering premium hands-on internships, custom software architectures, expert training, and secure verification systems.
+                Ashnexa Systems is an AI-powered EdTech and IT development platform delivering premium hands-on internships, custom software architectures, expert training, and secure verification systems.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -380,7 +380,7 @@ export default function About() {
               </span>
               <h2 className="text-3xl font-extrabold tracking-tight">Our Story</h2>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                Amit Solution Hub started with a bold vision: to bridge the gap between academic education and industry standards through project-based learning and real-world experience. We observed that traditional classrooms often focus on theory, leaving a skill gap for graduates transitioning into technical careers.
+                Ashnexa Systems started with a bold vision: to bridge the gap between academic education and industry standards through project-based learning and real-world experience. We observed that traditional classrooms often focus on theory, leaving a skill gap for graduates transitioning into technical careers.
               </p>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
                 To solve this, we created an ecosystem where students solve actual business codebases and build verifiable web models, while businesses receive optimized, high-fidelity software products.
@@ -587,11 +587,11 @@ export default function About() {
 
                 <div className="space-y-1">
                   <h3 className="font-extrabold text-xl text-slate-800 dark:text-slate-100">Amit Patel</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Founder of AmitSolutionHub</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">Founder of Ashnexa Systems</p>
                 </div>
 
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                  I lead the design and development of digital projects at AmitSolutionHub. With a focus on full-stack technologies and stock market analytics, I guide our software team to implement clean solutions for clients, while mentoring students through hands-on internship courses.
+                  I lead the design and development of digital projects at Ashnexa Systems. With a focus on full-stack technologies and stock market analytics, I guide our software team to implement clean solutions for clients, while mentoring students through hands-on internship courses.
                 </p>
 
                 {/* Skill Badges */}
@@ -606,7 +606,7 @@ export default function About() {
 
               <div className="flex gap-3 pt-6 mt-6 border-t border-blue-200/50 dark:border-blue-900/50">
                 <a
-                  href="https://portfolio.amitsolutionhub.com/"
+                  href="https://portfolio.Ashnexa Systems.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 py-2.5 rounded-xl text-xs font-extrabold text-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/20 transition-all"
@@ -713,7 +713,7 @@ export default function About() {
                 </div>
 
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                  I oversee team management, operational strategy, and project execution at AmitSolutionHub. Dedicated to optimizing internal workflows, maintaining quality standards, and driving cross-departmental success.
+                  I oversee team management, operational strategy, and project execution at Ashnexa Systems. Dedicated to optimizing internal workflows, maintaining quality standards, and driving cross-departmental success.
                 </p>
 
                 {/* Skill Badges */}

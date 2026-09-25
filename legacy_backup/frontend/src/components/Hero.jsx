@@ -755,7 +755,7 @@ const Hero = () => {
           </div>
         </section>
 
-        {/* ── ABOUT AMITSOLUTIONHUB ── */}
+        {/* ── ABOUT Ashnexa Systems ── */}
         <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/60">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
@@ -808,7 +808,7 @@ const Hero = () => {
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-black text-sm">A</div>
                 <div>
                   <p className="text-sm font-black text-slate-800">Amit Patel</p>
-                  <p className="text-xs text-slate-400 font-medium">Founder &amp; Head — Amit Solution Hub</p>
+                  <p className="text-xs text-slate-400 font-medium">Founder &amp; Head — Ashnexa Systems</p>
                 </div>
               </div>
             </motion.div>
@@ -922,14 +922,14 @@ const Hero = () => {
           </div>
         </section>
 
-        {/* ── WHY CHOOSE AMITSOLUTIONHUB ── */}
+        {/* ── WHY CHOOSE Ashnexa Systems ── */}
         <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-200/60">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
             <span className="px-3 py-1 rounded-full text-xs font-bold text-indigo-500 bg-indigo-500/10 uppercase tracking-wider">
               Our Core Strengths
             </span>
             <h2 className="ash-display ash-underline text-3xl sm:text-4xl font-extrabold tracking-tight">
-              Why Choose AmitSolutionHub
+              Why Choose Ashnexa Systems
             </h2>
             <p className="text-slate-500 text-sm font-medium">
               We focus on delivering high-quality, practical learning experiences to help students bridge the gap between academic theory and technical skills.

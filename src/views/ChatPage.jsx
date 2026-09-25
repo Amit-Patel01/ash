@@ -32,7 +32,7 @@ export default function ChatPage() {
       // Check if there's already a chat with admin
       const existingChat = chats.find(c => {
         const partner = c.participantInfo && Object.keys(c.participantInfo).find(id => id !== currentUser.uid)
-        return partner && c.participantInfo[partner]?.email === 'amitp@amitsolutionhub.com'
+        return partner && c.participantInfo[partner]?.email === 'amitp@Ashnexa Systems.com'
       })
 
       if (existingChat) {
@@ -44,7 +44,7 @@ export default function ChatPage() {
 
       try {
         const users = await getAllUsers()
-        const admin = users.find(u => u.email === 'amitp@amitsolutionhub.com' || u.role === 'admin' || u.role === 'employee')
+        const admin = users.find(u => u.email === 'amitp@Ashnexa Systems.com' || u.role === 'admin' || u.role === 'employee')
         if (admin) {
           const chatId = await getOrCreateChat(admin.uid, admin.displayName || admin.name || 'Support Team', admin.email, admin.role)
           if (chatId) {
@@ -113,7 +113,7 @@ export default function ChatPage() {
           <div>
             <h1 className="text-base sm:text-xl font-black text-slate-900 dark:text-white tracking-tight leading-none">
               <span className="sm:hidden">Support Center</span>
-              <span className="hidden sm:block">Amit Solution Hub Support Center</span>
+              <span className="hidden sm:block">Ashnexa Systems Support Center</span>
             </h1>
             <p className="text-[10px] text-slate-500 dark:text-gray-400 mt-1 uppercase tracking-[0.2em] font-black hidden sm:block">Real-time assistance</p>
           </div>

@@ -510,7 +510,7 @@ export default function UserOrders() {
             <div className="md:w-64 flex flex-col gap-4 shrink-0">
               <h3 className="text-lg font-black text-slate-900">Receipt Viewer</h3>
               <p className="text-xs text-slate-500 leading-relaxed">
-                You are viewing your official payment receipt. Download and print actions are restricted for this document. For assistance, contact support@amitsolutionhub.com.
+                You are viewing your official payment receipt. Download and print actions are restricted for this document. For assistance, contact support@Ashnexa Systems.com.
               </p>
 
               <button
@@ -532,18 +532,18 @@ export default function UserOrders() {
                   <div className="flex justify-between items-start gap-4 border-b-2 border-slate-100 pb-6 mb-6">
                     <div>
                       <div className="flex items-center gap-3.5 mb-2">
-                        <img src={getAbsoluteUrl(logo)} alt="Amit Solution Hub Logo" className="h-10 object-contain" />
+                        <img src={getAbsoluteUrl(logo)} alt="Ashnexa Systems Logo" className="h-10 object-contain" />
                         <div>
-                          <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none">Amit Solution Hub</h1>
+                          <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none">Ashnexa Systems</h1>
                           <p className="text-[9px] font-bold text-indigo-600 uppercase tracking-widest mt-1">MSME Govt. of India Registered</p>
                         </div>
                       </div>
                       <div className="space-y-0.5 text-slate-500 font-medium text-[11px] mt-3">
                         <p><strong>Udyam Reg:</strong> UDYAM-GJ-17-0037282</p>
-                        <p><strong>Email:</strong> support@amitsolutionhub.com</p>
+                        <p><strong>Email:</strong> support@Ashnexa Systems.com</p>
                         <p><strong>Mobile:</strong> +91 7874248481</p>
                         <p><strong>Address:</strong> Godhra, Gujarat, India</p>
-                        <p><strong>Website:</strong> www.amitsolutionhub.com</p>
+                        <p><strong>Website:</strong> www.ashnexasystems.com</p>
                       </div>
                     </div>
 

@@ -68,7 +68,7 @@ export default function CertificateDocument({ certificate, template, className =
       ? 'clamp(15px, 3.2cqw, 36px)'
       : 'clamp(17px, 3.8cqw, 42px)'
 
-  const orgName = activeTemplate.organizationName || 'Amit Solution Hub'
+  const orgName = activeTemplate.organizationName || 'Ashnexa Systems'
 
   return (
     <div

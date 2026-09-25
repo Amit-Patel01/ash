@@ -45,7 +45,7 @@ router.post("/chat", optionalAuth, async (req, res) => {
     logger.error("AI chat error:", error);
     res.status(500).json({
       success: false,
-      reply: "I'm having trouble connecting right now. Please try again or contact support@amitsolutionhub.com.",
+      reply: "I'm having trouble connecting right now. Please try again or contact support@Ashnexa Systems.com.",
     });
   }
 });
@@ -81,7 +81,7 @@ router.post("/recommend", optionalAuth, async (req, res) => {
     logger.error("AI recommend error:", error);
     res.status(500).json({
       success: false,
-      recommendations: "Unable to generate recommendations at this time. Browse our projects at amitsolutionhub.com/projects.",
+      recommendations: "Unable to generate recommendations at this time. Browse our projects at Ashnexa Systems.com/projects.",
     });
   }
 });
@@ -274,7 +274,7 @@ router.post("/department/email/broadcast", verifyFirebaseToken, adminOnly, async
     }
 
     if (recipients.length === 0) {
-      recipients = [process.env.ADMIN_EMAIL || "admin@amitsolutionhub.com"];
+      recipients = [process.env.ADMIN_EMAIL || "admin@Ashnexa Systems.com"];
     }
 
     const validRecipients = recipients.filter(e => e && typeof e === 'string' && e.includes('@'));
@@ -292,7 +292,7 @@ router.post("/department/email/broadcast", verifyFirebaseToken, adminOnly, async
     const { sendEmail, emailTemplate } = require("../services/emailService");
     const { generateUnsubscribeToken } = require("../routes/unsubscribe");
     const { addExecutionLog } = require("../services/aiAgents/departmentConfig");
-    const baseUrl = process.env.BACKEND_URL || process.env.PUBLIC_URL || 'https://api.amitsolutionhub.com';
+    const baseUrl = process.env.BACKEND_URL || process.env.PUBLIC_URL || 'https://api.Ashnexa Systems.com';
 
     const rawContent = typeof body === 'string' ? body : JSON.stringify(body, null, 2);
     const htmlContent = `<p style="margin:12px 0;color:#475569;line-height:1.8">${markdownToHtml(rawContent)}</p>`;
@@ -311,8 +311,8 @@ router.post("/department/email/broadcast", verifyFirebaseToken, adminOnly, async
             const formattedHtml = emailTemplate(
               subject,
               htmlContent,
-              'Visit Amit Solution Hub',
-              'https://www.amitsolutionhub.com',
+              'Visit Ashnexa Systems',
+              'https://www.ashnexasystems.com',
               '#2563eb',
               null,
               unsubUrl

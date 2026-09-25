@@ -12,7 +12,7 @@ async function run() {
     const usersCol = db.collection("users");
 
     // Default admin email
-    const email = "support@amitsolutionhub.com";
+    const email = "support@Ashnexa Systems.com";
     const password = "Admin@123";
     const passwordHash = await bcrypt.hash(password, 12);
 

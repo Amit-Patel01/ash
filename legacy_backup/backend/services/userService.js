@@ -9,7 +9,7 @@ const { logger } = require("../logger");
 const { sendEmail, emailTemplate } = require("./emailService");
 
 const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000;
-const DEFAULT_SITE_URL = (process.env.FRONTEND_URL || process.env.APP_URL || "https://www.amitsolutionhub.com").replace(/\/+$/, "");
+const DEFAULT_SITE_URL = (process.env.FRONTEND_URL || process.env.APP_URL || "https://www.ashnexasystems.com").replace(/\/+$/, "");
 /** Shown when email or phone already belongs to an account (registration or conflict). */
 const ACCOUNT_ALREADY_EXISTS_MESSAGE = "Account already exists. Please reset your password.";
 const NEW_CUSTOMER_EMAIL_INTRO = `
@@ -1539,10 +1539,10 @@ const updateManagedUser = async (identifier, updates, { updatedBy = null } = {})
       const html = `
         <div style="font-family: Arial, sans-serif; color: #1f2937;">
           <p>Hi ${updatedUser.displayName || updatedUser.email},</p>
-          <p>Your account has been upgraded with <strong>admin access</strong> at Amit Solution Hub.</p>
+          <p>Your account has been upgraded with <strong>admin access</strong> at Ashnexa Systems.</p>
           <p>You can now sign in to the admin dashboard using your existing email credentials.</p>
           <p>If you need help signing in, please reply to this message or contact support.</p>
-          <p style="margin-top: 24px;">Best regards,<br/>Amit Solution Hub Team</p>
+          <p style="margin-top: 24px;">Best regards,<br/>Ashnexa Systems Team</p>
         </div>
       `;
       const result = await sendEmail({

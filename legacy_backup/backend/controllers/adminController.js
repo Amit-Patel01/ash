@@ -282,7 +282,7 @@ const notifyAccountApproval = async (req, res) => {
   const welcomeContent = `
     <div style="background-color: #f8fafc; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
       <h2 style="color: #1e40af; margin-top: 0;">Welcome to the Team, ${name}!</h2>
-      <p style="color: #475569; font-size: 16px;">Your account request for <strong>Amit Solution Hub</strong> has been <strong>APPROVED</strong>.</p>
+      <p style="color: #475569; font-size: 16px;">Your account request for <strong>Ashnexa Systems</strong> has been <strong>APPROVED</strong>.</p>
       <div style="margin: 20px 0; padding: 15px; background: #ffffff; border-left: 4px solid #2563eb; border-radius: 4px;">
         <p style="margin: 4px 0;"><strong>Role:</strong> ${role || "Employee"}</p>
         <p style="margin: 4px 0;"><strong>Status:</strong> Active</p>
@@ -293,8 +293,8 @@ const notifyAccountApproval = async (req, res) => {
   try {
     await sendEmail({
       to: email,
-      subject: "Account Approved - Welcome to Amit Solution Hub",
-      html: emailTemplate("Account Approved!", welcomeContent, "Access Dashboard", "https://www.amitsolutionhub.com/login"),
+      subject: "Account Approved - Welcome to Ashnexa Systems",
+      html: emailTemplate("Account Approved!", welcomeContent, "Access Dashboard", "https://www.ashnexasystems.com/login"),
     });
 
     logger.info(`Account approval notification sent to ${email}`);
@@ -353,7 +353,7 @@ const createUser = async (req, res) => {
           <p style="color: #94a3b8; font-size: 13px;">Created by ${req.user?.email || "admin"} from the admin panel.</p>
           `,
           "Open Admin Panel",
-          process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/admin/students` : "https://www.amitsolutionhub.com/admin/students"
+          process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/admin/students` : "https://www.ashnexasystems.com/admin/students"
         ),
       }).catch(err => logger.warn("Admin notification email failed:", err.message));
     }
@@ -618,12 +618,12 @@ const sendReceiptEmail = async (req, res) => {
     const words = localNumberToWords(Math.round(total));
 
     // Construct receipt subject & HTML email content
-    const subject = `Payment Receipt - ${receipt.receiptId} (Amit Solution Hub)`;
+    const subject = `Payment Receipt - ${receipt.receiptId} (Ashnexa Systems)`;
     const emailHtml = `
       <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
         <div style="background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%); padding: 30px; text-align: center; color: white;">
           <h1 style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.5px;">PAYMENT RECEIPT</h1>
-          <p style="margin: 5px 0 0; font-size: 14px; opacity: 0.9; font-weight: 550;">Amit Solution Hub</p>
+          <p style="margin: 5px 0 0; font-size: 14px; opacity: 0.9; font-weight: 550;">Ashnexa Systems</p>
         </div>
         
         <div style="padding: 30px; color: #1e293b;">
@@ -702,19 +702,19 @@ const sendReceiptEmail = async (req, res) => {
 
           <!-- Company info card -->
           <div style="margin-top: 30px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 14px; background: #f8fafc; font-size: 12px; color: #475569; line-height: 1.6;">
-            <p style="margin: 0 0 4px; font-weight: bold; color: #1e293b;">Amit Solution Hub</p>
+            <p style="margin: 0 0 4px; font-weight: bold; color: #1e293b;">Ashnexa Systems</p>
             <p style="margin: 0 0 4px;">Registered MSME Govt. of India (Udyam ID: UDYAM-GJ-17-0037282)</p>
             <p style="margin: 0 0 4px;">Address: Godhra, Gujarat, India</p>
-            <p style="margin: 0;">Support: support@amitsolutionhub.com | +91 7874248481</p>
+            <p style="margin: 0;">Support: support@Ashnexa Systems.com | +91 7874248481</p>
           </div>
 
           <div style="margin-top: 30px; text-align: center; font-size: 11px; color: #94a3b8;">
-            This is an official computer-generated receipt issued by Amit Solution Hub.
+            This is an official computer-generated receipt issued by Ashnexa Systems.
           </div>
         </div>
         
         <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #f1f5f9; font-size: 11px; color: #94a3b8;">
-          © 2026 Amit Solution Hub | Gujarat, India
+          © 2026 Ashnexa Systems | Gujarat, India
         </div>
       </div>
     `;
@@ -808,7 +808,7 @@ const fireEmployee = async (req, res) => {
             Dear <strong>${safeName}</strong>,
           </p>
           <p style="color: #451a03; font-size: 15px; line-height: 1.6;">
-            This is an official notice to inform you that your employment with <strong>Amit Solution Hub</strong> has been terminated effective from <strong>${escapeHtml(formattedRelievingDate)}</strong>.
+            This is an official notice to inform you that your employment with <strong>Ashnexa Systems</strong> has been terminated effective from <strong>${escapeHtml(formattedRelievingDate)}</strong>.
           </p>
 
           <div style="margin: 20px 0; padding: 18px; background: #ffffff; border-left: 4px solid #dc2626; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
@@ -841,7 +841,7 @@ const fireEmployee = async (req, res) => {
       try {
         const mailRes = await sendEmail({
           to: existingUser.email,
-          subject: "Official Notice: Employment Termination & Relieving Certificate - Amit Solution Hub",
+          subject: "Official Notice: Employment Termination & Relieving Certificate - Ashnexa Systems",
           html: emailTemplate(
             "Official Relieving & Termination Notice",
             terminationContent,
@@ -918,7 +918,7 @@ const reinstateEmployee = async (req, res) => {
             Dear <strong>${safeName}</strong>,
           </p>
           <p style="color: #14532d; font-size: 15px; line-height: 1.6;">
-            We are pleased to inform you that your employment status at <strong>Amit Solution Hub</strong> has been <strong>REINSTATED</strong> and your account has been restored to <strong>Active</strong> status.
+            We are pleased to inform you that your employment status at <strong>Ashnexa Systems</strong> has been <strong>REINSTATED</strong> and your account has been restored to <strong>Active</strong> status.
           </p>
 
           <div style="margin: 20px 0; padding: 18px; background: #ffffff; border-left: 4px solid #16a34a; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
@@ -937,12 +937,12 @@ const reinstateEmployee = async (req, res) => {
       try {
         const mailRes = await sendEmail({
           to: existingUser.email,
-          subject: "Notice: Employment Reinstated - Welcome Back to Amit Solution Hub",
+          subject: "Notice: Employment Reinstated - Welcome Back to Ashnexa Systems",
           html: emailTemplate(
             "Welcome Back! Account Reinstated",
             reinstatementContent,
             "Login to Portal",
-            "https://www.amitsolutionhub.com/login",
+            "https://www.ashnexasystems.com/login",
             "#16a34a",
             "OFFICIAL HR REINSTATEMENT"
           ),
@@ -1042,7 +1042,7 @@ const submitReinstatementRequest = async (req, res) => {
             </div>
           `,
           "Review Request in Admin Panel",
-          process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/admin/employees` : "https://www.amitsolutionhub.com/admin/employees"
+          process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/admin/employees` : "https://www.ashnexasystems.com/admin/employees"
         ),
       }).catch((err) => logger.warn("Founder reinstatement notification failed:", err.message));
     }

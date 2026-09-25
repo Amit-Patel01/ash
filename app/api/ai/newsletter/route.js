@@ -7,7 +7,7 @@ import { createEmailTemplate } from '@/lib/emailTemplate';
 import { getDb } from '@/lib/db/mongo';
 
 const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'support@amitsolutionhub.com';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'support@Ashnexa Systems.com';
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 
 async function getNewsletterRecipients(customRecipients) {
@@ -99,7 +99,7 @@ export async function POST(request) {
     };
 
     const slotLabel = timeSlotLabelMap[slot] || '07:00 AM Morning Newsletter';
-    let newsletterSubject = `🚀 [Amit Solution Hub] ${slotLabel}`;
+    let newsletterSubject = `🚀 [Ashnexa Systems] ${slotLabel}`;
     let rawBody = '';
 
     if (apiKey) {
@@ -107,11 +107,11 @@ export async function POST(request) {
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
 
-        const prompt = `You are AGT-03, the Autonomous Newsletter AI Agent for Amit Solution Hub (amitsolutionhub.com).
+        const prompt = `You are AGT-03, the Autonomous Newsletter AI Agent for Ashnexa Systems (Ashnexa Systems.com).
 Generate an engaging, concise tech newsletter for students for the ${slotLabel} edition.
 
 STRICT MANDATORY CONSTRAINTS:
-1. Only feature programs, courses, and live projects that are actually available on amitsolutionhub.com listed below.
+1. Only feature programs, courses, and live projects that are actually available on Ashnexa Systems.com listed below.
 2. DO NOT invent, hallucinate, or generate any fake promo codes, fake coupon codes (such as AFTERNOONTECH25, DISCOUNT25, PROMO25, etc.), or fake discount percentages.
 3. DO NOT mention coupons, discounts, or promotional codes UNLESS they are explicitly listed under "Active Valid Coupons On Website" below. If "Active Valid Coupons On Website" states None, DO NOT include any coupon codes or discount offers!
 4. Format nicely with clean HTML paragraphs (<p>), subheadings (<h3>), bullet lists (<ul><li>), and bold text (<strong>).
@@ -132,8 +132,8 @@ Newsletter Outline:
 1. Motivational greeting & concise tech insight/tip.
 2. Highlight real available certification courses from the list above.
 3. Live project spotlight from the list above.
-${activeCoupons.length > 0 ? '4. Mention only the active valid website coupon offer listed above.' : '4. Call to action to visit amitsolutionhub.com for enrollments.'}
-5. Warm professional closing from Amit Solution Hub Team.`;
+${activeCoupons.length > 0 ? '4. Mention only the active valid website coupon offer listed above.' : '4. Call to action to visit Ashnexa Systems.com for enrollments.'}
+5. Warm professional closing from Ashnexa Systems Team.`;
 
         const result = await model.generateContent(prompt);
         rawBody = result.response.text();
@@ -152,7 +152,7 @@ ${activeCoupons.length > 0 ? '4. Mention only the active valid website coupon of
         : '';
 
       rawBody = `
-        <p>Welcome to your daily edition of tech insights and career growth from <strong>Amit Solution Hub</strong>.</p>
+        <p>Welcome to your daily edition of tech insights and career growth from <strong>Ashnexa Systems</strong>.</p>
         <p>We are dedicated to delivering hands-on skill development, industry-recognized certification courses, and real-world project experience to empower your tech journey.</p>
         
         <h3>🔥 Featured Certification Courses Available:</h3>
@@ -167,7 +167,7 @@ ${activeCoupons.length > 0 ? '4. Mention only the active valid website coupon of
 
         ${couponHtml}
 
-        <p>Visit <a href="https://www.amitsolutionhub.com">amitsolutionhub.com</a> to explore our available programs and accelerate your tech career today!</p>
+        <p>Visit <a href="https://www.ashnexasystems.com">Ashnexa Systems.com</a> to explore our available programs and accelerate your tech career today!</p>
       `;
     }
 
@@ -177,7 +177,7 @@ ${activeCoupons.length > 0 ? '4. Mention only the active valid website coupon of
       badgeText: 'DAILY TECH NEWSLETTER',
       bodyContent: rawBody,
       ctaText: 'Explore Programs & Projects',
-      ctaUrl: 'https://www.amitsolutionhub.com/courses'
+      ctaUrl: 'https://www.ashnexasystems.com/courses'
     });
 
     const mailResult = await sendEmail({

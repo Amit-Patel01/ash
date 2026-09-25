@@ -81,7 +81,7 @@ const Popup = () => {
             You can now learn from our courses and download source codes at affordable prices.
           </p>
           <p style={{ fontSize: '1.25rem', fontWeight: '600', color: '#fde047' }}>
-            Stay connected with AmitSolutionHub!
+            Stay connected with Ashnexa Systems!
           </p>
         </div>
 

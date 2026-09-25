@@ -112,7 +112,7 @@ export default function NoticePopup() {
                   </div>
                   <div className="text-sm leading-relaxed space-y-2">
                     <p className="font-semibold text-slate-900 dark:text-amber-100">
-                      We would like to inform all students and visitors that Amit Solution Hub’s Internship Program is currently on hold due to the pending approval of our Private Limited company registration.
+                      We would like to inform all students and visitors that Ashnexa Systems’s Internship Program is currently on hold due to the pending approval of our Private Limited company registration.
                     </p>
                     <p className="text-slate-600 dark:text-slate-300">
                       Therefore, we are currently not accepting new internship applications or registrations.
@@ -140,14 +140,14 @@ export default function NoticePopup() {
 
               {/* Notice Section 3: ASHX OS Focus & Certification Courses */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {/* ASHX OS Card */}
+                {/* Technology Solutions Card */}
                 <div className="rounded-2xl p-4 bg-slate-100/70 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 space-y-2">
                   <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-xs uppercase tracking-wider">
                     <Cpu className="w-4 h-4 shrink-0" />
-                    <span>Primary Development</span>
+                    <span>Core Development</span>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                    At present, our primary focus is on the development of <strong>ASHX OS</strong>, our upcoming operating system project.
+                    At present, our primary focus is on advancing custom enterprise software, cloud architecture, and cutting-edge web engineering.
                   </p>
                 </div>
 
@@ -177,7 +177,7 @@ export default function NoticePopup() {
               <div className="flex items-center justify-between pt-2">
                 <div>
                   <h4 className="font-black text-slate-900 dark:text-white text-sm">
-                    Amit Solution Hub
+                    Ashnexa Systems
                   </h4>
                   <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">
                     Learn &bull; Build &bull; Grow.

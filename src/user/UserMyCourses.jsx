@@ -71,7 +71,7 @@ export default function UserMyCourses() {
     codeSnippet: ''
   })
 
-  const progressStorageKey = `solutionhub:lms-progress:${currentUser?.uid || 'guest'}`
+  const progressStorageKey = `ashnexa:lms-progress:${currentUser?.uid || 'guest'}`
   const [resourceProgress, setResourceProgress] = useState(() => {
     if (typeof window === 'undefined') return {}
     try {
@@ -454,7 +454,7 @@ export default function UserMyCourses() {
 
             {(() => {
               const assignedEmp = activeCourseWorkspace.group.enrollments.find(e => e.assignedEmployeeName)
-              const mentorName = assignedEmp?.assignedEmployeeName || course.instructor || 'Lead Mentor'
+              const mentorName = assignedEmp?.assignedEmployeeName || (typeof course.instructor === 'object' ? course.instructor?.name : course.instructor) || 'Lead Mentor'
               const mentorEmail = assignedEmp?.assignedEmployeeEmail || ''
               return (
                 <div className="flex items-center gap-2 flex-wrap text-xs sm:text-sm font-medium text-slate-300">
@@ -1076,7 +1076,7 @@ export default function UserMyCourses() {
 
                     {(() => {
                       const assignedEmp = group.enrollments.find(e => e.assignedEmployeeName)
-                      const mentorName = assignedEmp?.assignedEmployeeName || course.instructor
+                      const mentorName = assignedEmp?.assignedEmployeeName || (typeof course.instructor === 'object' ? course.instructor?.name : course.instructor)
                       return mentorName ? (
                         <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5 pt-0.5">
                           <User className="w-3.5 h-3.5 text-indigo-500" /> Assigned Lead Mentor: {mentorName}

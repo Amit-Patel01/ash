@@ -6,7 +6,7 @@ const { logger } = require("../logger");
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
-const CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || "http://www.amitsolutionhub.com/api/auth/google/callback";
+const CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || "http://www.ashnexasystems.com/api/auth/google/callback";
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
 
 if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
@@ -32,7 +32,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
           const name = profile.displayName || email.split("@")[0];
           const picture = profile.photos?.[0]?.value || "";
 
-          const ADMIN_EMAILS = [ADMIN_EMAIL, "support@amitsolutionhub.com", "amitpatel07029@gmail.com"].filter(Boolean);
+          const ADMIN_EMAILS = [ADMIN_EMAIL, "support@Ashnexa Systems.com", "amitpatel07029@gmail.com"].filter(Boolean);
           const isAdminUser = ADMIN_EMAILS.includes(normalizedEmail);
 
           let user = await db.collection("users").findOne({ email: normalizedEmail });
@@ -70,7 +70,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
                   </div>
                   `,
                   "View Students",
-                  process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/admin/students` : "https://www.amitsolutionhub.com/admin/students"
+                  process.env.FRONTEND_URL ? `${process.env.FRONTEND_URL}/admin/students` : "https://www.ashnexasystems.com/admin/students"
                 ),
               }).catch(err => logger.warn("[Passport Google] Admin notification failed:", err.message));
             }

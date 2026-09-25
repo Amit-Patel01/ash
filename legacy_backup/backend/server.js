@@ -134,7 +134,7 @@ app.use(async (req, res, next) => {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Under Maintenance | Amit Solution Hub</title>
+      <title>Under Maintenance | Ashnexa Systems</title>
       <style>
         body {
           margin: 0;
@@ -222,7 +222,7 @@ app.use(async (req, res, next) => {
         <h1>Under Maintenance</h1>
         <p>\${displayMessage.replace(/\\n/g, "<br>")}</p>
         <p style="margin-bottom: 2.5rem;">For any urgent issues, please contact us at:</p>
-        <a href="mailto:support@amitsolutionhub.com" class="contact">support@amitsolutionhub.com</a>
+        <a href="mailto:support@Ashnexa Systems.com" class="contact">support@Ashnexa Systems.com</a>
         <div class="loader">
           <div class="dot"></div>
           <div class="dot"></div>
@@ -243,9 +243,9 @@ app.use(
   })
 );
 const DEFAULT_ALLOWED_ORIGINS = [
-  "https://www.amitsolutionhub.com",
-  "https://amitsolutionhub.com",
-  "https://amitsolutionhub.vercel.app",
+  "https://www.ashnexasystems.com",
+  "https://ashnexasystems.com",
+  "https://ashnexasystems.com.vercel.app",
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "http://localhost:4173",
@@ -271,7 +271,7 @@ app.use(
       const isAllowed = 
         allowedOrigins.some(allowed => allowed.replace(/\/$/, "") === origin.replace(/\/$/, "")) ||
         origin.endsWith(".vercel.app") ||
-        origin.endsWith(".amitsolutionhub.com") ||
+        origin.endsWith(".Ashnexa Systems.com") ||
         origin.endsWith(".onrender.com") ||
         origin.includes("devtunnels.ms") ||
         origin.includes("ngrok") ||
@@ -494,7 +494,7 @@ app.post("/contact", contactLimiter, async (req, res) => {
 
     await sendEmail({
       to: safeEmail,
-      subject: "Message Received – Amit Solution Hub",
+      subject: "Message Received – Ashnexa Systems",
       html: emailTemplate(
         "We've Received Your Message",
         `
@@ -506,7 +506,7 @@ app.post("/contact", contactLimiter, async (req, res) => {
         </div>
         `,
         "Explore Projects",
-        "https://www.amitsolutionhub.com/projects"
+        "https://www.ashnexasystems.com/projects"
       ),
     });
 
@@ -537,7 +537,7 @@ app.post("/reply", verifyFirebaseToken, async (req, res) => {
   try {
     await sendEmail({
       to: String(email).trim(),
-      subject: subject || "Reply from Amit Solution Hub",
+      subject: subject || "Reply from Ashnexa Systems",
       html: emailTemplate(
         subject || "Official Update",
         `

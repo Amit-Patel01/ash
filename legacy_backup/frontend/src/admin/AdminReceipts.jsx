@@ -105,7 +105,7 @@ export default function AdminReceipts() {
     showStamp: true,
     showSignature: true,
     showMsmeQR: true,
-    notes: 'This is a computer-generated receipt. Thank you for choosing Amit Solution Hub!'
+    notes: 'This is a computer-generated receipt. Thank you for choosing Ashnexa Systems!'
   })
 
   useEffect(() => {
@@ -197,7 +197,7 @@ export default function AdminReceipts() {
       showStamp: true,
       showSignature: true,
       showMsmeQR: true,
-      notes: 'This is a computer-generated receipt. Thank you for choosing Amit Solution Hub!'
+      notes: 'This is a computer-generated receipt. Thank you for choosing Ashnexa Systems!'
     })
     setShowFormModal(true)
   }
@@ -506,7 +506,7 @@ export default function AdminReceipts() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">Payment Receipts</h1>
-          <p className="text-sm text-slate-500 mt-1">Generate and print official payment receipts with Amit Solution Hub branding.</p>
+          <p className="text-sm text-slate-500 mt-1">Generate and print official payment receipts with Ashnexa Systems branding.</p>
         </div>
         <button
           onClick={handleOpenCreate}
@@ -1045,18 +1045,18 @@ export default function AdminReceipts() {
                     {/* Left: Brand Details */}
                     <div>
                       <div className="flex items-center gap-3.5 mb-2">
-                        <img src={getAbsoluteUrl(logo)} alt="Amit Solution Hub Logo" className="h-10 object-contain" />
+                        <img src={getAbsoluteUrl(logo)} alt="Ashnexa Systems Logo" className="h-10 object-contain" />
                         <div>
-                          <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none">Amit Solution Hub</h1>
+                          <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none">Ashnexa Systems</h1>
                           <p className="text-[9px] font-bold text-indigo-600 uppercase tracking-widest mt-1">MSME Govt. of India Registered</p>
                         </div>
                       </div>
                       <div className="space-y-0.5 text-slate-500 font-medium text-[11px] mt-3">
                         <p><strong>Udyam Reg:</strong> UDYAM-GJ-17-0037282</p>
-                        <p><strong>Email:</strong> support@amitsolutionhub.com</p>
+                        <p><strong>Email:</strong> support@Ashnexa Systems.com</p>
                         <p><strong>Mobile:</strong> +91 7874248481</p>
                         <p><strong>Address:</strong> Godhra, Gujarat, India</p>
-                        <p><strong>Website:</strong> www.amitsolutionhub.com</p>
+                        <p><strong>Website:</strong> www.ashnexasystems.com</p>
                       </div>
                     </div>
 
