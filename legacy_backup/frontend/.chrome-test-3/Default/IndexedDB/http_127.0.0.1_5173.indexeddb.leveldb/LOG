@@ -1,6 +1,0 @@
-2026/05/08-22:37:51.617 25c8 Creating DB D:\Github-project upload\solutionhub\frontend\.chrome-test-3\Default\IndexedDB\http_127.0.0.1_5173.indexeddb.leveldb since it was missing.
-2026/05/08-22:37:51.622 25c8 Reusing MANIFEST D:\Github-project upload\solutionhub\frontend\.chrome-test-3\Default\IndexedDB\http_127.0.0.1_5173.indexeddb.leveldb/MANIFEST-000001
-2026/05/08-22:37:51.628 3ff0 Level-0 table #5: started
-2026/05/08-22:37:51.631 3ff0 Level-0 table #5: 654 bytes OK
-2026/05/08-22:37:51.633 3ff0 Delete type=0 #3
-2026/05/08-22:37:51.634 3ff0 Manual compaction at level-0 from '\x00\x01\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x02\x00\x00\x00' @ 0 : 0; will stop at (end)
